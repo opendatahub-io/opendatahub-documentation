@@ -1,0 +1,37 @@
+:_module-type: PROCEDURE
+
+[id="adding-cluster-storage-to-your-data-science-project_{context}"]
+= Adding cluster storage to your data science project
+
+[role='_abstract']
+For data science projects that require data to be retained, you can add cluster storage to the project. Additionally, you can also connect cluster storage to a specific project's workbench.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+* You have created a data science project that you can add cluster storage to.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data science projects* page opens.
+. Click the name of the project that you want to add the cluster storage to.
++
+The *Details* page for the project opens.
+. Click *Add cluster storage* in the *Cluster storage* section.
++
+The *Add storage* dialog opens.
+. Enter a *name* for the cluster storage.
+. Enter a *description* for the cluster storage.
+. Under *Persistent storage size*, enter a new size in gigabytes. The minimum size is 1 GiB, and the maximum size is 16384 GiB.
+. Optional: Select a *workbench* from the list to connect the cluster storage to an existing workbench.
+. If you selected a workbench to connect the storage to, enter the storage directory in the *Mount folder* field.
+. Click *Add storage*.
+
+.Verification
+* The cluster storage that you added appears in the *Cluster storage* section on the *Details* page for the project.
+* A new persistent volume claim (PVC) is created with the storage size that you defined.
+* The persistent volume claim (PVC) is visible as an attached storage in the *Workbenches* section on the *Details* page for the project.
+
+//[role='_additional-resources']
+//.Additional resources

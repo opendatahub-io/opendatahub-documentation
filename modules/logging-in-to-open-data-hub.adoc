@@ -1,0 +1,34 @@
+:_module-type: PROCEDURE
+
+[id='logging-in-to-openshift-data-science_{context}']
+= Logging in to Open Data Hub
+
+[role='_abstract']
+Log in to {productname-short} from a browser for easy access to Jupyter and your data science projects.
+
+.Procedure
+. Browse to the {productname-short} instance URL and click *Log in with OpenShift*.
+** If you are a data scientist user, your administrator must provide you with the {productname-short} instance URL, for example, `https:://odh-dashboard-odh.apps.ocp4.example.com`.
+** If you have access to {openshift-platform}, you can browse to the {openshift-platform} web console and click the *Application Launcher* (image:{site-baseurl}/assets/img/pages/docs/images/osd-app-launcher.png[The application launcher]) -> *{productname-long}*.
+
+. Click the name of your identity provider, for example, `GitHub`.
+. Enter your credentials and click *Log in* (or equivalent for your identity provider).
++
+
+If you have not previously authorized the `odh-dashboard` service account to access your account, the *Authorize Access* page appears prompting you to provide authorization.
+Inspect the permissions selected by default, and click the *Allow selected permissions* button.
+
+
+.Verification
+* {productname-short} opens on the *Enabled applications* page.
+
+.Troubleshooting
+* If you see `An authentication error occurred` or `Could not create user` when you try to log in:
+** You might have entered your credentials incorrectly. Confirm that your credentials are correct.
+** You might have an account in more than one configured identity provider. If you have logged in with a different identity provider previously, try again with that identity provider.
+
+[role="_additional-resources"]
+.Additional resources
+ifndef::upstream[]
+* link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#launching-jupyter-and-starting-a-notebook-server_get-started[Launching Jupyter and starting a notebook server]
+endif::[]

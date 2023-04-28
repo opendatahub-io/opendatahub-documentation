@@ -1,0 +1,77 @@
+:_module-type: PROCEDURE
+
+[id='launching-jupyter-and-starting-a-notebook-server_{context}']
+= Launching Jupyter and starting a notebook server
+
+[role='_abstract']
+Launch Jupyter and start a notebook server to start working with your notebooks.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* You know the names and values you want to use for any environment variables in your notebook server environment, for example, `AWS_SECRET_ACCESS_KEY`.
+* If you want to work with a very large data set, work with your administrator to proactively increase the storage capacity of your notebook server.
+
+.Procedure
+
+. Locate the *Jupyter* card on the *Enabled applications* page.
+
+. Click *Launch application*.
++
+If you see *Error 403: Forbidden*, you are not in the default user group or the default administrator group for {productname-short}.
+ifndef::upstream[]
+Contact your administrator so that they can add you to the correct group using link:{rhodsdocshome}{default-format-url}/managing_users_and_user_resources/adding-users-for-openshift-data-science_useradd[Adding users for OpenShift Data Science].
+endif::[]
+ifdef::upstream[]
+Contact your administrator so that they can add you to the correct group.
+endif::[]
++
+If you have not previously authorized the `jupyter-nb-<username>` service account to access your account, the *Authorize Access* page appears prompting you to provide authorization. Inspect the permissions selected by default, and click the *Allow selected permissions* button.
++
+If you credentials are accepted, the *Notebook server control panel* opens displaying the *Start a notebook server* page.
+. Start a notebook server.
++
+This is not required if you have previously opened Jupyter.
+
+.. Select the *Notebook image* to use for your server.
+.. If the notebook image contains multiple versions, select the version of the notebook image from the *Versions* section.
++
+[NOTE]
+--
+When a new version of a notebook image is released, the previous version remains available and supported on the cluster. This gives you time to migrate your work to the latest version of the notebook image.
+--
+.. Select the *Container size* for your server.
+.. Optional: Select the *Number of GPUs* (graphics processing units) for your server.
++
+[IMPORTANT]
+--
+Using GPUs to accelerate workloads is only supported with the PyTorch, TensorFlow, and CUDA notebook server images.
+--
+.. Optional: Select and specify values for any new *Environment variables*.
++
+For example, if you plan to integrate with Red Hat OpenShift Streams for Apache Kafka, create environment variables to store your Kafka bootstrap server and the service account username and password here.
++
+The interface stores these variables so that you only need to enter them once. Example variable names for common environment variables are automatically provided for frequently integrated environments and frameworks, such as Amazon Web Services (AWS).
++
+[IMPORTANT]
+====
+Ensure that you select the *Secret* checkbox for any variables with sensitive values that must be kept private, such as passwords.
+====
+.. Optional: Select the *Start server in current tab* checkbox if necessary.
+.. Click *Start server*.
++
+The *Starting server* progress indicator appears. If you encounter a problem during this process, an error message appears with more information. Click *Expand event log* to view additional information about the server creation process. Depending on the deployment size and resources you requested, starting the server can take up to several minutes. Click *Cancel* to cancel the server creation. After the server starts, the JupyterLab interface opens.
++
+WARNING: You can be logged in to Jupyter for a maximum of 24 hours. After 24 hours, your user credentials expire, you are logged out of Jupyter, and your notebook server pod is stopped and deleted regardless of any work running in the notebook server. To help mitigate this, your administrator can configure OAuth tokens to expire after a set period of inactivity. See link:https://docs.openshift.com/container-platform/4.9/authentication/configuring-internal-oauth.html[Configuring the internal OAuth server] for more information.
+
+
+.Verification
+* The JupyterLab interface opens in a new tab.
+
+[role="_additional-resources"]
+.Additional resources
+ifndef::upstream[]
+link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#options-for-notebook-server-environments_get-started[Options for notebook server environments]
+endif::[]
+
+.Troubleshooting
+* If you see the "Unable to load notebook server configuration options" error message, contact your administrator so that they can review the logs associated with your Jupyter pod and determine further details about the problem.

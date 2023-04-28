@@ -1,0 +1,80 @@
+---
+layout: docs
+title: Getting started with Open Data Hub
+permalink: /docs/getting-started-with-open-data-hub
+custom_css: asciidoc.css
+---
+//:self-managed:
+:upstream:
+include::_artifacts/document-attributes-global.adoc[]
+
+:doctype: book
+:toc: left
+:compat-mode:
+:context: get-started
+
+= Getting started with Open Data Hub
+
+// downstream only
+ifndef::upstream[]
+include::modules/providing-feedback-on-red-hat-documentation.adoc[leveloffset=+1]
+
+include::modules/logging-in-to-openshift-data-science.adoc[leveloffset=+1]
+
+include::modules/the-openshift-data-science-user-interface.adoc[leveloffset=+1]
+
+include::modules/notifications-in-openshift-data-science.adoc[leveloffset=+1]
+endif::[]
+
+// upstream only
+ifdef::upstream[]
+include::modules/logging-in-to-open-data-hub.adoc[leveloffset=+1]
+
+include::modules/the-open-data-hub-user-interface.adoc[leveloffset=+1]
+
+include::modules/notifications-in-open-data-hub.adoc[leveloffset=+1]
+endif::[]
+
+include::modules/creating-a-data-science-project.adoc[leveloffset=+1]
+
+include::modules/creating-a-project-workbench.adoc[leveloffset=+1]
+
+include::modules/launching-jupyter-and-starting-a-notebook-server.adoc[leveloffset=+2]
+
+include::modules/options-for-notebook-server-environments.adoc[leveloffset=+2]
+
+include::modules/tutorials-for-data-scientists.adoc[leveloffset=+1]
+
+include::modules/accessing-tutorials.adoc[leveloffset=+2]
+
+// These modules are for downstream
+ifndef::upstream[]
+include::modules/enabling-services-connected-to-openshift-data-science.adoc[leveloffset=+1]
+
+include::modules/disabling-applications-connected-to-openshift-data-science.adoc[leveloffset=+1]
+
+include::modules/removing-disabled-applications-from-openshift-data-science.adoc[leveloffset=+2]
+endif::[]
+
+// These modules are for upstream
+ifdef::upstream[]
+include::modules/enabling-services-connected-to-open-data-hub.adoc[leveloffset=+1]
+
+include::modules/disabling-applications-connected-to-open-data-hub.adoc[leveloffset=+1]
+
+include::modules/removing-disabled-applications-from-open-data-hub.adoc[leveloffset=+2]
+endif::[]
+
+include::assemblies/support-requirements-and-limitations.adoc[leveloffset=+1]
+
+// leave out upstream for now
+//include::modules/common-questions.adoc[leveloffset=+1]
+
+// leave out - already in working on data science projects
+//include::modules/troubleshooting-common-problems-in-jupyter-for-administrators.adoc[leveloffset=+1]
+
+//include::modules/troubleshooting-common-problems-in-jupyter-for-users.adoc[leveloffset=+1]
+
+// [role='_additional-resources']
+// == Additional resources
+// * link to any relevant resources

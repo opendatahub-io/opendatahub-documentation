@@ -1,0 +1,65 @@
+:_module-type: REFERENCE
+
+[id='the-open-data-hub-user-interface_{context}']
+= The Open Data Hub user interface
+
+[role='_abstract']
+The {productname-long} interface is based on the OpenShift web console user interface.
+
+The {productname-long} user interface is divided into several areas:
+
+* The global navigation bar, which provides access to useful controls, such as *Help* and *Notifications*.
++
+.The global navigation bar
+image::{site-baseurl}/assets/img/pages/docs/images/odh-topnav.png[The global navigation bar]
+
+* The side navigation menu, which contains different categories of pages available in Open Data Hub.
++
+.The side navigation menu
+image::{site-baseurl}/assets/img/pages/docs/images/odh-sidenav.png[The side navigation menu]
+
+* The main display area, which displays the current page and shares space with any drawers currently displaying information, such as notifications or quick start guides. The main display area also displays the *Notebook server control panel* where you can launch Jupyter by starting and configuring a notebook server. Administrators can also use the *Notebook server control panel* to manage other users' notebook servers.
++
+.The main display area
+image::{site-baseurl}/assets/img/pages/docs/images/odh-main-area.png[The main display area]
+
+== Global navigation
+
+There are four items in the top navigation:
+
+* The *Toggle side navigation menu* button (image:{site-baseurl}/assets/img/pages/docs/images/rhods-sidenav-toggle-icon.png["Toggle side navigation menu icon",]) toggles whether or not the side navigation is displayed.
+* The *Notifications* button (image:{site-baseurl}/assets/img/pages/docs/images/rhods-notifications-icon.png["Notifications icon"]) opens and closes the *Notifications* drawer, letting you read current and previous notifications in more detail.
+* The *Help* menu (image:{site-baseurl}/assets/img/pages/docs/images/rhods-help-icon.png["Help menu icon"]) provides a link to access the {productname-short} documentation.
+* The *User* menu displays the name of the currently logged-in user and provides access to the *Log out* button.
+
+== Side navigation
+
+There are three main sections in the side navigation:
+
+Applications -> Enabled:: The *Enabled* page displays applications that are enabled and ready to use on {productname-short}. This page is the default landing page for {productname-short}.
++
+Click the *Launch application* button on an application card to open the application interface in a new tab. If an application has an associated quick start tour, click the drop-down menu on the application's card and select *Open quick start* to access it. This page also displays applications and components that have been disabled by your administrator. Disabled applications are denoted with `Disabled` on the application's card. Click *Disabled* on the application's card to access links allowing you to remove the card itself, and to re-validate its license, if the license had previously expired.
+
+Applications -> Explore:: The *Explore* page displays applications that are available for use with {productname-short}.
+Click on a card for more information about the application or to access the *Enable* button.
+The *Enable* button is only visible if your administrator and enabled an application at the {productname-short} level.
+
+Data science projects:: The *Data science projects* page allows you to organize your data science work into a single project. From this page, you can create and manage data science projects. You can also enhance the capabilities of your data science project by adding workbenches, adding storage to your project's cluster, adding data connections, and adding model servers.
+
+Model Serving:: The *Model Serving* page allows you to manage and view the status of your deployed models. You can use this page to deploy data science models to serve intelligent applications, or to view existing deployed models. You can also determine the inference endpoint of a deployed model.
+
+Resources:: The *Resources* page displays learning resources such as documentation, how-to material, and quick start tours. You can filter visible resources using the options displayed on the left, or enter terms into the search bar.
+
+Settings -> Notebook images:: The *Notebook image settings* page allows you to configure custom notebook images that cater to your project's specific requirements. After you have added custom notebook images to your deployment of {productname-short}, they are available for selection when creating a notebook server.
+
+Settings -> Cluster settings::  The *Cluster settings* page allows you perform the following administrative tasks on your cluster:
+* Enable or disable Red Hat's ability to collect data about Open Data Hub usage on your cluster.
+* Configure how resources are claimed within your cluster by changing the default size of the cluster's persistent volume claim (PVC).
+* Reduce resource usage in your {productname-short} deployment by stopping notebook servers that have been idle.
+* Schedule notebook pods on tainted nodes by adding tolerations.
+
+Settings -> User management:: The *User and group settings* page allows you to define {productname-short} user group and admin group membership.
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete

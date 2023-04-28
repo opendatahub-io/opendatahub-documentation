@@ -1,0 +1,47 @@
+:_module-type: PROCEDURE
+
+[id="creating-a-project-workbench_{context}"]
+= Creating a project workbench
+
+[role='_abstract']
+To examine and work with data models in an isolated area, you can create a workbench. This workbench enables you to create a new Jupyter notebook from an existing notebook container image to access its resources and properties. For data science projects that require data to be retained, you can add container storage to the workbench you are creating.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users`) in OpenShift.
+endif::[]
+* You have created a data science project that you can add a workbench to.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data science projects* page opens.
+. Click the name of the project that you want to add the workbench to.
++
+The *Details* page for the project opens.
+. Click *Create workbench* in the *Workbenches* section.
++
+The *Create workbench* page opens.
+. Configure the properties of the workbench you are creating.
+.. Enter a *name* for your workbench.
+.. Enter a *description* for your workbench.
+.. Select the *notebook image* to use for your workbench server.
+.. Select the *container size* for your server.
+.. Optional: Select and specify values for any new *environment variables*.
+.. Configure the storage for your {productname-short} cluster.
+... Select *Create new persistent storage* to create storage that is retained after you log out of {productname-short}. Fill in the relevant fields to define the storage.
+... Select *Use existing persistent storage* to reuse existing storage then select the storage from the *Persistent storage* list.
+. Click *Create workbench*.
+
+.Verification
+* The workbench that you created appears on the *Details* page for the project.
+* Any cluster storage that you associated with the workbench during the creation process appears on the *Details* page for the project.
+* The *Status* column, located in the *Workbenches* section of the *Details* page, displays a status of *Starting* when the workbench server is starting, and *Running* when the workbench has successfully started.
+
+
+//[role='_additional-resources']
+//.Additional resources
