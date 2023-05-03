@@ -1,0 +1,45 @@
+:_module-type: PROCEDURE
+
+[id='configuring-a-model-server-for-your-data-science-project_{context}']
+= Configuring a model server for your data science project
+
+[role='_abstract']
+Before you can successfully deploy a data science model on {productname-short}, you must configure a model server. This includes configuring the number of replicas being deployed, the server size, the token authorization, and how the project is accessed.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+* You have created a data science project that you can add a model server to.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data science projects* page opens.
+. Click the name of the project that you want to configure a model server for.
++
+The *Details* page for the project opens.
+. Click *Configure server* in the *Models and model servers* section.
++
+The *Configure model server* dialog appears.
+. Configure your project's model server in the *Compute resources per replica* section.
+.. Select the *number of model server* replicas to deploy.
+.. Select one of the following server sizes for your model:
+* Small
+* Medium
+* Large
+* Custom
+.. Optional: If you selected *Custom*, configure the following settings in the *Model server size* section to customize your model server:
+... Enter the number of CPUs to use with your model in the *CPUs requested* field.
+... Enter the maximum number of CPUs required for use with your model in the *CPU limit* field.
+... Enter the requested memory for the model server in gigabytes (GB) in the *Memory requested* field.
+... Enter the maximum memory limit for the model server in gigabytes (GB) in the *Memory limit* field.
+.. Optional: Select the *Make deployed available via an external route* check box in the *Model route* section to make your deployed model available externally.
+.. Optional: Select the *Require token authorization* check box in the *Token Authorization* section to apply token authentication to your model server.
+... Edit the service account name for which the token will be generated in the *Token secret* field. The generated token is created and displayed when the model server is configured.
+... To add an additional service account, click *Add a service account* and enter the relevant information in the *Token secret* field.
+
+.Verification
+* The model server that you configured is displayed in the *Models and model servers* section on the *Details* page for the project.
+
+//[role="_additional-resources"]
+//.Additional resources

@@ -1,0 +1,40 @@
+:_module-type: PROCEDURE
+
+[id="updating-cluster-storage_{context}"]
+= Updating cluster storage
+
+[role='_abstract']
+If your data science work requires you to change the identifying information of a project's cluster storage or the workbench that the storage is connected to, you can update your project's cluster storage to change these properties.
+
+[NOTE]
+====
+You cannot change size of a persistent volume claim (PVC) that you have previously defined as cluster storage.
+====
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+* You have created a data science project that contains cluster storage.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data science projects* page opens.
+. Click the name of the project whose storage you want to update.
++
+The *Details* page for the project opens.
+. Click the action menu (*&#8942;*) beside the storage that you want to update in the *Cluster storage* section and click *Edit storage*.
++
+The *Edit storage* page opens.
+. Update the storage's properties.
+.. Update the *name* for the storage, if applicable.
+.. Update *description* for the storage, if applicable.
+.. Update the *workbench* that the storage is connected to, if applicable.
+.. If you selected a new workbench to connect the storage to, enter the storage directory in the *Mount folder* field.
+. Click *Update storage*.
+
+.Verification
+* The storage that you updated appears in the *Cluster storage* section on the *Details* page for the project.
+
+//[role='_additional-resources']
+//.Additional resources

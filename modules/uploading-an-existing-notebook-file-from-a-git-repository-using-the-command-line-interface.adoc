@@ -1,0 +1,52 @@
+:_module-type: PROCEDURE
+//pv2hash: baacb03c-45ab-4ef0-ae78-9c03b89ec1fe
+
+[id='uploading-an-existing-notebook-file-from-a-git-repository-using-the-command-line-interface_{context}']
+= Uploading an existing notebook file from a Git repository using the command line interface
+
+[role='_abstract']
+You can use the command line interface to clone a Git repository into your workspace to continue your work or integrate files from an external project.
+
+.Prerequisites
+* A launched and running Jupyter server.
+
+.Procedure
+. Copy the HTTPS URL for the Git repository.
++
+** On GitHub, click *&#10515; Code* -> *HTTPS* and click the Clipboard button.
+** On GitLab, click *Clone* and click the Clipboard button under *Clone with HTTPS*.
+. In JupyterLab, click *File* -> *New* -> *Terminal* to open a Terminal window.
+. Enter the `git clone` command.
++
+[source,subs="+quotes"]
+----
+git clone _git-clone-URL_
+----
++
+Replace _git-clone-URL_ with the HTTPS URL, for example:
++
+[source,subs="+quotes"]
+----
+[1234567890@jupyter-nb-jdoe ~]$ *git clone https://github.com/example/myrepo.git*
+Cloning into 'myrepo'...
+remote: Enumerating objects: 11, done.
+remote: Counting objects: 100% (11/11), done.
+remote: Compressing objects: 100% (10/10), done.
+remote: Total 2821 (delta 1), reused 5 (delta 1), pack-reused 2810
+Receiving objects: 100% (2821/2821), 39.17 MiB | 23.89 MiB/s, done.
+Resolving deltas: 100% (1416/1416), done.
+----
+
+// . In the JupyterLab interface, click *Git* -> *Clone a repository*.
+// +
+// The _Clone a repo_ dialog appears.
+// . Enter the HTTPS URL of the repository that contains your notebook.
+// . Click *CLONE*.
+// . If prompted, enter your username and password for the Git repository.
+
+.Verification
+* Check that the contents of the repository are visible in the file browser in JupyterLab, or run the *ls* command in the terminal to verify that the repository is shown as a directory.
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete

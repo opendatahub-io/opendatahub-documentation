@@ -1,0 +1,65 @@
+:_module-type: PROCEDURE
+
+[id='enabling-services-connected-to-open-data-hub_{context}']
+= Enabling services connected to Open Data Hub
+
+[role='_abstract']
+You must enable SaaS-based services, such as Red OpenShift Streams for Apache Kafka and Anaconda, before using them with {productname-long}. On-cluster services are enabled automatically.
+
+Typically, you can install services, or enable services connected to {productname-short} using one of the following methods:
+
+* Enabling the service from the *Explore* page on the {productname-short} dashboard, as documented in this procedure.
+* Installing the service's operator from OperatorHub. OperatorHub is a web console for cluster administrators to discover and select Operators to install on their cluster. It is deployed by default in OpenShift Container Platform (link:https://access.redhat.com/documentation/en-us/openshift_container_platform/4.10/html/operators/administrator-tasks#olm-installing-from-operatorhub-using-web-console_olm-adding-operators-to-a-cluster[Installing from OperatorHub using the web console]).
++
+ifndef::upstream[]
+[NOTE]
+====
+Deployments containing operators installed from OperatorHub may not be fully supported by Red Hat.
+====
+endif::[]
+* Installing the service's operator from Red Hat Marketplace (link:https://marketplace.redhat.com/en-us/documentation/operators[Install operators]).
+* Installing the service as an {install-package} to your {openshift-platform} cluster (link:https://docs.openshift.com/container-platform/4.12/operators/admin/olm-adding-operators-to-cluster.html[Adding Operators to a cluster]).
+
+For most services, the service endpoint is available on the service's tile on the *Enabled* page of {productname-short}. Certain services cannot be accessed directly from their tiles, for example, OpenVINO and Anaconda provide notebook images for use in Jupyter and do not provide an endpoint link from their tile. Additionally, for services such as OpenShift Streams for Apache Kafka, it may be useful to store these endpoint URLs as environment variables for easy reference in a notebook environment.
+
+ifdef::managed[]
+Some independent software vendor (ISV) applications must be installed in specific OpenShift Data Science Add-on namespaces. However, do not install ISV applications in namespaces associated with OpenShift Data Science Add-ons unless you are specifically directed to do so on the application’s card on the dashboard.
+endif::[]
+
+ifdef::self-managed[]
+Some independent software vendor (ISV) applications must be installed in specific OpenShift Data Science Operator namespaces. However, do not install ISV applications in namespaces associated with OpenShift Data Science Operators unless you are specifically directed to do so on the application’s card on the dashboard.
+endif::[]
+
+ifdef::upstream[]
+Some independent software vendor (ISV) applications must be installed in specific {productname-short} Operator namespaces. However, do not install ISV applications in namespaces associated with {productname-short} Operators unless you are specifically directed to do so on the application’s card on the dashboard.
+endif::[]
+
+To help you get started quickly, you can access the service's learning resources and documentation on the **Resources** page, or by clicking the relevant link on the service's tile on the **Enabled** page.
+
+.Prerequisites
+* You have logged in to {productname-short}.
+* Your administrator has installed or configured the service on your OpenShift cluster.
+
+.Procedure
+. On the {productname-short} home page, click *Explore*.
++
+The *Explore* page opens.
+
+ifdef::kafka[]
+. Click the card for *Red Hat OpenShift Streams for Apache Kafka*.
+endif::[]
+ifndef::kafka[]
+. Click the card of the service that you want to enable.
+endif::[]
+
+. Click *Enable* on the drawer for the service.
+. If prompted, enter the service's key and click *Connect*.
+. Click *Enable* to confirm that you are enabling the service.
+
+.Verification
+* The service that you enabled appears on the *Enabled* page.
+* The service endpoint is displayed on the service's tile on the *Enabled* page
+
+//[role="_additional-resources"]
+//.Additional resources
+//* TODO or delete

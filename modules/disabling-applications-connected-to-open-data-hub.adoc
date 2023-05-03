@@ -1,0 +1,64 @@
+:_module-type: PROCEDURE
+
+[id='disabling-applications-connected-to-open-data-hub_{context}']
+= Disabling applications connected to Open Data Hub
+
+[role='_abstract']
+You can disable applications and components so that they do not appear on the {productname-short} dashboard when you no longer want to use them, for example, when data scientists no longer use an application or when the application's license expires.
+
+Disabling unused applications allows your data scientists to manually remove these application cards from their {productname-short} dashboard so that they can focus on the applications that they are most likely to use.
+ifndef::upstream[]
+See link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/disabling-applications-connected-to-openshift-data-science_get-started#removing-disabled-applications-from-openshift-data-science_get-started[Removing disabled applications from OpenShift Data Science] for more information about manually removing application cards.
+endif::[]
+
+[IMPORTANT]
+====
+Do not follow this procedure when disabling the following applications:
+
+* Anaconda Professional Edition. You cannot manually disable Anaconda Professional Edition. It is automatically disabled only when its license expires.
+ifdef::managed[]
+* Red Hat OpenShift API Management. You can only uninstall Red Hat OpenShift API Management from OpenShift Cluster Manager.
+endif::[]
+ifndef::upstream[]
+* Red Hat OpenShift Streams for Apache Kafka.
+endif::[]
+====
+
+.Prerequisites
+* You have logged in to the {productname-short} web console.
+* You are part of the `cluster-admins` user group in {openshift-platform}.
+* You have installed or configured the service on your {productname-short} cluster.
+* The application or component that you want to disable is enabled and appears on the *Enabled* page.
+
+.Procedure
+
+. In the {openshift-platform} web console, change into the *Administrator* perspective.
+ifndef::upstream[]
+. Change into the `redhat-ods-applications` project.
+endif::[]
+ifdef::upstream[]
+. Change into the `odh` project.
+endif::[]
+. Click *Operators* -> *Installed Operators*.
+. Click on the operator that you want to uninstall. You can enter a keyword into the *Filter by name* field to help you find the operator faster.
+. Delete any operator resources or instances by using the tabs in the operator interface.
++
+During installation, some operators require the administrator to create resources or start process instances using tabs in the operator interface. These must be deleted before the operator can uninstall correctly.
+. On the *Operator Details* page, click the *Actions* drop-down menu and select *Uninstall Operator*.
++
+An *Uninstall Operator?* dialog box is displayed.
+. Select *Uninstall* to uninstall the operator, operator deployments, and pods. After this is complete, the operator stops running and no longer receives updates.
+
+[IMPORTANT]
+====
+Removing an operator does not remove any of that operator's custom resource definitions or managed resources. Custom resource definitions and managed resources still exist and must be cleaned up manually. Any applications deployed by your operator and any configured off-cluster resources continue to run and must be cleaned up manually.
+====
+
+.Verification
+* The operator is uninstalled from its target clusters.
+* The operator no longer appears on the *Installed Operators* page.
+* The disabled application is no longer available for your data scientists to use, and is marked as `Disabled` on the *Enabled* page of the {productname-short} dashboard. This action may take a few minutes to occur following the removal of the operator.
+
+//[role="_additional-resources"]
+//.Additional resources
+//* TODO or delete

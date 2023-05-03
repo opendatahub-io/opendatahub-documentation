@@ -1,0 +1,39 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: model-serving
+
+[id="model-serving-on-openshift-data-science_{context}"]
+= Model serving on {productname-short}
+
+[role='_abstract']
+ifdef::managed[]
+Model serving is currently available as a Field Trial feature. For more information on the scope of Field Trial status, see link:https://access.redhat.com/support/policy/updates/rhods/service[OpenShift Data Science Service Definition].
+endif::[]
+ifdef::self-managed[]
+Model serving is currently available as a Technology Preview. For further information on the scope of Technology Preview status, and the associated support implications, refer to link:https://access.redhat.com/support/offerings/techpreview/.endif::[Technology Preview Features Support Scope].
+endif::[]
+
+As a data scientist, you can deploy your trained machine-learning models to serve intelligent applications in production. After you have deployed your model, applications can send requests to the model using its deployed API endpoint.
+
+== Configuring model servers
+
+include::modules/configuring-a-model-server-for-your-data-science-project.adoc[leveloffset=+2]
+include::modules/updating-a-model-server.adoc[leveloffset=+2]
+include::modules/deleting-a-model-server.adoc[leveloffset=+2]
+
+== Working with deployed models
+
+include::modules/deploying-a-model-in-openshift-data-science.adoc[leveloffset=+2]
+include::modules/viewing-a-deployed-model.adoc[leveloffset=+2]
+include::modules/updating-the-deployment-properties-of-a-deployed-model.adoc[leveloffset=+2]
+include::modules/deleting-a-deployed-model.adoc[leveloffset=+2]
+//include::modules/viewing-the-performance-metrics-of-a-deployed-model.adoc[leveloffset=+2]
+
+// [role='_additional-resources']
+// == Additional resources
+// *
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

@@ -1,0 +1,90 @@
+:_module-type: ASSEMBLY
+//pv2hash: 74917428-615b-4d3c-8af5-c3a87a8e51e6
+
+ifdef::context[:parent-context: {context}]
+
+:context: nb-server
+
+[id="working-on-data-science-projects_{context}"]
+= Working on data science projects
+
+[role='_abstract']
+As a data scientist, you can organize your data science work into a single project. A data science project in {productname-short} can consist of the following components:
+
+* Workbenches: Creating a workbench allows you to add a Jupyter notebook to your project.
+* Cluster storage: For data science projects that require data to be retained, you can add cluster storage to the project.
+* Data connections: Adding a data connection to your project allows you to connect data inputs to your workbenches.
+* Models and model servers: Deploy a trained data science model to serve intelligent applications. Your model is deployed with an endpoint that allows applications to send requests to the model.
+
+ifdef::managed[]
+Model serving is currently available as a Field Trial feature. For more information on the scope of Field Trial status, see link:https://access.redhat.com/support/policy/updates/rhods/service[OpenShift Data Science Service Definition].
+endif::[]
+ifdef::self-managed[]
+Model serving is currently available as a Technology Preview. For further information on the scope of Technology Preview status, and the associated support implications, refer to link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+endif::[]
+
+//[IMPORTANT]
+//====
+//OpenShift Data Science sends notifications to nominated email addresses (usually your administrator) when the storage for your notebook server is 90% full, and again when it is completely full.
+
+//If you download a very large data set, your storage can fill up before your administrator receives a notification, so you might run out of room before your administrator can give you more storage.
+
+//To avoid this issue, Red Hat recommends streaming larger data sets from external services where possible, as opposed to downloading them. Alternatively, if you need to download larger data sets, you can proactively request more storage from your administrator, to ensure you have sufficient space. For more information, see link:https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation/4.9/html-single/scaling_storage/index#doc-wrapper[Scaling storage].
+//====
+
+== Using data science projects
+
+include::modules/creating-a-data-science-project.adoc[leveloffset=+2]
+
+include::modules/updating-a-data-science-project.adoc[leveloffset=+2]
+
+include::modules/deleting-a-data-science-project.adoc[leveloffset=+2]
+
+== Using project workbenches
+
+include::modules/creating-a-project-workbench.adoc[leveloffset=+2]
+
+include::modules/starting-a-workbench.adoc[leveloffset=+2]
+
+include::modules/updating-a-project-workbench.adoc[leveloffset=+2]
+
+include::modules/deleting-a-workbench-from-a-data-science-project.adoc[leveloffset=+2]
+
+== Using data connections
+
+include::modules/adding-a-data-connection-to-your-data-science-project.adoc[leveloffset=+2]
+
+include::modules/deleting-a-data-connection.adoc[leveloffset=+2]
+
+include::modules/updating-a-connected-data-source.adoc[leveloffset=+2]
+
+== Configuring cluster storage
+
+include::modules/adding-cluster-storage-to-your-data-science-project.adoc[leveloffset=+2]
+
+include::modules/updating-cluster-storage.adoc[leveloffset=+2]
+
+include::modules/deleting-cluster-storage-from-a-data-science-project.adoc[leveloffset=+2]
+
+== Configuring model servers
+
+include::modules/configuring-a-model-server-for-your-data-science-project.adoc[leveloffset=+2]
+
+include::modules/updating-a-model-server.adoc[leveloffset=+2]
+
+include::modules/deleting-a-model-server.adoc[leveloffset=+2]
+
+
+include::modules/viewing-python-packages-installed-on-your-notebook-server.adoc[leveloffset=+1]
+
+include::modules/installing-python-packages-on-your-notebook-server.adoc[leveloffset=+1]
+
+include::modules/updating-notebook-server-settings-by-restarting-your-server.adoc[leveloffset=+1]
+
+
+// [role='_additional-resources']
+// == Additional resources
+// *
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

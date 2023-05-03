@@ -1,0 +1,48 @@
+:_module-type: REFERENCE
+//pv2hash: 3882aee9-15c2-4bb8-963b-7a6918f849a6
+
+[id='notebook-images-for-data-scientists_{context}']
+= Notebook images for data scientists
+
+[role='_abstract']
+{productname-long} contains Jupyter notebook images optimized with industry-leading tools and libraries required for your data science work. To provide a consistent, stable platform for your model development, all notebook images contain the same version of Python. Notebook images available on {productname-long} are pre-built and ready for you to use immediately after {productname-short} is installed or upgraded. Notebook images are upgraded quarterly to ensure that you are working with the latest supported version.
+
+ifdef::managed[]
+See the table in link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#options-for-notebook-server-environments_get-started[Options for notebook server environments] for a complete list of packages and versions included in these images.
+endif::[]
+ifdef::self-managed[]
+See the table in link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#options-for-notebook-server-environments_get-started[Options for notebook server environments] for a complete list of packages and versions included in these images.
+endif::[]
+
+{productname-long} contains the following notebook images that are installed by default:
+
+.Default notebook images
+[cols="1,5"]
+|===
+| Image name | Description
+
+| CUDA
+| If you are working with compute-intensive data science models that require GPU support, use the Compute Unified Device Architecture (CUDA) notebook image to gain access to the NVIDIA CUDA Toolkit. Using this toolkit, you can optimize your work using GPU-accelerated libraries and optimization tools.
+
+| Standard Data Science
+| Use the Standard Data Science notebook image for models that do not require TensorFlow or PyTorch. This image contains commonly used libraries to assist you in developing your machine learning models.
+// RHODS-1598 - or CUDA or GPU support
+
+| TensorFlow
+| TensorFlow is an open source platform for machine learning. With TensorFlow, you can build, train and deploy your machine learning models. TensorFlow contains advanced data visualization features, such as computational graph visualizations. It also allows you to easily monitor and track the progress of your models.
+
+| PyTorch
+| PyTorch is an open source machine learning library optimized for deep learning. If you are working with computer vision or natural language processing models, use the Pytorch notebook image.
+// RHODS-1598 -  using GPUs and CPUs
+
+| Minimal Python
+| If you do not require advanced machine learning features, or additional resources for compute-intensive data science work, you can use the Minimal Python image to develop your models.
+
+|===
+
+
+[role="_additional-resources"]
+.Additional resources
+ifndef::upstream[]
+* link:{site-baseurl}/docs/working_on_data_science_projects.html#installing-python-packages-on-your-notebook-server_nb-server[Installing Python packages on your notebook server]
+endif::[]
