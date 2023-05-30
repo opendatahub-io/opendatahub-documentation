@@ -44,7 +44,12 @@ When a new version of a notebook image is released, the previous version remains
 +
 [IMPORTANT]
 --
+ifdef::upstream[]
 Using GPUs to accelerate workloads is only supported with the PyTorch, TensorFlow, and CUDA notebook server images. In addition, you can specify the number of GPUs required for your notebook server only if GPUs are enabled on your cluster.
+endif::[]
+ifndef::upstream[]
+Using GPUs to accelerate workloads is only supported with the PyTorch, TensorFlow, and CUDA notebook server images. In addition, you can specify the number of GPUs required for your notebook server only if GPUs are enabled on your cluster. To learn how to enable GPU support, see link:{rhodsdocshome}{default-format-url}/managing_users_and_user_resources/enabling-gpu-support-in-openshift-data-science_user-mgmt[Enabling GPU support in OpenShift Data Science].
+endif::[]
 --
 .. Optional: Select and specify values for any new *Environment variables*.
 +
@@ -57,7 +62,16 @@ Ensure that you select the *Secret* checkbox for any variables with sensitive va
 .. Optional: Select the *Start server in current tab* checkbox if necessary.
 .. Click *Start server*.
 +
-The *Starting server* progress indicator appears. If you encounter a problem during this process, an error message appears with more information. Click *Expand event log* to view additional information about the server creation process. Depending on the deployment size and resources you requested, starting the server can take up to several minutes. Click *Cancel* to cancel the server creation. After the server starts, the JupyterLab interface opens.
+The *Starting server* progress indicator appears. Click *Expand event log* to view additional information about the server creation process. Depending on the deployment size and resources you requested, starting the server can take up to several minutes. Click *Cancel* to cancel the server creation.
++
+After the server starts, you see one of the following behaviors:
++
+--
+* If you previously selected the *Start server in current tab* checkbox, the JupyterLab interface opens in the current tab of your web browser.
+* If you did not previously select the *Start server in current tab* checkbox, the *Starting server* dialog box prompts you to open the server in a new browser tab or in the current tab.
++
+The JupyterLab interface opens according to your selection.
+--
 +
 WARNING: You can be logged in to Jupyter for a maximum of 24 hours. After 24 hours, your user credentials expire, you are logged out of Jupyter, and your notebook server pod is stopped and deleted regardless of any work running in the notebook server. To help mitigate this, your administrator can configure OAuth tokens to expire after a set period of inactivity. See link:https://docs.openshift.com/container-platform/4.9/authentication/configuring-internal-oauth.html[Configuring the internal OAuth server] for more information.
 
@@ -68,7 +82,7 @@ WARNING: You can be logged in to Jupyter for a maximum of 24 hours. After 24 hou
 [role="_additional-resources"]
 .Additional resources
 ifndef::upstream[]
-link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#options-for-notebook-server-environments_get-started[Options for notebook server environments]
+link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#options-for-notebook-server-environments_get-started[Options for notebook server environments].
 endif::[]
 
 .Troubleshooting
