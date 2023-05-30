@@ -17,8 +17,10 @@ endif::[]
 Do not follow this procedure when disabling the following applications:
 
 * Anaconda Professional Edition. You cannot manually disable Anaconda Professional Edition. It is automatically disabled only when its license expires.
-ifndef::self-managed[]
-* Red Hat OpenShift API Management. You can only uninstall Red Hat OpenShift API Management from OpenShift Cluster Manager.
+ifndef::upstream[]
+    ifndef::self-managed[]
+    * Red Hat OpenShift API Management. You can only uninstall Red Hat OpenShift API Management from OpenShift Cluster Manager.
+    endif::[]
 endif::[]
 ====
 
@@ -30,17 +32,18 @@ ifdef::upstream[]
 * You have installed or configured the service on your {productname-short} cluster.
 * The application or component that you want to disable is enabled and appears on the *Enabled* page.
 endif::[]
-ifndef::self-managed[]
-* You have logged in to the {openshift-platform} web console.
-* You are part of the `cluster-admins` user group in {openshift-platform}.
-* You have installed or configured the service on your {openshift-platform} cluster.
+ifndef::upstream[]
+    ifndef::self-managed[]
+    * You have logged in to the {openshift-platform} web console.
+    * You are part of the `cluster-admins` user group in {openshift-platform}.
+    * You have installed or configured the service on your {openshift-platform} cluster.
+    endif::[]
+    ifdef::self-managed[]
+    * You have logged in to the {openshift-platform} web console.
+    * You are assigned the `cluster-admin` role  in {openshift-platform}.
+    * You have installed or configured the service on your {openshift-platform} cluster.
+    endif::[]
 endif::[]
-ifdef::self-managed[]
-* You have logged in to the {openshift-platform} web console.
-* You are assigned the `cluster-admin` role  in {openshift-platform}.
-* You have installed or configured the service on your {openshift-platform} cluster.
-endif::[]
-
 .Procedure
 
 . In the {openshift-platform} web console, change into the *Administrator* perspective.
