@@ -1,14 +1,14 @@
 :_module-type: PROCEDURE
 
-[id='disabling-applications-connected-to-open-data-hub_{context}']
-= Disabling applications connected to Open Data Hub
+[id='disabling-applications_{context}']
+= Disabling applications connected to {productname-short}
 
 [role='_abstract']
 You can disable applications and components so that they do not appear on the {productname-short} dashboard when you no longer want to use them, for example, when data scientists no longer use an application or when the application's license expires.
 
 Disabling unused applications allows your data scientists to manually remove these application cards from their {productname-short} dashboard so that they can focus on the applications that they are most likely to use.
 ifndef::upstream[]
-See link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/disabling-applications-connected-to-openshift-data-science_get-started#removing-disabled-applications_get-started[Removing disabled applications from OpenShift Data Science] for more information about manually removing application cards.
+See link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/disabling-applications_get-started#removing-disabled-applications_get-started[Removing disabled applications from OpenShift Data Science] for more information about manually removing application cards.
 endif::[]
 
 [IMPORTANT]
@@ -58,14 +58,14 @@ ifdef::upstream[]
 . Change into the `odh` project.
 endif::[]
 . Click *Operators* -> *Installed Operators*.
-. Click on the operator that you want to uninstall. You can enter a keyword into the *Filter by name* field to help you find the operator faster.
-. Delete any operator resources or instances by using the tabs in the operator interface.
+. Click on the Operator that you want to uninstall. You can enter a keyword into the *Filter by name* field to help you find the Operator faster.
+. Delete any Operator resources or instances by using the tabs in the Operator interface.
 +
-During installation, some operators require the administrator to create resources or start process instances using tabs in the operator interface. These must be deleted before the operator can uninstall correctly.
+During installation, some Operators require the administrator to create resources or start process instances using tabs in the Operator interface. These must be deleted before the Operator can uninstall correctly.
 . On the *Operator Details* page, click the *Actions* drop-down menu and select *Uninstall Operator*.
 +
 An *Uninstall Operator?* dialog box is displayed.
-. Select *Uninstall* to uninstall the operator, operator deployments, and pods. After this is complete, the operator stops running and no longer receives updates.
+. Select *Uninstall* to uninstall the Operator, Operator deployments, and pods. After this is complete, the Operator stops running and no longer receives updates.
 
 [IMPORTANT]
 ====
@@ -75,7 +75,7 @@ Removing an Operator does not remove any custom resource definitions or managed 
 .Verification
 * The Operator is uninstalled from its target clusters.
 * The Operator no longer appears on the *Installed Operators* page.
-* The disabled application is no longer available for your data scientists to use, and is marked as `Disabled` on the *Enabled* page of the {productname-short} dashboard. This action may take a few minutes to occur following the removal of the operator.
+* The disabled application is no longer available for your data scientists to use, and is marked as `Disabled` on the *Enabled* page of the {productname-short} dashboard. This action may take a few minutes to occur following the removal of the Operator.
 
 //[role="_additional-resources"]
 //.Additional resources
