@@ -5,7 +5,17 @@
 = Notebook images for data scientists
 
 [role='_abstract']
-{productname-long} contains Jupyter notebook images optimized with industry-leading tools and libraries required for your data science work. To provide a consistent, stable platform for your model development, all notebook images contain the same version of Python. Notebook images available on {productname-long} are pre-built and ready for you to use immediately after {productname-short} is installed or upgraded. Notebook images are upgraded quarterly to ensure that you are working with the latest supported version.
+{productname-long} contains Jupyter notebook images optimized with industry-leading tools and libraries required for your data science work. To provide a consistent, stable platform for your model development, all notebook images contain the same version of Python. Notebook images available on {productname-long} are pre-built and ready for you to use immediately after {productname-short} is installed or upgraded. 
+
+ifdef::upstream[]
+Notebook images are upgraded quarterly to ensure that you are working with the latest supported version.
+endif::[]
+
+ifndef::upstream[]
+Notebook images are supported for a minimum of one year. Major updates to pre-configured notebook images occur approximately every six months. Therefore, two supported notebook images are typically available at any given time. You can use this support period to update your code to use components from the latest available notebook image.
+
+If necessary, you can still access older notebook images from the registry, even if they are no longer supported. You can then add the older notebook images as custom notebook images to cater for your project's specific requirements.
+endif::[]
 
 ifdef::managed[]
 See the table in link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#options-for-notebook-server-environments_get-started[Options for notebook server environments] for a complete list of packages and versions included in these images.
@@ -37,6 +47,9 @@ endif::[]
 
 | Minimal Python
 | If you do not require advanced machine learning features, or additional resources for compute-intensive data science work, you can use the Minimal Python image to develop your models.
+
+| TrustyAI
+| Use the TrustyAI notebook image to leverage your data science work with model explainability, tracing and accountability, and runtime monitoring.
 
 |===
 
