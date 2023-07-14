@@ -19,7 +19,17 @@ If you have configured specialized {productname-short} user groups, the user nam
 Check whether the user is part of the default user group.
 
 . Find the names of groups allowed access to Jupyter.
+ifndef::upstream[]
+ifndef::self-managed[]
+.. Log in to OpenShift Dedicated web console.
+endif::[]
+ifdef::self-managed[]
+.. Log in to OpenShift Container Platform web console.
+endif::[]
+endif::[]
+ifdef::upstream[]
 .. Log in to {productname-short} web console.
+endif::[]
 .. Click *User Management* -> *Groups*.
 .. Click the name of your user group, for example, `rhods-users`.
 +
@@ -40,10 +50,31 @@ endif::[]
 == A user's notebook server does not start
 
 .Problem
+ifdef::upstream[]
 The {openshift-platform} cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
+endif::[]
+
+ifndef::upstream[]
+ifndef::self-managed[]
+The OpenShift Dedicated cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
+endif::[]
+ifdef::self-managed[]
+The OpenShift Container Platform cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
+endif::[]
+endif::[]
 
 .Diagnosis
+ifndef::upstream[]
+ifndef::self-managed[]
+. Log in to OpenShift Dedicated web console.
+endif::[]
+ifdef::self-managed[]
+. Log in to OpenShift Container Platform web console.
+endif::[]
+endif::[]
+ifdef::upstream[]
 . Log in to {productname-short} web console.
+endif::[]
 . Delete and restart the notebook server pod for this user.
 .. Click *Workloads* -> *Pods* and set the *Project* to `rhods-notebooks`.
 
@@ -77,7 +108,17 @@ The user might have run out of storage space on their notebook server.
 
 .Diagnosis
 . Log in to Jupyter and start the notebook server that belongs to the user having problems. If the notebook server does not start, follow these steps to check whether the user has run out of storage space:
-.. Log in to {product-short} web console.
+ifndef::upstream[]
+ifndef::self-managed[]
+.. Log in to OpenShift Dedicated web console.
+endif::[]
+ifdef::self-managed[]
+.. Log in to OpenShift Container Platform web console.
+endif::[]
+endif::[]
+ifdef::upstream[]
+. Log in to {productname-short} web console.
+endif::[]
 .. Click *Workloads* -> *Pods* and set the *Project* to `rhods-notebooks`.
 .. Click the notebook server pod that belongs to this user, for example, `jupyter-nb-<idp>-<username>-*`.
 .. Click *Logs*. The user has exceeded their available capacity if you see lines similar to the following:
