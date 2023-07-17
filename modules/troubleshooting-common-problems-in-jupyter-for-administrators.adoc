@@ -20,12 +20,14 @@ Check whether the user is part of the default user group.
 
 . Find the names of groups allowed access to Jupyter.
 ifndef::upstream[]
+--
 ifndef::self-managed[]
 .. Log in to OpenShift Dedicated web console.
 endif::[]
 ifdef::self-managed[]
 .. Log in to OpenShift Container Platform web console.
 endif::[]
+--
 endif::[]
 ifdef::upstream[]
 .. Log in to {productname-short} web console.
@@ -55,22 +57,26 @@ The {openshift-platform} cluster that hosts the user's notebook server might not
 endif::[]
 
 ifndef::upstream[]
+--
 ifndef::self-managed[]
 The OpenShift Dedicated cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
 endif::[]
 ifdef::self-managed[]
 The OpenShift Container Platform cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
 endif::[]
+--
 endif::[]
 
 .Diagnosis
 ifndef::upstream[]
+--
 ifndef::self-managed[]
 . Log in to OpenShift Dedicated web console.
 endif::[]
 ifdef::self-managed[]
 . Log in to OpenShift Container Platform web console.
 endif::[]
+--
 endif::[]
 ifdef::upstream[]
 . Log in to {productname-short} web console.
@@ -109,12 +115,14 @@ The user might have run out of storage space on their notebook server.
 .Diagnosis
 . Log in to Jupyter and start the notebook server that belongs to the user having problems. If the notebook server does not start, follow these steps to check whether the user has run out of storage space:
 ifndef::upstream[]
+--
 ifndef::self-managed[]
 .. Log in to OpenShift Dedicated web console.
 endif::[]
 ifdef::self-managed[]
 .. Log in to OpenShift Container Platform web console.
 endif::[]
+--
 endif::[]
 ifdef::upstream[]
 . Log in to {productname-short} web console.
