@@ -8,7 +8,12 @@ Before you can successfully deploy a data science model on {productname-short}, 
 
 .Prerequisites
 * You have logged in to {productname-long}.
+ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users`) in OpenShift.
+endif::[]
 * You have created a data science project that you can add a model server to.
 ifndef::upstream[]
 * If you want to use a custom model-serving runtime for your model server, you have added and enabled the runtime. See link:{rhodsdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#adding-a-custom-model-serving-runtime_nb-server[Adding a custom model-serving runtime].

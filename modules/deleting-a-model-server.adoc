@@ -11,7 +11,12 @@ NOTE: When you remove a model server, you also delete the models that are hosted
 .Prerequisites
 * You have created a data science project and an associated model server.
 * You have notified the users of the applications that access the models that the models will no longer be available.
-* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admins`) in OpenShift.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users`) in OpenShift.
+endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Projects*.
