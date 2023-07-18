@@ -4,24 +4,23 @@
 = Deleting a model server
 
 [role='_abstract']
-You can delete model servers that you have assigned to host your data science projects. This enables you to remove model servers that you no longer require. If you delete a project's model server, models hosted by the server are then unavailable for applications to use. 
-ifndef::upstream[]
-Red Hat recommends that you advise the users of these models before deleting the model server. 
-endif::[]
+When you no longer need a model server to host models, you can remove it from your data science project. 
+
+NOTE: When you remove a model server, you also delete the models that are hosted on that model server and they are no longer available to applications.
 
 .Prerequisites
-* You have logged in to {productname-long}.
-* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
 * You have created a data science project and an associated model server.
+* You have notified the users of the applications that access the models that the models will no longer be available.
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admins`) in OpenShift.
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Projects*.
 +
 The *Data science projects* page opens.
-. Click the name of the project that you want to delete the model server from.
+. Click the name of the project from which you want to delete the model server.
 +
 The *Details* page for the project opens.
-. Click the action menu (*&#8942;*) beside the project whose model server you want to delete in the *Models and model servers* section and click *Delete model server*.
+. Click the action menu (*&#8942;*) beside the project whose model server you want to delete in the *Models and model servers* section and then click *Delete model server*.
 +
 The *Delete model server* dialog opens.
 . Enter the name of the model server in the text field to confirm that you intend to delete it.

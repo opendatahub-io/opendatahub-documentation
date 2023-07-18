@@ -1,0 +1,63 @@
+:_module-type: PROCEDURE
+
+[id='updating-access-to-a-data-science-project_{context}']
+= Updating access to a data science project
+
+[role='_abstract']
+To change the level of collaboration on your data science project, you can update the access permissions of users and groups who have access to your project.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+* You have created a data science project.
+* You have previously shared access to your project with other users or groups.
+* You have administrator permissions or you are the project owner.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data science projects* page opens.
+. Click the name of the project that you want to change the access permissions of.
++
+The *Details* page for the project opens.
+. Click the *Permissions* tab.
++
+The *Permissions* page for the project opens.
+. Update the user access permissions to the project.
+.. In the *Name* field, update the user name of the user whom you want to provide access to the project.
+.. From the *Permissions* list, update the user access permissions by selecting one of the following:
+* Admin: Users with this access level can edit project details and manage access to the project.
+* Edit: Users with this access level can view and edit project components, such as its workbenches, data connections, and storage.
+.. To confirm the update to the entry, click *Confirm* (image:images/rhods-confirm-entry-icon.png[The Confirm icon]).
+. Update the OpenShift groups access permissions to the project.
+.. From the *Name* list, update the group that has access to the project by selecting another group from the list.
++
+[NOTE]
+--
+--
+ifndef::upstream[]
+
+ifndef::self-managed[]
+If you do not have `cluster-admin` or `dedicated-admin` permissions, the *Name* list is not visible. Instead, an input field is displayed enabling you to configure group permissions.
+endif::[]
+
+ifdef::self-managed[]
+If you do not have `cluster-admin` permissions, the *Name* list is not visible. Instead, an input field is displayed enabling you to configure group permissions.
+endif::[]
+
+endif::[]
+
+ifdef::upstream[]
+If you do not have `cluster-admin` permissions, the *Name* list is not visible. Instead, an input field is displayed enabling you to configure group permissions.
+endif::[]
+--
+.. From the *Permissions* list, update the group access permissions by selecting one of the following:
+* Admin: Groups with this access permission level can edit project details and manage access to the project.
+* Edit: Groups with this access permission level can view and edit project components, such as its workbenches, data connections, and storage.
+.. To confirm the update to the entry, click *Confirm* (image:images/rhods-confirm-entry-icon.png[The Confirm icon]).
+
+.Verification
+* The *Users* and *Groups* sections on the *Permissions* tab show the respective users and groups whose project access permissions you changed.
+
+//[role="_additional-resources"]
+//.Additional resources

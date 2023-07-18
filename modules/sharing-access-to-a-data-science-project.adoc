@@ -1,0 +1,65 @@
+:_module-type: PROCEDURE
+
+[id='sharing-access-to-a-data-science-project_{context}']
+= Sharing access to a data science project
+
+[role='_abstract']
+To enable your organization to work collaboratively, you can share access to your data science project with other users and groups.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+* You have created a data science project.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data science projects* page opens.
+. From the list of data science projects, click the name of the data science project that you want to share access to.
++
+The *Details* page for the project opens.
+. Click the *Permissions* tab.
++
+The *Permissions* page for the project opens.
+. Provide one or more users with access to the project.
+.. In the *Users* section, click *Add user*.
+.. In the *Name* field, enter the user name of the user whom you want to provide access to the project.
+.. From the *Permissions* list, select one of the following access permission levels:
+* Admin: Users with this access level can edit project details and manage access to the project.
+* Edit: Users with this access level can view and edit project components, such as its workbenches, data connections, and storage.
+.. To confirm your entry, click *Confirm* (image:images/rhods-confirm-entry-icon.png[The Confirm icon]).
+.. Optional: To add an additional user, click *Add user* and repeat the process.
+. Provide one or more OpenShift groups with access to the project.
+.. In the *Groups* section, click *Add group*.
+.. From the *Name* list, select a group to provide access to the project.
++
+[NOTE]
+--
+ifndef::upstream[]
+
+ifndef::self-managed[]
+If you do not have `cluster-admin` or `dedicated-admin` permissions, the *Name* list is not visible. Instead, an input field is displayed enabling you to configure group permissions.
+endif::[]
+
+ifdef::self-managed[]
+If you do not have `cluster-admin` permissions, the *Name* list is not visible. Instead, an input field is displayed enabling you to configure group permissions.
+endif::[]
+
+endif::[]
+
+ifdef::upstream[]
+If you do not have `cluster-admin` permissions, the *Name* list is not visible. Instead, an input field is displayed enabling you to configure group permissions.
+endif::[]
+--
+.. From the *Permissions* list, select one of the following access permission levels:
+* Admin: Groups with this access permission level can edit project details and manage access to the project.
+* Edit: Groups with this access permission level can view and edit project components, such as its workbenches, data connections, and storage.
+.. To confirm your entry, click *Confirm* (image:images/rhods-confirm-entry-icon.png[The Confirm icon]).
+.. Optional: To add an additional group, click *Add group* and repeat the process.
+
+.Verification
+* Users whom you provided access to the project can perform only the actions permitted by their access permission level.
+* The *Users* and *Groups* sections on the *Permissions* tab show the respective users and groups that you provided with access to the project.
+
+//[role="_additional-resources"]
+//.Additional resources
