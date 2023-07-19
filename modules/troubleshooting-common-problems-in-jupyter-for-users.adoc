@@ -16,13 +16,26 @@ endif::[]
 If your administrator has configured specialized {productname-short} user groups, your user name might not be added to the default user group or the default administrator group for {productname-short}.
 
 .Resolution
-* Contact your administrator so that they can add you to the correct group/s.
+ Contact your administrator so that they can add you to the correct group/s.
 
 
 == My notebook server does not start
 
 .Problem
+ifndef::upstream[]
+--
+ifndef::self-managed[]
+The OpenShift Dedicated cluster that hosts your notebook server might not have access to enough resources, or the Jupyter pod may have failed.
+endif::[]
+ifdef::self-managed[]
+The OpenShift Platform Container cluster that hosts your notebook server might not have access to enough resources, or the Jupyter pod may have failed.
+endif::[]
+--
+endif::[]
+
+ifdef::upstream[]
 The {openshift-platform} cluster that hosts your notebook server might not have access to enough resources, or the Jupyter pod may have failed.
+endif::[]
 
 .Resolution
 Check the logs in the *Events* section in OpenShift for error messages associated with the problem. For example:
