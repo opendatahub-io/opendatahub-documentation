@@ -32,6 +32,22 @@ The *Create workbench* page opens.
 .. Select the *notebook image* to use for your workbench server.
 .. Select the *container size* for your server.
 .. Optional: Select and specify values for any new *environment variables*.
+ifdef::upstream[]
++
+[NOTE]
+--
+To enable data science pipelines in JupyterLab, create the following environment variable:
+`PIPELINES_SSL_SA_CERTS=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`
+--
+endif::[]
+ifdef::self-managed[]
++
+[NOTE]
+--
+To enable data science pipelines in JupyterLab in self-managed deployments, create the following environment variable:
+`PIPELINES_SSL_SA_CERTS=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`
+--
+endif::[]
 .. Configure the storage for your {productname-short} cluster.
 ... Select *Create new persistent storage* to create storage that is retained after you log out of {productname-short}. Fill in the relevant fields to define the storage.
 ... Select *Use existing persistent storage* to reuse existing storage then select the storage from the *Persistent storage* list.

@@ -1,0 +1,65 @@
+:_module-type: PROCEDURE
+
+[id='configuring-a-pipeline-server_{context}']
+= Configuring a pipeline server
+
+[role='_abstract']
+Before you can successfully create a pipeline in {productname-short}, you must configure a pipeline server. This includes configuring where your pipeline artifacts and data are stored.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users`) in OpenShift.
+endif::[]
+* You have created a data science project that you can add a pipeline server to.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data science projects* page opens.
+. Click the name of the project that you want to configure a pipeline server for.
++
+A project details page opens.
+. In the *Pipelines* section, click *Create a pipeline server*.
++
+The *Configure pipeline server* dialog appears.
+. In the *Object storage connection* section, to specify the S3-compatible data connection to store your pipeline artifacts, select one of the following sets of actions:
++
+[NOTE]
+====
+After the pipeline server is created, the `/metadata` and `/artifacts` folders are automatically created in the default `root` folder. Therefore, you are not required to specify any storage directories when configuring a data connection for your pipeline server.
+====
+* Select *Existing data connection* to use a data connection that you previously defined. If you selected this option, from the *Name* list, select the name of the relevant data connection and skip to step 6.
+* Select *Create new data connection* to add a new data connection that your pipeline server can access.
+. If you selected *Create new data connection*, perform the following steps:
+.. In the *Name* field, enter a name for the data connection.
+.. In the *AWS_ACCESS_KEY_ID* field, enter your access key ID for Amazon Web Services.
+.. In the *AWS_SECRET_ACCESS_KEY_ID* field, enter your secret access key for the account you specified.
+.. Optional: In the *AWS_S3_ENDPOINT* field, enter the endpoint of your AWS S3 storage.
+.. Optional: In the *AWS_DEFAULT_REGION* field, enter the default region of your AWS account.
+.. In the *AWS_S3_BUCKET* field, enter the name of the AWS S3 bucket.
++
+[IMPORTANT]
+====
+If you are creating a new data connection, in addition to the other designated mandatory fields, the *AWS_S3_BUCKET* field is mandatory. If you specify incorrect data connection settings, you cannot update these setting on the same pipeline server. Therefore, you must delete the pipeline server and configure another one.
+====
+. In the *Database* section, click *Show advanced database options* to specify the database to store your pipeline data and select one of the following sets of actions:
+* Select *Use default database stored on your cluster* to deploy a MariaDB database in your project.
+* Select *Connect to external MySQL database* to add a new connection to an external database that your pipeline server can access.
+... In the *Host* field, enter the database's host name.
+... In the *Port* field, enter the database's port.
+... In the *Username* field, enter the default user name that is connected to the database.
+... In the *Password* field, enter the password for the default user account.
+... In the *Database* field, enter the database name.
+. Click *Configure*.
+
+.Verification
+* The pipeline server that you configured is displayed in the *Pipelines* section on the project details page.
+* The *Import pipeline* button is available in the *Pipelines* section on the project details page.
+
+//[role="_additional-resources"]
+//.Additional resources

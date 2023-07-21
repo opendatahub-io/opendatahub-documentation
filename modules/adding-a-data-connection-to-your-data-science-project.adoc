@@ -4,12 +4,18 @@
 = Adding a data connection to your data science project
 
 [role='_abstract']
-You can enhance your data science project by adding a connection to a data source. When you want to work with a very large data sets, you can store your data in an Amazon Web Services (AWS) Simple Storage Service (S3) bucket so that you do not fill up your local storage.
+You can enhance your data science project by adding a connection to a data source. When you want to work with a very large data sets, you can store your data in an Amazon Web Services (AWS) Simple Storage Service (S3) bucket so that you do not fill up your local storage. You also have the option of associating the data connection with an existing workbench that does not already have a connection.
 
 .Prerequisites
 * You have logged in to {productname-long}.
+ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users`) in OpenShift.
+endif::[]
 * You have created a data science project that you can add a data connection to.
+* If you intend to add the data connection to an existing workbench, you have saved any data in the workbench to avoid losing work.
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Projects*.
@@ -17,8 +23,8 @@ You can enhance your data science project by adding a connection to a data sourc
 The *Data science projects* page opens.
 . Click the name of the project that you want to add a data connection to.
 +
-The *Details* page for the project opens.
-. Click *Add data connection* in the *Data connections* section.
+A project details page opens.
+. In the *Data connections* section of the page, click *Add data connection*.
 +
 The *Add data connection* dialog opens.
 . Enter a *name* for the data connection.
@@ -31,6 +37,7 @@ The *Add data connection* dialog opens.
 
 .Verification
 * The data connection that you added appears in the *Data connections* section on the *Details* page for the project.
+* If you selected a workbench, the data connection is visible in the *Workbenches* section on your data science project page.
 
 //[role='_additional-resources']
 //.Additional resources

@@ -1,0 +1,101 @@
+:_module-type: PROCEDURE
+
+[id="adding-a-custom-model-serving-runtime_{context}"]
+= Adding a custom model-serving runtime
+
+A model-serving runtime provides integration with a specified model server and the model frameworks that it supports. By default, {productname-long} includes the OpenVINO Model Server runtime. However, if this runtime doesn't meet your needs (it doesn't support a particular model framework, for example), you might want to add your own, custom runtimes.
+
+As an administrator, you can use the {productname-short} interface to add and enable custom model-serving runtimes. You can then choose from your enabled runtimes when you create a new model server.
+
+[role='_abstract']
+
+.Prerequisites
+* You have logged in to {productname-short} as an administrator.
+ifdef::upstream[]
+* You are familiar with how to link:{odhdocshome}/working-on-data-science-projects/#configuring-a-model-server-for-your-data-science-project_nb-server[configure a model server for your project]. When you have added a custom model-serving runtime, you must configure a new model server to use the runtime.
+endif::[]
+ifndef::upstream[]
+* You are familiar with how to link:{rhodsdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#configuring-a-model-server-for-your-data-science-project_nb-server[configure a model server for your project]. When you have added a custom model-serving runtime, you must configure a new model server to use the runtime.
+endif::[]
+* You have reviewed the example runtimes in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository. You can use these examples as _starting points_. However, each runtime requires some further modification before you can deploy it in {productname-short}. The required modifications are described in the following procedure.
++
+NOTE: {productname-short} includes the OpenVINO Model Server model-serving runtime by default. You do not need to add this runtime to {productname-short}.
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* > *Serving runtimes*.
++
+The *Serving runtimes* page opens and shows the model-serving runtimes that are already installed and enabled in your {productname-short} deployment. By default, the OpenVINO Model Server runtime is pre-installed and enabled in {productname-short}.
+. To add a new, custom runtime, click *Add serving runtime*.
++
+The *Add serving runtime* page opens.
+. To start adding a new runtime, perform one of the following sets of actions:
++
+--
+* *To upload a YAML file*
+.. Click *Upload files*.
++
+A file browser opens.
+.. In the file browser, select a YAML file on your computer. This file might be the one of the example runtimes that you downloaded from the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository.
++
+The embedded YAML editor opens and shows the contents of the file that you uploaded.
+
+* *To enter YAML code directly in the editor*
+.. Click *Start from scratch*.
++
+The embedded YAML editor opens with no content.
+.. Enter or paste YAML code directly in the embedded editor. The YAML that you paste might be copied from one of the example runtimes in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository.
+--
+
+. Optional: If you are adding one of the example runtimes in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository, perform the following modifications:
+.. In the YAML editor, locate the `kind` field for your runtime. Update the value of this field to `ServingRuntime`.
+.. In the YAML editor, locate the `containers.image` field for your runtime. Based on the runtime that you are adding, update the field to one of the following:
++
+--
+Nvidia Triton Inference Server::
++
+`image: nvcr.io/nvidia/tritonserver:21.06.1-py3`
+
+Seldon Python MLServer::
++
+`image: seldonio/mlserver:0.5.2`
+
+TorchServe::
++
+`image: pytorch/torchserve:0.6.0-cpu`
+--
+
+. In the `metadata.name` field, ensure that the value of the runtime you are adding is unique (that is, the value isn't the same as for a runtime you have already added).
+
+. Optional: To configure a custom display name for the runtime that you are adding, add a `metadata.annotations.openshift.io/display-name` field and specify a value, as shown in the following example:
++
+[source]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  name: mlserver-0.x
+  annotations:
+    openshift.io/display-name: MLServer
+----
++
+NOTE: If you do not configure a custom display name for your runtime, {productname-short} shows the value of the `metadata.name` field.
+
+. Click *Add*.
++
+The *Serving runtimes* page opens and shows the updated list of runtimes that are installed. Observe that the runtime you added is automatically enabled.
+
+. Optional: To edit your custom runtime, click the action menu (&#8942;) and select *Edit*.
++
+NOTE: You cannot directly edit the OpenVINO Model Server runtime that is included in {productname-short} by default. However, you can _clone_ this runtime and edit the cloned version. You can then add the edited clone as a new, custom runtime. To do this, click the action menu beside the OpenVINO Model Server and select *Clone*.
+
+.Verification
+* The model-serving runtime you added is shown in an enabled state on the *Serving runtimes* page.
+
+[role='_additional-resources']
+.Additional resources
+ifdef::upstream[]
+* To learn how to configure a model server that uses a custom model-serving runtime that you have added, see link:{odhdocshome}/working-on-data-science-projects/#configuring-a-model-server-for-your-data-science-project_nb-server[Configuring a model server for your data science project].
+endif::[]
+ifndef::upstream[]
+* To learn how to configure a model server that uses a custom model-serving runtime that you have added, see link:{rhodsdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#configuring-a-model-server-for-your-data-science-project_nb-server[Configuring a model server for your data science project].
+endif::[]

@@ -8,7 +8,12 @@ You can update your data science project's model server by changing details, suc
 
 .Prerequisites
 * You have logged in to {productname-long}.
+ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users`) in OpenShift.
+endif::[]
 * You have created a data science project that has a model server assigned.
 
 .Procedure
@@ -17,31 +22,44 @@ You can update your data science project's model server by changing details, suc
 The *Data science projects* page opens.
 . Click the name of the project whose model server details you want to update.
 +
-The *Details* page for the project opens.
-. In the *Models and model servers* section, locate the model server you want to update, and click the action menu (*&#8942;*) -> Edit model server.
+A project details page opens.
+. In the *Models and model servers* section, locate the model server you want to update. Click the action menu (*&#8942;*)   and select *Edit model server*.
 +
 The *Configure model server* dialog opens.
-. Update the model server's properties.
-.. Select the *number of model server* replicas to deploy.
-.. Select one of the following server sizes for your model:
+. Update the model server properties, as follows:
++
+NOTE: You cannot change the *Serving runtime* selection for a model server that is already configured. This protects against changing to a runtime that does not support already-deployed models.
+
+.. In the *Model sever name* field, enter a new, unique name for the model server.
+
+.. In the *Number of model replicas to deploy* field, specify a value.
+.. From the *Model server size* list, select one of the following server sizes:
 * Small
 * Medium
 * Large
 * Custom
-.. Optional: If you selected *Custom*, configure the following settings in the *Model server size* section to customize your model server:
-... Enter the number of CPUs to use with your model in the *CPUs requested* field.
-... Enter the maximum number of CPUs required for use with your model in the *CPU limit* field.
-... Enter the requested memory for the model server in gigabytes (GB) in the *Memory requested* field.
-... Enter the maximum memory limit for the model server in gigabytes (GB) in the *Memory limit* field.
-.. Optional: Select the *Make deployed available via an external route* check box in the *Model route* section to make your deployed model available externally.
-.. Optional: Select the *Require token authorization* check box in the *Token Authorization* section to apply token authentication to your model server.
-... Edit the service account name for which the token will be generated in the *Token secret* field. The generated token is created and displayed when the model server is configured.
-... To add an additional service account, click *Add a service account* and enter the relevant information in the *Token secret* field.
+.. Optional: If you selected *Custom* in the preceding step, configure the following settings in the *Model server size* section to customize your model server:
+... In the *CPUs requested* field, specify a number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
+... In the *CPU limit* field, specify the maximum number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
+... In the *Memory requested* field, specify the requested memory for the model server in gibibytes (Gi).
+... In the *Memory limit* field, specify the maximum memory limit for the model server in gibibytes (Gi).
+.. Optional: In the *Model server GPUs* field, specify a number of GPUs to use with your model server.
++
+[IMPORTANT]
+====
+{productname-short} includes two versions of the OpenVINO Model Server (OVMS) runtime by default; a version that supports GPUs and one that does not. To use GPUs, from the *Serving runtime* list, you must select the version whose display name includes `Supports GPUs`.
+
+If you are using a _custom_ model-serving runtime with your model server, you must ensure that your custom runtime supports GPUs and is appropriately configured to use them.
+====
+
+.. Optional: In the *Model route* section, select the *Make deployed models available through an external route* check box to make your deployed models available to external clients.
+.. Optional: In the *Token authorization* section, select the *Require token authentication* check box to require token authentication for your model server. To finish configuring token authentication, perform the following actions:
+... In the *Service account name* field, enter a service account name for which the token will be generated. The generated token is created and displayed in the *Token secret* field when the model server is configured.
+... To add an additional service account, click *Add a service account* and enter another service account name.
 . Click *Configure*.
 
 .Verification
-* The model server that you updated is displayed in the *Models and model servers* section on the *Details* page for the project.
-
+* The model server that you updated is displayed in the *Models and model servers* section on the project details page.
 
 //[role='_additional-resources']
 //.Additional resources

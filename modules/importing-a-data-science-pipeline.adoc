@@ -1,0 +1,41 @@
+:_module-type: PROCEDURE
+
+[id="importing-a-data-science-pipeline_{context}"]
+= Importing a data science pipeline
+
+[role='_abstract']
+To help you begin working with data science pipelines in {productname-short}, you can import a YAML file containing your pipeline's code to an active pipeline server. This file contains a Kubeflow pipeline compiled with the Tekton compiler. After you have imported the pipeline to a pipeline server, you can execute the pipeline by creating a pipeline run.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users`) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a configured pipeline server.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
++
+The *Pipelines* page opens.
+. From the *Project* list, select the project that you want to import a pipeline to.
+. Click *Import pipeline*.
++
+The *Import pipeline* dialog opens.
+. Enter the details for the pipeline that you are importing.
+.. In the *Pipeline name* field, enter a name for the pipeline that you are importing.
+.. In the *Pipeline description* field, enter a description for the pipeline that you are importing.
+.. Click *Upload*. Alternatively, drag the file from your local machine's file system and drop it in the designated area in the *Import pipeline* dialog.
++
+A file browser opens.
+.. Navigate to the file containing the pipeline code and click *Select*.
+.. Click *Import pipeline*.
+
+.Verification
+* The pipeline that you imported is displayed on the *Pipelines* page.
+
+//[role='_additional-resources']
+//.Additional resources//
