@@ -1,0 +1,39 @@
+:_module-type: PROCEDURE
+
+[id="deleting-a-scheduled-pipeline-run_{context}"]
+= Deleting a scheduled pipeline run
+
+[role='_abstract']
+To discard pipeline runs that you previously scheduled, but no longer require, you can delete them so that they do not appear on the *Runs* page.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a configured pipeline server.
+* You have imported a pipeline to an active pipeline server.
+* You have previously scheduled a run that is available to delete.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Runs*.
++
+The *Runs* page opens.
+. From the *Project* list, select the project that contains the pipeline whose scheduled run you want to delete.
++
+The page refreshes to show the pipeline's scheduled runs on the *Scheduled* tab.
+. Click the action menu (*&#8942;*) beside the scheduled run that you want to delete and click *Delete*.
++
+The *Delete scheduled run* dialog opens.
+. Enter the run's name in the text field to confirm that you intend to delete it.
+. Click *Delete scheduled run*.
+
+.Verification
+* The run that you deleted is no longer displayed on the *Scheduled* tab.
+
+//[role='_additional-resources']
+//.Additional resources

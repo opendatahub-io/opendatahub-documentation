@@ -1,0 +1,36 @@
+:_module-type: PROCEDURE
+
+[id="viewing-scheduled-pipeline-runs_{context}"]
+= Viewing scheduled pipeline runs
+
+[role='_abstract']
+You can view a list of pipeline runs that are scheduled for execution in OpenShift Data Science. From this list, you can view details relating to your pipeline's runs, such as the pipeline that the run belongs to. You can also view the run's status, execution frequency, and schedule.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to Red Hat OpenShift Data Science.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a pipeline server.
+* You have imported a pipeline to an active and available pipeline server.
+* You have created and scheduled a pipeline run.
+
+.Procedure
+. From the OpenShift Data Science dashboard, click *Data Science Pipelines* -> *Runs*.
++
+The *Runs* page opens.
+. From the *Project* list, select the project whose scheduled pipeline runs you want to view.
+. Click the *Scheduled* tab.
+. Study the table showing a list of scheduled runs.
++
+After a run has been scheduled, the run's status is displayed in the *Status* column in the table, indicating whether the run is ready for execution or unavailable for execution. To enable or disable a previously imported notebook image, on the row containing the relevant notebook image, click the toggle in the *Enabled* column.
+
+.Verification
+* A list of scheduled runs are displayed in the *Scheduled* tab on the *Runs* page.
+
+//[role='_additional-resources']
+//.Additional resources

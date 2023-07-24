@@ -1,0 +1,34 @@
+:_module-type: PROCEDURE
+
+[id="accessing-the-pipeline-editor_{context}"]
+= Accessing the pipeline editor
+
+[role='_abstract']
+You can use Elyra to create visual end-to-end pipeline workflows in JupyterLab. Elyra is an extension for JupyterLab that provides you with a Pipeline Editor to create pipeline workflows that can be executed in {productname-short}.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+
+* You have created a data science project that contains a workbench.
+* You have created and configured a pipeline server within the data science project that contains your workbench.
+* You have created and launched a Jupyter server from a notebook image that contains the Elyra extension (Standard data science, TensorFlow, TrustyAI, or  PyTorch).
+* You have access to S3-compatible storage.
+
+.Procedure
+. After you open JupyterLab, confirm that the JupyterLab launcher is automatically displayed.
+. In the *Elyra* section of the JupyterLab launcher, click the *Pipeline Editor* tile.
++
+The Pipeline Editor opens.
+
+.Verification
+* You can view the Pipeline Editor in JupyterLab.
+
+//[role='_additional-resources']
+//.Additional resources//

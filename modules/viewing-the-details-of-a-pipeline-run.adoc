@@ -1,0 +1,35 @@
+:_module-type: PROCEDURE
+
+[id="viewing-the-details-of-a-pipeline-run_{context}"]
+= Viewing the details of a pipeline run
+[role='_abstract']
+To gain a clearer understanding of your pipeline runs, you can view the details of a previously triggered pipeline run, such as its graph, execution details, and run output.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admins`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a pipeline server.
+* You have imported a pipeline to an active and available pipeline server.
+* You have previously triggered a pipeline run.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
++
+The *Pipelines* page opens.
+. From the *Project* list, select the project whose pipeline runs you want to view.
+. For a pipeline that you want to see run details for, click *Expand* (image:images/rhods-expand-icon.png[]).
+. From the *Runs* section, click the name of the run that you want to view the details of.
++
+The *Run details* page opens.
+
+.Verification
+* On the *Run details* page, you can view the run's graph, execution details, and run output.
+
+//[role='_additional-resources']
+//.Additional resources

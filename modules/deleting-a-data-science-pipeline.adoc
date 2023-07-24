@@ -1,0 +1,40 @@
+:_module-type: PROCEDURE
+
+[id="deleting-a-data-science-pipeline_{context}"]
+= Deleting a data science pipeline
+
+[role='_abstract']
+You can delete data science pipelines so that they do not appear on the {productname-short} *Pipelines* page.
+//+ - [Chris] - June 1st 2023: As of RHODS 1.27, the important note below is NOT true. So commenting out for now. Uncomment it out when it actually is true, or rewrite it at a future point in time so that it's accurate.
+//[IMPORTANT]
+//====
+//Deleting a data science pipeline deletes any associated artifacts and data connections. This data is permanently deleted and is not recoverable.
+//====
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* There are active pipelines available on the *Pipelines* page.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
++
+The *Pipelines* page opens.
+. From the *Project* list, select the project that contains the pipeline that you want to delete.
+. Click the action menu (*&#8942;*) beside the pipeline that you want to delete and click *Delete pipeline*.
++
+The *Delete pipeline* dialog opens.
+. Enter the pipeline name in the text field to confirm that you intend to delete it.
+. Click *Delete pipeline*.
+
+.Verification
+* The data science pipeline that you deleted is no longer displayed on the *Pipelines* page.
+
+//[role='_additional-resources']
+//.Additional resources

@@ -1,0 +1,34 @@
+:_module-type: PROCEDURE
+
+[id="deleting-a-runtime-configuration_{context}"]
+= Deleting a runtime configuration
+
+[role='_abstract']
+After you have finished using your runtime configuration, you can delete it from the JupyterLab interface. After deleting a runtime configuration, you cannot run pipelines in JupyterLab until you create another runtime configuration.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* You have created a data science project that contains a workbench.
+* You have created and configured a pipeline server within the data science project that contains your workbench.
+* A previously created runtime configuration is visible in the JupyterLab interface.
+* You have created and launched a Jupyter server from a notebook image that contains the Elyra extension (Standard data science, TensorFlow, TrustyAI, or  PyTorch).
+
+.Procedure
+. In the left sidebar of JupyterLab, click *Runtimes* (image:images/jupyter-runtimes-sidebar.png[The Runtimes icon]).
+. Hover the cursor over the runtime configuration that you want to delete and click the *Delete Item* button (image:images/jupyterlab-trash-button.png[Delete item]).
++
+A dialog box appears prompting you to confirm the deletion of your runtime configuration.
+. Click *OK*.
+
+.Verification
+* The runtime configuration that you deleted is no longer shown in the *Runtimes* tab (image:images/jupyter-runtimes-sidebar.png[The Runtimes icon]) in the left sidebar of JupyterLab.
+
+//[role='_additional-resources']
+//.Additional resources//

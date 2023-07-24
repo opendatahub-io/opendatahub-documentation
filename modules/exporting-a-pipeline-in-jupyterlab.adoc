@@ -1,0 +1,46 @@
+:_module-type: PROCEDURE
+
+[id="exporting-a-pipeline-in-jupyterlab_{context}"]
+= Exporting a pipeline in JupyterLab
+
+[role='_abstract']
+You can export pipelines that you have created in JupyterLab. When you export a pipeline, the pipeline is prepared for later execution, but is not uploaded or executed immediately. During the export process, any package dependencies are uploaded to S3-compatible storage. Also, pipeline code is generated for the target runtime.
+
+Before you can export a pipeline, you must create a data science project and a pipeline server. After you create a pipeline server, you must create a workbench within the same project as your pipeline server. In addition, your pipeline instance in JupyterLab must contain a runtime configuration. If you create a workbench as part of a data science project, a default runtime configuration is created automatically. However, if you create a notebook from the Jupyter tile in the {productname-short} dashboard, you must create a runtime configuration before you can export your pipeline in JupyterLab. A runtime configuration defines connectivity information for your pipeline instance and S3-compatible cloud storage.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* You have created a data science project that contains a workbench.
+* You have created and configured a pipeline server within the data science project that contains your workbench.
+* You have access to S3-compatible storage.
+* You have a created a pipeline in JupyterLab.
+* You have opened your pipeline in the Pipeline Editor in JupyterLab.
+* Your pipeline instance contains a runtime configuration.
+* You have created and launched a Jupyter server from a notebook image that contains the Elyra extension (Standard data science, TensorFlow, TrustyAI, or  PyTorch).
+
+.Procedure
+. In the Pipeline Editor user interface, click *Export Pipeline* (image:images/jupyterlab-export-pipeline-button.png[Export pipeline]).
++
+The *Export Pipeline* dialog appears. The *Pipeline Name* field is automatically populated with the pipeline file name.
+. Define the settings to export your pipeline.
+.. From the *Runtime Configuration* list, select the relevant runtime configuration to export your pipeline.
+.. From the *Export Pipeline as* select an appropriate file format
+.. In the *Export Filename* field, enter a file name for the exported pipeline.
+.. Select the *Replace if file already exists* check box to replace an existing file of the same name as the pipeline you are exporting.
+.. Optional: Configure your pipeline parameters, if applicable. If your pipeline contains nodes that reference pipeline parameters, you can change the default parameter values. If a parameter is required and has no default value, you must enter a value.
+. Click *OK*.
+
+.Verification
+* You can view the file containing the pipeline that you exported in your designated object storage bucket.
+
+
+
+//[role='_additional-resources']
+//.Additional resources//

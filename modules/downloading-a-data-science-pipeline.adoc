@@ -1,0 +1,38 @@
+:_module-type: PROCEDURE
+
+[id="downloading-a-data-science-pipeline_{context}"]
+= Downloading a data science pipeline
+
+[role='_abstract']
+To make further changes to a data science pipeline that you previously uploaded to {productname-short}, you can download the pipeline's code from the user interface.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a configured pipeline server.
+* You have created and imported a pipeline to an active pipeline server that is available to download.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
++
+The *Pipelines* page opens.
+. From the *Project* list, select the project whose pipeline that you want to download.
+. In the *Pipeline name* column, click the name of the pipeline that you want to download.
++
+The *Pipeline details* page opens displaying the *Graph* tab.
+. Click the *YAML* tab.
++
+The page reloads to display an embedded YAML editor showing the pipeline code.
+. Click the *Download* button (image:images/rhods-download-icon.png[]) to download the YAML file containing your pipeline's code to your local machine.
+
+.Verification
+* The pipeline code is downloaded to your browser's default directory for downloaded files.
+
+//[role='_additional-resources']
+//.Additional resources//

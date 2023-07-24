@@ -1,0 +1,39 @@
+:_module-type: PROCEDURE
+
+[id="stopping-a-triggered-pipeline-run_{context}"]
+= Stopping a triggered pipeline run
+
+[role='_abstract']
+If you no longer require a triggered pipeline run to continue executing, you can stop the run before its defined end date.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admins`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* There is a previously created data science project available that contains a pipeline server.
+* You have imported a pipeline to an active and available pipeline server.
+* You have previously triggered a pipeline run.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Runs*.
++
+The *Runs* page opens.
+. From the *Project* list, select the project whose pipeline runs you want to stop.
+. Click the *Triggered* tab.
+. In the *Name* column in the table, click the name of the run that you want to stop.
++
+The *Run details* page opens.
+. From the *Actions* list, select *Stop run*
++
+There might be a short delay while the run stops.
+
+.Verification
+* A list of previously triggered runs are displayed in the *Triggered* tab on the *Runs* page.
+
+//[role='_additional-resources']
+//.Additional resources

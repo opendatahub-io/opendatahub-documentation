@@ -1,0 +1,31 @@
+:_module-type: PROCEDURE
+
+[id="duplicating-a-runtime-configuration_{context}"]
+= Duplicating a runtime configuration
+
+[role='_abstract']
+To prevent you from re-creating runtime configurations with similar values in their entirety, you can duplicate an existing runtime configuration in the JupyterLab interface.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* You have created a data science project that contains a workbench.
+* You have created and configured a pipeline server within the data science project that contains your workbench.
+* A previously created runtime configuration is visible in the JupyterLab interface.
+* You have created and launched a Jupyter server from a notebook image that contains the Elyra extension (Standard data science, TensorFlow, TrustyAI, or  PyTorch).
+
+.Procedure
+. In the left sidebar of JupyterLab, click *Runtimes* (image:images/jupyter-runtimes-sidebar.png[The Runtimes icon]).
+. Hover the cursor over the runtime configuration that you want to duplicate and click the *Duplicate* button (image:images/jupyterlab-duplicate.png[Duplicate]).
+
+.Verification
+* The runtime configuration that you duplicated is shown in the *Runtimes* tab (image:images/jupyter-runtimes-sidebar.png[The Runtimes icon]) in the left sidebar of JupyterLab.
+
+//[role='_additional-resources']
+//.Additional resources//

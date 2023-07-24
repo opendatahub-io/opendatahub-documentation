@@ -1,0 +1,44 @@
+:_module-type: PROCEDURE
+
+[id="running-a-pipeline-in-jupyterlab_{context}"]
+= Running a pipeline in JupyterLab
+
+[role='_abstract']
+You can run pipelines that you have created in JupyterLab from the Pipeline Editor user interface. Before you can run a pipeline, you must create a data science project and a pipeline server. After you create a pipeline server, you must create a workbench within the same project as your pipeline server.
+Your pipeline instance in JupyterLab must contain a runtime configuration. If you create a workbench as part of a data science project, a default runtime configuration is created automatically. However, if you create a notebook from the Jupyter tile in the {productname-short} dashboard, you must create a runtime configuration before you can run your pipeline in JupyterLab. A runtime configuration defines connectivity information for your pipeline instance and S3-compatible cloud storage.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admins`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* You have access to S3-compatible storage.
+* You have created a pipeline in JupyterLab.
+* You have opened your pipeline in the Pipeline Editor in JupyterLab.
+* Your pipeline instance contains a runtime configuration.
+* You have created and configured a pipeline server within the data science project that contains your workbench.
+* You have created and launched a Jupyter server from a notebook image that contains the Elyra extension (Standard data science, TensorFlow, TrustyAI, or  PyTorch).
+
+.Procedure
+. In the Pipeline Editor user interface, click *Run Pipeline* (image:images/jupyterlab-run-pipeline-button.png[The Runtimes icon]).
++
+The *Run Pipeline* dialog appears. The *Pipeline Name* field is automatically populated with the pipeline file name.
++
+[IMPORTANT]
+====
+You must enter a unique pipeline name. The pipeline name that you enter must not match the name of any previously executed pipelines. 
+====
+. Define the settings for your pipeline run.
+.. From the *Runtime Configuration* list, select the relevant runtime configuration to run your pipeline.
+.. Optional: Configure your pipeline parameters, if applicable. If your pipeline contains nodes that reference pipeline parameters, you can change the default parameter values. If a parameter is required and has no default value, you must enter a value.
+. Click *OK*.
+
+.Verification
+* You can view the output artifacts of your pipeline run. The artifacts are stored in your designated object storage bucket.
+
+//[role='_additional-resources']
+//.Additional resources//
