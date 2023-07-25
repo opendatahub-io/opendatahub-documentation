@@ -4,42 +4,56 @@
 = Deploying a model in {productname-short}
 
 [role='_abstract']
-You can deploy trained models on {productname-short} to enable you to test and implement them into intelligent applications. Deploying a model makes it available as a service that you can access using an API. This enables you to return predictions based on data inputs.
+You can deploy trained models on {productname-short} to enable you to test and implement them into intelligent applications. Deploying a model makes it available as a service that you can access using an API. This enables you to return predictions based on data inputs. 
 
 .Prerequisites
 * You have logged in to {productname-long}.
+ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users`) in OpenShift.
+endif::[]
 * You have created a data science project that contains an associated model server.
 
 .Procedure
-. From the {productname-short} dashboard, click *Data Science Projects*.
+. From the OpenShift Data Science dashboard, click *Data Science Projects*.
 +
 The *Data science projects* page opens.
 . Click the name of the project containing the model that you want to deploy.
 +
-The *Details* page for the project opens.
-. Click *Deploy model* in the *Models and model servers* section.
+A project details opens.
+. In the *Models and model servers* section, next to the name of your model server, click *Deploy model*.
 +
-The *Deploy model* dialog appears.
-. Configure the properties for deploying your model.
-.. Enter a *name* for the model that you are deploying.
-.. Select a *model framework* for the model that you are deploying.
-.. Specify the location of your model.
-... Select *Existing data connection* to use a data connection that you previously defined.
-.... Select the *name* of the data connection from the list.
-.... Enter the *folder path* containing the model.
-... Select *New data connection* to add a new data connection that your model can access.
-.... Enter a *name* for the data connection.
-.... Enter your access key ID for Amazon Web Services in the *AWS_ACCESS_KEY_ID* field.
-.... Enter your secret access key for the account you specified in the *AWS_ACCESS_KEY_ID* field.
-.... Enter the endpoint of your AWS S3 storage in the *AWS_S3_ENDPOINT* field.
-.... Enter the default region of your AWS account in the *AWS_DEFAULT_REGION* field.
-.... Enter the name of the AWS S3 bucket in the *AWS_S3_BUCKET* field.
-.... Enter the *folder path* of the file containing the data.
-.. Click *Configure*.
+The *Deploy model* dialog opens.
+. Configure properties for deploying your model as follows:
+.. In the *Model Name* field, enter a unique name for the model that you are deploying.
+.. From the *Model framework* list, select a framework for your model. 
++
+NOTE: The *Model framework* list shows only the frameworks that are supported by the model-serving runtime that you specified when you configured your model server.
+.. To specify the location of your model, perform one of the following sets of actions:
++
+--
+* *To use an existing data connection*
+... Select *Existing data connection*.
+... From the *Name* list, select a data connection that you previously defined.
+... In the *Folder path* field, enter the folder path that contains the model in your specified data source.
+
+* *To use a new data connection*
+... To define a new data connection that your model can access, select *New data connection*.
+... In the *Name* field, enter a unique name for the data connection.
+... In the *AWS_ACCESS_KEY_ID* field, enter your access key ID for Amazon Web Services (AWS).
+... In the *AWS_SECRET_ACCESS_KEY* field, enter your secret access key for the AWS account you specified.
+... In the *AWS_S3_ENDPOINT* field, enter the endpoint of your AWS S3 storage.
+... In the *AWS_DEFAULT_REGION* field, enter the default region of your AWS account.
+... In the *AWS_S3_BUCKET* field, enter the name of the AWS S3 bucket.
+... In the *Folder path* field, enter the folder path in your AWS S3 bucket that contains your data file. 
+--
+
+.. Click *Deploy*.
 
 .Verification
-* The model you deployed is displayed in the *Deployed models* table on the *Model Serving* page, accessed from the dashboard.
+* The model you deployed is displayed on the *Model Serving* page of the dashboard.
 
 //[role="_additional-resources"]
 //.Additional resources

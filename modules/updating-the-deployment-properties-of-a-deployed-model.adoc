@@ -8,7 +8,12 @@ You can update the deployment properties of a model that has been deployed previ
 
 .Prerequisites
 * You have logged in to {productname-long}.
+ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users`) in OpenShift.
+endif::[]
 * You have deployed a model on {productname-short}.
 
 .Procedure
@@ -18,18 +23,28 @@ The *Model Serving* page opens.
 . Click the action menu (*&#8942;*) beside the model whose deployment properties you want to update and click *Edit*.
 +
 The *Deploy model* dialog opens.
-. Update the deployment properties of the model.
-.. Update the *name* of the model.
-.. Select an option to specify the location of your model.
-... If you selected *Existing data connection*, update the *folder path* of your existing data connection.
-... If you selected *New data connection*, update the relevant fields to add a new data connection.
-.... Update the data connection *name*.
-.... Update your access key ID for Amazon Web Services in the *AWS_ACCESS_KEY_ID* field.
-.... Update your secret access key for the account you specified in the *AWS_ACCESS_KEY_ID* field.
-.... Update the endpoint of your AWS S3 storage in the *AWS_S3_ENDPOINT* field.
-.... Update the default region of your AWS account in the *AWS_DEFAULT_REGION* field.
-.... Update the name of the AWS S3 bucket in the *AWS_S3_BUCKET* field.
-.... Update the *folder path* of the file containing the data.
+. Update the deployment properties of the model as follows:
+.. In the *Model Name* field, enter a new, unique name for the model.
+.. From the *Model framework* list, select a framework for your model. 
++
+NOTE: The *Model framework* list shows only the frameworks that are supported by the model-serving runtime that you specified when you configured your model server.
+
+.. To update the location of your model, perform one of the following sets of actions:
++
+--
+* *If you previosuly specified an existing data connection*
+... In the *Folder path* field, update the folder path that contains the model in your specified data source.
+
+* *If you previously specified a new data connection*
+... In the *Name* field, update the name of the data connection.
+... In the *AWS_ACCESS_KEY_ID* field, update your access key ID for Amazon Web Services (AWS).
+... In the *AWS_SECRET_ACCESS_KEY* field, update your secret access key for the AWS account you specified.
+... In the *AWS_S3_ENDPOINT* field, update the endpoint of your AWS S3 storage.
+... In the *AWS_DEFAULT_REGION* field, update the default region of your AWS account.
+... In the *AWS_S3_BUCKET* field, update the name of the AWS S3 bucket.
+... In the *Folder path* field, update the folder path in your AWS S3 bucket that contains your data file. 
+--
+
 .. Click *Configure*.
 
 .Verification
