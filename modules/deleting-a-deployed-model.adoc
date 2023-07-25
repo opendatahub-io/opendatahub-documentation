@@ -8,8 +8,13 @@ You can delete models you have previously deployed. This enables you to remove d
 
 .Prerequisites
 * You have logged in to {productname-long}.
+ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users`) in OpenShift.
-* You have have deployed a model.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users`) in OpenShift.
+endif::[]
+* You have deployed a model.
 
 .Procedure
 . From the {productname-short} dashboard, click *Model serving*.
