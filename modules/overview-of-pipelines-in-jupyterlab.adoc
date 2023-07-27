@@ -1,0 +1,39 @@
+:_module-type: CONCEPT
+
+[id='overview-of-pipelines-in-jupyterlab_{context}']
+= Overview of pipelines in JupyterLab
+
+[role='_abstract']
+You can use Elyra to create visual end-to-end pipeline workflows in JupyterLab. Elyra is an extension for JupyterLab that provides you with a Pipeline Editor to create pipeline workflows that can be executed in {productname-short}.
+
+Before you can work with pipelines in JupyterLab, you must install the OpenShift Pipelines operator. For more information about installing a compatible version of the OpenShift Pipelines operator, see link:https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/cicd/pipelines#op-release-notes[Red Hat OpenShift Pipelines release notes] and link:https://access.redhat.com/articles/6986416[Red Hat Openshift Data Science: Supported Configurations].
+
+You can access the Elyra extension within JupyterLab when you create the most recent version of one of the following notebook images:
+
+* Standard Data Science
+* PyTorch
+* TensorFlow
+* TrustyAI
+
+As you can use the Pipeline Editor to visually design your pipelines, minimal coding is required to create and run pipelines. For more information about Elyra, see link:https://elyra.readthedocs.io/en/stable/getting_started/overview.html[Elyra Documentation]. For more information on the Pipeline Editor, see link:https://elyra.readthedocs.io/en/stable/user_guide/jupyterlab-interface.html#visual-pipeline-editor[Visual Pipeline Editor]. After you have created your pipeline, you can run it locally in JupyterLab, or remotely using data science pipelines in {productname-short}.
+
+The pipeline creation process consists of the following tasks:
+
+* Create a data science project that contains a workbench.
+* Create a pipeline server.
+* Create a new pipeline in the Pipeline Editor in JupyterLab.
+* Develop your pipeline by adding Python notebooks or Python scripts and defining their runtime properties.
+* Define execution dependencies.
+* Run or export your pipeline.
+
+Before you can run a pipeline in JupyterLab, your pipeline instance must contain a runtime configuration. A runtime configuration defines connectivity information for your pipeline instance and S3-compatible cloud storage.
+
+If you create a workbench as part of a data science project, a default runtime configuration is created automatically. However, if you create a notebook from the Jupyter tile in the {productname-short} dashboard, you must create a runtime configuration before you can run your pipeline in JupyterLab. For more information about runtime configurations, see link:https://elyra.readthedocs.io/en/stable/user_guide/runtime-conf.html[Runtime Configuration]. As a prerequisite, before you create a workbench, ensure that you have created and configured a pipeline server within the same data science project as your workbench.
+
+You can use S3-compatible cloud storage to make data available to your notebooks and scripts while they are executed. Your cloud storage must be accessible from the machine in your deployment that runs JupyterLab and from the cluster that hosts Data Science Pipelines. Before you create and run pipelines in JupyterLab, ensure that you have your s3-compatible storage credentials readily available.
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://elyra.readthedocs.io/en/stable/getting_started/overview.html[Elyra Documentation]
+* link:https://elyra.readthedocs.io/en/stable/user_guide/jupyterlab-interface.html#visual-pipeline-editor[Visual Pipeline Editor]
+* https://elyra.readthedocs.io/en/stable/user_guide/runtime-conf.html[Runtime Configuration].

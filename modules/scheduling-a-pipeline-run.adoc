@@ -1,0 +1,48 @@
+:_module-type: PROCEDURE
+
+[id="scheduling-a-pipeline-run_{context}"]
+= Scheduling a pipeline run
+
+[role='_abstract']
+You can instantiate a single execution of a pipeline by scheduling a pipeline run. In {productname-short}, you can schedule runs to occur at specific times or execute them immediately after creation.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admins`) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a configured pipeline server.
+* You have imported a pipeline to an active pipeline server.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
++
+The *Pipelines* page opens.
+. Click the action menu (*&#8942;*) beside the relevant pipeline and click *Create run*.
++
+The *Create run* page opens.
+. From the *Project* list, select the project that contains the pipeline you want to create a run for.
+. In the *Name* field, enter a name for the run.
+. In the *Description* field, enter a description for the run.
+. From the *Pipeline* list, select the pipeline to create a run for. Alternatively, to upload a new pipeline, click *Upload new pipeline* and fill in the relevant fields in the *Import pipeline* dialog.
+. Configure the run type by performing one of the following sets of actions:
+* Select *Run once immediately after create* to specify the run executes once, and immediately after its creation.
+* Select *Schedule recurring run* to schedule the run to recur.
+... Configure the run's trigger type.
+.... Select *Periodic* and select the execution frequency from the list.
+.... Select *Cron* to specify the execution schedule in `cron` format. This creates a cron job to execute the run. Click the *Copy* button (image:images/osd-copy.png[]) to copy the cron job schedule to the clipboard. The field furthest to the left represents seconds. For more information about scheduling tasks using the supported `cron` format, see link:https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format[Cron Expression Format].
+... Configure the run's duration.
+.... Select the *Start date* check box to specify a start date for the run. Select the run's start date using the *Calendar* and the start time from the list of times.
+.... Select the *End date* check box to specify an end date for the run. Select the run's end date using the *Calendar* and the end time from the list of times.
+. Configure the input parameters for the run by selecting the parameters from the list.
+. Click *Create*.
+
+.Verification
+* The pipeline run that you created is shown in the *Scheduled* tab on the *Runs* page.
+
+//[role='_additional-resources']
+//.Additional resources

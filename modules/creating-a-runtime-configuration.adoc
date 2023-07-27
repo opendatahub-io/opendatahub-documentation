@@ -1,0 +1,74 @@
+:_module-type: PROCEDURE
+
+[id="creating-a-runtime-configuration_{context}"]
+= Creating a runtime configuration
+
+[role='_abstract']
+If you create a workbench as part of a data science project, a default runtime configuration is created automatically. However, if you create a notebook from the Jupyter tile in the {productname-short} dashboard, you must create a runtime configuration before you can run your pipeline in JupyterLab. This enables you to specify connectivity information for your pipeline instance and S3-compatible cloud storage.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* You have access to S3-compatible cloud storage.
+* You have created a data science project that contains a workbench.
+* You have created and configured a pipeline server within the data science project that contains your workbench.
+* You have created and launched a Jupyter server from a notebook image that contains the Elyra extension (Standard data science, TensorFlow, TrustyAI, or  PyTorch).
+
+.Procedure
+. In the left sidebar of JupyterLab, click *Runtimes* (image:images/jupyter-runtimes-sidebar.png[The Runtimes icon]).
+. Click the *Create new runtime configuration* button (image:images/jupyter-create-runtime.png[Create new runtime configuration]).
++
+The *Add new Data Science Pipelines runtime configuration* page opens.
+. Fill in the relevant fields to define your runtime configuration.
+.. In the *Display Name* field, enter a name for your runtime configuration.
+.. Optional: In the *Description* field, enter a description to define your runtime configuration.
+.. Optional: In the *Tags* field, click *Add Tag* to define a category for your pipeline instance. Enter a name for the tag and press Enter.
+.. Define the credentials of your data science pipeline:
+... In the *Data Science Pipelines API Endpoint* field, enter the API endpoint of your data science pipeline. Do not specify the pipelines namespace in this field.
+//+
+//[IMPORTANT]
+//====
+//To obtain the Data Science Pipelines API endpoint, x.
+//====
+... In the *Public Data Science Pipelines API Endpoint* field, enter the public API endpoint of your data science pipeline.
++
+[IMPORTANT]
+====
+You can obtain the Data Science Pipelines API endpoint from the *Data Science Pipelines* -> *Runs* page in the dashboard. Copy the relevant end point and enter it in the *Public Data Science Pipelines API Endpoint* field.
+====
+... Optional: In the *Data Science Pipelines User Namespace* field, enter the relevant user namespace to run pipelines.
+... From the *Data Science Pipelines engine* list, select `Tekton`.
+... From the *Authentication Type* list, select the authentication type required to authenticate your pipeline.
++
+[IMPORTANT]
+====
+If you created a notebook directly from the Jupyter tile on the dashboard, select `EXISTING_BEARER_TOKEN` from the *Authentication Type* list.
+====
+... In the *Data Science Pipelines API Endpoint Username* field, enter the user name required for the authentication type.
+... In the *Data Science Pipelines API Endpoint Password Or Token*, enter the password or token required for the authentication type.
++
+[IMPORTANT]
+====
+To obtain the Data Science Pipelines API endpoint token, in the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*. After you have logged in, click *Display token* and copy the value of `--token=` from the *Log in with this token* command.
+====
+.. Define the connectivity information of your S3-compatible storage:
+... In the *Cloud Object Storage Endpoint* field, enter the endpoint of your S3-compatible storage. For more information about Amazon s3 endpoints, see link:https://docs.aws.amazon.com/general/latest/gr/s3.html[Amazon Simple Storage Service endpoints and quotas].
+... Optional: In the *Public Cloud Object Storage Endpoint* field, enter the URL of your S3-compatible storage.
+... In the *Cloud Object Storage Bucket Name* field, enter the name of the bucket where your pipeline artifacts are stored. If the bucket name does not exist, it is created automatically.
+... From the *Cloud Object Storage Authentication Type* list, select the authentication type required to access to your S3-compatible cloud storage. If you use AWS S3 buckets, select `KUBERNETES_SECRET` from the list.
+... In the *Cloud Object Storage Credentials Secret* field, enter the secret that contains the storage user name and password. This secret is defined in the relevant user namespace, if applicable. In addition, it must be stored on the cluster that hosts your pipeline runtime.
+... In the *Cloud Object Storage Username* field, enter the user name to connect to your S3-compatible cloud storage, if applicable. If you use AWS S3 buckets, enter your AWS Secret Access Key ID.
+... In the *Cloud Object Storage Password* field, enter the password to connect to your S3-compatible cloud storage, if applicable. If you use AWS S3 buckets, enter your AWS Secret Access Key.
+.. Click *Save & Close*.
+
+.Verification
+* The runtime configuration that you created is shown in the *Runtimes* tab (image:images/jupyter-runtimes-sidebar.png[The Runtimes icon]) in the left sidebar of JupyterLab.
+
+//[role='_additional-resources']
+//.Additional resources//

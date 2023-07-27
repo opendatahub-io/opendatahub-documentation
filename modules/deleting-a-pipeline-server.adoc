@@ -1,0 +1,34 @@
+:_module-type: PROCEDURE
+
+[id="deleting-a-pipeline-server_{context}"]
+= Deleting a pipeline server
+
+[role='_abstract']
+After you have finished running your data science pipelines, you can delete the pipeline server. Deleting a pipeline server automatically deletes all of its associated pipelines and runs. If your pipeline data is stored in a database, the database is also deleted along with its meta-data. In addition, after deleting a pipeline server, you cannot create new pipelines or pipeline runs until you create another pipeline server.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a pipeline server.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
++
+The *Pipelines* page opens.
+. From the *Project* list, select the project whose pipeline server you want to delete.
+. From the *Pipeline server actions* list, select *Delete pipeline server*.
+The *Delete pipeline server* dialog opens.
+. Enter the pipeline server's name in the text field to confirm that you intend to delete it.
+. Click *Delete*.
+
+.Verification
+* Pipelines previously assigned to the deleted pipeline server are no longer displayed on the *Pipelines* page for the relevant data science project.
+* Pipeline runs previously assigned to the deleted pipeline server are no longer displayed on the *Runs* page for the relevant data science project.
+
+//[role='_additional-resources']
+//.Additional resources
