@@ -1,0 +1,43 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: managing-users
+
+[id="managing-users"]
+= Managing users
+
+include::modules/overview-of-user-types-and-permissions.adoc[leveloffset=+1]
+
+include::modules/defining-openshift-data-science-admin-and-user-groups.adoc[leveloffset=+2]
+
+include::modules/adding-users-to-specialized-openshift-data-science-user-groups.adoc[leveloffset=+2]
+
+include::modules/viewing-openshift-data-science-users.adoc[leveloffset=+2]
+
+== Deleting users and their resources
+
+[role="_abstract"]
+
+Users with administrator access to {openshift-platform} can revoke user access to Jupyter and delete user resources from {productname-long}.
+
+IMPORTANT: To completely remove a user from {productname-short}, you must remove them from the allowed group in your OpenShift identity provider.
+
+ifndef::self-managed[]
+include::modules/backing-up-storage-data-from-amazon-ebs.adoc[leveloffset=+2]
+
+include::modules/backing-up-storage-data-from-google-persistent-disk.adoc[leveloffset=+2]
+
+include::modules/stopping-notebook-servers-owned-by-other-users.adoc[leveloffset=+2]
+endif::[]
+
+ifdef::self-managed[]
+include::modules/backing-up-storage-data.adoc[leveloffset=+2]
+endif::[]
+
+include::modules/revoking-user-access-to-jupyter.adoc[leveloffset=+2]
+
+include::modules/cleaning-up-after-deleting-users.adoc[leveloffset=+2]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

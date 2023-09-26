@@ -1,0 +1,56 @@
+:_module-type: PROCEDURE
+
+[id='configuring-a-custom-notebook-image_{context}']
+= Configuring a custom notebook image
+
+[role='_abstract']
+In addition to notebook images provided and supported by Red Hat and independent software vendors (ISVs), you can configure custom notebook images that cater to your project's specific requirements.
+
+Red Hat supports you in adding custom notebook images to your deployment of {productname-short} and ensuring that they are available for selection when creating a notebook server. However, Red Hat does not support the contents of your custom notebook image. That is, if your custom notebook image is available for selection during notebook server creation, but does not create a usable notebook server, Red Hat does not provide support to fix your custom notebook image.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::self-managed[]
+* You are part of the `dedicated-admins` user group in {openshift-platform}.
+endif::[]
+ifdef::self-managed[]
+* You are assigned the `cluster-admin` role in OpenShift Container Platform.
+endif::[]
+* Your custom notebook image exists in an image registry and is accessible.
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Notebook images*.
++
+The *Notebook image settings* page appears. Previously imported notebook images are displayed. To enable or disable a previously imported notebook image, on the row containing the relevant notebook image, click the toggle in the *Enabled* column.
+. Click *Import new image*. Alternatively, if no previously imported images were found, click *Import image*.
++
+The *Import Notebook images* dialog appears.
+. In the *Repository* field, enter the URL of the repository containing the notebook image.
+. In the *Name* field, enter an appropriate name for the notebook image.
+. In the *Description* field, enter an appropriate description for the notebook image.
+. Optional: Add software to the notebook image. After the import has completed, the software is added to the notebook image's meta-data and displayed on the Jupyter server creation page.
+.. Click the *Software* tab.
+.. Click the *Add software* button.
+.. Click *Edit* (image:images/rhods-edit-icon.png[The Edit icon]).
+.. Enter the *Software* name.
+.. Enter the software *Version*.
+.. Click *Confirm* (image:images/rhods-confirm-icon.png[The Confirm icon]) to confirm your entry.
+.. To add additional software, click *Add software*, complete the relevant fields, and confirm your entry.
+. Optional: Add packages to the notebook images. After the import has completed, the packages are added to the notebook image's meta-data and displayed on the Jupyter server creation page.
+.. Click the *Packages* tab.
+.. Click the  *Add package* button.
+.. Click *Edit* (image:images/rhods-edit-icon.png[The Edit icon]).
+.. Enter the *Package* name.
+.. Enter the package *Version*.
+.. Click *Confirm* (image:images/rhods-confirm-icon.png[The Confirm icon]) to confirm your entry.
+.. To add an additional package, click *Add package*, complete the relevant fields, and confirm your entry.
+. Click *Import*.
+
+.Verification
+* The notebook image that you imported is displayed in the table on the *Notebook image settings* page.
+* Your custom notebook image is available for selection on the *Start a notebook server* page in Jupyter.
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://docs.openshift.com/container-platform/4.13/openshift_images/image-streams-manage.html[Managing image streams]
+* link:https://docs.openshift.com/container-platform/4.13/cicd/builds/understanding-buildconfigs.html[Understanding build configurations]

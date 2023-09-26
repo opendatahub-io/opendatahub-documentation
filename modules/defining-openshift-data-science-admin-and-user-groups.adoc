@@ -1,0 +1,47 @@
+:_module-type: PROCEDURE
+
+[id="defining-openshift-data-science-admin-and-user-groups_{context}"]
+= Defining {productname-short} administrator and user groups
+
+By default, all users authenticated in OpenShift can access {productname-short}.
+
+[role='_abstract']
+ifndef::self-managed[]
+Also by default, users with cluster admin permissions and users in the `dedicated-admins` administrator group are {productname-short} administrators.
+A `cluster admin` is a superuser that can perform any action in any project in the OpenShift cluster. When bound to a user with a local binding, they have full control over quota and every action on every resource in the project. 
+
+You can define additional {productname-short} administrator and user groups by using the {productname-short} dashboard.
+
+.Prerequisites
+* You have logged in to {productname-long} as described in link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/logging-in_get-started[Logging in to {productname-short}].
+* You are part of the {productname-short} administrator group in {openshift-platform}.
+* The groups that you want to define as administrator and user groups for {productname-short} already exist in {openshift-platform}.
+endif::[]
+
+ifdef::self-managed[]
+Also by default, users with the `cluster-admin` role are {productname-short} administrators, but all users authenticated in OpenShift can access {productname-short}. A cluster admin is a superuser that can perform any action in any project in the OpenShift cluster. When bound to a user with a local binding, they have full control over quota and every action on every resource in the project. 
+
+You can define additional {productname-short} administrator and user groups by using the {productname-short} dashboard.
+
+.Prerequisites
+* You have logged in to {productname-long} as described in link:{rhodsdocshome}{default-format-url}/getting_started_with_{url-productname-long}/logging-in_get-started[Logging in to {productname-short}].
+* You have the `cluster-admin` role in OpenShift Container Platform.
+* The groups that you want to define as administrator and user groups exist in OpenShift Container Platform.
+endif::[]
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *User management*.
+. Define your {productname-short} admin groups: Under *Data science administrator groups*, click the text box and select an OpenShift group. Repeat this process to define multiple admin groups.
+. Define your {productname-short} user groups: Under *Data science user groups*, click the text box and select an OpenShift group. Repeat this process to define multiple user groups.
++
+IMPORTANT: The `system:authenticated` setting allows all users authenticated in OpenShift to access {productname-short}.
+
+. Click *Save changes*.
+
+.Verification
+* Administrator users can successfully log in to {productname-short} and perform administrative functions.
+* Non-administrator users can successfully log in to {productname-short}, and can access and use individual components, such as Jupyter.
+
+//[role='_additional-resources']
+//.Additional resources
+

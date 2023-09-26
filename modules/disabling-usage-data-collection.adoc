@@ -1,0 +1,37 @@
+:_module-type: PROCEDURE
+
+[id="disabling-usage-data-collection_{context}"]
+= Disabling usage data collection
+
+[role='_abstract']
+{productname-long} administrators can choose whether to allow Red Hat to collect data about {productname-short} usage in their cluster.
+ifndef::self-managed[]
+Usage data collection is enabled by default when you install {productname-short} on your {openshift-platform} cluster.
+endif::[]
+ifdef::self-managed[]
+Usage data collection is enabled by default when you install {productname-short} on your OpenShift Container Platform cluster except when clusters are installed in a disconnected environment.
+endif::[]
+
+You can disable data collection by following these steps.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::self-managed[]
+* You are part of the {productname-short} administrator group in {openshift-platform}.
+endif::[]
+ifdef::self-managed[]
+* You are part of the {productname-short} administrator group in OpenShift Container Platform except when clusters are installed in a disconnected environment.
+endif::[]
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Cluster settings*.
+. Locate the *Usage data collection* section.
+. Deselect the *Allow collection of usage data* checkbox.
+. Click *Save changes*.
+
+.Verification
+* A notification is shown when settings are updated: `Settings changes saved.`
+
+[role='_additional-resources']
+.Additional resources
+* link:{rhodsdocshome}{default-format-url}/managing_resources#usage-data-collection-notice-for-openshift-data-science[Usage data collection notice for {productname-short}]

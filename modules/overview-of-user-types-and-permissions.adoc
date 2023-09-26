@@ -1,0 +1,85 @@
+:_module-type: CONCEPT
+
+[id='overview-of-user-types-and-permissions_{context}']
+= Overview of user types and permissions
+
+{productname-long} has the following user types:
+
+.User types
+[cols="1,5"]
+|===
+| User Type | Permissions
+
+| Data scientists
+| Data scientists can access and use individual components of {productname-long}, such as Jupyter.
+
+
+ifndef::self-managed[]
+See also link:{rhodsdocshome}{default-format-url}/installing_{url-productname-short}/accessing-data-science-dashboard_install[Accessing the {productname-short} dashboard].
+endif::[]
+ifdef::self-managed[]
+See also link:{rhodsdocshome}{default-format-url}/installing_{url-productname-short}/accessing-data-science-dashboard_install[Accessing the {productname-short} dashboard].
+endif::[]
+
+| IT operations administrators
+a| In addition to the actions permitted to a data scientist, IT operations administrators can:
+
+* Configure {productname-long} settings.
+* Access and manage notebook servers.
+
+
+ifndef::self-managed[]
+See also link:https://access.redhat.com/documentation/en-us/openshift_dedicated/4/html/cluster_administration/index[{openshift-platform} Cluster administration].
+endif::[]
+
+ifdef::self-managed[]
+See also link:https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/authentication_and_authorization/index[OpenShift Container Platform Authentication and authorization].
+endif::[]
+
+|===
+
+
+ifndef::self-managed[]
+By default, all OpenShift users have access to {productname-long}. In addition, users in the {openshift-platform} administrator group (by default, `dedicated-admins`), automatically have administrator access in {productname-short}.
+endif::[]
+
+ifdef::self-managed[]
+By default, all OpenShift users have access to {productname-long}. In addition, users with the `cluster-admin` role, automatically have administrator access in {productname-short}.
+endif::[]
+
+Alternatively, you can create specialized user groups to restrict access to {productname-short} for users and administrators.
+Therefore, you must decide if you want to restrict access to your {productname-short} deployment by using specialized user groups, as opposed to allowing all OpenShift users access.
+
+If you decide to restrict access, and you already have user groups defined in your configured identity provider, you can add these user groups to your {productname-short} deployment. If you decide to use specialized user groups without adding these groups from an identity provider, you must create the groups in {productname-short} and then add the appropriate users to them.
+
+ifndef::self-managed[]
+The user groups configured in {openshift-platform}, `cluster-admins` and `dedicated-admins`, are separate to any specialized {productname-short} user groups. There are some operations relevant to {productname-short} that require the `cluster-admins` or `dedicated-admins` role. Those operations include:
+
+* Adding users to the {productname-short} user and administrator groups, if you are using specialized groups.
+* Removing users from the {productname-short} user and administrator groups, if you are using specialized groups.
+* Managing custom environment and storage configuration for users in {openshift-platform}, such as Jupyter notebook resources, ConfigMaps, and persistent volume claims (PVCs).
+
+//For RHODS-1954
+[IMPORTANT]
+====
+Although users of {productname-short} and its components are authenticated through OpenShift, session management is separate from authentication. This means that logging out of {openshift-platform} or {productname-short} does not affect a logged in Jupyter session running on those platforms. This means that when a user's permissions change, that user must log out of all current sessions in order for the changes to take effect.
+====
+endif::[]
+
+ifdef::self-managed[]
+There are some operations relevant to {productname-short} that require the `cluster-admin` role. Those operations include:
+
+* Adding users to the {productname-short} user and administrator groups, if you are using specialized groups.
+* Removing users from the {productname-short} user and administrator groups, if you are using specialized groups.
+* Managing custom environment and storage configuration for users in OpenShift, such as Jupyter notebook resources, ConfigMaps, and persistent volume claims (PVCs).
+
+//For RHODS-1954
+[IMPORTANT]
+====
+Although users of {productname-short} and its components are authenticated through OpenShift, session management is separate from authentication.
+This means that logging out of OpenShift or {productname-short} does not affect a logged in Jupyter session running on those platforms.
+This means that when a user's permissions change, that user must log out of all current sessions in order for the changes to take effect.
+====
+endif::[]
+// [role="_additional-resources"]
+// .Additional resources

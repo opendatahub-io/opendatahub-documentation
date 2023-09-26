@@ -1,0 +1,46 @@
+:_module-type: PROCEDURE
+
+[id='revoking-user-access-to-jupyter_{context}']
+= Revoking user access to Jupyter
+
+[role='_abstract']
+You can revoke a user’s access to Jupyter to prevent them from running notebook servers and consuming resources in your cluster through Jupyter, while still allowing them access to {productname-short} and other services that use OpenShift's identity provider for authentication.
+
+IMPORTANT: Follow these steps only if you have restricted access to {productname-short} using specialized user groups. To completely remove a user from {productname-short}, you must remove them from the allowed group in your OpenShift identity provider.
+
+.Prerequisites
+* You have stopped any notebook servers owned by the user you want to delete.
+ifndef::self-managed[]
+* You are part of the `dedicated-admins` user group in {openshift-platform}.
+endif::[]
+ifdef::self-managed[]
+* You are assinged the `cluster-admin` role in OpenShift Container Platform.
+endif::[]
+* If you are using specialized {productname-short} user groups, the user is part of the {productname-short} user group, administrator group, or both.
+
+.Procedure
+ifndef::self-managed[]
+. In the {openshift-platform} web console, click *User Management* -> *Groups*.
+endif::[]
+ifdef::self-managed[]
+. In the OpenShift Container Platform web console, click *User Management* -> *Groups*.
+endif::[]
+. Click the name of the group that you want to remove the user from.
+** For administrative users, click the name of your administrator group, for example, `rhods-admins`.
+** For normal users, click the name of your user group, for example, `rhods-users`.
+
++
+The *Group details* page for the group appears.
+
+. In the *Users* section on the *Details* tab, locate the user that you want to remove.
+. Click the action menu (*&#8942;*) beside the user that you want to remove and click *Remove user*.
+
+
+.Verification
+* Check the *Users* section on the *Details* tab and confirm that the user that you removed is not visible.
+* In the `rhods-notebooks` project, check under *Workload* -> *Pods* and ensure that there is no notebook server pod for this user. If you can see a pod named `jupyter-nb-<username>-*` for the user that you have removed, delete that pod to ensure that the deleted user is not consuming resources on the cluster.
+* In the {productname-short} dashboard, check the list of data science projects. Delete any projects that belong to the user.
+
+//[role="_additional-resources"]
+//.Additional resources
+//* TODO or delete

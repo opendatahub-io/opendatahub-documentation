@@ -1,0 +1,40 @@
+:_module-type: PROCEDURE
+
+[id='stopping-notebook-servers-owned-by-other-users_{context}']
+= Stopping notebook servers owned by other users
+
+[role='_abstract']
+Administrators can stop notebook servers that are owned by other users to reduce resource consumption on the cluster, or as part of removing a user and their resources from the cluster.
+
+.Prerequisites
+* If you are using specialized {productname-short} groups, you are part of the administrator group (for example, `rhods-admins`). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. See link:{rhodsdocshome}{default-format-url}/installing_{url-productname-short}/adding-administrative-users-for-{openshift-platform-url}_install[Adding administrative users for {openshift-platform}] for more information.
+ifdef::self-managed[]
+* You have launched the Jupyter application. See link:{rhodsdocshome}{default-format-url}/getting_started_with_red_hat_openshift_data_science_self-managed/creating-a-project-workbench_get-started#launching-jupyter-and-starting-a-notebook-server_get-started[Launching Jupyter and starting a notebook server].
+endif::[]
+ifndef::self-managed[]
+* You have launched the Jupyter application. See link:{rhodsdocshome}{default-format-url}/getting_started_with_red_hat_openshift_data_science/creating-a-project-workbench_get-started#launching-jupyter-and-starting-a-notebook-server_get-started[Launching Jupyter and starting a notebook server].
+endif::[]
+* The notebook server that you want to stop is running.
+
+.Procedure
+. On the page that opens when you launch Jupyter, click the *Administration* tab.
+. Stop one or more servers.
+** If you want to stop one or more specific servers, perform the following actions:
+... In the *Users* section, locate the user that the notebook server belongs to.
+... To stop the notebook server, perform one of the following actions:
+* Click the action menu (*&#8942;*) beside the relevant user and select *Stop server*.
+* Click *View server* beside the relevant user and and then click *Stop notebook server*.
++
+The *Stop server* dialog box appears.
+... Click *Stop server*.
+
+** If you want to stop all servers, perform the following actions:
+... Click the *Stop all servers* button.
+... Click *OK* to confirm stopping all servers.
+
+.Verification
+* The *Stop server* link beside each server changes to a *Start server* link when the notebook server has stopped.
+
+// [role="_additional-resources"]
+//.Additional resources
+//* TODO or delete

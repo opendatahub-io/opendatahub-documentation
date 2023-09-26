@@ -1,0 +1,36 @@
+:_module-type: PROCEDURE
+
+[id="stopping-idle-notebooks_{context}"]
+= Stopping idle notebooks
+
+[role='_abstract']
+You can reduce resource usage in your {productname-short} deployment by stopping notebook servers that have been idle (without logged in users) for a period of time. This is useful when resource demand in the cluster is high. By default, idle notebooks are not stopped after a specific time limit.
+[NOTE]
+====
+If you have configured your cluster settings to disconnect all users from a cluster after a specified time limit, then this setting takes precedence over the idle notebook time limit. Users are logged out of the cluster when their session duration reaches the cluster-wide time limit.
+====
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::self-managed[]
+* You are part of the {productname-short} administrator group in {openshift-platform}.
+endif::[]
+ifdef::self-managed[]
+* You are part of the {productname-short} administrator group in OpenShift Container Platform.
+endif::[]
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Cluster settings*.
+. Under *Stop idle notebooks*, select *Stop idle notebooks after*.
+. Enter a time limit, in *hours* and *minutes*, for when idle notebooks are stopped.
+. Click *Save changes*.
+
+.Verification
+* The `notebook-controller-culler-config` ConfigMap, located in the `redhat-ods-applications` project on the *Workloads* -> *ConfigMaps* page, contains the following culling configuration settings:
+** `ENABLE_CULLING`: Specifies if the culling feature is enabled or disabled (this is `false` by default).
+** `IDLENESS_CHECK_PERIOD`: The polling frequency to check for a notebook's last known activity (in minutes).
+** `CULL_IDLE_TIME`: The maximum allotted time to scale an inactive notebook to zero (in minutes).
+
+* Idle notebooks stop at the time limit that you set.
+//[role='_additional-resources']
+//.Additional resources

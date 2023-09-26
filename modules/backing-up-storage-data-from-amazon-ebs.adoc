@@ -1,0 +1,68 @@
+:_module-type: PROCEDURE
+
+[id='backing-up-storage-data-from-amazon-ebs_{context}']
+= Backing up storage data from Amazon EBS
+
+[role='_abstract']
+ifndef::upstream[]
+Red Hat recommends that you back up the data on your persistent volume claims (PVCs) regularly. 
+endif::[]
+ifdef::upstream[]
+It is good practice to back up the data on your persistent volume claims (PVCs) regularly. 
+endif::[]
+Backing up your data is particularly important before deleting a user and before uninstalling {productname-short}, as all PVCs are deleted when {productname-short} is uninstalled.
+
+.Prerequisites
+* You have credentials for OpenShift Cluster Manager (link:https://console.redhat.com/openshift/[https://console.redhat.com/openshift/]).
+* You have administrator access to the {openshift-platform} cluster.
+* You have credentials for the Amazon Web Services (AWS) account that the {openshift-platform} cluster is deployed under.
+
+.Procedure
+
+. Determine the IDs of the persistent volumes (PVs) that you want to back up.
+.. In the {openshift-platform} web console, change into the *Administrator* perspective.
+.. Click *Home* -> *Projects*.
+.. Click the *rhods-notebooks* project.
++
+The *Details* page for the project opens.
+.. Click the *PersistentVolumeClaims* in the *Inventory* section.
++
+The *PersistentVolumeClaims* page opens.
+.. Note the ID of the persistent volume (PV) that you want to back up.
++
+[NOTE]
+====
+The persistent volumes (PV) that you make a note of are required to identify the correct EBS volume to back up in your AWS instance.
+====
+
+. Locate the EBS volume containing the PVs that you want to back up.
++
+See link:https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-snapshot.html[Amazon Web Services documentation: Create Amazon EBS snapshots] for more information.
+
+.. Log in to AWS (link:https://aws.amazon.com[https://aws.amazon.com]) and ensure that you are viewing the region that your {openshift-platform} cluster is deployed in.
+.. Click *Services*.
+.. Click *Compute* -> *EC2*.
+.. Click *Elastic Block Storage* -> *Volumes* in the side navigation.
++
+The *Volumes* page opens.
+.. In the search bar, enter the ID of the persistent volume (PV) that you made a note of earlier.
++
+The *Volumes* page reloads to display the search results.
++
+.. Click on the volume shown and verify that any `kubernetes.io/created-for/pvc/namespace` tags contain the value `rhods-notebooks`, and any  `kubernetes.io/created-for/pvc/name` tags match the name of the persistent volume that the EC2 volume is being used for, for example, `jupyter-nb-user1-pvc`.
+. Back up the EBS volume that contains your persistent volume (PV).
+.. Right-click on the volume that you want to back up and select *Create Snapshot* from the list.
++
+The *Create Snapshot* page opens.
+.. Enter a *Description* for the volume.
+.. Click *Create Snapshot*.
++
+The snapshot of the volume is created.
+.. Click *Close*.
+
+.Verification
+* The snapshot that you created is visible on the *Snapshots* page in AWS.
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-snapshot.html[Amazon Web Services documentation: Create Amazon EBS snapshots]
