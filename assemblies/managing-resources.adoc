@@ -1,41 +1,40 @@
 :_module-type: ASSEMBLY
 
 ifdef::context[:parent-context: {context}]
-
 :context: managing-resources
 
 [id="managing-resources"]
 = Managing resources
+:upstream:
+//:preview:
+
+ifdef::preview[]
+include::../_artifacts/document-attributes-global.adoc[]
+endif::preview[]
 
 [role='_abstract']
-ifdef::upstream[]
-
-As an {productname-long} administrator, you can manage these resources:
+As an {productname-long} administrator, you can manage the following resources:
 
 * Cluster resources to support compute-intensive data science work.
-* Jupyter notebook administration.
+* Jupyter notebook servers.
 * Data storage backup.
-endif::[]
+
 ifndef::upstream[]
-As a {productname-long} administrator, you can manage these resources:
-
-* Cluster resources to support compute-intensive data science work.
-* Jupyter notebook administration.
-* Data storage backup.
-* Whether to allow Red Hat to collect data about {productname-short} usage in your cluster.
-
+You can also specify whether to allow Red Hat to collect data about {productname-short} usage in your cluster.
 endif::[]
 
-include::modules/allocating-additional-resources-to-openshift-data-science-users.adoc[leveloffset=+1]
+== Managing cluster resources
 
-include::modules/enabling-gpu-support-in-openshift-data-science.adoc[leveloffset=+1]
+include::modules/configuring-the-default-pvc-size-for-your-cluster.adoc[leveloffset=+2]
 
-include::modules/configuring-the-default-pvc-size-for-your-cluster.adoc[leveloffset=+1]
+include::modules/restoring-the-default-pvc-size-for-your-cluster.adoc[leveloffset=+2]
 
-include::modules/restoring-the-default-pvc-size-for-your-cluster.adoc[leveloffset=+1]
+include::modules/enabling-gpu-support-in-data-science.adoc[leveloffset=+2]
+
+include::modules/allocating-additional-resources-to-data-science-users.adoc[leveloffset=+2]
 
 
-== Managing notebook servers
+== Managing Jupyter notebook servers
 
 
 ifndef::self-managed[]
@@ -57,7 +56,6 @@ include::modules/stopping-idle-notebooks.adoc[leveloffset=+2]
 include::modules/configuring-a-custom-notebook.adoc[leveloffset=+2]
 
 
-[id="backing-up-storage-data_{context}"]
 == Backing up storage data
 
 ifndef::self-managed[]
@@ -71,30 +69,6 @@ endif::[]
 ifdef::self-managed[]
 include::modules/backing-up-storage-data.adoc[leveloffset=+2]
 endif::[]
-
-ifndef::upstream[]
-== Usage data collection
-
-As a {productname-long} administrator, you can choose whether to allow Red Hat to collect data about {productname-short} usage in your cluster. Collecting this data allows Red Hat to monitor and improve our software and support.
-For further details about the data that Red Hat collects, see link:{rhodsdocshome}{default-format-url}/managing_resources/usage-data-collection-notice-for-openshift-data-science[Usage data collection notice for {productname-short}].
-
-ifndef::self-managed[]
-Usage data collection is enabled by default when you install {productname-short} on your {openshift-platform} cluster.
-endif::[]
-ifdef::self-managed[]
-Usage data collection is enabled by default when you install {productname-short} on your OpenShift Container Platform cluster except when clusters are installed in a disconnected environment.
-endif::[]
-
-See link:{rhodsdocshome}{default-format-url}/managing_resources/disabling-usage-data-collection_data-collection[Disabling usage data collection] for instructions on disabling the collection of this data in your cluster. If you have disabled data collection on your cluster, and you want to enable it again, see link:{rhodsdocshome}{default-format-url}/managing_resources/enabling-usage-data-collection_data-collection[Enabling usage data collection] for more information.
-
-include::modules/usage-data-collection-notice-for-openshift-data-science.adoc[leveloffset=+2]
-
-include::modules/enabling-usage-data-collection.adoc[leveloffset=+2]
-
-include::modules/disabling-usage-data-collection.adoc[leveloffset=+2]
-
-endif::[]
-
 
 
 ifdef::parent-context[:context: {parent-context}]
