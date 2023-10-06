@@ -1,0 +1,70 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+:context: managing-resources
+
+[id="managing-resources"]
+= Managing resources
+:upstream:
+//:preview:
+
+ifdef::preview[]
+include::../_artifacts/document-attributes-global.adoc[]
+endif::preview[]
+
+[role='_abstract']
+As an {productname-short} administrator, you can manage the following resources:
+
+* Cluster resources to support compute-intensive data science work.
+* Jupyter notebook servers.
+* Data storage backup.
+
+ifndef::upstream[]
+You can also specify whether to allow Red Hat to collect data about {productname-short} usage in your cluster.
+endif::[]
+
+== Managing cluster resources
+
+include::modules/configuring-the-default-pvc-size-for-your-cluster.adoc[leveloffset=+2]
+
+include::modules/restoring-the-default-pvc-size-for-your-cluster.adoc[leveloffset=+2]
+
+include::modules/enabling-gpu-support-in-data-science.adoc[leveloffset=+2]
+
+include::modules/allocating-additional-resources-to-data-science-users.adoc[leveloffset=+2]
+
+
+== Managing Jupyter notebook servers
+
+include::modules/accessing-the-jupyter-administration-interface.adoc[leveloffset=+2]
+
+include::modules/starting-notebook-servers-owned-by-other-users.adoc[leveloffset=+2]
+
+include::modules/accessing-notebook-servers-owned-by-other-users.adoc[leveloffset=+2]
+
+include::modules/stopping-notebook-servers-owned-by-other-users.adoc[leveloffset=+2]
+
+include::modules/stopping-idle-notebooks.adoc[leveloffset=+2]
+
+include::modules/configuring-a-custom-notebook.adoc[leveloffset=+2]
+
+== Backing up storage data
+
+ifndef::upstream[]
+
+ifndef::self-managed[]
+
+include::modules/backing-up-storage-data-from-amazon-ebs.adoc[leveloffset=+2]
+
+include::modules/backing-up-storage-data-from-google-persistent-disk.adoc[leveloffset=+2]
+endif::[]
+
+ifdef::self-managed[]
+include::modules/backing-up-storage-data.adoc[leveloffset=+2]
+endif::[]
+
+endif::[]
+
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

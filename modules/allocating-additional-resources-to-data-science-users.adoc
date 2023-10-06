@@ -1,0 +1,38 @@
+:_module-type: PROCEDURE
+
+[id='allocating-additional-resources-to-data-science-users_{context}']
+= Allocating additional resources to {productname-short} users
+
+[role='_abstract']
+As a cluster administrator, you can allocate additional resources to a cluster to support compute-intensive data science work. This support includes increasing the number of nodes in the cluster and changing the cluster's allocated machine pool.
+
+ifdef::upstream[]
+For more information about allocating additional resources to an {openshift-platform} cluster, see link:https://docs.openshift.com/container-platform/4.13/machine_management/manually-scaling-machineset.html[Manually scaling a compute machine set].
+endif::[]
+
+ifndef::upstream[]
+ifdef::self-managed[]
+For more information about allocating additional resources to an {openshift-platform} cluster, see link:https://docs.openshift.com/container-platform/4.13/machine_management/manually-scaling-machineset.html[Manually scaling a compute machine set].
+endif::[]
+
+ifndef::self-managed[]
+.Prerequisites
+* You have credentials for administering clusters in OpenShift Cluster Manager (link:https://console.redhat.com/openshift/[https://console.redhat.com/openshift/]). For more information about configuring administrative access in OpenShift Cluster Manager, see link:https://access.redhat.com/documentation/en-us/openshift_cluster_manager/2023/html-single/managing_clusters/index#assembly-user-management-ocm[Configuring access to clusters in OpenShift Cluster Manager].
+* If you want to increase the size of a machine pool by using NVIDIA GPUs, your {openshift-platform} cluster supports them.
+* You have an AWS or GCP instance with the capacity to create larger container sizes. For compute-intensive operations, your AWS or GCP instance has enough capacity to accommodate the largest container size, `XL`.
+
+.Procedure
+. Log in to OpenShift Cluster Manager (link:https://console.redhat.com/openshift/[https://console.redhat.com/openshift/]).
+. Click *Clusters*.
++
+The *Clusters* page opens.
+. Click the name of the cluster you want to allocate additional resources to.
+. Click *Actions* -> *Edit node count*.
+. Select a *Machine pool* from the list.
+. Select the number of nodes assigned to the machine pool from the *Node count* list.
+. Click *Apply*.
+
+.Verification
+* The additional resources that you allocated to the cluster are displayed on the *Machine Pools* tab.
+endif::[]
+endif::[]

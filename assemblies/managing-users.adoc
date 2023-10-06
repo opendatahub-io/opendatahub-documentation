@@ -1,0 +1,50 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: managing-users
+
+[id="managing-users"]
+= Managing users
+:upstream:
+//:preview:
+
+ifdef::preview[]
+include::../_artifacts/document-attributes-global.adoc[]
+endif::preview[]
+
+include::modules/overview-of-user-types-and-permissions.adoc[leveloffset=+1]
+
+include::modules/defining-data-science-admin-and-user-groups.adoc[leveloffset=+1]
+
+include::modules/adding-users-to-specialized-data-science-user-groups.adoc[leveloffset=+1]
+
+include::modules/viewing-data-science-users.adoc[leveloffset=+1]
+
+
+include::modules/about-deleting-users-and-resources.adoc[leveloffset=+1]
+
+ifdef::upstream[]
+include::modules/backing-up-storage-data.adoc[leveloffset=+2]
+endif::[]
+
+ifndef::upstream[]
+ifndef::self-managed[]
+include::modules/backing-up-storage-data-from-amazon-ebs.adoc[leveloffset=+2]
+
+include::modules/backing-up-storage-data-from-google-persistent-disk.adoc[leveloffset=+2]
+
+ifdef::self-managed[]
+include::modules/backing-up-storage-data.adoc[leveloffset=+2]
+endif::[]
+endif::[]
+
+include::modules/stopping-notebook-servers-owned-by-other-users.adoc[leveloffset=+2]
+endif::[]
+
+include::modules/revoking-user-access-to-jupyter.adoc[leveloffset=+2]
+
+include::modules/cleaning-up-after-deleting-users.adoc[leveloffset=+2]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

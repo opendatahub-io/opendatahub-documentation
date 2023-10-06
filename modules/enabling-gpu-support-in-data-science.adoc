@@ -1,0 +1,28 @@
+:_module-type: PROCEDURE
+
+[id='enabling-gpu-support_{context}']
+= Enabling GPU support {productname-short}
+
+[role='_abstract']
+Optionally, to ensure that your data scientists can use compute-heavy workloads in their models, you can enable graphics processing units (GPUs) in {productname-short}. To enable GPUs on OpenShift, you must install the NVIDIA GPU Operator. As a prerequisite to installing the NVIDIA GPU Operator, you must install the link:https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/specialized_hardware_and_driver_enablement/node-feature-discovery-operator[Node Feature Discovery Operator]. For information about how to install these operators, see link:https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/openshift/contents.html[GPU Operator on OpenShift].
+
+ifndef::self-managed[]
+[IMPORTANT]
+====
+The NVIDIA GPU Add-on is no longer supported. Instead, enable GPUs by installing the NVIDIA GPU Operator. If your deployment has a previously-installed NVIDIA GPU Add-on, before you install the NVIDIA GPU Operator, use OpenShift Cluster Manager to uninstall the NVIDIA GPU Add-on from your cluster.
+====
+endif::[]
+
+ifdef::self-managed[]
+ifndef::disconnected[]
+[IMPORTANT]
+====
+Follow the instructions in this chapter only if you want to enable GPU support in an unrestricted self-managed environment. To enable GPU support in a disconnected self-managed environment, see link:{rhodsdocshome}{default-format-url}/installing_{url-productname-short}_in_a_disconnected_environment/enabling-gpu-support-in-data-science_install[Enabling GPU support in {productname-short}] instead.
+====
+endif::[]
+
+ifdef::disconnected[]
+Follow the instructions in this chapter only if you want to enable GPU support in a disconnected self-managed environment. For more information on GPU enablement on a OpenShift cluster in a disconnected or airgapped environment, see link:https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/openshift/mirror-gpu-ocp-disconnected.html[Deploy GPU Operators in a disconnected or airgapped environment].
+endif::[]
+endif::[]
+
