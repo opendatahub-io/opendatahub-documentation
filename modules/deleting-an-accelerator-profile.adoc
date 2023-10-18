@@ -1,0 +1,34 @@
+:_module-type: PROCEDURE
+
+[id="deleting-an-accelerator-profile_{context}"]
+= Deleting an accelerator profile
+
+[role='_abstract']
+To discard accelerator profiles that you no longer require, you can delete them so that they do not appear on the dashboard.
+
+.Prerequisites
+* You have logged in to {openshift-platform}.
+* You have the `cluster-admin` role in {openshift-platform}.
+* The `acceleratorprofiles.dashboard.opendatahub.io` custom resource definition (CRD) exists in your deployment and contains an accelerator profile.
+
+.Procedure
+. In the {openshift-platform} web console, in the *Administrator* perspective, click *Administration* -> *CustomResourceDefinitions*.
+. Click the `acceleratorprofiles.dashboard.opendatahub.io` custom resource definition (CRD).
++
+A details page for the custom resource definition (CRD) opens.
+. Click the *Instances* tab.
+. Click the action menu (*&#8942;*) beside the accelerator profile that you want to delete and click *Delete*.
++
+The *Delete accelerator profile* dialog opens.
+. Enter the name of the accelerator profile in the text field to confirm that you intend to delete it.
+. Click *Delete accelerator profile*.
+
+.Verification
+* The accelerator profile no longer displays in the *Accelerator* list on the *Start a notebook server* page.   
+* The accelerator profile no longer displays on the *Instances* tab on the details page for the `acceleratorprofiles.dashboard.opendatahub.io` custom resource definition (CRD).
+
+[role='_additional-resources']
+.Additional resources
+* link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#toleration-v1-core[Toleration v1 core]
+* link:https://docs.openshift.com/container-platform/4.13/nodes/scheduling/nodes-scheduler-taints-tolerations.html[Understanding taints and tolerations]
+* link:https://docs.openshift.com/container-platform/4.13/operators/understanding/crds/crd-managing-resources-from-crds.html[Managing resources from custom resource definitions]

@@ -1,0 +1,28 @@
+:_module-type: CONCEPT
+
+[id='overview-of-accelerators_{context}']
+= Overview of accelerators
+
+[role='_abstract']
+If you work with large data sets, you can use accelerators to optimize the performance of your data science models in {productname-short}. Accelerators enable you to scale your work, reduce latency, and increase productivity. You can use accelerators in {productname-short} to assist your data scientists in the following tasks:
+
+* Natural language processing (NLP)
+* Inference
+* Training deep neural networks
+* Data cleansing and data processing
+
+{productname-short} supports the following accelerators: 
+
+* NVIDIA graphics processing units (GPUs)
+** To use compute-heavy workloads in your models, you can enable NVIDIA graphics processing units (GPUs) in {productname-short}. 
+**   To enable GPUs on OpenShift, you must install the NVIDIA GPU Operator.
+* Habana Gaudi devices (HPUs)
+** Habana, an Intel company, provides hardware accelerators intended for deep learning workloads. {productname-short} currently supports Habana 1.10.0 and Habana 1.11.0. 
+** You can enable Habana Gaudi devices on-premises or with AWS DL1 compute nodes on an AWS instance.
+
+Before you can use an accelerator in {productname-short}, your OpenShift instance must contain an associated accelerator profile . For accelerators that are new to your deployment, you must manually configure an accelerator profile for the accelerator in context. If you use NVIDIA GPUs, an accelerator profile is automatically created after you upgrade to the latest version of {productname-short}.
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://habana.ai/[Habana, an Intel Company]
+* link:https://aws.amazon.com/ec2/instance-types/dl1/[Amazon EC2 DL1 Instances]  

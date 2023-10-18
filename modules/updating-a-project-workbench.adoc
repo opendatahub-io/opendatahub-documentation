@@ -4,17 +4,17 @@
 = Updating a project workbench
 
 [role='_abstract']
-If your data science work requires you to change your workbench's notebook image, container size, or identifying information, you can modify the properties of your project's workbench.
+If your data science work requires you to change your workbench's notebook image, container size, or identifying information, you can update the properties of your project's workbench. If you require extra power for use with large datasets, you can assign accelerators to your workbench to optimize performance. 
 
 .Prerequisites
 * You have logged in to {productname-long}.
 ifndef::upstream[]
-* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admins`) in OpenShift.
+* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admins`) in OpenShift.
 endif::[]
 ifdef::upstream[]
-* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
 endif::[]
-* You have created a data science project that contains a workbench.
+* You have created a data science project that has a workbench.
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Projects*.
@@ -27,10 +27,15 @@ The *Details* page for the project opens.
 +
 The *Edit workbench* page opens.
 . Update the workbench's properties.
-.. Update the *name* for your workbench, if applicable.
-.. Update *description* for your workbench, if applicable.
-.. Select a new *notebook image* to use for your workbench server, if applicable.
-.. Select a new *container size* for your server, if applicable.
+.. In the *Name* field, update the *name* for your workbench, if applicable.
+.. In the *Description* field, update the description for your workbench, if applicable.
+.. In the *Notebook image* section, update the relevant fields to specify the most suitable notebook image to use with your workbench. 
+... From the *Image selection* list, select a new notebook image from the list, if applicable.
+.. In the *Deployment size* section, update the relevant fields to specify the size of your deployment instance.
+... From the *Container size* list, select a suitable new container size for your server, if applicable.
+... Optional: From the *Accelerator* field, select a new accelerator from the list, if applicable. 
+... Optional: If you selected an accelerator in the preceding step, from the *Number of accelerators* list, select a new number of accelerators to use, if applicable. 
+.. Optional: Select and specify values for any new *environment variables*, if applicable.
 . Click *Update workbench*.
 
 .Verification

@@ -1,0 +1,33 @@
+:_module-type: PROCEDURE
+
+[id="updating-an-accelerator-profile_{context}"]
+= Updating an accelerator profile
+
+[role='_abstract']
+You can update the existing accelerator profiles in your deployment. You might want to change important identifying information, such as the display name, the identifier, or the description. 
+
+.Prerequisites
+* You have logged in to {openshift-platform}.
+* You have the `cluster-admin` role in {openshift-platform}.
+* The `acceleratorprofiles.dashboard.opendatahub.io` custom resource definition (CRD) exists in your deployment and contains an accelerator profile.
+
+.Procedure
+. In the {openshift-platform} web console, in the *Administrator* perspective, click *Administration* -> *CustomResourceDefinitions*.
+. Click the `acceleratorprofiles.dashboard.opendatahub.io` custom resource definition (CRD).
++
+A details page for the custom resource definition (CRD) opens.
+. Click the *Instances* tab.
+. Click the accelerator profile that you want to update. 
++ 
+A details page for the accelerator profile opens. 
+. Update the YAML code in the embedded editor.
+. Click *Save*.
+
+.Verification
+* If your accelerator profile has new identifying information, this information appears in the *Accelerator* list on the *Start a notebook server* page. 
+
+[role='_additional-resources']
+.Additional resources
+* link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#toleration-v1-core[Toleration v1 core]
+* link:https://docs.openshift.com/container-platform/4.13/nodes/scheduling/nodes-scheduler-taints-tolerations.html[Understanding taints and tolerations]
+* link:https://docs.openshift.com/container-platform/4.13/operators/understanding/crds/crd-managing-resources-from-crds.html[Managing resources from custom resource definitions]

@@ -1,0 +1,38 @@
+:_module-type: PROCEDURE
+
+[id="configuring-a-recommended-accelerator-tag_{context}"]
+= Configuring a recommended accelerator tag
+
+[role='_abstract']
+To help you indicate the most suitable and appropriate accelerators to your data scientists, you can configure a recommended tag to appear on the dashboard. You must apply the annotation `opendatahub.io/recommended-accelerators` to an ImageStream. 
+
+.Prerequisites
+* You have logged in to {openshift-platform}.
+* You have the `cluster-admin` role in {openshift-platform}.
+* You have configured an ImageStream that contains your notebook image settings.  
+
+.Procedure
+. In the {openshift-platform} web console, in the *Administrator* perspective, click *Builds* -> *ImageStreams*.
+. Click the ImageStream that you want to a recommended accelerator tag to. 
++
+A details page opens.
+. Click the *YAML* tab.
++ 
+A page with an embedded YAML editor opens.
+. In the editor, enter or paste the YAML code directly to apply the annotation `opendatahub.io/recommended-accelerators`. The excerpt in this example shows the annotation to set a recommended tag for an NVIDIA GPU accelerator:
++
+[source,yaml]
+---
+metadata:
+	annotations:
+		opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
+---
+. Click *Save*.
+
+.Verification
+* When your data scientists select an accelerator with a specific notebook image, a recommended tag displays next to the corresponding accelerator. 
+* A recommended tag displays next to an notebook image when the accelerator your data scientists select matches the annotation in the ImageStream. 
+
+
+//[role='_additional-resources']
+//.Additional resources

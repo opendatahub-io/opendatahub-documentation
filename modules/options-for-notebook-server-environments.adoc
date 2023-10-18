@@ -6,7 +6,7 @@
 [role='_abstract']
 When you start Jupyter for the first time, or after stopping your notebook server, you must select server options in the *Start a notebook server* wizard so that the software and variables that you expect are available on your server. This section explains the options available in the *Start a notebook server* wizard in detail.
 
-The *Start a notebook server* page is divided into several sections:
+The *Start a notebook server* page comprises of the following sections:
 
 Notebook image:: Specifies the container image that your notebook server is based on. Different notebook images have different packages installed by default. If the notebook image contains multiple versions, you can select the notebook image version to use from the *Versions* section.
 +
@@ -32,32 +32,32 @@ The following table shows the package versions used in the available notebook im
 | Image name | Image version | Preinstalled packages
 
 .2+| CUDA
-| 2 (Recommended)
+| 2023.1 (Recommended)
 a| * Python 3.9
 * CUDA 11.8
 * JupyterLab 3.5
 * Notebook 6.5
 
-| 1
+| 1.2
 a| * Python 3.8
 * CUDA 11.4
 * JupyterLab 3.2
 * Notebook 6.4
 
 .2+| Minimal Python (default)
-| 2 (Recommended)
+| 2023.1 (Recommended)
 a| * Python 3.9
 * JupyterLab 3.5
 * Notebook 6.5
 
-| 1
+| 1.2
 a| * Python 3.8
 * JupyterLab 3.2
 * Notebook 6.4
 
 
 .2+| PyTorch
-| 2 (Recommended)
+| 2023.1 (Recommended)
 a| * Python 3.9
 * JupyterLab 3.5
 * Notebook 6.5
@@ -72,7 +72,7 @@ a| * Python 3.9
 * Scikit-learn 1.2
 * SciPy 1.10
 
-| 1
+| 1.2
 a| * Python 3.8
 * JupyterLab 3.2
 * Notebook 6.4
@@ -88,7 +88,7 @@ a| * Python 3.8
 * SciPy 1.6
 
 .2+| Standard Data Science
-| 2 (Recommended)
+| 2023.1 (Recommended)
 a| * Python 3.9
 * JupyterLab 3.5
 * Notebook 6.5
@@ -100,7 +100,7 @@ a| * Python 3.9
 * Scikit-learn 1.2
 * SciPy 1.10
 
-| 1
+| 1.2
 a| * Python 3.8
 * JupyterLab 3.2
 * Notebook 6.4
@@ -113,7 +113,7 @@ a| * Python 3.8
 * SciPy 1.6
 
 .2+| TensorFlow
-| 2 (Recommended)
+| 2023.1 (Recommended)
 a| * Python 3.9
 * JupyterLab 3.5
 * Notebook 6.5
@@ -128,7 +128,7 @@ a| * Python 3.9
 * Scikit-learn 1.2
 * SciPy 1.10
 
-| 1
+| 1.2
 a| * Python 3.8
 * JupyterLab 3.2
 * Notebook 6.4
@@ -144,7 +144,7 @@ a| * Python 3.8
 * SciPy 1.6
 
 | TrustyAI
-| 1
+| 
 a| * Python 3.9
 * JupyterLab 3.5
 * Notebook 6.5
@@ -157,13 +157,46 @@ a| * Python 3.9
 * Scikit-learn 1.2
 * SciPy 1.10
 
+.2+| HabanaAI
+| 2023.2 (Recommended)
+a| * Python 3.9
+* Habana 1.11
+* TensorFlow 2.12
+* Boto3 1.26
+* Kafka-Python 2.0
+* Matplotlib 3.6
+* Numpy 1.23
+* Pandas 1.5
+* Scikit-learn 1.2
+* SciPy 1.10
+* Kfp-tekton 1.5
+* PyTorch 2.0
+* Elyra 3.15
+
+| 2023.1
+a| * Python 3.8
+* Habana 1.10
+* TensorFlow 2.12
+* Boto3 1.17
+* Kafka-Python 2.0
+* Matplotlib 3.6
+* Numpy 1.23
+* Pandas 1.5
+* Scikit-learn 1.2
+* SciPy 1.10
+* Kfp-tekton 1.5
+* PyTorch 2.0
+* Elyra 3.15
+
 |===
 
 Deployment size:: Specifies the compute resources available on your notebook server.
 +
 *Container size* controls the number of CPUs, the amount of memory, and the minimum and maximum request capacity of the container.
 +
-*Number of GPUs* specifies the number of graphics processing units attached to the container.
+*Accelerators* Specifies the accelerators available on your notebook server.
++
+*Number of accelerators* specifies the number of accelerators to use. 
 +
 [IMPORTANT]
 --
