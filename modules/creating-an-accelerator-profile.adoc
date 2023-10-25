@@ -9,24 +9,45 @@ To configure accelerators for your data scientists to use in {productname-short}
 .Prerequisites
 * You have logged in to {openshift-platform}.
 * You have the `cluster-admin` role in {openshift-platform}.
-* The `acceleratorprofiles.dashboard.opendatahub.io` custom resource definition (CRD) exists in your deployment.
+* The `AcceleratorProfile` custom resource definition (CRD) exists in your deployment.
 * You are aware of the correct namespace to create the accelerator profile in. 
 
 .Procedure
 . In the {openshift-platform} web console, in the *Administrator* perspective, click *Administration* -> *CustomResourceDefinitions*.
-. Click the `acceleratorprofiles.dashboard.opendatahub.io` custom resource definition (CRD).
+. In the search bar, enter `acceleratorprofile` to search by name.
++
+The *CustomResourceDefinitions* page reloads to display the search results.
++
+. Click the `AcceleratorProfile` custom resource definition (CRD).
 +
 A details page for the custom resource definition (CRD) opens.
 . Click the *Instances* tab.
 . Click *Create AcceleratorProfile*. 
 + 
-The *Create AcceleratorProfile* page opens and displays an embedded YAML editor.
-. Enter or paste the YAML code directly in the embedded editor.
+The *Create AcceleratorProfile* page opens with an embedded YAML editor. 
+. Enter or paste your accelerator profile YAML code directly in the embedded editor. This example shows the code for a Habana Gaudi 1 accelerator profile:
++
+[source,yaml]
+---
+apiVersion: dashboard.opendatahub.io/v1alpha
+kind: AcceleratorProfile
+metadata:
+  name: hpu-profile-first-gen-gaudi
+spec:
+  displayName: Habana HPU - 1st Gen Gaudi
+  description: First Generation Habana Gaudi device
+  enabled: true
+  identifier: habana.ai/gaudi
+  tolerations:
+    - effect: NoSchedule
+      key: habana.ai/gaudi
+      operator: Exists
+---
 . Click *Create*.
 
 .Verification
-* The *Accelerator* list displays on the *Start a notebook server* page. After you select an accelerator, the *Number of accelerators* field appears allowing you to choose the number of accelerators for your notebook server.  
-* The accelerator profile appears on the *Instances* tab on the details page for the `acceleratorprofiles.dashboard.opendatahub.io` custom resource definition (CRD).
+* The *Accelerator* list appears on the *Start a notebook server* page. After you select an accelerator, the *Number of accelerators* field appears, which you can use to choose the number of accelerators for your notebook server.
+* The accelerator profile appears on the *Instances* tab on the details page for the `AcceleratorProfile` custom resource definition (CRD).
 
 [role='_additional-resources']
 .Additional resources

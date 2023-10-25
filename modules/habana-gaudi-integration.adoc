@@ -4,15 +4,35 @@
 = Habana Gaudi integration
 
 [role='_abstract']
-//UNDER CONSTRUCTION - DO NOT PUBLISH THIS 
-//OpenShift provides access to certain hardware resources such as Habana AI accelerators, NICs, and other devices through the device plugin framework. Configuring and managing OpenShift nodes with these hardware resources require configuring multiple software components and libraries.
+To accelerate your high-performance deep learning (DL) models, you can integrate Habana Gaudi devices in {productname-short}. {productname-short} also includes the HabanaAI notebook image. This notebook image is pre-built and ready for your data scientists to use after you install or upgrade {productname-short}. 
 
-//Since this is time consuming and error prone, the HabanaAI Operator is used with the Kernel Module Management Operator. This automates the management of all HabanaAI software components needed to provision AI accelerators within OpenShift cluster, from the drivers to the respective monitoring metrics.
+Before you can successfully enable Habana Gaudi devices in {productname-short}, you must install the necessary dependencies and install the HabanaAI Operator. This allows your data scientists to use Habana libraries and software associated with Habana Gaudi devices from their notebooks. For more information about how to enable your OpenShift environment for Habana Gaudi devices, see link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/[HabanaAI Operator for OpenShift].
 
-//How a data scientist can select Habana’s notebook image from the Jupyter notebook spawner. This allows the data scientist to use the libraries and software provided by Habana to efficiently use Gaudi devices from their notebooks. 
+[IMPORTANT]
+====
+Currently, Habana Gaudi integration is only supported in OpenShift 4.11 and 4.12. 
 
-//This option will be available in multiple places in the UI, such as when creating a workbench, serving a model, serving a notebook. The HPUs are allocated to a single node to obtain optimal performance.  he recommended accelerator profile is the default option within the accelerator profile dropdown. The data scientist can select 0 HPUs. They don’t have to use accelerators. 
+{productname-short} supports version 1.10 and 1.11 of the Habana Gaudi Operator. For information about the supported configurations for versions 1.10 and 1.11 of the Habana Gaudi Operator, see link:https://docs.habana.ai/en/latest/Support_Matrix/Support_Matrix_v1.10.0.html#support-matrix-1-10-0[Support Matrix v1.10.0] and https://docs.habana.ai/en/latest/Support_Matrix/Support_Matrix_v1.11.0.html#support-matrix-1-11-0[Support Matrix v1.11.0].
 
-//[role="_additional-resources"]
-//.Additional resources
-//* link:https://docs.openshift.com/container-platform/4.13/storage/understanding-persistent-storage.html[Understanding persistent storage]
+In addition, the version of the HabanaAI Operator that you install must match the version of the HabanaAI notebook image in your deployment.
+====
+
+You can use Habana Gaudi devices in an Amazon EC2 DL1 instance on OpenShift. Therefore, your OpenShift platform must support EC2 DL1 instances. Habana Gaudi accelerators are available to your data scientists when they create a workbench, serve a model, and create a notebook. 
+
+To identify the Habana Gaudi devices present in your deplotment, use the `lspci` utility. For more information, see link:https://linux.die.net/man/8/lspci[lspci(8) - Linux man page].
+
+[IMPORTANT]
+====
+If the `lspci` utility indicates that Habana Gaudi devices are present in your deployment, it does not necessarily mean that the devices are ready to use. 
+
+Before you can use your Habana Gaudi devices, you must enable them in your OpenShift environment and configure an accelerator profile for each device. For more information about how to enable your OpenShift environment for Habana Gaudi devices, see link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/[HabanaAI Operator for OpenShift].   
+====
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/[HabanaAI Operator for OpenShift]
+* link:https://linux.die.net/man/8/lspci[lspci(8) - Linux man page] 
+* link:https://aws.amazon.com/ec2/instance-types/dl1/[Amazon EC2 DL1 Instances]
+* link:https://docs.habana.ai/en/latest/Support_Matrix/Support_Matrix_v1.10.0.html#support-matrix-1-10-0[Support Matrix v1.10.0]
+* link:https://docs.habana.ai/en/latest/Support_Matrix/Support_Matrix_v1.11.0.html#support-matrix-1-11-0[Support Matrix v1.11.0]
+* link:https://access.redhat.com/solutions/4870701[What version of the Kubernetes API is included with each OpenShift 4.x release?]

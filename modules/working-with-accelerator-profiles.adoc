@@ -6,9 +6,11 @@
 [role='_abstract']
 To configure accelerators for your data scientists to use in {productname-short}, you must create an associated accelerator profile. An accelerator profile is a custom resource definition (CRD) on OpenShift that has an AcceleratorProfile resource, and defines the specification of the accelerator.  
 
-For accelerators that are new to your deployment, you must manually configure an accelerator profile for the accelerator. If you use NVIDIA GPUs, an accelerator profile generates automatically after you upgrade to the latest version of {productname-short}, and resides in the `Instances` section of the `acceleratorprofiles.dashboard.opendatahub.io` custom resource definition (CRD). 
+For accelerators that are new to your deployment, you must manually configure an accelerator profile for the accelerator. If your deployment contained NVIDIA GPUs before upgrading {productname-short}, an accelerator profile generates automatically after you upgrade to the latest version of {productname-short}, and resides in the `Instances` section of the `AcceleratorProfile` custom resource definition (CRD).
 
-To indicate suitable accelerators to your data scientists, you can assign specific accelerator profiles to your custom notebook images. This also enables you to manage the accelerators that appear to your data scientist.
+If you add NVIDIA GPUs to your deployment after upgrading {productname-short}, or you add them to your deployment after you install a new version of the {productname-short} Operator, you must manually create an accelerator profile for your NVIDIA GPUs.
+
+You can manage the accelerators that appear to your data scientists by assigning specific accelerator profiles to your custom notebook images.
 
 For more information about accelerator profile attributes, see the following table: 
 

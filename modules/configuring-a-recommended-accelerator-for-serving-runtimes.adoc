@@ -1,0 +1,41 @@
+:_module-type: PROCEDURE
+
+[id="configuring-a-recommended-accelerator-for-serving-runtimes_{context}"]
+= Configuring a recommended accelerator for serving runtimes
+
+[role='_abstract']
+To help you indicate the most suitable accelerators to your data scientists, you can configure a recommended accelerator tag for your serving runtimes. 
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you use specialized {productname-short} groups, you are part of the admin group (for example, `rhods-admin` ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you use specialized {productname-short} groups, you are part of the admin group (for example, `odh-admins`) in OpenShift.
+endif::[]
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* > *Serving runtimes*.
++
+The *Serving runtimes* page opens and shows the model-serving runtimes that are already installed and enabled in your {productname-short} deployment. By default, the OpenVINO Model Server runtime is pre-installed and enabled in {productname-short}.
+. Edit your custom runtime that you want to add the recommended accelerator tag to, click the action menu (&#8942;) and select *Edit*.
++ 
+A page with an embedded YAML editor opens.
++
+NOTE: You cannot directly edit the OpenVINO Model Server runtime that is included in {productname-short} by default. However, you can _clone_ this runtime and edit the cloned version. You can then add the edited clone as a new, custom runtime. To do this, click the action menu beside the OpenVINO Model Server and select *Duplicate*.
+
+. In the editor, enter the YAML code to apply the annotation `opendatahub.io/recommended-accelerators`. The excerpt in this example shows the annotation to set a recommended tag for an NVIDIA GPU accelerator:
++
+[source,yaml]
+metadata:
+	annotations:
+		opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
+. Click *Update*.
+
+.Verification
+* When your data scientists select an accelerator with a specific serving runtime, a tag appears next to the corresponding accelerator indicating its compatibility. 
+
+
+//[role='_additional-resources']
+//.Additional resources

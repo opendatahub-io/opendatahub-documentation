@@ -11,18 +11,21 @@ Before you can use Habana Gaudi devices in {productname-short}, you install the 
 * You have the `cluster-admin` role in {openshift-platform}.
 
 .Procedure
-. Configure an Amazon EC2 DL1 instance link:https://docs.habana.ai/en/latest/AWS_EC2_DL1_and_PyTorch_Quick_Start/AWS_EC2_DL1_and_PyTorch_Quick_Start.html[AWS DL1 Quick Start Guide].
 . To enable Habana Gaudi devices in {productname-short}, follow the instructions at link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/index.html[HabanaAI Operator for OpenShift].
 . Create an accelerator profile for your Habana Gaudi device. 
 .. In the {openshift-platform} web console in the *Administrator* perspective, click *Administration* -> *CustomResourceDefinitions*.
-.. Click the `acceleratorprofiles.dashboard.opendatahub.io` custom resource definition (CRD).
+.. In the search bar, enter `acceleratorprofile` to search by name.
++
+The *CustomResourceDefinitions* page reloads to display the search results.
++
+.. Click the `AcceleratorProfile` custom resource definition (CRD).
 +
 A details page for the custom resource definition (CRD) opens.
 .. Click the *Instances* tab.
 .. Click *Create AcceleratorProfile*. 
 + 
-The *Create AcceleratorProfile* page opens and displays an embedded YAML editor.
-.. Enter or paste the YAML code directly in the embedded editor. For example:
+The *Create AcceleratorProfile* page opens with an embedded YAML editor.
+.. Enter or paste your accelerator profile YAML code directly in the embedded editor. This example shows the code for a Habana Gaudi 1 accelerator profile:
 +
 [source,yaml]
 ---
@@ -43,14 +46,13 @@ spec:
 .. Click *Create*.
 
 .Verification
-* From the *Administrator* perspective, the following Operators display on the *Operators* -> *Installed Operators* page.
+* From the *Administrator* perspective, the following Operators appear on the *Operators* -> *Installed Operators* page.
 ** HabanaAI
 ** Node Feature Discovery (NFD)
 ** Kernel Module Management (KMM)
 * The *Accelerator* list displays the Habana Gaudi accelerator on the *Start a notebook server* page.  
-* The accelerator profile appears on the *Instances* tab on the details page for the `acceleratorprofiles.dashboard.opendatahub.io` custom resource definition (CRD).
+* The accelerator profile appears on the *Instances* tab on the details page for the `AcceleratorProfile` custom resource definition (CRD).
 
 [role='_additional-resources']
 .Additional resources
 * link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/index.html[HabanaAI Operator for OpenShift]. 
-* link:https://docs.habana.ai/en/latest/AWS_EC2_DL1_and_PyTorch_Quick_Start/AWS_EC2_DL1_and_PyTorch_Quick_Start.html[AWS DL1 Quick Start Guide].
