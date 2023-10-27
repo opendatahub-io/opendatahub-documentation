@@ -38,15 +38,15 @@ endif::[]
 oc login
 ----
 
-. Set the `TRUSTY_ROUTE`` variable to the external route for the TrustyAI service pod.
+. Set the `TRUSTY_ROUTE` variable to the external route for the TrustyAI service pod.
 +
 ----
 TRUSTY_ROUTE=http://$(oc get route/trustyai-service --template={{.spec.host}})
 ----
 
-. Configure bias metrics by running a command that uses the following syntax:
+. Configure bias metrics by running a command that uses the following syntax and payload structure:
 +
-Syntax:
+*Syntax*:
 +
 ----
 curl -sk  -X POST --location $TRUSTY_ROUTE/metrics/spd/request \ 
@@ -54,7 +54,7 @@ curl -sk  -X POST --location $TRUSTY_ROUTE/metrics/spd/request \
  --data <payload>
 ----
 +
-Use the following payload structure:
+*Payload structure*:
 
 `modelId`:: The name of the model to query.
 `protectedAttribute`:: The name of the feature that distinguishes the groups that we are checking for fairness over.
@@ -63,9 +63,9 @@ Use the following payload structure:
 `outcomeName`:: The name of the output that provides the output we are examining for fairness.
 `favorableOutcome`:: The value of the outcomeName output that describes the favorable or desired model prediction.
 `batchSize`:: The number of previous inferences to include in the calculation.
-+
+
 For example:  
-+
+
 ----
 curl -sk  -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/ \
      --header 'Content-Type: application/json' \
