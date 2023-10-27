@@ -1,0 +1,103 @@
+:_module-type: PROCEDURE
+
+[id='enabling-trustyai-service-cli_{context}']
+= Enabling the TrustyAI Service for a data science project
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+The TrustyAI features are for Technology Preview only. Technology Preview features are not supported with Red Hat production service level agreements (SLAs), might not be functionally complete, and Red Hat does not recommend using them for production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. 			
+For more information on Red Hat Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/ [Technology Preview Features Scope]. 		
+====
+endif::[]
+
+[role='_abstract']
+When you install {productname-short}, the TrustyAI Operator is included with the other components in the {productname-short} namespace. The TrustyAI operator is responsible for deploying and managing TrustyAI services, as well as managing all other resources required by TrustyAI.
+
+These managing tasks include configuring storage, creating the service monitors, and configuring the serving runtimes and routes.
+
+The TrustyAI operator manages all enabled TrustyAI services across any number of projects on your cluster.
+
+For each data science project (namespace) that contains models for which you want to monitor bias metrics, enable the TrustyAI service. 
+
+.Prerequisites
+
+* You have installed {productname-short} and included the `trustyai` component with its management state set to Managed, as described in TBD install steps.
+
+* On the OpenShift cluster where {productname-short} is installed, you have enabled user workload monitoring as described in link:https://docs.openshift.com/container-platform/4.13/monitoring/enabling-monitoring-for-user-defined-projects.html[Enabling monitoring for user-defined projects].
+
+* You have logged in to {productname-short}.
+
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admins`) in OpenShift.
+
+* You have created a data science project, as described in link:{rhodsdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project], that contains (or will contain) the models that you want to monitor.  
+endif::[]
+
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+
+* You are familiar with link:{odhdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project], that contains (or will contain) the models that you want to monitor.  
+endif::[]
+
+
+.Procedure
+
+Add an instance of the TrustyAI service to each data science project that contains models that you want to monitor. The TrustyAI service instance provides the URL that a developer uses to monitor and analyze any number of models deployed into a data science project.
+
+To enable the TrustyAI service from the command line, follow these steps:
+
+. Login in to your cluster.
++
+----
+ oc login
+----
+
+. Navigate to your data science project namespace:
++
+----
+oc project <project-name>
+----
++
+For example:
++
+----
+oc project mydsproject
+----
+
+ifndef::upstream[]
+. Optionally, edit
+link:{rhodsdocshome}{default-format-url}/monitoring-data-science-models/monitoring-models-for-bias#trustyai-service-cr_bias-monitoring[the default TrustyAI service's custom resource (CR)].
+endif::[]
+
+ifdef::upstream[]
+. Optionally, edit
+link:{odhdocshome}{default-format-url}/monitoring-data-science-models/monitoring-models-for-bias#trustyai-service-cr_bias-monitoring[the default TrustyAI service's custom resource (CR)].
+endif::[]
+
+. Add the TrustyAI service's CR to your project :
++
+----
+oc apply -f trustyai-service.yaml
+----
++
+This command should return output similar to the following:
++
+----
+trusty-service created
+----
+
+
+.Verification
+
+To verify that you enabled the TrustyAI Service:
+
+----
+oc get pods | grep trustyai 
+----
+
+You should see a response similar to the following:
+
+----
+trustyai-service-5d45b5884f-96h5z             1/1     Running
+----
