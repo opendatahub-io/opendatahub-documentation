@@ -18,7 +18,9 @@ These managing tasks include configuring storage, creating the service monitors,
 
 The TrustyAI operator manages all enabled TrustyAI services across any number of projects on your cluster.
 
-For each data science project (namespace) that contains models for which you want to monitor bias metrics, enable the TrustyAI service. 
+For each data science project (namespace) that contains models for which you want to monitor bias metrics, enable an instance of the TrustyAI service.
+
+*NOTE:* You should enable only one instance of the TrustyAI service in a project. The presence of multiple instances in the same project can result in unexpected behavior.
 
 .Prerequisites
 
@@ -37,7 +39,7 @@ endif::[]
 ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
 
-* You are familiar with link:{odhdocshome}/{default-format-url}/working-on-data-science-projects/#working-on-data-science-projects_nb-server[Creating a data science project], that contains (or will contain) the models that you want to monitor.  
+* You have created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#working-on-data-science-projects_nb-server[Creating a data science project], that contains (or will contain) the models that you want to monitor.  
 endif::[]
 
 .Procedure
