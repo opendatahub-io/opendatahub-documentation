@@ -4,6 +4,15 @@
 = Viewing the performance metrics of a deployed model
 
 [role='_abstract']
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+This feature is for Technology Preview only. Technology Preview features are not supported with Red Hat production service level agreements (SLAs), might not be functionally complete, and Red Hat does not recommend using them for production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. 			
+For more information on Red Hat Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/ [Technology Preview Features Scope]. 		
+====
+endif::[]
+
 To ensure that your deployed model is functioning correctly, you can monitor the model's performance metrics. The following metrics are tracked in {productname-short}:
 
 * Requests per day (x100)
@@ -11,8 +20,15 @@ To ensure that your deployed model is functioning correctly, you can monitor the
 * CPU utilization (%)
 * Memory utilization (%)
 
+
+
+
 .Prerequisites
-* You have logged in to {productname-long}.
+* You have installed {productname-long}.
+
+* On the OpenShift cluster where {productname-short} is installed, you have enabled user workload monitoring as described in link:https://docs.openshift.com/container-platform/4.13/monitoring/enabling-monitoring-for-user-defined-projects.html[Enabling monitoring for user-defined projects].
+
+* You have logged in to {productname-short}.
 ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admins`) in OpenShift.
 endif::[]
@@ -32,5 +48,4 @@ The *Metrics* page opens.
 .Verification
 * The *Metrics* page displays the performance metrics for the relevant model.
 
-//[role='_additional-resources']
-//.Additional resources
+

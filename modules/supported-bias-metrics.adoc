@@ -1,0 +1,63 @@
+:_module-type: REFERENCE
+:stem:
+
+[id="supported-bias-metrics_{context}"]
+= Supported bias metrics
+
+{productname-long} supports the following bias metrics.
+
+//== Demographic parity metrics
+
+Statistical Parity Difference::
++
+--
+_Statistical Parity Difference_ (SPD) is the difference in the probability of a favorable outcome prediction between unprivileged and privileged groups.  The formal definition of SPD is the following:
+
+image::images/bias-metric-spd.png[SPD definition, scale=60, align="center"]
+
+* _&#375;_ = 1 is the favorable outcome.
+* _D&#7524;_ and _D&#8346;_ are the unprivileged and privileged group data.
+
+You can interpret SPD values as follows:
+
+* A value of `0` means that the model is behaving fairly for a selected attribute (for example,  race, gender).
+* A value in the range  `-0.1` to `0.1` means that the model is reasonably fair for a selected attribute. Instead, you can attribute the difference in probability to other factors, such as the sample size.
+* A value outside the range `-0.1` to `0.1` indicates that the model is unfair for a selected attribute.
+* A negative value indicates that the model has bias against the unprivileged group.
+* A positive value indicates that the model has bias against the privileged group.
+--
+
+Disparate Impact Ratio::
++
+--
+_Disparate Impact Ratio_ (DIR) is the ratio of the probability of a favorable outcome prediction for unprivileged groups to that of privileged groups. The formal definition of DIR is the following:
+
+image::images/bias-metric-dir.png[DIR definition, scale=35, align="center"]
+
+* _&#375;_ = 1 is the favorable outcome.
+* _D&#7524;_ and _D&#8346;_ are the unprivileged and privileged group data.
+
+You can interpret DIR values as follows:
+
+* A value of `1` means that the model is fair for a selected attribute.
+* A value of between `0.8` and `1.2` means that the model is reasonably fair for a selected attribute.
+--
+
+//== Predictive parity metrics
+//
+//Average Odds Difference::
+//+
+//--
+//_Average Odds Difference_ measures the difference between the _True Positive Rates_ (TPR) for the privileged and unprivileged groups, and the _False Positive Rates_ (FPR) for the same groups. The formal defintion of AOD is the following:
+//
+//image::images/bias-metric-aod.png[SPD definition, scale=65, align="center"]
+//
+//* _FPR&#7524;_ and _FPR&#8346;_  are the FPR data for the unprivileged and privileged groups.
+//* _TPR&#7524;_ and _TPR&#8346;_  are the TPR data for the unprivileged and privileged groups.
+//
+//You can interpret AOD values as follows:
+//
+//* A fair model has an AOD value of `0`.
+//* A positive value indicates the model benefits the unprivileged group.
+//* A negative value indicates the model benefits the privileged group
+//--

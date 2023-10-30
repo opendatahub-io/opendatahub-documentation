@@ -1,0 +1,43 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:productname-long: Open Data Hub
+:productname-short: Open Data Hub
+
+:context: bias-monitoring
+
+[id="monitoring-models-for-bias_{context}"]
+= Monitoring models for bias
+:upstream:
+//:preview:
+
+ifdef::preview[]
+include::../_artifacts/document-attributes-global.adoc[]
+endif::preview[]
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+The TrustyAI features are for Technology Preview only. Technology Preview features are not supported with Red Hat production service level agreements (SLAs), might not be functionally complete, and Red Hat does not recommend using them for production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. 			
+For more information on Red Hat Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/ [Technology Preview Features Scope]. 		
+====
+endif::[]
+
+As a data scientist, you might need to monitor your machine learning models for bias. This means monitoring for algorithmic deficiencies that might skew the outcomes or decisions that the model produces. Importantly, this type of monitoring helps you to ensure that the model is not biased against particular protected groups or features.
+
+{productname-long} provides a set of metrics that help you to monitor your models for bias. You can use the {productname-short} interface to choose an available metric and then configure model-specific details such as a protected attribute, the privileged and unprivileged groups, the outcome you want to monitor, and a threshold for bias. You then see a chart of the calculated values for a specified number of model inferences.
+
+The sections that follow describe how to configure your models for bias monitoring and how to view and interpret the resulting metrics.
+
+include::modules/configuring-bias-monitoring-cli.adoc[leveloffset=+1]
+
+include::modules/viewing-bias-metrics.adoc[leveloffset=+1]
+
+include::modules/supported-bias-metrics.adoc[leveloffset=+1]
+
+include::modules/trustyai-service-cr.adoc[leveloffset=+1]
+
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
