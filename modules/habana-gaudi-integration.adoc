@@ -1,0 +1,37 @@
+:_module-type: CONCEPT
+
+[id='habana-gaudi-integration_{context}']
+= Habana Gaudi integration
+
+[role='_abstract']
+To accelerate your high-performance deep learning (DL) models, you can integrate Habana Gaudi devices in {productname-short}. {productname-short} also includes the HabanaAI notebook image. This notebook image is pre-built and ready for your data scientists to use after you install or upgrade {productname-short}. 
+
+Before you can successfully enable Habana Gaudi devices in {productname-short}, you must install the necessary dependencies and install the HabanaAI Operator. This allows your data scientists to use Habana libraries and software associated with Habana Gaudi devices from their notebooks. For more information about how to enable your OpenShift environment for Habana Gaudi devices, see link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/[HabanaAI Operator for OpenShift].
+
+[IMPORTANT]
+====
+Currently, Habana Gaudi integration is only supported in OpenShift 4.11 and 4.12. 
+
+You can use Habana Gaudi accelerators on {productname-short} with version 1.10.0 of the Habana Gaudi Operator. For information about the supported configurations for version 1.10 of the Habana Gaudi Operator, see link:https://docs.habana.ai/en/latest/Support_Matrix/Support_Matrix_v1.10.0.html#support-matrix-1-10-0[Support Matrix v1.10.0].
+
+In addition, the version of the HabanaAI Operator that you install must match the version of the HabanaAI notebook image in your deployment.
+====
+
+You can use Habana Gaudi devices in an Amazon EC2 DL1 instance on OpenShift. Therefore, your OpenShift platform must support EC2 DL1 instances. Habana Gaudi accelerators are available to your data scientists when they create a workbench, serve a model, and create a notebook. 
+
+To identify the Habana Gaudi devices present in your deployment, use the `lspci` utility. For more information, see link:https://linux.die.net/man/8/lspci[lspci(8) - Linux man page].
+
+[IMPORTANT]
+====
+If the `lspci` utility indicates that Habana Gaudi devices are present in your deployment, it does not necessarily mean that the devices are ready to use. 
+
+Before you can use your Habana Gaudi devices, you must enable them in your OpenShift environment and configure an accelerator profile for each device. For more information about how to enable your OpenShift environment for Habana Gaudi devices, see link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/[HabanaAI Operator for OpenShift].   
+====
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/[HabanaAI Operator for OpenShift]
+* link:https://linux.die.net/man/8/lspci[lspci(8) - Linux man page] 
+* link:https://aws.amazon.com/ec2/instance-types/dl1/[Amazon EC2 DL1 Instances]
+* link:https://docs.habana.ai/en/latest/Support_Matrix/Support_Matrix_v1.10.0.html#support-matrix-1-10-0[Support Matrix v1.10.0]
+* link:https://access.redhat.com/solutions/4870701[What version of the Kubernetes API is included with each OpenShift 4.x release?]

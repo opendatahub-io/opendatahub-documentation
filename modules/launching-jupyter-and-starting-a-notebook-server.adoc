@@ -4,12 +4,12 @@
 = Launching Jupyter and starting a notebook server
 
 [role='_abstract']
-Launch Jupyter and start a notebook server to start working with your notebooks.
+Launch Jupyter and start a notebook server to start working with your notebooks. If you require extra power for use with large datasets, you can assign accelerators to your notebook server to optimize performance. 
 
 .Prerequisites
 * You have logged in to {productname-long}.
 * You know the names and values you want to use for any environment variables in your notebook server environment, for example, `AWS_SECRET_ACCESS_KEY`.
-* If you want to work with a very large data set, work with your administrator to proactively increase the storage capacity of your notebook server.
+* If you want to work with a large data set, work with your administrator to proactively increase the storage capacity of your notebook server. If applicable, also consider assigning accelerators to your notebook server. 
 
 .Procedure
 
@@ -32,15 +32,16 @@ If you credentials are accepted, the *Notebook server control panel* opens displ
 +
 This is not required if you have previously opened Jupyter.
 
-.. Select the *Notebook image* to use for your server.
+.. From the *Notebook image* section, select the *Notebook image* to use for your server.
 .. If the notebook image contains multiple versions, select the version of the notebook image from the *Versions* section.
 +
 [NOTE]
 --
 When a new version of a notebook image is released, the previous version remains available and supported on the cluster. This gives you time to migrate your work to the latest version of the notebook image.
 --
-.. Select the *Container size* for your server.
-.. Optional: Select the *Number of GPUs* (graphics processing units) for your server.
+.. From the *Container size* list, select a suitable container size for your server.
+.. Optional: From the *Accelerator* list, select an accelerator. 
+.. Optional: If you selected an accelerator in the preceding step, from the *Number of accelerators* list, select a value.  
 +
 [IMPORTANT]
 --
@@ -57,7 +58,7 @@ The interface stores these variables so that you only need to enter them once. E
 +
 [IMPORTANT]
 ====
-Ensure that you select the *Secret* checkbox for any variables with sensitive values that must be kept private, such as passwords.
+Select the *Secret* checkbox for variables with sensitive values that must remain private, such as passwords.
 ====
 .. Optional: Select the *Start server in current tab* checkbox if necessary.
 .. Click *Start server*.
@@ -68,7 +69,7 @@ After the server starts, you see one of the following behaviors:
 +
 --
 * If you previously selected the *Start server in current tab* checkbox, the JupyterLab interface opens in the current tab of your web browser.
-* If you did not previously select the *Start server in current tab* checkbox, the *Starting server* dialog box prompts you to open the server in a new browser tab or in the current tab.
+* If you did not previously select the *Start server in current tab* checkbox, the *Starting server* dialog box prompts you to open the server in a new browser tab or in the current browser tab.
 +
 The JupyterLab interface opens according to your selection.
 --

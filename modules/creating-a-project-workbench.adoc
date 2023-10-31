@@ -4,15 +4,15 @@
 = Creating a project workbench
 
 [role='_abstract']
-To examine and work with data models in an isolated area, you can create a workbench. This workbench enables you to create a new Jupyter notebook from an existing notebook container image to access its resources and properties. For data science projects that require data to be retained, you can add container storage to the workbench you are creating.
+To examine and work with data models in an isolated area, you can create a workbench. You can use this workbench to create a Jupyter notebook from an existing notebook container image to access its resources and properties. For data science projects that require data retention, you can add container storage to the workbench you are creating. If you require extra power for use with large datasets, you can assign accelerators to your workbench to optimize performance. 
 
 .Prerequisites
 * You have logged in to {productname-long}.
 ifndef::upstream[]
-* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
 endif::[]
 ifdef::upstream[]
-* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
 endif::[]
 * You have created a data science project that you can add a workbench to.
 
@@ -23,14 +23,18 @@ The *Data science projects* page opens.
 . Click the name of the project that you want to add the workbench to.
 +
 The *Details* page for the project opens.
-. Click *Create workbench* in the *Workbenches* section.
+. In the *Workbenches* section, click *Create workbench*.
 +
 The *Create workbench* page opens.
 . Configure the properties of the workbench you are creating.
-.. Enter a *name* for your workbench.
-.. Enter a *description* for your workbench.
-.. Select the *notebook image* to use for your workbench server.
-.. Select the *container size* for your server.
+.. In the *Name* field, enter a name for your workbench.
+.. Optional: In the *Description* field, enter a description to define your workbench.
+.. In the *Notebook image* section, complete the fields to specify the notebook image to use with your workbench. 
+... From the *Image selection* list, select a notebook image.
+.. In the *Deployment size* section, specify the size of your deployment instance.
+... From the *Container size* list, select a container size for your server.
+... Optional: From the *Accelerator* list, select an accelerator. 
+... Optional: If you selected an accelerator in the preceding step, from the *Number of accelerators* list, select a value.  
 .. Optional: Select and specify values for any new *environment variables*.
 ifdef::upstream[]
 +
@@ -49,8 +53,8 @@ To enable data science pipelines in JupyterLab in self-managed deployments, crea
 --
 endif::[]
 .. Configure the storage for your {productname-short} cluster.
-... Select *Create new persistent storage* to create storage that is retained after you log out of {productname-short}. Fill in the relevant fields to define the storage.
-... Select *Use existing persistent storage* to reuse existing storage then select the storage from the *Persistent storage* list.
+... Select *Create new persistent storage* to create storage that is retained after you log out of {productname-short}. Complete the relevant fields to define the storage.
+... Select *Use existing persistent storage* to reuse existing storage and select the storage from the *Persistent storage* list.
 . Click *Create workbench*.
 
 .Verification

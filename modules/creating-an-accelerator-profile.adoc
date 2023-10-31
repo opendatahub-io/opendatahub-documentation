@@ -1,0 +1,56 @@
+:_module-type: PROCEDURE
+
+[id="creating-an-accelerator-profile_{context}"]
+= Creating an accelerator profile
+
+[role='_abstract']
+To configure accelerators for your data scientists to use in {productname-short}, you must create an associated accelerator profile. 
+
+.Prerequisites
+* You have logged in to {openshift-platform}.
+* You have the `cluster-admin` role in {openshift-platform}.
+* The `AcceleratorProfile` custom resource definition (CRD) exists in your deployment.
+* You are aware of the correct namespace to create the accelerator profile in. 
+
+.Procedure
+. In the {openshift-platform} web console, in the *Administrator* perspective, click *Administration* -> *CustomResourceDefinitions*.
+. In the search bar, enter `acceleratorprofile` to search by name.
++
+The *CustomResourceDefinitions* page reloads to display the search results.
++
+. Click the `AcceleratorProfile` custom resource definition (CRD).
++
+A details page for the custom resource definition (CRD) opens.
+. Click the *Instances* tab.
+. Click *Create AcceleratorProfile*. 
++ 
+The *Create AcceleratorProfile* page opens with an embedded YAML editor. 
+. Enter or paste your accelerator profile YAML code directly in the embedded editor. This example shows the code for a Habana Gaudi 1 accelerator profile:
++
+[source,yaml]
+---
+apiVersion: dashboard.opendatahub.io/v1alpha
+kind: AcceleratorProfile
+metadata:
+  name: hpu-profile-first-gen-gaudi
+spec:
+  displayName: Habana HPU - 1st Gen Gaudi
+  description: First Generation Habana Gaudi device
+  enabled: true
+  identifier: habana.ai/gaudi
+  tolerations:
+    - effect: NoSchedule
+      key: habana.ai/gaudi
+      operator: Exists
+---
+. Click *Create*.
+
+.Verification
+* The *Accelerator* list appears on the *Start a notebook server* page. After you select an accelerator, the *Number of accelerators* field appears, which you can use to choose the number of accelerators for your notebook server.
+* The accelerator profile appears on the *Instances* tab on the details page for the `AcceleratorProfile` custom resource definition (CRD).
+
+[role='_additional-resources']
+.Additional resources
+* link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#toleration-v1-core[Toleration v1 core]
+* link:https://docs.openshift.com/container-platform/4.13/nodes/scheduling/nodes-scheduler-taints-tolerations.html[Understanding taints and tolerations]
+* link:https://docs.openshift.com/container-platform/4.13/operators/understanding/crds/crd-managing-resources-from-crds.html[Managing resources from custom resource definitions]

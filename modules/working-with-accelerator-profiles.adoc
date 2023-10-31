@@ -1,0 +1,53 @@
+:_module-type: CONCEPT
+
+[id='working-with-accelerator-profiles_{context}']
+= Working with accelerator profiles
+
+[role='_abstract']
+The accelerator profiles feature is currently available as a Technology Preview. For further information about the scope of Technology Preview status, and the associated support implications, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+
+To configure accelerators for your data scientists to use in {productname-short}, you must create an associated accelerator profile. An accelerator profile is a custom resource definition (CRD) on OpenShift that has an AcceleratorProfile resource, and defines the specification of the accelerator.  
+
+For accelerators that are new to your deployment, you must manually configure an accelerator profile for each accelerator. If your deployment contained an accelerator before you upgrade, the associated accelerator profile preserves after the upgrade. You can manage the accelerators that appear to your data scientists by assigning specific accelerator profiles to your custom notebook images.
+
+For more information about accelerator profile attributes, see the following table: 
+
+[id="table-accelerator-profile-attributes_{context}"]
+
+.Accelerator profile attributes
+[cols="1,1,1,5",header]
+|===
+| Attribute | Type | Required | Description  
+
+| displayName
+| String
+| Required
+| The display name of the accelerator.
+
+| description
+| String
+| Optional
+| Descriptive text defining the accelerator.
+
+| identifier
+| String
+| Required
+| A unique identifier defining the accelerator.
+
+| enabled
+| Boolean
+| Required
+| Determines if the accelerator is visible in {productname-short}.
+
+| tolerations
+| Array
+| Optional
+| The tolerations that can apply to notebooks and serving runtimes that use the accelerator. For more information about the toleration attributes that {productname-short} supports, see link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#toleration-v1-core[Toleration v1 core].
+
+|===
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#toleration-v1-core[Toleration v1 core]
+* link:https://docs.openshift.com/container-platform/4.13/nodes/scheduling/nodes-scheduler-taints-tolerations.html[Understanding taints and tolerations]
+* link:https://docs.openshift.com/container-platform/4.13/operators/understanding/crds/crd-managing-resources-from-crds.html[Managing resources from custom resource definitions]

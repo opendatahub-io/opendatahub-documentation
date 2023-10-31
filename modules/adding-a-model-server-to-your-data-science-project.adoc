@@ -4,15 +4,15 @@
 = Adding a model server to your data science project
 
 [role='_abstract']
-Before you can successfully deploy a data science model on {productname-short}, you must configure a model server. This includes configuring the number of replicas being deployed, the server size, the token authorization, and how the project is accessed.
+Before you can successfully deploy a data science model on {productname-short}, you must configure a model server. This includes configuring the number of replicas to deploy, the server size, the token authorization, and how to access the project. If you require extra power for use with large datasets, you can assign accelerators to your model server to optimize performance. 
 
 .Prerequisites
 * You have logged in to {productname-long}.
 ifndef::upstream[]
-* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
+* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, `rhods-users` or `rhods-admin` ) in OpenShift.
 endif::[]
 ifdef::upstream[]
-* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
+* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, `odh-users` or `odh-admins`) in OpenShift.
 endif::[]
 * You have created a data science project that you can add a model server to.
 ifndef::upstream[]
@@ -47,7 +47,6 @@ The *Add model server* dialog opens.
 .. In the *CPU limit* field, specify the maximum number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
 .. In the *Memory requested* field, specify the requested memory for the model server in gibibytes (Gi).
 .. In the *Memory limit* field, specify the maximum memory limit for the model server in gibibytes (Gi).
-. Optional: In the *Model server GPUs* field, specify a number of GPUs to use with your model server.
 +
 [IMPORTANT]
 ====
@@ -55,7 +54,8 @@ The *Add model server* dialog opens.
 
 If you are using a _custom_ model-serving runtime with your model server, you must ensure that your custom runtime supports GPUs and is appropriately configured to use them.
 ====
-
+. Optional: From the *Accelerator* list, select an accelerator. 
+. Optional: If you selected an accelerator in the preceding step, from the *Number of accelerators* list, select a value.  
 . Optional: In the *Model route* section, select the *Make deployed models available through an external route* check box to make your deployed models available to external clients.
 . Optional: In the *Token authorization* section, select the *Require token authentication* check box to require token authentication for your model server. To finish configuring token authentication, perform the following actions:
 .. In the *Service account name* field, enter a service account name for which the token will be generated. The generated token is created and displayed in the *Token secret* field when the model server is configured.
@@ -63,7 +63,7 @@ If you are using a _custom_ model-serving runtime with your model server, you mu
 . Click *Add*.
 
 .Verification
-* The model server that you configured is displayed in the *Models and model servers* section of the project details page.
+* The model server that you configured appears in the *Models and model servers* section of the project details page.
 
 //[role="_additional-resources"]
 //.Additional resources
