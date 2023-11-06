@@ -36,13 +36,15 @@ endif::[]
 
 * The `trustyai` component is set to *Managed* for the {prodname-short} Operator.
 +
-To verify this setting, navigate to *Operators* ->*Installed Operators* ->*{prodname-long} Operator* and then click *YAML*. Scroll down to view the `spec:components` setting:
+To verify this setting, navigate to *Operators* -> *Installed Operators* -> *{prodname-long} Operator* -> *Data Science Cluster*. Select the *default* instance and then click *YAML*. Scroll down to view the `spec:components` setting:
 +
 ----
-"trustyai": {
-     "managementState": "Managed"
-}
+ trustyai:
+      devFlags: {}
+      managementState: Managed
 ----
++
+*NOTE:* If the `trustyai` component is set to *Removed*, edit the YAML file to set it to *Managed*.
 
 * You have logged in to {productname-short}.
 
@@ -70,7 +72,7 @@ To enable the TrustyAI service from the command line, follow these steps:
  oc login
 ----
 
-. Navigate to your data science project namespace:
+. Navigate to the data science project that contains (or will contain) the models that you want to monitor. 
 +
 ----
 oc project <project-name>
