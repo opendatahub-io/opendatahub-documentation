@@ -24,15 +24,25 @@ For each data science project (namespace) that contains models for which you wan
 
 .Prerequisites
 
+* On the OpenShift cluster where {productname-short} is installed, you have enabled user workload monitoring as described in link:https://docs.openshift.com/container-platform/4.13/monitoring/enabling-monitoring-for-user-defined-projects.html[Enabling monitoring for user-defined projects].
+
 ifdef::upstream[]
-* You have installed {productname-short} as described in link:https://opendatahub.io/docs/quick-installation-new-operator/[Quick Installtion(v2)].
+* You have installed {productname-short} as described in link:https://opendatahub.io/docs/quick-installation-new-operator/[Quick Installation(v2)].
 endif::[]
 
 ifndef::upstream[]
 * You have installed {productname-short} as described in link:{rhodsdocshome}{default-format-url}/installing_openshift_data_science_self-managed/installing-version2-of-openshift-data-science-operator_installing-operator-version2[Installing and managing version 2 of the Red Hat OpenShift Data Science Operator].
 endif::[]
 
-* On the OpenShift cluster where {productname-short} is installed, you have enabled user workload monitoring as described in link:https://docs.openshift.com/container-platform/4.13/monitoring/enabling-monitoring-for-user-defined-projects.html[Enabling monitoring for user-defined projects].
+* The `trustyai` component is set to *Managed* for the {prodname-short} Operator.
++
+To verify this setting, navigate to *Operators* ->*Installed Operators* ->*{prodname-long} Operator* and then click *YAML*. Scroll down to view the `spec:components` setting:
++
+----
+"trustyai": {
+     "managementState": "Managed"
+}
+----
 
 * You have logged in to {productname-short}.
 
@@ -54,7 +64,7 @@ Add an instance of the TrustyAI service to each data science project that contai
 
 To enable the TrustyAI service from the command line, follow these steps:
 
-. Login in to your cluster.
+. Login to your cluster.
 +
 ----
  oc login
@@ -72,20 +82,41 @@ For example:
 oc project mydsproject
 ----
 
-ifndef::upstream[]
-. Optionally, edit
-link:{rhodsdocshome}{default-format-url}/monitoring-data-science-models/monitoring-models-for-bias#trustyai-service-cr_bias-monitoring[the default TrustyAI service's custom resource (CR)].
-endif::[]
-
-ifdef::upstream[]
-. Optionally, edit
-link:{odhdocshome}{default-format-url}/monitoring-data-science-models/monitoring-models-for-bias#trustyai-service-cr_bias-monitoring[the default TrustyAI service's custom resource (CR)].
-endif::[]
+. Create a `TrustyAIService` custom resource (CR) file, for example `trustyai_crd.yaml`: 
++
+----
+apiVersion: trustyai.opendatahub.io.trustyai.opendatahub.io/v1alpha1
+kind: TrustyAIService
+metadata:
+  name: trustyai-service
+spec:
+  storage:
+	format: "PVC"
+	folder: "/inputs"
+	size: "1Gi"
+  data:
+	filename: "data.csv"
+	format: "CSV"
+  metrics:
+	schedule: "5s"
+	batchSize: 5000 # Optional, default is 5000
+----
++ 
+Here is a description of the fields:
++
+`metadata.name`:: The name of the TrustyAI service instance.
+`spec.storage.format`:: The storage format for the data. Currently, only persistent volume control (PVC) is supported.
+`spec.storage.folder`:: The location within the PVC where the data will be stored.
+`spec.storage.size`:: The size of the PVC to request.
+`spec.data.filename`:: The suffix for the stored data files.
+`spec.data.format`:: The format of the data. Currently, only comma-separated value (CSV) format is supported.
+`spec.metrics.schedule`:: The interval at which the metrics are calculated. The default is 5s. The duration is specified with the ISO-8601 format. For example, `5s` for 5 seconds, `5m` for 5 minutes, and `5h` for 5 hours.
+`spec.metrics.batchSize`:: The observation’s historical window size to use for metrics calculation. The default is `5000` (that is, the metrics are calculated by using the latest 5000 inferences).
 
 . Add the TrustyAI service's CR to your project:
 +
 ----
-oc apply -f resources/trustyai_crd.yaml
+oc apply -f trustyai_crd.yaml
 ----
 +
 This command should return output similar to the following:
