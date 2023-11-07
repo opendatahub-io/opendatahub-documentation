@@ -32,7 +32,7 @@ If you credentials are accepted, the *Notebook server control panel* opens displ
 +
 This is not required if you have previously opened Jupyter.
 
-.. From the *Notebook image* section, select the *Notebook image* to use for your server.
+.. In the *Notebook image* section, select the notebook image to use for your server.
 .. If the notebook image contains multiple versions, select the version of the notebook image from the *Versions* section.
 +
 [NOTE]
@@ -46,10 +46,10 @@ When a new version of a notebook image is released, the previous version remains
 [IMPORTANT]
 --
 ifdef::upstream[]
-Using GPUs to accelerate workloads is only supported with the PyTorch, TensorFlow, and CUDA notebook server images. In addition, you can specify the number of GPUs required for your notebook server only if GPUs are enabled on your cluster.
+Using accelerators is only supported with specific notebook images. For GPUs, only the PyTorch, TensorFlow, and CUDA notebook server images are supported. For Habana Gaudi devices, only the HabanaAI notebook image is supported. In addition, you can only specify the number of accelerators required for your notebook server if accelerators are enabled on your cluster.
 endif::[]
 ifndef::upstream[]
-Using GPUs to accelerate workloads is only supported with the PyTorch, TensorFlow, and CUDA notebook server images. In addition, you can specify the number of GPUs required for your notebook server only if GPUs are enabled on your cluster. To learn how to enable GPU support, see link:{rhodsdocshome}{default-format-url}/managing_resources/enabling-gpu-support-in-data-science_user-mgmt[Enabling GPU support in {productname-short}].
+Using accelerators is only supported with specific notebook images. For GPUs, only the PyTorch, TensorFlow, and CUDA notebook server images are supported. For Habana Gaudi devices, only the HabanaAI notebook image is supported. In addition, you can only specify the number of accelerators required for your notebook server if accelerators are enabled on your cluster. To learn how to enable GPU support, see link:{rhodsdocshome}{default-format-url}/managing_resources/enabling-gpu-support-in-data-science_user-mgmt[Enabling GPU support in {productname-short}].
 endif::[]
 --
 .. Optional: Select and specify values for any new *Environment variables*.
