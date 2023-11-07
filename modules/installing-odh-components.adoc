@@ -5,11 +5,12 @@
 = Installing Open Data Hub components
 
 [role='_abstract']
-You can use the OpenShift web console to install specific components of Open Data Hub on your cluster when version 2.X of the Open Data Hub Operator is already installed on the cluster.
+You can use the OpenShift web console to install specific components of Open Data Hub on your cluster when version 2 of the Open Data Hub Operator is already installed on the cluster.
 
 .Prerequisites
-* You have installed v2.X of the Open Data Hub Operator.
+* You have installed version 2 of the Open Data Hub Operator.
 * You can log in as a user with `cluster-admin` privileges.
+* If you want to use the `trustyai` component, you must enable user workload monitoring as described in link:https://docs.openshift.com/container-platform/4.13/monitoring/enabling-monitoring-for-user-defined-projects.html[Enabling monitoring for user-defined projects].
 * If you want to use the `kserve`, `datasciencepipeline`, `distributedworkloads`, or `modelmesh` components, you must have already installed the following Operator or Operators for the component. For information about installing an Operator, see link:https://access.redhat.com/documentation/en-us/openshift_container_platform/4.14/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
 
 .Required Operators for components
@@ -43,9 +44,8 @@ You can use the OpenShift web console to install specific components of Open Dat
 . On the *Create DataScienceCluster* page, configure the DataScienceCluster by using *Form* view or *YAML* view. For general information about the supported components, see link:https://opendatahub.io/docs/tiered-components[Tiered Components].
 * Configure by using *Form* view
 .. Enter a *Name*.
-.. In the *Components* section, expand each core component and set the *managementState* to *Managed* or *Removed*.
+.. In the *Components* section, expand each component and set the *managementState* to *Managed* or *Removed*.
 * Configure by using *YAML* view
-.. Write config in YAML format.
 .. In the `spec.components` section, for each component shown, set the value of the `managementState` field to either `Managed` or `Removed`.
 . Click *Create*.
 
@@ -57,7 +57,3 @@ You can use the OpenShift web console to install specific components of Open Dat
 
 .Next Step
 * Access the Open Data Hub dashboard.
-
-// [role="_additional-resources"]
-// .Additional resources
-// * TODO or delete
