@@ -1,0 +1,64 @@
+:_module-type: PROCEDURE
+
+[id="using-a-distributed-workload_{context}"]
+= Using a distributed workload
+
+[role='_abstract']
+To configure the distributed workloads feature for your data scientists to use in {productname-short}, you must <to be provided>.
+
+.Prerequisites
+* You have logged in to {openshift-platform}.
+* You have the `cluster-admin` role in {openshift-platform}.
+* You have access to a Ray cluster.
+
+.Procedure
+. In the {openshift-platform} web console, <please provide exact steps>
+
+////
+in the *Administrator* perspective, click *Administration* -> *CustomResourceDefinitions*.
+. In the search bar, enter `acceleratorprofile` to search by name.
++
+The *CustomResourceDefinitions* page reloads to display the search results.
++
+. Click the `AcceleratorProfile` custom resource definition (CRD).
++
+A details page for the custom resource definition (CRD) opens.
+. Click the *Instances* tab.
+. Click *Create AcceleratorProfile*.
++
+The *Create AcceleratorProfile* page opens with an embedded YAML editor.
+. Enter or paste your accelerator profile YAML code directly in the embedded editor. This example shows the code for a Habana Gaudi 1 accelerator profile:
++
+[source,yaml]
+---
+apiVersion: dashboard.opendatahub.io/v1alpha
+kind: AcceleratorProfile
+metadata:
+  name: hpu-profile-first-gen-gaudi
+spec:
+  displayName: Habana HPU - 1st Gen Gaudi
+  description: First Generation Habana Gaudi device
+  enabled: true
+  identifier: habana.ai/gaudi
+  tolerations:
+    - effect: NoSchedule
+      key: habana.ai/gaudi
+      operator: Exists
+---
+. Click *Create*.
+////
+
+.Verification
+<How can we verify each procedure?>
+////
+* The *Accelerator* list appears on the *Start a notebook server* page. After you select an accelerator, the *Number of accelerators* field appears, which you can use to choose the number of accelerators for your notebook server.
+* The accelerator profile appears on the *Instances* tab on the details page for the `AcceleratorProfile` custom resource definition (CRD).
+////
+
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+////
+* link:https://url[link text]
+////
