@@ -1,5 +1,4 @@
 :_module-type: PROCEDURE
-//pv2hash: 
 
 [id='installing-odh-components_{context}']
 = Installing Open Data Hub components
@@ -38,14 +37,14 @@ You can use the OpenShift web console to install specific components of Open Dat
 
 
 .Procedure
-. In the OpenShift Container Platform as a user with `cluster-admin` privileges. For a developer installation from link:http://try.openshift.com[try.openshift.com], you can log in as the `kubeadmin` user.
-. Select *Operators* -> *Installed Operators*, and then click the *Open Data Hub Operator*. The *Operator details* page opens.
-. Click the *Create DataScienceCluster* button in the warning box.
+. Log in to your OpenShift Container Platform as a user with `cluster-admin` privileges. If you are performing a developer installation on link:http://try.openshift.com[try.openshift.com], you can log in as the `kubeadmin` user.
+. Select *Operators* -> *Installed Operators*, and then click the *Open Data Hub Operator*.
+. On the *Operator details* page, click the *Data Science Cluster* tab, and then click *Create DataScienceCluster*.
 . On the *Create DataScienceCluster* page, configure the DataScienceCluster by using *Form* view or *YAML* view. For general information about the supported components, see link:https://opendatahub.io/docs/tiered-components[Tiered Components].
-* Configure by using *Form* view
-.. Enter a *Name*.
+* Configure by using *Form* view:
+.. In the *Name* field, enter a value.
 .. In the *Components* section, expand each component and set the *managementState* to *Managed* or *Removed*.
-* Configure by using *YAML* view
+* Configure by using *YAML* view:
 .. In the `spec.components` section, for each component shown, set the value of the `managementState` field to either `Managed` or `Removed`.
 . Click *Create*.
 
