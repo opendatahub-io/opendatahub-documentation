@@ -1,0 +1,58 @@
+:_module-type: PROCEDURE
+
+[id='installing-odh-components_{context}']
+= Installing Open Data Hub components
+
+[role='_abstract']
+You can use the OpenShift web console to install specific components of Open Data Hub on your cluster when version 2 of the Open Data Hub Operator is already installed on the cluster.
+
+.Prerequisites
+* You have installed version 2 of the Open Data Hub Operator.
+* You can log in as a user with `cluster-admin` privileges.
+* If you want to use the `trustyai` component, you must enable user workload monitoring as described in link:https://docs.openshift.com/container-platform/4.13/monitoring/enabling-monitoring-for-user-defined-projects.html[Enabling monitoring for user-defined projects].
+* If you want to use the `kserve`, `datasciencepipeline`, `distributedworkloads`, or `modelmesh` components, you must have already installed the following Operator or Operators for the component. For information about installing an Operator, see link:https://access.redhat.com/documentation/en-us/openshift_container_platform/4.14/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
+
+.Required Operators for components
+[cols="3]
+|===
+| Component | Required Operators | Catalog
+
+| ksersve
+| Red Hat OpenShift Serverless Operator, Red Hat OpenShift Service Mesh Operator 
+| Red Hat
+
+| datasciencepipeline
+| Red Hat OpenShift Pipelines Operator
+| Red Hat
+
+| distributedworkloads
+| CodeFlare Operator
+| Community
+
+| modelmesh
+| Prometheus Operator
+| Community
+
+|===
+
+
+.Procedure
+. Log in to your OpenShift Container Platform as a user with `cluster-admin` privileges. If you are performing a developer installation on link:http://try.openshift.com[try.openshift.com], you can log in as the `kubeadmin` user.
+. Select *Operators* -> *Installed Operators*, and then click the *Open Data Hub Operator*.
+. On the *Operator details* page, click the *Data Science Cluster* tab, and then click *Create DataScienceCluster*.
+. On the *Create DataScienceCluster* page, configure the DataScienceCluster by using *Form* view or *YAML* view. For general information about the supported components, see link:https://opendatahub.io/docs/tiered-components[Tiered Components].
+* Configure by using *Form* view:
+.. In the *Name* field, enter a value.
+.. In the *Components* section, expand each component and set the *managementState* to *Managed* or *Removed*.
+* Configure by using *YAML* view:
+.. In the `spec.components` section, for each component shown, set the value of the `managementState` field to either `Managed` or `Removed`.
+. Click *Create*.
+
+
+.Verification
+. Select *Home* -> *Projects*, and then select the *opendatahub* project.
+. On the *Project details* page, click the *Workloads* tab and confirm that the Open Data Hub core components are running. For more information, see link:https://opendatahub.io/docs/tiered-components[Tiered Components].
+
+
+.Next Step
+* Access the Open Data Hub dashboard.

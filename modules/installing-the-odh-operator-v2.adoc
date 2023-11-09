@@ -1,0 +1,32 @@
+:_module-type: PROCEDURE
+
+[id='installing-the-odh-operator-v2_{context}']
+= Installing the Open Data Hub Operator version 2
+
+.Prerequisites
+* You are using OpenShift Container Platform 4.11 or later.
+* Your OpenShift cluster has a minimum of 16 CPUs and 32GB of memory across all OpenShift worker nodes.
+* You can log in as a user with `cluster-admin` privileges.
+
+.Procedure
+. Log in to your OpenShift Container Platform as a user with `cluster-admin` privileges. If you are performing a developer installation on link:http://try.openshift.com[try.openshift.com], you can log in as the `kubeadmin` user.
+. Select *Operators* -> *OperatorHub*.
+. On the *OperatorHub* page, in the *Filter by keyword* field, enter `Open Data Hub Operator`.
+. Click the *Open Data Hub Operator* tile.
+. If the *Show community Operator* window opens, read the information and then click *Continue*.
+. Read the information about the Operator and then click *Install*.
+. On the *Install Operator* page, follow these steps:
+.. For *Update* channel, select *fast*.
+.. For *Version*, select the version of the Operator that you want to install. 
+.. For *Installation mode*, leave *All namespaces on the cluster (default)* selected.
+.. For *Installed Namespace*, select the *openshift-operators* namespace.
+.. For *Update approval*, select automatic or manual updates. 
+* *Automatic*: When a new version of the Operator is available, Operator Lifecycle Manager (OLM) automatically upgrades the running instance of your Operator.
+* *Manual*: When a new version of the Operator is available, OLM notifies you with an update request that you must manually approve to upgrade the running instance of your Operator.
+. Click *Install*. The installation might take a few minutes.
+
+.Verification
+* Select *Operators* -> *Installed Operators* to verify that the *Open Data Hub Operator* is listed with *Succeeded* status.
+
+.Next Step
+* Install Open Data Hub components.
