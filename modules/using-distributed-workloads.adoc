@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
 [id="using-a-distributed-workload_{context}"]
-= Using a distributed workload
+= Using distributed workloads
 
 [role='_abstract']
 To configure the distributed workloads feature for your data scientists to use in {productname-short}, you must enable several components.
@@ -10,23 +10,46 @@ To configure the distributed workloads feature for your data scientists to use i
 * You have logged in to {openshift-platform}.
 * You have the `cluster-admin` role in {openshift-platform}.
 * You have access to a Ray cluster image.
-* If you want to use the distributed workloads feature from a notebook, you have configured the notebook.
-* If you want to use the distributed workloads feature from a data science pipeline, you have configured the data science pipeline.
+* You have sufficient resources. In addition to the base {productname-short} resources, you need 1.1 vCPU and 1.6 GB memory to deploy the distributed workloads infrastructure.
+* You have logged in to {productname-long}.
 ifndef::upstream[]
-* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. See {rhodsdocshome}{default-format-url}/managing_users_and_user_resources/enabling-gpu-support-in-data-science[Enabling GPU support in {productname-short}]
+* If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}. See {rhodsdocshome}{default-format-url}/managing_users_and_user_resources/enabling-gpu-support-in-data-science[Enabling GPU support in {productname-short}].
 endif::[]
 
 .Procedure
-. Log in to {openshift-platform} web console.
+. Log in to the {openshift-platform} web console.
 . Enable the required components, as follows:
 .. Click *Operators* -> *Installed Operators*.
 .. Search for the *Red Hat OpenShift Data Science* Operator, and click the Operator name to open the Operator details page.
 .. Click the *Data Science Cluster* tab.
 .. Click the *rhods* cluster.
 .. Click the *YAML* tab.
-.. In the `spec.components` section, ensure that for the `codeflare` and `ray` components, the `managementState` is set to `Managed`.
-These settings are sufficient to use distributed workloads from a data science pipeline.
-.. If you want to use distributed workloads from a notebook, ensure that the `managementState` is also set to `Managed` for the `dashboard` and `workbenches` components.
+.. In the `spec.components` section, ensure that the `managementState` is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook, as shown in the following table.
++
+|===
+|Component | Pipelines | Notebooks
+
+|`codeflare`
+|`Managed`
+|`Managed`
+
+|`dashboard`
+|`Managed`
+|`Managed`
+
+|`datasciencepipelines`
+|`Managed`
+|`Removed`
+
+|`ray`
+|`Managed`
+|`Managed`
+
+|`workbenches`
+|`Removed`
+|`Managed`
+|===
+
 .. Click *Save*.
 After a short time, the components are ready.
 . Check the status of the components, as follows:
@@ -49,11 +72,12 @@ The JupyterLab interface opens in a new tab.
 .. In the JupyterLab interface, click *Git > Clone a Repository*.
 The "Clone a repo" dialog opens.
 .. In the *Enter the URI of the remote Git repository* field, enter `https://github.com/project-codeflare/codeflare-sdk.git` and click *Clone*.
-The `codeflare-sdk` repository is listed in the left naviation pane.
+The `codeflare-sdk` repository is listed in the left navigation pane.
 . Run a distributed workload job as follows:
 .. In the JupyterLab interface, in the left navigation pane, double-click *codeflare-sdk*.
 .. Double-click *demo-notebooks -> guided-demos*.
 .. Update each example demo notebook to replace the links to the example community image with a link to your Ray cluster image.
+.. Update each example demo notebook to set `instascale` to `False`.
 .. Run the notebooks.
 
 
