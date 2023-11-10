@@ -9,56 +9,62 @@ To configure the distributed workloads feature for your data scientists to use i
 .Prerequisites
 * You have logged in to {openshift-platform}.
 * You have the `cluster-admin` role in {openshift-platform}.
-* You have access to a Ray cluster.
+* You have access to a Ray cluster image.
+* If you want to use the distributed workloads feature from a notebook, you have configured the notebook.
+* If you want to use the distributed workloads feature from a data science pipeline, you have configured the data science pipeline.
+ifndef::upstream[]
+* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. See {rhodsdocshome}{default-format-url}/managing_resources#enabling-gpu-support-in-data-science[Enabling GPU support in {productname-short}]
+endif::[]
 
 .Procedure
-. In the {openshift-platform} web console, <please provide exact steps>
+. Log in to {openshift-platform} web console.
+. Enable the required components, as follows:
+.. Click *Operators* -> *Installed Operators*.
+.. Search for the *Red Hat OpenShift Data Science* Operator, and click the Operator name to open the Operator details page.
+.. Click the *Data Science Cluster* tab.
+.. Click the *rhods* cluster.
+.. Click the *YAML* tab.
+.. In the `spec.components` section, ensure that for the `codeflare` and `ray` components, the `managementState` is set to `Managed`.
+These settings are sufficient to use distributed workloads from a data science pipeline.
+.. If you want to use distributed workloads from a notebook, ensure that the `managementState` is also set to `Managed` for the `dashboard` and `workbenches` components.
+.. Click *Save*.
+After a short time, the components are ready.
+. Check the status of the components, as follows:
+.. In the {openshift-platform} web console, click *Workloads* -> *Deployments*.
+.. Search for the *codeflare-operator-manager* deployment, and click the deployment name to open the deployment details page.
+.. Click the *Pods* tab.
+When the status of the `codeflare-operator-manager-_<pod-id>_` is `Running`, the pod is ready to use.
+To see more information about the pod, click the pod name to open the pod details page, and click the *Logs* tab.
+. Log in to {productname-long}: click the application launcher (image:images/osd-app-launcher.png[The application launcher]) and click *{productname-long}*.
+. Start the notebook server, as follows:
+.. On the *Applications > Enabled* page, in the *Jupyter* tile, click *Launch application*.
+The *Start a notebook server* page opens.
+.. In the *Notebook image* section, select the *Standard Data Science* image.
+Expand the *Versions* section, and select the latest version.
+.. Click *Start server*.
+.. After a few minutes, when the server is ready, click *Open in new tab*.
+.. On the Authorize Access page, click *Allow selected permissions*.
+The JupyterLab interface opens in a new tab.
+. Clone the `codeflare-sdk` repository as follows:
+.. In the JupyterLab interface, click *Git > Clone a Repository*.
+The "Clone a repo" dialog opens.
+.. In the *Enter the URI of the remote Git repository* field, enter `https://github.com/project-codeflare/codeflare-sdk.git` and click *Clone*.
+The `codeflare-sdk` repository is listed in the left naviation pane.
+. Run a distributed workload job as follows:
+.. In the JupyterLab interface, in the left navigation pane, double-click *codeflare-sdk*.
+.. Double-click *demo-notebooks -> guided-demos*.
+.. Update each example demo notebook to replace the links to the example community image with a link to your Ray cluster image.
+.. Run the notebooks.
 
-////
-in the *Administrator* perspective, click *Administration* -> *CustomResourceDefinitions*.
-. In the search bar, enter `acceleratorprofile` to search by name.
-+
-The *CustomResourceDefinitions* page reloads to display the search results.
-+
-. Click the `AcceleratorProfile` custom resource definition (CRD).
-+
-A details page for the custom resource definition (CRD) opens.
-. Click the *Instances* tab.
-. Click *Create AcceleratorProfile*.
-+
-The *Create AcceleratorProfile* page opens with an embedded YAML editor.
-. Enter or paste your accelerator profile YAML code directly in the embedded editor. This example shows the code for a Habana Gaudi 1 accelerator profile:
-+
-[source,yaml]
----
-apiVersion: dashboard.opendatahub.io/v1alpha
-kind: AcceleratorProfile
-metadata:
-  name: hpu-profile-first-gen-gaudi
-spec:
-  displayName: Habana HPU - 1st Gen Gaudi
-  description: First Generation Habana Gaudi device
-  enabled: true
-  identifier: habana.ai/gaudi
-  tolerations:
-    - effect: NoSchedule
-      key: habana.ai/gaudi
-      operator: Exists
----
-. Click *Create*.
-////
 
 .Verification
-<How can we verify each procedure?>
-////
-* The *Accelerator* list appears on the *Start a notebook server* page. After you select an accelerator, the *Number of accelerators* field appears, which you can use to choose the number of accelerators for your notebook server.
-* The accelerator profile appears on the *Instances* tab on the details page for the `AcceleratorProfile` custom resource definition (CRD).
-////
+The notebooks run to completion without errors.
 
+////
 [role='_additional-resources']
 .Additional resources
 <Do we want to link to additional resources?>
 
-////
+
 * link:https://url[link text]
 ////
