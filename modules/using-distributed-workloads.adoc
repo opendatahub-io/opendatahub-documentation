@@ -9,7 +9,7 @@ To configure the distributed workloads feature for your data scientists to use i
 .Prerequisites
 * You have logged in to {openshift-platform}.
 * You have the `cluster-admin` role in {openshift-platform}.
-* You have access to a Ray cluster image.
+* You have access to a Ray cluster image. For information about how to create a Ray cluster, see the link:https://docs.ray.io/en/latest/index.html[Ray documentation].
 * You have sufficient resources. In addition to the base {productname-short} resources, you need 1.1 vCPU and 1.6 GB memory to deploy the distributed workloads infrastructure.
 * You have logged in to {productname-long}.
 ifndef::upstream[]
@@ -78,11 +78,12 @@ The `codeflare-sdk` repository is listed in the left navigation pane.
 .. Double-click *demo-notebooks -> guided-demos*.
 .. Update each example demo notebook to replace the links to the example community image with a link to your Ray cluster image.
 .. Update each example demo notebook to set `instascale` to `False`.
+Instascale is not deployed in the Technology Preview version of the distributed workloads feature.
 .. Run the notebooks.
 
 
 .Verification
-The notebooks run to completion without errors.
+The notebooks run to completion without errors. In the notebooks, the output from the `cluster.status()` function indicates that the Ray cluster is `Active`.
 
 ////
 [role='_additional-resources']
