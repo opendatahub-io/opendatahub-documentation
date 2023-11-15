@@ -7,8 +7,7 @@
 To configure the distributed workloads feature for your data scientists to use in {productname-short}, you must enable several components.
 
 .Prerequisites
-* You have logged in to {openshift-platform}.
-* You have the `cluster-admin` role in {openshift-platform}.
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
 * You have access to a Ray cluster image. For information about how to create a Ray cluster, see the link:https://docs.ray.io/en/latest/index.html[Ray documentation].
 * You have sufficient resources. In addition to the base {productname-short} resources, you need 1.1 vCPU and 1.6 GB memory to deploy the distributed workloads infrastructure.
 * You have logged in to {productname-long}.
@@ -17,14 +16,14 @@ ifndef::upstream[]
 endif::[]
 
 .Procedure
-. Log in to the {openshift-platform} web console.
+. Log in to the {openshift-platform} web console as a cluster administrator.
 . Enable the required components, as follows:
 .. Click *Operators* -> *Installed Operators*.
 .. Search for the *Red Hat OpenShift Data Science* Operator, and click the Operator name to open the Operator details page.
 .. Click the *Data Science Cluster* tab.
-.. Click the *rhods* cluster.
-.. Click the *YAML* tab.
-.. In the `spec.components` section, ensure that the `managementState` is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook, as shown in the following table.
+.. Click the *default-dsc* instance to open the instance details page.
+.. Click the *YAML* tab to show the instance specifications.
+.. In the `spec.components` section, ensure that the `managementState` field is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook, as shown in the following table.
 +
 |===
 |Component | Pipelines | Notebooks
@@ -59,8 +58,8 @@ After a short time, the components are ready.
 When the status of the `codeflare-operator-manager-_<pod-id>_` is `Running`, the pod is ready to use.
 To see more information about the pod, click the pod name to open the pod details page, and click the *Logs* tab.
 . Log in to {productname-long}: click the application launcher (image:images/osd-app-launcher.png[The application launcher]) and click *{productname-long}*.
-. Start the notebook server, as follows:
-.. On the *Applications > Enabled* page, in the *Jupyter* tile, click *Launch application*.
+. Start a notebook server, as follows:
+.. On the *Applications > Enabled* page, on the *Jupyter* tile, click *Launch application*.
 The *Start a notebook server* page opens.
 .. In the *Notebook image* section, select the *Standard Data Science* image.
 Expand the *Versions* section, and select the latest version.
@@ -75,7 +74,7 @@ The "Clone a repo" dialog opens.
 The `codeflare-sdk` repository is listed in the left navigation pane.
 . Run a distributed workload job as follows:
 .. In the JupyterLab interface, in the left navigation pane, double-click *codeflare-sdk*.
-.. Double-click *demo-notebooks -> guided-demos*.
+.. Double-click *demo-notebooks*, and then double-click *guided-demos*.
 .. Update each example demo notebook to replace the links to the example community image with a link to your Ray cluster image.
 .. Update each example demo notebook to set `instascale` to `False`.
 Instascale is not deployed in the Technology Preview version of the distributed workloads feature.
