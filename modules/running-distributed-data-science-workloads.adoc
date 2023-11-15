@@ -21,7 +21,13 @@ endif::[]
 .. Click *Operators* -> *Installed Operators*.
 .. Search for the *Red Hat OpenShift Data Science* Operator, and click the Operator name to open the Operator details page.
 .. Click the *Data Science Cluster* tab.
-.. Click the *default-dsc* instance to open the instance details page.
+.. Click the default instance name to open the instance details page.
++
+[NOTE]
+====
+Starting from {productname-long} 2.4, the default instance name for new installations is *default-dsc*.
+The default instance name for earlier installations, *rhods*, is preserved during upgrade.
+====
 .. Click the *YAML* tab to show the instance specifications.
 .. In the `spec.components` section, ensure that the `managementState` field is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook, as shown in the following table.
 +
