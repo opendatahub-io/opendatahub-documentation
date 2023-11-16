@@ -1,0 +1,84 @@
+:_module-type: PROCEDURE
+
+[id="configuring-distributed-workloads_{context}"]
+= Configuring distributed workloads
+
+[role='_abstract']
+To configure the distributed workloads feature for your data scientists to use in {productname-short}, you must enable several components.
+
+.Prerequisites
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+* You have sufficient resources. In addition to the base {productname-short} resources, you need 1.1 vCPU and 1.6 GB memory to deploy the distributed workloads infrastructure.
+* You have access to a Ray cluster image. For information about how to create a Ray cluster, see the link:https://docs.ray.io/en/latest/index.html[Ray documentation].
+ifndef::upstream[]
+* If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}. See link:{rhodsdocshome}{default-format-url}/managing_resources/enabling-gpu-support-in-data-science_user-mgmt[Enabling GPU support in {productname-short}].
+endif::[]
+
+.Procedure
+. Log in to the {openshift-platform} web console as a cluster administrator.
+. Enable the required components, as follows:
+.. Click *Operators* -> *Installed Operators*.
+.. Search for the *Red Hat OpenShift Data Science* Operator, and click the Operator name to open the Operator details page.
+.. Click the *Data Science Cluster* tab.
+.. Click the default instance name to open the instance details page.
++
+[NOTE]
+====
+Starting from {productname-long} 2.4, the default instance name for new installations is *default-dsc*.
+The default instance name for earlier installations, *rhods*, is preserved during upgrade.
+====
+.. Click the *YAML* tab to show the instance specifications.
+.. In the `spec.components` section, ensure that the `managementState` field is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
++
+[cols="34,20,20,26"]
+|===
+|Component | Pipelines only | Notebooks only | Pipelines and notebooks
+
+|`codeflare`
+|`Managed`
+|`Managed`
+|`Managed`
+
+|`dashboard`
+|`Managed`
+|`Managed`
+|`Managed`
+
+|`datasciencepipelines`
+|`Managed`
+|`Removed`
+|`Managed`
+
+|`ray`
+|`Managed`
+|`Managed`
+|`Managed`
+
+|`workbenches`
+|`Removed`
+|`Managed`
+|`Managed`
+|===
+
+.. Click *Save*.
+After a short time, the components are ready.
+
+
+.Verification
+Check the status of the components, as follows:
+
+. In the {openshift-platform} web console, from the *Project* list, select *redhat-ods-applications*.
+. Click *Workloads* -> *Deployments*.
+. Search for the *codeflare-operator-manager* deployment, and click the deployment name to open the deployment details page.
+. Click the *Pods* tab.
+When the status of the `codeflare-operator-manager-_<pod-id>_` is `Running`, the pod is ready to use.
+To see more information about the pod, click the pod name to open the pod details page, and click the *Logs* tab.
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////
