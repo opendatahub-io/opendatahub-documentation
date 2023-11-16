@@ -1,0 +1,39 @@
+:_module-type: PROCEDURE
+
+[id="running-distributed-data-science-workloads-from-notebooks_{context}"]
+= Running distributed data science workloads from notebooks
+
+[role='_abstract']
+To run a distributed data science workload from a notebook, you must first clone the `codeflare-sdk` repository, and provide the link to your Ray cluster image.
+
+.Prerequisites
+* You have created a data science project that contains a workbench that is running one of the default notebook images, for example, the *Standard Data Science* notebook.
+See the table in link:{rhodsdocshome}{default-format-url}/working_on_data_science_projects/creating-and-importing-notebooks_notebooks#notebook-images-for-data-scientists[Notebook images for data scientists] for a complete list of default notebook images.
+* You have launched your notebook server and logged in to Jupyter.
+
+.Procedure
+. If you have not already done so, clone the `codeflare-sdk` repository as follows:
+.. In the JupyterLab interface, click *Git > Clone a Repository*.
+.. In the "Clone a repo" dialog, enter `https://github.com/project-codeflare/codeflare-sdk.git` and then click *Clone*.
+The `codeflare-sdk` repository is listed in the left navigation pane.
+. Run a distributed workload job as shown in the following example:
+.. In the JupyterLab interface, in the left navigation pane, double-click *codeflare-sdk*.
+.. Double-click *demo-notebooks*, and then double-click *guided-demos*.
+.. Update each example demo notebook as follows:
+** Replace the links to the example community image with a link to your Ray cluster image.
+** Set `instascale` to `False`.
+InstaScale is not deployed in the Technology Preview version of the distributed workloads feature.
+.. Run the notebooks.
+
+
+.Verification
+The notebooks run to completion without errors. In the notebooks, the output from the `cluster.status()` function or `cluster.details()` function indicates that the Ray cluster is `Active`.
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////
