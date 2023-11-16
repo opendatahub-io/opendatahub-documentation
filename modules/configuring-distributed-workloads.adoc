@@ -15,20 +15,18 @@ ifndef::upstream[]
 endif::[]
 
 .Procedure
-. Log in to the {openshift-platform} web console as a cluster administrator.
-. Enable the required components, as follows:
-.. Click *Operators* -> *Installed Operators*.
-.. Search for the *Red Hat OpenShift Data Science* Operator, and click the Operator name to open the Operator details page.
-.. Click the *Data Science Cluster* tab.
-.. Click the default instance name to open the instance details page.
+. In the {openshift-platform} web console, click *Operators* -> *Installed Operators*.
+. Search for the *Red Hat OpenShift Data Science* Operator, and click the Operator name to open the Operator details page.
+. Click the *Data Science Cluster* tab.
+. Click the default instance name to open the instance details page.
 +
 [NOTE]
 ====
 Starting from {productname-long} 2.4, the default instance name for new installations is *default-dsc*.
 The default instance name for earlier installations, *rhods*, is preserved during upgrade.
 ====
-.. Click the *YAML* tab to show the instance specifications.
-.. In the `spec.components` section, ensure that the `managementState` field is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
+. Click the *YAML* tab to show the instance specifications.
+. In the `spec.components` section, ensure that the `managementState` field is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
 +
 [cols="34,20,20,26"]
 |===
@@ -60,7 +58,7 @@ The default instance name for earlier installations, *rhods*, is preserved durin
 |`Managed`
 |===
 
-.. Click *Save*.
+. Click *Save*.
 After a short time, the components are ready.
 
 
