@@ -15,8 +15,8 @@ ifndef::upstream[]
 endif::[]
 
 .Procedure
-. In the {openshift-platform} web console, click *Operators* -> *Installed Operators*.
-. Search for the *Red Hat OpenShift Data Science* Operator, and click the Operator name to open the Operator details page.
+. In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
+. Search for the *{productname-long}* Operator, and then click the Operator name to open the Operator details page.
 . Click the *Data Science Cluster* tab.
 . Click the default instance name to open the instance details page.
 +
@@ -28,6 +28,7 @@ The default instance name for earlier installations, *rhods*, is preserved durin
 . Click the *YAML* tab to show the instance specifications.
 . In the `spec.components` section, ensure that the `managementState` field is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
 +
+.Components required for distributed workloads
 [cols="34,20,20,26"]
 |===
 |Component | Pipelines only | Notebooks only | Pipelines and notebooks
@@ -59,24 +60,15 @@ The default instance name for earlier installations, *rhods*, is preserved durin
 |===
 
 . Click *Save*.
-After a short time, the components are ready.
+After a short time, the components with a `Managed` state are ready.
 
 
 .Verification
-Check the status of the components, as follows:
+Check the status of the `codeflare-operator-manager` pod, as follows:
 
-. In the {openshift-platform} web console, from the *Project* list, select *redhat-ods-applications*.
+. In the {openshift-platform} console, from the *Project* list, select *redhat-ods-applications*.
 . Click *Workloads* -> *Deployments*.
 . Search for the *codeflare-operator-manager* deployment, and click the deployment name to open the deployment details page.
 . Click the *Pods* tab.
-When the status of the `codeflare-operator-manager-_<pod-id>_` is `Running`, the pod is ready to use.
+When the status of the `codeflare-operator-manager-_<pod-id>_` pod is `Running`, the pod is ready to use.
 To see more information about the pod, click the pod name to open the pod details page, and click the *Logs* tab.
-
-////
-[role='_additional-resources']
-.Additional resources
-<Do we want to link to additional resources?>
-
-
-* link:https://url[link text]
-////
