@@ -17,7 +17,7 @@ endif::[]
 * You have created a data science project that you can add a model server to.
 ifndef::upstream[]
 * If you want to use a custom model-serving runtime for your model server, you have added and enabled the runtime. See link:{rhodsdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#adding-a-custom-model-serving-runtime_nb-server[Adding a custom model-serving runtime].
-* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. See {rhodsdocshome}{default-format-url}/managing_resources#enabling-gpu-support-in-data-science[Enabling GPU support in {productname-short}]
+* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. See link:{rhodsdocshome}{default-format-url}/managing_resources/managing-cluster-resources_resource-mgmt#enabling-gpu-support_cluster-mgmt[Enabling GPU support in {productname-short}]
 endif::[]
 ifdef::upstream[]
 * If you want to use a custom model-serving runtime for your model server, you have added and enabled the runtime. See link:{odhdocshome}/working-on-data-science-projects/#adding-a-custom-model-serving-runtime_nb-server[Adding a custom model-serving runtime].
@@ -43,7 +43,7 @@ The *Add model server* dialog opens.
 * Large
 * Custom
 . Optional: If you selected *Custom* in the preceding step, configure the following settings in the *Model server size* section to customize your model server:
-.. In the *CPUs requested* field, specify a number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
+.. In the *CPUs requested* field, specify the number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
 .. In the *CPU limit* field, specify the maximum number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
 .. In the *Memory requested* field, specify the requested memory for the model server in gibibytes (Gi).
 .. In the *Memory limit* field, specify the maximum memory limit for the model server in gibibytes (Gi).
@@ -56,8 +56,8 @@ If you are using a _custom_ model-serving runtime with your model server, you mu
 ====
 . Optional: From the *Accelerator* list, select an accelerator. 
 .. If you selected an accelerator in the preceding step, specify the number of accelerators to use.
-. Optional: In the *Model route* section, select the *Make deployed models available through an external route* check box to make your deployed models available to external clients.
-. Optional: In the *Token authorization* section, select the *Require token authentication* check box to require token authentication for your model server. To finish configuring token authentication, perform the following actions:
+. Optional: In the *Model route* section, select the *Make deployed models available through an external route* checkbox to make your deployed models available to external clients.
+. Optional: In the *Token authorization* section, select the *Require token authentication* checkbox to require token authentication for your model server. To finish configuring token authentication, perform the following actions:
 .. In the *Service account name* field, enter a service account name for which the token will be generated. The generated token is created and displayed in the *Token secret* field when the model server is configured.
 .. To add an additional service account, click *Add a service account* and enter another service account name.
 . Click *Add*.
