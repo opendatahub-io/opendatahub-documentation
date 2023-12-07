@@ -36,16 +36,16 @@ After the pipeline server is created, the `/metadata` and `/artifacts` folders a
 * Select *Existing data connection* to use a data connection that you previously defined. If you selected this option, from the *Name* list, select the name of the relevant data connection and skip to step 6.
 * Select *Create new data connection* to add a new data connection that your pipeline server can access.
 . If you selected *Create new data connection*, perform the following steps:
-.. In the *Name* field, enter a name for the data connection.
-.. In the *Access key* field, enter your access key ID for Amazon Web Services.
-.. In the *Secret key* field, enter your secret access key for the account you specified.
-.. Optional: In the *Endpoint* field, enter the endpoint of your AWS S3 storage.
-.. Optional: In the *Region* field, enter the default region of your AWS account.
-.. In the *Bucket* field, enter the name of the AWS S3 bucket.
+.. In the *Name* field, enter a unique name for the data connection.
+.. In the *Access key* field, enter the access key ID for the S3-compatible object storage provider.
+.. In the *Secret key* field, enter the secret access key for the S3-compatible object storage account that you specified.
+.. Optional: In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
+.. Optional: In the *Region* field, enter the default region of your S3-compatible object storage account.
+.. In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
 +
 [IMPORTANT]
 ====
-If you are creating a new data connection, in addition to the other designated mandatory fields, the *AWS_S3_BUCKET* field is mandatory. If you specify incorrect data connection settings, you cannot update these settings on the same pipeline server. Therefore, you must delete the pipeline server and configure another one.
+If you are creating a new data connection, in addition to the other designated mandatory fields, the *Bucket* field is mandatory. If you specify incorrect data connection settings, you cannot update these settings on the same pipeline server. Therefore, you must delete the pipeline server and configure another one.
 ====
 . In the *Database* section, click *Show advanced database options* to specify the database to store your pipeline data and select one of the following sets of actions:
 * Select *Use default database stored on your cluster* to deploy a MariaDB database in your project.
