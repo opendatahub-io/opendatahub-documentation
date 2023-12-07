@@ -4,22 +4,19 @@ ifdef::context[:parent-context: {context}]
 
 :context: model-serving
 
-[id="model-serving-on-openshift-data-science_{context}"]
-= Model serving on {productname-short}
+[id="serving-small-and-medium-sized-models_{context}"]
+= Serving small and medium-sized models
 
 [role='_abstract']
-ifdef::managed[]
-Model serving is currently available as a Field Trial feature. For more information on the scope of Field Trial status, see link:https://access.redhat.com/support/policy/updates/rhoai/service[OpenShift AI Service Definition].
-endif::[]
-ifdef::self-managed[]
-Model serving is currently available as a Technology Preview. For further information on the scope of Technology Preview status, and the associated support implications, refer to link:https://access.redhat.com/support/offerings/techpreview/.endif::[Technology Preview Features Support Scope].
-endif::[]
-
 As a data scientist, you can deploy your trained machine-learning models to serve intelligent applications in production. After you have deployed your model, applications can send requests to the model using its deployed API endpoint.
+
+When you want to deploy small or medium-sized models that can share server resources, you can use the _multi-model serving platform_. On this model-serving platform, multiple models can be deployed on the same model server. 
 
 == Configuring model servers
 
-include::modules/adding-a-model-server-to-your-data-science-project.adoc[leveloffset=+2]
+include::modules/enabling-the-multi-model-serving-platform.adoc[leveloffset=+2]
+
+include::modules/adding-a-model-server-for-the-multi-model-serving-platform.adoc[leveloffset=+2]
 
 include::modules/adding-a-custom-model-serving-runtime.adoc[leveloffset=+2]
 
