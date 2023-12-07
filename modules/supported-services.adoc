@@ -52,8 +52,15 @@ The `pachd` pod that Pachyderm creates *intentionally* does not provide terminal
 ====
 endif::[]
 
+ifdef::self-managed[]
 | Starburst Enterprise
-| Starburst Enterprise is a fully managed service to run high-performance queries across your various data sources using SQL.
+| Starburst Enterprise platform (SEP) is the commercial distribution of Trino, which is an open-source, Massively Parallel Processing (MPP) ANSI SQL query engine. Starburst simplifies data access for your {productname-long} workloads by providing fast access to all of your data. Starburst does this by connecting directly to each data source and pulling the data back into memory for processing, alleviating the need to copy or move the data into a single location first.
+endif::[]
+
+ifndef::self-managed[]
+| Starburst Galaxy
+| Starburst Galaxy is a fully managed service to run high-performance queries across your various data sources using SQL.
+endif::[]
 
 |===
 
