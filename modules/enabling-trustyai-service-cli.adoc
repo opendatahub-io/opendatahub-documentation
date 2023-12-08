@@ -28,13 +28,22 @@ For each data science project (namespace) that contains models for which you wan
 
 ifdef::upstream[]
 * You have installed {productname-short} as described in link:https://opendatahub.io/docs/quick-installation-new-operator/[Quick Installation(v2)].
+
+* The `trustyai` component is set to *Managed* for the {productname-short} Operator.
++
+To verify this setting, navigate to *Operators* -> *Installed Operators* -> *{productname-short} Operator* -> *Data Science Cluster*. Select the *default* instance and then click *YAML*. Scroll down to view the `spec:components` setting:
++
+----
+ trustyai:
+      devFlags: {}
+      managementState: Managed
+----
 endif::[]
 
 ifndef::upstream[]
 * You have installed {productname-short} as described in link:{rhodsdocshome}{default-format-url}/installing_and_uninstalling_openshift_data_science_self-managed/installing-the-openshift-data-science-operator_operator-install[Installing and managing version 2 of the Red Hat OpenShift Data Science Operator].
-endif::[]
 
-* The `trustyai` component is set to *Managed* for the {productname-short} Operator.
+* The `trustyai` component is set to *Managed* for the Red Hat OpenShift Data Science Operator.
 +
 To verify this setting, navigate to *Operators* -> *Installed Operators* -> *Red Hat OpenShift Data Science Operator* -> *Data Science Cluster*. Select the *default* instance and then click *YAML*. Scroll down to view the `spec:components` setting:
 +
@@ -43,6 +52,7 @@ To verify this setting, navigate to *Operators* -> *Installed Operators* -> *Red
       devFlags: {}
       managementState: Managed
 ----
+endif::[]
 +
 *NOTE:* If the `trustyai` component is set to *Removed*, edit the YAML file to set it to *Managed*.
 
