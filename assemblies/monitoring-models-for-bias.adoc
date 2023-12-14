@@ -16,14 +16,6 @@ ifdef::preview[]
 include::../_artifacts/document-attributes-global.adoc[]
 endif::preview[]
 
-ifndef::upstream[]
-[IMPORTANT]
-====
-The TrustyAI features are for Technology Preview only. Technology Preview features are not supported with {org-name} production service level agreements (SLAs), might not be functionally complete, and {org-name} does not recommend using them for production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. 			
-For more information on {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/ [Technology Preview Features Scope]. 		
-====
-endif::[]
-
 As a data scientist, you might need to monitor your machine learning models for bias. This means monitoring for algorithmic deficiencies that might skew the outcomes or decisions that the model produces. Importantly, this type of monitoring helps you to ensure that the model is not biased against particular protected groups or features.
 
 {productname-long} provides a set of metrics that help you to monitor your models for bias. You can use the {productname-short} interface to choose an available metric and then configure model-specific details such as a protected attribute, the privileged and unprivileged groups, the outcome you want to monitor, and a threshold for bias. You then see a chart of the calculated values for a specified number of model inferences.
@@ -39,13 +31,7 @@ When you configure your model for bias monitoring, you can view the metrics that
 
 .Prerequisites
 
-ifndef::upstream[]
-* You configured bias metrics for your model as described in link:{rhodsdocshome}{default-format-url}/monitoring_data_science_models/monitoring-models-for-bias_bias-monitoring#configuring-bias-monitoring-for-a-model-cli_bias-monitoring[Configuring bias monitoring for a model].
-
-endif::[]
-ifdef::upstream[]
 * You configured bias metrics for your model as described in link:{odhdocshome}/monitoring-data-science-models/#configuring-bias-monitoring-for-a-model-cli_bias-monitoring[Configuring bias monitoring for a model].
-endif::[]
 
 * You have admin access to the OpenShift web console.
 
