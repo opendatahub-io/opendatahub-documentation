@@ -1,35 +1,49 @@
 :_module-type: PROCEDURE
+//:disconnected:
+//:upstream:
+//:self-managed:
 
 [id='enabling-gpu-support_{context}']
 = Enabling GPU support in {productname-short}
 
 [role='_abstract']
-Optionally, to ensure that your data scientists can use compute-heavy workloads in their models, you can enable graphics processing units (GPUs) in {productname-short}. To enable GPUs on OpenShift, you must install the NVIDIA GPU Operator. As a prerequisite to installing the NVIDIA GPU Operator, you must install the link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/node-feature-discovery-operator[Node Feature Discovery Operator]. For information about how to install these operators, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
+Optionally, to ensure that your data scientists can use compute-heavy workloads in their models, you can enable graphics processing units (GPUs) in {productname-short}. 
 
-After installing the NVIDIA GPU Operator, you must also create an accelerator profile.
-ifdef::upstream[]
-For more information, see link:{odhdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+//the following note applies to self-managed connected only
+ifdef::self-managed[]
+ifndef::disconnected[]
+[IMPORTANT]
+====
+If you are using {productname-short} in a disconnected self-managed environment, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/enabling-gpu-support_install[Enabling GPU support in {productname-short}] instead.
+====
 endif::[]
-ifndef::upstream[]
-For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-accelerators_accelerators[Working with accelerators].
 endif::[]
 
+//the following note applies to cloud service only
 ifndef::self-managed[]
+ifndef::upstream[]
 [IMPORTANT]
 ====
 The NVIDIA GPU Add-on is no longer supported. Instead, enable GPUs by installing the NVIDIA GPU Operator. If your deployment has a previously-installed NVIDIA GPU Add-on, before you install the NVIDIA GPU Operator, use OpenShift Cluster Manager to uninstall the NVIDIA GPU Add-on from your cluster.
 ====
 endif::[]
+endif::[]
 
-ifdef::self-managed[]
+.Procedure
+//the following step applies to cloud service, self-managed connected, and upstream
 ifndef::disconnected[]
-[IMPORTANT]
-====
-Follow the instructions in this chapter only if you want to enable GPU support in an unrestricted self-managed environment. To enable GPU support in a disconnected self-managed environment, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/enabling-gpu-support_install[Enabling GPU support in {productname-short}] instead.
-====
+. To enable GPU support on an OpenShift cluster, follow the instructions here: link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
+endif::[]
+//the following step applies to self-managed disconnected only
+ifdef::disconnected[]
+. To enable GPU support on an OpenShift cluster in a disconnected or airgapped environment, follow the instructions here: link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mirror-gpu-ocp-disconnected.html[Deploy GPU Operators in a disconnected or airgapped environment^] in the NVIDIA documentation.
+endif::[]
+//the following step applies to downstream only: self-managed (connected and disconnected) and cloud service
+ifndef::upstream[]
+. After installing the NVIDIA GPU Operator, create an accelerator profile as described in link:{odhdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+endif::[]
+//the following step applies to upstream only
+ifdef::upstream[]
+. After installing the NVIDIA GPU Operator, create an accelerator profile as described in  link:{odhdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
 endif::[]
 
-ifdef::disconnected[]
-Follow the instructions in this chapter only if you want to enable GPU support in a disconnected self-managed environment. For more information on GPU enablement on a OpenShift cluster in a disconnected or airgapped environment, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mirror-gpu-ocp-disconnected.html[Deploy GPU Operators in a disconnected or airgapped environment^] in the NVIDIA documentation.
-endif::[]
-endif::[]
