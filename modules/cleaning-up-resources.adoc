@@ -1,0 +1,46 @@
+:_module-type: PROCEDURE
+
+[id='cleaning-up-resources_{context}']
+= Cleaning up resources
+
+[role='_abstract']
+Open Data Hub Operator versions 2.0 and 2.1 created some custom resource instances on your OpenShift Container Platform cluster for various components of {productname-short}. Before upgrading to versions 2.2 or later, you must manually clean up these resources in your cluster.
+
+.Prerequisites
+* You have installed version 2.0 or 2.1 of the Open Data Hub Operator and you want to upgrade to version 2.2 or later.
+* You have cluster administrator privileges for your OpenShift Container Platform cluster.
+
+.Procedure
+. Log in to the {openshift-platform} web console as a cluster administrator.
+. Follow these steps to disable the components in your DataScienceCluster instance:
+.. In the web console, click *Operators* → *Installed Operators* and then click the Open Data Hub Operator.
+.. Click the *Data Science Cluster* tab.
+.. On the *DataScienceClusters* page, click the `default` object.
+.. Click the *YAML* tab.
++ 
+An embedded YAML editor opens showing the custom resource (CR) file for the `DataScienceCluster` object.
+.. In the `spec.components` section of the CR, for each {productname-short} component shown, set the value of the `enabled` field to `false`.
+.. Click *Save*.
+. Follow these steps to delete the DataScienceCluster instance and DSCInitialization instance:
+.. Click *Operators* → *Installed Operators* and then click the Open Data Hub Operator.
+.. Click the *All instances* tab.
+.. Click the Options menu image:images/osd-ellipsis.png[Options menu] for `DataScienceCluster` and select *Delete Data Science Cluster*.
+.. Click *Delete* to confirm.
+.. Click the Options menu image:images/osd-ellipsis.png[Options menu] for `DSCInitialization` and select *Delete Data Science Cluster*.
+.. Click *Delete* to confirm.
+. Follow these steps to uninstall the Open Data Hub Operator:
+.. On the Open Data Hub Operator page, click *Actions* and then select *Uninstall Operator*.
+.. Click *Uninstall* to confirm.
+. Follow these steps to delete the CustomResourceDefinitions:
+.. Click *Administration* → *CustomResourceDefinitions*.
+.. Search for `DataScienceCluster`.
+.. In the *Latest version* column, if it shows `v1alpha1`, click the Options menu image:images/osd-ellipsis.png[Options menu] and select *Delete CustomResourceDefinition*.
+.. Click *Delete* to confirm.
+.. Search for `DSCInitialization`.
+.. In the *Latest version* column, if it shows `v1alpha1`, click the Options menu image:images/osd-ellipsis.png[Options menu] and select *Delete CustomResourceDefinition*.
+.. Click *Delete* to confirm.
+
+.Next Step
+* Install the Open Data Hub Operator version 2.
+
+

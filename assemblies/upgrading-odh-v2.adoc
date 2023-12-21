@@ -1,0 +1,41 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: upgradev2
+
+[id="upgrading-odh-v2_{context}"]
+= Upgrading Open Data Hub version 2.0 to version 2.2
+
+[role='_abstract']
+You can upgrade the Open Data Hub Operator from version 2.0 or 2.1 to version 2.2 or later by using the OpenShift console. 
+For information about upgrading from version 1 to version 2.2 or later, see link:{odhdocshome}/upgrading-open-data-hub/#upgrading-the-odh-operator-v1_upgradev1[Upgrading Open Data Hub version 1 to version 2].
+For information about installing the Open Hub Operator, see link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing Open Data Hub Operator version 2].
+
+Note that Open Data Hub Operator versions 2.2 and later use an upgraded API version for a DataScienceCluster instance, resulting in the following differences.
+
+.DataScienceCluster instance differences
+|===
+| | ODH 2.1 and earlier | ODH 2.2 and later
+
+|API version
+|`v1alpha1`
+|`v1`
+
+|Enable component
+|`.spec.components.[component_name].enabled: true`
+|`.spec.components.[component_name].managementState: Managed`
+
+|Disable component
+|`.spec.components.[component_name].enabled: false`
+|`.spec.components.[component_name].managementState: Removed`
+|===
+
+Upgrading Open Data Hub involves the following tasks:
+
+. Cleaning up resources from the previous version of {productname-short}.
+. Installing version 2.2 or later of {productname-short}.
+
+include::modules/cleaning-up-resources.adoc[leveloffset=+1]
+
+include::installing-odh-v2.adoc[leveloffset=+1]
