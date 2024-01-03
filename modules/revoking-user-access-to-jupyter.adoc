@@ -4,9 +4,9 @@
 = Revoking user access to Jupyter
 
 [role='_abstract']
-You can revoke a user’s access to Jupyter to prevent them from running notebook servers and consuming resources in your cluster through Jupyter, while still allowing them access to {productname-short} and other services that use OpenShift's identity provider for authentication.
+You can revoke a user's access to Jupyter by removing the user from the specialized user groups that define access to {productname-short}. When you remove a user from the specialized user groups, the user is prevented from accessing the {productname-short} dashboard and from using associated services that consume resources in your cluster.
 
-IMPORTANT: Follow these steps only if you have implemented specialized user groups to restricted access to {productname-short}. To completely remove a user from {productname-short}, you must remove them from the allowed group in your OpenShift identity provider.
+IMPORTANT: Follow these steps only if you have implemented specialized user groups to restrict access to {productname-short}. To completely remove a user from {productname-short}, you must remove them from the allowed group in your OpenShift identity provider.
 
 .Prerequisites
 * You have stopped any notebook servers owned by the user you want to delete.
@@ -16,7 +16,7 @@ endif::[]
 ifdef::self-managed[]
 * You are assigned the `cluster-admin` role in {openshift-platform}.
 endif::[]
-* If you are using specialized user groups for {productname-short}, the user is part of the user group, administrator group, or both.
+* You are using specialized user groups for {productname-short}, and the user is part of the specialized user group, administrator group, or both.
 
 .Procedure
 . In the {openshift-platform} web console, click *User Management* -> *Groups*.
