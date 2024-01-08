@@ -29,6 +29,10 @@ The NVIDIA GPU Add-on is no longer supported. Instead, enable GPUs by installing
 endif::[]
 endif::[]
 
+.Prerequisites
+* You have logged in to {openshift-platform}.
+* You have the `cluster-admin` role in {openshift-platform}.
+
 .Procedure
 //the following step applies to cloud service, self-managed connected, and upstream
 ifndef::disconnected[]
@@ -38,12 +42,34 @@ endif::[]
 ifdef::disconnected[]
 . To enable GPU support on an OpenShift cluster in a disconnected or airgapped environment, follow the instructions here: link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mirror-gpu-ocp-disconnected.html[Deploy GPU Operators in a disconnected or airgapped environment^] in the NVIDIA documentation.
 endif::[]
+//the following steps apply to upstream and downstream: self-managed (connected and disconnected) and cloud service
+. Delete the *migration-gpu-status* ConfigMap.
+.. In the {openshift-platform} web console, change into the *Administrator* perspective.
+.. Set the *Project* to *All Projects* or *redhat-ods-applications* to ensure you can see the appropriate ConfigMap.
+.. Search for the *migration-gpu-status* ConfigMap.
+.. Click the action menu (&#8942;) and select *Delete ConfigMap* from the list.
++
+The *Delete ConfigMap* dialog appears.
+.. Inspect the dialog and confirm that you are deleting the correct ConfigMap.
+.. Click *Delete*.
+. Restart the dashboard replica set.
+.. In the {openshift-platform} web console, change into the *Administrator* perspective.
+.. Click *Workloads* -> *Deployments*.
+.. Set the *Project* to *All Projects* or *redhat-ods-applications* to ensure you can see the appropriate deployment.
+.. Search for the *rhods-dashboard* deployment.
+.. Click the action menu (&#8942;)  and select *Restart Rollout* from the list.
+.. Wait until the *Status* column indicates that all pods in the rollout have fully restarted.
+
+.Verification
+* The NVIDIA GPU Operator displays on the *Operators* -> *Installed Operators* page in the {openshift-platform} web console.
+* The reset *migration-gpu-status* instance is present in the *Instances* tab on the `AcceleratorProfile` custom resource definition (CRD) details page.
+
 //the following step applies to downstream only: self-managed (connected and disconnected) and cloud service
 ifndef::upstream[]
-. After installing the NVIDIA GPU Operator, create an accelerator profile as described in link:{odhdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+After installing the NVIDIA GPU Operator, create an accelerator profile as described in link:{odhdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
 endif::[]
 //the following step applies to upstream only
 ifdef::upstream[]
-. After installing the NVIDIA GPU Operator, create an accelerator profile as described in  link:{odhdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+After installing the NVIDIA GPU Operator, create an accelerator profile as described in  link:{odhdocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
 endif::[]
 
