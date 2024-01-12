@@ -1,0 +1,37 @@
+:_module-type: PROCEDURE
+
+[id='duplicating-a-bias-metric_{context}']
+= Duplicating a bias metric
+
+[role='_abstract']
+If you want to edit an existing metric, you can duplicate (copy) it in the {productname-short} interface and then edit the values in the copy. However, note that the history of the original metric is not applied to the copy.
+
+.Prerequisites
+ifndef::upstream[]
+* You are familiar with link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models-for-bias/supported-bias-metrics_monitor[the bias metrics that {productname-short} supports] and how to interpret them.
+endif::[]
+ifdef::upstream[]
+* You are familiar with link:{odhdocshome}/monitoring-data-science-models-for-bias/#supported-bias-metrics_monitor[the bias metrics that {productname-short} supports] and how to interpret them.
+endif::[]
+
+* You are familiar with the specific data set schema and understand the names and meanings of the inputs and outputs.
+
+* You have logged in to {productname-long}.
+
+* There is an existing bias metric that you want to duplicate.
+
+.Procedure
+. In the left menu of the {productname-short} dashboard, click *Model Serving*.
+. On the *Model serving* page, click the name of the model with the bias metric that you want to duplicate.
+. In the metrics page for the model, click the *Model bias* tab.
+. Click the action menu (&#8942;) next to the metric that you want to copy and then click *Duplicate*.
+. In the *Configure bias metrics* dialog, follow these steps:
+.. In the *Metric name* field, type a unique name for your bias metric. Note that you cannot change the name of this metric later.
+.. Change the values of the fields as needed. For a description of these fields, see xref:creating-a-bias-metric-using-dashboard[Creating a bias metric by using the dashboard].
+.  Ensure that the values you entered are correct, and then click *Configure*.
+
+.Verification
+* The *Bias metric configuration* page shows the bias metrics that you configured for your model.
+
+.Next step
+To view metrics, on the *Bias metric configuration* page, click *View metrics* in the upper-right corner. For more information, see xref:viewing-bias-metrics[Viewing bias metrics for a model].
