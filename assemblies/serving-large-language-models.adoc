@@ -1,0 +1,31 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: serving-large-language-models
+
+[id="serving-large-language-models_{context}"]
+= Serving large language models
+
+[role='_abstract']
+For deploying large language models (LLMs), {productname-long} includes a _single model serving platform_ that is based on the KServe component. Because each model is deployed from its own model server, the single model serving platform helps you to deploy, monitor, scale, and maintain LLMs.
+
+include::modules/about-the-single-model-serving-platform.adoc[leveloffset=+1]
+include::modules/installing-kserve.adoc[leveloffset=+1]
+include::modules/deploying-models-using-the-single-model-serving-platform.adoc[leveloffset=+1]
+include::modules/enabling-the-single-model-serving-platform.adoc[leveloffset=+2]
+include::modules/deploying-models-on-the-single-model-serving-platform.adoc[leveloffset=+2]
+include::modules/accessing-api-endpoints-for-models-deployed-on-single-model-server.adoc[leveloffset=+2]
+
+// Conditionalized for self-managed because monitoring of user-defined projects is enabled on OSD and ROSA by default
+ifdef::self-managed[]
+include::modules/configuring-monitoring-for-the-single-model-serving-platform.adoc[leveloffset=+1]
+endif::[]
+
+include::modules/viewing-metrics-for-the-single-model-serving-platform.adoc[leveloffset=+1]
+
+// [role='_additional-resources']
+// == Additional resources
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

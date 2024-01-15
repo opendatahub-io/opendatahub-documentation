@@ -1,0 +1,11 @@
+:_module-type: CONCEPT
+
+[id="deploying-models-using-the-single-model-serving-platform_{context}"]
+= Deploying models by using the single model serving platform
+
+[role='_abstract']
+You can deploy trained models on {productname-short} to test and implement them into intelligent applications. Deploying a model makes it available as a service that you can access using an API. This enables you to return predictions based on data inputs.
+
+For serving large language models (LLMs), {productname-long} includes a _single model serving platform_ that is based on KServe. Because each model is deployed from its own model server, the single model serving platform helps you to deploy, monitor, scale, and maintain LLMs.
+
+IMPORTANT: The single model serving platform does not support self-signed certificates. Therefore, to deploy a model from S3 storage, you need to follow a workaround to disable SSL authentication. For more information, see the following Red Hat Solution article: link:https://access.redhat.com/solutions/7047512[How to skip the validation of SSL for KServe].

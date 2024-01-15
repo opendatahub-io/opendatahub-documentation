@@ -1,0 +1,30 @@
+:_module-type: CONCEPT
+
+[id="about-the-single-model-serving-platform_{context}"]
+= About the single model serving platform
+
+[role="_abstract"]
+For serving large language models (LLMs), {productname-long} includes a _single model serving platform_ that is based on KServe. The single model serving platform consists of the following components:
+
+* link:https://github.com/opendatahub-io/kserve[KServe^]: Kubernetes custom resource definition (CRD) that orchestrates model serving for all types of models. It includes model-serving runtimes that implement the loading of given types of model servers. KServe handles the lifecycle of the deployment object, storage access, and networking setup.
+
+* link:https://docs.openshift.com/serverless/1.29/about/about-serverless.html[{org-name} OpenShift Serverless^]: Cloud-native development model that allows for serverless deployments of models. OpenShift Serverless is based on the open source link:https://knative.dev/docs/[Knative^] project.
+
+ifdef::self-managed[]
+* link:https://docs.openshift.com/container-platform/{ocp-latest-version}/service_mesh/v2x/ossm-architecture.html[{org-name} OpenShift Service Mesh^]: Service mesh networking layer that manages traffic flows and enforces access policies. OpenShift Service Mesh is based on the open source link:https://istio.io/[Istio^] project.
+endif::[]
+
+ifndef::self-managed[]
+* link:https://docs.openshift.com/rosa/service_mesh/v2x/ossm-architecture.html[{org-name} OpenShift Service Mesh^]: Service mesh networking layer that manages traffic flows and enforces access policies. OpenShift Service Mesh is based on the open source link:https://istio.io/[Istio^] project.
+endif::[]
+
+To install the single model serving platform, you have the following options:
+
+Automated installation:: If you have not already created a `ServiceMeshControlPlane` or `KNativeServing` resource on your OpenShift cluster, you can configure the {productname-long} Operator to install KServe and its dependencies.
+
+Manual installation:: If you have already created a `ServiceMeshControlPlane` or `KNativeServing` resource on your OpenShift cluster, you _cannot_ configure the {productname-long} Operator to install KServe and its dependencies. In this situation, you must install KServe manually.
+
+When you have installed KServe, you can use the {productname-short} dashboard to deploy models using a link:https://github.com/opendatahub-io/caikit[Caikit^] and link:https://github.com/opendatahub-io/text-generation-inference[Text Generation Inference Server (TGIS)^]-based runtime that is included in {productname-short}. You can also configure monitoring for the platform and use Prometheus to scrape the available metrics.
+
+// [role="_additional-resources"]
+// .Additional resources

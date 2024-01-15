@@ -1,0 +1,40 @@
+:_module-type: PROCEDURE
+
+[id="accessing-api-endpoints-for-models-deployed-on-single-model-serving-platform_{context}"]
+= Accessing the API endpoints for models deployed on the single model serving platform
+
+[role='_abstract']
+When you deploy a model by using the single model serving platform, the model is available as a service that you can access using API requests. This enables you to return predictions based on data inputs. To use API requests to interact with your deployed model, you must know how to access the API endpoints that are available.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
+* You have deployed a model by using the single model serving platform.
+
+.Procedure
+. From the {productname-short} dashboard, click *Model Serving*.
+. From the *Project* list, select the project that you deployed a model in.
+. In the *Deployed models* table, for the model that you want to access, copy the URL shown in the *Inference endpoint* column.
+. Depending on what action you want to perform with the model (and if the model supports that action), add one of the following paths to the end of the inference endpoint URL:
++
+--
+* `:443/api/v1/task/server-streaming-text-generation`
+// * `:443/api/v1/task/text-classification`
+* `:443/api/v1/task/text-generation`
+// * `:443/api/v1/task/token-classification`
+--
++
+As indicated by the paths shown, the single model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
+
+. Use the endpoints to make API requests to your deployed model, as shown in the following example `curl` command:
++
+[source]
+----
+curl --json '{
+    "model_id": "<model_name>",
+    "inputs": "<query_text>"
+}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation
+----
+
+//[role='_additional-resources']
+//.Additional resources

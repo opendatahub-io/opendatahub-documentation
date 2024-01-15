@@ -1,0 +1,68 @@
+:_module-type: PROCEDURE
+
+[id="deploying-models-on-the-single-model-serving-platform_{context}"]
+= Deploying models on the single model serving platform
+
+[role='_abstract']
+When you have enabled the _single model serving platform_ (which uses the KServe component of {productname-short}), you can enable the Caikit-TGIS runtime that this platform uses and start to deploy models on the platform. 
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
+* You have installed KServe.
+* You have enabled the single model serving platform.
+* You have created a data science project.
+* To use the Caikit-TGIS runtime, you have converted your model to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving] repository.
+* You know the folder path for the data connection that you want the model to access.
+ifdef::self-managed[]
+* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. See link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/enabling-gpu-support_install[Enabling GPU support in {productname-short}].
+endif::[]
+ifndef::self-managed[]
+* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. See link:{rhoaidocshome}{default-format-url}/installing_{url-productname-short}/enabling-gpu-support_install[Enabling GPU support in {productname-short}].
+endif::[]
+
+.Procedure
+. Enable the Caikit-TGIS runtime as follows:
+.. In the left menu of the {productname-short} dashboard, click *Settings* -> *Serving runtimes*.
+.. On the *Serving runtimes* page, set the *Caikit TGIS ServingRuntime for KServe* runtime to *Enabled*. 
+. In the left menu, click *Data Science Projects*.
+. Click the name of the project that you want to deploy a model in.
+. In the *Models and model servers* section, perform one of the following actions:
++
+--
+* If you see a *​​Single model serving platform* tile, click *Deploy model* on the tile. 
+* If you do not see any tiles, click the *Deploy model* button.
+--
++
+The *Deploy model* dialog opens.
+. Configure properties for deploying your model as follows:
+.. In the *Model name* field, enter a unique name for the model that you are deploying.
+.. In the *Serving runtime* field, select *Caikit TGIS ServingRuntime for KServe*.
+.. From the *Model framework* list, select *caikit*.
+.. In the *Number of model replicas to deploy* field, specify a value.
+.. From the *Model server size* list, select a value.
+.. To specify the location of your model, perform one of the following sets of actions:
++
+--
+* *To use an existing data connection*
+... Select *Existing data connection*.
+... From the *Name* list, select a data connection that you previously defined.
+... In the *Folder path* field, enter the folder path that contains the model in your specified data source.
+
+* *To use a new data connection*
+... To define a new data connection that your model can access, select *New data connection*.
+... In the *Name* field, enter a unique name for the data connection.
+... In the *Access key* field, enter the access key ID for your S3-compatible object storage provider.
+... In the *Secret key* field, enter the secret access key for the S3-compatible object storage account that you specified.
+... In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
+... In the *Region* field, enter the default region of your S3-compatible object storage account.
+... In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
+... In the *Folder* path field, enter the folder path in your S3-compatible object storage that contains your data file.
+--
+.. Click *Deploy*.
+
+.Verification
+* Confirm that the deployed model is shown in the *Models and model servers* section of your project, and on the *Model Serving* page of the dashboard with a check mark in the *Status* column.
+
+// [role="_additional-resources"]
+// .Additional resources
