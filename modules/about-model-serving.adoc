@@ -4,15 +4,15 @@
 = About model serving
 
 [role="_abstract"]
-Serving trained models on {productname-long} means deploying the models on your OpenShift cluster to test and then integrate them into intelligent applications. Deploying a model makes it available as a service that you can access using an API. This enables you to return predictions based on data inputs that you provide through API calls. This process is known as model inferencing. When you serve a model on OpenShift AI, the inference endpoints that you can access for the deployed model are shown in the dashboard. 
+Serving trained models on {productname-long} means deploying the models on your OpenShift cluster to test and then integrate them into intelligent applications. Deploying a model makes it available as a service that you can access by using an API. This enables you to return predictions based on data inputs that you provide through API calls. This process is known as model _inferencing_. When you serve a model on {product-short}, the inference endpoints that you can access for the deployed model are shown in the dashboard. 
 
-{productname-short} provides two primary model serving platforms:
+{productname-short} provides the following model serving platforms:
 
 Single model serving platform::
-For deploying large language models (LLMs), {productname-short} includes a single model serving platform that uses the link:https://github.com/kserve/kserve[KServe^] component. Because each model is deployed from its own model server, the single model serving platform helps you to deploy, monitor, scale, and maintain LLMs.    
+For deploying large language models (LLMs), {productname-short} includes a _single model serving platform_ that is based on the link:https://github.com/kserve/kserve[KServe^] component. Because each model is deployed from its own model server, the single model serving platform helps you to deploy, monitor, scale, and maintain LLMs.    
 
 Multi-model serving platform::
-For deploying small and medium-sized models (that is, models that are not considered to be large language models), {productname-short} includes a multi-model serving platform that is based on the link:https://github.com/kserve/modelmesh[ModelMesh^] component. On the multi-model serving platform, you can deploy multiple models on the same model server. Each of the deployed models shares the server resources. This approach can be advantageous on OpenShift clusters that have finite compute resources or pods.
+For deploying small and medium-sized models (that is, models that are not considered to be large language models), {productname-short} includes a _multi-model serving platform_ that is based on the link:https://github.com/kserve/modelmesh[ModelMesh^] component. On the multi-model serving platform, you can deploy multiple models on the same model server. Each of the deployed models shares the server resources. This approach can be advantageous on OpenShift clusters that have finite compute resources or pods.
 
 // [role="_additional-resources"]
 // .Additional resources
