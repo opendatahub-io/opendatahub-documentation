@@ -12,10 +12,10 @@ As an administrator, you can use the {productname-short} interface to add and en
 .Prerequisites
 * You have logged in to {productname-short} as an administrator.
 ifdef::upstream[]
-* You are familiar with how to link:{odhdocshome}/working-on-data-science-projects/#adding-a-model-server-for-the-multi-model-serving-platform_nb-server[add a model server to your project]. When you have added a custom model-serving runtime, you must configure a new model server to use the runtime.
+* You are familiar with how to link:{odhdocshome}/serving-models/#adding-a-model-server-for-the-multi-model-serving-platform_model-serving[add a model server to your project]. When you have added a custom model-serving runtime, you must configure a new model server to use the runtime.
 endif::[]
 ifndef::upstream[]
-* You are familiar with how to link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#adding-a-model-server-for-the-multi-model-serving-platform_nb-server[add a model server to your project]. When you have added a custom model-serving runtime, you must configure a new model server to use the runtime.
+* You are familiar with how to link:{rhoaidocshome}{default-format-url}/serving-models/serving-small-and-medium-sized-models_model-serving#adding-a-model-server-for-the-multi-model-serving-platform_model-serving[add a model server to your project]. When you have added a custom model-serving runtime, you must configure a new model server to use the runtime.
 endif::[]
 * You have reviewed the example runtimes in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository. You can use these examples as _starting points_. However, each runtime requires some further modification before you can deploy it in {productname-short}. The required modifications are described in the following procedure.
 +
@@ -56,23 +56,25 @@ The embedded YAML editor opens with no content.
 
 . Optional: If you are adding one of the example runtimes in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository, perform the following modifications:
 .. In the YAML editor, locate the `kind` field for your runtime. Update the value of this field to `ServingRuntime`.
-.. In the YAML editor, locate the `containers.image` field for your runtime. Based on the runtime that you are adding, update the field to one of the following:
+.. In the link:https://github.com/kserve/modelmesh-serving/blob/main/config/runtimes/kustomization.yaml[kustomization.yaml] file in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository, take note of the `newName` and `newTag` values for the runtime that you want to add. You will specify these values in a later step.
+.. In the YAML editor for your custom runtime, locate the `containers.image` field. 
+.. Update the value of the `containers.image` field in the format `newName:newTag`, based on the values that you previously noted in the link:https://github.com/kserve/modelmesh-serving/blob/main/config/runtimes/kustomization.yaml[kustomization.yaml] file. Some examples are shown.
 +
 --
 Nvidia Triton Inference Server::
 +
-`image: nvcr.io/nvidia/tritonserver:21.06.1-py3`
+`image: nvcr.io/nvidia/tritonserver:23.04-py3`
 
 Seldon Python MLServer::
 +
-`image: seldonio/mlserver:0.5.2`
+`image: seldonio/mlserver:1.3.2`
 
 TorchServe::
 +
-`image: pytorch/torchserve:0.6.0-cpu`
+`image: pytorch/torchserve:0.7.1-cpu`
 --
 
-. In the `metadata.name` field, ensure that the value of the runtime you are adding is unique (that is, the value isn't the same as for a runtime you have already added).
+. In the `metadata.name` field, ensure that the value of the runtime you are adding is unique (that is, the value doesn't match a runtime that you have already added).
 
 . Optional: To configure a custom display name for the runtime that you are adding, add a `metadata.annotations.openshift.io/display-name` field and specify a value, as shown in the following example:
 +
