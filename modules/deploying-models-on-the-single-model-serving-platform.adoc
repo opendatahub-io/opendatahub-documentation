@@ -17,13 +17,13 @@ endif::[]
 * You have installed KServe.
 * You have enabled the single model serving platform.
 * You have created a data science project.
-* To use the Caikit-TGIS runtime, you have converted your model to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving] repository.
+* To use the Caikit-TGIS runtime, you have converted your model to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
 * You know the folder path for the data connection that you want the model to access.
-ifdef::self-managed[]
-* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. See link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/enabling-gpu-support_install[Enabling GPU support in {productname-short}].
+ifndef::upstream[]
+* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. See link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-gpu-support_cluster-mgmt[Enabling GPU support in {productname-short}^].
 endif::[]
-ifndef::self-managed[]
-* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. See link:{rhoaidocshome}{default-format-url}/installing_{url-productname-short}/enabling-gpu-support_install[Enabling GPU support in {productname-short}].
+ifdef::upstream[]
+* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support. This includes installing the Node Feature Discovery and GPU Operators. For more information, see https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
 endif::[]
 
 .Procedure

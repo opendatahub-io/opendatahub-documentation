@@ -56,9 +56,9 @@ The embedded YAML editor opens with no content.
 
 . Optional: If you are adding one of the example runtimes in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository, perform the following modifications:
 .. In the YAML editor, locate the `kind` field for your runtime. Update the value of this field to `ServingRuntime`.
-.. In the link:https://github.com/kserve/modelmesh-serving/blob/main/config/runtimes/kustomization.yaml[kustomization.yaml] file in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository, take note of the `newName` and `newTag` values for the runtime that you want to add. You will specify these values in a later step.
+.. In the link:https://github.com/kserve/modelmesh-serving/blob/main/config/runtimes/kustomization.yaml[kustomization.yaml^] file in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository, take note of the `newName` and `newTag` values for the runtime that you want to add. You will specify these values in a later step.
 .. In the YAML editor for your custom runtime, locate the `containers.image` field. 
-.. Update the value of the `containers.image` field in the format `newName:newTag`, based on the values that you previously noted in the link:https://github.com/kserve/modelmesh-serving/blob/main/config/runtimes/kustomization.yaml[kustomization.yaml] file. Some examples are shown.
+.. Update the value of the `containers.image` field in the format `newName:newTag`, based on the values that you previously noted in the link:https://github.com/kserve/modelmesh-serving/blob/main/config/runtimes/kustomization.yaml[kustomization.yaml^] file. Some examples are shown.
 +
 --
 Nvidia Triton Inference Server::
@@ -103,9 +103,9 @@ NOTE: You cannot directly edit the OpenVINO Model Server runtime that is include
 
 [role='_additional-resources']
 .Additional resources
-ifdef::upstream[]
-* To learn how to configure a model server that uses a custom model-serving runtime that you have added, see link:{odhdocshome}/working-on-data-science-projects/#adding-a-model-server-for-the-multi-model-serving-platform_nb-server[Adding a model server to your data science project].
-endif::[]
 ifndef::upstream[]
-* To learn how to configure a model server that uses a custom model-serving runtime that you have added, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#adding-a-model-server-for-the-multi-model-serving-platform_nb-server[Adding a model server to your data science project].
+* To learn how to configure a model server that uses a custom model-serving runtime that you have added, see link:{rhoaidocshome}{default-format-url}/serving-models/serving-small-and-medium-sized-models_model-serving#adding-a-model-server-for-the-multi-model-serving-platform_model-serving[Adding a model server to your data science project].
+endif::[]
+ifdef::upstream[]
+* To learn how to configure a model server that uses a custom model-serving runtime that you have added, see link:{odhdocshome}/serving-models/#adding-a-model-server-for-the-multi-model-serving-platform_model-serving[Adding a model server to your data science project].
 endif::[]
