@@ -1,0 +1,163 @@
+:_module-type: PROCEDURE
+
+[id="configuring-ide_{context}"]
+= Configuring your IDE
+
+[role='_abstract']
+
+= Configuring VS Code
+
+Incorporating standard database clients into your VS Code environment can streamline your workflow, offering a seamless interface for managing databases. You can incorporate different Database Management System (DBMS) clients into your Code Server workbench through built-in VS Code extensions or by creating a custom notebook image using Dockerfile.
+
+== Incorporating DBMS clients using VS Code extensions
+
+.Prerequisites
+
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have created a data science project that has a workbench.
+
+.Procedure
+
+. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data science projects* page opens.
+. Click the name of the project containing the Code Server workbench you want to start.
++
+The *Details* page for the project opens.
+. Click the toggle in the *Status* column for the relevant workbench to start a workbench that is not running.
++
+The status of the workbench that you started changes from *Stopped* to *Running*. 
+. After the workbench has started, click *Open* to open the workbench notebook.
+. In the Activity Bar, click the Extensions icon. (image:images/vscode-extensions-icon.png[The Extensions icon])
+. Search for the name of the extension you want to install. 
+. Click *Install* to add the extension to your VS Code environment.
++ The extension you installed appears in the *Browser - Installed* list on the *Extensions* panel.
+
+== Recommended extensions
+
+*MongoDB for VS Code*
+MongoDB for VS Code empowers you to connect to MongoDB and Atlas directly from your VS Code environment. Explore databases and collections, inspect schemas, and prototype queries and aggregations effortlessly using the integrated playgrounds.
+
+*MySQL Shell for VS Code*
+This extension provides a robust MySQL Shell for VS Code, enhancing your capability to manage MySQL databases seamlessly within the VS Code environment.
+
+*SQL Server (MSSQL)*
+Connect to SQL Server effortlessly with this extension, enabling you to perform database tasks directly from your VS Code workspace.
+
+*PostgreSQL*
+This extension facilitates direct interaction with PostgreSQL databases, allowing you to navigate, query, and manage your PostgreSQL instances efficiently.
+
+*SQLTools*
+SQLTools simplifies database connections, supporting a wide array of commonly used databases. This extension enhances data management and query execution, making it an invaluable tool for developers.
+
+*Database Client*
+This versatile extension serves as a database manager for MySQL/MariaDB, PostgreSQL, SQLite, Redis, and ElasticSearch. It provides a unified interface for managing diverse databases within the VS Code environment.
+
+
+== Incorporating DBMS clients using a custom image
+
+Custom notebook images are a powerful tool when working with containerized environments, especially in scenarios where you need specific libraries, OS packages, or applications that are not readily available in base images. This tutorial will guide you through the process of creating a custom notebook image with Database Management System (DBMS) clients using Dockerfile.
+
+.Prerequisites
+
+. 
+. Make sure you have Docker installed on your system.
+
+
+.Procedure
+
+. Clone the Open Data Hub notebooks repository:
++
+----
+git clone git@github.com:opendatahub-io/notebooks.git
+----
+
+. Go to the `codeserver` folder and create a new folder for your custom image. For example, let's name it ubi9-python-3.9-db-clients. 
+. Inside this folder, create a Dockerfile with the following instructions:
+
+# The base image auto assigned by the make recipe on the next step, in this case is the code-server notebook.
+
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+WORKDIR /opt/app-root/bin
+
+# Install OS packages as root
+USER root
+
+# Install necessary OS packages
+RUN dnf install -y unixODBC postgresql
+
+# Install MongoDB Client
+COPY mongodb-org-6.0.repo-x86_64 /etc/yum.repos.d/mongodb-org-6.0.repo
+RUN dnf install -y mongocli
+
+# Install MSSQL Client
+COPY mssql-2022.repo-x86_64 /etc/yum.repos.d/mssql-2022.repo
+RUN ACCEPT_EULA=Y dnf install -y mssql-tools18 unixODBC-devel
+ENV PATH="$PATH:/opt/mssql-tools18/bin"
+
+# Switch back to default user
+USER 1001
+
+WORKDIR /opt/app-root/src
+
+
+. Create two RPM files, mongodb-org-6.0.repo-x86_64 and mssql-2022.repo-x86_64, in the folder you created earlier. The content for these files is provided in the tutorial.
+
+Filename: mongodb-org-6.0.repo-x86_64
+
+[mongodb-org-6.0]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/redhat/9/mongodb-org/6.0/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-6.0.asc
+
+
+
+Filename: mssql-2022.repo-x86_64
+
+[packages-microsoft-com-prod]
+name=packages-microsoft-com-prod
+baseurl=https://packages.microsoft.com/rhel/9.0/prod/
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+
+
+. To streamline the build and push process, update the Makefile with a new recipe:
++
+----
+.PHONY: codeserver-ubi9-python-3.9-db-clients
+codeserver-ubi9-python-3.9-db-clients: codeserver-ubi9-python-3.9
+    $(call image,$@,codeserver/ubi9-python-3.9-db-clients,$<)
+----
+
+. Run the following command to build and push the image:
++
+----
+make codeserver-ubi9-python-3.9-db-clients -e IMAGE_REGISTRY=quay.io/${YOUR_USERNAME}/workbench-images
+----
+
++
+NOTE: Replace `${YOUR_USERNAME}` with your username. You can replace `quay.io` with any valid registry.
+
+. After pushing the custom image, go to *Settings* -> *Notebooks Image Settings* -> *Import New Image* to import it into Red Hat OpenAI.
+. Create or open a data science project, create a new workbench, and select the custom image from the *Image Selection* dropdown.
+. Open a new terminal inside your Code Server workbench and run the following command to confirm that the database clients installed successfully:
++
+----
+yum list installed | grep -E 'mssql|mongo|postgresql'
+----
+
+A list of installed packages related to MongoDB, MSSQL, and PostgreSQL should appear.
+
+Example
+https://github.com/atheo89/notebooks/tree/add-db-clients-example/codeserver/ubi9-python-3.9-plus
