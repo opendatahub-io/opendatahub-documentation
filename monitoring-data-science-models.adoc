@@ -11,22 +11,21 @@ include::_artifacts/document-attributes-global.adoc[]
 :doctype: book
 :toc: left
 :compat-mode:
-:context: monitor-models
+:context: monitor
 
-= Monitoring data science models
-
-ifndef::upstream[]
-[IMPORTANT]
-====
-The TrustyAI features are for Technology Preview only. Technology Preview features are not supported with {org-name} production service level agreements (SLAs), might not be functionally complete, and {org-name} does not recommend using them for production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. 			
-For more information on {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Scope]. 		
-====
-endif::[]
+= Monitoring data science models for bias
 
 The TrustyAI service provides data scientists with value-added capabilities, such as explainability (enriching model execution information through XAI algorithms) and model bias detection.
 
-include::modules/enabling-trustyai-service-cli.adoc[leveloffset=+1]
+[NOTE]
+====
+The monitoring models for bias (TrustyAI feature) is supported only on a _multi-model serving platform_ that is based on the ModelMesh component. It is not supported on a _single model serving platform_ that is based on the KServe component.
+====
 
-include::assemblies/monitoring-models-for-bias.adoc[leveloffset=+1]
+include::modules/enabling-trustyai-service.adoc[leveloffset=+1]
 
+include::assemblies/configuring-bias-metrics-for-a-model.adoc[leveloffset=+1]
 
+include::modules/viewing-bias-metrics.adoc[leveloffset=+1]
+
+include::modules/supported-bias-metrics.adoc[leveloffset=+1]

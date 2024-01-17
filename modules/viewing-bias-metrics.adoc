@@ -3,44 +3,49 @@
 [id="viewing-bias-metrics_{context}"]
 = Viewing bias metrics for a model
 
-ifndef::upstream[]
-[IMPORTANT]
-====
-The TrustyAI features are for Technology Preview only. Technology Preview features are not supported with {org-name} production service level agreements (SLAs), might not be functionally complete, and {org-name} does not recommend using them for production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. 			
-For more information on {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Scope]. 		
-====
-endif::[]
-
 [role='_abstract']
-When you configure your model for bias monitoring, you can use the {productname-short} dashboard to view and update the metrics that you configured.
+After you configure your model for bias monitoring, you can use the {productname-short} dashboard to view and update the metrics that you configured.
 
 .Prerequisite
 
 ifndef::upstream[]
-* You configured bias metrics for your model as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/monitoring-models-for-bias_bias-monitoring#configuring-bias-monitoring-for-a-model-cli_bias-monitoring[Configuring bias monitoring for a model].
+* You configured bias metrics for your model as described in xref:creating-a-bias-metric[Creating a bias metric].
 
 endif::[]
 ifdef::upstream[]
-* You configured bias metrics for your model as described in link:{odhdocshome}/monitoring-data-science-models/#configuring-bias-monitoring-for-a-model-cli_bias-monitoring[Configuring bias monitoring for a model].
+* You configured bias metrics for your model as described in link:{odhdocshome}/monitoring-data-science-models/#creating-a-bias-metric_bias-monitoring[Creating a bias metric].
 endif::[]
 
 .Procedure
+
+////
+Admin view
+
+== Viewing bias metrics for a model 
+
+When you configure your model for bias monitoring, you can view the metrics that you configured.
+
+.Prerequisites
+
+* You configured bias metrics for your model as described in link:{odhdocshome}/monitoring-data-science-models/#creating-bias-monitoring_bias-monitoring[Configuring bias monitoring for a model].
+
+* You have admin access to the OpenShift web console.
+
+.Procedure
+
+* From the *Administrator* perspective within the OpenShift web console, select *Observe* -> *Metrics*.
+////
+
 . In the {productname-short} dashboard, click *Model Serving*.
-+
-The *Model serving* page opens.
-
 . On the *Model serving* page, click the name of a model that you want to view bias metrics for.
-+
-A metrics page for the model opens. By default, the *Endpoint Performance* tab is selected.
-
-. To update the metrics shown on the page, perform the following actions:
+. To update the metrics shown on the page, follow these steps:
 .. In the *Metrics to display* section, use the *Select a metric* list to select a metric to show on the page.
 +
 NOTE: Each time you select a metric to show on the page, an additional *Select a metric* list appears. This enables you to show multiple metrics on the page.
 .. From the *Time range* list in the upper-right corner, select a value.
 .. From the *Refresh interval* list in the upper-right corner, select a value.
 +
-The metrics page shows the metrics you selected.
+The metrics page shows the metrics that you selected.
 . Optional: To remove one or more metrics from the page, in the *Metrics to display* section, perform one of the following actions:
 * To remove an individual metric, click the cancel icon (&#10006;) next to the metric name.
 * To remove all metrics, click the cancel icon (&#10006;) in the *Select a metric* list.

@@ -1,0 +1,55 @@
+:_module-type: PROCEDURE
+
+[id='creating-a-bias-metric-using-dashboard_{context}']
+= Creating a bias metric by using the dashboard
+
+[role='_abstract']
+The following procedure describes how to use the {productname-short} dashboard to create a bias metric for a model.
+
+.Prerequisites
+ifndef::upstream[]
+* You are familiar with xref:supported-bias-metrics[the bias metrics that {productname-short} supports] and how to interpret them.
+endif::[]
+ifdef::upstream[]
+* You are familiar with link:{odhdocshome}/monitoring-data-science-models-for-bias/#supported-bias-metrics_monitor[the bias metrics that {productname-short} supports] and how to interpret them.
+endif::[]
+
+* You are familiar with the specific data set schema and understand the names and meanings of the inputs and outputs.
+
+* Your OpenShift cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
+
+* You have logged in to {productname-long}.
+
+.Procedure
+. In the left menu of the {productname-short} dashboard, click *Model Serving*.
+. On the *Model serving* page, click the name of a model that you want to configure bias metrics for.
+. In the metrics page for the model, click the *Model bias* tab.
+. Click *Configure*.
+. In the *Configure bias metrics* dialog, complete the following steps to configure bias metrics:
+.. In the *Metric name* field, type a unique name for your bias metric. Note that you cannot change the name of this metric later.
+.. From the *Metric type* list, select one of the metrics types that are available in {productname-short}.
+.. In the *Protected attribute* field, type the name of an attribute in your model that you want to monitor for bias.
++ 
+TIP: You can use a `curl` command to query the metadata endpoint and view input attribute names and values. For example: `curl $TRUSTY_ROUTE/info | jq ".[0].data.inputSchema"`
+.. In the *Privileged value* field, type the name of a privileged group for the protected attribute that you specified.
+.. In the *Unprivileged value* field, type the name of an unprivileged group for the protected attribute that you specified.
+.. In the *Output* field, type the name of the model outcome that you want to monitor for bias.
++ 
+TIP: You can use a `curl` command to query the metadata endpoint and view output attribute names and values. For example: `curl $TRUSTY_ROUTE/info | jq ".[0].data.outputSchema"`
+
+.. In the *Output value* field, type the value of the outcome that you want to monitor for bias.
+.. In the *Violation threshold* field, type the bias threshold for your selected metric type. This threshold value defines how far the specified metric can be from the fairness value for your metric, before the model is considered biased. 
+.. In the *Metric batch size* field, type the number of model inferences that {productname-short} includes each time it calculates the metric.
+. Ensure that the values you entered are correct.
++
+[NOTE]
+====
+You cannot edit a model bias metric configuration after you create it. Instead, you can duplicate a metric and then edit (configure) it; however, the history of the original metric is not applied to the copy.
+====
+. Click *Configure*.
+
+.Verification
+* The *Bias metric configuration* page shows the bias metrics that you configured for your model.
+
+.Next step
+To view metrics, on the *Bias metric configuration* page, click *View metrics* in the upper-right corner. For more information, see xref:viewing-bias-metrics[Viewing bias metrics for a model].

@@ -1,0 +1,22 @@
+:_module-type: CONCEPT
+
+[id='enabling-trustyai-service_{context}']
+= Enabling the TrustyAI Service for a data science project
+
+[role='_abstract']
+When you install {productname-short}, the TrustyAI Operator is included with the other components in the {productname-short} namespace. The TrustyAI operator is responsible for deploying and managing TrustyAI services, as well as managing all other resources required by TrustyAI.
+
+These management tasks include configuring storage, creating the service monitors, and configuring the serving runtimes and routes.
+
+The TrustyAI operator manages all enabled TrustyAI services across any number of projects on your cluster.
+
+For each data science project (namespace) that contains models for which the data scientists on your team want to monitor bias metrics, enable an instance of the TrustyAI service. You can enable an instance of the TrustyAI service by using the {productname-short} dashboard or by using the OpenShift command-line interface (CLI).
+
+[NOTE]
+====
+You should enable only one instance of the TrustyAI service in a project. The presence of multiple instances in the same project can result in unexpected behavior.
+====
+
+include::enabling-trustyai-service-using-dashboard.adoc[leveloffset=+1]
+
+include::enabling-trustyai-service-using-cli.adoc[leveloffset=+1]

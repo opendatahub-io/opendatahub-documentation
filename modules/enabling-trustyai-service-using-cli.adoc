@@ -1,30 +1,23 @@
 :_module-type: PROCEDURE
 
-[id='enabling-trustyai-service-cli_{context}']
-= Enabling the TrustyAI Service for a data science project
-
-ifndef::upstream[]
-[IMPORTANT]
-====
-The TrustyAI features are for Technology Preview only. Technology Preview features are not supported with {org-name} production service level agreements (SLAs), might not be functionally complete, and {org-name} does not recommend using them for production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. 			
-For more information on {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Scope]. 		
-====
-endif::[]
+[id='enabling-trustyai-service-using-cli_{context}']
+= Enabling the TrustyAI Service by using the CLI
 
 [role='_abstract']
-When you install {productname-short}, the TrustyAI Operator is included with the other components in the {productname-short} namespace. The TrustyAI operator is responsible for deploying and managing TrustyAI services, as well as managing all other resources required by TrustyAI.
+Enable an instance of the TrustyAI service on each data science project that contains models that the data scientist wants to monitor. The TrustyAI service instance provides the URL that a data scientist uses to monitor and analyze any number of models deployed into a data science project.
 
-These managing tasks include configuring storage, creating the service monitors, and configuring the serving runtimes and routes.
-
-The TrustyAI operator manages all enabled TrustyAI services across any number of projects on your cluster.
-
-For each data science project (namespace) that contains models for which you want to monitor bias metrics, enable an instance of the TrustyAI service.
-
-*NOTE:* You should enable only one instance of the TrustyAI service in a project. The presence of multiple instances in the same project can result in unexpected behavior.
+The following procedure describes how to use the OpenShift command-line interface (CLI) to enable an instance of the TrustyAI service.
 
 .Prerequisites
 
 * On the OpenShift cluster where {productname-short} is installed, you have enabled user workload monitoring as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/monitoring/enabling-monitoring-for-user-defined-projects.html[Enabling monitoring for user-defined projects].
+
+* You have enabled the multi-model serving platform. 
+
+[NOTE]
+====
+The monitoring models for bias (TrustyAI feature) is supported only on a _multi-model serving platform_ that is based on the ModelMesh component. It is not supported on a _single model serving platform_ that is based on the KServe component.
+====
 
 ifdef::upstream[]
 * You have installed {productname-short} as described in link:https://opendatahub.io/docs/quick-installation-new-operator/[Quick Installation(v2)].
@@ -68,28 +61,23 @@ endif::[]
 ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
 
-* You have created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project], that contains (or will contain) the models that you want to monitor.  
+* The data scientist has created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project], that contains (or will contain) the models that the data scientist wants to monitor.  
 endif::[]
 
 ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 
-* You have created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#working-on-data-science-projects_nb-server[Creating a data science project], that contains (or will contain) the models that you want to monitor.  
+* The data scientist has created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#working-on-data-science-projects_nb-server[Creating a data science project], that contains (or will contain) the models that the data scientist wants to monitor.  
 endif::[]
 
 .Procedure
-
-Add an instance of the TrustyAI service to each data science project that contains models that you want to monitor. The TrustyAI service instance provides the URL that a developer uses to monitor and analyze any number of models deployed into a data science project.
-
-To enable the TrustyAI service from the command line, follow these steps:
-
 . Login to your cluster.
 +
 ----
  oc login
 ----
 
-. Navigate to the data science project that contains (or will contain) the models that you want to monitor. 
+. Navigate to the data science project that contains (or will contain) the models that the data scientist wants to monitor. 
 +
 ----
 oc project <project-name>
@@ -124,13 +112,13 @@ spec:
 Here is a description of the fields:
 +
 `metadata.name`:: The name of the TrustyAI service instance.
-`spec.storage.format`:: The storage format for the data. Currently, only persistent volume control (PVC) is supported.
-`spec.storage.folder`:: The location within the PVC where the data will be stored.
+`spec.storage.format`:: The storage format for the data. Currently, only persistent volume control (PVC) format is supported.
+`spec.storage.folder`:: The location within the PVC where you want to store the data.
 `spec.storage.size`:: The size of the PVC to request.
 `spec.data.filename`:: The suffix for the stored data files.
 `spec.data.format`:: The format of the data. Currently, only comma-separated value (CSV) format is supported.
-`spec.metrics.schedule`:: The interval at which the metrics are calculated. The default is 5s. The duration is specified with the ISO-8601 format. For example, `5s` for 5 seconds, `5m` for 5 minutes, and `5h` for 5 hours.
-`spec.metrics.batchSize`:: The observation’s historical window size to use for metrics calculation. The default is `5000` (that is, the metrics are calculated by using the latest 5000 inferences).
+`spec.metrics.schedule`:: The interval at which to calculate the metrics. The default is 5s. The duration is specified with the ISO-8601 format. For example, `5s` for 5 seconds, `5m` for 5 minutes, and `5h` for 5 hours.
+`spec.metrics.batchSize`:: The observation's historical window size to use for metrics calculation. The default is `5000` (that is, the metrics are calculated by using the latest 5000 inferences).
 
 . Add the TrustyAI service's CR to your project:
 +
@@ -138,7 +126,7 @@ Here is a description of the fields:
 oc apply -f trustyai_crd.yaml
 ----
 +
-This command should return output similar to the following:
+This command returns output similar to the following:
 +
 ----
 trusty-service created
@@ -147,7 +135,7 @@ trusty-service created
 
 .Verification
 
-To verify that you enabled the TrustyAI Service:
+Use this command to verify that you enabled the TrustyAI Service:
 
 ----
 oc get pods | grep trustyai 
