@@ -1,11 +1,13 @@
 :_module-type: PROCEDURE
 
-[id="adding-a-custom-model-serving-runtime_{context}"]
-= Adding a custom model-serving runtime
+[id="adding-a-custom-model-serving-runtime-for-the-multi-model-serving-platform_{context}"]
+= Adding a custom model-serving runtime for the multi-model serving platform
 
-A model-serving runtime provides integration with a specified model server and the model frameworks that it supports. By default, {productname-long} includes the OpenVINO Model Server runtime. However, if this runtime doesn't meet your needs (it doesn't support a particular model framework, for example), you might want to add your own, custom runtimes.
+A model-serving runtime adds support for a specified set of model frameworks (that is, formats). By default, the multi-model serving platform includes the OpenVINO Model Server runtime. However, if this runtime doesn't meet your needs (it doesn't support a particular model format, for example), you can add your own, custom runtime.
 
-As an administrator, you can use the {productname-short} interface to add and enable custom model-serving runtimes. You can then choose from your enabled runtimes when you create a new model server.
+As an administrator, you can use the {productname-long} dashboard to add and enable a custom model-serving runtime. You can then choose the custom runtime when you create a new model server for the multi-model serving platform.
+
+NOTE: {productname-short} enables you to add your own custom runtimes, but does not support the runtimes themselves. You are responsbile for correctly configuring and maintaining a custom runtime.
 
 [role='_abstract']
 
@@ -17,40 +19,35 @@ endif::[]
 ifndef::upstream[]
 * You are familiar with how to link:{rhoaidocshome}{default-format-url}/serving-models/serving-small-and-medium-sized-models_model-serving#adding-a-model-server-for-the-multi-model-serving-platform_model-serving[add a model server to your project]. When you have added a custom model-serving runtime, you must configure a new model server to use the runtime.
 endif::[]
-* You have reviewed the example runtimes in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository. You can use these examples as _starting points_. However, each runtime requires some further modification before you can deploy it in {productname-short}. The required modifications are described in the following procedure.
+* You have reviewed the example runtimes in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository. You can use these examples as starting points. However, each runtime requires some further modification before you can deploy it in {productname-short}. The required modifications are described in the following procedure.
 +
-NOTE: {productname-short} includes the OpenVINO Model Server model-serving runtime by default. You do not need to add this runtime to {productname-short}.
+NOTE: {productname-short} includes the OpenVINO Model Server runtime by default. You do not need to add this runtime to {productname-short}.
 
 .Procedure
 . From the {productname-short} dashboard, click *Settings* > *Serving runtimes*.
 +
-The *Serving runtimes* page opens and shows the model-serving runtimes that are already installed and enabled in your {productname-short} deployment. By default, the OpenVINO Model Server runtime is pre-installed and enabled in {productname-short}.
+The *Serving runtimes* page opens and shows the model-serving runtimes that are already installed and enabled.
 
 . To add a custom runtime, choose one of the following options:
 +
---
-** To start with an existing runtime, click the action menu (&#8942;) next to the existing runtime and then click *Duplicate*. Skip to Step 5. 
-
+** To start with an existing runtime (for example the OpenVINO Model Server runtime), click the action menu (&#8942;) next to the existing runtime and then click *Duplicate*.
 ** To add a new custom runtime, click *Add serving runtime*.
---
-+
-The *Add serving runtime* page opens.
 
-. To specify the YAML code for the runtime, perform one of the following sets of actions::
+. In the *Select the model serving platforms this runtime supports* list, perform one of the following actions:
+.. To add a custom runtime for only the single-model serving platform, select *Multi-model serving platform*.
+.. To add a custom runtime for both the multi- and single-model serving platforms, select *Single-model and multi-model serving platforms*.
+
+. Optional: If you started a new runtime (rather than duplicating an existing one), add your code by choosing one of the following options:
 +
 --
 * *Upload a YAML file*
 .. Click *Upload files*.
-+
-A file browser opens.
 .. In the file browser, select a YAML file on your computer. This file might be the one of the example runtimes that you downloaded from the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository.
 +
 The embedded YAML editor opens and shows the contents of the file that you uploaded.
 
 * *Enter YAML code directly in the editor*
 .. Click *Start from scratch*.
-+
-The embedded YAML editor opens with no content.
 .. Enter or paste YAML code directly in the embedded editor. The YAML that you paste might be copied from one of the example runtimes in the https://github.com/kserve/modelmesh-serving/tree/main/config/runtimes[kserve/modelmesh-serving^] repository.
 --
 
@@ -95,8 +92,6 @@ NOTE: If you do not configure a custom display name for your runtime, {productna
 The *Serving runtimes* page opens and shows the updated list of runtimes that are installed. Observe that the runtime you added is automatically enabled.
 
 . Optional: To edit your custom runtime, click the action menu (&#8942;) and select *Edit*.
-+
-NOTE: You cannot directly edit the OpenVINO Model Server runtime that is included in {productname-short} by default. However, you can _clone_ this runtime and edit the cloned version. You can then add the edited clone as a new, custom runtime. To do this, click the action menu beside the OpenVINO Model Server and select *Clone*.
 
 .Verification
 * The model-serving runtime you added is shown in an enabled state on the *Serving runtimes* page.
