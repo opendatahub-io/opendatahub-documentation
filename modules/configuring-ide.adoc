@@ -8,7 +8,7 @@ You can configure some notebook workbenches to get the most out of your data sci
 
 == Configuring VS Code Server
 
-Incorporating standard database clients into your VS Code environment can streamline your workflow, offering a seamless interface for managing databases. You can incorporate different Database Management System (DBMS) clients into your Code Server workbench through built-in VS Code extensions or by creating a custom notebook image using Dockerfile.
+Incorporating standard database clients into your VS Code Server environment can streamline your workflow, offering a seamless interface for managing databases. You can incorporate different Database Management System (DBMS) clients into your Code Server workbench through built-in VS Code extensions or by creating a custom notebook image using Dockerfile.
 
 === Incorporating DBMS clients using VS Code extensions
 
@@ -37,7 +37,7 @@ The status of the workbench that you started changes from *Stopped* to *Running*
 . After the workbench has started, click *Open* to open the workbench notebook.
 . In the Activity Bar, click the Extensions icon. (image:images/vscode-extensions-icon.png[The Extensions icon])
 . Search for the name of the extension you want to install. 
-. Click *Install* to add the extension to your VS Code environment.
+. Click *Install* to add the extension to your VS Code Server environment.
 + 
 The extension you installed appears in the *Browser - Installed* list on the *Extensions* panel.
 
@@ -46,17 +46,17 @@ The extension you installed appears in the *Browser - Installed* list on the *Ex
 The following list describes some available third-party extensions that you can consider installing.
 
 MongoDB for VS Code::
-MongoDB for VS Code lets you connect to MongoDB and Atlas directly from your VS Code environment. Explore databases and collections, inspect schemas, and prototype queries and aggregations using the integrated playgrounds.
+MongoDB for VS Code lets you connect to MongoDB and Atlas directly from your VS Code Server environment. Explore databases and collections, inspect schemas, and prototype queries and aggregations using the integrated playgrounds.
 
 link:https://marketplace.visualstudio.com/items?itemName=mongodb.mongodb-vscode[See in Visual Studio Marketplace]
 
 MySQL Shell for VS Code::
-This extension provides a MySQL Shell for VS Code, enhancing your ability to manage MySQL databases within the VS Code environment.
+This extension provides a MySQL Shell for VS Code, enhancing your ability to manage MySQL databases within the VS Code Server environment.
 
 link:https://marketplace.visualstudio.com/items?itemName=Oracle.mysql-shell-for-vs-code[See in Visual Studio Marketplace]
 
 SQL Server (MSSQL)::
-Connect to SQL Server with this extension and perform database tasks directly from your VS Code environment.
+Connect to SQL Server with this extension and perform database tasks directly from your VS Code Server environment.
 
 link:https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql[See in Visual Studio Marketplace]
 
@@ -71,7 +71,7 @@ SQLTools simplifies database connections and enhances data management and query 
 link:https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools[See in Visual Studio Marketplace]
 
 Database Client::
-This extension serves as a database manager for MySQL/MariaDB, PostgreSQL, SQLite, Redis, and ElasticSearch. It provides a unified interface for managing diverse databases within the VS Code environment.
+This extension serves as a database manager for MySQL/MariaDB, PostgreSQL, SQLite, Redis, and ElasticSearch. It provides a unified interface for managing diverse databases within the VS Code Server environment.
 
 link:https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-database-client2[See in Visual Studio Marketplace]
 
@@ -131,9 +131,9 @@ USER 1001
 WORKDIR /opt/app-root/src
 ----
 
-. Create two RPM files, `mongodb-org-6.0.repo-x86_64` and `mssql-2022.repo-x86_64`, in the folder you created for your custom image.
+. Create two RPM files, `mongodb-org-6.0.repo-x86_64` and `mssql-2022.repo-x86_64`, with the following contents, in the folder you created for your custom image.
 +
-*`mongodb-org-6.0.repo-x86_64` file content:*
+*`mongodb-org-6.0.repo-x86_64`:*
 
 +
 ----
@@ -146,7 +146,7 @@ gpgkey=https://www.mongodb.org/static/pgp/server-6.0.asc
 ----
 
 +
-*`mssql-2022.repo-x86_64` file content:*
+*`mssql-2022.repo-x86_64`:*
 
 +
 ----
