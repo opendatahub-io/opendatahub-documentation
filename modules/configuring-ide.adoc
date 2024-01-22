@@ -8,7 +8,7 @@ You can configure some notebook workbenches to get the most out of your data sci
 
 == Configuring VS Code Server
 
-Incorporating standard database clients into your VS Code Server environment can streamline your workflow, offering a seamless interface for managing databases. You can incorporate different Database Management System (DBMS) clients into your Code Server workbench through built-in VS Code extensions or by creating a custom notebook image using Dockerfile.
+Incorporating standard database clients into your VS Code Server environment can streamline your workflow, offering a seamless interface for managing databases. You can incorporate different Database Management System (DBMS) clients into your Code Server workbench through built-in VS Code extensions or by creating a custom notebook image using a Dockerfile.
 
 === Incorporating DBMS clients using VS Code extensions
 
@@ -77,7 +77,7 @@ link:https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-database
 
 === Incorporating DBMS clients using a custom image
 
-Custom notebook images are a powerful tool when working with containerized environments, especially when you need specific libraries, OS packages, or applications that are not readily available in base images. Follow these steps to create a custom notebook image with Database Management System (DBMS) clients for MongoDB, MSSQL, and PostgreSQL using Dockerfile.
+Custom notebook images are useful when working with containerized environments, especially when you need specific libraries, OS packages, or applications that are not available in base images. Follow these steps to create a custom notebook image with Database Management System (DBMS) clients for MongoDB, MSSQL, and PostgreSQL using a Dockerfile.
 
 .Prerequisites
 
@@ -175,7 +175,7 @@ Replace `${YOUR_USERNAME}` with your username. You can replace `quay.io` with an
 make codeserver-ubi9-python-3.9-db-clients -e IMAGE_REGISTRY=quay.io/${YOUR_USERNAME}/workbench-images
 ----
 
-. After pushing the custom image, go to *Settings* -> *Notebooks Image Settings* -> *Import New Image*.
+. After pushing the custom image, from the {productname-short} dashboard, go to *Settings* -> *Notebook image settings* -> *Import new image*.
 . Click *Import new image*.
 +
 The *Import Notebook images* dialog appears.
@@ -185,7 +185,7 @@ The *Import Notebook images* dialog appears.
 . Click *Import*.
 +
 The notebook image that you imported appears in the table on the *Notebook image settings* page.
-. Create or open a data science project, create a new workbench, and select the custom image from the *Image Selection* drop-down list.
+. Create or open a data science project, create a new workbench, and select the custom image from the *Image selection* drop-down list.
 . Open a new terminal inside your Code Server workbench and run the following command to confirm that the database clients installed successfully:
 +
 ----
