@@ -5,7 +5,7 @@
 
 [role='_abstract']
 ifdef::upstream[]
-You can configure custom notebook images that cater to your project's specific requirements.
+You can configure custom notebook images that cater to your project's specific requirements. From the *Notebook image settings* page, you can enable or disable a previously imported notebook image and create an accelerator profile as a recommended accelerator for existing notebook images.
 endif::[]
 ifndef::upstream[]
 In addition to notebook images provided and supported by {org-name} and independent software vendors (ISVs), you can configure custom notebook images that cater to your project's specific requirements.
@@ -26,7 +26,7 @@ endif::[]
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *Notebook images*.
 +
-The *Notebook image settings* page appears. Previously imported notebook images are displayed. To enable or disable a previously imported notebook image, on the row containing the relevant notebook image, click the toggle in the *Enable* column.
+The *Notebook image settings* page appears. Previously imported notebook images are displayed. To enable or disable a previously imported notebook image, on the row containing the relevant notebook image, click the toggle in the *Enable* column. Click *Create profile* on the row containing the relevant notebook image to create an accelerator profile as the image's recommended accelerator.  
 . Click *Import new image*. Alternatively, if no previously imported images were found, click *Import image*.
 +
 The *Import Notebook images* dialog appears.
@@ -34,7 +34,8 @@ The *Import Notebook images* dialog appears.
 `docker.io/my-repo/my-image:tag`.
 
 . In the *Name* field, enter an appropriate name for the notebook image.
-. In the *Description* field, enter an appropriate description for the notebook image.
+. Optional: In the *Description* field, enter an appropriate description for the notebook image.
+. Optional: From the *Accelerator identifier* list, select the relevant identifier to designate its accelerator as recommended with the notebook image.
 . Optional: Add software to the notebook image. After the import has completed, the software is added to the notebook image's meta-data and displayed on the Jupyter server creation page.
 .. Click the *Software* tab.
 .. Click the *Add software* button.

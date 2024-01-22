@@ -9,25 +9,22 @@ To help you indicate the most suitable accelerators to your data scientists, you
 .Prerequisites
 * You have logged in to {openshift-platform}.
 * You have the `cluster-admin` role in {openshift-platform}.
-* You have configured an ImageStream that contains your notebook image settings.  
+* You have existing notebook images in your deployment.
 
 .Procedure
-. In the {openshift-platform} web console, in the *Administrator* perspective, click *Builds* -> *ImageStreams*.
-. Click the ImageStream that you want to a recommended accelerator tag to. 
+. From the {productname-short} dashboard, click *Settings* -> *Notebook images*.
 +
-A details page opens.
-. Click the *YAML* tab.
-+ 
-A page with an embedded YAML editor opens.
-. In the editor, enter or paste the YAML code directly to apply the annotation `opendatahub.io/recommended-accelerators`. The excerpt in this example shows the annotation to set a recommended tag for an NVIDIA GPU accelerator:
+The *Notebook image settings* page appears. Previously imported notebook images are displayed. 
+. Click the action menu (&#8942;) and select *Edit* from the list.
 +
-[source,yaml]
----
-metadata:
-	annotations:
-		opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
----
-. Click *Save*.
+The *Update notebook image* dialog opens.
+. From the *Accelerator identifier* list, select the relevant identifier to designate its accelerator as recommended with the notebook image.
+. Click *Update*.
++
+[NOTE]
+====
+If the accelerator's profile does not exist in your deployment, click *Create profile* on the row containing the relevant notebook image to create an accelerator profile as the image's recommended accelerator.  
+====
 
 .Verification
 * When your data scientists select an accelerator with a specific notebook image, a tag appears next to the corresponding accelerator indicating its compatibility. 
