@@ -1,0 +1,55 @@
+:_module-type: PROCEDURE
+
+[id="viewing-performance-metrics-for-model-server_{context}"]
+= Viewing performance metrics for all models on a model server
+
+[role='_abstract']
+
+In {productname-short}, you can monitor the following metrics for all the models that are deployed on a model server:
+
+* HTTP requests that have failed or succeeded
+* Average response time (ms)
+* CPU utilization (%)
+* Memory utilization (%) 
+
+You can specify a time range and a refresh interval for these metrics to help you determine, for example, when the peak usage hours are and how the models are performing at a specified time.
+
+
+.Prerequisites
+* You have installed {productname-long}.
+
+* On the OpenShift cluster where {productname-short} is installed, you have enabled user workload monitoring as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/monitoring/enabling-monitoring-for-user-defined-projects.html[Enabling monitoring for user-defined projects].
+
+* You have logged in to {productname-short}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* There are deployed data science models in your data science project.
+
+.Procedure 
+
+. From the {productname-short} dashboard navigation menu, click *Data Science Projects* and then select the project that contains the data science models that you want to monitor.
+
+. On the *Components* page, scroll down to the *Models and model servers* section.
+
+. In the row for the model server that you are interested in, click the action menu (&#8942;) and then select *View model server metrics*.
+
+. Optional: On the metrics page for the model server, set the following options:
+
+** *Time range* - Specifies how long to track the metrics. You can select one of these values: 1 hour, 24 hours, 7 days, and 30 days.
+
+** *Refresh interval* - Specifies how frequently the graphs on the metrics page are refreshed (to show the latest data). You can select one of these values: 15 seconds, 30 seconds, 1 minute, 5 minutes, 15 minutes, 30 minutes, 1 hour, 2 hours, and 1 day.
+
+. Scroll down to view data graphs for HTTP requests, average response time, CPU utilization, and memory utilization.
+
+.Verification
+
+On the metrics page for the model server, the graphs provide performance metric data. 
+
+//.See also
+//Viewing HTTP request metrics for a deployed model
+
+
