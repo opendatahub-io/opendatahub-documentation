@@ -14,18 +14,18 @@ Before you can use Habana Gaudi devices in {productname-short}, you must install
 . To enable Habana Gaudi devices in {productname-short}, follow the instructions at link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/index.html[HabanaAI Operator for OpenShift].
 . From the {productname-short} dashboard, click *Settings* -> *Accelerator profiles*.
 +
-The *Accelerator profiles* page appears that shows existing accelerator profiles. To enable or disable an existing accelerator profile, on the row containing the relevant accelerator profile, click the toggle in the *Enable* column.
+The *Accelerator profiles* page appears, displaying existing accelerator profiles. To enable or disable an existing accelerator profile, on the row containing the relevant accelerator profile, click the toggle in the *Enable* column.
 . Click *Create accelerator profile*. 
 +
-The *Create accelerator profile* dialog appears.
-. In the *Name* field, enter an appropriate name for the Habana Gaudi device.
+The *Create accelerator profile* dialog opens.
+. In the *Name* field, enter a name for the Habana Gaudi device.
 . In the *Identifier* field, enter a unique string that identifies the Habana Gaudi device, for example, `habana.ai/gaudi`. 
-. Optional: In the *Description* field, enter an appropriate description for the Habana Gaudi device.
+. Optional: In the *Description* field, enter a description for the Habana Gaudi device.
 . To enable or disable the accelerator profile for the Habana Gaudi device immediately after creation, click the toggle in the *Enable* column.
 . Optional: Add a toleration to schedule pods with matching taints.
 .. Click *Add toleration*. 
 +
-The *Add toleration* dialog appears.
+The *Add toleration* dialog opens.
 .. From the *Operator* list, select one of the following options:
 * *Equal* - The *key/value/effect* parameters must match. This is the default.
 * *Exists* - The *key/effect* parameters must match. You must leave a blank value parameter, which matches any.
@@ -37,8 +37,8 @@ The *Add toleration* dialog appears.
 .. In the *Key* field, enter the toleration key `habana.ai/gaudi`. The key is any string, up to 253 characters. The key must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
 .. In the *Value* field, enter a toleration value. The value is any string, up to 63 characters. The value must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
 .. In the *Toleration Seconds* section, select one of the following options to specify how long a pod stays bound to a node that has a node condition. 
-** *Forever* - Pods stays permanently bound to nodes. 
-** *Custom value* - Enter a value (in seconds) before pods can remain bound to a nodes.
+** *Forever* - Pods stays permanently bound to a node. 
+** *Custom value* - Enter a value (in seconds) before pods can remain bound to a node.
 .. Click *Add*.
 . Click *Create accelerator profile*.
 
