@@ -37,7 +37,7 @@ def ray_fn(openshift_server: str, openshift_token: str) -> int:
    cluster = Cluster(
        ClusterConfiguration(
            name="raytest",
-           # namespace must exists
+           # namespace must exist
            namespace="pipeline-example",
            num_workers=1,
            head_cpus="500m",
@@ -48,16 +48,6 @@ def ray_fn(openshift_server: str, openshift_token: str) -> int:
            instascale=False,
        )
    )
-   # workaround for https://github.com/project-codeflare/codeflare-sdk/pull/412
-   cluster_file_name = "/opt/app-root/src/.codeflare/appwrapper/raytest.yaml"
-   with open(cluster_file_name, "r") as file:
-       filedata = file.read()
-   filedata = filedata.replace(
-       "busybox:1.28", "quay.io/project-codeflare/busybox:latest"
-   )
-   with open(cluster_file_name, "w") as file:
-       file.write(filedata)
-   # end workaround
 
 
    print(cluster.status())
