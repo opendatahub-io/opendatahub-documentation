@@ -15,209 +15,123 @@ To run a distributed data science workload from a data science pipeline, you mus
 .Procedure
 . Create a data connection to connect the object storage to your data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#adding-a-data-connection-to-your-data-science-project_nb-server[Adding a data connection to your data science project].
 . Configure a pipeline server to use the data connection, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
-. Create a data science pipeline as shown in the following example:
+. Create the data science pipeline as follows:
+.. Build your data science pipeline in Python code.
+For example, create a file named `compile_example.py` with the following content:
 +
-[source,YAML]
+[source,Python]
 ----
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun <1>
-metadata:
-  name: dw-dsp <2>
-  annotations:
-    tekton.dev/output_artifacts: '{
-      "ray-fn": [{"key": "artifacts/$PIPELINERUN/ray-fn/Output.tgz",
-      "name": "ray-fn-Output", "path": "/tmp/outputs/Output/data"}]}'
-    tekton.dev/input_artifacts: '{}'
-    tekton.dev/artifact_bucket: mlpipeline
-    tekton.dev/artifact_endpoint: minio-service.kubeflow:9000
-    tekton.dev/artifact_endpoint_scheme: http://
-    tekton.dev/artifact_items: '{"ray-fn": [["Output", "$(results.Output.path)"]]}'
-    sidecar.istio.io/inject: "false"
-    tekton.dev/template: ''
-    pipelines.kubeflow.org/big_data_passing_format: $(workspaces.$TASK_NAME.path)/artifacts/$ORIG_PR_NAME/$TASKRUN_NAME/$TASK_PARAM_NAME
-    pipelines.kubeflow.org/pipeline_spec: '{
-      "description": "Distributed Workloads Data Science Pipeline",
-      "inputs": [{"name": "openshift_server"}, {"name": "openshift_token"}],
-      "name": "Distributed Workloads Data Science Pipeline"}'
-  labels:
-    pipelines.kubeflow.org/pipelinename: ''
-    pipelines.kubeflow.org/generation: ''
-spec:
-  params:
-  - name: openshift_server
-    value: ''
-  - name: openshift_token
-    value: ''
-  pipelineSpec:
-    params:
-    - name: openshift_server
-    - name: openshift_token
-    tasks:
-    - name: ray-fn
-      params:
-      - name: openshift_server
-        value: $(params.openshift_server)
-      - name: openshift_token
-        value: $(params.openshift_token)
-      taskSpec:
-        steps:
-        - name: main
-          args:
-          - --openshift-server
-          - $(inputs.params.openshift_server)
-          - --openshift-token
-          - $(inputs.params.openshift_token)
-          - '----output-paths'
-          - $(results.Output.path)
-          command:
-          - sh
-          - -c
-          - (PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location 'codeflare-sdk' || PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location 'codeflare-sdk' --user) && "$0" "$@"
-          - sh
-          - -ec
-          - |
-            program_path=$(mktemp)
-            printf "%s" "$0" > "$program_path"
-            python3 -u "$program_path" "$@"
-          - |
-            def ray_fn(openshift_server, openshift_token):
-                import ray
-                from codeflare_sdk.cluster.auth import TokenAuthentication
-                from codeflare_sdk.cluster.cluster import Cluster, ClusterConfiguration
+from kfp import components, dsl
 
-                print("before login")
-                auth = TokenAuthentication(
-                    token=openshift_token, server=openshift_server, skip_tls=True
-                )
-                auth_return = auth.login()
-                print(f'auth_return: "{auth_return}"')
-                print("after login")
-                cluster = Cluster(
-                    ClusterConfiguration(
-                        name="Distributed",
-                        # namespace must exist, and it is the same from 432__data-science-pipelines-tekton.robot
-                        namespace="dw-dsp",
-                        num_workers=1,
-                        head_cpus="500m",
-                        min_memory=1,
-                        max_memory=1,
-                        num_gpus=0,
-                        image="quay.io/project-codeflare/ray:latest-py39-cu118",
-                        instascale=False,
-                    )
-                )
-                # workaround for https://github.com/project-codeflare/codeflare-sdk/pull/412
-                cluster_file_name = "/opt/app-root/src/.codeflare/appwrapper/distributed.yaml"
-                # Read in the file
-                with open(cluster_file_name, "r") as file:
-                    filedata = file.read()
 
-                # Replace the target string
-                filedata = filedata.replace(
-                    "busybox:1.28", "quay.io/project-codeflare/busybox:latest"
-                )
+def ray_fn(openshift_server: str, openshift_token: str) -> int:
+   import ray
+   from codeflare_sdk.cluster.auth import TokenAuthentication
+   from codeflare_sdk.cluster.cluster import Cluster, ClusterConfiguration
 
-                # Write the file out again
-                with open(cluster_file_name, "w") as file:
-                    file.write(filedata)
-                # end workaround
 
-                # always clean the resources
-                cluster.down()
-                print(cluster.status())
-                cluster.up()
-                cluster.wait_ready()
-                print(cluster.status())
-                print(cluster.details())
+   auth = TokenAuthentication(
+       token=openshift_token, server=openshift_server, skip_tls=True
+   )
+   auth_return = auth.login()
+   cluster = Cluster(
+       ClusterConfiguration(
+           name="raytest",
+           # namespace must exists
+           namespace="pipeline-example",
+           num_workers=1,
+           head_cpus="500m",
+           min_memory=1,
+           max_memory=1,
+           num_gpus=0,
+           image="quay.io/project-codeflare/ray:latest-py39-cu118",
+           instascale=False,
+       )
+   )
+   # workaround for https://github.com/project-codeflare/codeflare-sdk/pull/412
+   cluster_file_name = "/opt/app-root/src/.codeflare/appwrapper/raytest.yaml"
+   with open(cluster_file_name, "r") as file:
+       filedata = file.read()
+   filedata = filedata.replace(
+       "busybox:1.28", "quay.io/project-codeflare/busybox:latest"
+   )
+   with open(cluster_file_name, "w") as file:
+       file.write(filedata)
+   # end workaround
 
-                ray_dashboard_uri = cluster.cluster_dashboard_uri()
-                ray_cluster_uri = cluster.cluster_uri()
-                print(ray_dashboard_uri)
-                print(ray_cluster_uri)
 
-                # before proceeding make sure the cluster exists and the uri is not empty
-                assert ray_cluster_uri, "Ray cluster needs to be started and set before proceeding"
+   print(cluster.status())
+   cluster.up()
+   cluster.wait_ready()
+   print(cluster.status())
+   print(cluster.details())
 
-                # reset the ray context in case there's already one.
-                ray.shutdown()
-                # establish connection to ray cluster
-                ray.init(address=ray_cluster_uri)
-                print("Ray cluster is up and running: ", ray.is_initialized())
 
-                @ray.remote
-                def train_fn():
-                    return 100
+   ray_dashboard_uri = cluster.cluster_dashboard_uri()
+   ray_cluster_uri = cluster.cluster_uri()
+   print(ray_dashboard_uri, ray_cluster_uri)
 
-                result = ray.get(train_fn.remote())
-                assert 100 == result
-                ray.shutdown()
-                cluster.down()
-                auth.logout()
-                return result
 
-            def _serialize_int(int_value: int) -> str:
-                if isinstance(int_value, str):
-                    return int_value
-                if not isinstance(int_value, int):
-                    raise TypeError('Value "{}" has type "{}" instead of int.'.format(
-                        str(int_value), str(type(int_value))))
-                return str(int_value)
+   # before proceeding make sure the cluster exists and the uri is not empty
+   assert ray_cluster_uri, "Ray cluster needs to be started and set before proceeding"
 
-            import argparse
-            _parser = argparse.ArgumentParser(prog='Ray fn', description='')
-            _parser.add_argument("--openshift-server", dest="openshift_server", type=str, required=True, default=argparse.SUPPRESS)
-            _parser.add_argument("--openshift-token", dest="openshift_token", type=str, required=True, default=argparse.SUPPRESS)
-            _parser.add_argument("----output-paths", dest="_output_paths", type=str, nargs=1)
-            _parsed_args = vars(_parser.parse_args())
-            _output_files = _parsed_args.pop("_output_paths", [])
 
-            _outputs = ray_fn(**_parsed_args)
+   ray.init(address=ray_cluster_uri)
+   print("Ray cluster is up and running: ", ray.is_initialized())
 
-            _outputs = [_outputs]
 
-            _output_serializers = [
-                _serialize_int,
+   @ray.remote
+   def train_fn():
+       # complex training function
+       return 100
 
-            ]
 
-            import os
-            for idx, output_file in enumerate(_output_files):
-                try:
-                    os.makedirs(os.path.dirname(output_file))
-                except OSError:
-                    pass
-                with open(output_file, 'w') as f:
-                    f.write(_output_serializers[idx](_outputs[idx]))
-          image: registry.redhat.io/ubi8/python-39@sha256:3523b184212e1f2243e76d8094ab52b01ea3015471471290d011625e1763af61
-        params:
-        - name: openshift_server
-        - name: openshift_token
-        results:
-        - name: Output
-          type: string
-          description: /tmp/outputs/Output/data
-        metadata:
-          labels:
-            pipelines.kubeflow.org/cache_enabled: "true"
-          annotations:
-            pipelines.kubeflow.org/component_spec_digest: '{
-              "name": "Ray fn",
-              "outputs": [{"name": "Output", "type": "Integer"}],
-              "version": "Ray fn@sha256=437764a432cc0e2840b2757382f19c35a74f1b67ce7ffbab74811a7734f3bd44"}'
+   result = ray.get(train_fn.remote())
+   assert 100 == result
+   ray.shutdown()
+   cluster.down()
+   auth.logout()
+   return result
+
+
+@dsl.pipeline(
+   name="Ray Simple Example",
+   description="Ray Simple Example",
+)
+def ray_integration(openshift_server, openshift_token):
+   ray_op = components.create_component_from_func(
+       ray_fn,
+       base_image='registry.redhat.io/ubi8/python-39:latest',
+       packages_to_install=["codeflare-sdk"],
+   )
+   ray_op(openshift_server, openshift_token)
+
+
+if __name__ == '__main__':
+    from kfp_tekton.compiler import TektonCompiler
+    TektonCompiler().compile(ray_integration, 'compiled-example.yaml')
 
 ----
-<1> Specifies the type of Kubernetes object
-<2> Unique name of the pipeline
-
+.. Install any required dependencies.
+In this example, install the `kfp` and `kfp-tekton` Python packages:
++
+[source,bash]
+----
+$ pip install kfp kfp-tekton
+----
+.. Compile the Python file (in this example, the `compile_example.py` file):
++
+[source,bash]
+----
+$ python compile_example.py
+----
+This command creates a YAML file (in this example, `compiled-example.yaml`), which you can import in the next step.
 . Import your data science pipeline as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#importing-a-data-science-pipeline_ds-pipelines[Importing a data science pipeline].
 . Schedule the pipeline run as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#managing_pipeline_runs[Scheduling a pipeline run].
 . When the pipeline run is complete, view the run details as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#viewing-the-details-of-a-pipeline-run_ds-pipelines[Viewing the details of a pipeline run].
 
-
-
-
 .Verification
-The pipeline run completes without errors.
+The YAML file is created and the pipeline run completes without errors.
 
 ////
 [role='_additional-resources']
