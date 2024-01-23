@@ -16,48 +16,37 @@ endif::[]
 Do not follow this procedure when disabling the following applications:
 
 * Anaconda Professional Edition. You cannot manually disable Anaconda Professional Edition. It is automatically disabled only when its license expires.
-ifndef::upstream[]
---
-ifndef::self-managed[]
+ifdef::cloud-service[]
 * {org-name} OpenShift API Management. You can only uninstall {org-name} OpenShift API Management from OpenShift Cluster Manager.
-endif::[]
---
 endif::[]
 ====
 
 .Prerequisites
-ifdef::upstream[]
-* You have logged in to the {productname-short} web console.
-* You are part of the `cluster-admins` user group in {openshift-platform}.
-* You have installed or configured the service on your {productname-short} cluster.
-* The application or component that you want to disable is enabled and appears on the *Enabled* page.
-endif::[]
-
-ifndef::upstream[]
---
-ifndef::self-managed[]
+ifdef::upstream,self-managed[]
 * You have logged in to the {openshift-platform} web console.
 * You are part of the `cluster-admins` user group in {openshift-platform}.
 * You have installed or configured the service on your {openshift-platform} cluster.
 * The application or component that you want to disable is enabled and appears on the *Enabled* page.
 endif::[]
-ifdef::self-managed[]
-* You have logged in to the {openshift-platform} web console.
-* You are assigned the `cluster-admin` role  in {openshift-platform}.
-* You have installed or configured the service on your {openshift-platform} cluster.
+ifdef::cloud-service[]
+* You have logged in to the OpenShift web console.
+* You are part of the `cluster-admins` or `dedicated-admins` user group in your OpenShift cluster. The `dedicated-admins` user group applies only to OpenShift Dedicated.
+* You have installed or configured the service on your OpenShift cluster.
 * The application or component that you want to disable is enabled and appears on the *Enabled* page.
-endif::[]
---
 endif::[]
 
 .Procedure
-
-. In the {openshift-platform} web console, change into the *Administrator* perspective.
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} web console, switch to the *Administrator* perspective.
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift web console, switch to the *Administrator* perspective.
+endif::[]
 ifndef::upstream[]
-. Change into the `redhat-ods-applications` project.
+. Switch to the `redhat-ods-applications` project.
 endif::[]
 ifdef::upstream[]
-. Change into the `odh` project.
+. Switch to the `odh` project.
 endif::[]
 . Click *Operators* -> *Installed Operators*.
 . Click on the Operator that you want to uninstall. You can enter a keyword into the *Filter by name* field to help you find the Operator faster.

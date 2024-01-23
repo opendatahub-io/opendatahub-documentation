@@ -18,7 +18,12 @@ Deployments containing Operators installed from OperatorHub may not be fully sup
 ====
 endif::[]
 * Installing the Operator for the service from {org-name} Marketplace (link:https://marketplace.redhat.com/en-us/documentation/operators[Install Operators]).
+ifdef::upstream,self-managed[]
 * Installing the service as an {install-package} to your {openshift-platform} cluster (link:https://docs.openshift.com/container-platform/{ocp-latest-version}/operators/admin/olm-adding-operators-to-cluster.html[Adding Operators to a cluster]).
+endif::[]
+ifdef::cloud-service[]
+* Installing the service as an {install-package} to your OpenShift Dedicated (link:https://docs.openshift.com/dedicated/operators/admin/olm-adding-operators-to-cluster.html[Adding Operators to an OpenShift Dedicated cluster]) or ROSA cluster (link:https://docs.openshift.com/rosa/operators/admin/olm-adding-operators-to-cluster.html[Adding Operators to a ROSA cluster]).
+endif::[]
 
 For some services (such as Jupyter), the service endpoint is available on the tile for the service on the *Enabled* page of {productname-short}. Certain services cannot be accessed directly from their tiles, for example, OpenVINO and Anaconda provide notebook images for use in Jupyter and do not provide an endpoint link from their tile. Additionally, it may be useful to store these endpoint URLs as environment variables for easy reference in a notebook environment.
 
@@ -28,7 +33,12 @@ To help you get started quickly, you can access the service's learning resources
 
 .Prerequisites
 * You have logged in to {productname-short}.
+ifdef::upstream,self-managed[]
+* Your administrator has installed or configured the service on your {openshift-platform} cluster.
+endif::[]
+ifdef::cloud-service[]
 * Your administrator has installed or configured the service on your OpenShift cluster.
+endif::[]
 
 .Procedure
 . On the {productname-short} home page, click *Explore*.

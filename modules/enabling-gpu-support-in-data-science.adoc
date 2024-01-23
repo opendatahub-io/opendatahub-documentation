@@ -30,8 +30,14 @@ endif::[]
 endif::[]
 
 .Prerequisites
-* You have logged in to {openshift-platform}.
-* You have the `cluster-admin` role in {openshift-platform}.
+ifdef::upstream,self-managed[]
+* You have logged in to your {openshift-platform} cluster.
+* You have the `cluster-admin` role in your {openshift-platform} cluster.
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to your OpenShift cluster.
+* You have the `cluster-admin` role in your OpenShift cluster.
+endif::[]
 
 .Procedure
 //the following step applies to cloud service, self-managed connected, and upstream
@@ -44,7 +50,12 @@ ifdef::disconnected[]
 endif::[]
 //the following steps apply to upstream and downstream: self-managed (connected and disconnected) and cloud service
 . Delete the *migration-gpu-status* ConfigMap.
-.. In the {openshift-platform} web console, change into the *Administrator* perspective.
+ifdef::upstream,self-managed[]
+.. In the {openshift-platform} web console, switch to the *Administrator* perspective.
+endif::[]
+ifdef::cloud-service[]
+.. In the OpenShift web console, switch to the *Administrator* perspective.
+endif::[]
 .. Set the *Project* to *All Projects* or *redhat-ods-applications* to ensure you can see the appropriate ConfigMap.
 .. Search for the *migration-gpu-status* ConfigMap.
 .. Click the action menu (&#8942;) and select *Delete ConfigMap* from the list.
@@ -53,7 +64,12 @@ The *Delete ConfigMap* dialog appears.
 .. Inspect the dialog and confirm that you are deleting the correct ConfigMap.
 .. Click *Delete*.
 . Restart the dashboard replicaset.
-.. In the {openshift-platform} web console, change into the *Administrator* perspective.
+ifdef::upstream,self-managed[]
+.. In the {openshift-platform} web console, switch to the *Administrator* perspective.
+endif::[]
+ifdef::cloud-service[]
+.. In the OpenShift web console, switch to the *Administrator* perspective.
+endif::[]
 .. Click *Workloads* -> *Deployments*.
 .. Set the *Project* to *All Projects* or *redhat-ods-applications* to ensure you can see the appropriate deployment.
 .. Search for the *rhods-dashboard* deployment.
@@ -61,7 +77,12 @@ The *Delete ConfigMap* dialog appears.
 .. Wait until the *Status* column indicates that all pods in the rollout have fully restarted.
 
 .Verification
-* The NVIDIA GPU Operator displays on the *Operators* -> *Installed Operators* page in the {openshift-platform} web console.
+ifdef::upstream,self-managed[]
+* The NVIDIA GPU Operator appears on the *Operators* -> *Installed Operators* page in the {openshift-platform} web console.
+endif::[]
+ifdef::cloud-service[]
+* The NVIDIA GPU Operator appears on the *Operators* -> *Installed Operators* page in the OpenShift web console.
+endif::[]
 * The reset *migration-gpu-status* instance is present in the *Instances* tab on the `AcceleratorProfile` custom resource definition (CRD) details page.
 
 //the following step applies to downstream only: self-managed (connected and disconnected) and cloud service
