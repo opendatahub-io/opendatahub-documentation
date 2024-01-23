@@ -51,10 +51,10 @@ endif::[]
 //the following steps apply to upstream and downstream: self-managed (connected and disconnected) and cloud service
 . Delete the *migration-gpu-status* ConfigMap.
 ifdef::upstream,self-managed[]
-.. In the {openshift-platform} web console, change into the *Administrator* perspective.
+.. In the {openshift-platform} web console, switch to the *Administrator* perspective.
 endif::[]
 ifdef::cloud-service[]
-.. In the OpenShift web console, change into the *Administrator* perspective.
+.. In the OpenShift web console, switch to the *Administrator* perspective.
 endif::[]
 .. Set the *Project* to *All Projects* or *redhat-ods-applications* to ensure you can see the appropriate ConfigMap.
 .. Search for the *migration-gpu-status* ConfigMap.
@@ -65,10 +65,10 @@ The *Delete ConfigMap* dialog appears.
 .. Click *Delete*.
 . Restart the dashboard replicaset.
 ifdef::upstream,self-managed[]
-.. In the {openshift-platform} web console, change into the *Administrator* perspective.
+.. In the {openshift-platform} web console, switch to the *Administrator* perspective.
 endif::[]
 ifdef::cloud-service[]
-.. In the OpenShift web console, change into the *Administrator* perspective.
+.. In the OpenShift web console, switch to the *Administrator* perspective.
 endif::[]
 .. Click *Workloads* -> *Deployments*.
 .. Set the *Project* to *All Projects* or *redhat-ods-applications* to ensure you can see the appropriate deployment.
@@ -78,10 +78,10 @@ endif::[]
 
 .Verification
 ifdef::upstream,self-managed[]
-* The NVIDIA GPU Operator displays on the *Operators* -> *Installed Operators* page in the {openshift-platform} web console.
+* The NVIDIA GPU Operator appears on the *Operators* -> *Installed Operators* page in the {openshift-platform} web console.
 endif::[]
 ifdef::cloud-service[]
-* The NVIDIA GPU Operator displays on the *Operators* -> *Installed Operators* page in the OpenShift web console.
+* The NVIDIA GPU Operator appears on the *Operators* -> *Installed Operators* page in the OpenShift web console.
 endif::[]
 * The reset *migration-gpu-status* instance is present in the *Instances* tab on the `AcceleratorProfile` custom resource definition (CRD) details page.
 
