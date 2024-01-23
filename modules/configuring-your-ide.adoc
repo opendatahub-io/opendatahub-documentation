@@ -43,37 +43,7 @@ The extension you installed appears in the *Browser - Installed* list on the *Ex
 
 ==== Extensions
 
-The following list describes some available third-party extensions that you can consider installing.
-
-MongoDB for VS Code::
-MongoDB for VS Code lets you connect to MongoDB and Atlas directly from your VS Code Server environment. Explore databases and collections, inspect schemas, and prototype queries and aggregations using the integrated playgrounds.
-
-link:https://marketplace.visualstudio.com/items?itemName=mongodb.mongodb-vscode[See in Visual Studio Marketplace]
-
-MySQL Shell for VS Code::
-This extension provides a MySQL Shell for VS Code, enhancing your ability to manage MySQL databases within the VS Code Server environment.
-
-link:https://marketplace.visualstudio.com/items?itemName=Oracle.mysql-shell-for-vs-code[See in Visual Studio Marketplace]
-
-SQL Server (MSSQL)::
-Connect to SQL Server with this extension and perform database tasks directly from your VS Code Server environment.
-
-link:https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql[See in Visual Studio Marketplace]
-
-PostgreSQL::
-This extension facilitates direct interaction with PostgreSQL databases, allowing you to navigate, query, and manage your PostgreSQL instances efficiently.
-
-link:https://marketplace.visualstudio.com/items?itemName=ms-ossdata.vscode-postgresql[See in Visual Studio Marketplace]
-
-SQLTools::
-SQLTools simplifies database connections and enhances data management and query execution, supporting a variety of commonly used databases.
-
-link:https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools[See in Visual Studio Marketplace]
-
-Database Client::
-This extension serves as a database manager for MySQL/MariaDB, PostgreSQL, SQLite, Redis, and ElasticSearch. It provides a unified interface for managing diverse databases within the VS Code Server environment.
-
-link:https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-database-client2[See in Visual Studio Marketplace]
+See link:https://marketplace.visualstudio.com/vscode[Visual Studio Marketplace] for available third-party extensions that you can consider installing.
 
 === Incorporating DBMS clients using a custom image
 
@@ -131,7 +101,7 @@ USER 1001
 WORKDIR /opt/app-root/src
 ----
 
-. Create two RPM files, `mongodb-org-6.0.repo-x86_64` and `mssql-2022.repo-x86_64`, with the following contents, in the folder you created for your custom image.
+. Create two text files, `mongodb-org-6.0.repo-x86_64` and `mssql-2022.repo-x86_64`, with the following contents, in the folder you created for your custom image.
 +
 *`mongodb-org-6.0.repo-x86_64`:*
 
@@ -195,5 +165,5 @@ yum list installed | grep -E 'mssql|mongo|postgresql'
 +
 A list of installed packages related to MongoDB, MSSQL, and PostgreSQL should appear.
 
-Example::
-https://github.com/atheo89/notebooks/tree/add-db-clients-example/codeserver/ubi9-python-3.9-plus
+
+See link:https://github.com/atheo89/notebooks/tree/add-db-clients-example/codeserver/ubi9-python-3.9-plus[an example in GitHub] for reference.
