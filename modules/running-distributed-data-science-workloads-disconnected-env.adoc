@@ -1,0 +1,38 @@
+:_module-type: PROCEDURE
+
+[id="running-distributed-data-science-workloads-disconnected-env_{context}"]
+= Running distributed data science workloads in a disconnected environment
+
+[role='_abstract']
+To run a distributed data science workload in a disconnected environment, you must have access to the required software, and you must set some environment variables.
+
+.Prerequisites
+* You have access to a disconnected data science cluster.
+* You have installed {productname-long} and created a mirror image as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment[Installing and uninstalling {productname-short} Self-Managed in a disconnected environment].
+* You have access to a Ray cluster image.
+* You have access to the data sets and models to be used by the workload.
+* You have access to the Python dependencies for training scripts, either in a Ray image or in your own PyPi server that is available from the disconnected cluster.
+* You have created a data science project.
+
+.Procedure
+. Configure the disconnected data science cluster to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+. Set the `PIP_INDEX_URL` and `PIP_TRUSTED_HOST` environment variables to indicate the location of the Python dependencies, as shown in the following example:
++
+----
+PIP_INDEX_URL: https://pypi-notebook.apps.mylocation.com/simple
+PIP_TRUSTED_HOST: pypi-notebook.apps.mylocation.com
+----
+. Edit the notebook or pipeline to provide the location of the Ray cluster.
+. Run the distributed data science workload, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#running-distributed-data-science-workloads-from-notebooks_distributed-workloads[Running distributed data science workloads from notebooks] or link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#running-distributed-data-science-workloads-from-ds-pipelines_distributed-workloads[Running distributed data science workloads from data science pipelines].
+
+.Verification
+The notebook or pipeline run completes without errors.
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////
