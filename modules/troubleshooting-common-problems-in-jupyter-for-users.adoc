@@ -22,18 +22,10 @@ If your administrator has configured specialized user groups for {productname-sh
 == My notebook server does not start
 
 .Problem
-ifndef::upstream[]
---
-ifndef::self-managed[]
+ifndef::upstream,self-managed[]
 The OpenShift cluster that hosts your notebook server might not have access to enough resources, or the Jupyter pod may have failed.
 endif::[]
-ifdef::self-managed[]
-The {openshift-platform} cluster that hosts your notebook server might not have access to enough resources, or the Jupyter pod may have failed.
-endif::[]
---
-endif::[]
-
-ifdef::upstream[]
+ifdef::upstream,self-managed[]
 The {openshift-platform} cluster that hosts your notebook server might not have access to enough resources, or the Jupyter pod may have failed.
 endif::[]
 

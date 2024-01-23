@@ -19,21 +19,14 @@ If you have configured specialized user groups for {productname-short}, the user
 Check whether the user is part of the default user group.
 
 . Find the names of groups allowed access to Jupyter.
-ifndef::upstream[]
---
-ifdef::self-managed[]
-.. Log in to {openshift-platform} web console.
+ifdef::upstream,self-managed[]
+.. Log in to the {openshift-platform} web console.
 endif::[]
-ifndef::self-managed[]
-.. Log in to OpenShift web console.
-endif::[]
---
-endif::[]
-ifdef::upstream[]
-.. Log in to {productname-short} web console.
+ifndef::upstream,self-managed[]
+.. Log in to the OpenShift web console.
 endif::[]
 .. Click *User Management* -> *Groups*.
-.. Click the name of your user group, for example, `{oai-user-group}`.
+.. Click the name of your user group, for example, {oai-user-group}.
 +
 The *Group details* page for that group appears.
 
@@ -44,40 +37,26 @@ ifndef::upstream[]
 * If the user is not added to any of the groups with permission access to Jupyter, follow link:{rhoaidocshome}{default-format-url}/managing_users/adding-users_user-mgmt[Adding users] to add them.
 * If the user is already added to a group with permission to access Jupyter, contact {org-name} Support.
 endif::[]
-
 ifdef::upstream[]
-If the user is not added to any of the groups allowed access to Jupyter, add them.
+* If the user is not added to any of the groups allowed access to Jupyter, add them.
 endif::[]
 
 == A user's notebook server does not start
 
 .Problem
-ifdef::upstream[]
+ifdef::upstream,self-managed[]
 The {openshift-platform} cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
 endif::[]
-ifndef::upstream[]
---
-ifndef::self-managed[]
+ifndef::upstream,self-managed[]
 The OpenShift cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
 endif::[]
-ifdef:self-managed[]
-The {openshift-platform} cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
-endif::[]
---
-endif::[]
+
 .Diagnosis
-ifndef::upstream[]
---
-ifndef::self-managed[]
+ifndef::upstream,self-managed[]
 . Log in to the OpenShift web console.
 endif::[]
-ifdef::self-managed[]
+ifdef::upstream,self-managed[]
 . Log in to the {openshift-platform} web console.
-endif::[]
---
-endif::[]
-ifdef::upstream[]
-. Log in to {productname-short} web console.
 endif::[]
 . Delete and restart the notebook server pod for this user.
 .. Click *Workloads* -> *Pods* and set the *Project* to `rhods-notebooks`.
@@ -87,7 +66,12 @@ endif::[]
 If the notebook server pod exists, an intermittent failure may have occurred in the notebook server pod.
 +
 If the notebook server pod for the user does not exist, continue with diagnosis.
+ifdef::upstream,self-managed[]
+. Check the resources currently available in the {openshift-platform} cluster against the resources required by the selected notebook server image.
+endif::[]
+ifndef::upstream,self-managed[]
 . Check the resources currently available in the OpenShift cluster against the resources required by the selected notebook server image.
+endif::[]
 +
 If worker nodes with sufficient CPU and RAM are available for scheduling in the cluster, continue with diagnosis.
 . Check the state of the Jupyter pod.
@@ -97,7 +81,12 @@ If worker nodes with sufficient CPU and RAM are available for scheduling in the 
 * If there was an intermittent failure of the notebook server pod:
 .. Delete the notebook server pod that belongs to the user.
 .. Ask the user to start their notebook server again.
+ifdef::upstream,self-managed[]
+* If the notebook server does not have sufficient resources to run the selected notebook server image, either add more resources to the {openshift-platform} cluster, or choose a smaller image size.
+endif::[]
+ifndef::upstream,self-managed[]
 * If the notebook server does not have sufficient resources to run the selected notebook server image, either add more resources to the OpenShift cluster, or choose a smaller image size.
+endif::[]
 ifndef::upstream[]
 * If the Jupyter pod is in a *FAILED* state:
 .. Retrieve the logs for the `jupyter-nb-*` pod and send them to {org-name} Support for further evaluation.
@@ -112,18 +101,11 @@ The user might have run out of storage space on their notebook server.
 
 .Diagnosis
 . Log in to Jupyter and start the notebook server that belongs to the user having problems. If the notebook server does not start, follow these steps to check whether the user has run out of storage space:
-ifndef::upstream[]
---
-ifdef::self-managed[]
-.. Log in to {openshift-platform} web console.
+ifdef::upstream,self-managed[]
+.. Log in to the {openshift-platform} web console.
 endif::[]
-ifndef::self-managed[]
-.. Log in to your OpenShift web console.
-endif::[]
---
-endif::[]
-ifdef::upstream[]
-. Log in to {productname-short} web console.
+ifndef::upstream,self-managed[]
+.. Log in to the OpenShift web console.
 endif::[]
 .. Click *Workloads* -> *Pods* and set the *Project* to `rhods-notebooks`.
 .. Click the notebook server pod that belongs to this user, for example, `jupyter-nb-<idp>-<username>-*`.
@@ -140,7 +122,6 @@ endif::[]
 ifdef::upstream[]
 * Increase the user's available storage by expanding their persistent volume.
 endif::[]
-
 * Work with the user to identify files that can be deleted from the `/opt/app-root/src` directory on their notebook server to free up their existing storage space.
 
 [NOTE]
