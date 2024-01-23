@@ -16,7 +16,7 @@ endif::[]
 Do not follow this procedure when disabling the following applications:
 
 * Anaconda Professional Edition. You cannot manually disable Anaconda Professional Edition. It is automatically disabled only when its license expires.
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 * {org-name} OpenShift API Management. You can only uninstall {org-name} OpenShift API Management from OpenShift Cluster Manager.
 endif::[]
 ====
@@ -28,7 +28,7 @@ ifdef::upstream,self-managed[]
 * You have installed or configured the service on your {openshift-platform} cluster.
 * The application or component that you want to disable is enabled and appears on the *Enabled* page.
 endif::[]
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 * You have logged in to the OpenShift web console.
 * You are part of the `cluster-admins` or `dedicated-admins` user group in your OpenShift cluster. The `dedicated-admins` user group applies only to OpenShift Dedicated.
 * You have installed or configured the service on your OpenShift cluster.
@@ -39,7 +39,7 @@ endif::[]
 ifdef::upstream,self-managed[]
 . In the {openshift-platform} web console, switch to the *Administrator* perspective.
 endif::[]
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 . In the OpenShift web console, switch to the *Administrator* perspective.
 endif::[]
 ifndef::upstream[]

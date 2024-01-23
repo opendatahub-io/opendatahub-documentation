@@ -22,7 +22,7 @@ Check whether the user is part of the default user group.
 ifdef::upstream,self-managed[]
 .. Log in to the {openshift-platform} web console.
 endif::[]
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 .. Log in to the OpenShift web console.
 endif::[]
 .. Click *User Management* -> *Groups*.
@@ -47,12 +47,12 @@ endif::[]
 ifdef::upstream,self-managed[]
 The {openshift-platform} cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
 endif::[]
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 The OpenShift cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
 endif::[]
 
 .Diagnosis
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 . Log in to the OpenShift web console.
 endif::[]
 ifdef::upstream,self-managed[]
@@ -69,7 +69,7 @@ If the notebook server pod for the user does not exist, continue with diagnosis.
 ifdef::upstream,self-managed[]
 . Check the resources currently available in the {openshift-platform} cluster against the resources required by the selected notebook server image.
 endif::[]
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 . Check the resources currently available in the OpenShift cluster against the resources required by the selected notebook server image.
 endif::[]
 +
@@ -84,7 +84,7 @@ If worker nodes with sufficient CPU and RAM are available for scheduling in the 
 ifdef::upstream,self-managed[]
 * If the notebook server does not have sufficient resources to run the selected notebook server image, either add more resources to the {openshift-platform} cluster, or choose a smaller image size.
 endif::[]
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 * If the notebook server does not have sufficient resources to run the selected notebook server image, either add more resources to the OpenShift cluster, or choose a smaller image size.
 endif::[]
 ifndef::upstream[]
@@ -104,7 +104,7 @@ The user might have run out of storage space on their notebook server.
 ifdef::upstream,self-managed[]
 .. Log in to the {openshift-platform} web console.
 endif::[]
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 .. Log in to the OpenShift web console.
 endif::[]
 .. Click *Workloads* -> *Pods* and set the *Project* to `rhods-notebooks`.

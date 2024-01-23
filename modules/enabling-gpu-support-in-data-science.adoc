@@ -34,7 +34,7 @@ ifdef::upstream,self-managed[]
 * You have logged in to your {openshift-platform} cluster.
 * You have the `cluster-admin` role in your {openshift-platform} cluster.
 endif::[]
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 * You have logged in to your OpenShift cluster.
 * You have the `cluster-admin` role in your OpenShift cluster.
 endif::[]
@@ -53,7 +53,7 @@ endif::[]
 ifdef::upstream,self-managed[]
 .. In the {openshift-platform} web console, change into the *Administrator* perspective.
 endif::[]
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 .. In the OpenShift web console, change into the *Administrator* perspective.
 endif::[]
 .. Set the *Project* to *All Projects* or *redhat-ods-applications* to ensure you can see the appropriate ConfigMap.
@@ -67,7 +67,7 @@ The *Delete ConfigMap* dialog appears.
 ifdef::upstream,self-managed[]
 .. In the {openshift-platform} web console, change into the *Administrator* perspective.
 endif::[]
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 .. In the OpenShift web console, change into the *Administrator* perspective.
 endif::[]
 .. Click *Workloads* -> *Deployments*.
@@ -80,7 +80,7 @@ endif::[]
 ifdef::upstream,self-managed[]
 * The NVIDIA GPU Operator displays on the *Operators* -> *Installed Operators* page in the {openshift-platform} web console.
 endif::[]
-ifndef::upstream,self-managed[]
+ifdef::cloud-service[]
 * The NVIDIA GPU Operator displays on the *Operators* -> *Installed Operators* page in the OpenShift web console.
 endif::[]
 * The reset *migration-gpu-status* instance is present in the *Instances* tab on the `AcceleratorProfile` custom resource definition (CRD) details page.
