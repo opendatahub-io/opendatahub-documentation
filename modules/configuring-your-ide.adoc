@@ -6,10 +6,10 @@
 [role='_abstract']
 You can configure some notebook workbenches to get the most out of your data science work.
 
-== Configuring Code Server
-Incorporating standard database clients into your Code Server environment can streamline your workflow, offering a seamless interface for managing databases. You can incorporate different Database Management System (DBMS) clients into your Code Server workbench through built-in extensions or by creating a custom notebook image using a Dockerfile. 
+== Configuring your code-server workbench
+Incorporating standard database clients into your code-server workbench can streamline your workflow, offering a seamless interface for managing databases. You can incorporate different Database Management System (DBMS) clients into your code-server workbench through built-in extensions or by creating a custom notebook image using a Dockerfile. 
 
-For more information on `code-server`, see link:https://github.com/coder/code-server[code-server in GitHub].
+For more information on code-server, see link:https://github.com/coder/code-server[code-server in GitHub].
 
 === Incorporating DBMS clients using extensions
 
@@ -22,14 +22,14 @@ endif::[]
 ifdef::upstream[]
 * If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
-* You have created a data science project that has a Code Server workbench.
+* You have created a data science project that has a code-server workbench.
 
 .Procedure
 
 . From the {productname-short} dashboard, click *Data Science Projects*.
 +
 The *Data science projects* page opens.
-. Click the name of the project containing the Code Server workbench you want to start.
+. Click the name of the project containing the code-server workbench you want to start.
 +
 The *Details* page for the project opens.
 . Click the toggle in the *Status* column for the relevant workbench to start a workbench that is not running.
@@ -38,7 +38,7 @@ The status of the workbench that you started changes from *Stopped* to *Running*
 . After the workbench has started, click *Open* to open the workbench notebook.
 . In the Activity Bar, click the Extensions icon. (image:images/codeserver-extensions-icon.png[The Extensions icon])
 . Search for the name of the extension you want to install. 
-. Click *Install* to add the extension to your Code Server environment.
+. Click *Install* to add the extension to your code-server environment.
 + 
 The extension you installed appears in the *Browser - Installed* list on the *Extensions* panel.
 
@@ -59,7 +59,7 @@ endif::[]
 ifdef::upstream[]
 * If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
-* You have created a data science project that has a Code Server workbench.
+* You have created a data science project that has a code-server workbench.
 * You have installed Docker on your system.
 
 .Procedure
@@ -74,7 +74,7 @@ git clone git@github.com:red-hat-data-services/notebooks.git
 . Inside this folder, create a Dockerfile with the following contents:
 +
 ----
-# The base image is auto-assigned by the make recipe on the next step. In this case, this is your Code Server notebook.
+# The base image is auto-assigned by the make recipe on the next step. In this case, this is your code-server notebook.
 
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
@@ -159,7 +159,7 @@ The notebook image that you imported appears in the table on the *Notebook image
 . Create or open a data science project, and then create a new workbench and select the custom image from the *Image selection* drop-down list.
 
 .Verification
-. Open a new terminal inside your Code Server workbench and run the following command to confirm that the database clients installed successfully:
+. Open a new terminal inside your code-server workbench and run the following command to confirm that the database clients installed successfully:
 +
 ----
 yum list installed | grep -E 'mssql|mongo|postgresql'
