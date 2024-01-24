@@ -68,7 +68,7 @@ endif::[]
 . Clone the Open Data Hub *notebooks* repository:
 +
 ----
-git clone git@github.com:opendatahub-io/notebooks.git
+git clone git@github.com:red-hat-data-services/notebooks.git
 ----
 
 . From your local version of the repository, go to the `codeserver` folder and create a new folder for your custom image. For example, `ubi9-python-3.9-db-clients`. 
@@ -130,7 +130,7 @@ gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 ----
 
-. To streamline the build and push process, update your local version of the link:https://github.com/opendatahub-io/notebooks/blob/main/Makefile[makefile] with a new recipe:
+. To streamline the build and push process, update your local version of the link:https://github.com/red-hat-data-services/notebooks/blob/inject-bd-clients-example/Makefile[makefile] with a new recipe:
 +
 ----
 .PHONY: codeserver-ubi9-python-3.9-db-clients
@@ -168,3 +168,5 @@ yum list installed | grep -E 'mssql|mongo|postgresql'
 
 +
 A list of installed packages related to MongoDB, MSSQL, and PostgreSQL appear.
+
+See an link:https://github.com/red-hat-data-services/notebooks/tree/inject-bd-clients-example[example custom image file in GitHub] for reference.
