@@ -129,13 +129,16 @@ gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 ----
 
-. To streamline the build and push process, update your local version of the link:https://github.com/red-hat-data-services/notebooks/blob/inject-bd-clients-example/Makefile[makefile] with a new recipe:
+. To streamline the build and push process, update your local version of the `Makefile` with a new recipe:
 +
 ----
 .PHONY: codeserver-ubi9-python-3.9-db-clients
 codeserver-ubi9-python-3.9-db-clients: codeserver-ubi9-python-3.9
     $(call image,$@,codeserver/ubi9-python-3.9-db-clients,$<)
 ----
+
++
+See an link:https://github.com/red-hat-data-services/notebooks/blob/inject-bd-clients-example/Makefile[example makefile in GitHub].
 
 . Run the following command to build and push the image:
 +
@@ -162,10 +165,10 @@ The notebook image that you imported appears in the table on the *Notebook image
 . Open a new terminal inside your code-server workbench and run the following command to confirm that the database clients installed successfully:
 +
 ----
-yum list installed | grep -E 'mssql|mongo|postgresql'
+dnf list installed | grep -E 'mssql|mongo|postgresql'
 ----
 
 +
 A list of installed packages related to MongoDB, MSSQL, and PostgreSQL appear.
 
-See an link:https://github.com/red-hat-data-services/notebooks/tree/inject-bd-clients-example/codeserver/ubi9-python-3.9-db-clients[example custom image folder in GitHub] for reference.
+See an link:https://github.com/red-hat-data-services/notebooks/commit/fc556136b141d579e67600fb8af48fdbcc92effc[example makefile and custom image folder in GitHub] for reference.
