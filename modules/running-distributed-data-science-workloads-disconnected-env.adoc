@@ -19,7 +19,7 @@ To run a distributed data science workload in a disconnected environment, you mu
 
 .Procedure
 . Configure the disconnected data science cluster to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
-. Ensure that the notebook or pipeline includes a link to a Ray cluster image that can be accessed from the disconnected environment:
+. In the `ClusterConfiguration` section of the notebook or pipeline, ensure that the `image` value specifies a Ray cluster image that can be accessed from the disconnected environment:
 * Notebooks use the Ray cluster image to create a Ray cluster when running the notebook.
 * Pipelines use the Ray cluster image to create a Ray cluster during the pipeline run.
 . If any of the Python packages required by the workload are not available in the Ray cluster, configure the Ray cluster to download the Python packages from a private PyPI server.
