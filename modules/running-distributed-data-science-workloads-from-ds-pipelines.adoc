@@ -1,0 +1,146 @@
+:_module-type: PROCEDURE
+
+[id="running-distributed-data-science-workloads-from-ds-pipeline_{context}"]
+= Running distributed data science workloads from data science pipelines
+
+[role='_abstract']
+To run a distributed data science workload from a data science pipeline, you must first update the pipeline to include a link to your Ray cluster image.
+
+.Prerequisites
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+* You have installed the {org-name} OpenShift Pipelines Operator as described in link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/cicd/pipelines#installing-pipelines[Installing OpenShift Pipelines].
+* You have access to S3-compatible object storage.
+* You have logged in to {productname-long}.
+* You have created a data science project.
+
+.Procedure
+. Create a data connection to connect the object storage to your data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#adding-a-data-connection-to-your-data-science-project_nb-server[Adding a data connection to your data science project].
+. Configure a pipeline server to use the data connection, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+. Create the data science pipeline as follows:
+.. Install the `kfp-tekton` Python package, which is required for all pipelines:
++
+[source,bash]
+----
+$ pip install kfp-tekton
+----
+.. Install any other dependencies that are required for your pipeline.
+.. Build your data science pipeline in Python code.
+For example, create a file named `compile_example.py` with the following content:
++
+[source,Python]
+----
+from kfp import components, dsl
+
+
+def ray_fn(openshift_server: str, openshift_token: str) -> int: <1>
+   import ray
+   from codeflare_sdk.cluster.auth import TokenAuthentication
+   from codeflare_sdk.cluster.cluster import Cluster, ClusterConfiguration
+
+
+   auth = TokenAuthentication( <2>
+       token=openshift_token, server=openshift_server, skip_tls=True
+   )
+   auth_return = auth.login()
+   cluster = Cluster( <3>
+       ClusterConfiguration(
+           name="raytest",
+           # namespace must exist
+           namespace="pipeline-example",
+           num_workers=1,
+           head_cpus="500m",
+           min_memory=1,
+           max_memory=1,
+           num_gpus=0,
+           image="quay.io/project-codeflare/ray:latest-py39-cu118", <4>
+           instascale=False, <5>
+       )
+   )
+
+
+   print(cluster.status())
+   cluster.up() <6>
+   cluster.wait_ready() <7>
+   print(cluster.status())
+   print(cluster.details())
+
+
+   ray_dashboard_uri = cluster.cluster_dashboard_uri()
+   ray_cluster_uri = cluster.cluster_uri()
+   print(ray_dashboard_uri, ray_cluster_uri)
+
+
+   # Before proceeding, ensure that the cluster exists and that its URI contains a value
+   assert ray_cluster_uri, "Ray cluster must be started and set before proceeding"
+
+
+   ray.init(address=ray_cluster_uri)
+   print("Ray cluster is up and running: ", ray.is_initialized())
+
+
+   @ray.remote
+   def train_fn(): <8>
+       # complex training function
+       return 100
+
+
+   result = ray.get(train_fn.remote())
+   assert 100 == result
+   ray.shutdown()
+   cluster.down() <9>
+   auth.logout()
+   return result
+
+
+@dsl.pipeline( <10>
+   name="Ray Simple Example",
+   description="Ray Simple Example",
+)
+def ray_integration(openshift_server, openshift_token):
+   ray_op = components.create_component_from_func(
+       ray_fn,
+       base_image='registry.redhat.io/ubi8/python-39:latest',
+       packages_to_install=["codeflare-sdk"],
+   )
+   ray_op(openshift_server, openshift_token)
+
+
+if __name__ == '__main__': <11>
+    from kfp_tekton.compiler import TektonCompiler
+    TektonCompiler().compile(ray_integration, 'compiled-example.yaml')
+
+----
+<1> Imports from the CodeFlare SDK the packages that define the cluster functions
+<2> Authenticates with the cluster by using values that you specify when creating the pipeline run
+<3> Specifies the Ray cluster resources: replace these example values with the values for your Ray cluster
+<4> Specifies the location of the Ray cluster image: if using a disconnected environment, replace the default value with the location for your environment
+<5> InstaScale is not supported in this release
+<6> Creates a Ray cluster using the specified image and configuration
+<7> Waits for the Ray cluster to be ready before proceeding
+<8> Replace the example details in this section with the details for your workload
+<9> Removes the Ray cluster when your workload is finished
+<10> Replace the example name and description with the values for your workload
+<11> Compiles the Python code and saves the output in a YAML file
+
+.. Compile the Python file (in this example, the `compile_example.py` file):
++
+[source,bash]
+----
+$ python compile_example.py
+----
+This command creates a YAML file (in this example, `compiled-example.yaml`), which you can import in the next step.
+. Import your data science pipeline as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#importing-a-data-science-pipeline_ds-pipelines[Importing a data science pipeline].
+. Schedule the pipeline run as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#managing_pipeline_runs[Scheduling a pipeline run].
+. When the pipeline run is complete, confirm that it is included in the list of triggered pipeline runs as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#viewing-triggered-pipeline-runs_ds-pipelines[Viewing triggered pipeline runs].
+
+
+.Verification
+The YAML file is created and the pipeline run completes without errors.
+You can view the run details as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#viewing-the-details-of-a-pipeline-run_ds-pipelines[Viewing the details of a pipeline run].
+
+
+[role='_additional-resources']
+.Additional resources
+* link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines[Working with data science pipelines]
+* link:https://docs.ray.io/en/latest/cluster/getting-started.html[Ray Clusters documentation]
