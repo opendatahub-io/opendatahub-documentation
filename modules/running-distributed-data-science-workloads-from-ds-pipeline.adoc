@@ -18,6 +18,13 @@ To run a distributed data science workload from a data science pipeline, you mus
 . Create a data connection to connect the object storage to your data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#adding-a-data-connection-to-your-data-science-project_nb-server[Adding a data connection to your data science project].
 . Configure a pipeline server to use the data connection, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
 . Create the data science pipeline as follows:
+.. Install the `kfp-tekton` Python package, which is required for all pipelines:
++
+[source,bash]
+----
+$ pip install kfp-tekton
+----
+.. Install any other dependencies that are required for your pipeline.
 .. Build your data science pipeline in Python code.
 For example, create a file named `compile_example.py` with the following content:
 +
@@ -72,16 +79,16 @@ def ray_fn(openshift_server: str, openshift_token: str) -> int: <1>
    print("Ray cluster is up and running: ", ray.is_initialized())
 
 
-   @ray.remote <8>
-   def train_fn():
+   @ray.remote
+   def train_fn(): <8>
        # complex training function
        return 100
 
 
    result = ray.get(train_fn.remote())
    assert 100 == result
-   ray.shutdown() <9>
-   cluster.down()
+   ray.shutdown()
+   cluster.down() <9>
    auth.logout()
    return result
 
@@ -104,25 +111,18 @@ if __name__ == '__main__': <11>
     TektonCompiler().compile(ray_integration, 'compiled-example.yaml')
 
 ----
-<1> Imports objects from the CodeFlare SDK that define the cluster functions
+<1> Imports from the CodeFlare SDK the packages that define the cluster functions
 <2> Authenticates with the cluster by using values that you specify when creating the pipeline run
-<3> Specifies the resources required to run the task: replace these example values with the values for your task
+<3> Specifies the Ray cluster resources: replace these example values with the values for your Ray cluster
 <4> Specifies the location of the Ray cluster image: if using a disconnected environment, replace the default value with the location for your environment
 <5> InstaScale is not supported in this release
 <6> Creates a Ray cluster using the specified image and configuration
 <7> Waits for the Ray cluster to be ready before proceeding
-<8> Replace the example details in this section with the details for your task
-<9> Removes the Ray cluster when your task is finished
-<10> Replace the example name and description with the values for your task
+<8> Replace the example details in this section with the details for your workload
+<9> Removes the Ray cluster when your workload is finished
+<10> Replace the example name and description with the values for your workload
 <11> Compiles the Python code and saves the output in a YAML file
 
-.. Install any required dependencies.
-In this example, install the `kfp-tekton` Python package:
-+
-[source,bash]
-----
-$ pip install kfp-tekton
-----
 .. Compile the Python file (in this example, the `compile_example.py` file):
 +
 [source,bash]
