@@ -4,21 +4,22 @@
 = Running distributed data science workloads in a disconnected environment
 
 [role='_abstract']
-To run a distributed data science workload in a disconnected environment, you must have access to a Ray cluster image, and to the data sets and Python dependencies used by the workload tasks.
+To run a distributed data science workload in a disconnected environment, you must be able to access a Ray cluster image, and the data sets and Python dependencies used by the workload, from the disconnected environment.
 
 .Prerequisites
 * You have logged in to {openshift-platform} with the `cluster-admin` role.
 * You have access to the disconnected data science cluster.
 * You have installed {productname-long} and created a mirror image as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment[Installing and uninstalling {productname-short} Self-Managed in a disconnected environment].
-* You have access to a Ray cluster image.
-* You have access to the data sets and models to be used by the workload.
-* You have access to the Python dependencies for the workload, either in a Ray image or in your own Python Package Index (PyPI) server that is available from the disconnected cluster.
+* You can access the following software from the disconnected cluster:
+** A Ray cluster image
+** The data sets and models to be used by the workload
+** The Python dependencies for the workload, either in a Ray image or in your own Python Package Index (PyPI) server that is available from the disconnected cluster
 * You have logged in to {productname-long}.
 * You have created a data science project.
 
 .Procedure
 . Configure the disconnected data science cluster to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
-. Edit the notebook or pipeline to provide the location of the Ray cluster image:
+. Ensure that the notebook or pipeline includes a link to a Ray cluster image that can be accessed from the disconnected environment:
 * Notebooks use the Ray cluster image to create a Ray cluster when running the notebook.
 * Pipelines use the Ray cluster image to create a Ray cluster during the pipeline run.
 . If any of the Python packages required by the workload are not available in the Ray cluster, configure the Ray cluster to download the Python packages from a private PyPI server.
