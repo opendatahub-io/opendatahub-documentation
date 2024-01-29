@@ -7,9 +7,16 @@
 To run a distributed data science workload from a notebook, you must first provide the link to your Ray cluster image.
 
 .Prerequisites
+ifndef::upstream[]
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 * You have created a data science project that contains a workbench that is running one of the default notebook images, for example, the *Standard Data Science* notebook.
 See the table in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/creating-and-importing-notebooks_notebooks#notebook-images-for-data-scientists[Notebook images for data scientists] for a complete list of default notebook images.
+endif::[]
+ifdef::upstream[]
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+* You have created a data science project that contains a workbench that is running one of the default notebook images, for example, the *Standard Data Science* notebook.
+See the table in link:{odhdocshome}/working_on_data_science_projects/creating-and-importing-notebooks_notebooks#notebook-images-for-data-scientists[Notebook images for data scientists] for a complete list of default notebook images.
+endif::[]
 * You have launched your notebook server and logged in to Jupyter.
 
 .Procedure
@@ -23,7 +30,12 @@ The `codeflare-sdk` repository is listed in the left navigation pane.
 .. Update each example demo notebook as follows:
 ** Replace the links to the example community image with a link to your Ray cluster image.
 ** Set `instascale` to `False`.
+ifndef::upstream[]
 InstaScale is not deployed in the Technology Preview version of the distributed workloads feature.
+endif::[]
+ifdef::upstream[]
+InstaScale is not deployed in the current version of the distributed workloads feature.
+endif::[]
 .. Run the notebooks.
 
 
