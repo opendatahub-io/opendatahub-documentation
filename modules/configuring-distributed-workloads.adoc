@@ -24,15 +24,22 @@ endif::[]
 
 .Procedure
 . In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
+ifndef::upstream[]
 . Search for the *Red Hat OpenShift Data Science* Operator, and then click the Operator name to open the Operator details page.
+endif::[]
+ifdef::upstream[]
+. Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
+endif::[]
 . Click the *Data Science Cluster* tab.
 . Click the default instance name to open the instance details page.
+ifndef::upstream[]
 +
 [NOTE]
 ====
 Starting from {productname-long} 2.4, the default instance name for new installations is *default-dsc*.
 The default instance name for earlier installations, *rhods*, is preserved during upgrade.
 ====
+endif::[]
 . Click the *YAML* tab to show the instance specifications.
 . In the `spec.components` section, ensure that the `managementState` field is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
 +
@@ -74,7 +81,12 @@ After a short time, the components with a `Managed` state are ready.
 .Verification
 Check the status of the `codeflare-operator-manager` pod, as follows:
 
+ifndef::upstream[]
 . In the {openshift-platform} console, from the *Project* list, select *redhat-ods-applications*.
+endif::[]
+ifdef::upstream[]
+. In the {openshift-platform} console, from the *Project* list, select *odh*.
+endif::[]
 . Click *Workloads* -> *Deployments*.
 . Search for the *codeflare-operator-manager* deployment, and click the deployment name to open the deployment details page.
 . Click the *Pods* tab.

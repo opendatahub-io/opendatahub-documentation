@@ -8,15 +8,26 @@ To run a distributed data science workload from a data science pipeline, you mus
 
 .Prerequisites
 * You have logged in to {openshift-platform} with the `cluster-admin` role.
+ifndef::upstream[]
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+ifdef::upstream[]
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working_on_data_science_projects/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
 * You have installed the {org-name} OpenShift Pipelines Operator as described in link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/cicd/pipelines#installing-pipelines[Installing OpenShift Pipelines].
 * You have access to S3-compatible object storage.
 * You have logged in to {productname-long}.
 * You have created a data science project.
 
 .Procedure
+ifndef::upstream[]
 . Create a data connection to connect the object storage to your data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#adding-a-data-connection-to-your-data-science-project_nb-server[Adding a data connection to your data science project].
 . Configure a pipeline server to use the data connection, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+endif::[]
+ifdef::upstream[]
+. Create a data connection to connect the object storage to your data science project, as described in link:{odhdocshome}/working_on_data_science_projects/#adding-a-data-connection-to-your-data-science-project_nb-server[Adding a data connection to your data science project].
+. Configure a pipeline server to use the data connection, as described in link:{odhdocshome}/working_on_data_science_projects/#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+endif::[]
 . Create the data science pipeline as follows:
 .. Install the `kfp-tekton` Python package, which is required for all pipelines:
 +
@@ -130,17 +141,33 @@ if __name__ == '__main__': <11>
 $ python compile_example.py
 ----
 This command creates a YAML file (in this example, `compiled-example.yaml`), which you can import in the next step.
+ifndef::upstream[]
 . Import your data science pipeline as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#importing-a-data-science-pipeline_ds-pipelines[Importing a data science pipeline].
 . Schedule the pipeline run as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#managing_pipeline_runs[Scheduling a pipeline run].
 . When the pipeline run is complete, confirm that it is included in the list of triggered pipeline runs as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#viewing-triggered-pipeline-runs_ds-pipelines[Viewing triggered pipeline runs].
+endif::[]
+ifdef::upstream[]
+. Import your data science pipeline as described in link:{odhdocshome}/working_on_data_science_projects/#importing-a-data-science-pipeline_ds-pipelines[Importing a data science pipeline].
+. Schedule the pipeline run as described in link:{odhdocshome}/working_on_data_science_projects/#managing_pipeline_runs[Scheduling a pipeline run].
+. When the pipeline run is complete, confirm that it is included in the list of triggered pipeline runs as described in link:{odhdocshome}/working_on_data_science_projects/#viewing-triggered-pipeline-runs_ds-pipelines[Viewing triggered pipeline runs].
+endif::[]
 
 
 .Verification
 The YAML file is created and the pipeline run completes without errors.
+ifndef::upstream[]
 You can view the run details as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#viewing-the-details-of-a-pipeline-run_ds-pipelines[Viewing the details of a pipeline run].
-
+endif::[]
+ifdef::upstream[]
+You can view the run details as described in link:{odhdocshome}/working_on_data_science_projects/#viewing-the-details-of-a-pipeline-run_ds-pipelines[Viewing the details of a pipeline run].
+endif::[]
 
 [role='_additional-resources']
 .Additional resources
+ifndef::upstream[]
 * link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines[Working with data science pipelines]
+endif::[]
+ifdef::upstream[]
+* link:{odhdocshome}/working_on_data_science_projects#working-with-data-science-pipelines_ds-pipelines[Working with data science pipelines]
+endif::[]
 * link:https://docs.ray.io/en/latest/cluster/getting-started.html[Ray Clusters documentation]
