@@ -11,9 +11,14 @@ ifdef::upstream[]
 * You are part of the {openshift-platform} administrator group.
 endif::[]
 
-ifndef::upstream[]
+ifdef::self-managed[]
 * You are part of the {openshift-platform} administrator group. See link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/adding-administrative-users-for-{openshift-platform-url}_install[Adding administrative users for {openshift-platform}] for more information.
 endif::[]
+
+ifdef::cloud-service[]
+* You are part of the OpenShift Dedicated or Red Hat OpenShift Service on AWS (ROSA) administrator group. See link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/adding-administrative-users-in-openshift_install[Adding administrative users in OpenShift] for more information.
+endif::[]
+
 
 .Procedure
 ** To access the Jupyter administration interface from {productname-short}, perform the following actions:
