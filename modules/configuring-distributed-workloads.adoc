@@ -10,22 +10,36 @@ To configure the distributed workloads feature for your data scientists to use i
 * You have logged in to {openshift-platform} with the `cluster-admin` role.
 * You have sufficient resources. In addition to the base {productname-short} resources, you need 1.1 vCPU and 1.6 GB memory to deploy the distributed workloads infrastructure.
 * You have access to a Ray cluster image. For information about how to create a Ray cluster, see the link:https://docs.ray.io/en/latest/cluster/getting-started.html[Ray Clusters documentation].
-* You have removed any previously installed instances of the CodeFlare Operator, as described in the Knowledgebase solution link:https://access.redhat.com/solutions/7043796[How to migrate from CodeFlare Operator to Red Hat OpenShift AI Cluster].
 ifndef::upstream[]
-* If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}. See link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-gpu-support_cluster-mgmt[Enabling GPU support in {productname-short}].
+* You have removed any previously installed instances of the CodeFlare Operator, as described in the Knowledgebase solution link:https://access.redhat.com/solutions/7043796[How to migrate from a separately installed CodeFlare Operator in your data science cluster].
+* If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
+See link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-gpu-support_cluster-mgmt[Enabling GPU support in {productname-short}].
+endif::[]
+ifdef::upstream[]
+* You have removed any previously installed instances of the CodeFlare Operator.
+* If you want to use graphics processing units (GPUs), you have enabled GPU support.
+This process includes installing the Node Feature Discovery Operator and the NVIDIA GPU Operator.
+For more information, see https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
 endif::[]
 
 .Procedure
 . In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
+ifndef::upstream[]
 . Search for the *Red Hat OpenShift Data Science* Operator, and then click the Operator name to open the Operator details page.
+endif::[]
+ifdef::upstream[]
+. Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
+endif::[]
 . Click the *Data Science Cluster* tab.
 . Click the default instance name to open the instance details page.
+ifndef::upstream[]
 +
 [NOTE]
 ====
 Starting from {productname-long} 2.4, the default instance name for new installations is *default-dsc*.
 The default instance name for earlier installations, *rhods*, is preserved during upgrade.
 ====
+endif::[]
 . Click the *YAML* tab to show the instance specifications.
 . In the `spec.components` section, ensure that the `managementState` field is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
 +
@@ -67,7 +81,12 @@ After a short time, the components with a `Managed` state are ready.
 .Verification
 Check the status of the `codeflare-operator-manager` pod, as follows:
 
+ifndef::upstream[]
 . In the {openshift-platform} console, from the *Project* list, select *redhat-ods-applications*.
+endif::[]
+ifdef::upstream[]
+. In the {openshift-platform} console, from the *Project* list, select *odh*.
+endif::[]
 . Click *Workloads* -> *Deployments*.
 . Search for the *codeflare-operator-manager* deployment, and click the deployment name to open the deployment details page.
 . Click the *Pods* tab.
