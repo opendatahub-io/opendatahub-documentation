@@ -7,7 +7,11 @@
 Administrators can stop notebook servers that are owned by other users to reduce resource consumption on the cluster, or as part of removing a user and their resources from the cluster.
 
 .Prerequisites
-ifdef::upstream,self-managed[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group.
+endif::[]
+
+ifdef::self-managed[]
 * If you are using specialized {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/adding-administrative-users-for-{openshift-platform-url}_install[Adding administrative users for {openshift-platform}].
 endif::[]
 
