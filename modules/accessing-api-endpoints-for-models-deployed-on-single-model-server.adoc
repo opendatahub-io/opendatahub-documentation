@@ -23,23 +23,38 @@ endif::[]
 . Depending on what action you want to perform with the model (and if the model supports that action), add one of the following paths to the end of the inference endpoint URL:
 +
 --
+*Caikit TGIS ServingRuntime for KServe*
+
+* `:443/api/v1/task/text-generation`
 * `:443/api/v1/task/server-streaming-text-generation`
 // * `:443/api/v1/task/text-classification`
-* `:443/api/v1/task/text-generation`
 // * `:443/api/v1/task/token-classification`
---
-+
-As indicated by the paths shown, the single model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
 
-. Use the endpoints to make API requests to your deployed model, as shown in the following example `curl` command:
+*TGIS Standalone ServingRuntime for KServe*
+
+* `:443 fmaas.GenerationService/Generate`
+* `:443 fmaas.GenerationService/GenerateStream`
 +
+NOTE: To query the endpoints for the TGIS standalone runtime, you must also download the files in the `proto` directory of the IBM link:https://github.com/IBM/text-generation-inference[text-generation-inference^] repository.
+
+As indicated by the paths shown, the single model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
+--
+
+. Use the endpoints to make API requests to your deployed model, as shown in the following example commands:
++
+--
+*Caikit TGIS ServingRuntime for KServe*
 [source]
 ----
-curl --json '{
-    "model_id": "<model_name>",
-    "inputs": "<query_text>"
-}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation
+curl --json '{"model_id": "<model_name>", "inputs": "At what temperature does water boil?"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation
 ----
+
+*TGIS Standalone ServingRuntime for KServe*
+[source]
+----
+grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"At what temperature does water boil?"}]}' -H 'mm-model-id: <model_name>' -insecure <inference_url>:443 fmaas.GenerationService/Generate
+----
+--
 
 //[role='_additional-resources']
 //.Additional resources
