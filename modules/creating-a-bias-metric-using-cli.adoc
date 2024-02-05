@@ -23,6 +23,12 @@ endif::[]
 
 * You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html[Get Started with the CLI].
 
+* You have a user token for authentication or a token from a service account with sufficient privileges. For example, you can use the following command to get the token on {openshift-platform}:
++ 
+----
+TOKEN=$(oc whoami -t)
+----
+
 .Procedure
 
 . In a terminal window, log in to the OpenShift cluster where {productname-short} is deployed.
@@ -40,7 +46,7 @@ $TRUSTY_ROUTE=http://$(oc get route/trustyai-service --template={{.spec.host}})
 .  Optionally, get the full list of TrustyAI service endpoints and payloads. 
 +
 ----
-curl --location $TRUSTY_ROUTE/q/openapi
+curl -H "Authorization: Bearer $TOKEN" --location $TRUSTY_ROUTE/q/openapi
 ----
 
 . Configure bias metrics by running a command that uses the following syntax and payload structure:
@@ -48,7 +54,7 @@ curl --location $TRUSTY_ROUTE/q/openapi
 *Syntax*:
 +
 ----
-curl -sk  -X POST --location $TRUSTY_ROUTE/metrics/spd/request \ 
+curl -sk -H "Authorization: Bearer $TOKEN" -X POST --location $TRUSTY_ROUTE/metrics/spd/request \ 
  --header 'Content-Type: application/json' \ 
  --data <payload>
 ----
@@ -66,7 +72,7 @@ curl -sk  -X POST --location $TRUSTY_ROUTE/metrics/spd/request \
 For example:  
 
 ----
-curl -sk  -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/ \
+curl -sk -H "Authorization: Bearer $TOKEN" -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/ \
      --header 'Content-Type: application/json' \
      --data "{
                  \"modelId\": \"demo-loan-nn-onnx-alpha\",
