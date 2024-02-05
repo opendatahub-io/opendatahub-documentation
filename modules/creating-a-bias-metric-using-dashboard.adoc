@@ -22,7 +22,8 @@ endif::[]
 
 .Procedure
 . In the left menu of the {productname-short} dashboard, click *Model Serving*.
-. On the *Model serving* page, click the name of a model that you want to configure bias metrics for.
+. On the *Model serving* page, select your project from the drop-down list.
+. Click the name of the model that you want to configure bias metrics for.
 . In the metrics page for the model, click the *Model bias* tab.
 . Click *Configure*.
 . In the *Configure bias metrics* dialog, complete the following steps to configure bias metrics:
@@ -30,12 +31,12 @@ endif::[]
 .. From the *Metric type* list, select one of the metrics types that are available in {productname-short}.
 .. In the *Protected attribute* field, type the name of an attribute in your model that you want to monitor for bias.
 + 
-TIP: You can use a `curl` command to query the metadata endpoint and view input attribute names and values. For example: `curl $TRUSTY_ROUTE/info | jq ".[0].data.inputSchema"`
+TIP: You can use a `curl` command to query the metadata endpoint and view input attribute names and values. For example: `curl -H "Authorization: Bearer $TOKEN" $TRUSTY_ROUTE/info | jq ".[0].data.inputSchema"`
 .. In the *Privileged value* field, type the name of a privileged group for the protected attribute that you specified.
 .. In the *Unprivileged value* field, type the name of an unprivileged group for the protected attribute that you specified.
 .. In the *Output* field, type the name of the model outcome that you want to monitor for bias.
 + 
-TIP: You can use a `curl` command to query the metadata endpoint and view output attribute names and values. For example: `curl $TRUSTY_ROUTE/info | jq ".[0].data.outputSchema"`
+TIP: You can use a `curl` command to query the metadata endpoint and view output attribute names and values. For example: `curl -H "Authorization: Bearer $TOKEN" $TRUSTY_ROUTE/info | jq ".[0].data.outputSchema"`
 
 .. In the *Output value* field, type the value of the outcome that you want to monitor for bias.
 .. In the *Violation threshold* field, type the bias threshold for your selected metric type. This threshold value defines how far the specified metric can be from the fairness value for your metric, before the model is considered biased. 

@@ -14,6 +14,13 @@ The following procedure describes how to use the OpenShift command-line interfac
 
 * You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html[Get Started with the CLI].
 
+* You have a user token for authentication and you have passed the token to the TrustyAI service. For example:
++ 
+----
+TOKEN=$(oc whoami -t)
+curl -H "Authorization: Bearer $TOKEN" $TRUSTY_ROUTE
+----
+
 .Procedure
 
 . In a terminal window, log in to the OpenShift cluster where {productname-short} is deployed.
@@ -25,13 +32,13 @@ oc login
 .  Optional: To list all currently active requests for a metric, use `GET /metrics/{{metric}}/requests`. For example, to list all currently scheduled SPD metrics, type:
 +
 ----
-curl -X GET --location "http://{{host}}:8080/metrics/spd/requests"
+curl -H "Authorization: Bearer $TOKEN" -X GET --location "$TRUSTY_ROUTE/metrics/spd/requests"
 ----
 
 . To delete a metric, send an HTTP `DELETE` request to the `/metrics/$METRIC/request` endpoint to stop the periodic calculation, including the id of periodic task that you want to cancel in the payload. For example:
 +
 ----
-curl -X DELETE --location "http://{{host}}:8080/metrics/spd/request" \
+curl -H "Authorization: Bearer $TOKEN" -X DELETE --location "$TRUSTY_ROUTE/metrics/spd/request" \
     -H "Content-Type: application/json" \
     -d "{
           \"requestId\": \"3281c891-e2a5-4eb3-b05d-7f3831acbb56\"
@@ -42,6 +49,6 @@ curl -X DELETE --location "http://{{host}}:8080/metrics/spd/request" \
 Use `GET /metrics/{{metric}}/requests` to list all currently active requests for the metric and verify the metric that you deleted is not shown. For example:
 
 ----
-curl -X GET --location "http://{{host}}:8080/metrics/spd/requests"
+curl -H "Authorization: Bearer $TOKEN" -X GET --location "$TRUSTY_ROUTE/metrics/spd/requests"
 ----
 
