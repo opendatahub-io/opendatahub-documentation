@@ -7,28 +7,27 @@
 To discard accelerator profiles that you no longer require, you can delete them so that they do not appear on the dashboard.
 
 .Prerequisites
-* You have logged in to {openshift-platform}.
-* You have the `cluster-admin` role in {openshift-platform}.
-* The `AcceleratorProfile` custom resource definition (CRD) exists in your deployment and has an accelerator profile.
+* You have logged in to {productname-long}.
+ifndef::self-managed[]
+* You are part of the `dedicated-admins` user group in {openshift-platform}.
+endif::[]
+ifdef::self-managed[]
+* You are assigned the `cluster-admin` role in {openshift-platform}.
+endif::[]
+* The accelerator profile that you want to delete exists in your deployment. 
 
 .Procedure
-. In the {openshift-platform} web console, in the *Administrator* perspective, click *Administration* -> *CustomResourceDefinitions*.
-. In the search bar, enter `acceleratorprofile` to search by name.
+. From the {productname-short} dashboard, click *Settings* -> *Accelerator profiles*.
 +
-The *CustomResourceDefinitions* page reloads to display the search results.
-+
-. Click the `AcceleratorProfile` custom resource definition (CRD).
-+
-A details page for the custom resource definition (CRD) opens.
-. Click the *Instances* tab.
-. Click the action menu (*&#8942;*) beside the accelerator profile that you want to delete and click *Delete AcceleratorProfile*.
+The *Accelerator profiles* page appears, displaying existing accelerator profiles.
+. Click the action menu (*&#8942;*) beside the accelerator profile that you want to delete and click *Delete*.
 +
 The *Delete accelerator profile* dialog opens.
-. Click *Delete*.
+. Enter the name of the accelerator profile in the text field to confirm that you intend to delete it.
+. Click *Delete*. 
 
 .Verification
-* The accelerator profile no longer appears in the *Accelerator* list on the *Start a notebook server* page.   
-* The accelerator profile no longer appears on the *Instances* tab on the details page for the `AcceleratorProfile` custom resource definition (CRD).
+* The accelerator profile no longer appears on the *Accelerator profiles* page.
 
 [role='_additional-resources']
 .Additional resources

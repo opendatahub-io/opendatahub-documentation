@@ -6,11 +6,27 @@
 [role='_abstract']
 The accelerator profiles feature is currently available as a Technology Preview. For further information about the scope of Technology Preview status, and the associated support implications, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
 
-To configure accelerators for your data scientists to use in {productname-short}, you must create an associated accelerator profile. An accelerator profile is a custom resource definition (CRD) on OpenShift that has an AcceleratorProfile resource, and defines the specification of the accelerator.  
+To configure accelerators for your data scientists to use in {productname-short}, you must create an associated accelerator profile. An accelerator profile is a custom resource definition (CRD) on OpenShift that has an AcceleratorProfile resource, and defines the specification of the accelerator. You can create and manage accelerator profiles by selecting *Settings* -> *Accelerator profiles* on the {productname-short} dashboard.
 
-For accelerators that are new to your deployment, you must manually configure an accelerator profile for each accelerator. If your deployment contained an accelerator before you upgrade, the associated accelerator profile preserves after the upgrade. You can manage the accelerators that appear to your data scientists by assigning specific accelerator profiles to your custom notebook images.
+For accelerators that are new to your deployment, you must manually configure an accelerator profile for each accelerator. If your deployment contains an accelerator before you upgrade, the associated accelerator profile remains after the upgrade. You can manage the accelerators that appear to your data scientists by assigning specific accelerator profiles to your custom notebook images. This example shows the code for a Habana Gaudi 1 accelerator profile:
+[source,yaml]
+---
+apiVersion: dashboard.opendatahub.io/v1alpha
+kind: AcceleratorProfile
+metadata:
+  name: hpu-profile-first-gen-gaudi
+spec:
+  displayName: Habana HPU - 1st Gen Gaudi
+  description: First Generation Habana Gaudi device
+  enabled: true
+  identifier: habana.ai/gaudi
+  tolerations:
+    - effect: NoSchedule
+      key: habana.ai/gaudi
+      operator: Exists
+---
 
-For more information about accelerator profile attributes, see the following table: 
+The accelerator profile code appears on the *Instances* tab on the details page for the `AcceleratorProfile` custom resource definition (CRD). For more information about accelerator profile attributes, see the following table: 
 
 [id="table-accelerator-profile-attributes_{context}"]
 
@@ -22,17 +38,17 @@ For more information about accelerator profile attributes, see the following tab
 | displayName
 | String
 | Required
-| The display name of the accelerator.
+| The display name of the accelerator profile.
 
 | description
 | String
 | Optional
-| Descriptive text defining the accelerator.
+| Descriptive text defining the accelerator profile.
 
 | identifier
 | String
 | Required
-| A unique identifier defining the accelerator.
+| A unique identifier defining the accelerator resource.
 
 | enabled
 | Boolean

@@ -4,7 +4,7 @@
 = Enabling Habana Gaudi devices
 
 [role='_abstract']
-Before you can use Habana Gaudi devices in {productname-short}, you must install the necessary dependencies and deploy the HabanaAI Operator in your deployment. 
+Before you can use Habana Gaudi devices in {productname-short}, you must install the necessary dependencies and deploy the HabanaAI Operator. 
 
 .Prerequisites
 * You have logged in to {openshift-platform}.
@@ -12,45 +12,43 @@ Before you can use Habana Gaudi devices in {productname-short}, you must install
 
 .Procedure
 . To enable Habana Gaudi devices in {productname-short}, follow the instructions at link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/index.html[HabanaAI Operator for OpenShift].
-. Create an accelerator profile for your Habana Gaudi device. 
-.. In the {openshift-platform} web console in the *Administrator* perspective, click *Administration* -> *CustomResourceDefinitions*.
-.. In the search bar, enter `acceleratorprofile` to search by name.
+. From the {productname-short} dashboard, click *Settings* -> *Accelerator profiles*.
 +
-The *CustomResourceDefinitions* page reloads to display the search results.
+The *Accelerator profiles* page appears, displaying existing accelerator profiles. To enable or disable an existing accelerator profile, on the row containing the relevant accelerator profile, click the toggle in the *Enable* column.
+. Click *Create accelerator profile*. 
 +
-.. Click the `AcceleratorProfile` custom resource definition (CRD).
+The *Create accelerator profile* dialog opens.
+. In the *Name* field, enter a name for the Habana Gaudi device.
+. In the *Identifier* field, enter a unique string that identifies the Habana Gaudi device, for example, `habana.ai/gaudi`. 
+. Optional: In the *Description* field, enter a description for the Habana Gaudi device.
+. To enable or disable the accelerator profile for the Habana Gaudi device immediately after creation, click the toggle in the *Enable* column.
+. Optional: Add a toleration to schedule pods with matching taints.
+.. Click *Add toleration*. 
 +
-A details page for the custom resource definition (CRD) opens.
-.. Click the *Instances* tab.
-.. Click *Create AcceleratorProfile*. 
-+ 
-The *Create AcceleratorProfile* page opens with an embedded YAML editor.
-.. Enter or paste your accelerator profile YAML code directly in the embedded editor. This example shows the code for a Habana Gaudi 1 accelerator profile:
-+
-[source,yaml]
----
-apiVersion: dashboard.opendatahub.io/v1alpha
-kind: AcceleratorProfile
-metadata:
-  name: hpu-profile-first-gen-gaudi
-spec:
-  displayName: Habana HPU - 1st Gen Gaudi
-  description: First Generation Habana Gaudi device
-  enabled: true
-  identifier: habana.ai/gaudi
-  tolerations:
-    - effect: NoSchedule
-      key: habana.ai/gaudi
-      operator: Exists
----
-.. Click *Create*.
+The *Add toleration* dialog opens.
+.. From the *Operator* list, select one of the following options:
+* *Equal* - The *key/value/effect* parameters must match. This is the default.
+* *Exists* - The *key/effect* parameters must match. You must leave a blank value parameter, which matches any.
+.. From the *Effect* list, select one of the following options:
+* *None* 
+* *NoSchedule* - New pods that do not match the taint are not scheduled onto that node. Existing pods on the node remain.
+* *PreferNoSchedule* - New pods that do not match the taint might be scheduled onto that node, but the scheduler tries not to. Existing pods on the node remain.
+* *NoExecute* - New pods that do not match the taint cannot be scheduled onto that node. Existing pods on the node that do not have a matching toleration are removed.
+.. In the *Key* field, enter the toleration key `habana.ai/gaudi`. The key is any string, up to 253 characters. The key must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
+.. In the *Value* field, enter a toleration value. The value is any string, up to 63 characters. The value must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
+.. In the *Toleration Seconds* section, select one of the following options to specify how long a pod stays bound to a node that has a node condition. 
+** *Forever* - Pods stays permanently bound to a node. 
+** *Custom value* - Enter a value, in seconds, to define how long pods stay bound to a node that has a node condition.
+.. Click *Add*.
+. Click *Create accelerator profile*.
 
 .Verification
 * From the *Administrator* perspective, the following Operators appear on the *Operators* -> *Installed Operators* page.
 ** HabanaAI
 ** Node Feature Discovery (NFD)
 ** Kernel Module Management (KMM)
-* The *Accelerator* list displays the Habana Gaudi accelerator on the *Start a notebook server* page.  
+* The *Accelerator* list displays the Habana Gaudi accelerator on the *Start a notebook server* page. After you select an accelerator, the *Number of accelerators* field appears, which you can use to choose the number of accelerators for your notebook server. 
+* The accelerator profile appears on the *Accelerator profiles* page
 * The accelerator profile appears on the *Instances* tab on the details page for the `AcceleratorProfile` custom resource definition (CRD).
 
 [role='_additional-resources']
