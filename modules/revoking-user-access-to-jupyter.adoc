@@ -19,7 +19,12 @@ endif::[]
 * You are using specialized user groups for {productname-short}, and the user is part of the specialized user group, administrator group, or both.
 
 .Procedure
+ifdef::upstream,self-managed[]
 . In the {openshift-platform} web console, click *User Management* -> *Groups*.
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift web console, click *User Management* -> *Groups*.
+endif::[]
 . Click the name of the group that you want to remove the user from.
 ** For administrative users, click the name of your administrator group, for example, {oai-admin-group}.
 ** For non-administrator users, click the name of your user group, for example, {oai-user-group}.

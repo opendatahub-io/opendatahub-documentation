@@ -40,7 +40,7 @@ endif::[]
 
 
 ifdef::cloud-service[]
-By default, all OpenShift users have access to {productname-long}. In addition, users in the OpenShift administrator group (`cluster admins` or`dedicated-admins`), automatically have administrator access in {productname-short}.
+By default, all OpenShift users have access to {productname-long}. In addition, users in the OpenShift administrator group (`cluster admins` or `dedicated-admins`), automatically have administrator access in {productname-short}.
 endif::[]
 
 ifdef::self-managed[]
@@ -49,19 +49,22 @@ endif::[]
 
 Optionally, if you want to restrict access to your {productname-short} deployment, you can create specialized user groups for users and administrators.
 
+ifdef::upstream,self-managed[]
 If you decide to restrict access, and you already have user groups defined in your configured identity provider, you can add these user groups to your {productname-short} deployment. If you decide to use specialized user groups without adding these groups from an identity provider, you must create the groups in {openshift-platform} and then add users to them.
-
+endif::[]
 ifdef::cloud-service[]
-The user groups configured in {openshift-platform}, `cluster-admins` and `dedicated-admins`, are separate to any specialized user groups for {productname-short}. There are some operations relevant to {productname-short} that require the `cluster-admins` or `dedicated-admins` role. Those operations include:
+If you decide to restrict access, and you already have user groups defined in your configured identity provider, you can add these user groups to your {productname-short} deployment. If you decide to use specialized user groups without adding these groups from an identity provider, you must create the groups in OpenShift and then add users to them.
+
+The user groups configured in OpenShift, `cluster-admins` and `dedicated-admins`, are separate to any specialized user groups for {productname-short}. There are some operations relevant to {productname-short} that require the `cluster-admins` or `dedicated-admins` role. Those operations include:
 
 * Adding users to the {productname-short} user and administrator groups, if you are using specialized groups.
 * Removing users from the {productname-short} user and administrator groups, if you are using specialized groups.
-* Managing custom environment and storage configuration for users in {openshift-platform}, such as Jupyter notebook resources, ConfigMaps, and persistent volume claims (PVCs).
+* Managing custom environment and storage configuration for users in OpenShift, such as Jupyter notebook resources, ConfigMaps, and persistent volume claims (PVCs).
 
 //For RHODS-1954
 [IMPORTANT]
 ====
-Although users of {productname-short} and its components are authenticated through OpenShift, session management is separate from authentication. This means that logging out of {openshift-platform} or {productname-short} does not affect a logged in Jupyter session running on those platforms. This means that when a user's permissions change, that user must log out of all current sessions in order for the changes to take effect.
+Although users of {productname-short} and its components are authenticated through OpenShift, session management is separate from authentication. This means that logging out of OpenShift or {productname-short} does not affect a logged in Jupyter session running on those platforms. This means that when a user's permissions change, that user must log out of all current sessions in order for the changes to take effect.
 ====
 endif::[]
 

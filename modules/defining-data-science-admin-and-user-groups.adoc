@@ -8,6 +8,7 @@ By default, all users authenticated in OpenShift can access {productname-short}.
 ifdef::cloud-service[]
 Also by default, users with cluster admin permissions and users in the `dedicated-admins` administrator group are {productname-short} administrators.
 A `cluster admin` is a superuser that can perform any action in any project in the OpenShift cluster. When bound to a user with a local binding, they have full control over quota and every action on every resource in the project. 
+The `dedicated-admins` user group applies only to OpenShift Dedicated. 
 endif::[]
 ifdef::self-managed[]
 Also by default, users with the `cluster-admin` role are {productname-short} administrators, but all users authenticated in OpenShift can access {productname-short}. A cluster admin is a superuser that can perform any action in any project in the OpenShift cluster. When bound to a user with a local binding, they have full control over quota and every action on every resource in the project. 
@@ -26,11 +27,12 @@ ifndef::upstream[]
 endif::[]
 ifdef::cloud-service[]
 * You are part of the administrator group for {productname-short} in OpenShift.
+* The groups that you want to define as administrator and user groups for {productname-short} already exist in OpenShift.
 endif::[]
 ifdef::self-managed[]
 * You have the `cluster-admin` role in {openshift-platform}.
-endif::[]
 * The groups that you want to define as administrator and user groups for {productname-short} already exist in {openshift-platform}.
+endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *User management*.
