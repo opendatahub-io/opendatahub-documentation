@@ -1,0 +1,42 @@
+:_module-type: PROCEDURE
+
+[id="authenticating-trustyai-service_{context}"]
+= Authenticating the TrustyAI service
+
+[role='_abstract']
+TrustyAI service external endpoints are only accessible by authenticated users. Authentication is done by using OAuth proxy (`oauth-proxy`) and requires getting a user token, or a token from a service account with sufficient privileges, and then passing it to the TrustyAI service.
+
+.Prerequisites
+
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html[Get Started with the CLI].
+
+* Your OpenShift cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
+
+.Procedure
+
+. In a terminal window, log in to {openshift-platform} where {productname-short} is deployed.
++
+----
+oc login
+----
+
+. Enter the following command to get the user token on {openshift-platform}.
++
+----
+TOKEN=$(oc whoami -t)
+----
+
+
+
+
+.Verification
+* You can pass the token to the TrustyAI service using the Authorization header:
++
+----
+curl -H "Authorization: Bearer $TOKEN" $TRUSTY_ROUTE
+----
+
+ifndef::upstream[]
+.Next step
+xref:sending-training-data-to-models[Sending training data to models]
+endif::[]

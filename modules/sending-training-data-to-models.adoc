@@ -1,0 +1,35 @@
+:_module-type: PROCEDURE
+
+[id="sending-training-data-to-models_{context}"]
+= Sending training data to models
+
+[role='_abstract']
+You must send training data through your models for TrustyAI to be able to compute baseline fairness values. 
+
+.Prerequisites
+
+* Your OpenShift cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
+
+* You have logged in to {productname-long}.
+
+.Procedure
+. In a terminal window, use a batch script to send data through your model. For example:
++
+----
+for batch in 0; do scripts/send_data_batch data/training/$batch.json
+----
+. Wait for verification messages from the script. This might take a few minutes.
+
+.Verification
+In addition to the verification messages from the script, you can follow these steps to view cluster metrics and verify that TrustyAI is receiving data. 
+
+. Log in to the {openshift-platform} web console.
+. Switch to the *Developer* perspective.
+. In the left menu, click *Observe* -> *Metrics*.
+. On the *Metrics* page, set the *Time range* to 5 minutes and the *Refresh interval* to 15 seconds.
+. In the *Expression* field, enter `trustyai_model_observations_total` and then click *Run queries*. Your models are listed and report observed inferences.
+
+ifndef::upstream[]
+.Next step
+xref:assemblies/configuring-bias-metrics-for-a-model[Configuring bias metrics for a model]
+endif::[]
