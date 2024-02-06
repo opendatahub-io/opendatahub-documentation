@@ -20,14 +20,13 @@ endif::[]
 endif::[]
 
 //the following note applies to cloud service only
-ifndef::self-managed[]
-ifndef::upstream[]
+ifdef::cloud-service[]
 [IMPORTANT]
 ====
 The NVIDIA GPU Add-on is no longer supported. Instead, enable GPUs by installing the NVIDIA GPU Operator. If your deployment has a previously-installed NVIDIA GPU Add-on, before you install the NVIDIA GPU Operator, use Red Hat OpenShift Cluster Manager to uninstall the NVIDIA GPU Add-on from your cluster.
 ====
 endif::[]
-endif::[]
+
 
 .Prerequisites
 ifdef::upstream,self-managed[]

@@ -13,7 +13,7 @@ The *administrator group* provides the user with access to developer and adminis
 
 If you restrict access by using specialized user groups, users that are not in the {productname-short} user group or administrator group cannot view the dashboard and use associated services, such as Jupyter. They are also unable to access the *Cluster settings* page.
 
-ifndef::self-managed[]
+ifdef::cloud-service[]
 [IMPORTANT]
 ====
 If you are using LDAP as your identity provider, you need to configure LDAP syncing to {openshift-platform}. See link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/ldap-syncing[Syncing LDAP groups] for more information.
@@ -26,8 +26,8 @@ Note: You can add users in {productname-short} but you must manage the user list
 
 .Prerequisites
 * You have configured a supported identity provider for {openshift-platform}.
-ifndef::self-managed[]
-* You are part of the `dedicated-admins` user group in {openshift-platform}.
+ifdef::cloud-service[]
+* You are part of the `cluster-admins` or `dedicated-admins` user group in your OpenShift cluster. The `dedicated-admins` user group applies only to OpenShift Dedicated.
 endif::[]
 ifdef::self-managed[]
 * You are assigned the `cluster-admin` role in {openshift-platform}.

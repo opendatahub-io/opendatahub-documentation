@@ -6,13 +6,14 @@ If you have defined specialized user groups for {productname-short}, you can vie
 
 .Prerequisites
 * The {productname-long} user group, administrator group, or both exist.
-ifndef::self-managed[]
-* You have the `cluster-admin` role or you are part of the `dedicated-admins` administrator group.
+ifdef::cloud-service[]
+* You have the `cluster-admin` role or you are part of the `dedicated-admins` administrator group. The `dedicated-admins` group applies only to OpenShift Dedicated.
+* You have configured a supported identity provider for your OpenShift cluster.
 endif::[]
 ifdef::self-managed[]
 * You have the `cluster-admin` role in {openshift-platform}.
-endif::[]
 * You have configured a supported identity provider for {openshift-platform}.
+endif::[]
 
 
 .Procedure

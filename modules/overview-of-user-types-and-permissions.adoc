@@ -28,8 +28,8 @@ a| In addition to the actions permitted to a data scientist, administrators can 
 * Access and manage notebook servers.
 
 
-ifndef::self-managed[]
-See also link:https://access.redhat.com/documentation/en-us/openshift_dedicated/4/html/cluster_administration/index[{openshift-platform} Cluster administration].
+ifdef::cloud-service[]
+See also link:https://access.redhat.com/documentation/en-us/openshift_dedicated/4/html/cluster_administration/index[OpenShift Dedicated Cluster administration] or link:https://access.redhat.com/documentation/en-us/red_hat_openshift_service_on_aws/4/html/cluster_administration/index[Red Hat OpenShift Service on AWS (ROSA) Cluster administration].
 endif::[]
 
 ifdef::self-managed[]
@@ -39,8 +39,8 @@ endif::[]
 |===
 
 
-ifndef::self-managed[]
-By default, all OpenShift users have access to {productname-long}. In addition, users in the {openshift-platform} administrator group (by default, `dedicated-admins`), automatically have administrator access in {productname-short}.
+ifdef::cloud-service[]
+By default, all OpenShift users have access to {productname-long}. In addition, users in the OpenShift administrator group (`cluster admins` or`dedicated-admins`), automatically have administrator access in {productname-short}.
 endif::[]
 
 ifdef::self-managed[]
@@ -51,7 +51,7 @@ Optionally, if you want to restrict access to your {productname-short} deploymen
 
 If you decide to restrict access, and you already have user groups defined in your configured identity provider, you can add these user groups to your {productname-short} deployment. If you decide to use specialized user groups without adding these groups from an identity provider, you must create the groups in {openshift-platform} and then add users to them.
 
-ifndef::self-managed[]
+ifdef::cloud-service[]
 The user groups configured in {openshift-platform}, `cluster-admins` and `dedicated-admins`, are separate to any specialized user groups for {productname-short}. There are some operations relevant to {productname-short} that require the `cluster-admins` or `dedicated-admins` role. Those operations include:
 
 * Adding users to the {productname-short} user and administrator groups, if you are using specialized groups.
