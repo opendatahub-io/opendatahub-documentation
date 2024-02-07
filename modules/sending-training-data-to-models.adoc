@@ -4,7 +4,7 @@
 = Sending training data to models
 
 [role='_abstract']
-You must send training data through your models for TrustyAI to be able to compute baseline fairness values. 
+You must send training data through your model for TrustyAI to be able to compute baseline fairness values. 
 
 .Prerequisites
 
@@ -13,15 +13,18 @@ You must send training data through your models for TrustyAI to be able to compu
 * You have logged in to {productname-long}.
 
 .Procedure
-. In a terminal window, use a batch script to send data through your model. For example:
-+
-----
-for batch in 0; do scripts/send_data_batch data/training/$batch.json
-----
-. Wait for verification messages from the script. This might take a few minutes.
+ifdef::upstream[]
+. Get the inference endpoints for the deployed model, as described in link:{odhdocshome}{default-format-url}/serving-models/serving-small-and-medium-sized-models_model-serving#viewing-a-deployed-model_model-serving[Viewing a deployed model].
+endif::[]
+
+ifndef::upstream[]
+. Get the inference endpoints for the deployed model, as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-small-and-medium-sized-models_model-serving#viewing-a-deployed-model_model-serving[Viewing a deployed model].
+endif::[]
+
+. Send data to this endpoint. For more information, see the link:https://kserve.github.io/website/0.8/modelserving/inference_api/#server-metadata-response-json-object[KServe v2 Inference Protocol documentation].
 
 .Verification
-In addition to the verification messages from the script, you can follow these steps to view cluster metrics and verify that TrustyAI is receiving data. 
+Follow these steps to view cluster metrics and verify that TrustyAI is receiving data. 
 
 . Log in to the {openshift-platform} web console.
 . Switch to the *Developer* perspective.
