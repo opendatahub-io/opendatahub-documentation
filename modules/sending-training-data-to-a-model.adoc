@@ -1,14 +1,14 @@
 :_module-type: PROCEDURE
 
-[id="sending-training-data-to-models_{context}"]
-= Sending training data to models
+[id="sending-training-data-to-a-model_{context}"]
+= Sending training data to a model
 
 [role='_abstract']
-You must send training data through your model for TrustyAI to be able to compute baseline fairness values. 
+You must send training data through your model so that TrustyAI can compute baseline fairness values.
 
 .Prerequisites
 
-* Your OpenShift cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
+* Your OpenShift cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the model is deployed.
 
 * You have logged in to {productname-long}.
 
@@ -28,9 +28,9 @@ Follow these steps to view cluster metrics and verify that TrustyAI is receiving
 
 . Log in to the {openshift-platform} web console.
 . Switch to the *Developer* perspective.
-. In the left menu, click *Observe* -> *Metrics*.
-. On the *Metrics* page, set the *Time range* to 5 minutes and the *Refresh interval* to 15 seconds.
-. In the *Expression* field, enter `trustyai_model_observations_total` and then click *Run queries*. Your models are listed and report observed inferences.
+. In navigation menu, click *Observe* -> *Metrics*.
+. On the *Metrics* page, select a value for *Time range* and for *Refresh interval*. For example, select 5 minutes for *Time range* and 15 seconds for *Refresh interval*.
+. In the *Expression* field, enter `trustyai_model_observations_total` and then click *Run queries*. Your model should be listed and reporting observed inferences.
 
 ifndef::upstream[]
 .Next step
