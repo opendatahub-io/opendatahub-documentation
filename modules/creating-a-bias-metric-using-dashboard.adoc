@@ -24,6 +24,8 @@ endif::[]
 
 * You have sent training data to your models as described in xref:sending-training-data-to-models[Sending training data to models].
 
+TIP: To set the `TRUSTY_ROUTE` variable to the external route for the TrustyAI service pod, in a terminal window, log in to the OpenShift cluster where {productname-short} is deployed (`oc login`) and then use the following command: `$TRUSTY_ROUTE=http://$(oc get route/trustyai-service --template={{.spec.host}})`
+
 .Procedure
 . In the left menu of the {productname-short} dashboard, click *Model Serving*.
 . On the *Model serving* page, select your project from the drop-down list.
