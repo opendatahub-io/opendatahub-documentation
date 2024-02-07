@@ -8,7 +8,7 @@ The following procedure describes how to use the {productname-short} dashboard t
 
 .Prerequisites
 ifndef::upstream[]
-* You are familiar with xref:supported-bias-metrics_monitor[the bias metrics that {productname-short} supports] and how to interpret them.
+* You are familiar with link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/supported-bias-metrics_monitor[the bias metrics that {productname-short} supports] and how to interpret them.
 endif::[]
 ifdef::upstream[]
 * You are familiar with link:{odhdocshome}/monitoring-data-science-models/#supported-bias-metrics_monitor[the bias metrics that {productname-short} supports] and how to interpret them.
@@ -20,9 +20,14 @@ endif::[]
 
 * You have logged in to {productname-long}.
 
-* You have a user token for authentication as described in xref:authenticating-trustyai-service[Authenticating the TrustyAI service].
-
-* You have sent training data to your models as described in xref:sending-training-data-to-a-model[Sending training data to a model].
+ifndef::upstream[]
+* You have a user token for authentication as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/authenticating-trustyai-service_monitor[Authenticating the TrustyAI service].
+* You have sent training data to your models as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/sending-training-data-to-a-model_monitor[Sending training data to a model].
+endif::[]
+ifdef::upstream[]
+* You have a user token for authentication as described in link:{odhdocshome}/monitoring-data-science-models/#authenticating-trustyai-service_monitor[Authenticating the TrustyAI service].
+* You have sent training data to your models as described in link:{odhdocshome}/monitoring-data-science-models/#sending-training-data-to-a-model_monitor[Sending training data to a model].
+endif::[]
 
 .Procedure
 . Optional: To set the `TRUSTY_ROUTE` variable, follow these steps. 
@@ -69,4 +74,4 @@ You cannot edit a model bias metric configuration after you create it. Instead, 
 * The *Bias metric configuration* page shows the bias metrics that you configured for your model.
 
 .Next step
-To view metrics, on the *Bias metric configuration* page, click *View metrics* in the upper-right corner. For more information, see xref:viewing-bias-metrics_monitor[Viewing bias metrics for a model].
+To view metrics, on the *Bias metric configuration* page, click *View metrics* in the upper-right corner.
