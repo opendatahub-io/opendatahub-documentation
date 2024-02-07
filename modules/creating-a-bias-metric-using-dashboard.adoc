@@ -22,11 +22,21 @@ endif::[]
 
 * You have a user token for authentication as described in xref:authenticating-trustyai-service[Authenticating the TrustyAI service].
 
-* You have sent training data to your models as described in xref:sending-training-data-to-models[Sending training data to models].
-
-TIP: To set the `TRUSTY_ROUTE` variable to the external route for the TrustyAI service pod, in a terminal window, log in to the OpenShift cluster where {productname-short} is deployed (`oc login`) and then use the following command: `$TRUSTY_ROUTE=http://$(oc get route/trustyai-service --template={{.spec.host}})`
+* You have sent training data to your models as described in xref:sending-training-data-to-a-model[Sending training data to a model].
 
 .Procedure
+. Optional: To set the `TRUSTY_ROUTE` variable, follow these steps. 
+.. In a terminal window, log in to the OpenShift cluster where {productname-short} is deployed.
++
+----
+oc login
+----
+
+.. Set the `TRUSTY_ROUTE` variable to the external route for the TrustyAI service pod.
++
+----
+$TRUSTY_ROUTE=http://$(oc get route/trustyai-service --template={{.spec.host}})
+----
 . In the left menu of the {productname-short} dashboard, click *Model Serving*.
 . On the *Model serving* page, select your project from the drop-down list.
 . Click the name of the model that you want to configure bias metrics for.
