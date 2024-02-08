@@ -13,10 +13,18 @@ The *administrator group* provides the user with access to developer and adminis
 
 If you restrict access by using specialized user groups, users that are not in the {productname-short} user group or administrator group cannot view the dashboard and use associated services, such as Jupyter. They are also unable to access the *Cluster settings* page.
 
-ifndef::self-managed[]
+ifdef::cloud-service[]
 [IMPORTANT]
 ====
-If you are using LDAP as your identity provider, you need to configure LDAP syncing to {openshift-platform}. See link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/ldap-syncing[Syncing LDAP groups] for more information.
+If you are using LDAP as your identity provider, you need to configure LDAP syncing to OpenShift. For more information, see link:https://access.redhat.com/documentation/en-us/openshift_dedicated/4/html/authentication_and_authorization/ldap-syncing[Syncing LDAP groups in OpenShift Dedicated] or link:https://access.redhat.com/documentation/en-us/red_hat_openshift_service_on_aws/4/html/authentication_and_authorization/ldap-syncing[Syncing LDAP groups in Red Hat OpenShift Service on AWS (ROSA)]
+====
+endif::[]
+
+ifdef::upstream,self-managed[]
+[IMPORTANT]
+====
+If you are using LDAP as your identity provider, you need to configure LDAP syncing to {openshift-platform}. For more information, see link:
+https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/ldap-syncing[Syncing LDAP groups].
 ====
 endif::[]
 
@@ -25,9 +33,14 @@ Follow the steps in this section to add users to your specialized {productname-s
 Note: You can add users in {productname-short} but you must manage the user lists in the {openshift-platform} web console.
 
 .Prerequisites
+ifdef::upstream,self-managed[]
 * You have configured a supported identity provider for {openshift-platform}.
-ifndef::self-managed[]
-* You are part of the `dedicated-admins` user group in {openshift-platform}.
+endif::[]
+ifndef::upstream,self-managed[]
+* You have configured a supported identity provider for your OpenShift cluster.
+endif::[]
+ifdef::cloud-service[]
+* You are part of the `cluster-admins` or `dedicated-admins` user group in your OpenShift cluster. The `dedicated-admins` user group applies only to OpenShift Dedicated.
 endif::[]
 ifdef::self-managed[]
 * You are assigned the `cluster-admin` role in {openshift-platform}.
@@ -35,7 +48,12 @@ endif::[]
 * You have defined an administrator group and user group for {productname-short}.
 
 .Procedure
+ifdef::upstream,self-managed[]
 . In the {openshift-platform} web console, click *User Management* -> *Groups*.
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift web console, click *User Management* -> *Groups*.
+endif::[]
 . Click the name of the group you want to add users to.
 ** For administrative users, click the administrator group, for example, {oai-admin-group}.
 ** For normal users, click the user group, for example, {oai-user-group}.

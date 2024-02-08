@@ -6,21 +6,33 @@ If you have defined specialized user groups for {productname-short}, you can vie
 
 .Prerequisites
 * The {productname-long} user group, administrator group, or both exist.
-ifndef::self-managed[]
-* You have the `cluster-admin` role or you are part of the `dedicated-admins` administrator group.
+ifdef::cloud-service[]
+* You have the `cluster-admin` role or you are part of the `dedicated-admins` administrator group. The `dedicated-admins` group applies only to OpenShift Dedicated.
+* You have configured a supported identity provider for your OpenShift cluster.
 endif::[]
-ifdef::self-managed[]
+ifdef::upstream,self-managed[]
 * You have the `cluster-admin` role in {openshift-platform}.
-endif::[]
 * You have configured a supported identity provider for {openshift-platform}.
+endif::[]
 
 
 .Procedure
 
+ifdef::upstream,self-managed[]
 . In the {openshift-platform} web console, click *User Management* -> *Groups*.
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift web console, click *User Management* -> *Groups*.
+endif::[]
 . Click the name of the group containing the users that you want to view.
+ifndef::upstream[]
 ** For administrative users, click the name of your administrator group. for example, {oai-admin-group}.
 ** For normal users, click the name of your user group, for example, {oai-user-group}.
+endif::[]
+ifdef::upstream[]
+** For administrative users, click the name of your administrator group. for example, {odh-admin-group}.
+** For normal users, click the name of your user group, for example, {odh-user-group}.
+endif::[]
 +
 The *Group details* page for the group appears.
 
