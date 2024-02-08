@@ -34,10 +34,10 @@ oc login
 . Set the `TRUSTY_ROUTE` variable to the external route for the TrustyAI service pod.
 +
 ----
-$TRUSTY_ROUTE=http://$(oc get route/trustyai-service --template={{.spec.host}})
+TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
 ----
 
-.  Optionally, get the full list of TrustyAI service endpoints and payloads. 
+.  Optionally, get the full list of TrustyAI service endpoints and payloads.
 +
 ----
 curl --location $TRUSTY_ROUTE/q/openapi
@@ -48,8 +48,8 @@ curl --location $TRUSTY_ROUTE/q/openapi
 *Syntax*:
 +
 ----
-curl -sk  -X POST --location $TRUSTY_ROUTE/metrics/spd/request \ 
- --header 'Content-Type: application/json' \ 
+curl -sk  -X POST --location $TRUSTY_ROUTE/metrics/spd/request \
+ --header 'Content-Type: application/json' \
  --data <payload>
 ----
 +
@@ -63,7 +63,7 @@ curl -sk  -X POST --location $TRUSTY_ROUTE/metrics/spd/request \
 `favorableOutcome`:: The value of the `outcomeName` output that describes the favorable or desired model prediction.
 `batchSize`:: The number of previous inferences to include in the calculation.
 
-For example:  
+For example:
 
 ----
 curl -sk  -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/ \
@@ -76,7 +76,7 @@ curl -sk  -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/ \
                  \"outcomeName\": \"Will Default?\",
                  \"favorableOutcome\": 0,
                  \"batchSize\": 5000
-             }" 
+             }"
 ----
 
 .Verification
@@ -97,4 +97,3 @@ The bias metrics request should return output similar to the following:
 ----
 
 The `specificDefinition` field is useful in understanding the real-world interpretation of these metric values. For this example, the model is quite fair over the `Is Male-Identifying?` field, with the rate of positive outcome only differing by approximately -0.3%.
-
