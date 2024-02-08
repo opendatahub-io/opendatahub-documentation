@@ -40,7 +40,7 @@ oc login
 .. Set the `TRUSTY_ROUTE` variable to the external route for the TrustyAI service pod.
 +
 ----
-$TRUSTY_ROUTE=http://$(oc get route/trustyai-service --template={{.spec.host}})
+TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
 ----
 . In the left menu of the {productname-short} dashboard, click *Model Serving*.
 . On the *Model serving* page, select your project from the drop-down list.
