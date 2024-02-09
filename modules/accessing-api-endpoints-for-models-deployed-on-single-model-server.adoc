@@ -42,6 +42,25 @@ As indicated by the paths shown, the single model serving platform uses the HTTP
 
 . Use the endpoints to make API requests to your deployed model, as shown in the following example commands:
 +
+ifdef::upstream[]
+--
+*Caikit TGIS ServingRuntime for KServe*
+[source]
+----
+curl --json '{"model_id": "<model_name>", "inputs": "At what temperature does water boil?"}' \
+https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation
+----
+
+*TGIS Standalone ServingRuntime for KServe*
+[source]
+----
+grpcurl -proto text-generation-inference/proto/generation.proto -d \
+'{"requests": [{"text":"At what temperature does water boil?"}]}' \
+-H 'mm-model-id: <model_name>' -insecure <inference_url>:443 fmaas.GenerationService/Generate
+----
+--
+endif::[]
+ifdef::self-managed,cloud-service[]
 --
 *Caikit TGIS ServingRuntime for KServe*
 [source]
@@ -55,6 +74,7 @@ curl --json '{"model_id": "<model_name>", "inputs": "At what temperature does wa
 grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"At what temperature does water boil?"}]}' -H 'mm-model-id: <model_name>' -insecure <inference_url>:443 fmaas.GenerationService/Generate
 ----
 --
+endif::[]
 
 //[role='_additional-resources']
 //.Additional resources
