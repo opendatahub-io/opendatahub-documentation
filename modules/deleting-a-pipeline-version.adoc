@@ -1,0 +1,39 @@
+:_module-type: PROCEDURE
+
+[id="deleting-a-pipeline-version_{context}"]
+= Deleting a pipeline version
+
+[role='_abstract']
+You can delete specific versions of a pipeline when you no longer require them. Deleting a default pipeline version automatically changes the default pipeline version to the next most recent version. If no pipeline versions exist, the pipeline persists without a default version. 
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a pipeline server.
+* You have imported a pipeline to an active and available pipeline server.
+* You have previously triggered a pipeline run.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
++
+The *Pipelines* page opens.
+. From the *Project* list, select the project that contains a version of a pipeline that you want to delete.
+. On the row containing the pipeline, click *Expand* (image:images/rhoai-expand-icon.png[]).
+. On the row containing the pipeline version that you want to delete, select the checkbox. 
+. Click the action menu (&#8942;) next to the *Import pipeline* dropdown and select *Delete selected* from the list.
++
+The *Delete pipeline version* dialog opens.
+. Enter the name of the pipeline version in the text field to confirm that you intend to delete it.
+. Click *Delete*.
+
+.Verification
+* The pipeline version that you deleted no longer appears on the *Pipelines* page.
+
+//[role='_additional-resources']
+//.Additional resources

@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
-[id="cloning-a-scheduled-pipeline-run_{context}"]
-= Cloning a scheduled pipeline run
+[id="duplicating-a-scheduled-pipeline-run_{context}"]
+= Duplicating a scheduled pipeline run
 
 [role='_abstract']
-To make it easier to schedule runs to execute as part of your pipeline configuration, you can duplicate existing scheduled runs by cloning them.
+To make it easier to schedule runs to execute as part of your pipeline configuration, you can duplicate existing scheduled runs by duplicating them.
 
 .Prerequisites
 * You have installed the OpenShift Pipelines operator.
@@ -17,33 +17,34 @@ ifdef::upstream[]
 endif::[]
 * You have previously created a data science project that is available and contains a configured pipeline server.
 * You have imported a pipeline to an active pipeline server.
-* You have previously scheduled a run that is available to clone.
+* You have previously scheduled a run that is available to duplicate.
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Pipelines* -> *Runs*.
 +
 The *Runs* page opens.
-. Click the action menu (*&#8942;*) beside the relevant run and click *Clone*.
+. Click the action menu (*&#8942;*) beside the relevant run and click *Duplicate*.
 +
-The *Clone* page opens.
-. From the *Project* list, select the project that contains the pipeline whose run that you want to clone.
-. In the *Name* field, enter a name for the run that you want to clone.
-. In the *Description* field, enter a description for the run that you want to clone.
-. From the *Pipeline* list, select the pipeline containing the run that you want to clone.
-. To configure the run type for the run that you are cloning, in the *Run type* section, perform one of the following sets of actions:
-* Select *Run once immediately after create* to specify the run that you are cloning executes once, and immediately after its creation. If you selected this option, skip to step 10.
-* Select *Schedule recurring run* to schedule the run that you are cloning to recur.
+The *Duplicate* page opens.
+. From the *Project* list, select the project that contains the pipeline whose run that you want to duplicate.
+. In the *Name* field, enter a name for the run that you want to duplicate.
+. In the *Description* field, enter a description for the run that you want to duplicate.
+. From the *Pipeline* list, select the pipeline containing the run that you want to duplicate.
+. From the *Pipeline version* list, select the pipeline version containing the run that you want to duplicate.
+. To configure the run type for the run that you are duplicating, in the *Run type* section, perform one of the following sets of actions:
+* Select *Run once immediately after create* to specify the run that you are duplicating executes once, and immediately after its creation. If you selected this option, skip to step 10.
+* Select *Schedule recurring run* to schedule the run that you are duplicating to recur.
 . If you selected *Schedule recurring run* in the previous step, to configure the trigger type for the run, perform one of the following actions:
 * Select *Periodic* and select the execution frequency from the *Run every* list.
 * Select *Cron* to specify the execution schedule in `cron` format. This creates a cron job to execute the run. Click the *Copy* button (image:images/osd-copy.png[]) to copy the cron job schedule to the clipboard. The field furthest to the left represents seconds. For more information about scheduling tasks using the supported `cron` format, see link:https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format[Cron Expression Format].
-. If you selected *Schedule recurring run* in step 7, configure the duration for the run that you are cloning.
+. If you selected *Schedule recurring run* in step 7, configure the duration for the run that you are duplicating.
 .. Select the *Start date* check box to specify a start date for the run. Select the start date using the calendar tool and the start time from the list of times.
 .. Select the *End date* check box to specify an end date for the run. Select the end date using the calendar tool and the end time from the list of times.
-. In the *Parameters* section, configure the input parameters for the run that you are cloning by selecting the appropriate parameters from the list.
+. In the *Parameters* section, configure the input parameters for the run that you are duplicating by selecting the appropriate parameters from the list.
 . Click *Create*.
 
 .Verification
-* The pipeline run that you cloned is shown in the *Scheduled* tab on the *Runs* page.
+* The pipeline run that you duplicated is shown in the *Scheduled* tab on the *Runs* page.
 
 //[role='_additional-resources']
 //.Additional resources
