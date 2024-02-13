@@ -1,9 +1,9 @@
 :_module-type: PROCEDURE
 
-[id="viewing-the-details-of-a-pipeline-run_{context}"]
-= Viewing the details of a pipeline run
+[id="downloading-pipeline-run-step-logs_{context}"]
+= Downloading pipeline run step logs
 [role='_abstract']
-To gain a clearer understanding of your pipeline runs, you can view the details of a previously triggered pipeline run, such as its graph, execution details, and run output.
+Instead of viewing the step logs of a pipeline run using the log viewer on the {productname-short} dashboard, you can download them for further analysis. You can choose to download the logs belonging to all steps in your pipeline, or you can download the log only for the step log displayed in the log viewer.
 
 .Prerequisites
 * You have installed the OpenShift Pipelines operator.
@@ -22,17 +22,26 @@ endif::[]
 . From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
 +
 The *Pipelines* page opens.
-. From the *Project* list, select the project whose pipeline runs you want to view.
-. For a pipeline that you want to see run details for, click *Expand* (image:images/rhoai-expand-icon.png[]).
+. From the *Project* list, select the project whose pipeline run step logs you want to view.
+. For the pipeline that you want to see logs for, click *Expand* (image:images/rhoai-expand-icon.png[]).
 . Click *View runs* on the row containing the pipeline version whose run logs you want to view.
 +
 The *Runs* page opens displaying a list of previously executed pipeline runs. 
 . Click the name of the run whose logs you want to view.
 + 
 The *Run details* page opens.
+. On the graph, click the pipeline step whose logs you want to view.
++
+A pane opens displaying information about the pipeline step.
+. Click the *Logs* tab.
++
+The log viewer opens. 
+. Click the *Download* button (image:images/rhoai-download-icon.png[]).
+.. Select *Download current stop log* to download the log for the current pipeline step. 
+.. Select *Download all step logs* to download the logs for all steps in your pipeline run.
 
 .Verification
-* On the *Run details* page, you can view the run's graph, execution details, input parameters, step logs, and run output.
+* The step logs download to your browser's default directory for downloaded files.
 
 //[role='_additional-resources']
 //.Additional resources
