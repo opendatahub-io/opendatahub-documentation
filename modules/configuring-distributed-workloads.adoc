@@ -7,7 +7,12 @@
 To configure the distributed workloads feature for your data scientists to use in {productname-short}, you must enable several components.
 
 .Prerequisites
+ifdef::upstream,self-managed[]
 * You have logged in to {openshift-platform} with the `cluster-admin` role.
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to OpenShift with the `cluster-admin` role.
+endif::[]
 * You have sufficient resources. In addition to the base {productname-short} resources, you need 1.1 vCPU and 1.6 GB memory to deploy the distributed workloads infrastructure.
 * You have access to a Ray cluster image. For information about how to create a Ray cluster, see the link:https://docs.ray.io/en/latest/cluster/getting-started.html[Ray Clusters documentation].
 ifndef::upstream[]
@@ -23,9 +28,14 @@ For more information, see https://docs.nvidia.com/datacenter/cloud-native/opensh
 endif::[]
 
 .Procedure
+ifdef::upstream,self-managed[]
 . In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
-ifndef::upstream[]
-. Search for the *Red Hat OpenShift Data Science* Operator, and then click the Operator name to open the Operator details page.
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, click *Operators* -> *Installed Operators*.
+endif::[]
+ifdef::self-managed,cloud-service[]
+. Search for the *Red Hat OpenShift AI* Operator, and then click the Operator name to open the Operator details page.
 endif::[]
 ifdef::upstream[]
 . Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
@@ -81,7 +91,10 @@ After a short time, the components with a `Managed` state are ready.
 .Verification
 Check the status of the `codeflare-operator-manager` pod, as follows:
 
-ifndef::upstream[]
+ifdef::cloud-service[]
+. In the OpenShift console, from the *Project* list, select *redhat-ods-applications*.
+endif::[]
+ifdef::self-managed[]
 . In the {openshift-platform} console, from the *Project* list, select *redhat-ods-applications*.
 endif::[]
 ifdef::upstream[]

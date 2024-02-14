@@ -12,7 +12,12 @@ To change the size of resources utilized within your {productname-short} cluster
 
 .Prerequisites
 * You have logged in to {productname-long}.
+ifdef::upstream,self-managed[]
 * You are part of the administrator group for {productname-short} in {openshift-platform}.
+endif::[]
+ifdef::cloud-service[]
+* You are part of the administrator group for {productname-short} in OpenShift.
+endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *Cluster settings*.
@@ -24,5 +29,11 @@ To change the size of resources utilized within your {productname-short} cluster
 
 [role='_additional-resources']
 .Additional resources
+ifdef::upstream,self-managed[]
 * link:https://docs.openshift.com/container-platform/{ocp-latest-version}/storage/understanding-persistent-storage.html[Understanding persistent storage]
+endif::[]
+ifdef::cloud-service[]
+* link:https://docs.openshift.com/dedicated/storage/understanding-persistent-storage.html[Understanding persistent storage] (OpenShift Dedicated)
+* link:https://docs.openshift.com/rosa/storage/understanding-persistent-storage.html[Understanding persistent storage] (Red Hat OpenShift Service on AWS)
+endif::[]
 //TEST

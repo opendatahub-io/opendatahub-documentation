@@ -26,7 +26,12 @@ endif::[]
 .Verification
 Follow these steps to view cluster metrics and verify that TrustyAI is receiving data. 
 
+ifdef::upstream,self-managed[]
 . Log in to the {openshift-platform} web console.
+endif::[[]
+ifdef::cloud-service[]
+. Log in to the OpenShift web console.
+endif::[]
 . Switch to the *Administrator* perspective.
 . In navigation menu, click *Observe* -> *Metrics*.
 . On the *Metrics* page, in the *Expression* field, enter `trustyai_model_observations_total` and then click *Run queries*. Your model should be listed and reporting observed inferences.
