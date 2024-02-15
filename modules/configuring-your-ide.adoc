@@ -83,7 +83,6 @@ Note: The secret must be named `rhel-subscription-secret`, and the keys `USERNAM
 ----
 oc create secret generic rhel-subscription-secret --from-literal=USERNAME=<username> --from-literal=PASSWORD=<password> -n redhat-ods-applications
 ----
---
 . Start the build:
 .. To start the lightweight RStudio Server build: 
 ----
@@ -95,7 +94,7 @@ oc start-build cuda-rhel9 -n redhat-ods-applications --follow
 ----
 +
 The cuda-rhel9 build is a prerequisite for cuda-rstudio-rhel9. The cuda-rstudio-rhel9 build starts automatically.
---
+
 . Confirm that the build process has completed successfully using the following command. Successful builds appear as `Complete`.
 +
 ----
@@ -105,4 +104,4 @@ oc get builds -n redhat-ods-applications
 .Verification
 
 * You can see *RStudio Server* and *CUDA - RStudio Server* images on the *Applications* -> *Enabled* menu in the {productname-long} dashboard.
-* You can see *R Studio Server * or *CUDA - RStudio Server* in the *Data Science Projects* -> *Workbenches* -> *Create workbench* -> *Notebook image* -> *Image selection* dropdown list.
+* You can see *R Studio Server* or *CUDA - RStudio Server* in the *Data Science Projects* -> *Workbenches* -> *Create workbench* -> *Notebook image* -> *Image selection* dropdown list.
