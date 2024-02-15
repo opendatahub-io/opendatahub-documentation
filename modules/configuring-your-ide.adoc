@@ -83,6 +83,7 @@ Note: The secret must be named `rhel-subscription-secret`, and the keys `USERNAM
 ----
 oc create secret generic rhel-subscription-secret --from-literal=USERNAME=<username> --from-literal=PASSWORD=<password> -n redhat-ods-applications
 ----
+--
 . Start the build:
 .. To start the lightweight RStudio Server build: 
 ----
@@ -94,6 +95,7 @@ oc start-build cuda-rhel9 -n redhat-ods-applications --follow
 ----
 +
 The cuda-rhel9 build is a prerequisite for cuda-rstudio-rhel9. The cuda-rstudio-rhel9 build starts automatically.
+--
 . Confirm that the build process has completed successfully using the following command. Successful builds appear as `Complete`.
 +
 ----
