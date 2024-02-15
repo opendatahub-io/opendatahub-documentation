@@ -7,8 +7,14 @@
 Before you can use Habana Gaudi devices in {productname-short}, you must install the necessary dependencies and deploy the HabanaAI Operator. 
 
 .Prerequisites
+ifdef::upstream,self-managed[]
 * You have logged in to {openshift-platform}.
 * You have the `cluster-admin` role in {openshift-platform}.
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to OpenShift.
+* You have the `cluster-admin` role in OpenShift.
+endif::[]
 
 .Procedure
 . To enable Habana Gaudi devices in {productname-short}, follow the instructions at link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/index.html[HabanaAI Operator for OpenShift].

@@ -10,7 +10,13 @@ The following procedure describes how to use the {productname-short} dashboard t
 
 .Prerequisites
 
+ifdef::upstream,self-managed[]
 * On the OpenShift cluster where {productname-short} is installed, you have enabled user workload monitoring as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/monitoring/enabling-monitoring-for-user-defined-projects.html[Enabling monitoring for user-defined projects].
+endif::[]
+ifdef::cloud-service[]
+* On the OpenShift cluster where {productname-short} is installed, you have enabled user workload monitoring as described in link:https://docs.openshift.com/dedicated/monitoring/enabling-alert-routing-for-user-defined-projects.html[Enabling monitoring for user-defined projects] (OpenShift Dedicated) or https://docs.openshift.com/rosa/monitoring/enabling-alert-routing-for-user-defined-projects.html[Enabling monitoring for user-defined projects] (Red Hat OpenShift Service on AWS).
+
+endif::[]
 
 ifdef::upstream[]
 * You have enabled the multi-model serving platform as described in link:{odhdocshome}/serving-models/enabling-the-multi-model-serving-platform_model-serving[Enabling the multi-model serving platform].
@@ -84,7 +90,12 @@ endif::[]
 . Select the *Enable model bias monitoring* checkbox.
 
 .Verification
+ifdef::upstream,self-managed[]
 . In the {openshift-platform} web console, click *Workloads* → *Pods*.
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift web console, click *Workloads* → *Pods*.
+endif::[]
 . From the project list, select the project namespace in which you enabled TrustyAI. 
 . Confirm that there is a running pod for the TrustyAI service. The pod has a naming pattern similar to the following example:
 +
