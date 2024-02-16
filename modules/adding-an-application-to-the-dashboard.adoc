@@ -11,14 +11,58 @@ If you have installed another application in your {openshift-platform} cluster, 
 
 .Procedure
 . Log in to the {openshift-platform} console as a cluster administrator.
-. In the *Administrator* perspective, click *Home* -> *API Explorer*.
-. In the search bar, enter `OdhDashboardConfig` to filter by kind.
-. Click the `OdhDashboardConfig` custom resource (CR) to open the resource details page.
-. Click the *Instances* tab.
-. Click the default instance name to open the instance details page.
-. Click the *YAML* tab.
+. In the {openshift-platform} console, click *+* in the top navigation bar.
+. Select your project from the list of projects.
+. Copy the following code and paste it into the *Import YAML* editor.
++
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+apiVersion: dashboard.opendatahub.io/v1
+kind: OdhApplication
+metadata:
+  annotations:
+    opendatahub.io/categories: 'Data management,Data preprocessing'
+  name: examplename
+  namespace: redhat-ods-applications
+  labels:
+    app: odh-dashboard
+    app.kubernetes.io/part-of: odh-dashboard
+spec:
+  enable:
+    validationConfigMap: examplename-enable
+  img: >-
+    <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="path data" fill="#ee0000"/>
+    </svg>
+  getStartedLink: 'https://example.org/docs/quickstart.html'
+  route: exampleroutename
+  routeNamespace: examplenamespace
+  displayName: Example Name
+  kfdefApplications: []
+  support: third party support
+  csvName: ''
+  provider: example
+  docsLink: 'https://example.org/docs/index.html'
+  quickStart: ''
+  getStartedMarkDown: >-
+    # Example
 
+    Enter text for the information panel.
 
+  description: >-
+    Enter summary text for the tile.
+  category: Self-managed
+----
+
+. Modify all the parameters in the code for your application.
+. Click *Create*. You should see a "Resources successfully created" message.
+. Log in to {productname-short}.
+. In the left menu, click *Applications* -> *Explore*.
+. Locate the new tile for your application and click it.
+. In the information  pane for the application, click *Enable*.
 
 .Verification
-Log in to {productname-short} and verify that your dashboard configurations apply.
+
+* In the left menu of the {productname-short} dashboard, click *Applications* -> *Enabled* and verify that your application is available.
