@@ -102,6 +102,17 @@ The cuda-rhel9 build is a prerequisite for cuda-rstudio-rhel9. The cuda-rstudio-
 ----
 oc get builds -n redhat-ods-applications
 ----
+. After the builds complete successfully, use the following commands to make the notebook images available in the {productname-short} UI.
+.. To enable the RStudio Server notebook image:
++
+----
+oc label -n redhat-ods-applications imagestream rstudio-rhel9 opendatahub.io/notebook-image='true'
+----
+.. To enable the CUDA - RStudio Server notebook image:
++
+----
+oc label -n redhat-ods-applications imagestream cuda-rstudio-rhel9 opendatahub.io/notebook-image='true'
+----
 
 .Verification
 
