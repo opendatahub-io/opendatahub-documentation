@@ -64,22 +64,21 @@ The extension you installed appears in the *Browser - Installed* list on the *Ex
 See link:https://open-vsx.org/[Open VSX Registry] for available third-party extensions that you can consider installing.
 
 ifndef::upstream[]
+ifdef::cloud-service[]
 == Building the RStudio Server notebook images
 
-To use the *RStudio Server* and *CUDA - RStudio Server* notebook images, you must first build them by creating a secret and triggering the BuildConfig, and then enable them in the {productname-short} UI by editing the `rstudio-rhel9` and `cuda-rstudio-rhel9` imagestreams.
+To use the *RStudio Server* and *CUDA - RStudio Server* notebook images, you must first build them by creating a secret and triggering the BuildConfig, and then enable them in the {productname-short} UI by editing the `rstudio-rhel9` and `cuda-rstudio-rhel9` image streams.
 
 .Prerequisites
-
 * Before starting the RStudio Server build process, you have at least 1 CPU and 2Gi memory available for `rstudio-server-rhel9`, and 1.5 CPUs and 8Gi memory available for `cuda-rstudio-server-rhel9` on your cluster.
 * You are logged in to your OpenShift cluster.
 * You have the `cluster-admin` role in {openshift-platform}, to the namespace `rhoai-applications`, or with cluster-wide role binding.
 * You have an active {org-name} Enterprise Linux (RHEL) subscription.
 
 .Procedure
-
-. Create a secret with subscription manager credentials. These are usually your {org-name} Customer Portal username and password.
+. Create a secret with Subscription Manager credentials. These are usually your {org-name} Customer Portal username and password.
 +
-Note: The secret must be named `rhel-subscription-secret`, and the keys `USERNAME` and `PASSWORD` within it must be in capital letters. 
+Note: The secret must be named `rhel-subscription-secret`, and its `USERNAME` and `PASSWORD` keys must be in capital letters. 
 +
 ----
 oc create secret generic rhel-subscription-secret --from-literal=USERNAME=<username> --from-literal=PASSWORD=<password> -n redhat-ods-applications
@@ -115,8 +114,8 @@ oc label -n redhat-ods-applications imagestream cuda-rstudio-rhel9 opendatahub.i
 ----
 
 .Verification
-
 * You can see *RStudio Server* and *CUDA - RStudio Server* images on the *Applications* -> *Enabled* menu in the {productname-long} dashboard.
 * You can see *R Studio Server* or *CUDA - RStudio Server* in the *Data Science Projects* -> *Workbenches* -> *Create workbench* -> *Notebook image* -> *Image selection* dropdown list.
 
+endif::[]
 endif::[]
