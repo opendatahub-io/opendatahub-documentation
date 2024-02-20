@@ -4,16 +4,13 @@
 = Adding notebook pod tolerations
 
 [role='_abstract']
-You can add a toleration to notebook pods to allow them to be scheduled on tainted nodes. This is useful if you want to dedicate specific worker nodes to running notebooks, as tainting them will prevent other workloads from running on them. 
+You can add a toleration to notebook pods to allow them to be scheduled on tainted nodes. This is useful if you want to dedicate specific worker nodes to running notebooks, as tainting them prevents other workloads from running on them. 
 
-////
-For example, I might have 1-2 worker nodes that are large enough to accommodate an XL notebook server. I want to ensure when a user attempts to start an XL notebook server, it gets placed on a node with an appropriate taint to accept XL notebooks. Other smaller notebooks can share the resources across the other worker nodes that might not have a taint for an XL notebook. This can help ensure users that need to do work with large notebook sizes, the resources will be available to support them.
-////
+For example, if you have one or two worker nodes that are large enough to accommodate an XL notebook server, you want to be sure that when a user attempts to start an XL notebook server it gets placed on a node with an appropriate taint to accept XL notebooks. Smaller notebooks can share resources across the other worker nodes that do not have a taint for an XL notebook. This approach helps to ensure that users needing to work with large notebook sizes have the necessary resources available to them.
 
 .Prerequisites
 * You have logged in to {productname-long}.
 * You are part of the administrator group for {productname-short} in {openshift-platform}.
-//* You have added the toleration to the pods. For more information, see link:https://docs.openshift.com/container-platform/{ocp-latest-version}/nodes/scheduling/nodes-scheduler-taints-tolerations.html[Understanding taints and tolerations].
 
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *Cluster settings*.
@@ -27,7 +24,7 @@ In {openshift-platform}, add a matching taint key (with any value) to the machin
 ifdef::self-managed[]
 ** link:https://access.redhat.com/documentation/en-us/red_hat_openshift_service_on_aws/4/html/cluster_administration/manage-nodes-using-machine-pools#rosa-adding-taints_rosa-managing-worker-nodes[Adding taints to a machine pool]
 endif::[]
-ifndef::self-managed[]
+ifdef::cloud-service[]
 For more information, see link:https://access.redhat.com/documentation/en-us/openshift_dedicated/4/html/cluster_administration/nodes#rosa-adding-taints_osd-managing-worker-nodes[Adding taints to a machine pool].
 endif::[]
 
@@ -37,5 +34,6 @@ endif::[]
 . Search for your workbench pod name and then click the name to open the pod details page.
 . Confirm that the assigned *Node* and *Tolerations* are correct.
 
-//[role='_additional-resources']
-//.Additional resources
+[role='_additional-resources']
+.Additional resources
+link:https://docs.openshift.com/container-platform/{ocp-latest-version}/nodes/scheduling/nodes-scheduler-taints-tolerations.html[Controlling pod placement using node taints^]
