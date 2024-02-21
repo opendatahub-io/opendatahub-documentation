@@ -67,12 +67,11 @@ ifndef::upstream[]
 ifdef::cloud-service[]
 == Building the RStudio Server notebook images
 
-[Disclaimer] 
+[IMPORTANT] 
 ====
+*Disclaimer:* 
 {org-name} supports managing workbenches in {productname-short}. However, {org-name} does not provide support for the RStudio software. RStudio Server is available through link:rstudio.org[rstudio.org] and is subject to their licensing terms, which should be reviewed prior to use of this sample workbench.
 ==== 
-
-To use the *RStudio Server* and *CUDA - RStudio Server* notebook images, you must first build them by creating a secret and triggering the BuildConfig, and then enable them in the {productname-short} UI by editing the `rstudio-rhel9` and `cuda-rstudio-rhel9` image streams.
 
 [IMPORTANT]
 ====
@@ -84,6 +83,8 @@ These features provide early access to upcoming product features, enabling custo
 
 For more information about the support scope of Red{nbsp}Hat Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
 ====
+
+To use the *RStudio Server* and *CUDA - RStudio Server* notebook images, you must first build them by creating a secret and triggering the BuildConfig, and then enable them in the {productname-short} UI by editing the `rstudio-rhel9` and `cuda-rstudio-rhel9` image streams.
 
 .Prerequisites
 * Before starting the RStudio Server build process, you have at least 1 CPU and 2Gi memory available for `rstudio-server-rhel9`, and 1.5 CPUs and 8Gi memory available for `cuda-rstudio-server-rhel9` on your cluster.
