@@ -22,7 +22,14 @@ ifdef::self-managed[]
 See the table in link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#options-for-notebook-server-environments_get-started[Options for notebook server environments] for a complete list of packages and versions included in these images.
 endif::[]
 
-{productname-long} contains the following notebook images that are available by default:
+{productname-long} contains the following notebook images that are available by default.
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+Notebook images denoted with `(Technology Preview)` in this table are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete. {org-name} does not recommend using Technology Preview features in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. For more information about the support scope of {org-name} Technology Preview features, see Technology Preview Features Support Scope.
+====
+endif::[]
 
 .Default notebook images
 [cols="1,5"]
@@ -61,23 +68,49 @@ endif::[]
 a| With the code-server notebook image, you can customize your notebook environment to meet your needs using a variety of extensions to add new languages, themes, debuggers, and connect to additional services. Enhance the efficiency of your data science work with syntax highlighting, auto-indentation, and bracket matching, as well as an automatic task runner for seamless automation. See link:https://github.com/coder/code-server[code-server in GitHub] for more information. +
 
 NOTE: Elyra-based pipelines are not available with the code-server notebook image.
- 
+
+ifdef::upstream[]
+| RStudio Server 
+a| Use the RStudio Server notebook image to access the RStudio IDE, an integrated development environment for R, a programming language for statistical computing and graphics.
+See link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site] for more information. +
+endif::[]
 ifndef::upstream[]
-[IMPORTANT]
-====
-ifdef::self-managed[]
-The code-server notebook image is currently available in {productname-long} {vernum} as a Technology Preview feature.
-endif::[]
 ifdef::cloud-service[]
-The code-server notebook image is currently available in {productname-long} as a Technology Preview feature.
-endif::[]
-Technology Preview features are not supported with Red{nbsp}Hat production service level agreements (SLAs) and might not be functionally complete.
-Red{nbsp}Hat does not recommend using them in production.
-These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
-For more information about the support scope of Red{nbsp}Hat Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+| RStudio Server (Technology preview)
+a| Use the RStudio Server notebook image to access the RStudio IDE, an integrated development environment for R, a programming language for statistical computing and graphics.
+See link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site] for more information. +
+
+To use the *RStudio Server* notebook image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `rstudio-rhel9` image stream. See link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/configuring-your-ide_get-started#building_the_rstudio_server_notebook_images[Building the RStudio Server notebook images] for more information.
+
+[IMPORTANT] 
 ====
+*Disclaimer:* +
+{org-name} supports managing workbenches in {productname-short}. However, {org-name} does not provide support for the RStudio software. RStudio Server is available through link:rstudio.org[rstudio.org] and is subject to their licensing terms, which should be reviewed prior to use of this sample workbench.
+====
+endif::[]
 endif::[]
 
+ifdef::upstream[]
+| CUDA - RStudio Server
+a| Use the CUDA - RStudio Server notebook image to access the RStudio IDE and NVIDIA CUDA Toolkit. RStudio is an integrated development environment for R, a programming language for statistical computing and graphics. With the NVIDIA CUDA toolkit, you can optimize your work using GPU-accelerated libraries and optimization tools.
+See link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site] for more information. +
+endif::[]
+
+ifndef::upstream[]
+ifdef::cloud-service[]
+| CUDA - RStudio Server (Technology preview)
+a| Use the CUDA - RStudio Server notebook image to access the RStudio IDE and NVIDIA CUDA Toolkit. RStudio is an integrated development environment for R, a programming language for statistical computing and graphics. With the NVIDIA CUDA toolkit, you can optimize your work using GPU-accelerated libraries and optimization tools.
+See link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site] for more information. +
+
+To use the *CUDA - RStudio Server* notebook image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `cuda-rstudio-rhel9` image stream. See link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/configuring-your-ide_get-started#building_the_rstudio_server_notebook_images[Building the RStudio Server notebook images] for more information.
+
+[IMPORTANT] 
+====
+*Disclaimer:* +
+{org-name} supports managing workbenches in {productname-short}. However, {org-name} does not provide support for the RStudio software. RStudio Server is available through link:rstudio.org[rstudio.org] and is subject to their licensing terms, which should be reviewed prior to use of this sample workbench.
+====
+endif::[]
+endif::[]
 |===
 
 ifndef::upstream[]
