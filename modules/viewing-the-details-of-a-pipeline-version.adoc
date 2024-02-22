@@ -1,0 +1,35 @@
+:_module-type: PROCEDURE
+
+[id="viewing-the-details-of-a-pipeline-version_{context}"]
+= Viewing the details of a pipeline version
+
+[role='_abstract']
+You can view the details of a pipeline version that you have uploaded to {productname-long}, such as its graph and YAML code.
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a pipeline server.
+* You have a pipeline available on an active and available pipeline server.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
++
+The *Pipelines* page opens.
+. From the *Project* list, select the project containing the pipeline versions that you want to view details for.
+. Click *Expand* (image:images/rhoai-expand-icon.png[]) on the row containing the pipeline that you want to view versions for.
+. Click the pipeline version that you want to view the details of. 
++ 
+The *Pipeline details* page opens, displaying the *Graph* and *YAML* tabs.
+
+.Verification
+* On the *Pipeline details* page, you can view the pipeline graph and YAML code.
+
+//[role='_additional-resources']
+//.Additional resources

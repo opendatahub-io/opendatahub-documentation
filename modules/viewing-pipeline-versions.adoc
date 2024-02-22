@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
-[id="deleting-a-data-science-pipeline_{context}"]
-= Deleting a data science pipeline
+[id="viewing-pipeline-versions_{context}"]
+= Viewing pipeline versions
 
 [role='_abstract']
-You can delete data science pipelines so that they do not appear on the *Data Science Pipelines* page.
+You can view all versions for a pipeline on the *Pipelines* page.
 
 .Prerequisites
 * You have installed the OpenShift Pipelines operator.
@@ -15,21 +15,18 @@ endif::[]
 ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
-* There are active pipelines available on the *Pipelines* page.
+* You have previously created a data science project that is available and contains a pipeline server.
+* You have a pipeline available on an active and available pipeline server.
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
 +
 The *Pipelines* page opens.
-. From the *Project* list, select the project that contains the pipeline that you want to delete.
-. Click the action menu (*&#8942;*) beside the pipeline that you want to delete and click *Delete pipeline*.
-+
-The *Delete pipeline* dialog opens.
-. Enter the pipeline name in the text field to confirm that you intend to delete it.
-. Click *Delete pipeline*.
+. From the *Project* list, select the project containing the pipeline versions that you want to view.
+. Click *Expand* (image:images/rhoai-expand-icon.png[]) on the row containing the pipeline that you want to view versions for.
 
 .Verification
-* The data science pipeline that you deleted is no longer displayed on the *Pipelines* page.
+* You can view the versions of the pipeline on the *Pipelines* page.
 
 //[role='_additional-resources']
 //.Additional resources
