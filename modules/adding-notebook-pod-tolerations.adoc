@@ -4,22 +4,25 @@
 = Adding notebook pod tolerations
 
 [role='_abstract']
-You can add a toleration to notebook pods to allow them to be scheduled on tainted nodes. This is useful if you want to dedicate specific worker nodes to running notebooks, as tainting them prevents other workloads from running on them. 
+If you want to dedicate certain machine pools to only running notebook pods, you can allow notebook pods to be scheduled on specific nodes by adding a toleration. Taints and tolerations allow a node to control which pods should (or should not) be scheduled on them. For more information, see link:https://docs.openshift.com/container-platform/{ocp-latest-version}/nodes/scheduling/nodes-scheduler-taints-tolerations.html#nodes-scheduler-taints-tolerations-about_nodes-scheduler-taints-tolerations[Understanding taints and tolerations].
 
-For example, if you have one or two worker nodes that are large enough to accommodate an XL notebook server, you want to be sure that when a user attempts to start an XL notebook server it gets placed on a node with an appropriate taint to accept XL notebooks. Smaller notebooks can share resources across the other worker nodes that do not have a taint for an XL notebook. This approach helps to ensure that users needing to work with large notebook sizes have the necessary resources available to them.
+This capability is useful if you want to make sure that notebook servers are placed on nodes that can handle their needs. By preventing other workloads from running on these specific nodes, you can ensure that the necessary resources are available to users who need to work with large notebook sizes.
 
 .Prerequisites
 * You have logged in to {productname-long}.
 * You are part of the administrator group for {productname-short} in {openshift-platform}.
+* You are familiar with {openshift-platform} taints and tolerations, as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/nodes/scheduling/nodes-scheduler-taints-tolerations.html#nodes-scheduler-taints-tolerations-about_nodes-scheduler-taints-tolerations[Understanding taints and tolerations].
 
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *Cluster settings*.
 . Under *Notebook pod tolerations*, select *Add a toleration to notebook pods to allow them to be scheduled to tainted nodes*.
-. Enter a *Toleration key for notebook pods*. This toleration key will be applied to all notebook pods when they are created.
+. In the *Toleration key for notebook pods* field, enter a toleration key. The key is any string, up to 253 characters. The key must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores. For example, `notebooks-only`.
++
+This toleration key is applied to all new notebook pods when they are created. Existing notebook pods are not affected.
 . Click *Save changes*.
 
 .Next step
-In {openshift-platform}, add a matching taint key (with any value) to the machine pools that you want to dedicate to notebooks.
+In {openshift-platform}, add a matching taint key (with any value) to the machine pools that you want to dedicate to notebooks. For more information, see link:https://docs.openshift.com/container-platform/{ocp-latest-version}/nodes/scheduling/nodes-scheduler-taints-tolerations.html[Controlling pod placement using node taints].
 
 ifdef::self-managed[]
 ** link:https://access.redhat.com/documentation/en-us/red_hat_openshift_service_on_aws/4/html/cluster_administration/manage-nodes-using-machine-pools#rosa-adding-taints_rosa-managing-worker-nodes[Adding taints to a machine pool]

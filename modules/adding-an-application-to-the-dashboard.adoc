@@ -4,16 +4,20 @@
 = Adding an application to the dashboard
 
 [role='_abstract']
-If you have installed another application in your {openshift-platform} cluster, you can add a tile for that application to the {productname-short} dashboard (the *Applications* -> *Enabled* page) to make it easily accessible for users. 
+If you have installed another application in your {openshift-platform} cluster, you can add a tile for that application to the {productname-short} dashboard (the *Applications* -> *Enabled* page) to make it accessible for {productname-short} users.
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 
 .Procedure
 . Log in to the {openshift-platform} console as a cluster administrator.
-. In the {openshift-platform} console, click *+* in the top navigation bar.
-. Select your project from the list of projects.
-. Copy the following example code and paste it into the *Import YAML* editor.
+. In the *Administrator* perspective, click *Home* -> *API Explorer*.
+. On the *API Explorer* page, search for the `OdhApplication` kind.
+. Click the `OdhApplication` kind to open the resource details page.
+. On the *OdhApplication* details page, select the `redhat-ods-applications` project from the *Project* list.
+. Click the *Instances* tab.
+. Click *Create OdhApplication*.
+. On the *Create OdhApplication* page, copy the following code and paste it into the YAML editor.
 +
 [.lines_space]
 [.console-input]
@@ -22,8 +26,6 @@ If you have installed another application in your {openshift-platform} cluster, 
 apiVersion: dashboard.opendatahub.io/v1
 kind: OdhApplication
 metadata:
-  annotations:
-    opendatahub.io/categories: 'Data management,Data preprocessing'
   name: examplename
   namespace: redhat-ods-applications
   labels:
@@ -53,11 +55,14 @@ spec:
 
   description: >-
     Enter summary text for the tile.
-  category: Self-managed
+  category: Self-managed | Partner managed | Red Hat managed
 ----
 
-. Modify the parameters in the example code for your application.
-. Click *Create*. You should see a "Resources successfully created" message.
+. Modify the parameters in the code for your application.
++
+TIP: To see example YAML files, click *Home* -> *API Explorer*, select `OdhApplication`, click the *Instances* tab, select an instance, and then click the *YAML* tab.
+
+. Click *Create*. The application details page is displayed.
 . Log in to {productname-short}.
 . In the left menu, click *Applications* -> *Explore*.
 . Locate the new tile for your application and click it.
