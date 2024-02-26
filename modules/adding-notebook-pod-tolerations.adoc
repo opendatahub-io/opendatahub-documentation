@@ -16,16 +16,24 @@ This capability is useful if you want to make sure that notebook servers are pla
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *Cluster settings*.
 . Under *Notebook pod tolerations*, select *Add a toleration to notebook pods to allow them to be scheduled to tainted nodes*.
-. In the *Toleration key for notebook pods* field, enter a toleration key. The key is any string, up to 253 characters. The key must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores. For example, `notebooks-only`.
+. In the *Toleration key for notebook pods* field, enter a toleration key. The key is any string, up to 253 characters. The key must begin with a letter or number, and can contain letters, numbers, hyphens, dots, and underscores. For example, `notebooks-only`.
+. Click *Save changes*. The toleration key is applied to new notebook pods when they are created. 
 +
-This toleration key is applied to all new notebook pods when they are created. Existing notebook pods are not affected.
-. Click *Save changes*.
+For existing notebook pods, the toleration key is applied when the notebook pods are restarted. 
+ifdef::upstream[]
+If you are using Jupyter, see link:{odhdocshome}/working-on-data-science-projects/#updating-notebook-server-settings-by-restarting-your-server_nb-server[Updating notebook server settings by restarting your server].
+If you are using a workbench in a data science project, see link:{odhdocshome}/working-on-data-science-projects/#_using_project_workbenches[Starting a workbench].
+endif::[]
+ifndef::upstream[]
+If you are using Jupyter, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#updating-notebook-server-settings-by-restarting-your-server_nb-server[Updating notebook server settings by restarting your server].
+If you are using a workbench in a data science project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#starting-a-workbench_nb-server[Starting a workbench].
+endif::[]
 
 .Next step
 In {openshift-platform}, add a matching taint key (with any value) to the machine pools that you want to dedicate to notebooks. For more information, see link:https://docs.openshift.com/container-platform/{ocp-latest-version}/nodes/scheduling/nodes-scheduler-taints-tolerations.html[Controlling pod placement using node taints].
 
 ifdef::self-managed[]
-** link:https://access.redhat.com/documentation/en-us/red_hat_openshift_service_on_aws/4/html/cluster_administration/manage-nodes-using-machine-pools#rosa-adding-taints_rosa-managing-worker-nodes[Adding taints to a machine pool]
+For more information, see link:https://access.redhat.com/documentation/en-us/red_hat_openshift_service_on_aws/4/html/cluster_administration/manage-nodes-using-machine-pools#rosa-adding-taints_rosa-managing-worker-nodes[Adding taints to a machine pool]
 endif::[]
 ifdef::cloud-service[]
 For more information, see link:https://access.redhat.com/documentation/en-us/openshift_dedicated/4/html/cluster_administration/nodes#rosa-adding-taints_osd-managing-worker-nodes[Adding taints to a machine pool].
@@ -37,6 +45,5 @@ endif::[]
 . Search for your workbench pod name and then click the name to open the pod details page.
 . Confirm that the assigned *Node* and *Tolerations* are correct.
 
-[role='_additional-resources']
-.Additional resources
-link:https://docs.openshift.com/container-platform/{ocp-latest-version}/nodes/scheduling/nodes-scheduler-taints-tolerations.html[Controlling pod placement using node taints^]
+//[role='_additional-resources']
+//.Additional resources
