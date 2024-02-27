@@ -1,0 +1,49 @@
+:_module-type: PROCEDURE
+
+[id="viewing-pipeline-step-logs_{context}"]
+= Viewing pipeline step logs
+
+[role='_abstract']
+To help you troubleshoot and audit your pipelines, you can review and analyze the log of each pipeline step using the log viewer. From here, you can search for specific log messages and download the logs for each step in your pipeline. If the pipeline is running, you can also pause and resume the log from the log viewer.   
+
+.Prerequisites
+* You have installed the OpenShift Pipelines operator.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a pipeline server.
+* You have imported a pipeline to an active and available pipeline server.
+* You have previously triggered a pipeline run.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
++
+The *Pipelines* page opens.
+. From the *Project* list, select the project that you want to view logs for.
+. For the pipeline that you want to view logs for, click *Expand* (image:images/rhoai-expand-icon.png[]).
+. Click *View runs* on the row containing the pipeline version that you want to view logs for.
++
+The *Runs* page opens displaying a list of previously executed pipeline runs. 
+. Click the name of the run that you want to view logs for.
++ 
+The *Run details* page opens.
+. On the graph, click the pipeline step that you want to view logs for.
++
+A pane opens displaying information about the pipeline step.
+. Click the *Logs* tab.
++
+The log viewer opens. 
+. To view the logs of another pipeline step, from the *Steps* list, select the step that you want to view logs for.
+. Analyze the log using the log viewer.
+* To search for a specific log message, enter at least part of the message in the search bar. 
+* To view the full log in a separate browser window, click the action menu (&#8942;) and select *View raw logs*. Alternatively, to expand the size of the log viewer, click the action menu (&#8942;) and select *Expand*.
+
+.Verification
+* You can view the logs for each step in your pipeline. 
+
+//[role='_additional-resources']
+//.Additional resources
