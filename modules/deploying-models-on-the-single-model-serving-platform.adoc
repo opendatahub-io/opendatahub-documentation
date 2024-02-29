@@ -58,6 +58,10 @@ The *Deploy model* dialog opens.
 ... Select *Existing data connection*.
 ... From the *Name* list, select a data connection that you previously defined.
 ... In the *Path* field, enter the folder path that contains the model in your specified data source.
+ifdef::self-managed,cloud-service[]
++
+IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
+endif::[]
 
 * *To use a new data connection*
 ... To define a new data connection that your model can access, select *New data connection*.
@@ -68,6 +72,10 @@ The *Deploy model* dialog opens.
 ... In the *Region* field, enter the default region of your S3-compatible object storage account.
 ... In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
 ... In the *Path* field, enter the folder path in your S3-compatible object storage that contains your data file.
+ifdef::self-managed,cloud-service[]
++
+IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
+endif::[]
 --
 .. Click *Deploy*.
 
