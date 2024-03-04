@@ -1,0 +1,73 @@
+:_module-type: PROCEDURE
+
+[id="adding-an-application-to-the-dashboard_{context}"]
+= Adding an application to the dashboard
+
+[role='_abstract']
+If you have installed another application in your {openshift-platform} cluster, you can add a tile for that application to the {productname-short} dashboard (the *Applications* -> *Enabled* page) to make it accessible for {productname-short} users.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+.Procedure
+. Log in to the {openshift-platform} console as a cluster administrator.
+. In the *Administrator* perspective, click *Home* -> *API Explorer*.
+. On the *API Explorer* page, search for the `OdhApplication` kind.
+. Click the `OdhApplication` kind to open the resource details page.
+. On the *OdhApplication* details page, select the `redhat-ods-applications` project from the *Project* list.
+. Click the *Instances* tab.
+. Click *Create OdhApplication*.
+. On the *Create OdhApplication* page, copy the following code and paste it into the YAML editor.
++
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+apiVersion: dashboard.opendatahub.io/v1
+kind: OdhApplication
+metadata:
+  name: examplename
+  namespace: redhat-ods-applications
+  labels:
+    app: odh-dashboard
+    app.kubernetes.io/part-of: odh-dashboard
+spec:
+  enable:
+    validationConfigMap: examplename-enable
+  img: >-
+    <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="path data" fill="#ee0000"/>
+    </svg>
+  getStartedLink: 'https://example.org/docs/quickstart.html'
+  route: exampleroutename
+  routeNamespace: examplenamespace
+  displayName: Example Name
+  kfdefApplications: []
+  support: third party support
+  csvName: ''
+  provider: example
+  docsLink: 'https://example.org/docs/index.html'
+  quickStart: ''
+  getStartedMarkDown: >-
+    # Example
+
+    Enter text for the information panel.
+
+  description: >-
+    Enter summary text for the tile.
+  category: Self-managed | Partner managed | Red Hat managed
+----
+
+. Modify the parameters in the code for your application.
++
+TIP: To see example YAML files, click *Home* -> *API Explorer*, select `OdhApplication`, click the *Instances* tab, select an instance, and then click the *YAML* tab.
+
+. Click *Create*. The application details page appears.
+. Log in to {productname-short}.
+. In the left menu, click *Applications* -> *Explore*.
+. Locate the new tile for your application and click it.
+. In the information pane for the application, click *Enable*.
+
+.Verification
+
+* In the left menu of the {productname-short} dashboard, click *Applications* -> *Enabled* and verify that your application is available.
