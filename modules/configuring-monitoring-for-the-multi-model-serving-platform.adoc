@@ -1,20 +1,13 @@
 :_module-type: PROCEDURE
 
-[id="configuring-monitoring-for-the-single-model-serving-platform_{context}"]
-= Configuring monitoring for the single-model serving platform
+[id="configuring-monitoring-for-the-multi-model-serving-platform_{context}"]
+= Configuring monitoring for the multi-model serving platform
 
 [role="_abstract"]
-
-ifdef::self-managed,cloud-service[]
-The single-model serving platform includes metrics for link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#about-the-single-model-serving-platform_serving-large-models[supported runtimes]. You can also configure monitoring for OpenShift Service Mesh. The service mesh metrics helps you to understand dependencies and traffic flow between components in the mesh. When you have configured monitoring, you can grant Prometheus access to scrape the available metrics. 
-endif::[]
-ifdef::upstream[]
-The single-model serving platform includes metrics for link:{odhdocshome}/serving-models/#about-the-single-model-serving-platform_serving-large-models[supported runtimes]. You can also configure monitoring for OpenShift Service Mesh. The service mesh metrics helps you to understand dependencies and traffic flow between components in the mesh. When you have configured monitoring, you can grant Prometheus access to scrape the available metrics. 
-endif::[]
+The multi-model serving platform includes metrics for the ModelMesh component. When you have configured monitoring, you can grant Prometheus access to scrape the available metrics.
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
-* You have created OpenShift Service Mesh and Knative Serving instances and installed KServe.
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI].
 * You are familiar with link:https://docs.openshift.com/container-platform/{ocp-latest-version}/monitoring/configuring-the-monitoring-stack.html#creating-user-defined-workload-monitoring-configmap_configuring-the-monitoring-stack[creating a config map] for monitoring a user-defined workflow. You will perform similar steps in this procedure.
 * You are familiar with link:https://docs.openshift.com/container-platform/{ocp-latest-version}/monitoring/enabling-monitoring-for-user-defined-projects.html[enabling monitoring] for user-defined projects in OpenShift. You will perform similar steps in this procedure.
@@ -75,76 +68,6 @@ The `cluster-monitoring-config` object enables monitoring for user-defined proje
 [source]
 ----
 $ oc apply -f uwm-cm-enable.yaml
-----
-
-. Create `ServiceMonitor` and `PodMonitor` objects to monitor metrics in the service mesh control plane as follows:
-
-
-.. Create an `istiod-monitor.yaml` YAML file with the following contents:
-+
-[source]
-----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: istiod-monitor
-  namespace: istio-system
-spec:
-  targetLabels:
-  - app
-  selector:
-    matchLabels:
-      istio: pilot
-  endpoints:
-  - port: http-monitoring
-    interval: 30s
-----
-
-.. Deploy the `ServiceMonitor` CR in the specified `istio-system` namespace.
-+
-[source]
-----
-$ oc apply -f istiod-monitor.yaml
-----
-+
-You see the following output:
-+
-[source]
-----
-servicemonitor.monitoring.coreos.com/istiod-monitor created
-----
-
-.. Create an `istio-proxies-monitor.yaml` YAML file with the following contents:
-+
-[source]
-----
-apiVersion: monitoring.coreos.com/v1
-kind: PodMonitor
-metadata:
-  name: istio-proxies-monitor
-  namespace: istio-system
-spec:
-  selector:
-    matchExpressions:
-    - key: istio-prometheus-ignore
-      operator: DoesNotExist
-  podMetricsEndpoints:
-  - path: /stats/prometheus
-    interval: 30s
-----
-
-.. Deploy the `PodMonitor` CR in the specified `istio-system` namespace.
-+
-[source]
-----
-$ oc apply -f istio-proxies-monitor.yaml
-----
-+
-You see the following output:
-+
-[source]
-----
-podmonitor.monitoring.coreos.com/istio-proxies-monitor created
 ----
 
 // [role="_additional-resources"]

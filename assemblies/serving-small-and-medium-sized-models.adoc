@@ -22,6 +22,13 @@ include::modules/viewing-a-deployed-model.adoc[leveloffset=+2]
 include::modules/updating-the-deployment-properties-of-a-deployed-model.adoc[leveloffset=+2]
 include::modules/deleting-a-deployed-model.adoc[leveloffset=+2]
 
+// Conditionalized for self-managed because monitoring of user-defined projects is enabled on OSD and ROSA by default
+ifdef::upstream,self-managed[]
+include::modules/configuring-monitoring-for-the-multi-model-serving-platform.adoc[leveloffset=+1]
+endif::[]
+
+include::modules/viewing-metrics-for-the-multi-model-serving-platform.adoc[leveloffset=+1]
+
 == Monitoring deployed models
 include::modules/viewing-performance-metrics-for-model-server.adoc[leveloffset=+2]
 include::modules/viewing-http-request-metrics-for-a-deployed-model.adoc[leveloffset=+2]

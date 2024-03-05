@@ -1,0 +1,37 @@
+:_module-type: PROCEDURE
+
+[id="viewing-metrics-for-the-multi-model-serving-platform_{context}"]
+= Viewing metrics for the multi-model serving platform
+
+[role="_abstract"]
+When a cluster administrator has configured monitoring for the multi-model serving platform, non-admin users can use the OpenShift web console to view metrics. 
+
+.Prerequisites
+ifdef::self-managed[]
+* A cluster administrator has configured monitoring for the multi-model serving platform.
+* You have been link:https://docs.openshift.com/container-platform/{ocp-latest-version}/monitoring/enabling-monitoring-for-user-defined-projects.html#granting-users-permission-to-monitor-user-defined-projects_enabling-monitoring-for-user-defined-projects[assigned^] the `monitoring-rules-view` role.
+* You are familiar with how to link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/building_applications/odc-monitoring-project-and-application-metrics-using-developer-perspective#odc-monitoring-your-project-metrics_monitoring-project-and-application-metrics-using-developer-perspective[monitor project metrics^] in the {openshift-platform} web console.
+endif::[]
+ifdef::cloud-service[]
+* You have access to the OpenShift cluster as a developer or as a user with view permissions for the project that you are viewing metrics for.
+* You are familiar with querying metrics in user-defined projects. See link:https://docs.openshift.com/dedicated/monitoring/managing-metrics.html#querying-metrics-for-user-defined-projects-as-a-developer_managing-metrics[Querying metrics for user-defined projects as a developer^] (Red Hat OpenShift Dedicated) or link:https://docs.openshift.com/rosa/monitoring/managing-metrics.html#querying-metrics-for-user-defined-projects-as-a-developer_managing-metrics[Querying metrics for user-defined projects as a developer^] (Red Hat OpenShift Service on AWS).
+endif::[]
+
+.Procedure
+ifdef::self-managed[]
+. Log in to the {openshift-platform} web console.
+endif::[]
+ifdef::cloud-service[]
+. Log in to the OpenShift web console.
+endif::[]
+. Switch to the *Developer* perspective.
+. In the left menu, click *Observe*.
+ifdef::upstream,self-managed[]
+. As described in link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/building_applications/odc-monitoring-project-and-application-metrics-using-developer-perspective#odc-monitoring-your-project-metrics_monitoring-project-and-application-metrics-using-developer-perspective[monitoring project metrics^], use the web console to run queries for `modelmesh_*` metrics.
+endif::[]
+ifdef::cloud-service[]
+. As described in link:https://docs.openshift.com/dedicated/monitoring/managing-metrics.html#querying-metrics-for-user-defined-projects-as-a-developer_managing-metrics[Querying metrics for user-defined projects as a developer^] (Red Hat OpenShift Dedicated) or link:https://docs.openshift.com/rosa/monitoring/managing-metrics.html#querying-metrics-for-user-defined-projects-as-a-developer_managing-metrics[Querying metrics for user-defined projects as a developer^] (Red Hat OpenShift Service on AWS), use the web console to run queries for `modelmesh_*` metrics.
+endif::[]
+
+// [role="_additional-resources"]
+// .Additional resources
