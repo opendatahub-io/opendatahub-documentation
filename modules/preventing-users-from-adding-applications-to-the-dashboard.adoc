@@ -1,0 +1,26 @@
+:_module-type: PROCEDURE
+
+[id="preventing-users-from-adding-applications-to-the-dashboard_{context}"]
+= Preventing users from adding applications to the dashboard
+
+[role='_abstract']
+By default, admin users are allowed to add applications to the {productname-short} dashboard *Application → Enabled* page.
+
+Optionally, you can disable the ability for dashboard users to add applications to the dashboard.
+
+*Note:* To disable the Jupyter tile (enabled by default), see xref:hiding-the-default-jupyter-application[Hiding the default Jupyter application].
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* * You know how to edit the dashboard configuration file, as described in xref:editing-the-dashboard-configuration-file[Editing the dashboard configuration file].
+
+.Procedure
+
+. Open the dashboard configuration file.
+. In the `spec:dashboardConfig` section, set the value of  `enablement` to `false` to disable the ability for dashboard users to add applications to the dashboard.
+. Click *Save* to apply your changes and then click *Reload* to make sure that your changes are synced to the cluster.
+
+.Verification
+
+Open the {productname-short} dashboard *Application → Enabled* page. 

@@ -1,0 +1,32 @@
+:_module-type: PROCEDURE
+
+[id="hiding-information-about-applications_{context}"]
+= Hiding information about applications
+
+[role='_abstract']
+You can view a list of available applications in the *Exploring applications* page of the {productname-short} dashboard. You can optionally  disable the following extra information that is provided about the applications by default:
+
+* Any independent software vendor (ISV) application is indicated with a label on the tile indicating “Red Hat managed”, “Partner managed”, or “Self-managed”. 
+Optionally, as an admin user, you can hide the labels, for example, if you are running a self-managed environment and you want to show all available applications regardless of the support level. 
+
+* When a user clicks on an application, an information panel appears and provides more information about the application, including links to quick starts or detailed documentation. Optionally, you can disable the appearnce of application information panels.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You know how to edit the dashboard configuration file, as described in xref:editing-the-dashboard-configuration-file[Editing the dashboard configuration file].
+
+.Procedure
+
+. Open the dashboard configuration file.
+
+. In the `spec:dashboardConfig` section, set either or both of the following options to `true` to disable the default behavior:
+
+** `disableInfo`
+** `disableISVBadges`
+
+. Click *Save* to apply your changes and then click *Reload* to make sure that your changes are synced to the cluster.
+
+.Verification
+
+Log in to {productname-short} and verify that your dashboard configurations apply.
