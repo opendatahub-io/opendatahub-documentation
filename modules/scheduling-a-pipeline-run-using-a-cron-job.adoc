@@ -1,0 +1,34 @@
+:_module-type: CONCEPT
+
+[id='scheduling-a-pipeline-run-using-a-cron-job_{context}']
+= Scheduling a pipeline run using a cron job
+
+[role='_abstract']
+You can use a cron job to schedule a pipeline run to execute at a specific time. Cron jobs are useful for creating periodic and recurring tasks, and can also schedule individual tasks for a specific time, such as if you want to schedule a run for a low activity period. To successfully execute runs in {productname-short}, you must use the supported format. See link:https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format[Cron Expression Format] for more information.
+
+The following examples show the correct format:
+
+[cols="1,1"]
+|===
+|Run occurrence |Cron format
+
+|Every five minutes
+|@every 5m
+
+|Every 10 minutes
+|0 */10 * * * * 
+
+|Daily at 16:16 UTC
+|0 16 16 * * * 
+
+|Daily every quarter of the hour
+|0 0,15,30,45 * * * *    
+
+|On Monday and Tuesday at 15:40 UTC
+|0 40 15 * * MON,TUE
+|===
+
+    
+[role="_additional-resources"]
+.Additional resources
+* link:https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format[Cron Expression Format]
