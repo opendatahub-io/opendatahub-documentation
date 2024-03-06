@@ -1,0 +1,110 @@
+:_module-type: PROCEDURE
+
+[id="editing-the-dashboard-configuration-file_{context}"]
+= Editing the dashboard configuration file
+
+[role='_abstract']
+As an administrator, you can customize the interface of the dashboard by editing the dashboard configuration file.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+.Procedure
+. Log in to the {openshift-platform} console as a cluster administrator.
+. In the *Administrator* perspective, click *Home* -> *API Explorer*.
+. In the search bar, enter `OdhDashboardConfig` to filter by kind.
+. Click the `OdhDashboardConfig` custom resource (CR) to open the resource details page.
+. Select the `redhat-ods-applications` project from the *Project* list.
+. Click the *Instances* tab.
+. Click the `odh-dashboard-config` instance to open the details page.
+. Click the *YAML* tab. Here is an example `OdhDashboardConfig` file showing default values:
++
+----
+apiVersion: opendatahub.io/v1alpha
+kind: OdhDashboardConfig
+metadata:
+  name: odh-dashboard-config
+spec:
+  dashboardConfig:
+    enablement: true
+    disableBYONImageStream: false
+    disableClusterManager: false
+    disableISVBadges: false
+    disableInfo: false
+    disableSupport: false
+    disableTracking: true
+    disableProjects: true
+    disablePipelines: true
+    disableModelServing: true
+    disableProjectSharing: true
+    disableCustomServingRuntimes: false
+    disableAcceleratorProfiles: true
+    modelMetricsNamespace: ''
+    disablePerformanceMetrics: false
+  notebookController:
+    enabled: true
+  notebookSizes:
+    - name: Small
+      resources:
+        limits:
+          cpu: '2'
+          memory: 2Gi
+        requests:
+          cpu: '1'
+          memory: 1Gi
+    - name: Medium
+      resources:
+        limits:
+          cpu: '4'
+          memory: 4Gi
+        requests:
+          cpu: '2'
+          memory: 2Gi
+    - name: Large
+      resources:
+        limits:
+          cpu: '8'
+          memory: 8Gi
+        requests:
+          cpu: '4'
+          memory: 4Gi
+  modelServerSizes:
+    - name: Small
+      resources:
+        limits:
+          cpu: '2'
+          memory: 8Gi
+        requests:
+          cpu: '1'
+          memory: 4Gi
+    - name: Medium
+      resources:
+        limits:
+          cpu: '8'
+          memory: 10Gi
+        requests:
+          cpu: '4'
+          memory: 8Gi
+    - name: Large
+      resources:
+        limits:
+          cpu: '10'
+          memory: 20Gi
+        requests:
+          cpu: '6'
+          memory: 16Gi
+  groupsConfig:
+    adminGroups: 'odh-admins'
+    allowedGroups: 'system:authenticated'
+  templateOrder:
+    - 'ovms'
+  templateDisablement:
+    - 'ovms'
+----
+
+. Edit the values of the options that you want to change.
+. Click *Save* to apply your changes and then click *Reload* to make sure that your changes are synced to the cluster.
+
+.Verification
+Log in to {productname-short} and verify that your dashboard configurations apply.
+

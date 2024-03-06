@@ -1,0 +1,41 @@
+:_module-type: REFERENCE
+
+[id='ref-dashboard-configuration-options_{context}']
+= Dashboard configuration options
+
+[role='_abstract']
+The {productname-short} dashboard includes a set of core features enabled by default that are designed to work for most scenarios. Administrators can configure the {productname-short} dashboard from the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+
+.Dashboard feature configuration options
+[cols="20%,5%,75%","header"]
+|===
+| Feature | Default | Description
+| `dashboardConfig:enablement` | `true` | Enables admin users to add applications to the {productname-short} dashboard *Application → Enabled* page. To disable this ability, set the value to `false`.
+| `dashboardConfig:disableInfo` | `false` | On the *Applications→ Explore* page, when a user clicks on an application tile, an information panel opens with more details about the application. To disable the information panel for all applications on the *Applications→ Explore* page , set the value to `true`.
+| `dashboardConfig:disableSupport` | `false` | Shows the *Support* menu option when a user clicks the Help icon in the dashboard toolbar. To hide this menu option, set the value to *true*.
+| `dashboardConfig:disableClusterManager` | `false` | Shows the *Settings → Cluster settings* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
+| `dashboardConfig:disableTracking` | `true` | Allows {org-name} to collect data about {productname-short} usage in your cluster. To enable data collection, set the value to `false`. You can also set this option in the {productname-short} dashboard interface from the *Settings → Cluster settings* navigation menu.	
+| `dashboardConfig:disableBYONImageStream` | `false` | Shows the *Settings → Notebook image settings* option in the dashboard navigation menu. To hide this menu option, set the value to `false`.
+| `dashboardConfig:disableISVBadges` | `false` | Shows the label on a tile that indicates whether the application is “{org-name} managed”, “Partner managed”, or “Self-managed”. To hide these labels, set the value to `true`. 
+| `dashboardConfig:disableUserManagement` | `false` | Shows the *Settings → User management* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
+| `dashboardConfig:disableProjects` | `false` | Shows the *Data Science Projects* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
+ | `dashboardConfig:disablePipelines` | `false` | Shows the *Data Science Pipelines* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
+| `dashboardConfig:disableModelServing` | `false` | Shows the *Model Serving* option in the dashboard navigation menu and in the list of components for the data science projects. To hide *Model Serving* from the dashboard navigation menu and from the list of components for data science projects, set the value to `true`. 
+| `dashboardConfig:disableProjectSharing` | `false` | Allows users to share access to their data science projects with other users. To prevent users from sharing data science projects, set the value to `true`.
+| `dashboardConfig:disableCustomServingRuntimes` | `false` | Shows the *Serving runtimes* option in the dashboard navigation menu. To hide this menu option, set the value to `true`. 
+| `dashboardConfig:disableKServe` | `false` | Enables the ability to select KServe as a Serving Platform. To disable this ability, set the value to `true`.
+| `dashboardConfig:disableModelMesh` | `false` | Enables the ability to select ModelMesh as a Serving Platform. To disable this ability, set the value to `true`.
+| `dashboardConfig:disableAcceleratorProfiles` | `false`| Shows the *Accelerator profiles* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
+| `dashboardConfig:modelMetricsNamespace` | `false` | Enables the namespace in which the Model Serving Metrics' Prometheus Operator is installed.
+| `dashboardConfig:disablePerformanceMetrics` | `false` | Shows the *Endpoint Performance* tab on the *Model Serving* page. To hide this tab, set the value to `true`.
+|`notebookController:enabled` | `true` | Controls the Notebook Controller options, such as whether it is enabled in the dashboard and which parts are visible.
+| `notebookSizes` | | Allows you to customize names and resources for notebooks. The Kubernetes-style sizes are shown in the dropdown menu that appears when spawning notebooks with the Notebook Controller. Note: These sizes must follow conventions. For example, requests must be smaller than limits.
+| `ModelServerSizes` | | Allows you to customize names and resources for model servers.
+| `groupsConfig` | | Controls access to dashboard features, such as the spawner for allowed users and the cluster settings UI for admin users.
+| `templateOrder` | | Specifies the order of custom Serving Runtime templates. When the user creates a new template, it is added to this list.
+|===
+
+
+//[role="_additional-resources"]
+//.Additional resources
+
