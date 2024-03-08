@@ -52,6 +52,26 @@ If you specify incorrect data connection settings, you cannot update these setti
 ... In the *Username* field, enter the default user name that is connected to the database.
 ... In the *Password* field, enter the password for the default user account.
 ... In the *Database* field, enter the database name.
+ifdef::upstream[]
++
+[NOTE]
+====
+The external database connection is secured by default. To specify an external database that is unencrypted, you will need to set the value of `database.customExtraParams.tls` to `false` in the `DataSciencePipelinesApplication` custom resource as shown here:
+
+[source]
+----
+spec:
+  database:
+    customExtraParams: |
+      {"tls": "false"}    
+    externalDB:
+       host: mysql:3306
+       ... 
+---- 
+For more information, see link:https://github.com/opendatahub-io/data-science-pipelines-operator[Data Science Pipelines Operator] 
+====
+endif::[]
+
 . Click *Configure*.
 
 .Verification
