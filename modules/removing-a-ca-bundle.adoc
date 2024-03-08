@@ -1,0 +1,39 @@
+:_module-type: PROCEDURE
+
+[id="removing-a-ca-bundle_{context}"]
+= Removing a CA bundle
+
+[role='_abstract']
+You can remove a Certificate Authority (CA) bundle from all non-reserved namespaces in {productname-short}. This process changes the default configuration and disables the creation of the `odh-trusted-ca-bundle` ConfigMap, as described in xref:understanding-certificates_certs[Understanding certificates in {productname-short}].
+
+To remove a CA bundle from a single namespace only, see xref:removing-a-ca-bundle-from-a-namespace_certs[Removing a CA bundle from a namespace].
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html[Get Started with the CLI].
+
+.Procedure
+. In the {openshift-platform} web console, click *Operators* → *Installed Operators* and then click the {productname-long} Operator.
+. Click the *DSC Initialization* tab.
+. Click the *default-dsci* object.
+. Click the *YAML* tab.
+. In the `spec` section, change the value of the `managementState` field for `trustedCABundle` to `Removed`, as shown:
++
+[source]
+----
+spec:
+  trustedCABundle:
+    managementState: Removed
+----
+NOTE: The `odh-trusted-ca-bundle` ConfigMaps are only deleted from namespaces when you set the `managementState` of `trustedCABundle` to `Removed`; deleting the DSC Initialization does not delete the ConfigMaps. 
+. Click *Save*.
+
+.Verification
+* Run the following command to verify that the `odh-trusted-ca-bundle` ConfigMap has been removed from all namespaces:
++
+[source]
+----
+$ oc get configmaps --all-namespaces | grep odh-trusted-ca-bundle
+----
++
+The command should not return any ConfigMaps.
