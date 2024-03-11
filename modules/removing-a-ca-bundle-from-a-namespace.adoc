@@ -4,7 +4,7 @@
 = Removing a CA bundle from a namespace
 
 [role='_abstract']
-You can remove a custom Certificate Authority (CA) bundle from individual namespaces in {productname-short}. This process disables the creation of the `odh-trusted-ca-bundle` ConfigMap for the specified namespace only.
+You can remove a custom Certificate Authority (CA) bundle from individual namespaces in {productname-short}. This process disables the creation of the `odh-trusted-ca-bundle` configuration file (ConfigMap) for the specified namespace only.
 
 To remove a certificate bundle from all namespaces, see xref:removing-a-ca-bundle_certs[Removing a CA bundle].
 
@@ -13,7 +13,7 @@ To remove a certificate bundle from all namespaces, see xref:removing-a-ca-bundl
 * You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html[Get Started with the CLI].
 
 .Procedure
-* Run the following command to remove a CA bundle from a namespace (for example, _example-namespace_):
+* Run the following command to remove a CA bundle from a namespace. In the following command, _example-namespace_ is the non-reserved namespace.
 +
 [source]
 ----
@@ -21,14 +21,14 @@ $ oc annotate ns example-namespace security.opendatahub.io/inject-trusted-ca-bun
 ----
 
 .Verification
-* Run the following command to verify that the cluster-wide CA bundle and custom CA bundle (for example, _examplebundle123_) has been removed from the namespace (for example, _example-namespace_):
+* Run the following command to verify that the CA bundle has been removed from the namespace. In the following command, _example-namespace_ is the non-reserved namespace.
 +
 [source]
 ----
-$ oc get configmap odh-trusted-ca-bundle -n example-namespace -o yaml | grep examplebundle123
+$ oc get configmap odh-trusted-ca-bundle -n example-namespace
 ----
 +
-The command should not return any ConfigMaps.
+The command should return `configmaps "odh-trusted-ca-bundle" not found`.
 
 //[role='_additional-resources']
 //.Additional resources

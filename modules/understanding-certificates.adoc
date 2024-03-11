@@ -4,33 +4,14 @@
 = Understanding certificates in {productname-short}
 
 [role='_abstract']
-For {openshift-platform} clusters that rely on self-signed certificates, you can add those self-signed certificates to a cluster-wide Certificate Authority (CA) bundle (ca-bundle.crt) and use the CA bundle in {productname-long}. You can also use self-signed certificates in a custom CA bundle (odh-ca-bundle.crt) that is separate from the cluster-wide bundle.
+For {openshift-platform} clusters that rely on self-signed certificates, you can add those self-signed certificates to a cluster-wide Certificate Authority (CA) bundle (`ca-bundle.crt`) and use the CA bundle in {productname-long}. You can also use self-signed certificates in a custom CA bundle (`odh-ca-bundle.crt`) that is separate from the cluster-wide bundle.
 
-For information about which components in OpenShift AI support the use of self-signed certificates, see the release notes.
-
-////
-
-Workbenches:
-Each Newly created workbench would have embedded with self-signed certs and user would be able to use.
-Note: This would NOT change anything for long running workbenches.
-User would need to create a new workbench to utilize this feature. 
-
-Data Science Pipelines: https://issues.redhat.com/browse/RHOAIENG-3107
-    from slack: When a user creates a pipeline server, the data science pipelines operator creates a custom ConfigMap  dsp-trusted-ca-pipelines-definition with exactly that. I wonder if other components need it maybe the rhoai-operator could do it
-
-IDE: https://issues.redhat.com/browse/RHOAIENG-1816
-Model Serving: https://issues.redhat.com/browse/RHOAIENG-2088
-Distributed Workloads: https://issues.redhat.com/browse/RHOAIENG-3325
-Dashboard: https://issues.redhat.com/browse/RHOAIENG-2466
-Platform: 
-    https://issues.redhat.com/browse/RHOAIENG-1825 (release notes) or pipeline?
-    https://issues.redhat.com/browse/RHOAIENG-3414
-
-////
+//For information about which components in OpenShift AI support the use of self-signed certificates, see the release notes.
 
 == How CA bundles are injected
 
-After installing {productname-short}, the {productname-long} Operator automatically creates an empty `odh-trusted-ca-bundle` ConfigMap with a label to instruct the Cluster Network Operator (CNO) to inject the CA bundle into all pods automatically.
+After installing {productname-short}, the {productname-long} Operator automatically creates an empty `odh-trusted-ca-bundle` configuration file (ConfigMap), and the Cluster Network Operator (CNO) injects the cluster-wide CA bundle into the `odh-trusted-ca-bundle` configMap with the label "config.openshift.io/inject-trusted-cabundle". The components deployed in the affected namespaces are responsible for mounting this configMap as a volume in the deployment pods.
+
 
 [source]
 ----
@@ -61,7 +42,7 @@ data:
 
 == How the ConfigMap is managed
 
-By default, the {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap. If you want to manage or remove the `odh-trusted-ca-bundle` ConfigMap, or add a custom CA bundle (odh-ca-bundle.crt) separate from the cluster-wide CA bundle (ca-bundle.crt), you can use the `trustedCABundle` property in the Operator's DSC Initialization (DSCI) object.
+By default, the {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap. If you want to manage or remove the `odh-trusted-ca-bundle` ConfigMap, or add a custom CA bundle (`odh-ca-bundle.crt`) separate from the cluster-wide CA bundle (`ca-bundle.crt`), you can use the `trustedCABundle` property in the Operator's DSC Initialization (DSCI) object.
 
 [source]
 ----
@@ -73,13 +54,13 @@ spec:
 
 In the Operator's DSCI object, you can set the `spec.trustedCABundle.managementState` field to the following values:
 
-* `Managed`: The {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap and adds it to all existing and new namespaces. The ConfigMap is automatically updated to reflect any changes made to the `customCABundle` field. This is the default value after installing {productname-long}.
+* `Managed`: The {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap and adds it to all non-reserved existing and new namespaces (the ConfigMap is not added to any reserved or system namespaces, such as `default`, `openshift-\*` or `kube-*`). The ConfigMap is automatically updated to reflect any changes made to the `customCABundle` field. This is the default value after installing {productname-long}.
 
-* `Removed`: The {productname-long} Operator removes the `odh-trusted-ca-bundle` ConfigMap (if present) and disables the creation of the ConfigMap in new namespaces. This is the default value after upgrading {productname-long} from 2.7 or earlier versions to {vernum}.
+* `Removed`: The {productname-long} Operator removes the `odh-trusted-ca-bundle` ConfigMap (if present) and disables the creation of the ConfigMap in new namespaces. If you change this field from `Managed` to `Removed`, the `odh-trusted-ca-bundle` ConfigMap is also deleted from namespaces. This is the default value after upgrading {productname-long} from 2.7 or earlier versions to {vernum}.
 
 * `Unmanaged`: The {productname-long} Operator does not manage the `odh-trusted-ca-bundle` ConfigMap, allowing for an administrator to manage it instead. Changing the `managementState` from `Managed` to `Unmanaged` does not remove the `odh-trusted-ca-bundle` ConfigMap, but the ConfigMap is not updated if you make changes to the `customCABundle` field.
 
-In the Operator's DSCI object, you can add a custom certificate to the `spec.trustedCABundle.customCABundle` field. This adds the odh-ca-bundle.crt file containing the certificates to the `odh-trusted-ca-bundle` ConfigMap, as shown in the following example:
+In the Operator's DSCI object, you can add a custom certificate to the `spec.trustedCABundle.customCABundle` field. This adds the `odh-ca-bundle.crt` file containing the certificates to the `odh-trusted-ca-bundle` ConfigMap, as shown in the following example:
 
 [source]
 ----
