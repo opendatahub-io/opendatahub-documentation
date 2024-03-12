@@ -4,7 +4,7 @@
 = Managing certificates
 
 [role='_abstract']
-After installing {productname-short}, the {productname-long} Operator creates the `odh-trusted-ca-bundle` configuration file (ConfigMap) that contains the trusted CA bundle and adds it to all new and existing namespaces in the cluster. 
+After installing {productname-short}, the {productname-long} Operator creates the `odh-trusted-ca-bundle` configuration file (ConfigMap) that contains the trusted CA bundle and adds it to all new and existing non-reserved namespaces in the cluster. 
 By default, the {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap and automatically updates it if any changes are made to the CA bundle. You can choose to manage the `odh-trusted-ca-bundle` ConfigMap instead of allowing the (productname-long) Operator to manage it.
 
 .Prerequisites
@@ -23,6 +23,7 @@ spec:
   trustedCABundle:
     managementState: Unmanaged
 ---- 
+
 . Click *Save*.
 +
 Note that changing the `managementState` from `Managed` to `Unmanaged` does not remove the `odh-trusted-ca-bundle` ConfigMap, but the ConfigMap is not updated if you make changes to the `customCABundle` field.
