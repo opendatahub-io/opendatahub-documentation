@@ -1,0 +1,78 @@
+:_module-type: PROCEDURE
+//Self-managed only
+
+[id="adding-a-ca-bundle-after-upgrading_{context}"]
+= Adding a CA bundle after upgrading
+
+[role='_abstract']
+ifndef::upstream[]
+{productname-long} {vernum} provides support for using self-signed certificates. If you have upgraded from {productname-short} 2.7 or earlier versions, you can add self-signed certificates to the {productname-short} deployments and Data Science Projects in your cluster. 
+endif::[]
+
+ifdef::upstream[]
+{productname-long} provides support for using self-signed certificates. If you have upgraded {productname-short}, you can add self-signed certificates to the {productname-short} deployments and Data Science Projects in your cluster. 
+endif::[]
+
+There are two ways to add a Certificate Authority (CA) bundle to {productname-short}. You can use one or both of these methods:
+
+* For {openshift-platform} clusters that rely on self-signed certificates, you can add those self-signed certificates to a cluster-wide Certificate Authority (CA) bundle (`ca-bundle.crt`) and use the CA bundle in {productname-long}. 
+
+* You can use self-signed certificates in a custom CA bundle (`odh-ca-bundle.crt`) that is separate from the cluster-wide bundle.
+
+.Prerequisites
+* You have admin access to the `DSCInitialization` resources in the {openshift-platform} cluster.
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html[Get Started with the CLI].
+ifndef::upstream[]
+* You upgraded {productname-long} from version 2.7 or earlier. If you are working in a new installation of {productname-long}, see xref:adding-a-ca-bundle_certs[Adding a CA bundle] instead.
+endif::[]
+ifdef::upstream[]
+* You upgraded {productname-long}. If you are working in a new installation of {productname-long}, see xref:adding-a-ca-bundle_certs[Adding a CA bundle].
+endif::[]
+
+.Procedure
+. Log in to the {openshift-platform} as a cluster administrator.
+. Click *Operators* → *Installed Operators* and then click the {productname-long} Operator.
+. Click the *DSC Initialization* tab.
+. Click the *default-dsci* object.
+. Click the *YAML* tab.
+. Add the following to the `spec` section, setting the `managementState` field to `Managed`:
++
+[source]
+----
+spec:
+  trustedCABundle:
+    managementState: Managed
+    customCABundle: ""
+----
+. If you want to use self-signed certificates added to a cluster-wide CA bundle, log in to the {openshift-platform} as a cluster administrator and follow the steps as described in https://docs.openshift.com/container-platform/{ocp-latest-version}/networking/configuring-a-custom-pki.html#installation-configure-proxy_configuring-a-custom-pki[Configuring the cluster-wide proxy during installation].
+. If you want to use self-signed certificates in a custom CA bundle that is separate from the cluster-wide bundle, follow these steps:
+.. Add the custom certificate to the `customCABundle` field of the `default-dsci` object, as shown in the following example:
++
+[source]
+----
+spec:
+  trustedCABundle:
+    managementState: Managed
+    customCABundle: |
+      -----BEGIN CERTIFICATE-----
+      examplebundle123
+      -----END CERTIFICATE-----
+----
+.. Click *Save*.
++
+The {productname-long} Operator creates an `odh-trusted-ca-bundle` ConfigMap containing the certificates in all new and existing non-reserved namespaces.
+
+.Verification
+* If you are using a cluster-wide CA bundle, run the following command to verify that all non-reserved namespaces contain the `odh-trusted-ca-bundle` ConfigMap:
++
+[source]
+----
+$ oc get configmaps --all-namespaces -l app.kubernetes.io/part-of=opendatahub-operator | grep odh-trusted-ca-bundle
+----
+* If you are using a custom CA bundle, run the following command to verify that a non-reserved namespace contains the `odh-trusted-ca-bundle` ConfigMap and that the ConfigMap contains your `customCABundle` value. In the following command, _example-namespace_ is the non-reserved namespace and _examplebundle123_ is the customCABundle value.
++
+[source]
+----
+
+$ oc get configmap odh-trusted-ca-bundle -n example-namespace -o yaml | grep examplebundle123
+----

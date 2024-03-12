@@ -1,0 +1,77 @@
+:_module-type: CONCEPT
+
+[id="understanding-certificates_{context}"]
+= Understanding certificates in {productname-short}
+
+[role='_abstract']
+For {openshift-platform} clusters that rely on self-signed certificates, you can add those self-signed certificates to a cluster-wide Certificate Authority (CA) bundle (`ca-bundle.crt`) and use the CA bundle in {productname-long}. You can also use self-signed certificates in a custom CA bundle (`odh-ca-bundle.crt`) that is separate from the cluster-wide bundle.
+
+== How CA bundles are injected
+
+After installing {productname-short}, the {productname-long} Operator automatically creates an empty `odh-trusted-ca-bundle` configuration file (ConfigMap), and the Cluster Network Operator (CNO) injects the cluster-wide CA bundle into the `odh-trusted-ca-bundle` configMap with the label "config.openshift.io/inject-trusted-cabundle". The components deployed in the affected namespaces are responsible for mounting this configMap as a volume in the deployment pods.
+
+
+[source]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels: 
+    app.kubernetes.io/part-of: opendatahub-operator
+    config.openshift.io/inject-trusted-cabundle: 'true'
+  name: odh-trusted-ca-bundle
+----
+
+After the CNO operator injects the bundle, it updates the ConfigMap with the `ca-bundle.crt` file containing the certificates.
+
+[source]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels: 
+    app.kubernetes.io/part-of: opendatahub-operator
+    config.openshift.io/inject-trusted-cabundle: 'true'
+  name: odh-trusted-ca-bundle
+data:
+  ca-bundle.crt: |
+    <BUNDLE OF CLUSTER-WIDE CERTIFICATES>
+----
+
+== How the ConfigMap is managed
+
+By default, the {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap. If you want to manage or remove the `odh-trusted-ca-bundle` ConfigMap, or add a custom CA bundle (`odh-ca-bundle.crt`) separate from the cluster-wide CA bundle (`ca-bundle.crt`), you can use the `trustedCABundle` property in the Operator's DSC Initialization (DSCI) object.
+
+[source]
+----
+spec:
+  trustedCABundle:
+    managementState: Managed
+    customCABundle: ""
+----
+
+In the Operator's DSCI object, you can set the `spec.trustedCABundle.managementState` field to the following values:
+
+* `Managed`: The {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap and adds it to all non-reserved existing and new namespaces (the ConfigMap is not added to any reserved or system namespaces, such as `default`, `openshift-\*` or `kube-*`). The ConfigMap is automatically updated to reflect any changes made to the `customCABundle` field. This is the default value after installing {productname-long}.
+
+* `Removed`: The {productname-long} Operator removes the `odh-trusted-ca-bundle` ConfigMap (if present) and disables the creation of the ConfigMap in new namespaces. If you change this field from `Managed` to `Removed`, the `odh-trusted-ca-bundle` ConfigMap is also deleted from namespaces. This is the default value after upgrading {productname-long} from 2.7 or earlier versions to {vernum}.
+
+* `Unmanaged`: The {productname-long} Operator does not manage the `odh-trusted-ca-bundle` ConfigMap, allowing for an administrator to manage it instead. Changing the `managementState` from `Managed` to `Unmanaged` does not remove the `odh-trusted-ca-bundle` ConfigMap, but the ConfigMap is not updated if you make changes to the `customCABundle` field.
+
+In the Operator's DSCI object, you can add a custom certificate to the `spec.trustedCABundle.customCABundle` field. This adds the `odh-ca-bundle.crt` file containing the certificates to the `odh-trusted-ca-bundle` ConfigMap, as shown in the following example:
+
+[source]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels: 
+    app.kubernetes.io/part-of: opendatahub-operator
+    config.openshift.io/inject-trusted-cabundle: 'true'
+  name: odh-trusted-ca-bundle
+data:
+  ca-bundle.crt: |
+    <BUNDLE OF CLUSTER-WIDE CERTIFICATES>
+  odh-ca-bundle.crt: |
+    <BUNDLE OF CUSTOM CERTIFICATES>
+----

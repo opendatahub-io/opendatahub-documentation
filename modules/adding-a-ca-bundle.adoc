@@ -1,0 +1,58 @@
+:_module-type: PROCEDURE
+
+[id="adding-a-ca-bundle_{context}"]
+= Adding a CA bundle
+
+[role='_abstract']
+There are two ways to add a Certificate Authority (CA) bundle to {productname-short}. You can use one or both of these methods:
+
+* For {openshift-platform} clusters that rely on self-signed certificates, you can add those self-signed certificates to a cluster-wide Certificate Authority (CA) bundle (`ca-bundle.crt`) and use the CA bundle in {productname-long}. To use this method, log in to the {openshift-platform} as a cluster administrator and follow the steps as described in https://docs.openshift.com/container-platform/{ocp-latest-version}/networking/configuring-a-custom-pki.html#installation-configure-proxy_configuring-a-custom-pki[Configuring the cluster-wide proxy during installation].
+
+* You can use self-signed certificates in a custom CA bundle (`odh-ca-bundle.crt`) that is separate from the cluster-wide bundle. To use this method, follow the steps in this section.
+
+.Prerequisites
+* You have admin access to the `DSCInitialization` resources in the {openshift-platform} cluster.
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html[Get Started with the CLI].
+* You are working in a new installation of {productname-long}. If you upgraded {productname-long}, see xref:adding-a-ca-bundle-after-upgrading_certs[Adding a CA bundle after upgrading].
+
+.Procedure
+. Log in to the {openshift-platform}.
+. Click *Operators* → *Installed Operators* and then click the {productname-long} Operator.
+. Click the *DSC Initialization* tab.
+. Click the *default-dsci* object.
+. Click the *YAML* tab.
+. In the `spec` section, add the custom certificate to the `customCABundle` field for `trustedCABundle`, as shown in the following example:
++
+[source]
+----
+spec:
+  trustedCABundle:
+    managementState: Managed
+    customCABundle: |
+      -----BEGIN CERTIFICATE-----
+      examplebundle123
+      -----END CERTIFICATE-----
+----
+. Click *Save*.
+
+.Verification
+* If you are using a cluster-wide CA bundle, run the following command to verify that all non-reserved namespaces contain the `odh-trusted-ca-bundle` ConfigMap:
++
+[source]
+----
+$ oc get configmaps --all-namespaces -l app.kubernetes.io/part-of=opendatahub-operator | grep odh-trusted-ca-bundle
+----
+* If you are using a custom CA bundle, run the following command to verify that a non-reserved namespace contains the `odh-trusted-ca-bundle` ConfigMap and that the ConfigMap contains your `customCABundle` value. In the following command, _example-namespace_ is the non-reserved namespace and _examplebundle123_ is the customCABundle value.
++
+[source]
+----
+
+$ oc get configmap odh-trusted-ca-bundle -n example-namespace -o yaml | grep examplebundle123
+----
+
+////
+.. Click *Workloads* -> *ConfigMaps*.
+.. Select a project from the project list.
+.. Click the 'odh-trusted-ca-bundle' ConfigMap.
+.. Click the *YAML* tab to see the certificates that have been added to this ConfigMap.
+////
