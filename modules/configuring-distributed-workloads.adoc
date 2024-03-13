@@ -20,6 +20,23 @@ ifndef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
 See link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-gpu-support_cluster-mgmt[Enabling GPU support in {productname-short}].
 endif::[]
+* If you want to use self-signed certificates, you have added them to a central Certificate Authority (CA) bundle as described in [X].
+No additional configuration is necessary to use those certificates with distributed workloads.
+The centrally configured self-signed certificates are automatically available in the workload pods at the following mount points:
+** Cluster-wide CA bundle:
++
+[source,bash]
+----
+/etc/pki/tls/certs/odh-trusted-ca-bundle.crt
+/etc/ssl/certs/odh-trusted-ca-bundle.crt
+----
+** Custom CA bundle:
++
+[source,bash]
+----
+/etc/pki/tls/certs/odh-ca-bundle.crt
+/etc/ssl/certs/odh-ca-bundle.crt
+----
 ifdef::upstream[]
 * You have removed any previously installed instances of the CodeFlare Operator.
 * If you want to use graphics processing units (GPUs), you have enabled GPU support.
