@@ -20,15 +20,8 @@ ifndef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
 See link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-gpu-support_cluster-mgmt[Enabling GPU support in {productname-short}].
 endif::[]
-ifdef::upstream[]
-* If you want to use self-signed certificates, you have added them to a central Certificate Authority (CA) bundle as described in link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
-endif::[]
 ifdef::cloud-service[]
 * If you want to use self-signed certificates, you have added them to a central Certificate Authority (CA) bundle as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
-endif::[]
-ifdef::self-managed[]
-* If you want to use self-signed certificates, you have added them to a central Certificate Authority (CA) bundle as described link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs[Working with certificates]).
-endif::[]
 No additional configuration is necessary to use those certificates with distributed workloads.
 The centrally configured self-signed certificates are automatically available in the workload pods at the following mount points:
 ** Cluster-wide CA bundle:
@@ -45,11 +38,49 @@ The centrally configured self-signed certificates are automatically available in
 /etc/pki/tls/certs/odh-ca-bundle.crt
 /etc/ssl/certs/odh-ca-bundle.crt
 ----
+endif::[]
+ifdef::self-managed[]
+* If you want to use self-signed certificates, you have added them to a central Certificate Authority (CA) bundle as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs[Working with certificates]).
+No additional configuration is necessary to use those certificates with distributed workloads.
+The centrally configured self-signed certificates are automatically available in the workload pods at the following mount points:
+** Cluster-wide CA bundle:
++
+[source,bash]
+----
+/etc/pki/tls/certs/odh-trusted-ca-bundle.crt
+/etc/ssl/certs/odh-trusted-ca-bundle.crt
+----
+** Custom CA bundle:
++
+[source,bash]
+----
+/etc/pki/tls/certs/odh-ca-bundle.crt
+/etc/ssl/certs/odh-ca-bundle.crt
+----
+endif::[]
+
 ifdef::upstream[]
 * You have removed any previously installed instances of the CodeFlare Operator.
 * If you want to use graphics processing units (GPUs), you have enabled GPU support.
 This process includes installing the Node Feature Discovery Operator and the NVIDIA GPU Operator.
 For more information, see https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
+* If you want to use self-signed certificates, you have added them to a central Certificate Authority (CA) bundle as described in link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
+No additional configuration is necessary to use those certificates with distributed workloads.
+The centrally configured self-signed certificates are automatically available in the workload pods at the following mount points:
+** Cluster-wide CA bundle:
++
+[source,bash]
+----
+/etc/pki/tls/certs/odh-trusted-ca-bundle.crt
+/etc/ssl/certs/odh-trusted-ca-bundle.crt
+----
+** Custom CA bundle:
++
+[source,bash]
+----
+/etc/pki/tls/certs/odh-ca-bundle.crt
+/etc/ssl/certs/odh-ca-bundle.crt
+----
 endif::[]
 
 .Procedure
