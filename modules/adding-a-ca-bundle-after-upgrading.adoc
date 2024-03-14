@@ -19,14 +19,43 @@ There are two ways to add a Certificate Authority (CA) bundle to {productname-sh
 
 * You can use self-signed certificates in a custom CA bundle (`odh-ca-bundle.crt`) that is separate from the cluster-wide bundle.
 
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
+endif::[]
+
+ifdef::self-managed,cloud-service[]
+
+For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
+
+ifdef::disconnected[]
+For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs[Working with certificates].
+endif::[]
+
+endif::[]
+
 .Prerequisites
 * You have admin access to the `DSCInitialization` resources in the {openshift-platform} cluster.
 * You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html[Get Started with the CLI].
-ifndef::upstream[]
-* You upgraded {productname-long} from version 2.7 or earlier. If you are working in a new installation of {productname-long}, see _Adding a CA bundle_.
-endif::[]
 ifdef::upstream[]
-* You upgraded {productname-long}. If you are working in a new installation of {productname-long}, see _Adding a CA bundle_.
+* You upgraded {productname-long}. If you are working in a new installation of {productname-long}, see link:{odhdocshome}/installing-open-data-hub/#adding-a-ca-bundle_certs[Understanding certificates in {productname-short}].
+endif::[]
+
+ifdef::self-managed[]
+
+ifndef::disconnected[]
+* You upgraded {productname-long} from version 2.7 or earlier. If you are working in a new installation of {productname-long}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#adding-a-ca-bundle_certs[Adding a CA bundle].
+endif::[]
+
+ifdef::disconnected[]
+* You upgraded {productname-long} from version 2.7 or earlier. If you are working in a new installation of {productname-long}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs#adding-a-ca-bundle_certs[Adding a CA bundle].
+endif::[]
+
+* You upgraded {productname-long} from version 2.7 or earlier. If you are working in a new installation of {productname-long}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#adding-a-ca-bundle_certs[Adding a CA bundle].
+
+endif::[]
+
+ifdef::cloud-service[]
+* You upgraded {productname-long}. If you are working in a new installation of {productname-long}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#adding-a-ca-bundle_certs[Adding a CA bundle].
 endif::[]
 
 .Procedure
