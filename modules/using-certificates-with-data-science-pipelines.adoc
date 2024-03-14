@@ -11,7 +11,7 @@ Perform the following steps to provide a Certificate Authority (CA) bundle just 
 . Create a ConfigMap with the required bundle in the same data science project or namespace as the target data science pipeline:
 +
 [source]
-====
+----
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -19,11 +19,11 @@ metadata:
 data:
     ca-bundle.crt: |
     # contents of ca-bundle.crt
-====
+----
 . Add the following snippet to the `.spec.apiserver.caBundle` field of the underlying Data Science Pipelines Application (DSPA):
 +
 [source]
-====
+----
 apiVersion: datasciencepipelinesapplications.opendatahub.io/v1alpha1
 kind: DataSciencePipelinesApplication
 metadata:
@@ -35,7 +35,7 @@ spec:
     cABundle:
         configMapName: custom-ca-bundle
         configMapKey: ca-bundle.crt
-====
+----
 
 The pipeline server pod redeploys with the updated bundle and uses it in the newly created pipeline pods.
 
@@ -60,26 +60,24 @@ oc login
 ----
 . Set the `dspa` value:
 +
-[source]
-====
+----
 dspa=pipelines-definition
-====
+----
 . Set the `dsProject` value, replacing `$YOUR_DS_PROJECT` with the name of your data science project:
 +
-[source]
-====
+----
 dsProject=$YOUR_DS_PROJECT
-====
+----
 . Set the `pod` value:
-[source]
-====
++
+----
 pod=$(oc get pod -n ${dsProject} -l app=ds-pipeline-${dspa} --no-headers | awk '{print $1}')
-====
+----
 . Display the contents of the `/dsp-custom-certs/dsp-ca.crt` file:
-[source]
-====
++
+----
 oc -n ${dsProject} exec $pod -- cat /dsp-custom-certs/dsp-ca.crt
-====
+----
 . Verify that your your CA bundle is present within this bundle.
 
 == Creating data science pipelines with Elyra and self-signed certificates
