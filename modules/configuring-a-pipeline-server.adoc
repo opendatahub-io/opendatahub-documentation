@@ -52,11 +52,35 @@ If you specify incorrect data connection settings, you cannot update these setti
 ... In the *Username* field, enter the default user name that is connected to the database.
 ... In the *Password* field, enter the password for the default user account.
 ... In the *Database* field, enter the database name.
+. Click *Configure*.
 +
 [NOTE]
 ====
-The external database connection is secured by default. To specify an external database connection that is not secured with TLS, set the value of `database.customExtraParams.tls` to `false` in the `DataSciencePipelinesApplication` custom resource as shown here:
+The external database connection is secured by default. To specify an external database connection that is not secured with TLS, after you create the Pipeline Server, set the value of `database.customExtraParams.tls` to `false` in the `DataSciencePipelinesApplication` custom resource definition (CRD):
 
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} web console, in the `Administrator` perspective, click `Administration` → `CustomResourceDefinitions`
+endif::[]
+
+ifdef::cloud-service[]
+. In the OpenShift web console, in the `Administrator` perspective, click `Administration` → `CustomResourceDefinitions`
+endif::[]
+
+. In the search bar, enter `DataSciencePipelinesApplication` to search by name.
++
+The `CustomResourceDefinitions` page reloads to display the search results.
++
+. Click the `DataSciencePipelinesApplication` custom resource definition (CRD).
++
+A details page for the custom resource definition (CRD) opens.
++
+. Click the `Instances` tab.
+. Click on `DataSciencePipelinesApplication`.
++
+A details page opens.
++
+. Update the YAML code in the embedded editor and set `database.customExtraParams.tls` to `false`.
++
 [source]
 ----
 spec:
@@ -67,9 +91,9 @@ spec:
        host: mysql:3306
        ... 
 ---- 
++
+. Click *Save*.
 ====
-
-. Click *Configure*.
 
 .Verification
 * The pipeline server that you configured is displayed in the *Pipelines* section on the project details page.
