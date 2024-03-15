@@ -67,14 +67,6 @@ ifndef::upstream[]
 ifdef::cloud-service[]
 == Building the RStudio Server notebook images
 
-[IMPORTANT] 
-====
-*Disclaimer:* 
-{org-name} supports managing workbenches in {productname-short}. However, {org-name} does not provide support for the RStudio software. RStudio Server is available through link:https://rstudio.org/[https://rstudio.org/] and is subject to their licensing terms. Review their licensing terms before you use this sample workbench.
-
-The *CUDA - RStudio Server* notebook image contains NVIDIA CUDA technology. CUDA licensing information is available at link:https://docs.nvidia.com/cuda/[https://docs.nvidia.com/cuda/]. Review their licensing terms before you use this sample workbench.
-==== 
-
 [IMPORTANT]
 ====
 The *RStudio Server* and *CUDA - RStudio Server* notebook images are currently available in {productname-long} as Technology Preview features.
@@ -84,6 +76,16 @@ Red{nbsp}Hat does not recommend using them in production.
 These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
 
 For more information about the support scope of Red{nbsp}Hat Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+
+Disclaimer::
+{org-name} supports managing workbenches in {productname-short}. However, {org-name} does not provide support for the RStudio software. RStudio Server is available through link:https://rstudio.org/[https://rstudio.org/] and is subject to their licensing terms. Review their licensing terms before you use this sample workbench.
+
+The *CUDA - RStudio Server* notebook image contains NVIDIA CUDA technology. CUDA licensing information is available at link:https://docs.nvidia.com/cuda/[https://docs.nvidia.com/cuda/]. Review their licensing terms before you use this sample workbench.
+
+[IMPORTANT]
+====
+Complete the workaround steps described in the link:https://access.redhat.com/solutions/7060469[Branch workaround for RStudio image BuildConfig definition] knowledgebase article before performing the following manual build steps.
 ====
 
 To use the *RStudio Server* and *CUDA - RStudio Server* notebook images, you must first build them by creating a secret and triggering the BuildConfig, and then enable them in the {productname-short} UI by editing the `rstudio-rhel9` and `cuda-rstudio-rhel9` image streams.
