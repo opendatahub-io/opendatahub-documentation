@@ -1,0 +1,86 @@
+:_module-type: PROCEDURE
+
+[id='using-certificates-with-data-science-pipelines_{context}']
+= Using certificates with data science pipelines 
+
+== Providing a CA bundle only for data science pipelines
+
+Perform the following steps to provide a Certificate Authority (CA) bundle just for data science pipelines.
+
+.Procedure
+. Log in to {openshift-platform}.
+. From *Workloads* -> *ConfigMaps*, create a ConfigMap with the required bundle in the same data science project or namespace as the target data science pipeline:
++
+[source]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: custom-ca-bundle
+data:
+    ca-bundle.crt: |
+    # contents of ca-bundle.crt
+----
+. Add the following snippet to the `.spec.apiserver.caBundle` field of the underlying Data Science Pipelines Application (DSPA):
++
+[source]
+----
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1alpha1
+kind: DataSciencePipelinesApplication
+metadata:
+    name: data-science-pipelines-definition
+spec:
+    ...
+    apiServer:
+    ...
+    cABundle:
+        configMapName: custom-ca-bundle
+        configMapKey: ca-bundle.crt
+----
+
+The pipeline server pod redeploys with the updated bundle and uses it in the newly created pipeline pods.
+
+.Verification
+
+Perform the following steps to confirm that your CA bundle was successfully mounted.
+
+. Log in to the {openshift-platform} console.
+. Go to the {openshift-platform} project that corresponds to the data science project.
+. Click the *Pods* tab.
+. Click the pipeline server pod with the `ds-pipeline-pipelines-definition-<hash>` prefix.
+. Click *Terminal*.
+. Enter `cat /dsp-custom-certs/dsp-ca.crt`.
+. Verify that your CA bundle is present within this file.
+
+You can also confirm that your CA bundle was successfully mounted by using the CLI:
+
+. In a terminal window, log in to the OpenShift cluster where {productname-short} is deployed.
++
+----
+oc login
+----
+. Set the `dspa` value:
++
+----
+dspa=pipelines-definition
+----
+. Set the `dsProject` value, replacing `$YOUR_DS_PROJECT` with the name of your data science project:
++
+----
+dsProject=$YOUR_DS_PROJECT
+----
+. Set the `pod` value:
++
+----
+pod=$(oc get pod -n ${dsProject} -l app=ds-pipeline-${dspa} --no-headers | awk '{print $1}')
+----
+. Display the contents of the `/dsp-custom-certs/dsp-ca.crt` file:
++
+----
+oc -n ${dsProject} exec $pod -- cat /dsp-custom-certs/dsp-ca.crt
+----
+. Verify that your CA bundle is present within this file.
+
+== Creating data science pipelines with Elyra and self-signed certificates
+
+To create pipelines using a workbench that contains the Elyra extension and which uses self-signed certificates, see the link:https://access.redhat.com/solutions/7046302[Workbench workaround for executing a pipeline using Elyra in a disconnected environment] knowledgebase article.
