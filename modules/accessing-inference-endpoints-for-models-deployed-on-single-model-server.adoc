@@ -30,7 +30,7 @@ endif::[]
 // * `:443/api/v1/task/text-classification`
 // * `:443/api/v1/task/token-classification`
 
-*TGIS Standalone ServingRuntime for KServe (gRPC)*
+*TGIS Standalone ServingRuntime for KServe*
 
 * `:443 fmaas.GenerationService/Generate`
 * `:443 fmaas.GenerationService/GenerateStream`
@@ -55,7 +55,7 @@ curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' \
 https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation
 ----
 
-*TGIS Standalone ServingRuntime for KServe (gRPC)*
+*TGIS Standalone ServingRuntime for KServe*
 [source]
 ----
 grpcurl -proto text-generation-inference/proto/generation.proto -d \
@@ -81,7 +81,7 @@ ifdef::self-managed,cloud-service[]
 curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation
 ----
 
-*TGIS Standalone ServingRuntime for KServe (gRPC)*
+*TGIS Standalone ServingRuntime for KServe*
 [source]
 ----
 grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'mm-model-id: <model_name>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate
