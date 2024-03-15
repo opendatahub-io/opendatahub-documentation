@@ -49,7 +49,7 @@ Perform the following steps to confirm that your CA bundle was successfully moun
 . Click the pipeline server pod with the `ds-pipeline-pipelines-definition-<hash>` prefix.
 . Click *Terminal*.
 . Enter `cat /dsp-custom-certs/dsp-ca.crt`.
-. Verify that your your CA bundle is present within this bundle.
+. Verify that your CA bundle is present within this file.
 
 You can also confirm that your CA bundle was successfully mounted by using the CLI:
 
@@ -78,7 +78,7 @@ pod=$(oc get pod -n ${dsProject} -l app=ds-pipeline-${dspa} --no-headers | awk '
 ----
 oc -n ${dsProject} exec $pod -- cat /dsp-custom-certs/dsp-ca.crt
 ----
-. Verify that your your CA bundle is present within this bundle.
+. Verify that your CA bundle is present within this file.
 
 == Creating data science pipelines with Elyra and self-signed certificates
 
