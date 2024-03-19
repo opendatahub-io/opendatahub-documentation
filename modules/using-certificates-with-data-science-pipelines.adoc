@@ -96,7 +96,3 @@ pod=$(oc get pod -n ${dsProject} -l app=ds-pipeline-${dspa} --no-headers | awk '
 oc -n ${dsProject} exec $pod -- cat /dsp-custom-certs/dsp-ca.crt
 ----
 . Verify that your CA bundle is present within this file.
-
-== Creating data science pipelines with Elyra and self-signed certificates
-
-To create pipelines using a workbench that contains the Elyra extension and which uses self-signed certificates, see the link:https://access.redhat.com/solutions/7046302[Workbench workaround for executing a pipeline using Elyra in a disconnected environment] knowledgebase article.
