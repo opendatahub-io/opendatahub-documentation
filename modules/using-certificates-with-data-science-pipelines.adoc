@@ -3,6 +3,20 @@
 [id='using-certificates-with-data-science-pipelines_{context}']
 = Using certificates with data science pipelines 
 
+ifdef::upstream[]
+If you want to use self-signed certificates, you have added them to a central Certificate Authority (CA) bundle as described in link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
+endif::[]
+ifdef::cloud-service[]
+If you want to use self-signed certificates, you have added them to a central Certificate Authority (CA) bundle as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
+
+No additional configuration is necessary to use those certificates with data science pipelines.
+endif::[]
+ifdef::self-managed[]
+If you want to use self-signed certificates, you have added them to a central Certificate Authority (CA) bundle as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs[Working with certificates]).
+
+No additional configuration is necessary to use those certificates with data science pipelines.
+endif::[]
+
 == Providing a CA bundle only for data science pipelines
 
 Perform the following steps to provide a Certificate Authority (CA) bundle just for data science pipelines.
