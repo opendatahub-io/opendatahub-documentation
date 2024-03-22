@@ -1,17 +1,17 @@
 :_module-type: PROCEDURE
 
 [id="deploying-models-on-the-single-model-serving-platform_{context}"]
-= Deploying models on the single model serving platform
+= Deploying models on the single-model serving platform
 
 [role='_abstract']
-When you have enabled the single model serving platform, you can enable a pre-installed or custom model-serving runtime and start to deploy models on the platform.
+When you have enabled the single-model serving platform, you can enable a pre-installed or custom model-serving runtime and start to deploy models on the platform.
 
 ifdef::upstream[]
-NOTE: link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own, custom runtime to support a TGI model. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single model serving platform].
+NOTE: link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own, custom runtime to support a TGI model. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
 
 ifndef::upstream[]
-NOTE: link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own, custom runtime to support a TGI model. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single model serving platform].
+NOTE: link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own, custom runtime to support a TGI model. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
 
 .Prerequisites
@@ -23,10 +23,11 @@ ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
 * You have installed KServe.
-* You have enabled the single model serving platform.
+* You have enabled the single-model serving platform.
 * You have created a data science project.
+* You have access to S3-compatible object storage.
+* For the model that you want to deploy, you know the associated folder path in your S3-compatible object storage bucket.
 * To use the Caikit-TGIS runtime, you have converted your model to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
-* You know the folder path for the data connection that you want the model to access.
 ifndef::upstream[]
 * If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. See link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-gpu-support_cluster-mgmt[Enabling GPU support in {productname-short}^].
 endif::[]
