@@ -15,7 +15,17 @@ ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the admin group (for example, {odh-admin-group}) in OpenShift.
 endif::[] 
 * You have installed KServe.
+* Your cluster administrator has set the value of the `disableKServe` dashboard configuration to `false` in the `OdhDashboardConfig` custom resource (CR). 
++
+[source]
+----
+spec:
+  dashboardConfig:
+    disableKServe: false
+----
+For more information, see link:{rhoaidocshome}/html/managing_resources/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
 
+ 
 .Procedure
 . Enable the single model serving platform as follows:
 .. In the left menu, click *Settings* -> *Cluster settings*.

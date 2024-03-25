@@ -14,6 +14,15 @@ endif::[]
 ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the admin group (for example, {odh-admin-group}) in OpenShift.
 endif::[]
+* Your cluster administrator has set the value of the `disableModelMesh` dashboard configuration to `false` in the `OdhDashboardConfig` custom resource (CR).
++
+[source]
+----
+spec:
+  dashboardConfig:
+    disableModelMesh: false
+----
+For more information, see link:{rhoaidocshome}/html/managing_resources/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
 
 .Procedure
 . In the left menu of the {productname-short} dashboard, click *Settings* → *Cluster settings*.
