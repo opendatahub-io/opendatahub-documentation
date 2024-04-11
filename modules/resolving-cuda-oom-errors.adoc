@@ -1,0 +1,64 @@
+:_module-type: PROCEDURE
+
+[id="resolving-cuda-oom-errors-for-the-single-model-serving-platform_{context}"]
+= Resolving CUDA out-of-memory errors
+
+[role="_abstract"]
+
+In certain cases, depending on the model and hardware accelerator used, the TGIS memory auto-tuning algorithm might underestimate the amount of GPU memory needed to process long sequences. This miscalculation can lead to Compute Unified Architecture (CUDA) out-of-memory (OOM) error responses from the model server. In such cases, you must update or add additional parameters in the TGIS model-serving runtime, as described in the following procedure.
+
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the admin group (for example, {odh-admin-group}) in {openshift-platform}.
+* You have installed the single-model serving platform. For more information, see link:{odhdocshome}/serving_models#about-the-single-model-serving-platform_serving-large-models[About the single-model serving platform]
+endif::[]
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the admin group (for example, {oai-admin-group}) in {openshift-platform}.
+* You have installed the single-model serving platform. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#about-the-single-model-serving-platform_serving-large-models[About the single-model serving platform]
+endif::[]
+* You have added a custom model-serving runtime for TGIS.
+
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* > *Serving runtimes*.
++
+The *Serving runtimes* page opens and shows the model-serving runtimes that are already installed and enabled.
++
+. Find your custom runtime for TGIS, click the action menu next to the runtime and select *Edit*.
++
+The embedded YAML editor opens and shows the contents of the custom runtime.
++
+. Add or update the `BATCH_SAFETY_MARGIN` environment variable and set the value to 30. Similarly, add or update the `ESTIMATE_MEMORY_BATCH_SIZE` environment variable and set the value to 8.
++
+[source]
+----
+spec:
+  containers:
+    env:
+    - name: BATCH_SAFETY_MARGIN
+      value: 30
+    - name: ESTIMATE_MEMORY_BATCH
+      value: 8
+----
++
+[NOTE]
+====
+The `BATCH_SAFETY_MARGIN` parameter sets a percentage of free GPU memory to hold back as a safety margin to avoid OOM conditions. The default value of `BATCH_SAFETY_MARGIN` is `20`. The `ESTIMATE_MEMORY_BATCH_SIZE` parameter sets the batch size used in the memory auto-tuning algorithm. The default value of `ESTIMATE_MEMORY_BATCH_SIZE`  is `16`.
+====
+. Click *Update*.
+. You must redeploy the impacted model for the updated or added parameters in the model-serving runtime to take effect:
+.. From the {productname-short} dashboard, click *Model Serving* > *Deployed Models*.
+.. Find the model you want to update, click the action menu (⋮) beside the model, and click *Delete*.
+ifndef::upstream[]
+.. Redeploy the model as described link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[here].
+endif::[]
+ifdef::upstream[]
+.. Redeploy the model as described link:{odhdocshome}/serving_models/#deploying-models-on-the-single-model-serving-platform_serving-large-models[here].
+endif::[]
+
+.Verification
+* You receive successful responses from the model server and no longer see CUDA OOM errors.
+// [role="_additional-resources"]
+// .Additional resources
