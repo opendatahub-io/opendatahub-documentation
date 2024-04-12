@@ -23,13 +23,16 @@ endif::[]
 
 .Procedure
 . In the left menu of the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data Science Projects* page opens.
 . Click the name of the project that you want to deploy a model in.
 +
 A project details page opens.
-. In the *Models and model servers* section, click *Deploy model*.
+. Click the *Models* tab.
+. Click *Deploy model*.
 . Configure properties for deploying your model as follows:
 .. In the *Model name* field, enter a unique name for the model that you are deploying.
-.. From the *Model framework* list, select a framework for your model. 
+.. From the *Model framework* list, select a framework for your model.
 +
 NOTE: The *Model framework* list shows only the frameworks that are supported by the model-serving runtime that you specified when you configured your model server.
 .. To specify the location of the model you want to deploy from S3-compatible object storage, perform one of the following sets of actions:
@@ -48,13 +51,13 @@ NOTE: The *Model framework* list shows only the frameworks that are supported by
 ... In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
 ... In the *Region* field, enter the default region of your S3-compatible object storage account.
 ... In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
-... In the *Path* field, enter the folder path in your S3-compatible object storage that contains your data file. 
+... In the *Path* field, enter the folder path in your S3-compatible object storage that contains your data file.
 --
 
 .. Click *Deploy*.
 
 .Verification
-* Confirm that the deployed model is shown in the *Models and model servers* section of your project, and on the *Model Serving* page of the dashboard with a checkmark in the *Status* column.
+* Confirm that the deployed model is shown in the *Models* tab for the project, and on the *Model Serving* page of the dashboard with a checkmark in the *Status* column.
 
 ifdef::upstream[]
 [role='_additional-resources']
@@ -62,4 +65,3 @@ ifdef::upstream[]
 
 * To learn how to monitor your model for bias, see link:{odhdocshome}/monitoring_data_science_models[Monitoring data science models].
 endif::[]
-
