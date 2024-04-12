@@ -45,18 +45,19 @@ endif::[]
 
 . From the {productname-short} dashboard, click *Data Science Projects*.
 +
-The *Data science projects* page opens.
+The *Data Science Projects* page opens.
 . Click the name of the project containing the code-server workbench you want to start.
 +
-The *Details* page for the project opens.
+A project details page opens.
+. Click the *Workbenches* tab.
 . Click the toggle in the *Status* column for the relevant workbench to start a workbench that is not running.
 +
-The status of the workbench that you started changes from *Stopped* to *Running*. 
+The status of the workbench that you started changes from *Stopped* to *Running*.
 . After the workbench has started, click *Open* to open the workbench notebook.
 . In the Activity Bar, click the Extensions icon. (image:images/codeserver-extensions-icon.png[The Extensions icon])
-. Search for the name of the extension you want to install. 
+. Search for the name of the extension you want to install.
 . Click *Install* to add the extension to your code-server environment.
-+ 
++
 The extension you installed appears in the *Browser - Installed* list on the *Extensions* panel.
 
 ==== Extensions
@@ -94,18 +95,18 @@ To use the *RStudio Server* and *CUDA - RStudio Server* notebook images, you mus
 .Procedure
 . Create a secret with Subscription Manager credentials. These are usually your {org-name} Customer Portal username and password.
 +
-Note: The secret must be named `rhel-subscription-secret`, and its `USERNAME` and `PASSWORD` keys must be in capital letters. 
+Note: The secret must be named `rhel-subscription-secret`, and its `USERNAME` and `PASSWORD` keys must be in capital letters.
 +
 ----
 oc create secret generic rhel-subscription-secret --from-literal=USERNAME=<username> --from-literal=PASSWORD=<password> -n redhat-ods-applications
 ----
 . Start the build:
-.. To start the lightweight RStudio Server build: 
+.. To start the lightweight RStudio Server build:
 +
 ----
 oc start-build rstudio-server-rhel9 -n redhat-ods-applications --follow
 ----
-.. To start the CUDA-enabled RStudio Server build, trigger the `cuda-rhel9` BuildConfig: 
+.. To start the CUDA-enabled RStudio Server build, trigger the `cuda-rhel9` BuildConfig:
 +
 ----
 oc start-build cuda-rhel9 -n redhat-ods-applications --follow
