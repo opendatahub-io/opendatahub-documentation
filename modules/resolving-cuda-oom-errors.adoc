@@ -12,13 +12,11 @@ In certain cases, depending on the model and hardware accelerator used, the TGIS
 * You have logged in to {productname-long}.
 ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the admin group (for example, {odh-admin-group}) in {openshift-platform}.
-* You have installed the single-model serving platform. For more information, see link:{odhdocshome}/serving_models#about-the-single-model-serving-platform_serving-large-models[About the single-model serving platform]
 * You have added a custom model-serving runtime for TGIS or have created a copy of the pre-installed standalone TGIS runtime. For more information, see link:{odhdocshome}/serving_models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
 ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the admin group (for example, {oai-admin-group}) in {openshift-platform}.
-* You have installed the single-model serving platform. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#about-the-single-model-serving-platform_serving-large-models[About the single-model serving platform]
-* You have added a custom model-serving runtime for TGIS or have created a copy of the pre-installed standalone TGIS runtime. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+* You have added a custom model-serving runtime for TGIS or have created a copy of the pre-installed standalone *TGIS Standalone ServingRuntime for KServe* runtime. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
 
 .Procedure
@@ -26,10 +24,12 @@ endif::[]
 +
 The *Serving runtimes* page opens and shows the model-serving runtimes that are already installed and enabled.
 +
-. Find your custom model-serving runtime, click the action menu (&#8942;) next to the runtime and select *Edit*.
+. Based on the runtime that you used to deploy your model, perform one of the following actions:
++
+* If you used the pre-installed *TGIS Standalone ServingRuntime for KServe* runtime, you must duplicate this runtime before following the remainder of this procedure. For more information about duplicating the pre-installed TGIS runtime, see {rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+* If you were already using a custom TGI runtime, click the action menu (&#8942;) next to the runtime and select *Edit*.
 +
 The embedded YAML editor opens and shows the contents of the custom model-serving runtime.
-+
 . Add or update the `BATCH_SAFETY_MARGIN` environment variable and set the value to 30. Similarly, add or update the `ESTIMATE_MEMORY_BATCH_SIZE` environment variable and set the value to 8.
 +
 [source]
@@ -51,14 +51,14 @@ The `BATCH_SAFETY_MARGIN` parameter sets a percentage of free GPU memory to hold
 + 
 The *Serving runtimes* page opens and shows the list of runtimes that are installed. Observe that the custom model-serving runtime you updated is shown.
 +
-. You must redeploy the impacted model for the updated or added parameters in the model-serving runtime to take effect:
+. To redeploy the model for the parameter updates to take effect, perform the following actions:
 .. From the {productname-short} dashboard, click *Model Serving* > *Deployed Models*.
-.. Find the model you want to update, click the action menu (⋮) beside the model, and click *Delete*.
+.. Find the model you want to redeploy, click the action menu (⋮) next to the model, and select *Delete*.
 ifndef::upstream[]
-.. Redeploy the model as described link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[here].
+.. Redeploy the model as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
 endif::[]
 ifdef::upstream[]
-.. Redeploy the model as described link:{odhdocshome}/serving_models/#deploying-models-on-the-single-model-serving-platform_serving-large-models[here].
+.. Redeploy the model as described in link:{odhdocshome}/serving_models/#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
 endif::[]
 
 .Verification
