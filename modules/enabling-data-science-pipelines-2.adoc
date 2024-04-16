@@ -1,0 +1,81 @@
+:_module-type: PROCEDURE
+
+[id='enabling-data-science-pipelines-2_{context}']
+= Enabling Data Science Pipelines 2.0
+
+ifdef::upstream[]
+
+Data science pipelines in {productname-long} are now based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0].
+endif::[]
+
+ifndef::upstream[]
+
+From {productname-short} version 2.9, data science pipelines are based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0].
+endif::[]
+
+[IMPORTANT]
+====
+Data Science Pipelines (DSP) 2.0 contains an installation of Argo Workflows. {productname-short} does not support direct customer usage of this installation of Argo Workflows.
+
+ifdef::upstream[]
+If there is an existing installation of Argo workflows that is not managed by {org-name} on your cluster, {productname-short} installations and upgrades with DSP will fail.
+endif::[]
+ifndef::upstream[]
+If there is an existing installation of Argo workflows that is not managed by {org-name} on your cluster, installations of and upgrades to {productname-short} 2.9 with DSP will fail.
+
+To install or upgrade to {productname-short} 2.9 with DSP, you must ensure that no separate installation of Argo workflows exists on your cluster.
+endif::[]
+====
+
+== Installing {productname-short} with DSP 2.0
+ifdef::upstream[]
+To install {productname-short} x.x?, ensure that there is no installation of Argo workflows that is not managed by {org-name} on your cluster, and follow the installation steps described in link:{odhdocshome}/installing-open-data-hub/[Installing {productname-short}].
+endif::[]
+
+ifndef::upstream[]
+ifdef::cloud-service[]
+//RHOAI CS
+To install {productname-short} 2.9, ensure that there is no installation of Argo workflows that is not managed by {org-name} on your cluster, and follow the installation steps described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_cloud_service/index[Installing and uninstalling OpenShift AI Cloud Service].
+endif::[]
+
+//RHOAI self-managed & disconnected
+ifdef::self-managed[]
+To install {productname-short} 2.9, ensure that there is no installation of Argo workflows that is not managed by {org-name} on your cluster, and follow the installation steps described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/index[Installing and uninstalling OpenShift AI Self-Managed], or for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment[Installing and uninstalling {productname-long} in a disconnected environment].
+endif::[]
+endif::[]
+
+== Upgrading to DSP 2.0
+
+
+=== Upgrading to DSP 2.0
+ifdef::upstream[]
+To upgrade to x with DSP v2, ensure that there is no installation of Argo workflows that is not managed by {org-name} on your cluster, and follow the upgrade steps described in Y.
+
+
+ifndef::upstream[]
+ifdef::cloud-service[]
+//RHOAI CS
+To upgrade {productname-short}, ensure that there is no installation of Argo workflows that is not managed by {org-name} on your cluster, and follow the upgrade steps described in link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_cloud_service/index[Upgrading {productname-short } AI Cloud Service].
+endif::[]
+
+//RHOAI self-managed & disconnected
+ifdef::self-managed[]
+To upgrade to {productname-short} 2.9, ensure that there is no installation of Argo workflows that is not managed by {org-name} on your cluster, and follow the upgrade steps described in link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed/index[Upgrading {productname-short} Self-Managed], or for disconnected environments, link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed_in_a_disconnected_environment/index[Upgrading {productname-long} in a disconnected environment].
+endif::[]
+
+endif::[]
+
+== Migrating pipelines to DSP 2.0
+
+{productname-short} does not automatically migrate existing DSP 1.0 instances to 2.0. To use existing pipelines with DSP 2.0, you must manually migrate them.
+
+Migrating pipelines from DSP 1.0 to DSP 2.0
+
+
+.
+.
+.
+
+
+
+
