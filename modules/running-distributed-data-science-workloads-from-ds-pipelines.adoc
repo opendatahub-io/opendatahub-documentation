@@ -51,11 +51,11 @@ def ray_fn(openshift_server: str, openshift_token: str): <1>
    import ray
    from codeflare_sdk.cluster.auth import TokenAuthentication
    from codeflare_sdk.cluster.cluster import Cluster, ClusterConfiguration
+
+
    auth = TokenAuthentication( <2>
        token=openshift_token, server=openshift_server, skip_tls=True
    )
-
-
    auth_return = auth.login()
    cluster = Cluster( <3>
        ClusterConfiguration(
