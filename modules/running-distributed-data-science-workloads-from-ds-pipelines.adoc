@@ -19,7 +19,6 @@ endif::[]
 ifdef::upstream[]
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working_on_data_science_projects/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 endif::[]
-* You have installed the {org-name} OpenShift Pipelines Operator, as described in link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/cicd/pipelines#installing-pipelines[Installing OpenShift Pipelines].
 * You have access to S3-compatible object storage.
 * You have logged in to {productname-long}.
 * You have created a data science project.
@@ -46,18 +45,17 @@ For example, create a file named `compile_example.py` with the following content
 +
 [source,Python]
 ----
-from kfp import components, dsl
-
-
-def ray_fn(openshift_server: str, openshift_token: str) -> int: <1>
+from kfp import dsl@dsl.component(base_image="registry.redhat.io/ubi8/python-39:latest",
+               packages_to_install=['codeflare-sdk'])
+def ray_fn(openshift_server: str, openshift_token: str): <1>
    import ray
    from codeflare_sdk.cluster.auth import TokenAuthentication
    from codeflare_sdk.cluster.cluster import Cluster, ClusterConfiguration
-
-
    auth = TokenAuthentication( <2>
        token=openshift_token, server=openshift_server, skip_tls=True
    )
+
+
    auth_return = auth.login()
    cluster = Cluster( <3>
        ClusterConfiguration(
@@ -113,18 +111,10 @@ def ray_fn(openshift_server: str, openshift_token: str) -> int: <1>
    name="Ray Simple Example",
    description="Ray Simple Example",
 )
-def ray_integration(openshift_server, openshift_token):
-   ray_op = components.create_component_from_func(
-       ray_fn,
-       base_image='registry.redhat.io/ubi8/python-39:latest',
-       packages_to_install=["codeflare-sdk"],
-   )
-   ray_op(openshift_server, openshift_token)
-
-
-if __name__ == '__main__': <11>
-    from kfp_tekton.compiler import TektonCompiler
-    TektonCompiler().compile(ray_integration, 'compiled-example.yaml')
+def ray_integration(openshift_server: str, openshift_token: str): <11>
+   ray_fn(openshift_server=openshift_server, openshift_token=openshift_token)if __name__ == '__main__':
+    from kfp.compiler import Compiler
+    Compiler().compile(ray_integration, 'compiled-example.yaml')
 
 ----
 <1> Imports from the CodeFlare SDK the packages that define the cluster functions
