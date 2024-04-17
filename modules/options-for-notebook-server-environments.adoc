@@ -21,10 +21,9 @@ ifndef::upstream[]
 --
 Notebook images are supported for a minimum of one year. Major updates to preconfigured notebook images occur about every six months. Therefore, two supported notebook image versions are typically available at any given time. Legacy notebook image versions, that is, not the two most recent versions, might still be available for selection. Legacy image versions include a label that indicates the image is out-of-date. 
 
-From {productname-short} 2.5, version 1.2 of notebook images is no longer supported. Notebooks that are already running on version 1.2 of an image will continue to work normally, but it is not available to select for new users or notebooks. 
+Versions 1.2 and 2023.1 of notebook images are no longer supported. Notebooks that are already running on versions 1.2 or 2023.1 of an image will continue to work normally, but they are not available to select for new users or notebooks.
 
 To use the latest package versions, {org-name} recommends that you use the most recently added notebook image.
-
 --
 endif::[]
 +
@@ -43,43 +42,65 @@ endif::[]
 | Image name | Image version | Preinstalled packages
 
 .3+| CUDA
-| 2023.2 (Recommended)
+| 2024.1 (Recommended)
+a| * CUDA 12.1
+* Python 3.9
+* JupyterLab 3.6
+* Notebook 6.5
+
+| 2023.2
 a| * CUDA 11.8
 * Python 3.9
 * JupyterLab 3.6
 * Notebook 6.5
 
-| 2023.1 
+| 2023.1 (Deprecated)
 a| * CUDA 11.8
 * Python 3.9
 * JupyterLab 3.5
 * Notebook 6.5
-
-| 1.2
-a| * CUDA 11.4
-* Python 3.8
-* JupyterLab 3.2
-* Notebook 6.4
 
 .3+| Minimal Python (default)
-
-| 2023.2 (Recommended)
+| 2024.1 (Recommended)
 a| * Python 3.9
 * JupyterLab 3.6
 * Notebook 6.5
 
-| 2023.1 
+| 2023.2
+a| * Python 3.9
+* JupyterLab 3.6
+* Notebook 6.5
+
+| 2023.1 (Deprecated)
 a| * Python 3.9
 * JupyterLab 3.5
 * Notebook 6.5
 
-| 1.2
-a| * Python 3.8
-* JupyterLab 3.2
-* Notebook 6.4
-
 .3+| PyTorch
-| 2023.2 (Recommended)
+| 2024.1 (Recommended)
+a| * CUDA 12.1
+* Python 3.9
+* PyTorch 2.2
+* JupyterLab 3.6
+* Notebook 6.5
+* TensorBoard 2.16
+* Boto3 1.34
+* Kafka-Python 2.0
+* Kfp 2.7
+* Matplotlib 3.8
+* Numpy 1.26
+* Pandas 2.2
+* Scikit-learn 1.4
+* SciPy 1.12
+* ODH-Elyra 3.16
+* PyMongo 4.6
+* Pyodbc 5.1 
+* Codeflare-SDK 0.14
+* Sklearn-onnx 1.16
+* Psycopg 3.1 
+* MySQL Connector/Python 8.3
+
+| 2023.2
 a| * CUDA 11.8
 * Python 3.9
 * PyTorch 2.0
@@ -102,7 +123,7 @@ a| * CUDA 11.8
 * Psycopg 3.1 
 * MySQL Connector/Python 8.0
 
-| 2023.1
+| 2023.1 (Deprecated)
 a| * CUDA 11.8
 * Python 3.9
 * PyTorch 1.13
@@ -119,23 +140,28 @@ a| * CUDA 11.8
 * SciPy 1.10
 * Elyra 3.15
 
-| 1.2
-a| * CUDA 11.4
-* Python 3.8
-* PyTorch 1.8
-* JupyterLab 3.2
-* Notebook 6.4
-* TensorBoard 2.6
-* Boto3 1.17
-* Kafka-Python 2.0
-* Matplotlib 3.4
-* Numpy 1.19
-* Pandas 1.2
-* Scikit-learn 0.24
-* SciPy 1.6
-
 .3+| Standard Data Science
-| 2023.2 (Recommended)
+| 2024.1 (Recommended)
+a| * Python 3.9
+* JupyterLab 3.6
+* Notebook 6.5
+* Boto3 1.34
+* Kafka-Python 2.0
+* Kfp 2.7
+* Matplotlib 3.8
+* Pandas 2.2
+* Numpy 1.26
+* Scikit-learn 1.4
+* SciPy 1.12
+* ODH-Elyra 3.16
+* PyMongo 4.6 
+* Pyodbc 5.1 
+* Codeflare-SDK 0.14
+* Sklearn-onnx 1.16
+* Psycopg 3.1 
+* MySQL Connector/Python 8.3
+
+| 2023.2
 a| * Python 3.9
 * JupyterLab 3.6
 * Notebook 6.5
@@ -155,7 +181,7 @@ a| * Python 3.9
 * Psycopg 3.1 
 * MySQL Connector/Python 8.0
 
-| 2023.1
+| 2023.1 (Deprecated)
 a| * Python 3.9
 * JupyterLab 3.5
 * Notebook 6.5
@@ -169,20 +195,31 @@ a| * Python 3.9
 * SciPy 1.10
 * Elyra 3.15
 
-| 1.2
-a| * Python 3.8
-* JupyterLab 3.2
-* Notebook 6.4
-* Boto3 1.17
-* Kafka-Python 2.0
-* Matplotlib 3.4
-* Pandas 1.2
-* Numpy 1.19
-* Scikit-learn 0.24
-* SciPy 1.6
-
 .3+| TensorFlow
-| 2023.2 (Recommended)
+| 2024.1 (Recommended)
+a| * CUDA 12.1
+* Python 3.9
+* JupyterLab 3.6
+* Notebook 6.5
+* TensorFlow 2.15
+* TensorBoard 2.15
+* Boto3 1.34
+* Kafka-Python 2.0
+* Kfp 2.7
+* Matplotlib 3.8
+* Numpy 1.26
+* Pandas 2.2
+* Scikit-learn 1.4
+* SciPy 1.12
+* ODH-Elyra 3.16
+* PyMongo 4.6 
+* Pyodbc 5.1
+* Codeflare-SDK 0.14
+* Sklearn-onnx 1.16
+* Psycopg 3.1 
+* MySQL Connector/Python 8.3
+
+| 2023.2
 a| * CUDA 11.8
 * Python 3.9
 * JupyterLab 3.6
@@ -205,7 +242,7 @@ a| * CUDA 11.8
 * Psycopg 3.1 
 * MySQL Connector/Python 8.0
 
-| 2023.1 
+| 2023.1 (Deprecated)
 a| * CUDA 11.8
 * Python 3.9
 * JupyterLab 3.5
@@ -222,23 +259,29 @@ a| * CUDA 11.8
 * SciPy 1.10
 * Elyra 3.15
 
-| 1.2
-a| * CUDA 11.4
-* Python 3.8
-* JupyterLab 3.2
-* Notebook 6.4
-* TensorFlow 2.7
-* TensorBoard 2.6
-* Boto3 1.17
+.3+| TrustyAI
+| 2024.1 (Recommended)
+a| * Python 3.9
+* JupyterLab 3.6
+* Notebook 6.5
+* TrustyAI 0.5
+* Boto3 1.34
 * Kafka-Python 2.0
-* Matplotlib 3.4
-* Numpy 1.19
-* Pandas 1.2
-* Scikit-learn 0.24
-* SciPy 1.6
+* Kfp 2.7
+* Matplotlib 3.6
+* Numpy 1.24
+* Pandas 1.5
+* Scikit-learn 1.4
+* SciPy 1.12
+* ODH-Elyra 3.16
+* PyMongo 4.6
+* Pyodbc 5.1 
+* Codeflare-SDK 0.14
+* Sklearn-onnx 1.16
+* Psycopg 3.1 
+* MySQL Connector/Python 8.3
 
-.2+| TrustyAI
-| 2023.2 (Recommended)
+| 2023.2
 a| * Python 3.9
 * JupyterLab 3.6
 * Notebook 6.5
@@ -259,7 +302,7 @@ a| * Python 3.9
 * Psycopg 3.1 
 * MySQL Connector/Python 8.0
 
-| 2023.1
+| 2023.1 (Deprecated)
 a| * Python 3.9
 * JupyterLab 3.5
 * Notebook 6.5
@@ -274,8 +317,25 @@ a| * Python 3.9
 * SciPy 1.10
 * Elyra 3.15
 
-| HabanaAI
-| 2023.2 (Recommended)
+.2+| HabanaAI
+| 2024.1 (Recommended)
+a|* Python 3.8
+* Habana 1.13
+* JupyterLab 3.6
+* Boto3 1.34
+* Kafka-Python 2.0
+* Kfp 2.7
+* Matplotlib 3.7
+* Numpy 1.23
+* Pandas 2.0
+* Scikit-learn 1.3
+* Scipy 1.10
+* TensorFlow 2.13
+* PyTorch 2.1
+* ODH-Elyra v3.16
+
+
+| 2023.2
 a| * Python 3.8
 * Habana 1.10
 * JupyterLab 3.5
@@ -292,12 +352,27 @@ a| * Python 3.8
 * Elyra 3.15
 
 ifndef::upstream[]
-| code-server (Technology Preview)
+.2+| code-server (Technology Preview)
 endif::[]
 ifdef::upstream[]
-| code-server
+.2+| code-server
 endif::[]
-| 2023.2 (Recommended)
+| 2024.1 (Recommended)
+a| * Python 3.9
+* Boto3 1.29
+* Kafka-Python 2.0
+* Matplotlib 3.8
+* Numpy 1.26
+* Pandas 2.1
+* Plotly 5.18
+* Scikit-learn 1.3
+* Scipy 1.11
+* Sklearn-onnx 1.15
+* Ipykernel 6.26
+* (code-server plugin) Python 2024.2.1
+* (code-server plugin) Jupyter 2023.9.100
+
+| 2023.2
 a| * Python 3.9
 * Boto3 1.29
 * Kafka-Python 2.0
@@ -314,7 +389,7 @@ a| * Python 3.9
 
 ifdef::upstream[]
 | RStudio Server
-| 2023.2 (Recommended)
+| 2024.1 (Recommended)
 a| * Python 3.9
 * R 4.3
 endif::[]
@@ -322,7 +397,7 @@ endif::[]
 ifndef::upstream[]
 ifdef::cloud-service[]
 | RStudio Server (Technology preview)
-| 2023.2 (Recommended)
+| 2024.1 (Recommended)
 a| * Python 3.9
 * R 4.3
 [IMPORTANT] 
@@ -335,19 +410,20 @@ endif::[]
 
 ifdef::upstream[]
 | CUDA - RStudio Server
-| 2023.2 (Recommended)
+| 2024.1 (Recommended)
 a| * Python 3.9
-* CUDA 11.8
+* CUDA 12.1
 * R 4.3
 endif::[]
 
 ifndef::upstream[]
 ifdef::cloud-service[]
 | CUDA - RStudio Server (Technology preview)
-| 2023.2 (Recommended)
+| 2024.1 (Recommended)
 a| * Python 3.9
-* CUDA 11.8
+* CUDA 12.1
 * R 4.3
+
 [IMPORTANT] 
 ====
 *Disclaimer:* +
