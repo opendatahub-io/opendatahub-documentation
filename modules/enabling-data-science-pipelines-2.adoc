@@ -4,12 +4,10 @@
 = Enabling Data Science Pipelines 2.0
 
 ifdef::upstream[]
-
-Data science pipelines in {productname-long} are now based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0].
+From {productname-long} version 2.9.0, data science pipelines are based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0].
 endif::[]
 
 ifndef::upstream[]
-
 From {productname-short} version 2.9, data science pipelines are based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0].
 endif::[]
 
@@ -18,7 +16,9 @@ endif::[]
 Data Science Pipelines (DSP) 2.0 contains an installation of Argo Workflows. {productname-short} does not support direct customer usage of this installation of Argo Workflows.
 
 ifdef::upstream[]
-If there is an existing installation of Argo workflows that is not managed by {org-name} on your cluster, {productname-short} installations and upgrades with DSP will fail.
+If there is an existing installation of Argo workflows that is not managed by {org-name} on your cluster, installations and upgrades to {productname-short} 2.9.0 with DSP will fail.
+
+To install or upgrade to {productname-short} 2.9.0 with DSP, you must ensure that no separate installation of Argo workflows exists on your cluster.
 endif::[]
 ifndef::upstream[]
 If there is an existing installation of Argo workflows that is not managed by {org-name} on your cluster, installations of and upgrades to {productname-short} 2.9 with DSP will fail.
@@ -28,8 +28,9 @@ endif::[]
 ====
 
 == Installing {productname-short} with DSP 2.0
+
 ifdef::upstream[]
-To install {productname-short} x.x?, ensure that there is no installation of Argo workflows that is not managed by {org-name} on your cluster, and follow the installation steps described in link:{odhdocshome}/installing-open-data-hub/[Installing {productname-short}].
+To install {productname-short} 2.9.0, ensure that there is no installation of Argo workflows that is not managed by {org-name} on your cluster, and follow the installation steps described in link:{odhdocshome}/installing-open-data-hub/[Installing {productname-short}].
 endif::[]
 
 ifndef::upstream[]
@@ -46,11 +47,9 @@ endif::[]
 
 == Upgrading to DSP 2.0
 
-
-=== Upgrading to DSP 2.0
 ifdef::upstream[]
-To upgrade to x with DSP v2, ensure that there is no installation of Argo workflows that is not managed by {org-name} on your cluster, and follow the upgrade steps described in Y.
-
+To upgrade to {productname-short} 2.9.0 with DSP 2.0, ensure that there is no installation of Argo workflows that is not managed by {org-name} on your cluster, and follow the upgrade steps described in link:{odhdocshome}/upgrading-open-data-hub/[Upgrading {productname-short}].
+endif::[]
 
 ifndef::upstream[]
 ifdef::cloud-service[]
@@ -62,20 +61,65 @@ endif::[]
 ifdef::self-managed[]
 To upgrade to {productname-short} 2.9, ensure that there is no installation of Argo workflows that is not managed by {org-name} on your cluster, and follow the upgrade steps described in link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed/index[Upgrading {productname-short} Self-Managed], or for disconnected environments, link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed_in_a_disconnected_environment/index[Upgrading {productname-long} in a disconnected environment].
 endif::[]
-
 endif::[]
 
-== Migrating pipelines to DSP 2.0
+ifndef::upstream[]
+== Migrating pipelines from DSP 1.0 to 2.0
 
 {productname-short} does not automatically migrate existing DSP 1.0 instances to 2.0. To use existing pipelines with DSP 2.0, you must manually migrate them.
 
-Migrating pipelines from DSP 1.0 to DSP 2.0
+. On {productname-short} 2.9, create a new data science project.
+. Configure a new pipeline server. 
+. Remove the `kfp-tekton` Python package:
++
+[source]
+----
+$ pip uninstall kfp-tekton
+----
+. Install the DSP 2.0 SDK:
++
+[source]
+----
+$ pip install kfp
+----
+. (Optional) Install the `kfp-kubernetes` Python package. This is required if you need to handle `k8s` resources for your pipelines.
++
+[source]
+----
+$ pip install kfp[kubernetes]
+----
+. Update and recompile your DSP 1.0 pipelines as described in link:https://www.kubeflow.org/docs/components/pipelines/v2/migration/[Migrate from KFP SDK v1: v1 to v2 migration instructions and breaking changes].
+. Import your updated pipelines to your new data science project.
+. (Optional) Remove your DSP 1.0 pipeline server.
+
+== Accessing DSP 1.0 pipelines and history
+
+You can view historical DSP 1.0 pipeline run information in the {openshift-platform} Console under *Pipelines > Project > PipelineRuns*. 
+
+You can still connect to the KFP API server by using the `kfp-tekton` SDK for programmatic access to your pipelines and pipeline run history. For more information, see link:https://www.kubeflow.org/docs/components/pipelines/v1/sdk/pipelines-with-tekton/[Kubeflow Pipelines SDK for Tekton].
 
 
-.
-.
-.
+== Uninstalling the OpenShift Pipelines Operator
+
+When your migration to DSP 2.0 is complete, you can remove the OpenShift Pipelines Operator.
+
+[IMPORTANT]
+Before removing the OpenShift Pipelines Operator, ensure that migration of your DSP 1.0 pipelines to 2.0 is complete, and that there are no remaining DSP 1.0 pipeline servers in use on your cluster.
 
 
+[role="_additional-resources"]
+.Additional resources
 
+ifdef::cloud-service[]
+* link:[Creating a data science project]
+* link:[Configuring a pipeline server]
+* link:[Importing a data science pipeline]
+endif::[]
+ifdef::self-managed[]
+* link:[Creating a data science project]
+* link:[Configuring a pipeline server]
+* link:[Importing a data science pipeline]
+endif::[]
+
+endif::[]
 
