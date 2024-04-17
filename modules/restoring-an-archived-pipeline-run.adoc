@@ -1,0 +1,42 @@
+:_module-type: PROCEDURE
+
+[id="restoring-an-archived-pipeline-run_{context}"]
+= Restoring an archived pipeline run
+
+[role='_abstract']
+If you decide to make use of a pipeline run that was previously archived, you can restore it.
+
+.Prerequisites
+
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and has a pipeline server.
+* You have imported a pipeline to an active and available pipeline server.
+* You have previously archived a run that is available to restore. 
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Runs*.
++
+The *Runs* page opens.
+. From the *Project* list, select the project whose archived pipeline run you want to restore. 
++
+The *Run details* page opens.
+. Click the *Archived* tab.
++
+A table opens that shows list of archived runs.
+. Click the action menu (*&#8942;*) beside the run that you want to restore and click *Restore*.
++
+The *Restore run* dialog opens.
+. Enter the run name in the text field to confirm that you intend to restore it.
+. Click *Restore*.
+
+.Verification
+* The restored run is displayed in the *Active* tab on the *Runs* page.
+
+//[role='_additional-resources']
+//.Additional resources

@@ -4,10 +4,9 @@
 = Deleting a data science pipeline
 
 [role='_abstract']
-You can delete data science pipelines so that they do not appear on the *Data Science Pipelines* page.
+If you no longer require access to your data science pipeline on the dashboard, you can delete it so that it does not appear on the *Data Science Pipelines* page.
 
 .Prerequisites
-* You have installed the OpenShift Pipelines operator.
 * You have logged in to {productname-long}.
 ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
@@ -16,6 +15,7 @@ ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
 * There are active pipelines available on the *Pipelines* page.
+* The pipeline that you want to delete does not contain any pipeline versions. 
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
@@ -30,6 +30,7 @@ The *Delete pipeline* dialog opens.
 
 .Verification
 * The data science pipeline that you deleted is no longer displayed on the *Pipelines* page.
+* Pipelines previously assigned to the pipeline server no longer appear on the *Pipelines* tab of the *Data Science Projects* page for the relevant data science project.
 
 //[role='_additional-resources']
 //.Additional resources

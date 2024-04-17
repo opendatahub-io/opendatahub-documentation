@@ -1,0 +1,42 @@
+:_module-type: PROCEDURE
+
+[id="duplicating-an-archived-pipeline-run_{context}"]
+= Duplicating an archived pipeline run
+
+[role='_abstract']
+To make it easier reproduce runs with the same configuration in your run archive, you can duplicate them.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a configured pipeline server.
+* You have imported a pipeline to an active pipeline server.
+* An archived run is available to duplicate in the *Archived* tab on the *Runs* page.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Runs*.
++
+The *Runs* page opens.
+. From the *Project* list, select the project that has the pipeline run that you want to duplicate.
+. Click the *Archived* tab.
+. Click the action menu (*&#8942;*) beside the relevant archived run and click *Duplicate*.
++
+The *Duplicate run* page opens.
+. Configure the duplicate run:
+.. In the *Name* field, enter a name for the duplicate run.
+.. In the *Description* field, enter a description for the duplicate run.
+.. From the *Pipeline* list, select the pipeline to contain the duplicate run.
+.. From the *Pipeline version* list, select the pipeline version to contain the duplicate run.
+.. In the *Parameters* section, configure the input parameters for the run that you are duplicating by selecting the appropriate parameters from the list.
+.. Click *Create run*.
+
+.Verification
+* The duplicate pipeline run is displayed in the *Archived* tab on the *Runs* page.
+
+//[role='_additional-resources']
+//.Additional resources

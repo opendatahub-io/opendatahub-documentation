@@ -4,10 +4,9 @@
 = Importing a data science pipeline
 
 [role='_abstract']
-To help you begin working with data science pipelines in {productname-short}, you can import a YAML file containing your pipeline's code to an active pipeline server. This file contains a Kubeflow pipeline compiled with the Tekton compiler. After you have imported the pipeline to a pipeline server, you can execute the pipeline by creating a pipeline run.
+To help you begin working with data science pipelines in {productname-short}, you can import a YAML file containing your pipeline's code to an active pipeline server, or you can import the YAML file from a URL. This file contains a Kubeflow pipeline compiled with the Kubeflow compiler. After you have imported the pipeline to a pipeline server, you can execute the pipeline by creating a pipeline run.
 
 .Prerequisites
-* You have installed the OpenShift Pipelines operator.
 * You have logged in to {productname-long}.
 ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
@@ -16,6 +15,8 @@ ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
 * You have previously created a data science project that is available and contains a configured pipeline server.
+* You have compiled your pipeline with the Kubeflow compiler and you in possession of its YAML file.
+* If you are uploading your pipeline from a URL, the URL is publicly accessible. 
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
@@ -28,14 +29,17 @@ The *Import pipeline* dialog opens.
 . Enter the details for the pipeline that you are importing.
 .. In the *Pipeline name* field, enter a name for the pipeline that you are importing.
 .. In the *Pipeline description* field, enter a description for the pipeline that you are importing.
-.. Click *Upload*. Alternatively, drag the file from your local machine's file system and drop it in the designated area in the *Import pipeline* dialog.
+.. Select where you want to import your pipeline from by performing one of the following actions:
+* Select *Upload from file* to upload your pipeline from your local machine's file system. 
+... Click *Upload*. Alternatively, drag the file from your local machine's file system and drop it in the designated area in the *Import pipeline* dialog.
 +
 A file browser opens.
-.. Navigate to the file containing the pipeline code and click *Select*.
+... Navigate to the file containing the pipeline code and click *Select*.
+* Select *Import by url* to upload your pipeline from a URL and then enter the URL into the text box.  
 .. Click *Import pipeline*.
 
 .Verification
-* The pipeline that you imported is displayed on the *Pipelines* page.
+* The pipeline that you imported is displayed on the *Pipelines* page and on the *Pipelines* tab on the project details page.
 
 //[role='_additional-resources']
 //.Additional resources//

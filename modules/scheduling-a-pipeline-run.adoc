@@ -4,10 +4,9 @@
 = Scheduling a pipeline run
 
 [role='_abstract']
-You can instantiate a single execution of a pipeline by scheduling a pipeline run. In {productname-short}, you can schedule runs to occur at specific times or execute them immediately after creation.
+For repeatable tasks, you configure a pipeline run to execute on a recurring basis by scheduling a pipeline run. 
 
 .Prerequisites
-* You have installed the OpenShift Pipelines operator.
 * You have logged in to {productname-long}.
 ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
@@ -19,31 +18,31 @@ endif::[]
 * You have imported a pipeline to an active pipeline server.
 
 .Procedure
-. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Runs*.
 +
-The *Pipelines* page opens.
-. From the *Project* list, select the project that you want to create a run for.
-. Click the action menu (*&#8942;*) beside the relevant pipeline and click *Create run*.
+The *Runs* page opens.
+. From the *Project* list, select the project that you want to schedule a run for.
+. Click the *Schedules* tab.
+. Click *Schedule run*. 
 +
-The *Create run* page opens.
-. In the *Name* field, enter a name for the run.
-. In the *Description* field, enter a description for the run.
-. From the *Pipeline* list, select the pipeline that you want to create a run for. Alternatively, to create a new pipeline, click *Create new pipeline* and complete the relevant fields in the *Import pipeline* dialog.
-. From the *Pipeline version* list, select the pipeline version to create a run for. Alternatively, to upload a new version, click *Upload new version* and complete the relevant fields in the *Upload new version* dialog.
-. Configure the run type by performing one of the following sets of actions:
-* Select *Run once immediately after creation* to specify the run executes once, and immediately after its creation.
-* Select *Schedule recurring run* to schedule the run to recur.
-... Configure the run's trigger type.
-.... Select *Periodic* to specify an execution frequency. Enter a numerical value and select an execution frequency from the list.
-.... Select *Cron* to specify the execution schedule in `cron` format. This creates a cron job to execute the run. Click the *Copy* button (image:images/osd-copy.png[]) to copy the cron job schedule to the clipboard. The field furthest to the left represents seconds. For more information about scheduling tasks using the supported `cron` format, see link:https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format[Cron Expression Format].
-... Configure the run's duration.
-.... Select the *Start date* check box to specify a start date for the run. Select the run's start date using the *Calendar* and the start time from the list of times.
-.... Select the *End date* check box to specify an end date for the run. Select the run's end date using the *Calendar* and the end time from the list of times.
-. Configure the input parameters for the run by selecting the parameters from the list.
-. Click *Create*.
+The *Schedule run* page opens.
+. Configure the run that you are scheduling:
+.. In the *Name* field, enter a name for the run.
+.. In the *Description* field, enter a description for the run.
+.. From the *Trigger type* list, select one of the following options:
+* Select *Periodic* to specify an execution frequency. In the *Run every* field, enter a numerical value and select an execution frequency from the list.
+* Select *Cron* to specify the execution schedule in `cron` format. This creates a cron job to execute the run. Click the *Copy* button (image:images/osd-copy.png[]) to copy the cron job schedule to the clipboard. The field furthest to the left represents seconds. For more information about scheduling tasks using the supported `cron` format, see link:https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format[Cron Expression Format].
+.. In the *Maximum concurrent runs* field, specify the number of runs that can execute concurrently, from a range of one to ten.  
+.. Click the toggle in the *Start date* field to specify a start date for the run. Select a start date using the *Calendar* and the start time from the list of times.
+.. Click the toggle in the *End date* field to specify an end date for the run. Select an end date using the *Calendar* and the end time from the list of times.
+.. Click the toggle in the *Catch up* field to enable or disable catch up runs. You can use catch up runs to ensure your pipeline runs do not permanently fall behind schedule when paused. For example, if you re-enable a paused recurring run, the run scheduler backfills each missed run interval.
+.. From the *Pipeline* list, select the pipeline that you want to create a run for. Alternatively, to create a new pipeline, click *Create new pipeline* and complete the relevant fields in the *Import pipeline* dialog.
+.. From the *Pipeline version* list, select the pipeline version to create a run for. Alternatively, to upload a new version, click *Upload new version* and complete the relevant fields in the *Upload new version* dialog.
+.. Configure the input parameters for the run by selecting the parameters from the list.
+.. Click *Schedule run*.
 
 .Verification
-* The pipeline run that you created is shown in the *Scheduled* tab on the *Runs* page.
+* The pipeline run that you created is shown in the *Schedules* tab on the *Runs* page.
 
 //[role='_additional-resources']
 //.Additional resources

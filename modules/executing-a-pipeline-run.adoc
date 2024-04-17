@@ -1,0 +1,40 @@
+:_module-type: PROCEDURE
+
+[id="executing-a-pipeline-run_{context}"]
+= Executing a pipeline run
+
+[role='_abstract']
+You can instantiate a single execution of a pipeline by creating an active pipeline run that executes immediately after creation.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a configured pipeline server.
+* You have imported a pipeline to an active pipeline server.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Runs*.
++
+The *Runs* page opens.
+. From the *Project* list, select the project that you want to create a run for.
+. Click *Create run*.
++
+The *Create run* page opens.
+. Configure the run:
+.. In the *Name* field, enter a name for the run.
+.. In the *Description* field, enter a description for the run.
+.. From the *Pipeline* list, select the pipeline that you want to create a run for. Alternatively, to create a new pipeline, click *Create new pipeline* and complete the relevant fields in the *Import pipeline* dialog.
+.. From the *Pipeline version* list, select the pipeline version to create a run for. Alternatively, to upload a new version, click *Upload new version* and complete the relevant fields in the *Upload new version* dialog.
+.. Configure the input parameters for the run by selecting the parameters from the list.
+.. Click *Create run*.
+
+.Verification
+* The pipeline run that you created is displayed in the *Active* tab on the *Runs* page.
+
+//[role='_additional-resources']
+//.Additional resources
