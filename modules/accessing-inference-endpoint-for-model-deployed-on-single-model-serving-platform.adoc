@@ -1,0 +1,120 @@
+:_module-type: PROCEDURE
+
+[id="accessing-inference-endpoint-for-deployed-model_{context}"]
+= Accessing the inference endpoint for a deployed model
+
+[role='_abstract']
+To make inference requests to your deployed model, you must know how to access the inference endpoint that is available.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have deployed a model by using the single-model serving platform.
+* If you enabled token authorization for your deployed model, you have the associated token value.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data Science Projects* page opens.
+. Click the name of the project that contains your deployed model.
++
+A project details page opens.
+. Click the *Models* tab.
+. In the *Models and model servers* list, expand the section for your model.
++
+The inference endpoint for the model is shown in the *Inference endpoint* field.
+. Depending on what action you want to perform with the model (and if the model supports that action), copy the inference endpoint shown and then add one of the following paths to the end of the URL:
++
+--
+*Caikit TGIS ServingRuntime for KServe*
+
+* `:443/api/v1/task/text-generation`
+* `:443/api/v1/task/server-streaming-text-generation`
+// * `:443/api/v1/task/text-classification`
+// * `:443/api/v1/task/token-classification`
+
+*TGIS Standalone ServingRuntime for KServe*
+
+* `:443 fmaas.GenerationService/Generate`
+* `:443 fmaas.GenerationService/GenerateStream`
++
+NOTE: To query the endpoint for the TGIS standalone runtime, you must also download the files in the `proto` directory of the IBM link:https://github.com/IBM/text-generation-inference[text-generation-inference^] repository.
+
+*OpenVINO Model Server*
+
+* `/v2/models/<model-name>/infer`
+
+As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
+--
+
+. Use the endpoint to make API requests to your deployed model, as shown in the following example commands.
+
+ifdef::upstream[]
++
+--
+*Caikit TGIS ServingRuntime for KServe*
+[source,subs="+quotes"]
+----
+curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' \
+https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation \
+-H 'Authorization: Bearer __<token>__' <1>
+----
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+
+*TGIS Standalone ServingRuntime for KServe*
+[source]
+----
+grpcurl -proto text-generation-inference/proto/generation.proto -d \
+'{"requests": [{"text":"<text>"}]}' \
+-H 'mm-model-id: <model_name>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate \
+-H 'Authorization: Bearer __<token>__' <1>
+----
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+
+*OpenVINO Model Server*
+[source]
+----
+curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d \
+'{ "model_name": "<model_name>", \
+"inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' \
+-H 'Authorization: Bearer __<token>__' <1>
+----
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+--
+endif::[]
+ifdef::self-managed,cloud-service[]
++
+--
+*Caikit TGIS ServingRuntime for KServe*
+[source]
+----
+curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation -H 'Authorization: Bearer __<token>__'  <1>
+----
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+
+*TGIS Standalone ServingRuntime for KServe*
+[source]
+----
+grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'mm-model-id: <model_name>' -H 'Authorization: Bearer __<token>__' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate  <1>
+----
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+
+*OpenVINO Model Server*
+[source]
+----
+curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer __<token>__'  <1>
+----
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+--
+endif::[]
+
+[role='_additional-resources']
+.Additional resources
+* link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]
+* link:https://caikit.readthedocs.io/en/latest/autoapi/caikit/index.html[Caikit API documentation^]
+* link:https://docs.openvino.ai/2023.3/ovms_docs_rest_api_kfs.html[OpenVINO KServe-compatible REST API documentation^]
