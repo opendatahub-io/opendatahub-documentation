@@ -51,42 +51,42 @@ A project details page opens.
 --
 +
 The *Deploy model* dialog opens.
-. Configure properties for deploying your model as follows:
-.. In the *Model name* field, enter a unique name for the model that you are deploying.
-.. In the *Serving runtime* field, select an enabled runtime.
-.. From the *Model framework* list, select a value.
-.. In the *Number of model replicas to deploy* field, specify a value.
-.. From the *Model server size* list, select a value.
-.. To require token authorization for inference requests to the deployed model, perform the following actions:
-... Select *Require token authorization*.
-... In the *Service account name* field, enter the service account name that the token will be generated for.
-.. To specify the location of your model, perform one of the following sets of actions:
+
+. In the *Model name* field, enter a unique name for the model that you are deploying.
+. In the *Serving runtime* field, select an enabled runtime.
+. From the *Model framework* list, select a value.
+. In the *Number of model replicas to deploy* field, specify a value.
+. From the *Model server size* list, select a value.
+. To require token authorization for inference requests to the deployed model, perform the following actions:
+.. Select *Require token authorization*.
+.. In the *Service account name* field, enter the service account name that the token will be generated for.
+. To specify the location of your model, perform one of the following sets of actions:
 +
 --
 * *To use an existing data connection*
-... Select *Existing data connection*.
-... From the *Name* list, select a data connection that you previously defined.
-... In the *Path* field, enter the folder path that contains the model in your specified data source.
+.. Select *Existing data connection*.
+.. From the *Name* list, select a data connection that you previously defined.
+.. In the *Path* field, enter the folder path that contains the model in your specified data source.
 ifdef::self-managed,cloud-service[]
 +
 IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
 endif::[]
 
 * *To use a new data connection*
-... To define a new data connection that your model can access, select *New data connection*.
-... In the *Name* field, enter a unique name for the data connection.
-... In the *Access key* field, enter the access key ID for your S3-compatible object storage provider.
-... In the *Secret key* field, enter the secret access key for the S3-compatible object storage account that you specified.
-... In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
-... In the *Region* field, enter the default region of your S3-compatible object storage account.
-... In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
-... In the *Path* field, enter the folder path in your S3-compatible object storage that contains your data file.
+.. To define a new data connection that your model can access, select *New data connection*.
+.. In the *Name* field, enter a unique name for the data connection.
+.. In the *Access key* field, enter the access key ID for your S3-compatible object storage provider.
+.. In the *Secret key* field, enter the secret access key for the S3-compatible object storage account that you specified.
+.. In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
+.. In the *Region* field, enter the default region of your S3-compatible object storage account.
+.. In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
+.. In the *Path* field, enter the folder path in your S3-compatible object storage that contains your data file.
 ifdef::self-managed,cloud-service[]
 +
 IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
 endif::[]
 --
-.. Click *Deploy*.
+. Click *Deploy*.
 
 .Verification
 * Confirm that the deployed model is shown in the *Models* tab for the project, and on the *Model Serving* page of the dashboard with a checkmark in the *Status* column.
