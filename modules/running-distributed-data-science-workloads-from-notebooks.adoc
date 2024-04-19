@@ -4,15 +4,17 @@
 = Running distributed data science workloads from notebooks
 
 [role='_abstract']
-To run a distributed data science workload from a notebook, you must first provide the link to your Ray cluster image.
+To run a distributed data science workload from a notebook, you must first provide the link to your Ray cluster image and to your Local Queue.
 
 .Prerequisites
 ifndef::upstream[]
+* You have created the required Kueue resources as described in link:{odhdocshome}/working-on-data-science-projects/#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 * You have created a data science project that contains a workbench that is running one of the default notebook images, for example, the *Standard Data Science* notebook.
 See the table in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/creating-and-importing-notebooks_notebooks#notebook-images-for-data-scientists_notebooks[Notebook images for data scientists] for a complete list of default notebook images.
 endif::[]
 ifdef::upstream[]
+* You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working_on_data_science_projects/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 * You have created a data science project that contains a workbench that is running one of the default notebook images, for example, the *Standard Data Science* notebook.
 See the table in link:{odhdocshome}/working_on_data_science_projects/#notebook-images-for-data-scientists_notebooks[Notebook images for data scientists] for a complete list of default notebook images.
@@ -20,7 +22,11 @@ endif::[]
 * You have launched your notebook server and logged in to Jupyter.
 
 .Procedure
-. To access the demo notebooks, clone the `codeflare-sdk` repository as follows:
+. Download the demo notebooks provided by the CodeFlare SDK.
+The demo notebooks provide guidelines for how to use the CodeFlare stack in your own notebooks.
++
+To access the demo notebooks, clone the `codeflare-sdk` repository as follows:
+
 .. In the JupyterLab interface, click *Git > Clone a Repository*.
 .. In the "Clone a repo" dialog, enter `https://github.com/project-codeflare/codeflare-sdk.git` and then click *Clone*.
 The `codeflare-sdk` repository is listed in the left navigation pane.
@@ -29,6 +35,14 @@ The `codeflare-sdk` repository is listed in the left navigation pane.
 .. Double-click *demo-notebooks*, and then double-click *guided-demos*.
 .. Update each example demo notebook as follows:
 ** Replace the links to the example community image with a link to your Ray cluster image.
+** If you have not configured a default local queue as described in link:{odhdocshome}/working-on-data-science-projects/#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads], update the `ClusterConfiguration` code to specify the Local Queue for the Ray cluster, as follows:
++
+.Example local queue
+[source,bash]
+----
+local_queue="local_queue_name"
+----
+
 ** Set `instascale` to `False`.
 ifndef::upstream[]
 InstaScale is not deployed in the Technology Preview version of the distributed workloads feature.

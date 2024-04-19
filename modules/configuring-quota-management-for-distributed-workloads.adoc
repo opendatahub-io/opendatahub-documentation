@@ -1,0 +1,122 @@
+:_module-type: PROCEDURE
+
+[id="configuring-quota-management-for-distributed-workloads_{context}"]
+= Configuring quota management for distributed workloads
+
+[role='_abstract']
+Configure quotas for distributed workloads on a cluster, so that you can share resources between several data science projects.
+
+.Prerequisites
+ifdef::upstream,self-managed[]
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to OpenShift with the `cluster-admin` role.
+endif::[]
+* You have sufficient resources. In addition to the base {productname-short} resources, you need 1.1 vCPU and 1.6 GB memory to deploy the distributed workloads infrastructure.
+* The resources are physically available in the cluster.
++
+[NOTE]
+====
+{productname-short} currently supports only a single Cluster Queue per cluster (that is, homogenous clusters), and only empty resource flavors.
+For more information about Kueue resources, see the link:https://kueue.sigs.k8s.io/docs/concepts/[Kueue documentation].
+====
+
+
+.Procedure
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, click *Operators* -> *Installed Operators*.
+endif::[]
+ifdef::self-managed,cloud-service[]
+. Search for the *Red Hat OpenShift AI* Operator, and then click the Operator name to open the Operator details page.
+endif::[]
+ifdef::upstream[]
+. Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
+endif::[]
+. Click the *Data Science Cluster* tab.
+. Click the default instance name to open the instance details page.
+ifndef::upstream[]
++
+[NOTE]
+====
+Starting from {productname-long} 2.4, the default instance name for new installations is *default-dsc*.
+The default instance name for earlier installations, *rhods*, is preserved during upgrade.
+====
+endif::[]
+. Click the *YAML* tab to show the instance specifications.
+. Define an empty Kueue resource flavor, as follows:
++
+.Empty Kueue resource flavor
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ResourceFlavor
+metadata:
+  name: default-flavor
+----
+
+. Create a Cluster Queue to manage the resource flavor that you created in the previous step.
+Define quotas for the resource flavor's compute resources, including CPU, memory, and GPUs, as shown in the following example:
++
+.Example cluster queue
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "cluster-queue"
+spec:
+  namespaceSelector: {} # match all.
+  resourceGroups:
+  - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
+	flavors:
+	- name: "default-flavor"
+  	  resources:
+   	  - name: "cpu"
+    	nominalQuota: 9
+  	  - name: "memory"
+    	nominalQuota: 36Gi
+  	  - name: ""nvidia.com/gpu""
+    	nominalQuota: 5
+----
++
+This example configures a quota of 9 CPUs, 36 Gi memory, and 5 NVIDIA GPUs for the cluster queue.
+The Cluster Queue will start a distributed workload only if the total required resources are within these quota limits.
+
+. Create a Local Queue that points to your Cluster Queue, as follows:
++
+.Example local queue
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: LocalQueue
+metadata:
+  namespace: test
+  name: local-queue-test
+  annotations:
+	kueue.x-k8s.io/default-queue: 'true'
+spec:
+  clusterQueue: cluster-queue
+----
++
+The Cluster Queue allocates the resources to run distributed workloads in the Local Queue.
+In this example, the annotation defines this queue as the default queue.
+Therefore, the distributed workload is submitted to this queue if no `local_queue` value is specified in the `ClusterConfiguration` code in the data science pipeline or Jupyter notebook.
+
+
+.Verification
+Check the status of the queue in a project, as follows:
+
+.Check queue status
+[source,subs="+quotes"]
+----
+$ oc get -n __<project-name>__ localqueues
+----
+
+
+[role='_additional-resources']
+.Additional resources
+* link:https://kueue.sigs.k8s.io/docs/concepts/[Kueue documentation]

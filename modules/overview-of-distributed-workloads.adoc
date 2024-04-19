@@ -12,6 +12,7 @@ Distributed workloads provide the following benefits:
 * You can iterate faster and experiment more frequently because of the reduced processing time.
 * You can use larger datasets, which can lead to more accurate models.
 * You can use complex models that could not be trained on a single node.
+* You can submit distributed workloads at any time, and the system will schedule the distributed workload when the required resources are available.
 
 The distributed workloads infrastructure includes the following components:
 
@@ -24,8 +25,11 @@ Defines and controls the remote distributed compute jobs and infrastructure for 
 KubeRay::
 Manages remote Ray clusters on OpenShift for running distributed compute workloads
 
+Kueue::
+Manages quotas and how distributed workloads consume them, and manages the queueing of distributed workloads with respect to quotas
 
-You can run distributed data science workloads from data science pipelines or from notebooks.
+
+You can run distributed data science workloads from data science pipelines or from Jupyter notebooks.
 
 
 
