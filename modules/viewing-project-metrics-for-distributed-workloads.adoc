@@ -1,0 +1,58 @@
+:_module-type: PROCEDURE
+
+[id="viewing-project-metrics-for-distributed-workloads_{context}"]
+= Viewing project metrics for distributed workloads
+
+[role='_abstract']
+
+In {productname-short}, you can view the following project metrics for distributed workloads:
+
+* *CPU* - The number of CPU cores that are currently being used by all distributed workloads in the selected project.
+* *Memory* - The amount of memory (GiB) that is currently being used by all distributed workloads in the selected project.
+
+You can use these metrics to monitor the progress of the distributed workloads, and to assess whether the project resources are allocated correctly.
+
+.Prerequisites
+* You have installed {productname-long}.
+
+* On the OpenShift cluster where {productname-short} is installed, user workload monitoring is enabled.
+
+* You have logged in to {productname-short}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* Your data science project contains distributed workloads.
+
+.Procedure
+
+. In the {productname-short} left navigation pane, click *Distributed Workloads Metrics*.
+
+. From the *Project* list, select the project that contains the distributed workloads that you want to monitor.
+
+. Click the *Project metrics* tab.
+
+. Optional: From the *Refresh interval* list, select a value to specify how frequently the graphs on the metrics page are refreshed (to show the latest data).
+You can select one of these values: 15 seconds, 30 seconds, 1 minute, 5 minutes, 15 minutes, 30 minutes, 1 hour, 2 hours, or 1 day.
+
+. In the *Requested resources* section, review the *CPU* and *Memory* requested by the distributed workloads in the selected project.
+You can also see the CPU and memory currently requested by all projects (including projects that you cannot access), and the total shared quota for all projects (provided by the cluster queue).
+For each resource type (*CPU* and *Memory*), subtract the *Requested by all projects* value from the *Total shared quota* value to calculate how much of that resource quota is available for your project.
+
+. Scroll down to view the *Top resource-consuming distributed workloads* section to identify the top 5 distributed workloads that are consuming the most CPU and the top 5 distributed workloads that are consuming the most memory, and how much CPU or memory is consumed in each case.
+
+. Scroll down to view the *Distributed workload resource metrics* table, which lists all of the distributed workloads in the selected project, and the current status of each distributed workload.
+In each table entry, progress bars indicate how much of the requested CPU and memory is currently being used by this distributed workload.
+To see numeric values for the actual usage and requested usage for CPU (measured in cores) and memory (measured in GiB), hover the cursor over each progress bar.
+Compare the actual usage with the requested usage to assess the distributed workload configuration.
+If necessary, reconfigure the distributed workload to request fewer resources or more resources.
+
+
+.Verification
+
+On the *Project metrics* tab, the graphs and table provide resource-usage data for the distributed workloads in the selected project.
+
+//.See also
+//Viewing HTTP request metrics for a deployed model

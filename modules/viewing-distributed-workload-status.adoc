@@ -1,0 +1,54 @@
+:_module-type: PROCEDURE
+
+[id="viewing-project-metrics-for-distributed-workloads_{context}"]
+= Viewing distributed workload status
+
+[role='_abstract']
+
+In {productname-short}, you can view the status of all distributed workloads in the selected project.
+
+You can use these metrics to monitor the progress of the distributed workloads, and to identify corrective action when necessary.
+
+.Prerequisites
+* You have installed {productname-long}.
+
+* On the OpenShift cluster where {productname-short} is installed, user workload monitoring is enabled.
+
+* You have logged in to {productname-short}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* Your data science project contains distributed workloads.
+
+.Procedure
+
+. In the {productname-short} left navigation pane, click *Distributed Workloads Metrics*.
+
+. From the *Project* list, select the project that contains the distributed workloads that you want to monitor.
+
+. Click the *Distributed workload status* tab.
+
+. Optional: From the *Refresh interval* list, select a value to specify how frequently the graphs on the metrics page are refreshed (to show the latest data).
+You can select one of these values: 15 seconds, 30 seconds, 1 minute, 5 minutes, 15 minutes, 30 minutes, 1 hour, 2 hours, or 1 day.
+
+. In the *Status overview* section, review a summary of the status of all distributed workloads in the selected project.
+The status can be *Pending*, *Inadmissible*, *Admitted*, *Running*, *Evicted*, *Succeeded*, or *Failed*.
+
+. Scroll down to view the *Distributed workloads* table, which lists all of the distributed workloads in the selected project.
+The table provides the priority, status, creation date, and latest message for each distributed workload.
++
+The latest message provides more information about the current status of the distributed workload.
+Review the latest message to identify any corrective action needed.
+For example, a distributed workload might be *Inadmissible* because the requested resources exceed the available resources.
+In such cases, you can either reconfigure the distributed workload to reduce the requested resources, or reconfigure the cluster queue for the project to increase the resource quota.
+
+
+.Verification
+
+On the *Distributed workload status* tab, the graph provides a summarized view of the status of all distributed workloads in the selected project, and the table provides more details about the status of each distributed workload.
+
+//.See also
+//Viewing HTTP request metrics for a deployed model
