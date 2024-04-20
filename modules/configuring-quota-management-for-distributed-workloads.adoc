@@ -7,11 +7,17 @@
 Configure quotas for distributed workloads on a cluster, so that you can share resources between several data science projects.
 
 .Prerequisites
-ifdef::upstream,self-managed[]
-* You have logged in to {openshift-platform} with the `cluster-admin` role.
+ifdef::cloud-service[]
+* You have cluster administrator privileges for your OpenShift cluster.
+endif::[]
+ifdef::self-managed[]
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+endif::[]
+ifdef::self-managed[]
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI].
 endif::[]
 ifdef::cloud-service[]
-* You have logged in to OpenShift with the `cluster-admin` role.
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.openshift.com/dedicated/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI] (Red Hat OpenShift Dedicated) or link:https://docs.openshift.com/rosa/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI] (Red Hat OpenShift Service on AWS).
 endif::[]
 * You have sufficient resources. In addition to the base {productname-short} resources, you need 1.1 vCPU and 1.6 GB memory to deploy the distributed workloads infrastructure.
 * The resources are physically available in the cluster.
@@ -24,6 +30,13 @@ For more information about Kueue resources, see the link:https://kueue.sigs.k8s.
 
 
 .Procedure
+
+. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
 
 . Create an empty Kueue resource flavor, as follows:
 .. Create a file called `default_flavor.yaml` and populate it with the following content:
