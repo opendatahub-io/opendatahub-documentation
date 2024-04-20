@@ -18,36 +18,15 @@ endif::[]
 +
 [NOTE]
 ====
-{productname-short} currently supports only a single Cluster Queue per cluster (that is, homogenous clusters), and only empty resource flavors.
+{productname-short} currently supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
 For more information about Kueue resources, see the link:https://kueue.sigs.k8s.io/docs/concepts/[Kueue documentation].
 ====
 
 
 .Procedure
-ifdef::upstream,self-managed[]
-. In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
-endif::[]
-ifdef::cloud-service[]
-. In the OpenShift console, click *Operators* -> *Installed Operators*.
-endif::[]
-ifdef::self-managed,cloud-service[]
-. Search for the *Red Hat OpenShift AI* Operator, and then click the Operator name to open the Operator details page.
-endif::[]
-ifdef::upstream[]
-. Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
-endif::[]
-. Click the *Data Science Cluster* tab.
-. Click the default instance name to open the instance details page.
-ifndef::upstream[]
-+
-[NOTE]
-====
-Starting from {productname-long} 2.4, the default instance name for new installations is *default-dsc*.
-The default instance name for earlier installations, *rhods*, is preserved during upgrade.
-====
-endif::[]
-. Click the *YAML* tab to show the instance specifications.
-. Define an empty Kueue resource flavor, as follows:
+
+. Create an empty Kueue resource flavor, as follows:
+.. Create a file called `default_flavor.yaml` and populate it with the following content:
 +
 .Empty Kueue resource flavor
 [source,bash]
@@ -57,9 +36,15 @@ kind: ResourceFlavor
 metadata:
   name: default-flavor
 ----
+.. Apply the configuration to create the `default-flavor` object:
++
+[source,bash]
+----
+$ oc apply -f default_flavor.yaml
+----
 
-. Create a Cluster Queue to manage the resource flavor that you created in the previous step.
-Define quotas for the resource flavor's compute resources, including CPU, memory, and GPUs, as shown in the following example:
+. Create a cluster queue to manage the empty Kueue resource flavor, as follows:
+.. Create a file called `cluster_queue.yaml` and populate it with the following content:
 +
 .Example cluster queue
 [source,bash]
@@ -69,7 +54,7 @@ kind: ClusterQueue
 metadata:
   name: "cluster-queue"
 spec:
-  namespaceSelector: {} # match all.
+  namespaceSelector: {}  # match all.
   resourceGroups:
   - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
 	flavors:
@@ -79,14 +64,21 @@ spec:
     	nominalQuota: 9
   	  - name: "memory"
     	nominalQuota: 36Gi
-  	  - name: ""nvidia.com/gpu""
+  	  - name: "nvidia.com/gpu"
     	nominalQuota: 5
 ----
 +
-This example configures a quota of 9 CPUs, 36 Gi memory, and 5 NVIDIA GPUs for the cluster queue.
-The Cluster Queue will start a distributed workload only if the total required resources are within these quota limits.
+.. Replace the example quota values (9 CPUs, 36 GiB memory, and 5 NVIDIA GPUs) with the appropriate values for your cluster queue.
+The cluster queue will start a distributed workload only if the total required resources are within these quota limits.
+.. Apply the configuration to create the `cluster-queue` object:
++
+[source,bash]
+----
+$ oc apply -f cluster_queue.yaml
+----
 
-. Create a Local Queue that points to your Cluster Queue, as follows:
+. Create a local queue that points to your cluster queue, as follows:
+.. Create a file called `local_queue.yaml` and populate it with the following content:
 +
 .Example local queue
 [source,bash]
@@ -97,20 +89,26 @@ metadata:
   namespace: test
   name: local-queue-test
   annotations:
-	kueue.x-k8s.io/default-queue: 'true'
+	kueue.x-k8s.io/default-queue: 'true' <1>
 spec:
   clusterQueue: cluster-queue
 ----
+<1> Defines this queue as the default queue; distributed workloads are submitted to this queue if no `local_queue` value is specified in the `ClusterConfiguration` code in the data science pipeline or Jupyter notebook
+.. Update the `namespace` value to specify the same namespace as in the `ClusterConfiguration` code that creates the Ray cluster.
+.. Optional: Update the `name` value accordingly.
+.. Apply the configuration to create the local-queue object:
 +
-The Cluster Queue allocates the resources to run distributed workloads in the Local Queue.
-In this example, the annotation defines this queue as the default queue.
-Therefore, the distributed workload is submitted to this queue if no `local_queue` value is specified in the `ClusterConfiguration` code in the data science pipeline or Jupyter notebook.
+[source,bash]
+----
+$ oc apply -f local_queue.yaml
+----
++
+The cluster queue allocates the resources to run distributed workloads in the local queue.
 
 
 .Verification
 Check the status of the queue in a project, as follows:
 
-.Check queue status
 [source,subs="+quotes"]
 ----
 $ oc get -n __<project-name>__ localqueues
