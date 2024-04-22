@@ -62,7 +62,7 @@ from kfp import dsl
 
 def ray_fn(openshift_server: str, openshift_token: str): <1>
    import ray
-   from codeflare_sdk import Cluster, ClusterConfiguration, TokenAuthentication
+   from codeflare_sdk import Cluster, ClusterConfiguration, TokenAuthentication, generate_cert
 
 
    auth = TokenAuthentication( <2>
@@ -96,6 +96,10 @@ def ray_fn(openshift_server: str, openshift_token: str): <1>
    ray_dashboard_uri = cluster.cluster_dashboard_uri()
    ray_cluster_uri = cluster.cluster_uri()
    print(ray_dashboard_uri, ray_cluster_uri)
+
+   # Enable secure connection to the Ray head pod by exporting the environment variables required for Ray mTLS communication
+   generate_cert.generate_tls_cert("raytest", "pipeline-example")
+   generate_cert.export_env("raytest", "pipeline-example")
 
 
    # Before proceeding, ensure that the cluster exists and that its URI contains a value
