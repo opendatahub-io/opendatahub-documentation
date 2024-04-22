@@ -34,20 +34,33 @@ endif::[]
 
 . Click the *Project metrics* tab.
 
-. Optional: From the *Refresh interval* list, select a value to specify how frequently the graphs on the metrics page are refreshed (to show the latest data).
+. Optional: From the *Refresh interval* list, select a value to specify how frequently the graphs on the metrics page are refreshed to show the latest data.
++
 You can select one of these values: 15 seconds, 30 seconds, 1 minute, 5 minutes, 15 minutes, 30 minutes, 1 hour, 2 hours, or 1 day.
 
-. In the *Requested resources* section, review the *CPU* and *Memory* requested by the distributed workloads in the selected project.
-You can also see the CPU and memory currently requested by all projects (including projects that you cannot access), and the total shared quota for all projects (provided by the cluster queue).
-For each resource type (*CPU* and *Memory*), subtract the *Requested by all projects* value from the *Total shared quota* value to calculate how much of that resource quota is available for your project.
+. In the *Requested resources* section, review the *CPU* and *Memory* graphs to identify the resources requested by distributed workloads as follows:
++
+* Requested by the selected project
+* Requested by all projects, including the selected project and projects that you cannot access
+* Total shared quota for all projects, as provided by the cluster queue
 
-. Scroll down to view the *Top resource-consuming distributed workloads* section to identify the top 5 distributed workloads that are consuming the most CPU and the top 5 distributed workloads that are consuming the most memory, and how much CPU or memory is consumed in each case.
++
+For each resource type (*CPU* and *Memory*), subtract the *Requested by all projects* value from the *Total shared quota* value to calculate how much of that resource quota has not been requested and is available for all projects.
 
-. Scroll down to view the *Distributed workload resource metrics* table, which lists all of the distributed workloads in the selected project, and the current status of each distributed workload.
+. Scroll down to the *Top resource-consuming distributed workloads* section to review the following graphs:
++
+* Top 5 distributed workloads that are consuming the most CPU
+* Top 5 distributed workloads that are consuming the most memory
+
++
+You can also identify how much CPU or memory is consumed in each case.
+
+. Scroll down to view the *Distributed workload resource metrics* table, which lists all of the distributed workloads in the selected project, and indicates the current resource usage and the status of each distributed workload.
++
 In each table entry, progress bars indicate how much of the requested CPU and memory is currently being used by this distributed workload.
 To see numeric values for the actual usage and requested usage for CPU (measured in cores) and memory (measured in GiB), hover the cursor over each progress bar.
 Compare the actual usage with the requested usage to assess the distributed workload configuration.
-If necessary, reconfigure the distributed workload to request fewer resources or more resources.
+If necessary, reconfigure the distributed workload to reduce or increase the requested resources.
 
 
 .Verification
