@@ -19,7 +19,6 @@ endif::[]
 ifdef::upstream[]
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working_on_data_science_projects/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 endif::[]
-* You have installed the {org-name} OpenShift Pipelines Operator, as described in link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/cicd/pipelines#installing-pipelines[Installing OpenShift Pipelines].
 * You have access to S3-compatible object storage.
 * You have logged in to {productname-long}.
 * You have created a data science project.
@@ -33,12 +32,18 @@ ifdef::upstream[]
 . Create a data connection to connect the object storage to your data science project, as described in link:{odhdocshome}/working_on_data_science_projects/#adding-a-data-connection-to-your-data-science-project_nb-server[Adding a data connection to your data science project].
 . Configure a pipeline server to use the data connection, as described in link:{odhdocshome}/working_on_data_science_projects/#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
 endif::[]
-. Create the data science pipeline as follows:
-.. Install the `kfp-tekton` Python package, which is required for all pipelines:
+. Optional: Define a default `LocalQueue` for the Ray cluster by adding the following annotation to the configuration details for that `LocalQueue`:
 +
 [source,bash]
 ----
-$ pip install kfp-tekton
+"kueue.x-k8s.io/default-queue": "true"
+----
+. Create the data science pipeline as follows:
+.. Install the `kfp` Python package, which is required for all pipelines:
++
+[source,bash]
+----
+$ pip install kfp
 ----
 .. Install any other dependencies that are required for your pipeline.
 .. Build your data science pipeline in Python code.
@@ -46,13 +51,18 @@ For example, create a file named `compile_example.py` with the following content
 +
 [source,Python]
 ----
-from kfp import components, dsl
+from kfp import dsl
 
 
-def ray_fn(openshift_server: str, openshift_token: str) -> int: <1>
+@dsl.component(
+    base_image="registry.redhat.io/ubi8/python-39:latest",
+    packages_to_install=['codeflare-sdk']
+)
+
+
+def ray_fn(openshift_server: str, openshift_token: str): <1>
    import ray
-   from codeflare_sdk.cluster.auth import TokenAuthentication
-   from codeflare_sdk.cluster.cluster import Cluster, ClusterConfiguration
+   from codeflare_sdk import Cluster, ClusterConfiguration, TokenAuthentication, generate_cert
 
 
    auth = TokenAuthentication( <2>
@@ -70,14 +80,15 @@ def ray_fn(openshift_server: str, openshift_token: str) -> int: <1>
            max_memory=1,
            num_gpus=0,
            image="quay.io/project-codeflare/ray:latest-py39-cu118", <4>
-           instascale=False, <5>
+           local_queue="local_queue_name", <5>
+           instascale=False, <6>
        )
    )
 
 
    print(cluster.status())
-   cluster.up() <6>
-   cluster.wait_ready() <7>
+   cluster.up() <7>
+   cluster.wait_ready() <8>
    print(cluster.status())
    print(cluster.details())
 
@@ -85,6 +96,10 @@ def ray_fn(openshift_server: str, openshift_token: str) -> int: <1>
    ray_dashboard_uri = cluster.cluster_dashboard_uri()
    ray_cluster_uri = cluster.cluster_uri()
    print(ray_dashboard_uri, ray_cluster_uri)
+
+   # Enable secure connection to the Ray head pod by exporting the environment variables required for Ray mTLS communication
+   generate_cert.generate_tls_cert("raytest", "pipeline-example")
+   generate_cert.export_env("raytest", "pipeline-example")
 
 
    # Before proceeding, ensure that the cluster exists and that its URI contains a value
@@ -96,7 +111,7 @@ def ray_fn(openshift_server: str, openshift_token: str) -> int: <1>
 
 
    @ray.remote
-   def train_fn(): <8>
+   def train_fn(): <9>
        # complex training function
        return 100
 
@@ -104,40 +119,38 @@ def ray_fn(openshift_server: str, openshift_token: str) -> int: <1>
    result = ray.get(train_fn.remote())
    assert 100 == result
    ray.shutdown()
-   cluster.down() <9>
+   cluster.down() <10>
    auth.logout()
    return result
 
 
-@dsl.pipeline( <10>
+@dsl.pipeline( <11>
    name="Ray Simple Example",
    description="Ray Simple Example",
 )
-def ray_integration(openshift_server, openshift_token):
-   ray_op = components.create_component_from_func(
-       ray_fn,
-       base_image='registry.redhat.io/ubi8/python-39:latest',
-       packages_to_install=["codeflare-sdk"],
-   )
-   ray_op(openshift_server, openshift_token)
 
 
-if __name__ == '__main__': <11>
-    from kfp_tekton.compiler import TektonCompiler
-    TektonCompiler().compile(ray_integration, 'compiled-example.yaml')
+def ray_integration(openshift_server: str, openshift_token: str): <12>
+   ray_fn(openshift_server=openshift_server, openshift_token=openshift_token)
+
+
+if __name__ == '__main__':
+    from kfp.compiler import Compiler
+    Compiler().compile(ray_integration, 'compiled-example.yaml')
 
 ----
 <1> Imports from the CodeFlare SDK the packages that define the cluster functions
 <2> Authenticates with the cluster by using values that you specify when creating the pipeline run
 <3> Specifies the Ray cluster resources: replace these example values with the values for your Ray cluster
 <4> Specifies the location of the Ray cluster image: if using a disconnected environment, replace the default value with the location for your environment
-<5> InstaScale is not supported in this release
-<6> Creates a Ray cluster using the specified image and configuration
-<7> Waits for the Ray cluster to be ready before proceeding
-<8> Replace the example details in this section with the details for your workload
-<9> Removes the Ray cluster when your workload is finished
-<10> Replace the example name and description with the values for your workload
-<11> Compiles the Python code and saves the output in a YAML file
+<5> Specifies the `LocalQueue` to which the Ray cluster will be submitted: if you configured a default `LocalQueue`, you can omit this line
+<6> InstaScale is not supported in this release
+<7> Creates a Ray cluster using the specified image and configuration
+<8> Waits for the Ray cluster to be ready before proceeding
+<9> Replace the example details in this section with the details for your workload
+<10> Removes the Ray cluster when your workload is finished
+<11> Replace the example name and description with the values for your workload
+<12> Compiles the Python code and saves the output in a YAML file
 
 .. Compile the Python file (in this example, the `compile_example.py` file):
 +
