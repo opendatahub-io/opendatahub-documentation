@@ -69,6 +69,8 @@ def ray_fn(openshift_server: str, openshift_token: str): <1>
        token=openshift_token, server=openshift_server, skip_tls=True
    )
    auth_return = auth.login()
+
+
    cluster = Cluster( <3>
        ClusterConfiguration(
            name="raytest",
@@ -98,7 +100,7 @@ def ray_fn(openshift_server: str, openshift_token: str): <1>
    print(ray_dashboard_uri, ray_cluster_uri)
 
    # Enable secure connection to the Ray head pod by exporting the environment variables required for Ray mTLS communication
-   generate_cert.generate_tls_cert("raytest", "pipeline-example")
+   generate_cert.generate_tls_cert("raytest", "pipeline-example") <9>
    generate_cert.export_env("raytest", "pipeline-example")
 
 
@@ -111,7 +113,7 @@ def ray_fn(openshift_server: str, openshift_token: str): <1>
 
 
    @ray.remote
-   def train_fn(): <9>
+   def train_fn(): <10>
        # complex training function
        return 100
 
@@ -119,18 +121,18 @@ def ray_fn(openshift_server: str, openshift_token: str): <1>
    result = ray.get(train_fn.remote())
    assert 100 == result
    ray.shutdown()
-   cluster.down() <10>
+   cluster.down() <11>
    auth.logout()
    return result
 
 
-@dsl.pipeline( <11>
+@dsl.pipeline( <12>
    name="Ray Simple Example",
    description="Ray Simple Example",
 )
 
 
-def ray_integration(openshift_server: str, openshift_token: str): <12>
+def ray_integration(openshift_server: str, openshift_token: str): <13>
    ray_fn(openshift_server=openshift_server, openshift_token=openshift_token)
 
 
@@ -140,17 +142,18 @@ if __name__ == '__main__':
 
 ----
 <1> Imports from the CodeFlare SDK the packages that define the cluster functions
-<2> Authenticates with the cluster by using values that you specify when creating the pipeline run
-<3> Specifies the Ray cluster resources: replace these example values with the values for your Ray cluster
+<2> Authenticates with the cluster by using values that you specify when creating the pipeline run; you can omit this section if the Ray cluster is configured to use the same namespace as the data science project
+<3> Specifies the Ray cluster configuration: replace these example values with the values for your Ray cluster
 <4> Specifies the location of the Ray cluster image: if using a disconnected environment, replace the default value with the location for your environment
-<5> Specifies the `LocalQueue` to which the Ray cluster will be submitted: if you configured a default `LocalQueue`, you can omit this line
+<5> Specifies the `LocalQueue` to which the Ray cluster will be submitted: you can omit this line if you configured a default `LocalQueue`
 <6> InstaScale is not supported in this release
 <7> Creates a Ray cluster using the specified image and configuration
 <8> Waits for the Ray cluster to be ready before proceeding
-<9> Replace the example details in this section with the details for your workload
-<10> Removes the Ray cluster when your workload is finished
-<11> Replace the example name and description with the values for your workload
-<12> Compiles the Python code and saves the output in a YAML file
+<9> Enables a secure connection for Ray cluster communication; mutual Transport Layer Security (mTLS) is enabled by default in the CodeFlare component in {productname-short}
+<10> Replace the example details in this section with the details for your workload
+<11> Removes the Ray cluster when your workload is finished
+<12> Replace the example name and description with the values for your workload
+<13> Compiles the Python code and saves the output in a YAML file
 
 .. Compile the Python file (in this example, the `compile_example.py` file):
 +
