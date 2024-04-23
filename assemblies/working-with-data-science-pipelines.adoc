@@ -19,6 +19,13 @@ ifdef::upstream[]
 You can also use the Elyra JupyterLab extension to create and run data science pipelines within JupyterLab. For more information, see link:{odhdocshome}/working_on_data_science_projects/#_working_with_pipelines_in_jupyterlab[Working with pipelines in JupyterLab].
 endif::[]
 
+ifdef::upstream[]
+From {productname-long} version 2.10.0, data science pipelines are based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0]. For more information, see link:{odhdocshome}/working-on-data-science-projects/#enabling-data-science-pipelines-2_ds-pipelines[Enabling Data Science Pipelines 2.0].
+endif::[]
+ifndef::upstream[]
+From {productname-short} version 2.9, data science pipelines are based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0]. For more information, see link:{rhoaidocshome}{default-format-url}working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#enabling-data-science-pipelines-2_ds-pipelines[Enabling Data Science Pipelines 2.0].
+endif::[]
+
 A data science pipeline in {productname-short} consists of the following components:
 
 * Pipeline server: A server that is attached to your data science project and hosts your data science pipeline.
@@ -29,16 +36,12 @@ A data science pipeline in {productname-short} consists of the following compone
 ** Triggered run: A previously executed pipeline run.
 ** Scheduled run: A pipeline run scheduled to execute at least once.
 
-This feature is based on Kubeflow Pipelines v1. Use the Kubeflow Pipelines SDK to build your data science pipeline in Python code. After you have built your pipeline, compile it into Tekton-formatted YAML code using kfp-tekton SDK (version 1.5.x only). The {productname-short} user interface enables you to track and manage pipelines and pipeline runs.
-
-ifdef::upstream[]
-Before you can use data science pipelines, you must install the Data Science Pipelines operator as described in link:https://github.com/opendatahub-io/data-science-pipelines-operator[Data Science Pipelines Operator].
-endif::[]
-ifndef::upstream[]
-Before you can use data science pipelines, you must install the OpenShift Pipelines operator. For more information about installing a compatible version of the OpenShift Pipelines operator, see link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/cicd/pipelines#op-release-notes[{org-name} OpenShift Pipelines release notes] and link:https://access.redhat.com/articles/6986416[{productname-long}: Supported Configurations].
-endif::[]
+This feature is based on Kubeflow Pipelines 2.0. Use the latest Kubeflow Pipelines 2.0 SDK to build your data science pipeline in Python code. After you have built your pipeline, use the SDK to compile it into an Intermediate Representation (IR) YAML file. The {productname-short} user interface enables you to track and manage pipelines and pipeline runs.
 
 You can store your pipeline artifacts in an S3-compatible object storage bucket so that you do not consume local storage. To do this, you must first configure write access to your S3 bucket on your storage account.
+
+//Enabling DSPv2
+include::modules/enabling-data-science-pipelines-2.adoc[leveloffset=+1]
 
 == Managing data science pipelines
 
@@ -119,7 +122,7 @@ include::modules/exporting-a-pipeline-in-jupyterlab.adoc[leveloffset=+2]
 
 [role='_additional-resources']
 == Additional resources
-* link:https://www.kubeflow.org/docs/components/pipelines/v1/[Kubeflow Pipelines v1 Documentation]
+* link:https://www.kubeflow.org/docs/components/pipelines/v2/[Kubeflow Pipelines 2.0 Documentation]
 ifndef::upstream[]
 * link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#working_with_pipelines_in_jupyterlab[Working with pipelines in JupyterLab].
 endif::[]
