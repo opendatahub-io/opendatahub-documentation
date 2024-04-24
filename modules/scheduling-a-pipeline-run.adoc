@@ -4,7 +4,7 @@
 = Scheduling a pipeline run
 
 [role='_abstract']
-For repeatable tasks, you configure a pipeline run to execute on a recurring basis by scheduling a pipeline run. 
+To repeatedly run a pipeline, you can create a scheduled pipeline run.
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -24,25 +24,23 @@ The *Runs* page opens.
 . From the *Project* list, select the project that you want to schedule a run for.
 . Click the *Schedules* tab.
 . Click *Schedule run*. 
-+
-The *Schedule run* page opens.
-. Configure the run that you are scheduling:
+. On the *Schedule run* page, configure the run that you are scheduling:
 .. In the *Name* field, enter a name for the run.
 .. In the *Description* field, enter a description for the run.
 .. From the *Trigger type* list, select one of the following options:
 * Select *Periodic* to specify an execution frequency. In the *Run every* field, enter a numerical value and select an execution frequency from the list.
 * Select *Cron* to specify the execution schedule in `cron` format. This creates a cron job to execute the run. Click the *Copy* button (image:images/osd-copy.png[]) to copy the cron job schedule to the clipboard. The field furthest to the left represents seconds. For more information about scheduling tasks using the supported `cron` format, see link:https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format[Cron Expression Format].
 .. In the *Maximum concurrent runs* field, specify the number of runs that can execute concurrently, from a range of one to ten.  
-.. Click the toggle in the *Start date* field to specify a start date for the run. Select a start date using the *Calendar* and the start time from the list of times.
-.. Click the toggle in the *End date* field to specify an end date for the run. Select an end date using the *Calendar* and the end time from the list of times.
-.. Click the toggle in the *Catch up* field to enable or disable catch up runs. You can use catch up runs to ensure your pipeline runs do not permanently fall behind schedule when paused. For example, if you re-enable a paused recurring run, the run scheduler backfills each missed run interval.
+.. For *Start date*, specify a start date for the run. Select a start date using the *Calendar* and the start time from the list of times.
+.. For *End date*, specify an end date for the run. Select an end date using the *Calendar* and the end time from the list of times.
+.. For *Catch up*, enable or disable catch up runs. You can use catch up runs to ensure your pipeline runs do not permanently fall behind schedule when paused. For example, if you re-enable a paused recurring run, the run scheduler backfills each missed run interval.
 .. From the *Pipeline* list, select the pipeline that you want to create a run for. Alternatively, to create a new pipeline, click *Create new pipeline* and complete the relevant fields in the *Import pipeline* dialog.
 .. From the *Pipeline version* list, select the pipeline version to create a run for. Alternatively, to upload a new version, click *Upload new version* and complete the relevant fields in the *Upload new version* dialog.
 .. Configure the input parameters for the run by selecting the parameters from the list.
 .. Click *Schedule run*.
 
 .Verification
-* The pipeline run that you created is shown in the *Schedules* tab on the *Runs* page.
+* The pipeline run that you created appears in the *Schedules* tab on the *Runs* page.
 
 //[role='_additional-resources']
 //.Additional resources

@@ -4,7 +4,7 @@
 = Uploading a pipeline version
 
 [role='_abstract']
-You can upload a YAML file to an active pipeline server that contains the latest version of your pipeline, or you can upload the YAML file from a URL. This file consists of a Kubeflow pipeline compiled with the Kubeflow compiler. After you upload a pipeline version to a pipeline server, you can execute it by creating a pipeline run.
+You can upload a YAML file to an active pipeline server that contains the latest version of your pipeline, or you can upload the YAML file from a URL. The YAML file must consist of a Kubeflow pipeline compiled with the Kubeflow compiler. After you upload a pipeline version to a pipeline server, you can execute it by creating a pipeline run.
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -20,24 +20,16 @@ endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
-+
-The *Pipelines* page opens.
-. From the *Project* list, select the project that you want to upload a pipeline version to.
+. On the *Pipelines* page, select the *project* that you want to upload a pipeline version to.
 . Click the *Import pipeline* dropdown list and select *Upload new version*.
-+
-The *Upload new version* dialog opens.
-. Enter the details for the pipeline version that you are uploading.
+. In the *Upload new version* dialog, enter the details for the pipeline version that you are uploading.
 .. From the *Pipeline* list, select the pipeline that you want to upload your pipeline version to. 
 .. In the *Pipeline version name* field, confirm the name for the pipeline version, and change it if necessary.  
 .. In the *Pipeline version description* field, enter a description for the pipeline version.
-
-.. Select where you want to import your pipeline version from by performing one of the following actions:
-* Select *Upload from file* to upload your pipeline version from your local machine's file system. 
-... Click *Upload*. Alternatively, drag the file from your local machine's file system and drop it in the designated area in the *Import pipeline version* dialog.
-+
-A file browser opens.
-... Navigate to the file containing the pipeline code and click *Select*.
+.. Select where you want to upload your pipeline version from by performing one of the following actions:
+* Select *Upload from file* to upload your pipeline version from your local machine's file system. Import your pipeline version by clicking *upload* or by dragging and dropping a file.
 * Select *Import by url* to upload your pipeline version from a URL and then enter the URL into the text box.  
+.. Click *Upload*.
 
 .Verification
 * The pipeline version that you uploaded is displayed on the *Pipelines* page. Click *Expand* (image:images/rhoai-expand-icon.png[]) on the row containing the pipeline to view its versions.
