@@ -13,6 +13,8 @@ endif::[]
 ifdef::cloud-service[]
 * You have logged in to OpenShift with the `cluster-admin` role.
 endif::[]
+* You have access to the data science cluster.
+* You have installed {productname-long}.
 * You have sufficient resources. In addition to the base {productname-short} resources, you need 1.1 vCPU and 1.6 GB memory to deploy the distributed workloads infrastructure.
 * You have access to a Ray cluster image. For information about how to create a Ray cluster, see the link:https://docs.ray.io/en/latest/cluster/getting-started.html[Ray Clusters documentation].
 +
@@ -22,7 +24,8 @@ Mutual Transport Layer Security (mTLS) is enabled by default in the CodeFlare co
 In the current {productname-short} version, `submissionMode=K8sJobMode` is not supported in the Ray job specification, so the KubeRay Operator cannot create a submitter Kubernetes Job to submit the Ray job.
 Instead, the Ray job specification must be configured to set `submissionMode=HTTPMode` only, so that the KubeRay Operator sends a request to the RayCluster to create a Ray job.
 ====
-
+* You have access to the data sets and models to be used by the distributed workload.
+* You have access to the Python dependencies for the distributed workload.
 
 ifndef::upstream[]
 * You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
@@ -108,15 +111,7 @@ ifdef::upstream[]
 . Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
 endif::[]
 . Click the *Data Science Cluster* tab.
-. Click the default instance name to open the instance details page.
-ifndef::upstream[]
-+
-[NOTE]
-====
-Starting from {productname-long} 2.4, the default instance name for new installations is *default-dsc*.
-The default instance name for earlier installations, *rhods*, is preserved during upgrade.
-====
-endif::[]
+. Click the default instance name (for example, *default-dsc*) to open the instance details page.
 . Click the *YAML* tab to show the instance specifications.
 . In the `spec.components` section, ensure that the `managementState` field is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
 +
