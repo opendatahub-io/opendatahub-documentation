@@ -64,7 +64,7 @@ curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' \
 https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation \
 -H 'Authorization: Bearer <token>' <1>
 ----
-<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authorization provider to secure your model inference endpoint.
 
 *TGIS Standalone ServingRuntime for KServe*
 [source]
@@ -74,7 +74,7 @@ grpcurl -proto text-generation-inference/proto/generation.proto -d \
 -H 'mm-model-id: <model_name>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate \
 -H 'Authorization: Bearer <token>' <1>
 ----
-<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authorization provider to secure your model inference endpoint.
 
 *OpenVINO Model Server*
 [source]
@@ -84,7 +84,7 @@ curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d \
 "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' \
 -H 'Authorization: Bearer <token>' <1>
 ----
-<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authorization provider to secure your model inference endpoint.
 --
 endif::[]
 ifdef::self-managed,cloud-service[]
@@ -95,21 +95,21 @@ ifdef::self-managed,cloud-service[]
 ----
 curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation -H 'Authorization: Bearer <token>'  <1>
 ----
-<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authorization provider to secure your model inference endpoint.
 
 *TGIS Standalone ServingRuntime for KServe*
 [source]
 ----
 grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'mm-model-id: <model_name>' -H 'Authorization: Bearer <token>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate  <1>
 ----
-<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authorization provider to secure your model inference endpoint.
 
 *OpenVINO Model Server*
 [source]
 ----
 curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'  <1>
 ----
-<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authoriztion provider to secure your model inference endpoint.
+<1> You need to add the HTTP `Authorization` header and specify a token value _only_ if you added Authorino as an authorization provider to secure your model inference endpoint.
 --
 endif::[]
 
