@@ -15,7 +15,7 @@ ifdef::cloud-service[]
 endif::[]
 * You have access to the data science cluster.
 * You have installed {productname-long}.
-* You have sufficient resources. In addition to the base {productname-short} resources, you need 1.1 vCPU and 1.6 GB memory to deploy the distributed workloads infrastructure.
+* You have sufficient resources. In addition to the base {productname-short} resources, you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
 * You have access to a Ray cluster image. For information about how to create a Ray cluster, see the link:https://docs.ray.io/en/latest/cluster/getting-started.html[Ray Clusters documentation].
 +
 [NOTE]
@@ -156,7 +156,7 @@ After a short time, the components with a `Managed` state are ready.
 
 
 .Verification
-Check the status of the `codeflare-operator-manager` pod, as follows:
+Check the status of the *codeflare-operator-manager*, *kuberay-operator*, and *kueue-controller-manager* pods, as follows:
 
 ifdef::cloud-service[]
 . In the OpenShift console, from the *Project* list, select *redhat-ods-applications*.
@@ -168,7 +168,11 @@ ifdef::upstream[]
 . In the {openshift-platform} console, from the *Project* list, select *odh*.
 endif::[]
 . Click *Workloads* -> *Deployments*.
-. Search for the *codeflare-operator-manager* deployment, and click the deployment name to open the deployment details page.
-. Click the *Pods* tab.
-When the status of the `codeflare-operator-manager-_<pod-id>_` pod is `Running`, the pod is ready to use.
-To see more information about the pod, click the pod name to open the pod details page, and click the *Logs* tab.
+. Search for the *codeflare-operator-manager*, *kuberay-operator*, and *kueue-controller-manager* deployments.
+In each case, check the status as follows:
+.. Click the deployment name to open the deployment details page.
+.. Click the *Pods* tab.
+.. Check the pod status.
++
+When the status of the *codeflare-operator-manager-_<pod-id>_*, *kuberay-operator-_<pod-id>_*, and *kueue-controller-manager-_<pod-id>_* pods is *Running*, the pods are ready to use.
+.. To see more information about each pod, click the pod name to open the pod details page, and then click the *Logs* tab.

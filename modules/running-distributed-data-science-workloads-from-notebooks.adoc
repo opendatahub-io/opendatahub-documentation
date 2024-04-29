@@ -8,18 +8,57 @@ To run a distributed data science workload from a notebook, you must first provi
 
 .Prerequisites
 ifndef::upstream[]
+* You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
+endif::[]
+ifdef::upstream[]
 * You have created the required Kueue resources as described in link:{odhdocshome}/working-on-data-science-projects/#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads]:
++
+[source,bash]
+----
+"kueue.x-k8s.io/default-queue": "true"
+----
++
+[NOTE]
+====
+If you do not create a default local queue, you must specify a local queue in each notebook.
+====
+endif::[]
+ifdef::upstream[]
+* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{odhdocshome}/working-on-data-science-projects/#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads]:
++
+[source,bash]
+----
+"kueue.x-k8s.io/default-queue": "true"
+----
++
+[NOTE]
+====
+If you do not create a default local queue, you must specify a local queue in each notebook.
+====
+endif::[]
+
+ifndef::upstream[]
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+ifdef::upstream[]
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working_on_data_science_projects/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+
+ifndef::upstream[]
 * You have created a data science project that contains a workbench that is running one of the default notebook images, for example, the *Standard Data Science* notebook.
 See the table in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/creating-and-importing-notebooks_notebooks#notebook-images-for-data-scientists_notebooks[Notebook images for data scientists] for a complete list of default notebook images.
 endif::[]
 ifdef::upstream[]
-* You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
-* You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working_on_data_science_projects/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 * You have created a data science project that contains a workbench that is running one of the default notebook images, for example, the *Standard Data Science* notebook.
 See the table in link:{odhdocshome}/working_on_data_science_projects/#notebook-images-for-data-scientists_notebooks[Notebook images for data scientists] for a complete list of default notebook images.
 endif::[]
-* You have launched your notebook server and logged in to Jupyter.
+
+* You have launched your notebook server and logged in to your notebook editor.
+The examples in this procedure refer to the JupyterLab integrated development environment (IDE).
 
 .Procedure
 . Download the demo notebooks provided by the CodeFlare SDK.
@@ -29,12 +68,12 @@ To access the demo notebooks, clone the `codeflare-sdk` repository as follows:
 
 .. In the JupyterLab interface, click *Git > Clone a Repository*.
 .. In the "Clone a repo" dialog, enter `https://github.com/project-codeflare/codeflare-sdk.git` and then click *Clone*.
-The `codeflare-sdk` repository is listed in the left navigation pane.
+The *codeflare-sdk* repository is listed in the left navigation pane.
 . Run a distributed workload job as shown in the following example:
 .. In the JupyterLab interface, in the left navigation pane, double-click *codeflare-sdk*.
 .. Double-click *demo-notebooks*, and then double-click *guided-demos*.
 .. Update each example demo notebook as follows:
-** Update the `import` section to import the `generate_cert` component:
+** If not already specified, update the `import` section to import the `generate_cert` component:
 +
 .Updated import section
 [source,bash]
@@ -42,26 +81,26 @@ The `codeflare-sdk` repository is listed in the left navigation pane.
 from codeflare_sdk import generate_cert
 ----
 
-** Replace the `default` namespace value with the name of your data science project.
+** Replace the default namespace value with the name of your data science project.
 ** Replace the link to the example community image with a link to your Ray cluster image.
-** Add the following Ray cluster authentication code after the Ray cluster creation step. Replace _your_cluster_name_ and _your_namespace_ with the values for your Ray cluster name and your data science project name.
+** Ensure that the following Ray cluster authentication code is included after the Ray cluster creation section.
 +
-.Example Ray cluster authentication code
+.Ray cluster authentication code
 [source,bash,subs="+quotes"]
 ----
-generate_cert.generate_tls_cert(_your_cluster_name_, _your_namespace_)
-generate_cert.export_env(_your_cluster_name_, _your_namespace_)
+generate_cert.generate_tls_cert(cluster.config.name, cluster.config.namespace)
+generate_cert.export_env(cluster.config.name, cluster.config.namespace)
 ----
 +
 [NOTE]
 ====
 Mutual Transport Layer Security (mTLS) is enabled by default in the CodeFlare component in {productname-short}.
-Therefore, you must run the Ray cluster authentication code to create a secure connection between the Ray client that runs within a notebook and the Ray head client endpoint.
+You must include the Ray cluster authentication code to enable the Ray client that runs within a notebook to connect to a secure Ray cluster that has mTLS enabled.
 ====
 
 
 ifndef::upstream[]
-** If you have not configured a default local queue by including the `kueue.x-k8s.io/default-queue: 'true'` annotation as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads], update the `ClusterConfiguration` code to specify the local queue for the Ray cluster, as shown in the following example:
+** If you have not configured a default local queue by including the `kueue.x-k8s.io/default-queue: 'true'` annotation as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads], update the `ClusterConfiguration` section to specify the local queue for the Ray cluster, as shown in the following example:
 +
 .Example local queue assignment
 [source,bash,subs="+quotes"]
@@ -70,7 +109,7 @@ local_queue="_your_local_queue_name_"
 ----
 endif::[]
 ifdef::upstream[]
-** If you have not configured a default local queue by including the `kueue.x-k8s.io/default-queue: 'true'` annotation as described in link:{odhdocshome}/working-on-data-science-projects/#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads], update the `ClusterConfiguration` code to specify the local queue for the Ray cluster, as shown in the following example:
+** If you have not configured a default local queue by including the `kueue.x-k8s.io/default-queue: 'true'` annotation as described in link:{odhdocshome}/working-on-data-science-projects/#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads], update the `ClusterConfiguration` section to specify the local queue for the Ray cluster, as shown in the following example:
 +
 .Example local queue assignment
 [source,bash]
@@ -79,13 +118,6 @@ local_queue="your_local_queue_name"
 ----
 endif::[]
 
-** Set `instascale` to `False`.
-ifndef::upstream[]
-InstaScale is not deployed in the Technology Preview version of the distributed workloads feature.
-endif::[]
-ifdef::upstream[]
-InstaScale is not deployed in the current version of the distributed workloads feature.
-endif::[]
 .. Run the notebooks.
 
 
