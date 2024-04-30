@@ -8,8 +8,31 @@ Before you can successfully create a pipeline in {productname-short}, you must c
 
 [NOTE]
 ====
-After the pipeline server is created, the `/metadata` and `/artifacts` folders are automatically created in the default `root` folder. Therefore, you are not required to specify any storage directories when configuring a data connection for your pipeline server.
+You are not required to specify any storage directories when configuring a data connection for your pipeline server. When you import a pipeline, the `/pipelines` folder is created in the `root` folder of the bucket, containing a YAML file for the pipeline. If you upload a new version of the same pipeline, a new YAML file with a different ID is added to the `/pipelines` folder.  
+
+When you run a pipeline, the artifacts are stored in the `/pipeline-name` folder in the `root` folder of the bucket.
 ====
+
+ifdef::upstream[]
+[IMPORTANT]
+====
+If you use an external MySQL database and upgrade to {productname-short} 2.10.0, the database is migrated to DSP 2.0 format, making it incompatible with earlier versions of {productname-short}.
+====
+endif::[]
+ifndef::upstream[]
+ifdef::self-managed[]
+[IMPORTANT]
+====
+If you use an external MySQL database and upgrade to {productname-short} 2.9, the database is migrated to DSP 2.0 format, making it incompatible with earlier versions of {productname-short}.
+====
+endif::[]
+ifdef::cloud-service[]
+[IMPORTANT]
+====
+If you use an external MySQL database and upgrade to {productname-short} with DSP 2.0, the database is migrated to DSP 2.0 format, making it incompatible with earlier versions of {productname-short}.
+====
+endif::[]
+endif::[]
 
 .Prerequisites
 * You have installed the OpenShift Pipelines Operator.
@@ -22,6 +45,7 @@ ifdef::upstream[]
 endif::[]
 * You have created a data science project that you can add a pipeline server to.
 * You have an existing S3-compatible object storage bucket and you have configured write access to your S3 bucket on your storage account.
+* If you are configuring a pipeline server with an external MySQL database, your database must use MySQL version 5.x.
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Projects*.
