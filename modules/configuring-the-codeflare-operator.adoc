@@ -51,6 +51,7 @@ ray-client-_<clustername>_-_<namespace>_._<your.ingress.domain>_
 This configuration option is enabled (`mTLSEnabled: true`) by default.
 When this option is enabled, the Ray Cluster pods create certificates that are used for mutual Transport Layer Security (mTLS), a form of mutual authentication, between Ray Cluster nodes.
 When this option is enabled, Ray clients cannot connect to the Ray head node unless they download the generated certificates from the `ca-secret-_<cluster_name>_` secret, generate the necessary certificates for mTLS communication, and then set the required Ray environment variables.
+The Ray clients must then be re-initialized to apply the changes.
 The CodeFlare SDK provides the following functions to simplify the authentication process for Ray clients:
 +
 .Example Ray client authentication code
@@ -60,6 +61,8 @@ from codeflare_sdk import generate_cert
 
 generate_cert.generate_tls_cert(cluster.config.name, cluster.config.namespace)
 generate_cert.export_env(cluster.config.name, cluster.config.namespace)
+
+ray.init(cluster.cluster_uri())
 ----
 
 +
