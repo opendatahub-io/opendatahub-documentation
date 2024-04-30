@@ -31,6 +31,15 @@ ifdef::cloud-service[]
 To install or upgrade to {productname-short} with DSP 2.0, ensure that no separate installation of Argo Workflows exists on your cluster.
 endif::[]
 endif::[]
+
+Argo Workflows resources that are created by {productname-short} have the following labels in the OpenShift Console under *Administration > CustomResourceDefinitions*, in the `argoproj.io` group:
++
+[source]
+----
+ labels:
+    app.kubernetes.io/part-of: data-science-pipelines-operator
+    app.opendatahub.io/data-science-pipelines-operator: 'true'
+----
 ====
 
 [NOTE]
@@ -45,7 +54,7 @@ To install {productname-short} 2.10.0, ensure that there is no installation of A
 
 If there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, DSP will be disabled after you install {productname-short} 2.10.0 with DSP.
 
-To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster and restart the `operator` pod.
+To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster and restart the `opendatahub-operator-controller-manager-XXXXXX` pod in the `opendatahub` namespace.
 endif::[]
 
 ifndef::upstream[]
@@ -55,7 +64,7 @@ To install {productname-short} with DSP 2.0, ensure that there is no installatio
 
 If there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, DSP will be disabled after you install {productname-short}.
 
-To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster and restart the `operator` pod.
+To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster and restart the `rhods-operator` pod in the `redhat-ods-operator` namespace. 
 endif::[]
 
 //RHOAI self-managed & disconnected
@@ -64,7 +73,7 @@ To install {productname-short} 2.9, ensure that there is no installation of Argo
 
 If there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, DSP will be disabled after you install {productname-short} 2.9 or later.
 
-To enable DSP, remove the separate installation of Argo Workflows from your cluster and restart the `operator` pod.
+To enable DSP, remove the separate installation of Argo Workflows from your cluster and restart the `rhods-operator` pod in the `redhat-ods-operator` namespace. 
 endif::[]
 endif::[]
 
@@ -78,8 +87,7 @@ After you upgrade to {productname-short} 2.10.0, pipelines created with DSP 1.0 
 
 To upgrade to {productname-short} 2.10.0 with DSP 2.0, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the upgrade steps described in link:{odhdocshome}/upgrading-open-data-hub/[Upgrading {productname-short}].
 
-If you upgrade to {productname-short} 2.10.0 with DSP enabled and an existing Argo Workflows installation that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows, and then restart the `operator` pod.
-endif::[]
+If you upgrade to {productname-short} 2.10.0 with DSP enabled and an existing Argo Workflows installation that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows, and then restart the `opendatahub-operator-controller-manager-XXXXXX` pod in the `opendatahub` namespace.
 
 ifndef::upstream[]
 ifdef::cloud-service[]
@@ -91,7 +99,7 @@ After you upgrade to {productname-short} with DSP 2.0, pipelines created with DS
 
 To upgrade {productname-short}, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the upgrade steps described in link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_cloud_service/index[Upgrading {productname-short } AI Cloud Service].
 
-If you upgrade to {productname-short} with DSP 2.0 enabled and an existing Argo Workflows installation that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows, and then restart the `operator` pod.
+If you upgrade to {productname-short} with DSP 2.0 enabled and an existing Argo Workflows installation that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows, and then restart the `rhods-operator` pod in the `redhat-ods-operator` namespace. 
 endif::[]
 
 //RHOAI self-managed & disconnected
@@ -103,7 +111,7 @@ After you upgrade to {productname-short} 2.9 or later, pipelines created with DS
 
 To upgrade to {productname-short} 2.9, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the upgrade steps described in link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed/index[Upgrading {productname-short} Self-Managed], or for disconnected environments, link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed_in_a_disconnected_environment/index[Upgrading {productname-long} in a disconnected environment].
 
-If you upgrade to {productname-short} 2.9 or later with DSP enabled and an existing Argo Workflows installation that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows, and then restart the `operator` pod.
+If you upgrade to {productname-short} 2.9 or later with DSP enabled and an existing Argo Workflows installation that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows, and then restart the `rhods-operator` pod in the `redhat-ods-operator` namespace. 
 endif::[]
 endif::[]
 
