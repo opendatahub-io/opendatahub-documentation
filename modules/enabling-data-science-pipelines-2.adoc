@@ -14,6 +14,7 @@ endif::[]
 ifdef::cloud-service[]
 Data science pipelines in {productname-short} are now based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0]. DSP 2.0 is enabled and deployed by default in {productname-short}.
 endif::[]
+endif::[]
 
 [IMPORTANT]
 ====
@@ -111,7 +112,12 @@ ifndef::upstream[]
 
 {productname-short} does not automatically migrate existing DSP 1.0 instances to 2.0. To use existing pipelines with DSP 2.0, you must manually migrate them.
 
+ifdef::self-managed[]
 . On {productname-short} 2.9, create a new data science project.
+endif::[]
+ifdef::cloud-service[]
+. On {productname-short} with DSP 2.0, create a new data science project.
+endif::[]
 . Configure a new pipeline server. 
 . Update and recompile your DSP 1.0 pipelines as described in link:https://www.kubeflow.org/docs/components/pipelines/v2/migration/[Migrate from KFP SDK v1: v1 to v2 migration instructions and breaking changes].
 . Import your updated pipelines to your new DSP 2.0-based data science project.
@@ -150,5 +156,3 @@ Before removing the OpenShift Pipelines Operator, ensure that migration of your 
 * link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#deleting-a-pipeline-server_ds-pipelines[Deleting a pipeline server]
 
 endif::[]
-
-
