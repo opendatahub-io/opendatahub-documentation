@@ -14,61 +14,104 @@ endif::[]
 ifdef::cloud-service[]
 Data science pipelines in {productname-short} are now based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0]. DSP 2.0 is enabled and deployed by default in {productname-short}.
 endif::[]
+endif::[]
+
+[NOTE]
+====
+The `PipelineConf` class is deprecated, and there is no KFP 2.0 equivalent.
+====
 
 [IMPORTANT]
 ====
 Data Science Pipelines (DSP) 2.0 contains an installation of Argo Workflows. {productname-short} does not support direct customer usage of this installation of Argo Workflows.
 
 ifdef::upstream[]
-If there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, installations of and upgrades to {productname-short} 2.10.0 with DSP will fail.
-
-To install or upgrade to {productname-short} 2.10.0 with DSP, ensure that no separate installation of Argo Workflows exists on your cluster.
+To install or upgrade to {productname-short} 2.10.0 with DSP, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 ifndef::upstream[]
 ifdef::self-managed[]
-If there is an existing installation of Argo workflows that is not installed by DSP on your cluster, installations of and upgrades to {productname-short} 2.9 with DSP will fail.
-To install or upgrade to {productname-short} 2.9 with DSP, ensure that no separate installation of Argo workflows exists on your cluster.
+To install or upgrade to {productname-short} 2.9 with DSP, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 ifdef::cloud-service[]
-If there is an existing installation of Argo workflows that is not installed by DSP on your cluster, installations of and upgrades to {productname-short} with DSP 2.0 will fail.
-To install or upgrade to {productname-short} with DSP 2.0, ensure that no separate installation of Argo workflows exists on your cluster.
+To install or upgrade to {productname-short} with DSP 2.0, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 endif::[]
+
+Remove the custom resource definitions (CRDs) for all Argo Workflows resources that are not created by {productname-short}.
+Argo Workflows resources that are created by {productname-short} have the following labels in the OpenShift Console under *Administration > CustomResourceDefinitions*, in the `argoproj.io` group:
+[source]
+----
+ labels:
+    app.kubernetes.io/part-of: data-science-pipelines-operator
+    app.opendatahub.io/data-science-pipelines-operator: 'true'
+----
 ====
 
 == Installing {productname-short} with DSP 2.0
 
 ifdef::upstream[]
 To install {productname-short} 2.10.0, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the installation steps described in link:{odhdocshome}/installing-open-data-hub/[Installing {productname-short}].
+
+If there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, DSP will be disabled after you install {productname-short} 2.10.0 with DSP.
+
+To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster. Data Science Pipelines will be enabled automatically. 
 endif::[]
 
 ifndef::upstream[]
 ifdef::cloud-service[]
 //RHOAI CS
 To install {productname-short} with DSP 2.0, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the installation steps described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_cloud_service/index[Installing and uninstalling OpenShift AI Cloud Service].
+
+If there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, DSP will be disabled after you install {productname-short}.
+
+To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster. Data Science Pipelines will be enabled automatically. 
 endif::[]
 
 //RHOAI self-managed & disconnected
 ifdef::self-managed[]
 To install {productname-short} 2.9, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the installation steps described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/index[Installing and uninstalling OpenShift AI Self-Managed], or for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment[Installing and uninstalling {productname-long} in a disconnected environment].
+
+If there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, DSP will be disabled after you install {productname-short} 2.9 or later.
+
+To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster. Data Science Pipelines will be enabled automatically. 
 endif::[]
 endif::[]
 
 == Upgrading to DSP 2.0
 
 ifdef::upstream[]
-To upgrade to {productname-short} 2.10.0 with DSP 2.0, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the upgrade steps described in link:{odhdocshome}/upgrading-open-data-hub/[Upgrading {productname-short}].
-endif::[]
+[IMPORTANT]
+====
+After you upgrade to {productname-short} 2.10.0, pipelines created with DSP 1.0 will continue to run, but will be inaccessible from the {productname-short} dashboard. We recommend that current DSP users do not upgrade to {productname-short} 2.10.0 until you are ready to migrate to the new pipelines solution. 
+====
 
+To upgrade to {productname-short} 2.10.0 with DSP 2.0, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the upgrade steps described in link:{odhdocshome}/upgrading-open-data-hub/[Upgrading {productname-short}].
+
+If you upgrade to {productname-short} 2.10.0 with DSP enabled and an Argo Workflows installation that is not installed by DSP exists on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows. The component upgrade will complete automatically.
+endif::[]
 ifndef::upstream[]
 ifdef::cloud-service[]
 //RHOAI CS
+[IMPORTANT]
+====
+After you upgrade to {productname-short} with DSP 2.0, pipelines created with DSP 1.0 will continue to run, but will be inaccessible from the {productname-short} dashboard. We recommend that current DSP users do not upgrade to {productname-short} with DSP 2.0 until you are ready to migrate to the new pipelines solution. 
+====
+
 To upgrade {productname-short}, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the upgrade steps described in link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_cloud_service/index[Upgrading {productname-short } AI Cloud Service].
+
+If you upgrade to {productname-short} with DSP 2.0 enabled and an existing Argo Workflows installation that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows from your cluster. The component upgrade will complete automatically.
 endif::[]
 
 //RHOAI self-managed & disconnected
 ifdef::self-managed[]
+[IMPORTANT]
+====
+After you upgrade to {productname-short} 2.9 or later, pipelines created with DSP 1.0 will continue to run, but will be inaccessible from the {productname-short} dashboard. We recommend that current DSP users stay on {productname-short} 2.8 until you are ready to migrate to the new pipelines solution. 
+====
+
 To upgrade to {productname-short} 2.9, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the upgrade steps described in link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed/index[Upgrading {productname-short} Self-Managed], or for disconnected environments, link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed_in_a_disconnected_environment/index[Upgrading {productname-long} in a disconnected environment].
+
+If you upgrade to {productname-short} 2.9 or later with DSP enabled and an existing Argo Workflows installation that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows from your cluster.  The component upgrade will complete automatically. 
 endif::[]
 endif::[]
 
@@ -77,9 +120,19 @@ ifndef::upstream[]
 
 {productname-short} does not automatically migrate existing DSP 1.0 instances to 2.0. To use existing pipelines with DSP 2.0, you must manually migrate them.
 
+ifdef::self-managed[]
 . On {productname-short} 2.9, create a new data science project.
+endif::[]
+ifdef::cloud-service[]
+. On {productname-short} with DSP 2.0, create a new data science project.
+endif::[]
 . Configure a new pipeline server. 
 . Update and recompile your DSP 1.0 pipelines as described in link:https://www.kubeflow.org/docs/components/pipelines/v2/migration/[Migrate from KFP SDK v1: v1 to v2 migration instructions and breaking changes].
++
+[NOTE]
+----
+DSP 2.0 does not use the `kfp-tekton` library. In most cases, you can replace usage of `kfp-tekton` with the `kfp` library.
+----
 . Import your updated pipelines to your new DSP 2.0-based data science project.
 . (Optional) Remove your DSP 1.0 pipeline server.
 
@@ -109,6 +162,7 @@ Before removing the OpenShift Pipelines Operator, ensure that migration of your 
 [role="_additional-resources"]
 .Additional resources
 
+* link:https://pypi.org/project/kfp/[PyPI: kfp^]
 * link:https://kubeflow-pipelines.readthedocs.io[Kubeflow Pipelines SDK API Reference].
 * link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project]
 * link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server]
@@ -116,4 +170,3 @@ Before removing the OpenShift Pipelines Operator, ensure that migration of your 
 * link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#deleting-a-pipeline-server_ds-pipelines[Deleting a pipeline server]
 
 endif::[]
-
