@@ -26,17 +26,18 @@ The `PipelineConf` class is deprecated, and there is no KFP 2.0 equivalent.
 Data Science Pipelines (DSP) 2.0 contains an installation of Argo Workflows. {productname-short} does not support direct customer usage of this installation of Argo Workflows.
 
 ifdef::upstream[]
-To install or upgrade to {productname-short} 2.10.0 with DSP, ensure that no installation of Argo Workflows that is not installed by {productname-short} exists on your cluster.
+To install or upgrade to {productname-short} 2.10.0 with DSP, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 ifndef::upstream[]
 ifdef::self-managed[]
-To install or upgrade to {productname-short} 2.9 with DSP, ensure that no installation of Argo Workflows that is not installed by {productname-short} exists on your cluster.
+To install or upgrade to {productname-short} 2.9 with DSP, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 ifdef::cloud-service[]
-To install or upgrade to {productname-short} with DSP 2.0, ensure that no installation of Argo Workflows that is not installed by {productname-short} exists on your cluster.
+To install or upgrade to {productname-short} with DSP 2.0, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 endif::[]
 
+Remove the custom resource definitions (CRDs) for all Argo Workflows resources that are not created by {productname-short}.
 Argo Workflows resources that are created by {productname-short} have the following labels in the OpenShift Console under *Administration > CustomResourceDefinitions*, in the `argoproj.io` group:
 [source]
 ----
@@ -81,12 +82,12 @@ endif::[]
 ifdef::upstream[]
 [IMPORTANT]
 ====
-After you upgrade to {productname-short} 2.10.0, pipelines created with DSP 1.0 will continue to run, but will be inaccessible from the {productname-short} dashboard. We recommend that current DSP users stay on an earlier version of {productname-short} until you are ready to migrate to the new pipelines solution. 
+After you upgrade to {productname-short} 2.10.0, pipelines created with DSP 1.0 will continue to run, but will be inaccessible from the {productname-short} dashboard. We recommend that current DSP users do not upgrade to {productname-short} 2.10.0 until you are ready to migrate to the new pipelines solution. 
 ====
 
 To upgrade to {productname-short} 2.10.0 with DSP 2.0, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the upgrade steps described in link:{odhdocshome}/upgrading-open-data-hub/[Upgrading {productname-short}].
 
-If you upgrade to {productname-short} 2.10.0 with DSP enabled and an existing Argo Workflows installation that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows. The component upgrade will complete automatically.
+If you upgrade to {productname-short} 2.10.0 with DSP enabled and an Argo Workflows installation that is not installed by DSP exists on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows. The component upgrade will complete automatically.
 endif::[]
 ifndef::upstream[]
 ifdef::cloud-service[]
@@ -161,7 +162,7 @@ Before removing the OpenShift Pipelines Operator, ensure that migration of your 
 [role="_additional-resources"]
 .Additional resources
 
-* link:https://pypi.org/project/kfp/[PyPI:]
+* link:https://pypi.org/project/kfp/[PyPI: kfp^]
 * link:https://kubeflow-pipelines.readthedocs.io[Kubeflow Pipelines SDK API Reference].
 * link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project]
 * link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server]
