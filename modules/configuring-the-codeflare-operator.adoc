@@ -50,6 +50,18 @@ ray-client-_<clustername>_-_<namespace>_._<your.ingress.domain>_
 `*mTLSEnabled*`::
 This configuration option is enabled (`mTLSEnabled: true`) by default.
 When this option is enabled, the Ray Cluster pods create certificates that are used for mutual Transport Layer Security (mTLS), a form of mutual authentication, between Ray Cluster nodes.
+When this option is enabled, Ray clients cannot connect to the Ray head node unless they download the generated certificates from the `ca-secret-_<cluster_name>_` secret, generate the necessary certificates for mTLS communication, and then set the required Ray environment variables.
+The CodeFlare SDK provides the following functions to simplify the authentication process for Ray clients:
++
+.Example Ray client authentication code
+[source,bash,subs="+quotes"]
+----
+from codeflare_sdk import generate_cert
+
+generate_cert.generate_tls_cert(cluster.config.name, cluster.config.namespace)
+generate_cert.export_env(cluster.config.name, cluster.config.namespace)
+----
+
 +
 `*rayDashboardOauthEnabled*`::
 This configuration option is enabled (`rayDashboardOAuthEnabled: true`) by default.
@@ -64,11 +76,15 @@ If the user wants to access the Ray Dashboard via the Ray `JobSubmissionClient` 
 ----
 
 . To save your changes, click *Save*.
-The CodeFlare Operator is updated.
+. To apply your changes, delete the pod:
+.. Click *Workloads* -> *Pods*.
+.. Find the *codeflare-operator-manager-_<pod-id>_* pod.
+.. Click the options menu (&#8942;) for that pod, and then click *Delete Pod*.
+ The pod restarts with your changes applied.
 
 
 .Verification
-Check the status of the `codeflare-operator-manager` pod, as follows:
+Check the status of the *codeflare-operator-manager* pod, as follows:
 
 ifdef::upstream,self-managed[]
 . In the {openshift-platform} console, click *Workloads* -> *Deployments*.
@@ -79,5 +95,5 @@ endif::[]
 
 . Search for the *codeflare-operator-manager* deployment, and then click the deployment name to open the deployment details page.
 . Click the *Pods* tab.
-When the status of the `codeflare-operator-manager-_<pod-id>_` pod is `Running`, the pod is ready to use.
-To see more information about the pod, click the pod name to open the pod details page, and click the *Logs* tab.
+When the status of the *codeflare-operator-manager-_<pod-id>_* pod is *Running*, the pod is ready to use.
+To see more information about the pod, click the pod name to open the pod details page, and then click the *Logs* tab.
