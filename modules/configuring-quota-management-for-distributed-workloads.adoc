@@ -1,0 +1,142 @@
+:_module-type: PROCEDURE
+
+[id="configuring-quota-management-for-distributed-workloads_{context}"]
+= Configuring quota management for distributed workloads
+
+[role='_abstract']
+Configure quotas for distributed workloads on a cluster, so that you can share resources between several data science projects.
+
+.Prerequisites
+ifdef::cloud-service[]
+* You have cluster administrator privileges for your OpenShift cluster.
+endif::[]
+ifdef::self-managed[]
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+endif::[]
+
+ifdef::self-managed[]
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI].
+endif::[]
+ifdef::cloud-service[]
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.openshift.com/dedicated/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI] (Red Hat OpenShift Dedicated) or link:https://docs.openshift.com/rosa/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI] (Red Hat OpenShift Service on AWS).
+endif::[]
+
+* You have sufficient resources. In addition to the base {productname-short} resources, you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
+
+* The resources are physically available in the cluster.
++
+[NOTE]
+====
+{productname-short} currently supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
+For more information about Kueue resources, see the link:https://kueue.sigs.k8s.io/docs/concepts/[Kueue documentation].
+====
+
+
+.Procedure
+
+. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+. Create an empty Kueue resource flavor, as follows:
+.. Create a file called `default_flavor.yaml` and populate it with the following content:
++
+.Empty Kueue resource flavor
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ResourceFlavor
+metadata:
+  name: default-flavor
+----
+.. Apply the configuration to create the `default-flavor` object:
++
+[source,bash]
+----
+$ oc apply -f default_flavor.yaml
+----
+
+. Create a cluster queue to manage the empty Kueue resource flavor, as follows:
+.. Create a file called `cluster_queue.yaml` and populate it with the following content:
++
+.Example cluster queue
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "cluster-queue"
+spec:
+  namespaceSelector: {}  # match all.
+  resourceGroups:
+  - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 9
+      - name: "memory"
+        nominalQuota: 36Gi
+      - name: "nvidia.com/gpu"
+        nominalQuota: 5
+----
++
+.. Replace the example quota values (9 CPUs, 36 GiB memory, and 5 NVIDIA GPUs) with the appropriate values for your cluster queue.
+The cluster queue will start a distributed workload only if the total required resources are within these quota limits.
++
+[NOTE]
+====
+In this release of {productname-short}, the only accelerators supported for distributed workloads are NVIDIA GPUs.
+====
+.. Apply the configuration to create the `cluster-queue` object:
++
+[source,bash]
+----
+$ oc apply -f cluster_queue.yaml
+----
+
+. Create a local queue that points to your cluster queue, as follows:
+.. Create a file called `local_queue.yaml` and populate it with the following content:
++
+.Example local queue
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: LocalQueue
+metadata:
+  namespace: test
+  name: local-queue-test
+  annotations:
+    kueue.x-k8s.io/default-queue: 'true'
+spec:
+  clusterQueue: cluster-queue
+----
+The `kueue.x-k8s.io/default-queue: 'true'` annotation defines this queue as the default queue.
+Distributed workloads are submitted to this queue if no `local_queue` value is specified in the `ClusterConfiguration` section of the data science pipeline or Jupyter notebook or Microsoft Visual Studio Code file.
+.. Update the `namespace` value to specify the same namespace as in the `ClusterConfiguration` section that creates the Ray cluster.
+.. Optional: Update the `name` value accordingly.
+.. Apply the configuration to create the local-queue object:
++
+[source,bash]
+----
+$ oc apply -f local_queue.yaml
+----
++
+The cluster queue allocates the resources to run distributed workloads in the local queue.
+
+
+.Verification
+Check the status of the local queue in a project, as follows:
+
+[source,subs="+quotes"]
+----
+$ oc get -n __<project-name>__ localqueues
+----
+
+
+[role='_additional-resources']
+.Additional resources
+* link:https://kueue.sigs.k8s.io/docs/concepts/[Kueue documentation]

@@ -13,9 +13,22 @@ endif::[]
 ifdef::cloud-service[]
 * You have logged in to OpenShift with the `cluster-admin` role.
 endif::[]
-* You have sufficient resources. In addition to the base {productname-short} resources, you need 1.1 vCPU and 1.6 GB memory to deploy the distributed workloads infrastructure.
+* You have access to the data science cluster.
+* You have installed {productname-long}.
+* You have sufficient resources. In addition to the base {productname-short} resources, you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
 * You have access to a Ray cluster image. For information about how to create a Ray cluster, see the link:https://docs.ray.io/en/latest/cluster/getting-started.html[Ray Clusters documentation].
++
+[NOTE]
+====
+Mutual Transport Layer Security (mTLS) is enabled by default in the CodeFlare component in {productname-short}.
+In the current {productname-short} version, `submissionMode=K8sJobMode` is not supported in the Ray job specification, so the KubeRay Operator cannot create a submitter Kubernetes Job to submit the Ray job.
+Instead, the Ray job specification must be configured to set `submissionMode=HTTPMode` only, so that the KubeRay Operator sends a request to the RayCluster to create a Ray job.
+====
+* You have access to the data sets and models to be used by the distributed workload.
+* You have access to the Python dependencies for the distributed workload.
+
 ifndef::upstream[]
+* You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
 * You have removed any previously installed instances of the CodeFlare Operator, as described in the Knowledgebase solution link:https://access.redhat.com/solutions/7043796[How to migrate from a separately installed CodeFlare Operator in your data science cluster].
 * If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
 See link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-gpu-support_cluster-mgmt[Enabling GPU support in {productname-short}].
@@ -60,6 +73,7 @@ The centrally configured self-signed certificates are automatically available in
 endif::[]
 
 ifdef::upstream[]
+* You have created the required Kueue resources as described in link:{odhdocshome}/working-on-data-science-projects/#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
 * You have removed any previously installed instances of the CodeFlare Operator.
 * If you want to use graphics processing units (GPUs), you have enabled GPU support.
 This process includes installing the Node Feature Discovery Operator and the NVIDIA GPU Operator.
@@ -97,15 +111,7 @@ ifdef::upstream[]
 . Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
 endif::[]
 . Click the *Data Science Cluster* tab.
-. Click the default instance name to open the instance details page.
-ifndef::upstream[]
-+
-[NOTE]
-====
-Starting from {productname-long} 2.4, the default instance name for new installations is *default-dsc*.
-The default instance name for earlier installations, *rhods*, is preserved during upgrade.
-====
-endif::[]
+. Click the default instance name (for example, *default-dsc*) to open the instance details page.
 . Click the *YAML* tab to show the instance specifications.
 . In the `spec.components` section, ensure that the `managementState` field is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
 +
@@ -129,6 +135,11 @@ endif::[]
 |`Removed`
 |`Managed`
 
+|`kueue`
+|`Managed`
+|`Managed`
+|`Managed`
+
 |`ray`
 |`Managed`
 |`Managed`
@@ -145,7 +156,7 @@ After a short time, the components with a `Managed` state are ready.
 
 
 .Verification
-Check the status of the `codeflare-operator-manager` pod, as follows:
+Check the status of the *codeflare-operator-manager*, *kuberay-operator*, and *kueue-controller-manager* pods, as follows:
 
 ifdef::cloud-service[]
 . In the OpenShift console, from the *Project* list, select *redhat-ods-applications*.
@@ -157,7 +168,11 @@ ifdef::upstream[]
 . In the {openshift-platform} console, from the *Project* list, select *odh*.
 endif::[]
 . Click *Workloads* -> *Deployments*.
-. Search for the *codeflare-operator-manager* deployment, and click the deployment name to open the deployment details page.
-. Click the *Pods* tab.
-When the status of the `codeflare-operator-manager-_<pod-id>_` pod is `Running`, the pod is ready to use.
-To see more information about the pod, click the pod name to open the pod details page, and click the *Logs* tab.
+. Search for the *codeflare-operator-manager*, *kuberay-operator*, and *kueue-controller-manager* deployments.
+In each case, check the status as follows:
+.. Click the deployment name to open the deployment details page.
+.. Click the *Pods* tab.
+.. Check the pod status.
++
+When the status of the *codeflare-operator-manager-_<pod-id>_*, *kuberay-operator-_<pod-id>_*, and *kueue-controller-manager-_<pod-id>_* pods is *Running*, the pods are ready to use.
+.. To see more information about each pod, click the pod name to open the pod details page, and then click the *Logs* tab.
