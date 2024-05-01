@@ -1,0 +1,102 @@
+:_module-type: PROCEDURE
+
+[id="configuring-the-codeflare-operator_{context}"]
+= Configuring the CodeFlare Operator
+
+[role='_abstract']
+If you want to change the default configuration of the CodeFlare Operator for distributed workloads in {productname-short}, you can edit the associated config map.
+
+.Prerequisites
+ifdef::upstream,self-managed[]
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to OpenShift with the `cluster-admin` role.
+endif::[]
+
+
+.Procedure
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, click *Workloads* -> *ConfigMaps*.
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, click *Workloads* -> *ConfigMaps*.
+endif::[]
+
+ifdef::self-managed,cloud-service[]
+. From the *Project* list, select *redhat-ods-applications*.
+endif::[]
+ifdef::upstream[]
+. From the *Project* list, select *odh*.
+endif::[]
+
+. Search for the *codeflare-operator-config* config map, and click the config map name to open the *ConfigMap details* page.
+
+. Click the *YAML* tab to show the config map specifications.
+. In the `*data*` > `*config.yaml*` > `*kuberay*` section, you can edit the following entries:
++
+`*ingressDomain*`::
+This configuration option is null (`ingressDomain: ""`) by default.
+This option should remain null unless the Ingress Controller is not running on OpenShift.
+{productname-short} uses this value to generate the dashboard and client routes for every Ray Cluster, as shown in the following examples:
++
+.Example dashboard and client routes
+[source,bash,subs="+quotes"]
+----
+ray-dashboard-_<clustername>_-_<namespace>_._<your.ingress.domain>_
+ray-client-_<clustername>_-_<namespace>_._<your.ingress.domain>_
+----
++
+`*mTLSEnabled*`::
+This configuration option is enabled (`mTLSEnabled: true`) by default.
+When this option is enabled, the Ray Cluster pods create certificates that are used for mutual Transport Layer Security (mTLS), a form of mutual authentication, between Ray Cluster nodes.
+When this option is enabled, Ray clients cannot connect to the Ray head node unless they download the generated certificates from the `ca-secret-_<cluster_name>_` secret, generate the necessary certificates for mTLS communication, and then set the required Ray environment variables.
+Users must then re-initialize the Ray clients to apply the changes.
+The CodeFlare SDK provides the following functions to simplify the authentication process for Ray clients:
++
+.Example Ray client authentication code
+[source,bash,subs="+quotes"]
+----
+from codeflare_sdk import generate_cert
+
+generate_cert.generate_tls_cert(cluster.config.name, cluster.config.namespace)
+generate_cert.export_env(cluster.config.name, cluster.config.namespace)
+
+ray.init(cluster.cluster_uri())
+----
+
++
+`*rayDashboardOauthEnabled*`::
+This configuration option is enabled (`rayDashboardOAuthEnabled: true`) by default.
+When this option is enabled, {productname-short} places an OpenShift OAuth proxy in front of the Ray Cluster head node.
+Users must then authenticate by using their OpenShift cluster login credentials when accessing the Ray Dashboard through the browser.
+If users want to access the Ray Dashboard by using the Ray `JobSubmissionClient` class or in some other programmatic way, they must set an authorization header as part of their request, as shown in the following example:
++
+.Example authorization header
+[source,bash,subs="+quotes"]
+----
+{Authorization: "Bearer _<your-openshift-token>_"}
+----
+
+. To save your changes, click *Save*.
+. To apply your changes, delete the pod:
+.. Click *Workloads* -> *Pods*.
+.. Find the *codeflare-operator-manager-_<pod-id>_* pod.
+.. Click the options menu (&#8942;) for that pod, and then click *Delete Pod*.
+ The pod restarts with your changes applied.
+
+
+.Verification
+Check the status of the *codeflare-operator-manager* pod, as follows:
+
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, click *Workloads* -> *Deployments*.
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, click *Workloads* -> *Deployments*.
+endif::[]
+
+. Search for the *codeflare-operator-manager* deployment, and then click the deployment name to open the deployment details page.
+. Click the *Pods* tab.
+When the status of the *codeflare-operator-manager-_<pod-id>_* pod is *Running*, the pod is ready to use.
+To see more information about the pod, click the pod name to open the pod details page, and then click the *Logs* tab.
