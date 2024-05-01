@@ -51,7 +51,7 @@ ray-client-_<clustername>_-_<namespace>_._<your.ingress.domain>_
 This configuration option is enabled (`mTLSEnabled: true`) by default.
 When this option is enabled, the Ray Cluster pods create certificates that are used for mutual Transport Layer Security (mTLS), a form of mutual authentication, between Ray Cluster nodes.
 When this option is enabled, Ray clients cannot connect to the Ray head node unless they download the generated certificates from the `ca-secret-_<cluster_name>_` secret, generate the necessary certificates for mTLS communication, and then set the required Ray environment variables.
-The Ray clients must then be re-initialized to apply the changes.
+Users must then re-initialize the Ray clients to apply the changes.
 The CodeFlare SDK provides the following functions to simplify the authentication process for Ray clients:
 +
 .Example Ray client authentication code
@@ -69,8 +69,8 @@ ray.init(cluster.cluster_uri())
 `*rayDashboardOauthEnabled*`::
 This configuration option is enabled (`rayDashboardOAuthEnabled: true`) by default.
 When this option is enabled, {productname-short} places an OpenShift OAuth proxy in front of the Ray Cluster head node.
-Users must then authenticate via their OpenShift cluster login credentials when accessing the Ray Dashboard through the browser.
-If the user wants to access the Ray Dashboard via the Ray `JobSubmissionClient` class or in some other programmatic way, they must set an authorization header as part of their request, as shown in the following example:
+Users must then authenticate by using their OpenShift cluster login credentials when accessing the Ray Dashboard through the browser.
+If users want to access the Ray Dashboard by using the Ray `JobSubmissionClient` class or in some other programmatic way, they must set an authorization header as part of their request, as shown in the following example:
 +
 .Example authorization header
 [source,bash,subs="+quotes"]
