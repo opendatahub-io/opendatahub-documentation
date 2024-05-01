@@ -33,11 +33,11 @@ endif::[]
 . Search for the *codeflare-operator-config* config map, and click the config map name to open the *ConfigMap details* page.
 
 . Click the *YAML* tab to show the config map specifications.
-. In the `*data*` > `*config.yaml*` > `*kuberay*` section, you can edit the following entries:
+. In the `data` > `config.yaml` > `kuberay` section, you can edit the following entries:
 +
-`*ingressDomain*`::
+ingressDomain::
 This configuration option is null (`ingressDomain: ""`) by default.
-This option should remain null unless the Ingress Controller is not running on OpenShift.
+Do not change this option unless the Ingress Controller is not running on OpenShift.
 {productname-short} uses this value to generate the dashboard and client routes for every Ray Cluster, as shown in the following examples:
 +
 .Example dashboard and client routes
@@ -47,7 +47,7 @@ ray-dashboard-_<clustername>_-_<namespace>_._<your.ingress.domain>_
 ray-client-_<clustername>_-_<namespace>_._<your.ingress.domain>_
 ----
 +
-`*mTLSEnabled*`::
+mTLSEnabled::
 This configuration option is enabled (`mTLSEnabled: true`) by default.
 When this option is enabled, the Ray Cluster pods create certificates that are used for mutual Transport Layer Security (mTLS), a form of mutual authentication, between Ray Cluster nodes.
 When this option is enabled, Ray clients cannot connect to the Ray head node unless they download the generated certificates from the `ca-secret-_<cluster_name>_` secret, generate the necessary certificates for mTLS communication, and then set the required Ray environment variables.
@@ -66,11 +66,11 @@ ray.init(cluster.cluster_uri())
 ----
 
 +
-`*rayDashboardOauthEnabled*`::
+rayDashboardOauthEnabled::
 This configuration option is enabled (`rayDashboardOAuthEnabled: true`) by default.
 When this option is enabled, {productname-short} places an OpenShift OAuth proxy in front of the Ray Cluster head node.
 Users must then authenticate by using their OpenShift cluster login credentials when accessing the Ray Dashboard through the browser.
-If users want to access the Ray Dashboard by using the Ray `JobSubmissionClient` class or in some other programmatic way, they must set an authorization header as part of their request, as shown in the following example:
+If users want to access the Ray Dashboard in another way (for example, by using the Ray `JobSubmissionClient` class), they must set an authorization header as part of their request, as shown in the following example:
 +
 .Example authorization header
 [source,bash,subs="+quotes"]
