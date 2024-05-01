@@ -16,16 +16,26 @@ endif::[]
 
 * You have access to the data science cluster.
 * You have installed {productname-long}.
-* You have sufficient resources. In addition to the base {productname-short} resources, you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
+
+ifdef::cloud-service[]
+* You have sufficient resources. In addition to the minimum {productname-short} resources described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install[Installing and deploying {productname-short}], you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
+endif::[]
+ifdef::self-managed[]
+* You have sufficient resources. In addition to the minimum {productname-short} resources described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install[Installing and deploying {productname-short}] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/deploying-openshift-ai-in-a-disconnected-environment_install[Deploying {productname-short} in a disconnected environment]), you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
+endif::[]
+ifdef::upstream[]
+* You have sufficient resources. In addition to the minimum {productname-short} resources described in link:{odhdocshome}/installing_open_data_hub/#installing-the-odh-operator-v2_installv2[Installing the {productname-short} Operator version 2], you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
+endif::[]
+
 * You have access to a Ray cluster image. For information about how to create a Ray cluster, see the link:https://docs.ray.io/en/latest/cluster/getting-started.html[Ray Clusters documentation].
 +
 [NOTE]
 ====
 Mutual Transport Layer Security (mTLS) is enabled by default in the CodeFlare component in {productname-short}.
 In the current {productname-short} version, `submissionMode=K8sJobMode` is not supported in the Ray job specification, so the KubeRay Operator cannot create a submitter Kubernetes Job to submit the Ray job.
-Instead, the Ray job specification must be configured to set `submissionMode=HTTPMode` only, so that the KubeRay Operator sends a request to the RayCluster to create a Ray job.
+Instead, users must configure the Ray job specification to set `submissionMode=HTTPMode` only, so that the KubeRay Operator sends a request to the RayCluster to create a Ray job.
 ====
-* You have access to the data sets and models to be used by the distributed workload.
+* You have access to the data sets and models that the distributed workload uses.
 * You have access to the Python dependencies for the distributed workload.
 
 ifndef::upstream[]
