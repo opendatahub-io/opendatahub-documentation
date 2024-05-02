@@ -172,13 +172,10 @@ if __name__ == '__main__':
 
 ----
 <1> Imports from the CodeFlare SDK the packages that define the cluster functions
-<2> Authenticates with the cluster by using values that you specify when creating the pipeline run
+<2> Authenticates with the cluster by using values that you specify when creating the pipeline run;
+if your cluster uses self-signed certificates, include `ca-cert-path=__<path>__` in the `TokenAuthentication` parameter list, where `__<path>__` is the path to the cluster-wide Certificate Authority (CA) bundle that contains the self-signed certificates
 // Commenting out second part of callout 2 until RHOAIENG-880 is fixed
 //; you can omit this section if the Ray cluster is configured to use the same namespace as the data science project
-[NOTE]
-----
-If your cluster uses self-signed certificates, include `ca-cert-path=__<path>__` in the `TokenAuthentication` parameter list, where `__<path>__` is the path to the cluster-wide Certificate Authority (CA) bundle that contains the self-signed certificates.
-----
 <3> Specifies the Ray cluster configuration: replace these example values with the values for your Ray cluster
 <4> Specifies the location of the Ray cluster image: if using a disconnected environment, replace the default value with the location for your environment
 <5> Specifies the local queue to which the Ray cluster will be submitted: you can omit this line if you configured a default local queue
