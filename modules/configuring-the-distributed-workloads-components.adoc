@@ -39,13 +39,6 @@ Instead, users must configure the Ray job specification to set `submissionMode=H
 * You have access to the Python dependencies for the distributed workload.
 
 ifndef::upstream[]
-* You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
-endif::[]
-ifdef::upstream[]
-* You have created the required Kueue resources as described in link:{odhdocshome}/working_with_distributed_workloads/#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
-endif::[]
-
-ifndef::upstream[]
 * You have removed any previously installed instances of the CodeFlare Operator, as described in the Knowledgebase solution link:https://access.redhat.com/solutions/7043796[How to migrate from a separately installed CodeFlare Operator in your data science cluster].
 endif::[]
 ifdef::upstream[]
@@ -138,7 +131,9 @@ endif::[]
 . Click the *Data Science Cluster* tab.
 . Click the default instance name (for example, *default-dsc*) to open the instance details page.
 . Click the *YAML* tab to show the instance specifications.
-. In the `spec.components` section, ensure that the `managementState` field is set correctly for the required components depending on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
+. Enable the required distributed workloads components.
+In the `spec:components` section, set the `managementState` field correctly for the required components.
+The list of required components depends on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
 +
 .Components required for distributed workloads
 [cols="34,20,20,26"]

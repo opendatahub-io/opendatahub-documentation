@@ -21,6 +21,13 @@ ifdef::cloud-service[]
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.openshift.com/dedicated/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI] (Red Hat OpenShift Dedicated) or link:https://docs.openshift.com/rosa/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI] (Red Hat OpenShift Service on AWS).
 endif::[]
 
+ifndef::upstream[]
+* You have enabled the required distributed workloads components as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/#configuring-the-distributed-workloads-components_distributed-workloads[Configuring the distributed workloads components].
+endif::[]
+ifdef::upstream[]
+* You have enabled the required distributed workloads components as described in link:{odhdocshome}/working_with_distributed_workloads/#configuring-the-distributed-workloads-components_distributed-workloads[Configuring the distributed workloads components].
+endif::[]
+
 * You have sufficient resources. In addition to the base {productname-short} resources, you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
 
 * The resources are physically available in the cluster.
