@@ -1,6 +1,6 @@
 :_module-type: PROCEDURE
 
-[id="running-distributed-data-science-workloads-from-ds-pipeline_{context}"]
+[id="running-distributed-data-science-workloads-from-ds-pipelines_{context}"]
 = Running distributed data science workloads from data science pipelines
 
 [role='_abstract']
@@ -15,44 +15,44 @@ ifdef::cloud-service[]
 endif::[]
 
 ifndef::upstream[]
-* You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
-endif::[]
-ifdef::upstream[]
-* You have created the required Kueue resources as described in link:{odhdocshome}/working_with_distributed_workloads/#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads].
-endif::[]
-
-ifndef::upstream[]
-* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to the configuration details for that `LocalQueue` resource, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads]:
-+
-[source,bash]
-----
-"kueue.x-k8s.io/default-queue": "true"
-----
-+
-[NOTE]
-====
-If you do not create a default local queue, you must specify a local queue in each pipeline.
-====
-endif::[]
-ifdef::upstream[]
-* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to the configuration details for that `LocalQueue` resource, as described in link:{odhdocshome}/working_with_distributed_workloads/#configuring-quota-management-for-distributed-workloads_distributed_workloads[Configuring quota management for distributed workloads]:
-+
-[source,bash]
-----
-"kueue.x-k8s.io/default-queue": "true"
-----
-+
-[NOTE]
-====
-If you do not create a default local queue, you must specify a local queue in each pipeline.
-====
-endif::[]
-
-ifndef::upstream[]
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/working-with-distributed-workloads_distributed-workloads#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 endif::[]
 ifdef::upstream[]
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working_with_distributed_workloads/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
+endif::[]
+ifdef::upstream[]
+* You have created the required Kueue resources as described in link:{odhdocshome}/working_with_distributed_workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to the configuration details for that `LocalQueue` resource, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/working-with-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
++
+[source,bash]
+----
+"kueue.x-k8s.io/default-queue": "true"
+----
++
+[NOTE]
+====
+If you do not create a default local queue, you must specify a local queue in each pipeline.
+====
+endif::[]
+ifdef::upstream[]
+* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to the configuration details for that `LocalQueue` resource, as described in link:{odhdocshome}/working_with_distributed_workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
++
+[source,bash]
+----
+"kueue.x-k8s.io/default-queue": "true"
+----
++
+[NOTE]
+====
+If you do not create a default local queue, you must specify a local queue in each pipeline.
+====
 endif::[]
 
 * You have access to S3-compatible object storage.
@@ -175,6 +175,10 @@ if __name__ == '__main__':
 <2> Authenticates with the cluster by using values that you specify when creating the pipeline run
 // Commenting out second part of callout 2 until RHOAIENG-880 is fixed
 //; you can omit this section if the Ray cluster is configured to use the same namespace as the data science project
+[NOTE]
+----
+If your cluster uses self-signed certificates, include `ca-cert-path=__<path>__` in the `TokenAuthentication` parameter list, where `__<path>__` is the path to the cluster-wide Certificate Authority (CA) bundle that contains the self-signed certificates.
+----
 <3> Specifies the Ray cluster configuration: replace these example values with the values for your Ray cluster
 <4> Specifies the location of the Ray cluster image: if using a disconnected environment, replace the default value with the location for your environment
 <5> Specifies the local queue to which the Ray cluster will be submitted: you can omit this line if you configured a default local queue
@@ -209,10 +213,10 @@ ifdef::upstream[]
 endif::[]
 
 ifndef::upstream[]
-. When the pipeline run is complete, confirm that it is included in the list of triggered pipeline runs, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#viewing-triggered-pipeline-runs_ds-pipelines[Viewing triggered pipeline runs].
+. When the pipeline run is complete, confirm that it is included in the list of triggered pipeline runs, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#viewing-the-details-of-a-pipeline-run_ds-pipelines[Viewing the details of a pipeline run].
 endif::[]
 ifdef::upstream[]
-. When the pipeline run is complete, confirm that it is included in the list of triggered pipeline runs, as described in link:{odhdocshome}/working_on_data_science_projects/#viewing-triggered-pipeline-runs_ds-pipelines[Viewing triggered pipeline runs].
+. When the pipeline run is complete, confirm that it is included in the list of triggered pipeline runs, as described in link:{odhdocshome}/working_on_data_science_projects/#viewing-the-details-of-a-pipeline-run_ds-pipelines[Viewing the details of a pipeline run].
 endif::[]
 
 
