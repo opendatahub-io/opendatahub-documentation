@@ -1,0 +1,37 @@
+:_module-type: PROCEDURE
+
+[id="duplicating-an-active-pipeline-run_{context}"]
+= Duplicating an active pipeline run
+
+[role='_abstract']
+To make it easier to quickly execute pipeline runs with the same configuration, you can duplicate them.  
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and contains a configured pipeline server.
+* You have imported a pipeline to an active pipeline server.
+* An active run is available to duplicate in the *Active* tab on the *Runs* page.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Runs*.
+. On the *Runs* page, select the *project* that has the pipeline run that you want to duplicate.
+. Click the action menu (*&#8942;*) beside the relevant active run and click *Duplicate*.
+. In the *Duplicate run* page, configure the duplicate run:
+.. In the *Name* field, enter a name for the duplicate run.
+.. In the *Description* field, enter a description for the duplicate run.
+.. From the *Pipeline* list, select the pipeline to contain the duplicate run.
+.. From the *Pipeline version* list, select the pipeline version to contain the duplicate run.
+.. In the *Parameters* section, configure the input parameters for the run that you are duplicating by selecting the appropriate parameters from the list.
+.. Click *Create run*.
+
+.Verification
+* The duplicate pipeline run appears in the *Active* tab on the *Runs* page.
+
+//[role='_additional-resources']
+//.Additional resources

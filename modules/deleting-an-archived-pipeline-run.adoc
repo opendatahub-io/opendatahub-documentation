@@ -1,0 +1,34 @@
+:_module-type: PROCEDURE
+
+[id="deleting-an-archived-pipeline-run_{context}"]
+= Deleting an archived pipeline run
+
+[role='_abstract']
+You can delete pipeline runs from the {productname-short} run archive. 
+
+.Prerequisites
+
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and has a pipeline server.
+* You have imported a pipeline to an active pipeline server.
+* You have previously archived a pipeline run. 
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Runs*.
+. On the *Runs* page, select the *project* for the archived pipeline run you want to delete. 
+. In the *Run details* page, click *Archived*.
+. Click the action menu (*&#8942;*) beside the run that you want to delete and click *Delete*.
+. In the *Delete run* dialog, enter the run name in the text field to confirm that you intend to delete it.
+. Click *Delete*.
+
+.Verification
+* The archived run that you deleted no longer appears in the *Archived* tab on the *Runs* page.
+
+//[role='_additional-resources']
+//.Additional resources

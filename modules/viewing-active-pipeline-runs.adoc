@@ -1,39 +1,32 @@
 :_module-type: PROCEDURE
 
-[id="viewing-triggered-pipeline-runs_{context}"]
-= Viewing triggered pipeline runs
+[id="viewing-active-pipeline-runs_{context}"]
+= Viewing active pipeline runs
 
 [role='_abstract']
 You can view a list of pipeline runs that were previously executed in {productname-short}. From this list, you can view details relating to your pipeline runs, such as the pipeline version that the run belongs to, along with the run status, duration, and execution start time.
 
 .Prerequisites
-
 * You have logged in to {productname-long}.
 ifndef::upstream[]
-* You have installed the OpenShift Pipelines operator.
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
 endif::[]
 ifdef::upstream[]
-* You have installed the Data Science Pipelines operator.
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
 * You have previously created a data science project that is available and has a pipeline server.
-* You have imported a pipeline to an active and available pipeline server.
-* You have previously triggered a pipeline run.
+* You have imported a pipeline to an active pipeline server.
+* You have previously executed a pipeline run.
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Pipelines* -> *Runs*.
+. On the *Runs* page, select the *project* for the active pipeline runs that you want to view.
+. On the *Run details* page, click the *Active* tab.
 +
-The *Runs* page opens.
-. From the *Project* list, select the project whose previously executed pipeline runs you want to view.
-+
-The *Run details* page opens.
-. Click the *Triggered* tab.
-+
-A table opens that shows list of triggered runs. After a run has completed its execution, the run's status is displayed in the *Status* column in the table, indicating whether the run has succeeded or failed.
+After a run has completed its execution, the run's status appears in the *Status* column in the table, indicating whether the run has succeeded or failed.
 
 .Verification
-* A list of previously triggered runs are displayed in the *Triggered* tab on the *Runs* page.
+* A list of active runs appears in the *Active* tab on the *Runs* page.
 
 //[role='_additional-resources']
 //.Additional resources

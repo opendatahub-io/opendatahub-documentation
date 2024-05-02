@@ -4,10 +4,9 @@
 = Viewing existing pipelines
 
 [role='_abstract']
-You can view the details of pipelines that you have imported to {productname-long}, such as the pipeline's last run, when it was created, and the pipeline's executed runs.
+You can view the details of pipelines that you have imported to {productname-long}, such as the pipeline's last run, when it was created, the pipeline's executed runs, and details of any associated pipeline versions. 
 
 .Prerequisites
-* You have installed the OpenShift Pipelines operator.
 * You have logged in to {productname-long}.
 ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
@@ -16,19 +15,17 @@ ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
 * You have previously created a data science project that is available and contains a pipeline server.
-* You have imported a pipeline to an active and available pipeline server.
-* The pipeline you imported is available, or there are other previously imported pipelines available to view.
+* You have imported a pipeline to an active pipeline server.
+* Existing pipelines are available.
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Pipelines* -> *Pipelines*.
-+
-The *Pipelines* page opens.
-. From the *Project* list, select the relevant project whose pipelines you want to view.
+. On the *Pipelines* page, select the relevant *project* for the pipelines you want to view.
 . Study the pipelines on the list.
-. Optional: Click *Expand* (image:images/rhoai-expand-icon.png[]) on the relevant row to view the pipeline's executed runs. If the pipeline does not contain any runs, click *Create run* to create one.
+. Optional: Click *Expand* (image:images/rhoai-expand-icon.png[]) on the relevant row to view details of any pipeline versions associated with the pipeline.
 
 .Verification
-* A list of previously created data science pipelines is displayed on the *Pipelines* page.
+* A list of previously created data science pipelines appears on the *Pipelines* page.
 
 //[role='_additional-resources']
 //.Additional resources
