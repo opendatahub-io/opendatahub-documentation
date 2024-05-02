@@ -8,21 +8,21 @@ To run a distributed data science workload from a notebook, you must first provi
 
 .Prerequisites
 ifndef::upstream[]
-* You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 endif::[]
 ifdef::upstream[]
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working_with_distributed_workloads/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 endif::[]
 
 ifndef::upstream[]
-* You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
+* You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
 endif::[]
 ifdef::upstream[]
 * You have created the required Kueue resources as described in link:{odhdocshome}/working_with_distributed_workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
 endif::[]
 
 ifndef::upstream[]
-* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
+* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
 +
 [source,bash]
 ----
@@ -100,7 +100,7 @@ You must include the Ray cluster authentication code to enable the Ray client th
 
 
 ifndef::upstream[]
-** If you have not configured a default local queue by including the `kueue.x-k8s.io/default-queue: 'true'` annotation as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], update the `ClusterConfiguration` section to specify the local queue for the Ray cluster, as shown in the following example:
+** If you have not configured a default local queue by including the `kueue.x-k8s.io/default-queue: 'true'` annotation as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], update the `ClusterConfiguration` section to specify the local queue for the Ray cluster, as shown in the following example:
 +
 .Example local queue assignment
 [source,bash,subs="+quotes"]
