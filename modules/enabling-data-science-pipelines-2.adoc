@@ -96,9 +96,12 @@ ifdef::cloud-service[]
 After you upgrade to {productname-short} with DSP 2.0, pipelines created with DSP 1.0 will continue to run, but will be inaccessible from the {productname-short} dashboard. We recommend that current DSP users do not upgrade to {productname-short} with DSP 2.0 until you are ready to migrate to the new pipelines solution. 
 ====
 
-To upgrade {productname-short}, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the upgrade steps described in link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_cloud_service/index[Upgrading {productname-short } AI Cloud Service].
-
-If you upgrade to {productname-short} with DSP 2.0 enabled and an existing Argo Workflows installation that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows from your cluster. The component upgrade will complete automatically.
+To upgrade to DSP 2.0, follow these steps.
+. Ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}, and then follow the upgrade steps described in link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_cloud_service/index[Upgrading {productname-short} AI Cloud Service].
++
+If you upgrade to {productname-short} with DSP 2.0 enabled and there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows from your cluster. The component upgrade will then complete automatically. 
+. Update your workbenches to use the notebook image version 2024.1 or later. For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#updating-a-project-workbench_nb-server[Updating a project workbench].
+. Manually migrate your pipelines from DSP 1.0 to 2.0. For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#migrating_pipelines_from_dsp_1_0_to_2_0[Migrating pipelines from DSP 1.0 to 2.0].
 endif::[]
 
 //RHOAI self-managed & disconnected
@@ -108,9 +111,12 @@ ifdef::self-managed[]
 After you upgrade to {productname-short} 2.9 or later, pipelines created with DSP 1.0 will continue to run, but will be inaccessible from the {productname-short} dashboard. We recommend that current DSP users stay on {productname-short} 2.8 until you are ready to migrate to the new pipelines solution. 
 ====
 
-To upgrade to {productname-short} 2.9, ensure that there is no installation of Argo Workflows that is not installed by DSP on your cluster, and follow the upgrade steps described in link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed/index[Upgrading {productname-short} Self-Managed], or for disconnected environments, link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed_in_a_disconnected_environment/index[Upgrading {productname-long} in a disconnected environment].
-
-If you upgrade to {productname-short} 2.9 or later with DSP enabled and an existing Argo Workflows installation that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows from your cluster.  The component upgrade will complete automatically. 
+To upgrade to DSP 2.0, follow these steps.
+. Ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}, and then follow the upgrade steps described in link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed/index[Upgrading {productname-short} Self-Managed], or for disconnected environments, link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed_in_a_disconnected_environment/index[Upgrading {productname-long} in a disconnected environment].
++
+If you upgrade to {productname-short} 2.9 or later with DSP enabled and there is an existing installation of Argo Workflows that is not installed by DSP on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable DSP or remove the separate installation of Argo Workflows from your cluster. The component upgrade will then complete automatically.
+. Update your workbenches to use the notebook image version 2024.1 or later. For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#updating-a-project-workbench_nb-server[Updating a project workbench]. 
+. Manually migrate your pipelines from DSP 1.0 to 2.0. For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#migrating_pipelines_from_dsp_1_0_to_2_0[Migrating pipelines from DSP 1.0 to 2.0].
 endif::[]
 endif::[]
 
