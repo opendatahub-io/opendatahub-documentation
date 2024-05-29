@@ -27,15 +27,15 @@ endif::[]
 . Switch to the *Developer* perspective.
 . In the left menu, click *Observe*.
 ifdef::upstream,self-managed[]
-. As described in link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/building_applications/odc-monitoring-project-and-application-metrics-using-developer-perspective#odc-monitoring-your-project-metrics_monitoring-project-and-application-metrics-using-developer-perspective[monitoring project metrics^], use the web console to run queries for `caikit_*`, `tgi_*`, `ovms_*` and `vllm:*` model-serving runtime metrics. You can also run queries for `istio_*` metrics that are related to OpenShift Service Mesh.
-.. For example, you can check the number of successful inference requests over a period of time for a model deployed with the vLLM runtime, using the following query:
+. As described in link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/building_applications/odc-monitoring-project-and-application-metrics-using-developer-perspective#odc-monitoring-your-project-metrics_monitoring-project-and-application-metrics-using-developer-perspective[monitoring project metrics^], use the web console to run queries for `caikit_*`, `tgi_*`, `ovms_*` and `vllm:*` model-serving runtime metrics. You can also run queries for `istio_*` metrics that are related to OpenShift Service Mesh. Here are a few example queries:
+.. You can check the number of successful inference requests over a period of time for a model deployed with the vLLM runtime, using the following query:
 +
 [source,subs="+quotes"]
 ----
 sum(increase(vllm:request_success_total{namespace='${namespace}',model_name='${model_name}'}[${rate_interval}]))
 ----
 
-.. Similarly, you can also check the number of successful inference requests over a period of time for a model deployed with the TGIS runtime, using the following query:
+.. You can also check the number of successful inference requests over a period of time for a model deployed with the TGIS runtime, using the following query:
 +
 [source,subs="+quotes"]
 ----
@@ -44,7 +44,7 @@ sum(increase(tgi_request_success{namespace=${namespace}, pod=~'${model_name}-pre
 
 endif::[]
 ifdef::cloud-service[]
-. As described in link:https://docs.openshift.com/dedicated/observability/monitoring/managing-metrics.html#querying-metrics-for-user-defined-projects-as-a-developer_managing-metrics[Querying metrics for user-defined projects as a developer^] (Red Hat OpenShift Dedicated) or link:https://docs.openshift.com/rosa/observability/monitoring/managing-metrics.html#querying-metrics-for-user-defined-projects-as-a-developer_managing-metrics[Querying metrics for user-defined projects as a developer^] (Red Hat OpenShift Service on AWS), use the web console to run queries for `caikit_*`, `tgi_*`, `ovms_*` and `vLLM:*` model-serving runtime metrics. You can also run queries for `istio_*` metrics that are related to OpenShift Service Mesh. A few example queries are listed below:
+. As described in link:https://docs.openshift.com/dedicated/observability/monitoring/managing-metrics.html#querying-metrics-for-user-defined-projects-as-a-developer_managing-metrics[Querying metrics for user-defined projects as a developer^] (Red Hat OpenShift Dedicated) or link:https://docs.openshift.com/rosa/observability/monitoring/managing-metrics.html#querying-metrics-for-user-defined-projects-as-a-developer_managing-metrics[Querying metrics for user-defined projects as a developer^] (Red Hat OpenShift Service on AWS), use the web console to run queries for `caikit_*`, `tgi_*`, `ovms_*` and `vLLM:*` model-serving runtime metrics. You can also run queries for `istio_*` metrics that are related to OpenShift Service Mesh. Here are a few example queries:
 .. You can check the number of successful inference requests over a period of time for a model deployed with the vLLM runtime, using the following query:
 +
 [source,subs="+quotes"]
