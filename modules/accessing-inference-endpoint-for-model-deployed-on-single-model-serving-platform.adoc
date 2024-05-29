@@ -49,6 +49,14 @@ NOTE: To query the endpoint for the TGIS standalone runtime, you must also downl
 
 * `/v2/models/<model-name>/infer`
 
+*vLLM ServingRuntime for KServe*
+
+* `:443/v1/models`
+* `:443/v1/version`
+* `:443/v1/chat/completions`
+* `:443/v1/completions`
+* `:443/v1/embeddings`
+
 As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
 --
 
@@ -86,6 +94,20 @@ curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d \
 ----
 <1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
 --
+
+*vLLM ServingRuntime for KServe*
+[source]
+----
+curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H \
+"Content-Type: application/json" -d '{ \
+"model": "<model_name>", \
+"messages": [{ \
+"role": "<role>", \
+"content": "<content>" \
+} -H 'Authorization: Bearer <token>' <1>
+----
+<1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
+--
 endif::[]
 ifdef::self-managed,cloud-service[]
 +
@@ -111,6 +133,14 @@ curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name
 ----
 <1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
 --
+
+*vLLM ServingRuntime for KServe*
+[source]
+----
+curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "model": "<model_name>", "messages": [{ "role": "<role>", "content": "<content>" } -H 'Authorization: Bearer <token>' <1>
+----
+<1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
+--
 endif::[]
 
 [role='_additional-resources']
@@ -118,3 +148,4 @@ endif::[]
 * link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]
 * link:https://caikit.readthedocs.io/en/latest/autoapi/caikit/index.html[Caikit API documentation^]
 * link:https://docs.openvino.ai/2023.3/ovms_docs_rest_api_kfs.html[OpenVINO KServe-compatible REST API documentation^]
+
