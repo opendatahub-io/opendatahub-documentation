@@ -132,7 +132,6 @@ grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests":
 curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'  <1>
 ----
 <1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
---
 
 *vLLM ServingRuntime for KServe*
 [source]
@@ -148,4 +147,3 @@ endif::[]
 * link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]
 * link:https://caikit.readthedocs.io/en/latest/autoapi/caikit/index.html[Caikit API documentation^]
 * link:https://docs.openvino.ai/2023.3/ovms_docs_rest_api_kfs.html[OpenVINO KServe-compatible REST API documentation^]
-
