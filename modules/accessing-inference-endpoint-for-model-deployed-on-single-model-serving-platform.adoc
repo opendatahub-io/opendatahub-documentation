@@ -103,7 +103,7 @@ curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H \
 "messages": [{ \
 "role": "<role>", \
 "content": "<content>" \
-} -H 'Authorization: Bearer <token>' <1>
+}] -H 'Authorization: Bearer <token>' <1>
 ----
 <1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
 --
@@ -135,7 +135,7 @@ curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name
 *vLLM ServingRuntime for KServe*
 [source]
 ----
-curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "model": "<model_name>", "messages": [{ "role": "<role>", "content": "<content>" } -H 'Authorization: Bearer <token>' <1>
+curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "model": "<model_name>", "messages": [{ "role": "<role>", "content": "<content>" }] -H 'Authorization: Bearer <token>' <1>
 ----
 <1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
 --
