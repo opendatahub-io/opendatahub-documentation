@@ -1,0 +1,58 @@
+:_module-type: PROCEDURE
+
+[id='enabling-applications-connected_{context}']
+= Enabling applications that are connected to {productname-short}
+
+[role='_abstract']
+You must enable SaaS-based applications, such as Anaconda Professional Edition, before using them with {productname-long}. On-cluster applications are enabled automatically.
+
+Typically, you can install, or enable applications connected to {productname-short} using one of the following methods:
+
+* Enabling the application from the *Explore* page on the {productname-short} dashboard, as documented in the following procedure.
+* Installing the Operator for the application from OperatorHub. OperatorHub is a web console for cluster administrators to discover and select Operators to install on their cluster. It is deployed by default in {openshift-platform} (link:https://access.redhat.com/documentation/en-us/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-installing-from-operatorhub-using-web-console_olm-adding-operators-to-a-cluster[Installing from OperatorHub using the web console]).
++
+ifndef::upstream[]
+[NOTE]
+====
+Deployments containing Operators installed from OperatorHub may not be fully supported by {org-name}.
+====
+endif::[]
+* Installing the Operator for the application from {org-name} Marketplace (link:https://marketplace.redhat.com/en-us/documentation/operators[Install Operators]).
+ifdef::upstream,self-managed[]
+* Installing the application as an {install-package} to your {openshift-platform} cluster (link:https://docs.openshift.com/container-platform/{ocp-latest-version}/operators/admin/olm-adding-operators-to-cluster.html[Adding Operators to a cluster]).
+endif::[]
+ifdef::cloud-service[]
+* Installing the application as an {install-package} to your OpenShift Dedicated (link:https://docs.openshift.com/dedicated/operators/admin/olm-adding-operators-to-cluster.html[Adding Operators to an OpenShift Dedicated cluster]) or ROSA cluster (link:https://docs.openshift.com/rosa/operators/admin/olm-adding-operators-to-cluster.html[Adding Operators to a ROSA cluster]).
+endif::[]
+
+For some applications (such as Jupyter), the API endpoint is available on the tile for the application on the *Enabled* page of {productname-short}. Certain applications cannot be accessed directly from their tiles, for example, OpenVINO and Anaconda provide notebook images for use in Jupyter and do not provide an endpoint link from their tile. Additionally, it may be useful to store these endpoint URLs as environment variables for easy reference in a notebook environment.
+
+Some applications cannot be accessed directly from their tiles. For example, OpenVINO and Anaconda provide notebook images for use in Jupyter and do not provide an endpoint link from their tiles.
+
+Some independent software vendor (ISV) applications must be installed in specific namespaces. In these cases, the tile for the application in the {productname-short} dashboard specifies the required namespace.
+
+To help you get started quickly, you can access the application's learning resources and documentation on the **Resources** page, or on the **Enabled** page by clicking the relevant link on the tile for the application.
+
+.Prerequisites
+* You have logged in to {productname-short}.
+ifdef::upstream,self-managed[]
+* Your administrator has installed or configured the application on your {openshift-platform} cluster.
+endif::[]
+ifdef::cloud-service[]
+* Your administrator has installed or configured the application on your OpenShift cluster.
+endif::[]
+
+.Procedure
+. On the {productname-short} home page, click *Explore*.
+. On the *Explore* page, find the tile for the application that you want to enable.
+. Click *Enable* on the application tile.
+. If prompted, enter the application's service key and then click *Connect*.
+. Click *Enable* to confirm that you want to enable the application.
+
+.Verification
+* The application that you enabled appears on the *Enabled* page.
+* The API endpoint is displayed on the tile for the application on the *Enabled* page.
+
+//[role="_additional-resources"]
+//.Additional resources
+//* TODO or delete
