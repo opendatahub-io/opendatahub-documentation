@@ -51,11 +51,14 @@ NOTE: To query the endpoint for the TGIS standalone runtime, you must also downl
 
 *vLLM ServingRuntime for KServe*
 
-* `:443/v1/models`
 * `:443/version`
+* `:443/docs`
+* `:443/v1/models`
 * `:443/v1/chat/completions`
 * `:443/v1/completions`
 * `:443/v1/embeddings`
++
+NOTE: While the vLLM runtime is compatible with the OpenAI REST API, it is also additionally compatible with the TGIS gRPC API. To query the endpoints for the vLLM runtime with the TGIS gRPC API, refer to the endpoints that are used for the TGIS Standalone runtime. You must also download the files in the `proto` directory of the IBM link:https://github.com/IBM/text-generation-inference[text-generation-inference^] repository, if querying with the TGIS gRPC API.
 
 As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
 --
@@ -146,3 +149,4 @@ endif::[]
 * link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]
 * link:https://caikit.readthedocs.io/en/latest/autoapi/caikit/index.html[Caikit API documentation^]
 * link:https://docs.openvino.ai/2023.3/ovms_docs_rest_api_kfs.html[OpenVINO KServe-compatible REST API documentation^]
+* link:https://platform.openai.com/docs/api-reference/introduction[OpenAI API documentation]
