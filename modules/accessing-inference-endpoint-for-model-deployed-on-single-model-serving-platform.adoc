@@ -82,7 +82,7 @@ https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generatio
 ----
 grpcurl -proto text-generation-inference/proto/generation.proto -d \
 '{"requests": [{"text":"<text>"}]}' \
--H 'mm-model-id: <model_name>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate \
+-insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate \
 -H 'Authorization: Bearer <token>' <1>
 ----
 <1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
@@ -102,7 +102,6 @@ curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d \
 ----
 curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H \
 "Content-Type: application/json" -d '{ \
-"model": "<model_name>", \
 "messages": [{ \
 "role": "<role>", \
 "content": "<content>" \
@@ -124,7 +123,7 @@ curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' https://<inferenc
 *TGIS Standalone ServingRuntime for KServe*
 [source]
 ----
-grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'mm-model-id: <model_name>' -H 'Authorization: Bearer <token>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate  <1>
+grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'Authorization: Bearer <token>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate  <1>
 ----
 <1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
 
@@ -138,7 +137,7 @@ curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name
 *vLLM ServingRuntime for KServe*
 [source]
 ----
-curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "model": "<model_name>", "messages": [{ "role": "<role>", "content": "<content>" }] -H 'Authorization: Bearer <token>' <1>
+curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "messages": [{ "role": "<role>", "content": "<content>" }] -H 'Authorization: Bearer <token>' <1>
 ----
 <1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
 --
