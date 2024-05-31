@@ -1,0 +1,67 @@
+:_module-type: ASSEMBLY
+
+[id="working-in-your-data-science-ide"]
+= Working in your data science IDE
+:upstream:
+:context: ide
+//:preview:
+
+ifdef::preview[]
+include::../_artifacts/document-attributes-global.adoc[]
+endif::preview[]
+
+In {productname-long}, when you create a workbench, you select a workbench image that includes an IDE for developing your machine learning models. 
+
+{productname-short} supports the following data science IDEs for developing ML models:
+
+* JupyterLab
+* code-server (Technology Preview feature)
+ifdef::cloud-service[]
+* RStudio Server (Technology Preview feature) 
+endif::[]
+
+include::modules/accessing-your-workbench-ide.adoc[leveloffset=+1]
+
+== Working in JupyterLab
+
+JupyterLab is the latest web-based interactive development environment for notebooks, code, and data. You can configure and arrange workflows in data science and machine learning. JupyterLab is an open-source web application that supports over 40 programming languages, including Python and R.
+
+=== Creating and importing notebooks
+
+[role='_abstract']
+You can create a blank notebook or import a notebook from several different sources.
+
+include::modules/creating-a-new-notebook.adoc[leveloffset=+3]
+include::modules/notebook-images-for-data-scientists.adoc[leveloffset=+3]
+// include::modules/uploading-an-existing-notebook-file-from-a-file-URL.adoc[leveloffset=+2]
+
+include::modules/uploading-an-existing-notebook-file-from-local-storage.adoc[leveloffset=+3]
+
+
+=== Collaborating on notebooks using Git
+
+[role='_abstract']
+If your notebooks or other files are stored in Git version control, you can import them from a Git repository onto your notebook server to work with them in JupyterLab. When you are ready, you can push your changes back to the Git repository so that others can review or use your models.
+
+include::modules/uploading-an-existing-notebook-file-from-a-git-repository-using-jupyterlab.adoc[leveloffset=3]
+
+include::modules/uploading-an-existing-notebook-file-from-a-git-repository-using-the-command-line-interface.adoc[leveloffset=+3]
+
+include::modules/updating-your-project-with-changes-from-a-remote-git-repository.adoc[leveloffset=+3]
+
+include::modules/pushing-project-changes-to-a-git-repository.adoc[leveloffset=+3]
+
+=== Managing Python packages
+
+In JupyterLab, you can view the Python packages that are installed on your notebook image and install additional packages.
+
+include::modules/viewing-python-packages-installed-on-your-notebook-server.adoc[leveloffset=+3]
+
+include::modules/installing-python-packages-on-your-notebook-server.adoc[leveloffset=+3]
+
+include::modules/troubleshooting-common-problems-in-jupyter-for-users.adoc[leveloffset=+2]
+
+include::modules/working-in-code-server.adoc[leveloffset=+1]
+
+include::modules/working-in-rstudio-server.adoc[leveloffset=+1]
+
