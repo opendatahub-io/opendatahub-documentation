@@ -1,0 +1,55 @@
+---
+layout: docs
+title: Working with connected applications
+permalink: /docs/working-with-connected-applications
+custom_css: asciidoc.css
+---
+
+:upstream:
+include::_artifacts/document-attributes-global.adoc[]
+
+:doctype: book
+:toc: left
+:compat-mode:
+:context: connected-apps
+
+= Working with connected applications
+
+
+include::assemblies/enabling-removing-connected-applications.adoc[leveloffset=+1]
+
+== Using the Jupyter application
+{productname-long} provides access to Jupyter as an enabled application for situations where, for example, you do not want users to have their own data science projects or you want to open a notebook that was developed outside of {productname-short} and has no dependencies on other environments. 
+
+ifndef::upstream[]
+Note that the preferred way to access Jupyter on {productname-short} is through a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-project-workbench_nb-server[Creating a workbench]. The advantages to using an {productname-short} data science project and creating a workbench that includes Jupyter, is that your project organizes your data science work in one place and adds functionality such as data connections so that you can access data and save your models and pipelines for automating your ML workflow.
+endif::[]
+ifdef::upstream[]
+Note that the preferred way to access Jupyter on {productname-short} is through a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Creating a workbench]. The advantages to using an {productname-short} data science project and creating a workbench that includes Jupyter, is that your project organizes your data science work in one place and adds functionality such as data connections so that you can access data and save your models and pipelines for automating your ML workflow.
+endif::[]
+
+include::modules/starting-a-jupyter-notebook-server.adoc[leveloffset=+2]
+
+=== Creating and importing notebooks
+
+[role='_abstract']
+You can create a blank notebook or import a notebook from several different sources.
+
+include::modules/creating-a-new-notebook.adoc[leveloffset=+3]
+include::modules/notebook-images-for-data-scientists.adoc[leveloffset=+3]
+// include::modules/uploading-an-existing-notebook-file-from-a-file-URL.adoc[leveloffset=+2]
+
+include::modules/uploading-an-existing-notebook-file-from-local-storage.adoc[leveloffset=+3]
+
+include::assemblies/collaborating-on-notebooks-by-using-git.adoc[leveloffset=+2]
+
+=== Managing Python packages
+
+In JupyterLab, you can view the Python packages that are installed on your notebook image and install additional packages.
+
+include::modules/viewing-python-packages-installed-on-your-notebook-server.adoc[leveloffset=+3]
+
+include::modules/installing-python-packages-on-your-notebook-server.adoc[leveloffset=+3]
+
+include::modules/updating-notebook-server-settings-by-restarting-your-server.adoc[leveloffset=+2]
+

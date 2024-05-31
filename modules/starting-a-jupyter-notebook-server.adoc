@@ -1,13 +1,16 @@
 :_module-type: PROCEDURE
 
-[id='launching-jupyter-and-starting-a-notebook-server_{context}']
-= Launching Jupyter and starting a notebook server
+[id='starting-a-jupyter-notebook-server_{context}']
+= Starting a Jupyter notebook server
 
 [role='_abstract']
-Launch Jupyter and start a notebook server to start working with your notebooks. If you require extra power for use with large datasets, you can assign accelerators to your notebook server to optimize performance. 
+Jupyter is based on a server-client architecture. The Jupyter notebook server runs in a container on the Red Hat OpenShift cluster. The client is the JupyterLab interface that opens in your web browser on your local computer. However, all of the commands that you enter in JupyterLab are executed by the notebook server. This architecture allows you to interact through your local computer in a browser environment, while all processing occurs on the cluster. The cluster provides the benefits of larger available resources and security because the data being processed never leaves the cluster.
+
+From the Jupyter application tile, you can start a Jupyter notebook server. If you require extra power for use with large datasets, you can assign accelerators to your notebook server to optimize performance. 
 
 .Prerequisites
-* You have logged in to {productname-long}.
+* You are logged in to {productname-long}.
+* You are starting Jupyter for the first time or you stopped your notebook server.
 * You know the names and values you want to use for any environment variables in your notebook server environment, for example, `AWS_SECRET_ACCESS_KEY`.
 * If you want to work with a large data set, work with your administrator to proactively increase the storage capacity of your notebook server. If applicable, also consider assigning accelerators to your notebook server. 
 
@@ -27,12 +30,13 @@ endif::[]
 +
 If you have not previously authorized the `jupyter-nb-<username>` service account to access your account, the *Authorize Access* page appears prompting you to provide authorization. Inspect the permissions selected by default, and click the *Allow selected permissions* button.
 +
-If you credentials are accepted, the *Notebook server control panel* opens displaying the *Start a notebook server* page.
+If your credentials are accepted, the *Notebook server control panel* opens displaying the *Start a notebook server* page.
 . Start a notebook server.
-+
-This is not required if you have previously opened Jupyter.
 
-.. In the *Notebook image* section, select the notebook image to use for your server.
+.. In the *Notebook image* section, select the notebook image to use for your server. 
++
+Different notebook images have different packages installed by default. Click the help icon (?) next to a notebook image name to view a list of its included packages.
+
 .. If the notebook image contains multiple versions, select the version of the notebook image from the *Versions* section.
 +
 [NOTE]
@@ -60,28 +64,20 @@ The interface stores these variables so that you only need to enter them once. E
 ====
 Select the *Secret* checkbox for variables with sensitive values that must remain private, such as passwords.
 ====
-.. Optional: Select the *Start server in current tab* checkbox if necessary.
+.. Optional: Check *Start server in current tab*.
 .. Click *Start server*.
 +
-The *Starting server* progress indicator appears. Click *Expand event log* to view additional information about the server creation process. Depending on the deployment size and resources you requested, starting the server can take up to several minutes. Click *Cancel* to cancel the server creation.
+The *Starting server* progress indicator appears. Click *Expand event log* to view additional information about the server creation process. Depending on the deployment size and resources you requested, starting the server can take up to several minutes. Only click *Cancel* if you want to cancel the server creation.
 +
 After the server starts, you see one of the following behaviors:
 +
 --
-* If you previously selected the *Start server in current tab* checkbox, the JupyterLab interface opens in the current tab of your web browser.
-* If you did not previously select the *Start server in current tab* checkbox, the *Starting server* dialog box prompts you to open the server in a new browser tab or in the current browser tab.
-+
-The JupyterLab interface opens according to your selection.
+* If you selected *Start server in current tab* in Step 7, the JupyterLab interface opens in the current tab of your web browser.
+* If you did not select *Start server in current tab* in Step 7, the *Starting server* dialog box prompts you to open the server in a new browser tab or in the current browser tab.
 --
 
 .Verification
 * The JupyterLab interface opens.
-
-[role="_additional-resources"]
-.Additional resources
-ifndef::upstream[]
-link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#options-for-notebook-server-environments_get-started[Options for notebook server environments].
-endif::[]
 
 .Troubleshooting
 * If you see the "Unable to load notebook server configuration options" error message, contact your administrator so that they can review the logs associated with your Jupyter pod and determine further details about the problem.
