@@ -12,6 +12,7 @@ To run a distributed data science workload in a disconnected environment, you mu
 * You have installed {productname-long} and created a mirror image as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment[Installing and uninstalling {productname-short} Self-Managed in a disconnected environment].
 * You can access the following software from the disconnected cluster:
 ** A Ray cluster image
+** An image that includes the `openssl` package, for the creation of TLS certificates when creating Ray clusters
 ** The data sets and models to be used by the workload
 ** The Python dependencies for the workload, either in a Ray image or in your own Python Package Index (PyPI) server that is available from the disconnected cluster
 * You have logged in to {productname-long}.
@@ -22,6 +23,21 @@ To run a distributed data science workload in a disconnected environment, you mu
 . In the `ClusterConfiguration` section of the notebook or pipeline, ensure that the `image` value specifies a Ray cluster image that can be accessed from the disconnected environment:
 * Notebooks use the Ray cluster image to create a Ray cluster when running the notebook.
 * Pipelines use the Ray cluster image to create a Ray cluster during the pipeline run.
+. In the CodeFlare Operator config map, ensure that the `kuberay:certGeneratorImage` value specifies an image that contains the `openssl` package, and that the image can be accessed from the disconnected environment.
+The following example shows the default value provided by {productname-short}:
++
+[source,bash]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: codeflare-operator-config
+  namespace: openshift-operators
+  data:
+  config.yaml: |
+    kuberay:
+      certGeneratorImage: "registry.access.redhat.com/ubi9@sha256:770cf07083e1c85ae69c25181a205b7cdef63c11b794c89b3b487d4670b4c328"
+----
 . If any of the Python packages required by the workload are not available in the Ray cluster, configure the Ray cluster to download the Python packages from a private PyPI server.
 +
 For example, set the `PIP_INDEX_URL` and `PIP_TRUSTED_HOST` environment variables for the Ray cluster, to specify the location of the Python dependencies, as shown in the following example:
