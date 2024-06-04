@@ -399,7 +399,6 @@ a| * Python 3.9
 endif::[]
 
 ifndef::upstream[]
-ifdef::cloud-service[]
 | RStudio Server (Technology preview)
 | 2024.1 (Recommended)
 a| * Python 3.9
@@ -409,6 +408,8 @@ a| * Python 3.9
 *Disclaimer:* +
 {org-name} supports managing workbenches in {productname-short}. However, {org-name} does not provide support for the RStudio software. RStudio Server is available through link:https://rstudio.org/[https://rstudio.org/] and is subject to their licensing terms. Review their licensing terms before you use this sample workbench.
 ====
+ifdef::self-managed[]
+NOTE: The *RStudio Server* workbench image is currently unavailable for disconnected environments.
 endif::[]
 endif::[]
 
@@ -421,7 +422,6 @@ a| * Python 3.9
 endif::[]
 
 ifndef::upstream[]
-ifdef::cloud-service[]
 | CUDA - RStudio Server (Technology preview)
 | 2024.1 (Recommended)
 a| * Python 3.9
@@ -435,9 +435,10 @@ a| * Python 3.9
 
 The *CUDA - RStudio Server* notebook image contains NVIDIA CUDA technology. CUDA licensing information is available at link:https://docs.nvidia.com/cuda/[https://docs.nvidia.com/cuda/]. Review their licensing terms before you use this sample workbench.
 ====
+ifdef::self-managed[]
+NOTE: The *CUDA - RStudio Server* workbench image is currently unavailable for disconnected environments.
 endif::[]
 endif::[]
-
 |===
 
 Deployment size:: specifies the compute resources available on your notebook server.
