@@ -1,0 +1,53 @@
+:_module-type: PROCEDURE
+
+[id='logging-in_{context}']
+= Logging in to {productname-short}
+
+[role='_abstract']
+After you install {productname-short}, log in to the {productname-short} dashboard so that you can set up your develop and deploy environment.
+
+.Prerequisites
+ifndef::upstream[]
+ifdef::disconnected[]
+{productname-short} is installed on your OpenShift cluster. For information on how to install {productname-short}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#installing-the-openshift-data-science-operator_operator-install[Chapter 2. Installing and deploying {productname-short}{productname-long}Self-Managed].
+endif::[]
+
+ifdef::disconnected[]
+{productname-short} is installed on your OpenShift cluster. For information on how to install {productname-short}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/deploying-openshift-ai-in-a-disconnected-environment_install#installing-the-openshift-data-science-operator_operator-install[Chapter 2. Deploying {productname-short}in a disconnected environment {productname-long}Self-Managed].
+endif::[]
+endif::[]
+
+* You know the {productname-short} identity provider and your login credentials.
+
+ifdef::upstream[]
+** If you are a data scientist, data engineer, or ML engineer, your administrator must provide you with the {productname-short} instance URL, for example, `https:://odh-dashboard-odh.apps.ocp4.example.com`.
+endif::[]
+ifndef::upstream[]
+** If you are a data scientist, data engineer, or ML engineer, your administrator must provide you with the {productname-short} instance URL, for example, `https://rhods-dashboard-redhat-oai-applications.apps.example.abc1.p1.openshiftapps.com/`
+endif::[]
+* You have the latest version of one of the following supported browsers: 
+** Google Chrome 
+** Mozilla Firefox 
+** Safari 
+
+.Procedure
+
+. Browse to the {productname-short} instance URL and click *Log in with OpenShift*. 
+
+
+ifdef::upstream,self-managed[]
+** If you have access to {openshift-platform}, you can browse to the {openshift-platform} web console and click the *Application Launcher* (image:images/osd-app-launcher.png[The application launcher]) -> *{productname-long}*.
+endif::[]
+ifdef::cloud-service[]
+** If you have access to OpenShift, you can browse to the OpenShift web console and click the *Application Launcher* (image:images/osd-app-launcher.png[The application launcher]) -> *{productname-long}*.
+endif::[] 
+
+. Click the name of your identity provider, for example, `GitHub`,`Google`, or your company's single-sign on method.
+
+. Enter your credentials and click *Log in* (or equivalent for your identity provider).
+
+
+.Verification
+* The {productname-short} dashboard opens on the *Home* page.
+
+
