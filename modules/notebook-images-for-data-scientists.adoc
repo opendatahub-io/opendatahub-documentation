@@ -11,16 +11,6 @@ ifdef::upstream[]
 When a new version of a notebook image is released, the previous version remains available on the cluster. This gives you time to migrate your work to the latest version of the notebook image. Legacy notebook image versions, that is, not the two most recent versions, might still be available for selection. Legacy image versions include a label that indicates that the image is out-of-date. To use the latest package versions, use the most recently added notebook image.
 endif::[]
 
-ifndef::upstream[]
-Notebook images are supported for a minimum of one year. Major updates to pre-configured notebook images occur about every six months. Therefore, two supported notebook image versions are typically available at any given time. You can use this support period to update your code to use components from the latest available notebook image. Legacy notebook image versions, that is, not the two most recent versions, might still be available for selection. Legacy image versions include a label that indicates the image is out-of-date. To use the latest package versions, {org-name} recommends that you use the most recently added notebook image. If necessary, you can still access older notebook images from the registry, even if they are no longer supported. You can then add the older notebook images as custom notebook images to cater for your project's specific requirements.
-endif::[]
-
-ifdef::cloud-service[]
-See the table in link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#options-for-notebook-server-environments_get-started[Options for notebook server environments] for a complete list of packages and versions included in these images.
-endif::[]
-ifdef::self-managed[]
-See the table in link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#options-for-notebook-server-environments_get-started[Options for notebook server environments] for a complete list of packages and versions included in these images.
-endif::[]
 
 {productname-long} contains the following notebook images that are available by default.
 
@@ -79,7 +69,7 @@ ifndef::upstream[]
 a| Use the RStudio Server notebook image to access the RStudio IDE, an integrated development environment for R, a programming language for statistical computing and graphics.
 See link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site] for more information. +
 
-To use the *RStudio Server* notebook image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `rstudio-rhel9` image stream. See link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/configuring-your-ide_get-started#building_the_rstudio_server_notebook_images[Building the RStudio Server notebook images] for more information.
+To use the *RStudio Server* notebook image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `rstudio-rhel9` image stream. See link:{rhoaidocshome}{default-format-url}/working-with-connected-applications/working-in-rstudio-server_connected-apps#building_the_rstudio_server_connected-apps[Building the RStudio Server notebook images] for more information.
 
 [IMPORTANT] 
 ====
@@ -102,7 +92,7 @@ ifndef::upstream[]
 a| Use the CUDA - RStudio Server notebook image to access the RStudio IDE and NVIDIA CUDA Toolkit. RStudio is an integrated development environment for R, a programming language for statistical computing and graphics. With the NVIDIA CUDA toolkit, you can optimize your work using GPU-accelerated libraries and optimization tools.
 See link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site] for more information. +
 
-To use the *CUDA - RStudio Server* notebook image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `cuda-rstudio-rhel9` image stream. See link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/configuring-your-ide_get-started#building_the_rstudio_server_notebook_images[Building the RStudio Server notebook images] for more information.
+To use the *CUDA - RStudio Server* notebook image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `cuda-rstudio-rhel9` image stream. See link:{rhoaidocshome}{default-format-url}/working-with-connected-applications/working-in-rstudio-server_connected-apps#building_the_rstudio_server_connected-apps[Building the RStudio Server notebook images] for more information.
 
 [IMPORTANT] 
 ====
@@ -121,5 +111,4 @@ ifndef::upstream[]
 [role="_additional-resources"]
 .Additional resources
 * link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#installing-python-packages-on-your-notebook-server_nb-server[Installing Python packages on your notebook server]
-* link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-project-workbench_get-started#options-for-notebook-server-environments_get-started[Options for notebook server environments]
 endif::[]
