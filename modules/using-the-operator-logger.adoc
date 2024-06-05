@@ -1,0 +1,70 @@
+:_module-type: PROCEDURE
+
+[id='using-the-operator-logger_{context}']
+= Using the {productname-short} Operator logger
+
+[role='_abstract']
+You can change the log level for {productname-short} Operator components by setting the `.spec.devFlags.logmode` flag for the *DSC Initialization*/`DSCI` custom resource during runtime. The logger is enabled by default and uses the `INFO`  log level if it is not set.
+
+The log level that you set with `.spec.devFlags.logmode` applies to all components, not just those in a *Managed* state.
+
+The following table shows the available log levels.
+
+|===
+| `.spec.devFlags.logmode` value| Stacktrace level | Verbosity | Output | Timestamp type |
+| `devel` or `development` | WARN | INFO | Console | Epoch timestamps |
+| `""` (or no `logmode` value set)| ERROR | INFO | JSON | Human-readable timestamps |
+| `prod` or `production` | ERROR | INFO | JSON |Human-readable timestamps |
+|===
+
+Logs that are set to `devel` or `development` generate in a plain text console format.
+Logs that are set to `prod`, `production`, or which do not have a level set generate in a JSON format.
+
+.Prerequisites
+* You have admin access to the `DSCInitialization` resources in the {openshift-platform} cluster.
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html[Get Started with the CLI].
+
+.Procedure
+. Log in to the {openshift-platform} as a cluster administrator.
+. Click *Operators* → *Installed Operators* and then click the {productname-long} Operator.
+. Click the *DSC Initialization* tab.
+. Click the *default-dsci* object.
+. Click the *YAML* tab.
+. In the `spec` section, update the `.spec.devFlags.logmode` flag with the log level that you want to set. 
++
+[source]
+----
+apiVersion: dscinitialization.opendatahub.io/v1
+kind: DSCInitialization
+metadata:
+  name: default-dsci
+spec:
+  devFlags:
+    logmode: development
+----
+. Click *Save*.
+
+.Verification
+
+* If you set the component log level to `devel` or `development`, logs generate more frequently and include logs at `WARN` level and above.
+* If you set the component log level to `prod` or `production`, or do not set a log level, logs generate less frequently and include logs at `ERROR` level or above.
+
+= Viewing the {productname-short} Operator log
+
+. Log in to the OpenShift CLI.
+. Run the following command:
+---
+oc get pods -l name=opendatahub-operator -o name -n openshift-operators |  xargs -I {} oc logs -f {} -n openshift-operators
+---
+The operator pod log opens.
+
+ifndef::upstream[]
+. Log in to the OpenShift CLI.
+. Run the following command:
+---
+oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {} oc logs -f {} -n redhat-ods-operator
+---
+The operator pod log opens.
+
+You can also view the operator pod log in the OpenShift Console, under *Workloads* > *Deployments* > *Pods* > *`redhat-ods-operator`* > *Logs*.
+endif::[]
