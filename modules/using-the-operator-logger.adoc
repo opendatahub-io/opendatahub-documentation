@@ -10,10 +10,11 @@ The log level that you set with `.spec.devFlags.logmode` applies to all componen
 
 The following table shows the available log levels.
 |===
-| `.spec.devFlags.logmode` value| Stacktrace level | Verbosity | Output | Timestamp type |
-| `devel` or `development` | WARN | INFO | Console | Epoch timestamps |
-| `""` (or no `logmode` value set)| ERROR | INFO | JSON | Human-readable timestamps |
-| `prod` or `production` | ERROR | INFO | JSON |Human-readable timestamps |
+| Log level | Stacktrace level | Verbosity | Output | Timestamp type 
+
+| `devel` or `development` | WARN | INFO | Console | Epoch timestamps 
+| `""`  (or no `logmode` value set)| ERROR | INFO | JSON | Human-readable timestamps 
+| `prod` or `production` | ERROR | INFO | JSON |Human-readable timestamps 
 |===
 
 Logs that are set to `devel` or `development` generate in a plain text console format.
@@ -48,10 +49,12 @@ spec:
 * If you set the component log level to `devel` or `development`, logs generate more frequently and include logs at `WARN` level and above.
 * If you set the component log level to `prod` or `production`, or do not set a log level, logs generate less frequently and include logs at `ERROR` level or above.
 
-= Viewing the {productname-short} Operator log
+== Viewing the {productname-short} Operator log
 
 . Log in to the OpenShift CLI.
 . Run the following command:
++
+[source]
 ---
 oc get pods -l name=opendatahub-operator -o name -n openshift-operators |  xargs -I {} oc logs -f {} -n openshift-operators
 ---
@@ -60,6 +63,8 @@ The operator pod log opens.
 ifndef::upstream[]
 . Log in to the OpenShift CLI.
 . Run the following command:
++
+[source]
 ---
 oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {} oc logs -f {} -n redhat-ods-operator
 ---
