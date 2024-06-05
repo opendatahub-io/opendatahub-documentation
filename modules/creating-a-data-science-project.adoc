@@ -4,16 +4,15 @@
 = Creating a data science project
 
 [role='_abstract']
-To start your data science work, create a data science project. Creating a project helps you organize your work in one place. You can also enhance your data science project by adding the following functionality:
+To implement a data science workflow, you must create a project. In OpenShift, a project is a Kubernetes namespace with additional annotations, and is the main way that you can manage user access to resources. A project organizes your data science work in one place and also allows you to collaborate with other developers and data scientists in your organization.
 
-* Workbenches
-* Storage for your project's cluster
-* Data connections
-* Data science pipelines
-* Model servers
-ifdef::upstream[]
-* Bias monitoring for your models
-endif::[]
+Within a project, you can add the following functionality: 
+
+* Data connections so that you can access data without having to hardcode information like endpoints or credentials.
+* Workbenches for working with and processing data, and for developing models.
+* Deployed models so that you can test them and then integrate them into intelligent applications. Deploying a model makes it available as a service that you can access by using an API. 
+* Pipelines for automating your ML workflow.
+
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -25,21 +24,20 @@ ifdef::upstream[]
 endif::[]
 
 .Procedure
-. From the {productname-short} dashboard, click *Data Science Projects*.
-+
-The *Data Science Projects* page opens.
+. From the {productname-short} dashboard, select *Data Science Projects*.
+
 . Click *Create data science project*.
+
+. In the *Create a data science project* dialog, enter a display *Name* for your project.
+
+. Optional: Edit the *Resource name* for your data science project. The resource name must consist of lowercase alphanumeric characters, '-', and must start and end with an alphanumeric character.
 +
-The *Create a data science project* dialog opens.
-. Enter a *name* for your data science project.
-. Optional: Edit the *resource name* for your data science project. The resource name must consist of lowercase alphanumeric characters, '-', and must start and end with an alphanumeric character.
+*Note:* After you create a project, you can change the project display name but you cannot change the resource name.
+
 . Enter a *description* for your data science project.
 . Click *Create*.
-+
-A project details page opens. From this page, you can create workbenches, add cluster storage and data connections, import pipelines, and deploy models.
+
 
 .Verification
-* The project that you created is displayed on the *Data Science Projects* page.
 
-//[role='_additional-resources']
-//.Additional resources//
+* A project details page opens. From this page, you can add data connections, create workbenches, configure pipelines, and deploy models.

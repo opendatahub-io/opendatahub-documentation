@@ -1,0 +1,26 @@
+:_module-type: CONCEPT
+
+[id="creating-a-workbench-select-ide_{context}"]
+= Creating a workbench and selecting an IDE
+
+[role="_abstract"]
+A workbench is an isolated area where you can examine and work with ML models. You can also work with data and run programs, for example to prepare and clean data. While a workbench is not required if, for example, you only want to service an existing model, one is needed for most data science workflow tasks, such as writing code to process data, or training a model.
+
+ifndef::upstream[]
+When you create a workbench, you specify an image (an IDE, packages, and other dependencies). Supported IDEs include JupyterLab, code-server (Technology Preview), and RStudio (Technology Preview).
+endif::[]
+ifdef::upstream[]
+When you create a workbench, you specify an image (an IDE, packages, and other dependencies). IDEs include JupyterLab and code-server.
+endif::[]
+
+The IDEs are based on a server-client architecture. Each IDE provides a server that runs in a container on the OpenShift cluster, while the user interface (the client) is displayed in your web browser. For example, the Jupyter notebook server runs in a container on the Red Hat OpenShift cluster. The client is the JupyterLab interface that opens in your web browser on your local computer. All of the commands that you enter in JupyterLab are executed by the notebook server. Similarly, other IDEs like code-server or RStudio Server provide a server that runs in a container on the OpenShift cluster, while the user interface is displayed in your web browser. This architecture allows you to interact through your local computer in a browser environment, while all processing occurs on the cluster. The cluster provides the benefits of larger available resources and security because the data being processed never leaves the cluster.
+
+In a workbench, you also configure data connections (to access external data for training models and to save models so that you can deploy them) and cluster storage (for persisting data). Workbenches within the same project can share models and data through object storage with the data science pipelines and model servers.
+
+For data science projects that require data retention, you can add container storage to the workbench you are creating. 
+
+Within a project, you can create multiple workbenches. When to create a new workbench depends on considerations, such as the following:
+
+* The workbench configuration (for example, CPU, RAM, or IDE). If you want to avoid editing the configuration of an existing workbench’s configuration to accomodate a new task, you can create a new workbench instead.
+* Separation of tasks or activities. For example, you might want to use one workbench for your Large Language Models (LLM) experimentation activities, another workbench dedicated to a demo, and another workbench for testing. 
+

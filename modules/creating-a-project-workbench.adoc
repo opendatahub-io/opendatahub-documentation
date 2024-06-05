@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
 [id="creating-a-project-workbench_{context}"]
-= Creating a project workbench
+= Creating a workbench
 
-[role='_abstract']
-To examine and work with models in an isolated area, you can create a workbench. You can use this workbench to create a Jupyter notebook from an existing notebook container image to access its resources and properties. For data science projects that require data retention, you can add container storage to the workbench you are creating. If you require extra power for use with large datasets, you can assign accelerators to your workbench to optimize performance.
+When you create a workbench, you specify an image (an IDE, packages, and other dependencies). You can also configure data connections, cluster storage, and add container storage.
+
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -14,51 +14,64 @@ endif::[]
 ifdef::upstream[]
 * If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
-* You have created a data science project that you can add a workbench to.
+* You created a project. 
+ifndef::upstream[]
+* You created a Simple Storage Service (S3) account outside of {productname-long}. 
+* If you want to create data connections to your existing S3-compatible storage buckets, you have the following credential information for the storage buckets: 	
++
+--			
+** Endpoint URL 						
+** Access key 						
+** Secret key 						
+** Region
+** Bucket name 
+--
++
+For information about working with data stored in AWS S3, see 
+link:{rhoaidocshome}{default-format-url}/integrating_data_from_amazon_s3[Integrating data from Amazon S3].
+endif::[]
+
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Projects*.
-+
-The *Data Science Projects* page opens.
+
 . Click the name of the project that you want to add the workbench to.
 +
-A project details page opens.
-. Click the *Workbenches* tab.
-. Click *Create workbench*.
-+
-The *Create workbench* page opens.
-. Configure the properties of the workbench you are creating.
+A *Details* page for the project opens.
+. In the *Workbenches* section, click *Create a workbench*.
+. In the *Create workbench* page, configure the properties of the workbench that you are creating.
 .. In the *Name* field, enter a name for your workbench.
 .. Optional: In the *Description* field, enter a description to define your workbench.
-.. In the *Notebook image* section, complete the fields to specify the notebook image to use with your workbench.
-... From the *Image selection* list, select a notebook image.
-.. In the *Deployment size* section, specify the size of your deployment instance.
-... From the *Container size* list, select a container size for your server.
-... Optional: From the *Accelerator* list, select an accelerator.
-... If you selected an accelerator in the preceding step, specify the number of accelerators to use.
-.. Optional: Select and specify values for any new *environment variables*.
-////
-ifdef::upstream[]
+.. In the *Notebook image* section, complete the fields to specify the workbench image to use with your workbench.
 +
-[NOTE]
---
-To enable data science pipelines in JupyterLab, create the following environment variable:
-`PIPELINES_SSL_SA_CERTS=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`
---
-endif::[]
-ifdef::self-managed[]
+From the *Image selection* list, select a workbench image that suits your use case. A workbench image includes an IDE and Python packages (reusable code). Optionally, click the *View package information* option to view a list of packages that are included in the image that you selected.
 +
-[NOTE]
+If the workbench image has multiple versions available, select the workbench image version to use from the *Versions* section. To use the latest package versions, Red Hat recommends that you use the most recently added image. 
++
+NOTE: You can change the workbench image after you create the workbench.
+
+.. In the *Deployment size* section, from the *Container size* list, select a container size for your server. The container size controls the number of CPUs, the amount of memory, and the minimum and maximum request capacity of the container. 
+
+.. Optional: Select and specify values for any environment variables. 
++
+Setting environment variables during the workbench configuration helps you save time later because you do not need to define them in the body of your notebooks, or with the IDE command line interface. 
++
+If you are using S3-compatible storage, add these recommended environment variables:
++
 --
-To enable data science pipelines in JupyterLab in self-managed deployments, create the following environment variable:
-`PIPELINES_SSL_SA_CERTS=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`
+* `AWS_ACCESS_KEY_ID` specifies your Access Key ID for Amazon Web Services.
+* `AWS_SECRET_ACCESS_KEY` specifies your Secret access key for the account specified in `AWS_ACCESS_KEY_ID`. 
 --
-endif::[]
-////
-.. Configure the storage for your {productname-short} cluster.
-... Select *Create new persistent storage* to create storage that is retained after you log out of {productname-short}. Complete the relevant fields to define the storage.
-... Select *Use existing persistent storage* to reuse existing storage and select the storage from the *Persistent storage* list.
-.. To use a data connection, in the *Data connections* section, select the *Use a data connection* checkbox.
++
+{productname-short} stores the credentials as Kubernetes secrets in a protected namespace if you select *Secret* when you add the variable. 
+
+.. Configure the storage for your workbench. Select one of the following options:
+** *Create new persistent storage* to create storage that is retained after you shut down your workbench. Complete the relevant fields to define the storage. 
+** *Use existing persistent storage* to reuse existing storage and select the storage from the *Persistent storage* list. 
+
+.. Optionally, you can add a data connection to your workbench. A data connection is a resource that contains the configuration parameters needed to connect to a data source or an object storage bucket. Currently, only S3-Compatible data connections are supported. You can use storage buckets for storing data, models, and pipeline artifacts. You can also use a data connection to specify the location of a model that you want to deploy.
++
+In the *Data connections* section, select the *Use a data connection* checkbox. 
 +
 --
 * Create a new data connection as follows:
@@ -81,7 +94,4 @@ endif::[]
 * The workbench that you created appears on the *Workbenches* tab for the project.
 * Any cluster storage that you associated with the workbench during the creation process appears on the *Cluster storage* tab for the project.
 * The *Status* column on the *Workbenches* tab displays a status of *Starting* when the workbench server is starting, and *Running* when the workbench has successfully started.
-
-
-//[role='_additional-resources']
-//.Additional resources
+* Optionally, click the *Open* link to open the IDE in a new window.

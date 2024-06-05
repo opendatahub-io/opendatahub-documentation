@@ -1,16 +1,16 @@
-:_module-type: REFERENCE
-//pv2hash: 3882aee9-15c2-4bb8-963b-7a6918f849a6
+:_module-type: CONCEPT
 
-[id='notebook-images-for-data-scientists_{context}']
-= Notebook images for data scientists
+[id="about-workbench-images_{context}"]
+= About workbench images
 
-[role='_abstract']
-{productname-long} contains Jupyter notebook images optimized with industry-leading tools and libraries required for your data science work. To provide a consistent, stable platform for your model development, all notebook images contain the same version of Python. Notebook images available on {productname-long} are pre-built and ready for you to use immediately after {productname-short} is installed or upgraded. 
+[role="_abstract"]
+A workbench image (sometimes referred to as a notebook image) is optimized with the tools and libraries that you need for model development. You can use the provided workbench images or an {productname-short} admin user can create custom workbench images adapted to your needs.
 
-ifdef::upstream[]
-When a new version of a notebook image is released, the previous version remains available on the cluster. This gives you time to migrate your work to the latest version of the notebook image. Legacy notebook image versions, that is, not the two most recent versions, might still be available for selection. Legacy image versions include a label that indicates that the image is out-of-date. To use the latest package versions, use the most recently added notebook image.
+To provide a consistent, stable platform for your model development, many provided workbench images contain the same version of Python. Most workbench images available on {productname-short} are pre-built and ready for you to use immediately after {productname-short} is installed or upgraded. 
+
+ifndef::upstream[]
+For information about Red Hat support of workbench images and packages, see link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations].
 endif::[]
-
 
 {productname-long} contains the following notebook images that are available by default.
 
@@ -27,18 +27,16 @@ endif::[]
 | Image name | Description
 
 | CUDA
-| If you are working with compute-intensive data science models that require GPU support, use the Compute Unified Device Architecture (CUDA) notebook image to gain access to the NVIDIA CUDA Toolkit. Using this toolkit, you can optimize your work using GPU-accelerated libraries and optimization tools.
+| If you are working with compute-intensive data science models that require GPU support, use the Compute Unified Device Architecture (CUDA) notebook image to gain access to the NVIDIA CUDA Toolkit. Using this toolkit, you can optimize your work by using GPU-accelerated libraries and optimization tools.
 
 | Standard Data Science
-| Use the Standard Data Science notebook image for models that do not require TensorFlow or PyTorch. This image contains commonly used libraries to assist you in developing your machine learning models.
-// RHODS-1598 - or CUDA or GPU support
+| Use the Standard Data Science notebook image for models that do not require TensorFlow or PyTorch. This image contains commonly-used libraries to assist you in developing your machine learning models.
 
 | TensorFlow
 | TensorFlow is an open source platform for machine learning. With TensorFlow, you can build, train and deploy your machine learning models. TensorFlow contains advanced data visualization features, such as computational graph visualizations. It also allows you to easily monitor and track the progress of your models.
 
 | PyTorch
 | PyTorch is an open source machine learning library optimized for deep learning. If you are working with computer vision or natural language processing models, use the Pytorch notebook image.
-// RHODS-1598 -  using GPUs and CPUs
 
 | Minimal Python
 | If you do not require advanced machine learning features, or additional resources for compute-intensive data science work, you can use the Minimal Python image to develop your models.
@@ -65,6 +63,7 @@ a| Use the RStudio Server notebook image to access the RStudio IDE, an integrate
 See link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site] for more information. +
 endif::[]
 ifndef::upstream[]
+ifdef::cloud-service[]
 | RStudio Server (Technology preview)
 a| Use the RStudio Server notebook image to access the RStudio IDE, an integrated development environment for R, a programming language for statistical computing and graphics.
 See link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site] for more information. +
@@ -76,8 +75,6 @@ To use the *RStudio Server* notebook image, you must first build it by creating 
 *Disclaimer:* +
 {org-name} supports managing workbenches in {productname-short}. However, {org-name} does not provide support for the RStudio software. RStudio Server is available through link:https://rstudio.org/[https://rstudio.org/] and is subject to their licensing terms. Review their licensing terms before you use this sample workbench.
 ====
-ifdef::self-managed[]
-NOTE: The *RStudio Server* workbench image is currently unavailable for disconnected environments.
 endif::[]
 endif::[]
 
@@ -88,27 +85,20 @@ See link:https://posit.co/products/open-source/rstudio-server/[the RStudio Serve
 endif::[]
 
 ifndef::upstream[]
+ifdef::cloud-service[]
 | CUDA - RStudio Server (Technology preview)
 a| Use the CUDA - RStudio Server notebook image to access the RStudio IDE and NVIDIA CUDA Toolkit. RStudio is an integrated development environment for R, a programming language for statistical computing and graphics. With the NVIDIA CUDA toolkit, you can optimize your work using GPU-accelerated libraries and optimization tools.
-See link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site] for more information. +
+See link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site] for more information. 
 
-To use the *CUDA - RStudio Server* notebook image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `cuda-rstudio-rhel9` image stream. See link:{rhoaidocshome}{default-format-url}/working-with-connected-applications/working-in-rstudio-server_connected-apps#building_the_rstudio_server_connected-apps[Building the RStudio Server notebook images] for more information.
+To use the *CUDA - RStudio Server* notebook image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `cuda-rstudio-rhel9` image stream. See link:{rhoaidocshome}{default-format-url}/working-with-connected-applications/working-in-rstudio-server_connected-apps#building_the_rstudio_server_connected-apps[Building the RStudio Server notebook images] for more information. +
 
 [IMPORTANT] 
 ====
 *Disclaimer:* +
-{org-name} supports managing workbenches in {productname-short}. However, {org-name} does not provide support for the RStudio software. RStudio Server is available through link:https://rstudio.org/[https://rstudio.org/] and is subject to their licensing terms. Review their licensing terms before you use this sample workbench. +
+{org-name} supports managing workbenches in {productname-short}. However, {org-name} does not provide support for the RStudio software. RStudio Server is available through link:https://rstudio.org/[https://rstudio.org/] and is subject to their licensing terms. Review their licensing terms before you use this sample workbench. 
 
 The *CUDA - RStudio Server* notebook image contains NVIDIA CUDA technology. CUDA licensing information is available at link:https://docs.nvidia.com/cuda/[https://docs.nvidia.com/cuda/]. Review their licensing terms before you use this sample workbench.
 ====
-ifdef::self-managed[]
-NOTE: The *CUDA - RStudio Server* workbench image is currently unavailable for disconnected environments.
 endif::[]
 endif::[]
 |===
-
-ifndef::upstream[]
-[role="_additional-resources"]
-.Additional resources
-* link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#installing-python-packages-on-your-notebook-server_nb-server[Installing Python packages on your notebook server]
-endif::[]
