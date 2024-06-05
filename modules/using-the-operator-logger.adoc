@@ -55,9 +55,10 @@ spec:
 . Run the following command:
 +
 [source]
----
+----
 oc get pods -l name=opendatahub-operator -o name -n openshift-operators |  xargs -I {} oc logs -f {} -n openshift-operators
----
+----
+
 The operator pod log opens.
 
 ifndef::upstream[]
@@ -65,9 +66,10 @@ ifndef::upstream[]
 . Run the following command:
 +
 [source]
----
+----
 oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {} oc logs -f {} -n redhat-ods-operator
----
+----
+
 The operator pod log opens.
 
 You can also view the operator pod log in the OpenShift Console, under *Workloads* > *Deployments* > *Pods* > *`redhat-ods-operator`* > *Logs*.
