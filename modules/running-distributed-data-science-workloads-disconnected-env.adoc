@@ -32,11 +32,11 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: codeflare-operator-config
-  namespace: openshift-operators
+  namespace: redhat-ods-applications
   data:
   config.yaml: |
     kuberay:
-      certGeneratorImage: "registry.access.redhat.com/ubi9@sha256:770cf07083e1c85ae69c25181a205b7cdef63c11b794c89b3b487d4670b4c328"
+      certGeneratorImage: "registry.redhat.io/ubi9@sha256:770cf07083e1c85ae69c25181a205b7cdef63c11b794c89b3b487d4670b4c328"
 ----
 . If any of the Python packages required by the workload are not available in the Ray cluster, configure the Ray cluster to download the Python packages from a private PyPI server.
 +
