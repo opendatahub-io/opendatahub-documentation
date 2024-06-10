@@ -1,0 +1,35 @@
+:_module-type: REFERENCE
+
+[id="storing-data-with-data-science-pipelines_{context}"]
+= Storing data with data science pipelines
+
+[role="_abstract"]
+When you run a data science pipeline, {productname-short} stores the pipeline YAML configuration file and resulting pipeline run artifacts in your storage bucket `root` directory. The directories that contain pipeline run artifacts can differ depending on where you executed the pipeline run from. See the following table for further information:
+
+.Pipeline configuration file and artifacts storage locations
+[cols="3]
+|===
+| Pipeline run source | Pipeline storage directory | Run artifacts storage directory
+
+| Ran from the {productname-short} dashboard
+| `/pipelines/<pipeline_version_id>` 
+
+Example: `/pipelines/1d01c4eb-d2ab-4916-9935-a73a5580f1fb`
+| `/<pipeline_name>/<pipeline run_id>` 
+
+Example: `iris-training-pipeline/2g48k8pw-a8ib-4884-9145-h41j7599h3ds`
+
+| Ran from the JupyterLab Elyra extension
+| `/pipelines/<pipeline_version_id>`
+| `/<pipeline_name_timestamp>` 
+
+Example: `/hello-generic-world-0523161704`
+
+In the JupyterLab Elyra extension, you can also set an link:https://elyra.readthedocs.io/en/latest/user_guide/pipelines.html#generic-node-properties[object storage path prefix]. 
+
+Example: `/iris-project/hello-generic-world-0523161704` 
+
+
+
+|===
+
