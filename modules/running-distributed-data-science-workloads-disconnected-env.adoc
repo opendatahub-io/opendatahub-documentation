@@ -20,10 +20,10 @@ To run a distributed data science workload in a disconnected environment, you mu
 
 .Procedure
 . Configure the disconnected data science cluster to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
-. In the `ClusterConfiguration` section of the notebook or pipeline, ensure that the `image` value specifies a Ray cluster image that can be accessed from the disconnected environment:
+. In the `ClusterConfiguration` section of the notebook or pipeline, ensure that the `image` value specifies a Ray cluster image that you can access from the disconnected environment:
 * Notebooks use the Ray cluster image to create a Ray cluster when running the notebook.
 * Pipelines use the Ray cluster image to create a Ray cluster during the pipeline run.
-. In the CodeFlare Operator config map, ensure that the `kuberay:certGeneratorImage` value specifies an image that contains the `openssl` package, and that the image can be accessed from the disconnected environment.
+. In the CodeFlare Operator config map, ensure that the `kuberay:certGeneratorImage` value specifies an image that contains the `openssl` package, and that you can access the image from the disconnected environment.
 The following example shows the default value provided by {productname-short}:
 +
 [source,bash]
