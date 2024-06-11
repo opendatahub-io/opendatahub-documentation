@@ -1,0 +1,86 @@
+:_module-type: PROCEDURE
+
+[id="accessing-nvidia-gpu-metrics-for-distributed-workloads_{context}"]
+= Accessing NVIDIA GPU metrics for distributed workloads
+
+[role='_abstract']
+
+By default, a non-admin user cannot access the NVIDIA GPU metrics.
+To enable a non-admin user to view the NVIDIA GPU metrics, add a relabelling config to the cluster policy.
+
+.Prerequisites
+ifdef::upstream,self-managed[]
+* You have logged in to your {openshift-platform} cluster.
+* You have the `cluster-admin` role in your {openshift-platform} cluster. 
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to your OpenShift cluster.
+* You have the `cluster-admin` role in your OpenShift cluster.
+endif::[]
+
+ifndef::upstream[]
+* You have enabled GPU support in {productname-short}, as described in link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-gpu-support_cluster-mgmt[Enabling GPU support in {productname-short}].
+endif::[]
+ifdef::upstream[]
+* You have enabled GPU support in {productname-short}, as described in https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
+endif::[]
+
+.Procedure
+
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} web console, switch to the *Administrator* perspective.
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift web console, switch to the *Administrator* perspective.
+endif::[]
+
+
+. Click *Operators* -> *Installed Operators*.
+. From the *Project* list, select *All Projects*.
+. Click *NVIDIA GPU Operator*.
+. Click the *ClusterPolicy* tab, and click the *gpu-cluster-policy* cluster policy.
+. Edit the cluster policy to add a relabelling configuration section, as shown in the following example:
++
+[source,bash]
+----
+apiVersion: nvidia.com/v1
+kind: ClusterPolicy
+metadata:
+  name: gpu-cluster-policy
+spec:
+  dcgm:
+	enabled: true
+  dcgmExporter:
+	config:
+  	name: ''
+	enabled: true
+	serviceMonitor:
+  	enabled: true
+  	relabelings:
+    	- action: replace
+      	replacement: '${1}'
+      	sourceLabels:
+        	- exported_namespace
+      	targetLabel: namespace
+    	- action: replace
+      	replacement: '${1}'
+      	sourceLabels:
+        	- exported_pod
+      	targetLabel: pod
+    	- action: replace
+      	replacement: '${1}'
+      	sourceLabels:
+        	- exported_container
+      	targetLabel: container
+----
+. Click *Save*.
+
+
+.Verification
+
+. Log in to {productname-short} as a non-admin user.
+. In the left navigation pane, click *Distributed Workloads Metrics*.
+. From the *Project* list, select a project that contains distributed workloads that use NVIDIA GPUs.
+. Click the *Project metrics* tab. 
+The graphs and table provide NVIDIA GPU data for the distributed workloads in the selected project.
+
