@@ -16,7 +16,14 @@ To run a distributed data science workload in a disconnected environment, you mu
 ** The data sets and models to be used by the workload
 ** The Python dependencies for the workload, either in a Ray image or in your own Python Package Index (PyPI) server that is available from the disconnected cluster
 * You have logged in to {productname-long}.
-* You have created a data science project.
+
+ifdef::upstream[]
+* You have created a data science project that contains a workbench, and the workbench is running one of the default notebook images that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook.  For information on how to create a project, see  link:{odhdocshome}//working-on-data-science-projects/#_using_data_science_projects[Creating a data science project]. For a complete list of the default notebook images and the preinstalled packages that they contain, see the table in link:{odhdocshome}//working-on-data-science-projects/#_using_data_science_projects[Notebook images for data scientists].
+endif::[]
+
+ifndef::upstream[]
+* You have created a data science project that contains a workbench, and the workbench is running one of the default notebook images that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook.  For information on how to create a project, see link:{rhoaidocshome}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project]. For a complete list of the default notebook images and the preinstalled packages that they contain, see the table in link:{rhoaidocshome}/working_on_data_science_projects/creating-and-importing-notebooks_notebooks#notebook-images-for-data-scientists_notebooks[Notebook images for data scientists].
+endif::[]
 
 .Procedure
 . Configure the disconnected data science cluster to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].

@@ -10,6 +10,15 @@ To run a distributed data science workload from a notebook, you must first provi
 ifndef::upstream[]
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 endif::[]
+
+ifdef::upstream[]
+* You have created a data science project that contains a workbench, and the workbench is running one of the default notebook images that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook.  For information on how to create a project, see  link:{odhdocshome}//working-on-data-science-projects/#_using_data_science_projects[Creating a data science project]. For a complete list of the default notebook images and the preinstalled packages that they contain, see the table in link:{odhdocshome}//working-on-data-science-projects/#_using_data_science_projects[Notebook images for data scientists].
+endif::[]
+
+ifndef::upstream[]
+* You have created a data science project that contains a workbench, and the workbench is running one of the default notebook images that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook.  For information on how to create a project, see link:{rhoaidocshome}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project]. For a complete list of the default notebook images and the preinstalled packages that they contain, see the table in link:{rhoaidocshome}/working_on_data_science_projects/creating-and-importing-notebooks_notebooks#notebook-images-for-data-scientists_notebooks[Notebook images for data scientists].
+endif::[]
+
 ifdef::upstream[]
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 endif::[]
@@ -17,6 +26,7 @@ endif::[]
 ifndef::upstream[]
 * You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
 endif::[]
+
 ifdef::upstream[]
 * You have created the required Kueue resources as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
 endif::[]
@@ -46,19 +56,6 @@ ifdef::upstream[]
 ====
 If you do not create a default local queue, you must specify a local queue in each notebook.
 ====
-endif::[]
-
-ifndef::upstream[]
-* You have created a data science project that contains a workbench that is running one of the default notebook images, for example, the *Standard Data Science* notebook.
-See the table in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/creating-a-workbench-select-ide_nb-server
-#about-workbench-images_nb-server[About workbench images] for a complete list of default notebook images.
-endif::[]
-ifdef::upstream[]
-* You have created a data science project that contains a workbench that is running one of the default notebook images, for example, the *Standard Data Science* notebook.
-See the table in link:{odhdocshome}/working_on_data_science_projects/creating-a-workbench-select-ide_nb-server
-#about-workbench-images_nb-server[About workbench images] for a complete list of default notebook images.
-
-
 endif::[]
 
 * You have launched your notebook server and logged in to your notebook editor.
