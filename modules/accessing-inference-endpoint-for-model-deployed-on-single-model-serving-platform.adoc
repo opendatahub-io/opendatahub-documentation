@@ -43,7 +43,7 @@ The inference endpoint for the model is shown in the *Inference endpoint* field.
 * `:443 fmaas.GenerationService/Generate`
 * `:443 fmaas.GenerationService/GenerateStream`
 +
-NOTE: To query the endpoint for the TGIS standalone runtime, you must also download the files in the `proto` directory of the Open Data Hub link:https://github.com/opendatahub-io/text-generation-inference/blob/main/proto[text-generation-inference^] repository.
+NOTE: To query the endpoint for the TGIS standalone runtime, you must also download the files in the link:https://github.com/opendatahub-io/text-generation-inference/blob/main/proto[proto^] directory of the Open Data Hub `text-generation-inference` repository.
 
 *OpenVINO Model Server*
 
@@ -58,9 +58,9 @@ NOTE: To query the endpoint for the TGIS standalone runtime, you must also downl
 * `:443/v1/completions`
 * `:443/v1/embeddings`
 +
-NOTE: The vLLM runtime is compatible with the OpenAI REST API and TGIS gRPC API. If you have deployed a model using the TGIS Standalone runtime, you have the option to migrate to the vLLM runtime, if desired. To use the TGIS gRPC API to query the endpoints for a model deployed using the vLLM runtime, refer to the paths that are used for the TGIS Standalone runtime. For a list of models supported by the vLLM runtime, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
+NOTE: The vLLM runtime is compatible with the OpenAI REST API and TGIS gRPC API. If you have deployed a model by using the TGIS Standalone runtime, you have the option to migrate to the vLLM runtime, if desired. To use the TGIS gRPC API to query the endpoints for a model deployed using the vLLM runtime, refer to the paths that are used for the TGIS Standalone runtime. For a list of models supported by the vLLM runtime, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
 +
-NOTE: To use the embeddings inference endpoint in vLLM, you must use an embeddings model that is supported by vLLM. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM]
+NOTE: To use the embeddings inference endpoint in vLLM, you must use an embeddings model that is supported by vLLM. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
 +
 
 As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
