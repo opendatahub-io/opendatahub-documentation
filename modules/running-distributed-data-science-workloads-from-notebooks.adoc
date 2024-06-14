@@ -15,47 +15,53 @@ ifdef::upstream[]
 endif::[]
 
 ifndef::upstream[]
-* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. For information about how to create a project, see link:{rhoaidocshome}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project].
+* Your cluster administrator has created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
+endif::[]
+ifdef::upstream[]
+* Your cluster administrator has created the required Kueue resources as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* Optional: Your cluster administrator has defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
++
+[source,bash]
+----
+"kueue.x-k8s.io/default-queue": "true"
+----
++
+[NOTE]
+====
+If your cluster administrator does not define a default local queue, you must specify a local queue in each notebook.
+====
+endif::[]
+ifdef::upstream[]
+* Optional: Your cluster administrator has defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
++
+[source,bash]
+----
+"kueue.x-k8s.io/default-queue": "true"
+----
++
+[NOTE]
+====
+If your cluster administrator does not define a default local queue, you must specify a local queue in each notebook.
+====
+endif::[]
+
+ifndef::upstream[]
+* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about how to create a project, see link:{rhoaidocshome}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project].
 For a complete list of the default notebook images and their preinstalled packages, see the table in link:{rhoaidocshome}/working_on_data_science_projects/creating-and-importing-notebooks_notebooks#notebook-images-for-data-scientists_notebooks[Notebook images for data scientists].
 endif::[]
 ifdef::upstream[]
-* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Creating a data science project].
+* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Creating a data science project].
 For a complete list of the default notebook images and their preinstalled packages, see the table in link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Notebook images for data scientists].
 endif::[]
 
-ifndef::upstream[]
-* You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
-endif::[]
-ifdef::upstream[]
-* You have created the required Kueue resources as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
-endif::[]
-
-ifndef::upstream[]
-* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
-+
-[source,bash]
-----
-"kueue.x-k8s.io/default-queue": "true"
-----
-+
-[NOTE]
-====
-If you do not create a default local queue, you must specify a local queue in each notebook.
-====
-endif::[]
-ifdef::upstream[]
-* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
-+
-[source,bash]
-----
-"kueue.x-k8s.io/default-queue": "true"
-----
-+
-[NOTE]
-====
-If you do not create a default local queue, you must specify a local queue in each notebook.
-====
-endif::[]
+* You have Admin access for the data science project.
+** If you created the project, you automatically have Admin access. 
+** If you did not create the project, your cluster administrator must give you Admin access.
 
 * You have launched your notebook server and logged in to your notebook editor.
 The examples in this procedure refer to the JupyterLab integrated development environment (IDE).
@@ -82,6 +88,7 @@ from codeflare_sdk import generate_cert
 ----
 
 ** Replace the default namespace value with the name of your data science project.
+** In the `TokenAuthentication` section of your notebook code, provide the token and server details to authenticate to the OpenShift cluster by using the CodeFlare SDK.
 ** Replace the link to the example community image with a link to your Ray cluster image.
 ** Ensure that the following Ray cluster authentication code is included after the Ray cluster creation section.
 +
