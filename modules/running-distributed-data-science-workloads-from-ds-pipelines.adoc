@@ -133,6 +133,7 @@ def ray_fn():
 
    print(cluster.status())
    cluster.up() <8>
+   // cluster.wait_ready() 
    time.sleep(180) <9>
    print(cluster.status())
    print(cluster.details())
@@ -172,7 +173,7 @@ def ray_fn():
 
 
 def ray_integration(): 
-   ray_fn(openshift_server=openshift_server, openshift_token=openshift_token)
+   ray_fn()
 
 
 if __name__ == '__main__': <14>
@@ -180,20 +181,20 @@ if __name__ == '__main__': <14>
     Compiler().compile(ray_integration, 'compiled-example.yaml')
 
 ----
-<1> Imports Ray
-<2> Imports the `time` package so that you can wait during code execution
-<3> Imports from the CodeFlare SDK the packages that define the cluster functions
-<4> Specifies the Ray cluster configuration: replace these example values with the values for your Ray cluster
-<5> Specifies the project: replace the example value with the name of your project
-<6> Specifies the location of the Ray cluster image: if using a disconnected environment, replace the default value with the location for your environment
-<7> Specifies the local queue to which the Ray cluster will be submitted: you can omit this line if a default local queue is configured
-<8> Creates a Ray cluster by using the specified image and configuration
-<9> Waits for the Ray cluster to be ready before proceeding
-<10> Enables the Ray client to connect to a secure Ray cluster that has mutual Transport Layer Security (mTLS) enabled; mTLS is enabled by default in the CodeFlare component in {productname-short}
-<11> Replace the example details in this section with the details for your workload
-<12> Removes the Ray cluster when your workload is finished
-<13> Replace the example name and description with the values for your workload
-<14> Compiles the Python code and saves the output in a YAML file
+<1> Imports Ray.
+<2> Imports the `time` package so that you can use the `sleep` function to wait during code execution, as a workaround for link:https://issues.redhat.com/browse/RHOAIENG-7346[RHOAIENG-7346].
+<3> Imports from the CodeFlare SDK the packages that define the cluster functions.
+<4> Specifies the Ray cluster configuration: replace these example values with the values for your Ray cluster.
+<5> Optional: Specifies the project where the Ray cluster is created. Replace the example value with the name of your project. If you omit this line, the Ray cluster is created in the current project.
+<6> Specifies the location of the Ray cluster image. If using a disconnected environment, replace the default value with the location for your environment.
+<7> Specifies the local queue to which the Ray cluster will be submitted. If a default local queue is configured, you can omit this line.
+<8> Creates a Ray cluster by using the specified image and configuration.
+<9> Waits for the Ray cluster to be ready before proceeding. As a workaround for link:https://issues.redhat.com/browse/RHOAIENG-7346[RHOAIENG-7346], use `time.sleep(180)` instead of `cluster.wait_ready()`.
+<10> Enables the Ray client to connect to a secure Ray cluster that has mutual Transport Layer Security (mTLS) enabled. mTLS is enabled by default in the CodeFlare component in {productname-short}.
+<11> Replace the example details in this section with the details for your workload.
+<12> Removes the Ray cluster when your workload is finished.
+<13> Replace the example name and description with the values for your workload.
+<14> Compiles the Python code and saves the output in a YAML file.
 
 .. Compile the Python file (in this example, the `compile_example.py` file):
 +
