@@ -104,7 +104,7 @@ The cluster administrator can optionally define one local queue in a project as 
 When configuring a distributed workload, the user specifies the local queue name.
 If the cluster administrator configured a default local queue, the user can omit the local queue specification from the distributed workload code.
 
-Kueue allocates the resources for a distributed workload from the cluster queue for the local queue, if the total requested resources are within the quota limits specified in that cluster queue.
+Kueue allocates the resources for a distributed workload from the cluster queue that is associated with the local queue, if the total requested resources are within the quota limits specified in that cluster queue.
 
 The following example configures a local queue called `team-a-queue` for the `team-a` project, and specifies `cluster-queue` as the associated cluster queue.
 
@@ -124,7 +124,7 @@ spec:
 ----
 
 In this example, the `kueue.x-k8s.io/default-queue: "true"` annotation defines this local queue as the default local queue for the `team-a` project.
-If a user submits a distributed workload in the `team-a` project and that distributed workload does not specify a local queue, Kueue automatically routes the distributed workload to the `team-a-queue` local queue.
+If a user submits a distributed workload in the `team-a` project and that distributed workload does not specify a local queue in the cluster configuration, Kueue automatically routes the distributed workload to the `team-a-queue` local queue.
 The distributed workload can then access the resources that the `cluster-queue` cluster queue manages.
 
 For more information about configuring local queues, see link:https://kueue.sigs.k8s.io/docs/concepts/local_queue/[Local Queue] in the Kueue documentation.
