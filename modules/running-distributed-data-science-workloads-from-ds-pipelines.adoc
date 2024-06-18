@@ -110,34 +110,31 @@ from kfp import dsl
 )
 
 
-def ray_fn(openshift_server: str, openshift_token: str):
+def ray_fn():
    import ray <1>
-   from codeflare_sdk import Cluster, ClusterConfiguration, TokenAuthentication, generate_cert
+   import time <2>
+   from codeflare_sdk import Cluster, ClusterConfiguration, generate_cert <3>
 
 
-   auth = TokenAuthentication( <2>
-       token=openshift_token, server=openshift_server
-   )
-   auth_return = auth.login()
-
-
-   cluster = Cluster( <3>
+   cluster = Cluster( <4>
        ClusterConfiguration(
+           namespace="my_project", <5>
            name="raytest",
            num_workers=1,
            head_cpus="500m",
            min_memory=1,
            max_memory=1,
            num_gpus=0,
-           image="quay.io/project-codeflare/ray:latest-py39-cu118", <4>
-           local_queue="local_queue_name", <5>
+           image="quay.io/project-codeflare/ray:latest-py39-cu118", <6>
+           local_queue="local_queue_name", <7>
        )
    )
 
 
    print(cluster.status())
-   cluster.up() <6>
-   cluster.wait_ready() <7>
+   cluster.up() <8>
+   // cluster.wait_ready() 
+   time.sleep(180) <9>
    print(cluster.status())
    print(cluster.details())
 
@@ -147,7 +144,7 @@ def ray_fn(openshift_server: str, openshift_token: str):
    print(ray_dashboard_uri, ray_cluster_uri)
 
    # Enable Ray client to connect to secure Ray cluster that has mTLS enabled
-   generate_cert.generate_tls_cert(cluster.config.name, cluster.config.namespace) <8>
+   generate_cert.generate_tls_cert(cluster.config.name, cluster.config.namespace) <10>
    generate_cert.export_env(cluster.config.name, cluster.config.namespace)
 
 
@@ -156,7 +153,7 @@ def ray_fn(openshift_server: str, openshift_token: str):
 
 
    @ray.remote
-   def train_fn(): <9>
+   def train_fn(): <11>
        # complex training function
        return 100
 
@@ -164,41 +161,40 @@ def ray_fn(openshift_server: str, openshift_token: str):
    result = ray.get(train_fn.remote())
    assert 100 == result
    ray.shutdown()
-   cluster.down() <10>
+   cluster.down() <12>
    auth.logout()
    return result
 
 
-@dsl.pipeline( <11>
+@dsl.pipeline( <13>
    name="Ray Simple Example",
    description="Ray Simple Example",
 )
 
 
-def ray_integration(openshift_server: str, openshift_token: str): <12>
-   ray_fn(openshift_server=openshift_server, openshift_token=openshift_token)
+def ray_integration(): 
+   ray_fn()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': <14>
     from kfp.compiler import Compiler
     Compiler().compile(ray_integration, 'compiled-example.yaml')
 
 ----
-<1> Imports from the CodeFlare SDK the packages that define the cluster functions
-<2> Authenticates with the cluster by using values that you specify when creating the pipeline run;
-if your cluster uses self-signed certificates, include `ca-cert-path=<path>` in the `TokenAuthentication` parameter list, where `<path>` is the path to the cluster-wide Certificate Authority (CA) bundle that contains the self-signed certificates
-// Commenting out second part of callout 2 until RHOAIENG-880 is fixed
-//; you can omit this section if the Ray cluster is configured to use the same namespace as the data science project
-<3> Specifies the Ray cluster configuration: replace these example values with the values for your Ray cluster
-<4> Specifies the location of the Ray cluster image: if using a disconnected environment, replace the default value with the location for your environment
-<5> Specifies the local queue to which the Ray cluster will be submitted: you can omit this line if you configured a default local queue
-<6> Creates a Ray cluster using the specified image and configuration
-<7> Waits for the Ray cluster to be ready before proceeding
-<8> Enables the Ray client to connect to a secure Ray cluster that has mutual Transport Layer Security (mTLS) enabled; mTLS is enabled by default in the CodeFlare component in {productname-short}
-<9> Replace the example details in this section with the details for your workload
-<10> Removes the Ray cluster when your workload is finished
-<11> Replace the example name and description with the values for your workload
-<12> Compiles the Python code and saves the output in a YAML file
+<1> Imports Ray.
+<2> Imports the `time` package so that you can use the `sleep` function to wait during code execution, as a workaround for link:https://issues.redhat.com/browse/RHOAIENG-7346[RHOAIENG-7346].
+<3> Imports packages from the CodeFlare SDK to define the cluster functions.
+<4> Specifies the Ray cluster configuration: replace these example values with the values for your Ray cluster.
+<5> Optional: Specifies the project where the Ray cluster is created. Replace the example value with the name of your project. If you omit this line, the Ray cluster is created in the current project.
+<6> Specifies the location of the Ray cluster image. If you are running this code in a disconnected environment, replace the default value with the location for your environment.
+<7> Specifies the local queue to which the Ray cluster will be submitted. If a default local queue is configured, you can omit this line.
+<8> Creates a Ray cluster by using the specified image and configuration.
+<9> Waits until the Ray cluster is ready before proceeding. As a workaround for link:https://issues.redhat.com/browse/RHOAIENG-7346[RHOAIENG-7346], use `time.sleep(180)` instead of `cluster.wait_ready()`.
+<10> Enables the Ray client to connect to a secure Ray cluster that has mutual Transport Layer Security (mTLS) enabled. mTLS is enabled by default in the CodeFlare component in {productname-short}.
+<11> Replace the example details in this section with the details for your workload.
+<12> Removes the Ray cluster when your workload is finished.
+<13> Replace the example name and description with the values for your workload.
+<14> Compiles the Python code and saves the output in a YAML file.
 
 .. Compile the Python file (in this example, the `compile_example.py` file):
 +
