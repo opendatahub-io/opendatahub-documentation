@@ -1,0 +1,142 @@
+:_module-type: CONCEPT
+
+[id='overview-of-kueue-resources_{context}']
+= Overview of Kueue resources
+
+[role='_abstract']
+Cluster administrators can configure Kueue resource flavors, cluster queues, and local queues to manage distributed workload resources across multiple nodes in an OpenShift cluster.
+
+== Resource flavour
+The Kueue `ResourceFlavor` object describes the resource variations that are available in a cluster. 
+
+Resources in a cluster can be _homogenous_ or _heterogeneous_:
+
+* Homogeneous resources are identical across the cluster: same node type, CPUs, memory, accelerators, and so on.
+* Heterogeneous resources have variations across the cluster.
+
+If a cluster has homogeneous resources, or if it is not necessary to manage separate quotas for different flavors of a resource, a cluster administrator can create an empty `ResourceFlavor` object named `default-flavor`, without any labels or taints, as follows:
+
+.Empty Kueue resource flavor for homegeneous resources
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ResourceFlavor
+metadata:
+  name: default-flavor
+----
+
+If a cluster has heterogeneous resources, cluster administrators can define a different resource flavor for each variation in the resources available. 
+Example variations include different CPUs, different memory, or different accelerators.
+Cluster administrators can then associate the resource flavors with cluster nodes by using labels, taints, and tolerations, as shown in the following example.
+
+.Example Kueue resource flavor for heterogeneous resources
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ResourceFlavor
+metadata:
+  name: "spot"
+spec:
+  nodeLabels:
+    instance-type: spot
+  nodeTaints:
+  - effect: NoSchedule
+    key: spot
+    value: "true"
+  tolerations:
+  - key: "spot-taint"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+----
+
+[NOTE]
+====
+{productname-short} currently supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
+====
+
+
+For more information about configuring resource flavors, see link:https://kueue.sigs.k8s.io/docs/concepts/resource_flavor/[Resource Flavor] in the Kueue documentation.
+
+
+== Cluster queue
+
+The Kueue `ClusterQueue` object manages a pool of cluster resources such as pods, CPUs, memory, and accelerators. 
+A cluster can have multiple cluster queues, and each cluster queue can reference multiple resource flavors.
+
+Cluster administrators can configure cluster queues to define the resource flavors that the queue manages, and assign a quota for each resource in each resource flavor.
+Cluster administrators can also configure usage limits and queueing strategies to apply fair sharing rules across multiple cluster queues in a cluster.
+ 
+The following example configures a cluster queue to assign a quota of 9 CPUs, 36 GiB memory, 5 pods, and 5 NVIDIA GPUs.
+
+.Example cluster queue
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "cluster-queue"
+spec:
+  namespaceSelector: {} # match all.
+  resourceGroups:
+  - coveredResources: ["cpu", "memory", "pods", "nvidia.com/gpu"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 9
+      - name: "memory"
+        nominalQuota: 36Gi
+      - name: "pods"
+        nominalQuota: 5
+      - name: "nvidia.com/gpu"
+        nominalQuota: '5'
+----
+
+The cluster queue starts a distributed workload only if the total required resources are within these quota limits. 
+If the sum of the requests for a resource in a distributed workload is greater than the specified quota for that resource in the cluster queue, the cluster queue does not admit the distributed workload.
+
+
+For more information about configuring cluster queues, see link:https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/[Cluster Queue] in the Kueue documentation.
+
+
+== Local queue
+
+The Kueue `LocalQueue` object groups closely related distributed workloads in a project.
+Cluster administrators can configure local queues to specify the project name and the associated cluster queue.
+Each local queue then grants access to the resources that its specified cluster queue manages.
+A cluster administrator can optionally define one local queue in a project as the default local queue for that project.
+
+When configuring a distributed workload, the user specifies the local queue name.
+If a cluster administrator configured a default local queue, the user can omit the local queue specification from the distributed workload code.
+
+Kueue allocates the resources for a distributed workload from the cluster queue that is associated with the local queue, if the total requested resources are within the quota limits specified in that cluster queue.
+
+The following example configures a local queue called `team-a-queue` for the `team-a` project, and specifies `cluster-queue` as the associated cluster queue.
+
+.Example local queue
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: LocalQueue
+metadata:
+  namespace: team-a 
+  name: team-a-queue
+  annotations:
+    kueue.x-k8s.io/default-queue: "true"
+spec:
+  clusterQueue: cluster-queue
+
+----
+
+In this example, the `kueue.x-k8s.io/default-queue: "true"` annotation defines this local queue as the default local queue for the `team-a` project.
+If a user submits a distributed workload in the `team-a` project and that distributed workload does not specify a local queue in the cluster configuration, Kueue automatically routes the distributed workload to the `team-a-queue` local queue.
+The distributed workload can then access the resources that the `cluster-queue` cluster queue manages.
+
+For more information about configuring local queues, see link:https://kueue.sigs.k8s.io/docs/concepts/local_queue/[Local Queue] in the Kueue documentation.
+
+////
+[role="_additional-resources"]
+.Additional resources
+* link:https://url/[link text]
+////
