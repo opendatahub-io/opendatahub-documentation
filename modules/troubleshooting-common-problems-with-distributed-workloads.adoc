@@ -1,0 +1,138 @@
+:_module-type: REFERENCE
+
+[id="troubleshooting-common-problems-with-distributed-workloads_{context}"]
+= Troubleshooting common problems with distributed workloads
+
+[role='_abstract']
+If you are experiencing errors in {productname-long} relating to distributed workloads, read this section to understand what could be causing the problem, and how to resolve the problem.
+
+ifndef::upstream[]
+If you cannot see the problem here or in the release notes, contact {org-name} Support.
+endif::[]
+
+== Ray cluster is in suspended state
+
+.Problem
+The resource quota specified in the cluster queue configuration is insufficient, or the resource flavor is not yet created.
+
+.Diagnosis
+Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
+The `status.conditions.message` field provides the reason for the suspended state, as shown in the following example:
++
+[source,bash]
+----
+status:
+ conditions:
+   - lastTransitionTime: '2024-05-29T13:05:09Z'
+     message: 'couldn''t assign flavors to pod set small-group-jobtest12: insufficient quota for nvidia.com/gpu in flavor default-flavor in ClusterQueue'
+
+----
+
+.Resolution
+Ensure that the resource flavor is created. Update the cluster queue configuration to increase the resource quota as necessary. 
+
+== Ray cluster is in failed state
+
+.Problem
+The Ray cluster head pod or worker pods are not running, perhaps because the user has insufficient resources.
+
+.Diagnosis
+When a Ray cluster is created, it initially enters a `failed` state. 
+This failed state usually resolves after the reconciliation process completes and the Ray cluster pods are running.
+If the failed state persists, review the pod events to identify the cause of the problem.
+
+
+.Resolution
+Increase the resource quota for the user.
+
+== 
+
+.Problem
+The .
+
+.Diagnosis
+
+
+.Resolution
+
+
+== 
+
+.Problem
+The .
+
+.Diagnosis
+
+
+.Resolution
+
+
+== 
+
+.Problem
+The .
+
+.Diagnosis
+
+
+.Resolution
+
+
+== 
+
+.Problem
+The .
+
+.Diagnosis
+
+
+.Resolution
+
+
+== 
+
+.Problem
+The .
+
+.Diagnosis
+
+
+.Resolution
+
+
+== 
+
+.Problem
+The .
+
+.Diagnosis
+
+
+.Resolution
+
+
+== 
+
+.Problem
+The .
+
+.Diagnosis
+
+
+.Resolution
+
+
+== 
+
+.Problem
+The .
+
+.Diagnosis
+
+
+.Resolution
+
+
+// [role='_additional-resources']
+// == Additional resources
+// * TODO
