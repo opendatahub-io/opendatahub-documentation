@@ -38,13 +38,24 @@ For a complete list of the default notebook images and their preinstalled packag
 endif::[]
 
 * You have sufficient resources. In addition to the base {productname-short} resources, you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
+
+ifndef::upstream[]
 * The resources are physically available in the cluster.
 +
 [NOTE]
 ====
-{productname-short} currently supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
-For more information about Kueue resources, see the link:https://kueue.sigs.k8s.io/docs/concepts/[Kueue documentation].
+{org-name} currently supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
+For more information about Kueue resources, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/overview-of-distributed-workloads_distributed-workloads#overview-of-kueue-resources_distributed-workloads[Overview of Kueue resources].
 ====
+endif::[]
+ifdef::upstream[]
+* The resources are physically available in the cluster.
++
+[NOTE]
+====
+For more information about Kueue resources, see link:{odhdocshome}/working_with_distributed_workloads/#_overview-of-kueue-resources_distributed-workloads[Overview of Kueue resources].
+====
+endif::[]
 
 
 .Procedure
