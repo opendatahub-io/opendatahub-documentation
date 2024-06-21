@@ -15,14 +15,14 @@ ifdef::upstream[]
 endif::[]
 
 ifndef::upstream[]
-* You have created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
+* Your cluster administrator has created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
 endif::[]
 ifdef::upstream[]
-* You have created the required Kueue resources as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
+* Your cluster administrator has created the required Kueue resources as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
 endif::[]
 
 ifndef::upstream[]
-* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
+* Optional: Your cluster administrator has defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
 +
 [source,bash]
 ----
@@ -31,11 +31,11 @@ ifndef::upstream[]
 +
 [NOTE]
 ====
-If you do not create a default local queue, you must specify a local queue in each notebook.
+If your cluster administrator does not define a default local queue, you must specify a local queue in each notebook.
 ====
 endif::[]
 ifdef::upstream[]
-* Optional: You have defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
+* Optional: Your cluster administrator has defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
 +
 [source,bash]
 ----
@@ -44,22 +44,24 @@ ifdef::upstream[]
 +
 [NOTE]
 ====
-If you do not create a default local queue, you must specify a local queue in each notebook.
+If your cluster administrator does not define a default local queue, you must specify a local queue in each notebook.
 ====
 endif::[]
 
 ifndef::upstream[]
-* You have created a data science project that contains a workbench that is running one of the default notebook images, for example, the *Standard Data Science* notebook.
-See the table in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/creating-a-workbench-select-ide_nb-server
-#about-workbench-images_nb-server[About workbench images] for a complete list of default notebook images.
+* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about how to create a project, see link:{rhoaidocshome}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project].
+For a complete list of the default notebook images and their preinstalled packages, see the table in link:{rhoaidocshome}/working_on_data_science_projects/creating-and-importing-notebooks_notebooks#notebook-images-for-data-scientists_notebooks[Notebook images for data scientists].
 endif::[]
 ifdef::upstream[]
-* You have created a data science project that contains a workbench that is running one of the default notebook images, for example, the *Standard Data Science* notebook.
-See the table in link:{odhdocshome}/working_on_data_science_projects/creating-a-workbench-select-ide_nb-server
-#about-workbench-images_nb-server[About workbench images] for a complete list of default notebook images.
-
-
+* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Creating a data science project].
+For a complete list of the default notebook images and their preinstalled packages, see the table in link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Notebook images for data scientists].
 endif::[]
+
+* You have Admin access for the data science project.
+** If you created the project, you automatically have Admin access. 
+** If you did not create the project, your cluster administrator must give you Admin access.
 
 * You have launched your notebook server and logged in to your notebook editor.
 The examples in this procedure refer to the JupyterLab integrated development environment (IDE).
@@ -73,11 +75,11 @@ To access the demo notebooks, clone the `codeflare-sdk` repository as follows:
 .. In the JupyterLab interface, click *Git > Clone a Repository*.
 .. In the "Clone a repo" dialog, enter `https://github.com/project-codeflare/codeflare-sdk.git` and then click *Clone*.
 The *codeflare-sdk* repository is listed in the left navigation pane.
-. Run a distributed workload job as shown in the following example:
+. Locate the downloaded demo notebooks as follows:
 .. In the JupyterLab interface, in the left navigation pane, double-click *codeflare-sdk*.
 .. Double-click *demo-notebooks*, and then double-click *guided-demos*.
-.. Update each example demo notebook as follows:
-** If not already specified, update the `import` section to import the `generate_cert` component:
+. Update each example demo notebook as follows:
+.. If not already specified, update the `import` section to import the `generate_cert` component:
 +
 .Updated import section
 [source,bash]
@@ -85,9 +87,10 @@ The *codeflare-sdk* repository is listed in the left navigation pane.
 from codeflare_sdk import generate_cert
 ----
 
-** Replace the default namespace value with the name of your data science project.
-** Replace the link to the example community image with a link to your Ray cluster image.
-** Ensure that the following Ray cluster authentication code is included after the Ray cluster creation section.
+.. Replace the default namespace value with the name of your data science project.
+.. In the `TokenAuthentication` section of your notebook code, provide the token and server details to authenticate to the OpenShift cluster by using the CodeFlare SDK.
+.. Replace the link to the example community image with a link to your Ray cluster image.
+.. Ensure that the following Ray cluster authentication code is included after the Ray cluster creation section.
 +
 .Ray cluster authentication code
 [source,bash,subs="+quotes"]
@@ -104,7 +107,7 @@ You must include the Ray cluster authentication code to enable the Ray client th
 
 
 ifndef::upstream[]
-** If you have not configured a default local queue by including the `kueue.x-k8s.io/default-queue: 'true'` annotation as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], update the `ClusterConfiguration` section to specify the local queue for the Ray cluster, as shown in the following example:
+.. If you have not configured a default local queue by including the `kueue.x-k8s.io/default-queue: 'true'` annotation as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], update the `ClusterConfiguration` section to specify the local queue for the Ray cluster, as shown in the following example:
 +
 .Example local queue assignment
 [source,bash,subs="+quotes"]
@@ -113,7 +116,7 @@ local_queue="_your_local_queue_name_"
 ----
 endif::[]
 ifdef::upstream[]
-** If you have not configured a default local queue by including the `kueue.x-k8s.io/default-queue: 'true'` annotation as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], update the `ClusterConfiguration` section to specify the local queue for the Ray cluster, as shown in the following example:
+.. If you have not configured a default local queue by including the `kueue.x-k8s.io/default-queue: 'true'` annotation as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], update the `ClusterConfiguration` section to specify the local queue for the Ray cluster, as shown in the following example:
 +
 .Example local queue assignment
 [source,bash]
@@ -121,8 +124,14 @@ ifdef::upstream[]
 local_queue="your_local_queue_name"
 ----
 endif::[]
-
-.. Run the notebooks.
+.. Optional: In the `ClusterConfiguration` section, assign a dictionary of `labels` parameters to the Ray cluster for identification and management purposes, as shown in the following example:
++
+.Example labels assignment
+[source,bash,subs="+quotes"]
+----
+labels = {"exampleLabel1": "exampleLabel1Value", "exampleLabel2": "exampleLabel2Value"}
+----
+. Run the notebooks.
 
 
 .Verification

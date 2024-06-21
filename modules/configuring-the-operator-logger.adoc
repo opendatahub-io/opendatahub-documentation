@@ -59,6 +59,7 @@ oc patch dsci default-dsci -p '{"spec":{"devFlags":{"logmode":"development"}}}' 
 
 == Viewing the {productname-short} Operator log
 
+ifdef::upstream[]
 . Log in to the OpenShift CLI.
 . Run the following command:
 +
@@ -66,8 +67,9 @@ oc patch dsci default-dsci -p '{"spec":{"devFlags":{"logmode":"development"}}}' 
 ----
 oc get pods -l name=opendatahub-operator -o name -n openshift-operators |  xargs -I {} oc logs -f {} -n openshift-operators
 ----
-
++
 The operator pod log opens.
+endif::[]
 
 ifndef::upstream[]
 . Log in to the OpenShift CLI.
@@ -77,7 +79,7 @@ ifndef::upstream[]
 ----
 oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {} oc logs -f {} -n redhat-ods-operator
 ----
-
++
 The operator pod log opens.
 
 You can also view the operator pod log in the OpenShift Console, under *Workloads* > *Deployments* > *Pods* > *`redhat-ods-operator`* > *Logs*.
