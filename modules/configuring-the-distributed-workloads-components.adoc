@@ -32,7 +32,7 @@ endif::[]
 [NOTE]
 ====
 Mutual Transport Layer Security (mTLS) is enabled by default in the CodeFlare component in {productname-short}.
-In the current {productname-short} version, `submissionMode=K8sJobMode` is not supported in the Ray job specification, so the KubeRay Operator cannot create a submitter Kubernetes Job to submit the Ray job.
+{productname-short} {vernum} does not support the `submissionMode=K8sJobMode` setting in the Ray job specification, so the KubeRay Operator cannot create a submitter Kubernetes Job to submit the Ray job.
 Instead, users must configure the Ray job specification to set `submissionMode=HTTPMode` only, so that the KubeRay Operator sends a request to the RayCluster to create a Ray job.
 ====
 * You have access to the data sets and models that the distributed workload uses.
