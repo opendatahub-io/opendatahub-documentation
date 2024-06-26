@@ -31,6 +31,24 @@ The inference endpoint for the model is shown in the *Inference endpoint* field.
 // * `:443/api/v1/task/text-classification`
 // * `:443/api/v1/task/token-classification`
 
+*Caikit Standalone ServingRuntime*
+
+.HTTP endpoints
+* `/api/v1/task/embedding`
+* `/api/v1/task/embedding-tasks`
+* `/api/v1/task/sentence-similarity`
+* `/api/v1/task/sentence-similarity-tasks`
+* `/api/v1/task/rerank`
+* `/api/v1/task/rerank-tasks`
+
+.gRPC endpoints
+* `caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict`
+* `caikit.runtime.Nlp.NlpService/EmbeddingTasksPredict`
+* `caikit.runtime.Nlp.NlpService/SentenceSimilarityTaskPredict`
+* `caikit.runtime.Nlp.NlpService/SentenceSimilarityTasksPredict`
+* `caikit.runtime.Nlp.NlpService/RerankTaskPredict`
+* `caikit.runtime.Nlp.NlpService/RerankTasksPredict`
+
 *TGIS Standalone ServingRuntime for KServe*
 
 * `:443 fmaas.GenerationService/Generate`
@@ -53,7 +71,7 @@ NOTE: To query the endpoint for the TGIS standalone runtime, you must also downl
 +
 NOTE: The vLLM runtime is compatible with the OpenAI REST API. For a list of models supported by the vLLM runtime, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
 +
-NOTE: To use the embeddings inference endpoint in vLLM, you must use an embeddings model that is supported by vLLM. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
+NOTE: To use the embeddings inference endpoint in vLLM, you must use an embeddings model that the vLLM supports. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
 +
 
 As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
@@ -71,7 +89,22 @@ curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' \
 https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation \
 -H 'Authorization: Bearer <token>' <1>
 ----
-<1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
+<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
+
+*Caikit Standalone ServingRuntime for KServe*
+
+.REST
+[source]
+----
+curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' localhost:8080/api/v1/task/embedding
+----
+// change localhost to endpoint in dashboard
+
+.gRPC
+[source]
+----
+grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <isvc_hostname>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict
+----
 
 *TGIS Standalone ServingRuntime for KServe*
 [source]
@@ -81,7 +114,7 @@ grpcurl -proto text-generation-inference/proto/generation.proto -d \
 -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate \
 -H 'Authorization: Bearer <token>' <1>
 ----
-<1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
+<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 *OpenVINO Model Server*
 [source]
@@ -91,7 +124,7 @@ curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d \
 "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' \
 -H 'Authorization: Bearer <token>' <1>
 ----
-<1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
+<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 *vLLM ServingRuntime for KServe*
 [source]
@@ -103,7 +136,7 @@ curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H \
 "content": "<content>" \
 }] -H 'Authorization: Bearer <token>' <1>
 ----
-<1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
+<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 --
 endif::[]
 ifdef::self-managed,cloud-service[]
@@ -113,30 +146,44 @@ ifdef::self-managed,cloud-service[]
 *Caikit TGIS ServingRuntime for KServe*
 [source]
 ----
-curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation -H 'Authorization: Bearer <token>'  <1>
+curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation -H 'Authorization: Bearer <token>'  <1>
 ----
-<1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
+<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
+
+*Caikit Standalone ServingRuntime for KServe*
+REST
+[source]
+----
+curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' localhost:8080/api/v1/task/embedding
+----
+// change localhost to endpoint in dashboard
+
+gRPC
+[source]
+----
+grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <isvc_hostname>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict
+----
 
 *TGIS Standalone ServingRuntime for KServe*
 [source]
 ----
 grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'Authorization: Bearer <token>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate  <1>
 ----
-<1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
+<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 *OpenVINO Model Server*
 [source]
 ----
 curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'  <1>
 ----
-<1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
+<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 *vLLM ServingRuntime for KServe*
 [source]
 ----
 curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "messages": [{ "role": "<role>", "content": "<content>" }] -H 'Authorization: Bearer <token>' <1>
 ----
-<1> You must add the `Authorization` header and specify a token value _only_ if you enabled token authorization when deploying the model.
+<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 --
 endif::[]
 
@@ -144,5 +191,6 @@ endif::[]
 .Additional resources
 * link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]
 * link:https://caikit.readthedocs.io/en/latest/autoapi/caikit/index.html[Caikit API documentation^]
+* link:https://github.com/markstur/caikit-embeddings[Caikit Text Embedding GitHub project^]
 * link:https://docs.openvino.ai/2023.3/ovms_docs_rest_api_kfs.html[OpenVINO KServe-compatible REST API documentation^]
 * link:https://platform.openai.com/docs/api-reference/introduction[OpenAI API documentation]
