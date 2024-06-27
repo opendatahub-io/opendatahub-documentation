@@ -33,6 +33,8 @@ The inference endpoint for the model is shown in the *Inference endpoint* field.
 
 *Caikit Standalone ServingRuntime*
 
+By defalt, the Caikit Standalone ServingRuntime exposes REST endpoints for use. You can also manually expose gRPC endpoints to suit your use case.
+
 .HTTP endpoints
 * `/api/v1/task/embedding`
 * `/api/v1/task/embedding-tasks`
@@ -69,7 +71,7 @@ NOTE: To query the endpoint for the TGIS standalone runtime, you must also downl
 * `:443/v1/completions`
 * `:443/v1/embeddings`
 +
-NOTE: The vLLM runtime is compatible with the OpenAI REST API. For a list of models supported by the vLLM runtime, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
+NOTE: The vLLM runtime is compatible with the OpenAI REST API. For a list of models the vLLM runtime supports, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
 +
 NOTE: To use the embeddings inference endpoint in vLLM, you must use an embeddings model that the vLLM supports. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
 +
@@ -96,9 +98,8 @@ https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generatio
 .HTTP
 [source]
 ----
-curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' localhost:8080/api/v1/task/embedding
+curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' /api/v1/task/embedding
 ----
-// change localhost to endpoint in dashboard
 
 .gRPC
 [source]
