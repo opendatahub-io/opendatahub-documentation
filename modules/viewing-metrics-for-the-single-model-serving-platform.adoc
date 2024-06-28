@@ -42,7 +42,7 @@ sum(increase(vllm:request_success_total{namespace='${namespace}',model_name='${m
 sum(increase(tgi_request_success{namespace=${namespace}, pod=~'${model_name}-predictor-.*'}[${rate_interval}]))
 ----
 
-.. The following query displays the number of successful inference requests over a period of time for a model deployed with the Caikit Standalone ServingRuntime:
+.. The following query displays the number of successful inference requests over a period of time for a model deployed with the Caikit Standalone runtime:
 +
 [source,subs="+quotes"]
 ----
@@ -74,14 +74,14 @@ sum(increase(vllm:request_success_total{namespace='${namespace}',model_name='${m
 sum(increase(tgi_request_success{namespace=${namespace}, pod=~'${model_name}-predictor-.*'}[${rate_interval}]))
 ----
 
-.. The following query displays the number of successful inference requests over a period of time for a model deployed with the Caikit Standalone ServingRuntime:
+.. The following query displays the number of successful inference requests over a period of time for a model deployed with the Caikit Standalone runtime:
 +
 [source,subs="+quotes"]
 ----
 sum(increase(predict_rpc_count_total{namespace='${namespace}',code='OK',model_id='${model_name}'}[${rate_interval}]))
 ----
 
-.. The following query displays the number of successful inference requests over a periof of time for a model deployed with the OpenVINO Model Server runtime:
+.. The following query displays the number of successful inference requests over a period of time for a model deployed with the OpenVINO Model Server runtime:
 +
 [source,subs="+quotes"]
 ----

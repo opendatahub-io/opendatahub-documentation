@@ -71,7 +71,7 @@ NOTE: To query the endpoint for the TGIS standalone runtime, you must also downl
 * `:443/v1/completions`
 * `:443/v1/embeddings`
 +
-NOTE: The vLLM runtime is compatible with the OpenAI REST API. For a list of models the vLLM runtime supports, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
+NOTE: The vLLM runtime is compatible with the OpenAI REST API. For a list of models that the vLLM runtime supports, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
 +
 NOTE: To use the embeddings inference endpoint in vLLM, you must use an embeddings model that the vLLM supports. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
 +
@@ -104,7 +104,7 @@ curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<
 .gRPC
 [source]
 ----
-grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <isvc_hostname>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict
+grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict
 ----
 
 *TGIS Standalone ServingRuntime for KServe*
@@ -155,14 +155,13 @@ curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<infere
 REST
 [source]
 ----
-curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' localhost:8080/api/v1/task/embedding
+curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding
 ----
-// change localhost to endpoint in dashboard
 
 gRPC
 [source]
 ----
-grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <isvc_hostname>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict
+grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict
 ----
 
 *TGIS Standalone ServingRuntime for KServe*
