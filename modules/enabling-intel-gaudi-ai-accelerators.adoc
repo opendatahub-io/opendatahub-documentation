@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
-[id='enabling-habana-gaudi-devices_{context}']
-= Enabling Habana Gaudi devices
+[id='enabling-intel-gaudi-ai-accelerators_{context}']
+= Enabling Intel Gaudi AI Accelerators
 
 [role='_abstract']
-Before you can use Habana Gaudi devices in {productname-short}, you must install the necessary dependencies and deploy the HabanaAI Operator. 
+Before you can use Intel Gaudi AI Accelerators in {productname-short}, you must install the necessary dependencies and deploy the HabanaAI Operator. 
 
 .Prerequisites
 ifdef::upstream,self-managed[]
@@ -17,17 +17,17 @@ ifdef::cloud-service[]
 endif::[]
 
 .Procedure
-. To enable Habana Gaudi devices in {productname-short}, follow the instructions at link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/index.html[HabanaAI Operator for OpenShift].
+. To enable Intel Gaudi AI Accelerators in {productname-short}, follow the instructions at link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/index.html[HabanaAI Operator for OpenShift].
 . From the {productname-short} dashboard, click *Settings* -> *Accelerator profiles*.
 +
 The *Accelerator profiles* page appears, displaying existing accelerator profiles. To enable or disable an existing accelerator profile, on the row containing the relevant accelerator profile, click the toggle in the *Enable* column.
 . Click *Create accelerator profile*. 
 +
 The *Create accelerator profile* dialog opens.
-. In the *Name* field, enter a name for the Habana Gaudi device.
-. In the *Identifier* field, enter a unique string that identifies the Habana Gaudi device, for example, `habana.ai/gaudi`. 
-. Optional: In the *Description* field, enter a description for the Habana Gaudi device.
-. To enable or disable the accelerator profile for the Habana Gaudi device immediately after creation, click the toggle in the *Enable* column.
+. In the *Name* field, enter a name for the Intel Gaudi AI Accelerator.
+. In the *Identifier* field, enter a unique string that identifies the Intel Gaudi AI Accelerator, for example, `habana.ai/gaudi`. 
+. Optional: In the *Description* field, enter a description for the Intel Gaudi AI Accelerator.
+. To enable or disable the accelerator profile for the Intel Gaudi AI Accelerator immediately after creation, click the toggle in the *Enable* column.
 . Optional: Add a toleration to schedule pods with matching taints.
 .. Click *Add toleration*. 
 +
@@ -53,7 +53,7 @@ The *Add toleration* dialog opens.
 ** HabanaAI
 ** Node Feature Discovery (NFD)
 ** Kernel Module Management (KMM)
-* The *Accelerator* list displays the Habana Gaudi accelerator on the *Start a notebook server* page. After you select an accelerator, the *Number of accelerators* field appears, which you can use to choose the number of accelerators for your notebook server. 
+* The *Accelerator* list displays the Intel Gaudi AI Accelerator on the *Start a notebook server* page. After you select an accelerator, the *Number of accelerators* field appears, which you can use to choose the number of accelerators for your notebook server. 
 * The accelerator profile appears on the *Accelerator profiles* page
 * The accelerator profile appears on the *Instances* tab on the details page for the `AcceleratorProfile` custom resource definition (CRD).
 
