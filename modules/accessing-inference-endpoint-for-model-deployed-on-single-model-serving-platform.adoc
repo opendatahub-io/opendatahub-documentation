@@ -98,8 +98,9 @@ https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generatio
 .HTTP
 [source]
 ----
-curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' /api/v1/task/embedding
+curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>' <1>
 ----
+<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 .gRPC
 [source]
@@ -152,11 +153,12 @@ curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<infere
 <1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 *Caikit Standalone ServingRuntime for KServe*
-REST
+HTTP
 [source]
 ----
-curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding
+curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>' <1>
 ----
+<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 gRPC
 [source]
