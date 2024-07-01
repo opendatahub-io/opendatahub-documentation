@@ -33,8 +33,6 @@ The inference endpoint for the model is shown in the *Inference endpoint* field.
 
 *Caikit Standalone ServingRuntime*
 
-By default, the Caikit Standalone ServingRuntime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime.
-
 .HTTP endpoints
 * `/api/v1/task/embedding`
 * `/api/v1/task/embedding-tasks`
@@ -50,6 +48,8 @@ By default, the Caikit Standalone ServingRuntime exposes REST endpoints for use.
 * `:443 caikit.runtime.Nlp.NlpService/SentenceSimilarityTasksPredict`
 * `:443 caikit.runtime.Nlp.NlpService/RerankTaskPredict`
 * `:443 caikit.runtime.Nlp.NlpService/RerankTasksPredict`
++
+NOTE: By default, the Caikit Standalone ServingRuntime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_cloud_service/1/html/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform]. An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
 
 *TGIS Standalone ServingRuntime for KServe*
 
@@ -79,7 +79,9 @@ NOTE: To use the embeddings inference endpoint in vLLM, you must use an embeddin
 As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
 --
 
-. Use the endpoint to make API requests to your deployed model, as shown in the following example commands.
+. Use the endpoint to make API requests to your deployed model, as shown in the following example commands:
++
+NOTE: If you have enabled token authorization when deploying the model, add the `Authorization` header and specify a token value.
 
 ifdef::upstream[]
 +
@@ -89,23 +91,21 @@ ifdef::upstream[]
 ----
 curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' \
 https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation \
--H 'Authorization: Bearer <token>' <1>
+-H 'Authorization: Bearer <token>'
 ----
-<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 *Caikit Standalone ServingRuntime for KServe*
 
 .HTTP
 [source]
 ----
-curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>' <1>
+curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>'
 ----
-<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 .gRPC
 [source]
 ----
-grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict
+grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict -H 'Authorization: Bearer <token>'
 ----
 
 *TGIS Standalone ServingRuntime for KServe*
@@ -114,9 +114,8 @@ grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <infere
 grpcurl -proto text-generation-inference/proto/generation.proto -d \
 '{"requests": [{"text":"<text>"}]}' \
 -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate \
--H 'Authorization: Bearer <token>' <1>
+-H 'Authorization: Bearer <token>'
 ----
-<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 *OpenVINO Model Server*
 [source]
@@ -124,9 +123,8 @@ grpcurl -proto text-generation-inference/proto/generation.proto -d \
 curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d \
 '{ "model_name": "<model_name>", \
 "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' \
--H 'Authorization: Bearer <token>' <1>
+-H 'Authorization: Bearer <token>'
 ----
-<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 *vLLM ServingRuntime for KServe*
 [source]
@@ -136,9 +134,8 @@ curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H \
 "messages": [{ \
 "role": "<role>", \
 "content": "<content>" \
-}] -H 'Authorization: Bearer <token>' <1>
+}] -H 'Authorization: Bearer <token>'
 ----
-<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 --
 endif::[]
 ifdef::self-managed,cloud-service[]
@@ -148,44 +145,39 @@ ifdef::self-managed,cloud-service[]
 *Caikit TGIS ServingRuntime for KServe*
 [source]
 ----
-curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation -H 'Authorization: Bearer <token>'  <1>
+curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation -H 'Authorization: Bearer <token>'
 ----
-<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 *Caikit Standalone ServingRuntime for KServe*
-HTTP
+.HTTP
 [source]
 ----
-curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>' <1>
+curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>'
 ----
-<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
-gRPC
+.gRPC
 [source]
 ----
-grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict
+grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict -H 'Authorization: Bearer <token>'
 ----
 
 *TGIS Standalone ServingRuntime for KServe*
 [source]
 ----
-grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'Authorization: Bearer <token>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate  <1>
+grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'Authorization: Bearer <token>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate 
 ----
-<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 *OpenVINO Model Server*
 [source]
 ----
-curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'  <1>
+curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'
 ----
-<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 
 *vLLM ServingRuntime for KServe*
 [source]
 ----
-curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "messages": [{ "role": "<role>", "content": "<content>" }] -H 'Authorization: Bearer <token>' <1>
+curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "messages": [{ "role": "<role>", "content": "<content>" }] -H 'Authorization: Bearer <token>'
 ----
-<1> Add the `Authorization` header and specify a token value only if you enabled token authorization when deploying the model.
 --
 endif::[]
 
