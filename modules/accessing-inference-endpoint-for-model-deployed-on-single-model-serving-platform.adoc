@@ -49,7 +49,17 @@ The inference endpoint for the model is shown in the *Inference endpoint* field.
 * `:443 caikit.runtime.Nlp.NlpService/RerankTaskPredict`
 * `:443 caikit.runtime.Nlp.NlpService/RerankTasksPredict`
 +
-NOTE: By default, the Caikit Standalone ServingRuntime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_cloud_service/1/html/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform]. An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
+ifdef::upstream[]
+NOTE: By default, the Caikit Standalone ServingRuntime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform]. 
+
+An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
+endif::[]
+
+ifndef::upstream[]
+NOTE: By default, the Caikit Standalone ServingRuntime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+
+An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
+endif::[]
 
 *TGIS Standalone ServingRuntime for KServe*
 
