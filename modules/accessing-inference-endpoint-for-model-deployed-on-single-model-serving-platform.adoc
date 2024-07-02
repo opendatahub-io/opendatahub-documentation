@@ -33,7 +33,7 @@ The inference endpoint for the model is shown in the *Inference endpoint* field.
 
 *Caikit Standalone ServingRuntime for KServe*
 
-.HTTP endpoints
+.REST endpoints
 * `/api/v1/task/embedding`
 * `/api/v1/task/embedding-tasks`
 * `/api/v1/task/sentence-similarity`
@@ -50,13 +50,13 @@ The inference endpoint for the model is shown in the *Inference endpoint* field.
 * `:443 caikit.runtime.Nlp.NlpService/RerankTasksPredict`
 +
 ifdef::upstream[]
-NOTE: By default, the Caikit Standalone Runtime exposes HTTP endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform]. 
+NOTE: By default, the Caikit Standalone Runtime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform]. 
 
 An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
 endif::[]
 
 ifndef::upstream[]
-NOTE: By default, the Caikit Standalone Runtime exposes HTTP endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+NOTE: By default, the Caikit Standalone Runtime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 
 An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
 endif::[]
@@ -106,7 +106,7 @@ https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generatio
 
 *Caikit Standalone ServingRuntime for KServe*
 
-.HTTP
+.REST
 [source]
 ----
 curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>'
@@ -159,7 +159,7 @@ curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<infere
 ----
 
 *Caikit Standalone ServingRuntime for KServe*
-.HTTP
+.REST
 [source]
 ----
 curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>'
