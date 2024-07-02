@@ -1,0 +1,45 @@
+:_module-type: PROCEDURE
+
+[id='comparing-runs_{context}']
+= Comparing runs
+
+[role='_abstract']
+You can compare up to 10 pipeline runs at one time, and view available parameter, scalar metric, confusion matrix, and receiver operating characteristic (ROC) curve data for all selected runs.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and has a pipeline server.
+* You have imported a pipeline to an active pipeline server.
+* You have created at least 2 pipeline runs.
+
+.Procedure
+. In the {productname-short} dashboard, select *Experiments > Experiments and runs*.
++ The *Experiments* page opens.
+. From the *Project* drop-down list, select your data science project.
+. In the *Experiments* column, click the experiment that you want to compare runs, or manage runs or schedules for. To select runs that are not in an experiment, click *Default*. All runs that are created without specifying an experiment will appear in the *Default* group.
++
+The *Runs* page opens.
+. Select the checkbox next to each run that you want to compare, then click *Compare runs*. You can compare a maximum of 10 runs at one time.
++ The *Compare runs* page opens and displays available parameter, scalar metric, confusion matrix, and receiver operating characteristic (ROC) curve data for the runs that you selected.
+    . The *Run list* section displays a list of selected runs. You can filter the list by run name, experiment, pipeline version start date, duration, and status.
+    . The *Parameters* section displays parameter information for each selected run. Set the *Hide parameters with no differences* switch to On to hide parameters that are the same for all selected runs.
+    . The *Metrics* section displays scalar metric, confusion matrix, and ROC curve data for all selected runs.
+        . In the ROC curve artifact list, deselect the checkbox next to artifacts that you want to remove from the ROC curve chart.
+. To update the runs that are selected for comparison, click *Manage runs*.
++ The **Manage runs* dialog opens.
+    . Filter by run, experiment, pipeline version, start date, duration, or status by entering the column name in the *Filters* field.
+    . Deselect the checkbox next to each run that you want to remove from your comparison.
+    . Select the checkbox next to each run that you want to add to your comparison.
+. Click *Update*.
+
+.Verification
+* The *Compare runs* page opens and displays data for the runs that you selected.
+
+
+
