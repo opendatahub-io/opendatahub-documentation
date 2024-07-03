@@ -6,6 +6,27 @@
 [role='_abstract']
 To help you troubleshoot and audit your pipelines, you can review and analyze the log of each pipeline step using the log viewer. From here, you can search for specific log messages and download the logs for each step in your pipeline. If the pipeline is running, you can also pause and resume the log from the log viewer.   
 
+[NOTE]
+====
+ifdef::upstream[]
+Logs are no longer stored in S3-compatible storage for Python scripts which are running in Elyra pipelines. From {productname-short} version 2.14, you can view these logs in the *Logs* tab of the *Pipeline runs* page.
+
+For this change to take effect, you must use the latest runtime images for Elyra, which are provided in the 2024.1 workbench images.
+
+If you have an older workbench image version, update the *Version selection* field to `2024.1`, as described in the 'Updating a project workbench' section of link:{odhdocshome}working-on-data-science-projects/#_using_project_workbenches[Using project workbenches].
+endif::[]
+
+ifndef::upstream[] 
+Logs are no longer stored in S3-compatible storage for Python scripts which are running in Elyra pipelines. From {productname-short} version 2.11, you can view these logs in the *Logs* tab of the *Pipeline runs* page.
+
+For this change to take effect, you must be using the latest runtime images for Elyra, which are provided in the 2024.1 workbench images.
+
+If you have an older workbench image version, update the *Version selection* field to `2024.1`, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#updating-a-project-workbench_nb-server[Updating a project workbench].
+endif::[]
+
+Updating your workbench image version will clear any existing runtime image selections for your pipeline. After you update your workbench version, open your workbench IDE and update the properties of your pipeline to select a runtime image.
+====
+
 .Prerequisites
 * You have logged in to {productname-long}.
 ifndef::upstream[]
