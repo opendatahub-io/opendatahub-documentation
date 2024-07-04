@@ -1,0 +1,90 @@
+:_module-type: PROCEDURE
+
+[id="tuning-a-model-by-using-the-training-operator_{context}"]
+= Tuning a model by using the training Operator
+
+[role='_abstract']
+To tune a model, you must first install the Kubeflow Training Operator to manage the lifecycle of the machine learning jobs.
+
+.Prerequisites
+ifdef::upstream,self-managed[]
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to OpenShift with the `cluster-admin` role.
+endif::[]
+
+ifndef::upstream[]
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+ifdef::upstream[]
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* Your cluster administrator has created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
+endif::[]
+ifdef::upstream[]
+* Your cluster administrator has created the required Kueue resources as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* Optional: Your cluster administrator has defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
++
+[source,bash]
+----
+"kueue.x-k8s.io/default-queue": "true"
+----
++
+[NOTE]
+====
+If your cluster administrator does not define a default local queue, you must specify a local queue in each notebook.
+====
+endif::[]
+ifdef::upstream[]
+* Optional: Your cluster administrator has defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to its configuration details, as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
++
+[source,bash]
+----
+"kueue.x-k8s.io/default-queue": "true"
+----
++
+[NOTE]
+====
+If your cluster administrator does not define a default local queue, you must specify a local queue in each notebook.
+====
+endif::[]
+
+ifndef::upstream[]
+* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project].
+endif::[]
+ifdef::upstream[]
+* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Creating a data science project].
+endif::[]
+
+* You have Admin access for the data science project.
+** If you created the project, you automatically have Admin access. 
+** If you did not create the project, your cluster administrator must give you Admin access.
+
+* You have access to a model.
+* You have access to data to train the model.
+
+.Procedure
+. Create a Config Map to specify the configuration of the training job, as follows:
+ 
+ 
+
+
+.Verification
+The notebooks run to completion without errors. In the notebooks, the output from the `cluster.status()` function or `cluster.details()` function indicates that the Ray cluster is `Active`.
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////
