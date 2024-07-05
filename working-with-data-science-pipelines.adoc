@@ -1,12 +1,19 @@
-:_module-type: ASSEMBLY
+---
+layout: docs
+title: Working with data science pipelines
+permalink: /docs/working-with-data-science-pipelines
+custom_css: asciidoc.css
+---
 
-ifdef::context[:parent-context: {context}]
+:upstream:
+include::_artifacts/document-attributes-global.adoc[]
 
-:context: ds-pipelines
-
-[id="working-with-data-science-pipelines_{context}"]
 = Working with data science pipelines
-
+:doctype: book
+:toc: left
+:compat-mode:
+:context: ds-pipelines
+ 
 [role='_abstract']
 As a data scientist, you can enhance your data science projects on {productname-short} by building portable machine learning (ML) workflows with data science pipelines, using Docker containers. This enables you to standardize and automate machine learning workflows to enable you to develop and deploy your data science models.
 
@@ -49,114 +56,23 @@ You can store your pipeline artifacts in an S3-compatible object storage bucket 
 //Enabling DSPv2
 include::modules/enabling-data-science-pipelines-2.adoc[leveloffset=+1]
 
-== Managing data science pipelines
+include::assemblies/managing-data-science-pipelines.adoc[leveloffset=+1]
 
-include::modules/configuring-a-pipeline-server.adoc[leveloffset=+2]
+//Managing pipeline experiments (To be written for a future release)
+// create a new assembly and include these modules:
+//include::modules/overview-of-pipeline-experiments.adoc[leveloffset=+1] 
+//include::modules/creating-a-pipeline-experiment.adoc[leveloffset=+1] 
+//include::modules/updating-a-pipeline-experiment.adoc[leveloffset=+1] 
+//include::modules/deleting-a-pipeline-experiment.adoc[leveloffset=+1] 
 
-include::modules/defining-a-pipeline.adoc[leveloffset=+2]
+include::assemblies/managing-pipeline-runs.adoc[leveloffset=+1]
 
-include::modules/importing-a-data-science-pipeline.adoc[leveloffset=+2]
+include::assemblies/working-with-pipeline-logs.adoc[leveloffset=+1]
 
-include::modules/downloading-a-data-science-pipeline-version.adoc[leveloffset=+2]
-
-include::modules/deleting-a-data-science-pipeline.adoc[leveloffset=+2]
-
-include::modules/deleting-a-pipeline-server.adoc[leveloffset=+2]
-
-include::modules/viewing-the-details-of-a-pipeline-server.adoc[leveloffset=+2]
-
-include::modules/viewing-existing-pipelines.adoc[leveloffset=+2]
-
-// == Managing pipeline experiments (To be written for 2.11)
-
-//include::modules/overview-of-pipeline-experiments.adoc[leveloffset=+2] 
-
-//include::modules/creating-a-pipeline-experiment.adoc[leveloffset=+2] 
-
-//include::modules/updating-a-pipeline-experiment.adoc[leveloffset=+2] 
-
-//include::modules/deleting-a-pipeline-experiment.adoc[leveloffset=+2] 
-
-include::modules/comparing-runs.adoc[leveloffset=+2]
-
-== Managing pipeline runs
-
-include::modules/overview-of-pipeline-runs.adoc[leveloffset=+2]
-
-include::modules/storing-data-with-data-science-pipelines.adoc[leveloffset=+2]
-
-include::modules/viewing-active-pipeline-runs.adoc[leveloffset=+2]
-
-include::modules/executing-a-pipeline-run.adoc[leveloffset=+2]
-
-include::modules/stopping-an-active-pipeline-run.adoc[leveloffset=+2]
-
-// include::modules/deleting-an-active-pipeline-run.adoc[leveloffset=+2]
-
-include::modules/duplicating-an-active-pipeline-run.adoc[leveloffset=+2]
-
-include::modules/viewing-scheduled-pipeline-runs.adoc[leveloffset=+2]
-
-include::modules/scheduling-a-pipeline-run-using-a-cron-job.adoc[leveloffset=+2]
-
-include::modules/scheduling-a-pipeline-run.adoc[leveloffset=+2]
-
-include::modules/duplicating-a-scheduled-pipeline-run.adoc[leveloffset=+2]
-
-include::modules/deleting-a-scheduled-pipeline-run.adoc[leveloffset=+2]
-
-include::modules/viewing-the-details-of-a-pipeline-run.adoc[leveloffset=+2]
-
-include::modules/viewing-archived-pipeline-runs.adoc[leveloffset=+2]
-
-include::modules/archiving-a-pipeline-run.adoc[leveloffset=+2]
-
-include::modules/restoring-an-archived-pipeline-run.adoc[leveloffset=+2]
-
-include::modules/deleting-an-archived-pipeline-run.adoc[leveloffset=+2]
-
-include::modules/duplicating-an-archived-pipeline-run.adoc[leveloffset=+2]
-
-== Working with pipeline logs
-
-include::modules/about-pipeline-logs.adoc[leveloffset=+2]
-
-include::modules/viewing-pipeline-step-logs.adoc[leveloffset=+2]
-
-include::modules/downloading-pipeline-step-logs.adoc[leveloffset=+2]
-
-
-== Working with pipelines in JupyterLab
-
-include::modules/overview-of-pipelines-in-jupyterlab.adoc[leveloffset=+2]
-
-include::modules/accessing-the-pipeline-editor.adoc[leveloffset=+2]
-
-include::modules/creating-a-runtime-configuration.adoc[leveloffset=+2]
-
-include::modules/updating-a-runtime-configuration.adoc[leveloffset=+2]
-
-include::modules/deleting-a-runtime-configuration.adoc[leveloffset=+2]
-
-include::modules/duplicating-a-runtime-configuration.adoc[leveloffset=+2]
-
-//include::modules/defining-pipeline-parameters-in-jupyterlab.adoc[leveloffset=+2] 
-
-include::modules/running-a-pipeline-in-jupyterlab.adoc[leveloffset=+2]
-
-include::modules/exporting-a-pipeline-in-jupyterlab.adoc[leveloffset=+2]
+include::assemblies/working-with-pipelines-in-jupyterlab.adoc[leveloffset=+1]
 
 
 [role='_additional-resources']
 == Additional resources
-* link:https://pypi.org/project/kfp/[KubeFlow Pipelines SDK]
 * link:https://www.kubeflow.org/docs/components/pipelines/v2/[Kubeflow Pipelines 2.0 Documentation]
-ifndef::upstream[]
-* link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-with-data-science-pipelines_ds-pipelines#working_with_pipelines_in_jupyterlab[Working with pipelines in JupyterLab].
-endif::[]
-ifdef::upstream[]
-link:{odhdocshome}/working-on-data-science-projects/working-with-data-science-pipelines_ds-pipelines#working_with_pipelines_in_jupyterlab[Working with pipelines in JupyterLab].
-endif::[]
 
-ifdef::parent-context[:context: {parent-context}]
-ifndef::parent-context[:!context:]
