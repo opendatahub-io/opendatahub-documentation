@@ -6,7 +6,7 @@
 [role='_abstract']
 A pipeline run is a single execution of a data science pipeline. As data scientist, you can use {productname-short} to define, manage, and track executions of a data science pipeline. You can view a record of previously executed, scheduled, and archived runs from the *Runs* page in the {productname-short} user interface.
 
-You can optimize your use of pipeline runs for portability. You can clone your pipeline runs to reproduce and scale them accordingly, or archive them when you want to retain a record of their execution, but no longer require them. You can delete archived runs that you no longer want to retain, or you can restore them to their former state. 
+You can optimize your use of pipeline runs for portability and repeatability by using pipeline experiments, which enable you to logically group pipeline runs. This allows you to try different configurations of your pipelines. In addition, You can clone your pipeline runs to reproduce and scale them accordingly, or archive them when you want to retain a record of their execution, but no longer require them. You can delete archived runs that you no longer want to retain, or you can restore them to their former state. 
 
 You can execute a run once, that is, immediately after its creation, or on a recurring basis. Recurring runs consist of a copy of a pipeline with all of its parameter values and a run trigger. A run trigger indicates when a recurring run executes. You can define the following run triggers:
 
@@ -15,11 +15,13 @@ You can execute a run once, that is, immediately after its creation, or on a rec
 
 You can also configure multiple instances of the same run to execute concurrently, from a range of one to ten. When executed, you can track the run's progress from the run *Details* page on the {productname-short} user interface. From here, you can view the run's graph, and output artifacts. A pipeline run can be in one of the following states: 
 
-* Scheduled run: A pipeline run scheduled to execute at least once.
-* Active run: A pipeline run that is in its execution phase, or is stopped.
-* Archived run: A pipeline run that resides in the run archive and is no longer required. 
+* Scheduled: A pipeline run scheduled to execute at least once.
+* Active: A pipeline run that is in its execution phase, or is stopped.
+* Archived: A pipeline run that resides in the run archive and is no longer required. 
 
 You can use catch up runs to ensure your pipeline runs do not permanently fall behind schedule when paused. For example, if you re-enable a paused recurring run, the run scheduler backfills each missed run interval. If you disable catch up runs, and you have a scheduled run interval ready to execute, the run scheduler only schedules the run execution for the latest run interval. Catch up runs are enabled by default. However, if your pipeline handles backfill internally, Red Hat recommends that you disable catch up runs to avoid duplicate backfill. 
+
+After a pipeline run executes, you can view details of its executed tasks on the *Executions* page, along with its artifacts, on the *Artifacts* page. From the *Executions* page, you can view the execution status of each task, which indicates whether it completed successfully. You can also view further information about each executed task by clicking the execution name in the list. From the *Artifacts* page, you can view the the details of each pipeline artifact, such as its name, unique ID, type, and URI. Pipeline artifacts can help you evaluate the performance of your pipeline runs and make it easier to understand your pipeline components. Pipeline artifacts can range from plain text data or detailed, interactive data visualizations.  
 
 You can review and analyze logs for each step in an active pipeline run. With the log viewer, you can search for specific log messages, view the log for each step, and download the step logs to your local machine.
 
