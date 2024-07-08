@@ -1,0 +1,163 @@
+:_module-type: PROCEDURE
+
+[id="creating-the-training-job_{context}"]
+= Creating the training job
+
+[role='_abstract']
+Before you can use a training job to tune a model, you must create the training job. 
+The example training job in this section is based on the IBM and Hugging Face tuning example provided link:https://github.com/foundation-model-stack/fms-hf-tuning/tree/main/examples/prompt_tuning_twitter_complaints[here]. 
+
+
+.Prerequisites
+ifdef::upstream,self-managed[]
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to OpenShift with the `cluster-admin` role.
+endif::[]
+
+ifndef::upstream[]
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+ifdef::upstream[]
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project].
+endif::[]
+ifdef::upstream[]
+* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Creating a data science project].
+endif::[]
+
+* You have Admin access for the data science project.
+** If you created the project, you automatically have Admin access. 
+** If you did not create the project, your cluster administrator must give you Admin access.
+
+* You have access to a model.
+* You have access to data to train the model.
+
+.Procedure
+. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+. Define a `ConfigMap` object in a YAML file called `config_trainingjob.yaml` with the following contents:
++
+[source]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: my-config-trainingjob
+  namespace: kfto
+data:
+  config.json: |
+    {
+      "model_name_or_path": "bigscience/bloom-560m",
+      "training_data_path": "/data/input/twitter_complaints.json",
+      "output_dir": "/data/output/tuning/bloom-twitter",
+      "num_train_epochs": 10.0,
+      "per_device_train_batch_size": 4,
+      "gradient_accumulation_steps": 4,
+      "learning_rate": 1e-05,
+      "response_template": "\n### Label:",
+      "dataset_text_field": "output",
+      "use_flash_attn": false
+    }
+
+----
++
+The `my-config-trainingjob` object configures the parameters of the training job: the model name, the path to the training data, the output directory, and so on.
+Observe that the training job is set to run 10 times, in batches of 4 per device.
+*OTHER PARAMETERS TO BE EXPLAINED*
+Replace the example namespace value `kfto` with the name of your project, and update the other parameters to suit your environment.
+
+. Apply the configuration to create the `my-config-trainingjob` object.
++
+[source]
+----
+$ oc apply -f config_trainingjob.yaml
+----
+
+. Define a `ConfigMap` object in a YAML file called `training_data.yaml` with the following contents:
++
+[source]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: twitter-complaints
+  namespace: kfto
+data:
+  twitter_complaints.json: |
+    [
+        {"Tweet text":"@HMRCcustomers No this is my first job","ID":0,"Label":2,"text_label":"no complaint","output":"### Text: @HMRCcustomers No this is my first job\n\n### Label: no complaint"},
+        {"Tweet text":"@KristaMariePark Thank you for your interest! If you decide to cancel, you can call Customer Care at 1-800-NYTIMES.","ID":1,"Label":2,"text_label":"no complaint","output":"### Text: @KristaMariePark Thank you for your interest! If you decide to cancel, you can call Customer Care at 1-800-NYTIMES.\n\n### Label: no complaint"},
+        {"Tweet text":"@EE On Rosneath Arial having good upload and download speeds but terrible latency 200ms. Why is this.","ID":3,"Label":1,"text_label":"complaint","output":"### Text: @EE On Rosneath Arial having good upload and download speeds but terrible latency 200ms. Why is this.\n\n### Label: complaint"},
+        {"Tweet text":"Couples wallpaper, so cute. :) #BrothersAtHome","ID":4,"Label":2,"text_label":"no complaint","output":"### Text: Couples wallpaper, so cute. :) #BrothersAtHome\n\n### Label: no complaint"},
+        {"Tweet text":"@mckelldogs This might just be me, but-- eyedrops? Artificial tears are so useful when you're sleep-deprived and sp… https:\/\/t.co\/WRtNsokblG","ID":5,"Label":2,"text_label":"no complaint","output":"### Text: @mckelldogs This might just be me, but-- eyedrops? Artificial tears are so useful when you're sleep-deprived and sp… https:\/\/t.co\/WRtNsokblG\n\n### Label: no complaint"},
+        {"Tweet text":"@Yelp can we get the exact calculations for a business rating (for example if its 4 stars but actually 4.2) or do we use a 3rd party site?","ID":6,"Label":2,"text_label":"no complaint","output":"### Text: @Yelp can we get the exact calculations for a business rating (for example if its 4 stars but actually 4.2) or do we use a 3rd party site?\n\n### Label: no complaint"},
+        {"Tweet text":"@nationalgridus I have no water and the bill is current and paid. Can you do something about this?","ID":7,"Label":1,"text_label":"complaint","output":"### Text: @nationalgridus I have no water and the bill is current and paid. Can you do something about this?\n\n### Label: complaint"},
+        {"Tweet text":"@JenniferTilly Merry Christmas to as well. You get more stunning every year ��","ID":9,"Label":2,"text_label":"no complaint","output":"### Text: @JenniferTilly Merry Christmas to as well. You get more stunning every year ��\n\n### Label: no complaint"}
+    ]
+
+----
++
+Replace the example namespace value `kfto` with the name of your project.
+
+. Apply the configuration to create the training data.
++
+[source]
+----
+$ oc apply -f training_data.yaml
+----
+
+. Define a `PersistentVolumeClaim` object in a YAML file called `trainedmodelpvc.yaml` with the following contents:
+
++
+[source]
+----
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: trained-model
+  namespace: kfto
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+----
++
+Replace the example namespace value `kfto` with the name of your project, and update the other parameters to suit your environment.
+
+. Apply the configuration to create a Persistent Volume Claim (PVC) for the training job:
++
+[source]
+----
+$ oc apply -f trainedmodelpvc.yaml
+----
+
+
+
+
+
+.Verification
+*TO BE PROVIDED*
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////
