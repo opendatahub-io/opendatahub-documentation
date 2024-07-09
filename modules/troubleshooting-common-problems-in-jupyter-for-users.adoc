@@ -10,17 +10,18 @@ ifndef::upstream[]
 If you cannot see your problem here or in the release notes, contact {org-name} Support.
 endif::[]
 
-== I see a *403: Forbidden* error when I log in to Jupyter
 
+I see a *403: Forbidden* error when I log in to Jupyter::
++
 .Problem
 If your administrator has configured specialized user groups for {productname-short}, your user name might not be added to the default user group or the default administrator group for {productname-short}.
-
++
 .Resolution
  Contact your administrator so that they can add you to the correct group/s.
 
 
-== My notebook server does not start
-
+My notebook server does not start::
++
 .Problem
 ifdef::cloud-service[]
 The OpenShift cluster that hosts your notebook server might not have access to enough resources, or the Jupyter pod may have failed.
@@ -28,26 +29,24 @@ endif::[]
 ifdef::upstream,self-managed[]
 The {openshift-platform} cluster that hosts your notebook server might not have access to enough resources, or the Jupyter pod may have failed.
 endif::[]
-
++
 .Resolution
 Check the logs in the *Events* section in OpenShift for error messages associated with the problem. For example:
++
 ----
 Server requested
 2021-10-28T13:31:29.830991Z [Warning] 0/7 nodes are available: 2 Insufficient memory,
 2 node(s) had taint {node-role.kubernetes.io/infra: }, that the pod didn't tolerate, 3 node(s) had taint {node-role.kubernetes.io/master: },
 that the pod didn't tolerate.
 ----
++
 Contact your administrator with details of any relevant error messages so that they can perform further checks.
 
-
-== I see a *database or disk is full* error or a *no space left on device* error when I run my notebook cells
-
+I see a *database or disk is full* error or a *no space left on device* error when I run my notebook cells::
++
 .Problem
 You might have run out of storage space on your notebook server.
-
++
 .Resolution
 Contact your administrator so that they can perform further checks.
 
-// [role='_additional-resources']
-// == Additional resources
-// * TODO

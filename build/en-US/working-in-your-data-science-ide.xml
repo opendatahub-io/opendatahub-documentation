@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book [
+<!ENTITY % sgml.features "IGNORE">
+<!ENTITY % xml.features "INCLUDE">
+<!ENTITY % DOCBOOK_ENTS PUBLIC "-//OASIS//ENTITIES DocBook Character Entities V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/dbcentx.mod">
+%DOCBOOK_ENTS;
+]>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+<info>
+<title>Working in your data science IDE</title>
+<date>2024-07-09</date>
+</info>
+<preface>
+<title>Preface</title>
+<simpara><?asciidoc-hr?></simpara>
+<simpara>layout: docs
+title: Working in your data science IDE
+permalink: /docs/working-in-your-data-science-ide
+custom_css: asciidoc.css
+---</simpara>
+</preface>
+<part xml:id="_working_in_your_data_science_ide">
+<title>Working in your data science IDE</title>
+<partintro>
+<simpara>In Open Data Hub, when you create a workbench, you select a workbench image that includes an IDE (integrated development environment) for developing your machine learning models.</simpara>
+<simpara>Open Data Hub supports the following data science IDEs for developing ML models:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>JupyterLab</simpara>
+</listitem>
+<listitem>
+<simpara>code-server</simpara>
+</listitem>
+<listitem>
+<simpara>RStudio Server</simpara>
+</listitem>
+</itemizedlist>
+</partintro>
+<chapter xml:id="accessing-your-workbench-ide_ide">
+<title>Accessing your workbench IDE</title>
+<simpara>To access a workbench IDE, use the link provided in the Open Data Hub interface.</simpara>
+<itemizedlist>
+<title>Prerequisite</title>
+<listitem>
+<simpara>You have created a data science project and a workbench.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>From the Open Data Hub dashboard, click <emphasis role="strong">Data Science Projects</emphasis>.</simpara>
+</listitem>
+<listitem>
+<simpara>Click the name of the project that contains the workbench.</simpara>
+</listitem>
+<listitem>
+<simpara>If the status of the workbench is <emphasis role="strong">Running</emphasis>, skip to Step 4.</simpara>
+<simpara>Otherwise, click the toggle in the <emphasis role="strong">Status</emphasis> column for the relevant workbench and wait until the status changes from <emphasis role="strong">Stopped</emphasis> to <emphasis role="strong">Running</emphasis>.</simpara>
+</listitem>
+<listitem>
+<simpara>Click <emphasis role="strong">Open</emphasis>.</simpara>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>A new browser window opens for the workbench IDE.</simpara>
+</listitem>
+</itemizedlist>
+</chapter>
+<chapter xml:id="_working_in_jupyterlab">
+<title>Working in JupyterLab</title>
+<simpara>JupyterLab is the latest web-based interactive development environment for notebooks, code, and data. You can configure and arrange workflows in data science and machine learning. JupyterLab is an open-source web application that supports over 40 programming languages, including Python and R.</simpara>
+<section xml:id="creating-and-importing-notebooks_ide">
+<title>Creating and importing notebooks</title>
+<simpara role="_abstract">You can create a blank notebook or import a notebook from several different sources.</simpara>
+<section xml:id="creating-a-new-notebook_ide">
+<title>Creating a new notebook</title>
+<simpara role="_abstract">You can create a new Jupyter notebook from an existing notebook container image to access its resources and properties. The <emphasis role="strong">Notebook server control panel</emphasis> contains a list of available container images that you can run as a single-user notebook server.</simpara>
+<itemizedlist>
+<title>Prerequisites</title>
+<listitem>
+<simpara>Ensure that you have logged in to Open Data Hub.</simpara>
+</listitem>
+<listitem>
+<simpara>Ensure that you have launched your notebook server and logged in to JupyterLab.</simpara>
+</listitem>
+<listitem>
+<simpara>The notebook image exists in a registry, image stream, and is accessible.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>Click <emphasis role="strong">File</emphasis> &#8594; <emphasis role="strong">New</emphasis> &#8594; <emphasis role="strong">Notebook</emphasis>.</simpara>
+</listitem>
+<listitem>
+<simpara>If prompted, select a kernel for your notebook from the list.</simpara>
+<simpara>If you want to use a kernel, click <emphasis role="strong">Select</emphasis>. If you do not want to use a kernel, click <emphasis role="strong">No Kernel</emphasis>.</simpara>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>Check that the notebook file is visible in the JupyterLab interface.</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="uploading-an-existing-notebook-file-from-local-storage_ide">
+<title>Uploading an existing notebook file from local storage</title>
+<simpara role="_abstract">You can load an existing notebook from local storage into JupyterLab to continue work, or adapt a project for a new use case.</simpara>
+<itemizedlist>
+<title>Prerequisites</title>
+<listitem>
+<simpara>Credentials for logging in to JupyterLab.</simpara>
+</listitem>
+<listitem>
+<simpara>A launched and running Jupyter notebook server.</simpara>
+</listitem>
+<listitem>
+<simpara>A notebook file exists in your local storage.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>In the <emphasis role="strong">File Browser</emphasis> in the left sidebar of the JupyterLab interface, click <emphasis role="strong">Upload Files</emphasis> (<inlinemediaobject>
+<imageobject>
+<imagedata fileref="images/jupyter-upload-file.png"/>
+</imageobject>
+<textobject><phrase>Upload Files</phrase></textobject>
+</inlinemediaobject>).</simpara>
+</listitem>
+<listitem>
+<simpara>Locate and select the notebook file and click <emphasis role="strong">Open</emphasis>.</simpara>
+<simpara>The file is displayed in the <emphasis role="strong">File Browser</emphasis>.</simpara>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>The notebook file displays in the <emphasis role="strong">File Browser</emphasis> in the left sidebar of the JupyterLab interface.</simpara>
+</listitem>
+<listitem>
+<simpara>You can open the notebook file in JupyterLab.</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="uploading-an-existing-notebook-file-from-a-git-repository-using-jupyterlab_ide">
+<title>Uploading an existing notebook file from a Git repository by using JupyterLab</title>
+<simpara role="_abstract">You can use the JupyterLab user interface to clone a Git repository into your workspace to continue your work or integrate files from an external project.</simpara>
+<itemizedlist>
+<title>Prerequisites</title>
+<listitem>
+<simpara>A launched and running Jupyter notebook server.</simpara>
+</listitem>
+<listitem>
+<simpara>Read access for the Git repository you want to clone.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>Copy the HTTPS URL for the Git repository.</simpara>
+<itemizedlist>
+<listitem>
+<simpara>On GitHub, click <emphasis role="strong">&#10515; Code</emphasis> &#8594; <emphasis role="strong">HTTPS</emphasis> and click the Clipboard button.</simpara>
+</listitem>
+<listitem>
+<simpara>On GitLab, click <emphasis role="strong">Clone</emphasis> and click the Clipboard button under <emphasis role="strong">Clone with HTTPS</emphasis>.</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>In the JupyterLab interface, click the <emphasis role="strong">Git Clone</emphasis> button (<inlinemediaobject>
+<imageobject>
+<imagedata fileref="images/jupyterlab-git-clone-button.png"/>
+</imageobject>
+<textobject><phrase>Git Clone button</phrase></textobject>
+</inlinemediaobject>).</simpara>
+<simpara>You can also click <emphasis role="strong">Git</emphasis> &#8594; <emphasis role="strong">Clone a repository</emphasis> in the menu, or click the Git icon (<inlinemediaobject>
+<imageobject>
+<imagedata fileref="images/jupyterlab-git-button.png"/>
+</imageobject>
+<textobject><phrase>Git button</phrase></textobject>
+</inlinemediaobject>) and click the <emphasis role="strong">Clone a repository</emphasis> button.</simpara>
+<simpara>The <emphasis role="strong">Clone a repo</emphasis> dialog appears.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter the HTTPS URL of the repository that contains your notebook.</simpara>
+</listitem>
+<listitem>
+<simpara>Click <emphasis role="strong">CLONE</emphasis>.</simpara>
+</listitem>
+<listitem>
+<simpara>If prompted, enter your username and password for the Git repository.</simpara>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>Check that the contents of the repository are visible in the file browser in JupyterLab, or run the <emphasis role="strong">ls</emphasis> command in the terminal to verify that the repository is shown as a directory.</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="uploading-an-existing-notebook-file-from-a-git-repository-using-the-command-line-interface_ide">
+<title>Uploading an existing notebook file from a Git repository by using the command line interface</title>
+<simpara role="_abstract">You can use the command line interface to clone a Git repository into your workspace to continue your work or integrate files from an external project.</simpara>
+<itemizedlist>
+<title>Prerequisites</title>
+<listitem>
+<simpara>A launched and running Jupyter notebook server.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>Copy the HTTPS URL for the Git repository.</simpara>
+<itemizedlist>
+<listitem>
+<simpara>On GitHub, click <emphasis role="strong">&#10515; Code</emphasis> &#8594; <emphasis role="strong">HTTPS</emphasis> and click the Clipboard button.</simpara>
+</listitem>
+<listitem>
+<simpara>On GitLab, click <emphasis role="strong">Clone</emphasis> and click the Clipboard button under <emphasis role="strong">Clone with HTTPS</emphasis>.</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>In JupyterLab, click <emphasis role="strong">File</emphasis> &#8594; <emphasis role="strong">New</emphasis> &#8594; <emphasis role="strong">Terminal</emphasis> to open a terminal window.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter the <literal>git clone</literal> command.</simpara>
+<screen>git clone <emphasis>&lt;git-clone-URL&gt;</emphasis></screen>
+<simpara>Replace <emphasis>`&lt;git-clone-URL&gt;`</emphasis> with the HTTPS URL, for example:</simpara>
+<screen>[1234567890@jupyter-nb-jdoe ~]$ <emphasis role="strong">git clone https://github.com/example/myrepo.git</emphasis>
+Cloning into <emphasis>myrepo</emphasis>...
+remote: Enumerating objects: 11, done.
+remote: Counting objects: 100% (11/11), done.
+remote: Compressing objects: 100% (10/10), done.
+remote: Total 2821 (delta 1), reused 5 (delta 1), pack-reused 2810
+Receiving objects: 100% (2821/2821), 39.17 MiB | 23.89 MiB/s, done.
+Resolving deltas: 100% (1416/1416), done.</screen>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>Check that the contents of the repository are visible in the file browser in JupyterLab, or run the <emphasis role="strong">ls</emphasis> command in the terminal to verify that the repository is shown as a directory.</simpara>
+</listitem>
+</itemizedlist>
+</section>
+</section>
+<section xml:id="collaborating-on-notebooks-by-using-git_git-collab">
+<title>Collaborating on notebooks by using Git</title>
+<simpara role="_abstract">If your notebooks or other files are stored in Git version control, you can import them from a Git repository onto your notebook server to work with them in JupyterLab. When you are ready, you can push your changes back to the Git repository so that others can review or use your models.</simpara>
+<section xml:id="uploading-an-existing-notebook-file-from-a-git-repository-using-jupyterlab_git-collab">
+<title>Uploading an existing notebook file from a Git repository by using JupyterLab</title>
+<simpara role="_abstract">You can use the JupyterLab user interface to clone a Git repository into your workspace to continue your work or integrate files from an external project.</simpara>
+<itemizedlist>
+<title>Prerequisites</title>
+<listitem>
+<simpara>A launched and running Jupyter notebook server.</simpara>
+</listitem>
+<listitem>
+<simpara>Read access for the Git repository you want to clone.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>Copy the HTTPS URL for the Git repository.</simpara>
+<itemizedlist>
+<listitem>
+<simpara>On GitHub, click <emphasis role="strong">&#10515; Code</emphasis> &#8594; <emphasis role="strong">HTTPS</emphasis> and click the Clipboard button.</simpara>
+</listitem>
+<listitem>
+<simpara>On GitLab, click <emphasis role="strong">Clone</emphasis> and click the Clipboard button under <emphasis role="strong">Clone with HTTPS</emphasis>.</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>In the JupyterLab interface, click the <emphasis role="strong">Git Clone</emphasis> button (<inlinemediaobject>
+<imageobject>
+<imagedata fileref="images/jupyterlab-git-clone-button.png"/>
+</imageobject>
+<textobject><phrase>Git Clone button</phrase></textobject>
+</inlinemediaobject>).</simpara>
+<simpara>You can also click <emphasis role="strong">Git</emphasis> &#8594; <emphasis role="strong">Clone a repository</emphasis> in the menu, or click the Git icon (<inlinemediaobject>
+<imageobject>
+<imagedata fileref="images/jupyterlab-git-button.png"/>
+</imageobject>
+<textobject><phrase>Git button</phrase></textobject>
+</inlinemediaobject>) and click the <emphasis role="strong">Clone a repository</emphasis> button.</simpara>
+<simpara>The <emphasis role="strong">Clone a repo</emphasis> dialog appears.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter the HTTPS URL of the repository that contains your notebook.</simpara>
+</listitem>
+<listitem>
+<simpara>Click <emphasis role="strong">CLONE</emphasis>.</simpara>
+</listitem>
+<listitem>
+<simpara>If prompted, enter your username and password for the Git repository.</simpara>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>Check that the contents of the repository are visible in the file browser in JupyterLab, or run the <emphasis role="strong">ls</emphasis> command in the terminal to verify that the repository is shown as a directory.</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="uploading-an-existing-notebook-file-from-a-git-repository-using-the-command-line-interface_git-collab">
+<title>Uploading an existing notebook file from a Git repository by using the command line interface</title>
+<simpara role="_abstract">You can use the command line interface to clone a Git repository into your workspace to continue your work or integrate files from an external project.</simpara>
+<itemizedlist>
+<title>Prerequisites</title>
+<listitem>
+<simpara>A launched and running Jupyter notebook server.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>Copy the HTTPS URL for the Git repository.</simpara>
+<itemizedlist>
+<listitem>
+<simpara>On GitHub, click <emphasis role="strong">&#10515; Code</emphasis> &#8594; <emphasis role="strong">HTTPS</emphasis> and click the Clipboard button.</simpara>
+</listitem>
+<listitem>
+<simpara>On GitLab, click <emphasis role="strong">Clone</emphasis> and click the Clipboard button under <emphasis role="strong">Clone with HTTPS</emphasis>.</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>In JupyterLab, click <emphasis role="strong">File</emphasis> &#8594; <emphasis role="strong">New</emphasis> &#8594; <emphasis role="strong">Terminal</emphasis> to open a terminal window.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter the <literal>git clone</literal> command.</simpara>
+<screen>git clone <emphasis>&lt;git-clone-URL&gt;</emphasis></screen>
+<simpara>Replace <emphasis>`&lt;git-clone-URL&gt;`</emphasis> with the HTTPS URL, for example:</simpara>
+<screen>[1234567890@jupyter-nb-jdoe ~]$ <emphasis role="strong">git clone https://github.com/example/myrepo.git</emphasis>
+Cloning into <emphasis>myrepo</emphasis>...
+remote: Enumerating objects: 11, done.
+remote: Counting objects: 100% (11/11), done.
+remote: Compressing objects: 100% (10/10), done.
+remote: Total 2821 (delta 1), reused 5 (delta 1), pack-reused 2810
+Receiving objects: 100% (2821/2821), 39.17 MiB | 23.89 MiB/s, done.
+Resolving deltas: 100% (1416/1416), done.</screen>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>Check that the contents of the repository are visible in the file browser in JupyterLab, or run the <emphasis role="strong">ls</emphasis> command in the terminal to verify that the repository is shown as a directory.</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="updating-your-project-with-changes-from-a-remote-git-repository_git-collab">
+<title>Updating your project with changes from a remote Git repository</title>
+<simpara role="_abstract">You can pull changes made by other users into your data science project from a remote Git repository.</simpara>
+<itemizedlist>
+<title>Prerequisites</title>
+<listitem>
+<simpara>You have configured the remote Git repository.</simpara>
+</listitem>
+<listitem>
+<simpara>You have already imported the Git repository into JupyterLab, and the contents of the repository are visible in the file browser in JupyterLab.</simpara>
+</listitem>
+<listitem>
+<simpara>You have permissions to pull files from the remote Git repository to your local repository.</simpara>
+</listitem>
+<listitem>
+<simpara>You have credentials for logging in to Jupyter.</simpara>
+</listitem>
+<listitem>
+<simpara>You have a launched and running Jupyter server.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>In the JupyterLab interface, click the <emphasis role="strong">Git</emphasis> button (<inlinemediaobject>
+<imageobject>
+<imagedata fileref="images/jupyter-git-sidebar.png"/>
+</imageobject>
+<textobject><phrase>Git button</phrase></textobject>
+</inlinemediaobject>).</simpara>
+</listitem>
+<listitem>
+<simpara>Click the <emphasis role="strong">Pull latest changes</emphasis> button (<inlinemediaobject>
+<imageobject>
+<imagedata fileref="images/jupyter-git-pull-button.png"/>
+</imageobject>
+<textobject><phrase>Pull latest changes button</phrase></textobject>
+</inlinemediaobject>).</simpara>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>You can view the changes pulled from the remote repository in the <emphasis role="strong">History</emphasis> tab of the Git pane.</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="pushing-project-changes-to-a-git-repository_git-collab">
+<title>Pushing project changes to a Git repository</title>
+<simpara role="_abstract">To build and deploy your application in a production environment, upload your work to a remote Git repository.</simpara>
+<itemizedlist>
+<title>Prerequisites</title>
+<listitem>
+<simpara>You have opened a notebook in the JupyterLab interface.</simpara>
+</listitem>
+<listitem>
+<simpara>You have already added the relevant Git repository to your notebook server.</simpara>
+</listitem>
+<listitem>
+<simpara>You have permission to push changes to the relevant Git repository.</simpara>
+</listitem>
+<listitem>
+<simpara>You have installed the Git version control extension.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>Click <emphasis role="strong">File</emphasis> &#8594; <emphasis role="strong">Save All</emphasis> to save any unsaved changes.</simpara>
+</listitem>
+<listitem>
+<simpara>Click the Git icon (<inlinemediaobject>
+<imageobject>
+<imagedata fileref="images/jupyterlab-git-button.png"/>
+</imageobject>
+<textobject><phrase>Git button</phrase></textobject>
+</inlinemediaobject>) to open the Git pane in the JupyterLab interface.</simpara>
+</listitem>
+<listitem>
+<simpara>Confirm that your changed files appear under <emphasis role="strong">Changed</emphasis>.</simpara>
+<simpara>If your changed files appear under <emphasis role="strong">Untracked</emphasis>, click <emphasis role="strong">Git</emphasis> &#8594; <emphasis role="strong">Simple Staging</emphasis> to enable a simplified Git process.</simpara>
+</listitem>
+<listitem>
+<simpara>Commit your changes.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Ensure that all files under <emphasis role="strong">Changed</emphasis> have a blue checkmark beside them.</simpara>
+</listitem>
+<listitem>
+<simpara>In the <emphasis role="strong">Summary</emphasis> field, enter a brief description of the changes you made.</simpara>
+</listitem>
+<listitem>
+<simpara>Click <emphasis role="strong">Commit</emphasis>.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Click <emphasis role="strong">Git</emphasis> &#8594; <emphasis role="strong">Push to Remote</emphasis> to push your changes to the remote repository.</simpara>
+</listitem>
+<listitem>
+<simpara>When prompted, enter your Git credentials and click <emphasis role="strong">OK</emphasis>.</simpara>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>Your most recently pushed changes are visible in the remote Git repository.</simpara>
+</listitem>
+</itemizedlist>
+</section>
+</section>
+<section xml:id="managing-python-packages_ide">
+<title>Managing Python packages</title>
+<simpara>In JupyterLab, you can view the Python packages that are installed on your notebook image and install additional packages.</simpara>
+<section xml:id="viewing-python-packages-installed-on-your-notebook-server_ide">
+<title>Viewing Python packages installed on your notebook server</title>
+<simpara role="_abstract">You can check which Python packages are installed on your notebook server and which version of the package you have by running the <literal>pip</literal> tool in a notebook cell.</simpara>
+<itemizedlist>
+<title>Prerequisites</title>
+<listitem>
+<simpara>Log in to JupyterLab and open a notebook.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>Enter the following in a new cell in your notebook:</simpara>
+<screen role="execute">!pip list</screen>
+</listitem>
+<listitem>
+<simpara>Run the cell.</simpara>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>The output shows an alphabetical list of all installed Python packages and their versions. For example, if you use this command immediately after creating a notebook server that uses the <emphasis role="strong">Minimal</emphasis> image, the first packages shown are similar to the following:</simpara>
+<screen>Package                           Version
+--------------------------------- ----------
+aiohttp                           3.7.3
+alembic                           1.5.2
+appdirs                           1.4.4
+argo-workflows                    3.6.1
+argon2-cffi                       20.1.0
+async-generator                   1.10
+async-timeout                     3.0.1
+attrdict                          2.0.1
+attrs                             20.3.0
+backcall                          0.2.0</screen>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="installing-python-packages-on-your-notebook-server_ide">
+<title>Installing Python packages on your notebook server</title>
+<simpara role="_abstract">You can install Python packages that are not part of the default notebook server by adding the package and the version to a <literal>requirements.txt</literal> file and then running the <literal>pip install</literal> command in a notebook cell.</simpara>
+<note>
+<simpara>You can also install packages directly, but using a <literal>requirements.txt</literal> file so that the packages stated in the file can be easily re-used across different notebooks is recommended. In addition, using a <literal>requirements.txt</literal> file is also useful when using a S2I build to deploy a model.</simpara>
+</note>
+<itemizedlist>
+<title>Prerequisites</title>
+<listitem>
+<simpara>Log in to JupyterLab and open a notebook.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>Create a new text file using one of the following methods:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Click <emphasis role="strong">+</emphasis> to open a new launcher and click <emphasis role="strong">Text file</emphasis>.</simpara>
+</listitem>
+<listitem>
+<simpara>Click <emphasis role="strong">File</emphasis> &#8594; <emphasis role="strong">New</emphasis> &#8594; <emphasis role="strong">Text File</emphasis>.</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>Rename the text file to <literal>requirements.txt</literal>.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Right-click on the name of the file and click <emphasis role="strong">Rename Text</emphasis>. The <emphasis role="strong">Rename File</emphasis> dialog opens.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter <literal>requirements.txt</literal> in the <emphasis role="strong">New Name</emphasis> field and click <emphasis role="strong">Rename</emphasis>.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Add the packages to install to the <literal>requirements.txt</literal> file.</simpara>
+<screen>altair</screen>
+<simpara>You can specify the exact version to install by using the <literal>==</literal> (equal to) operator, for example:</simpara>
+<screen>altair==4.1.0</screen>
+<simpara>Specifying exact package versions to enhance the stability of your notebook server over time is recommended. New package versions can introduce undesirable or unexpected changes in your environment&#8217;s behavior.
+To install multiple packages at the same time, place each package on a separate line.</simpara>
+</listitem>
+<listitem>
+<simpara>Install the packages in <literal>requirements.txt</literal> to your server using a notebook cell.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Create a new cell in your notebook and enter the following command:</simpara>
+<screen>!pip install -r requirements.txt</screen>
+</listitem>
+<listitem>
+<simpara>Run the cell by pressing Shift and Enter.</simpara>
+</listitem>
+</orderedlist>
+<important>
+<simpara>This command installs the package on your notebook server, but you must still run the <literal>import</literal> directive in a code cell to use the package in your code.</simpara>
+<screen>import altair</screen>
+</important>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>Confirm that the packages in <literal>requirements.txt</literal> appear in the list of packages installed on the notebook server.
+See <link xlink:href="https://opendatahub.io/docs/working-on-data-science-projects/#viewing-python-packages-installed-on-your-notebook-server_ide">Viewing Python packages installed on your notebook server</link> for details.</simpara>
+</listitem>
+</itemizedlist>
+</section>
+</section>
+</chapter>
+<chapter xml:id="troubleshooting-common-problems-in-jupyter-for-users_ide">
+<title>Troubleshooting common problems in Jupyter for users</title>
+<simpara role="_abstract">If you are seeing errors in Open Data Hub related to Jupyter, your notebooks, or your notebook server, read this section to understand what could be causing the problem.</simpara>
+<section xml:id="_i_see_a_emphasis_role_strong_403_forbidden_emphasis_error_when_i_log_in_to_jupyter">
+<title>I see a <emphasis role="strong">403: Forbidden</emphasis> error when I log in to Jupyter</title>
+<formalpara>
+<title>Problem</title>
+<para>If your administrator has configured specialized user groups for Open Data Hub, your user name might not be added to the default user group or the default administrator group for Open Data Hub.</para>
+</formalpara>
+<formalpara>
+<title>Resolution</title>
+<para>
+<literallayout class="monospaced">Contact your administrator so that they can add you to the correct group/s.</literallayout>
+</para>
+</formalpara>
+</section>
+<section xml:id="_my_notebook_server_does_not_start">
+<title>My notebook server does not start</title>
+<formalpara>
+<title>Problem</title>
+<para>The OpenShift Container Platform cluster that hosts your notebook server might not have access to enough resources, or the Jupyter pod may have failed.</para>
+</formalpara>
+<formalpara>
+<title>Resolution</title>
+<para>Check the logs in the <emphasis role="strong">Events</emphasis> section in OpenShift for error messages associated with the problem. For example:</para>
+</formalpara>
+<screen>Server requested
+2021-10-28T13:31:29.830991Z [Warning] 0/7 nodes are available: 2 Insufficient memory,
+2 node(s) had taint {node-role.kubernetes.io/infra: }, that the pod didn't tolerate, 3 node(s) had taint {node-role.kubernetes.io/master: },
+that the pod didn't tolerate.</screen>
+<simpara>Contact your administrator with details of any relevant error messages so that they can perform further checks.</simpara>
+</section>
+<section xml:id="_i_see_a_emphasis_role_strong_database_or_disk_is_full_emphasis_error_or_a_emphasis_role_strong_no_space_left_on_device_emphasis_error_when_i_run_my_notebook_cells">
+<title>I see a <emphasis role="strong">database or disk is full</emphasis> error or a <emphasis role="strong">no space left on device</emphasis> error when I run my notebook cells</title>
+<formalpara>
+<title>Problem</title>
+<para>You might have run out of storage space on your notebook server.</para>
+</formalpara>
+<formalpara>
+<title>Resolution</title>
+<para>Contact your administrator so that they can perform further checks.</para>
+</formalpara>
+</section>
+</chapter>
+<chapter xml:id="working-in-code-server_ide">
+<title>Working in code-server</title>
+<simpara role="_abstract">Open Data Hub includes the code-server workbench image.</simpara>
+<simpara>For more information on code-server, see <link xlink:href="https://github.com/coder/code-server">code-server in GitHub</link>.</simpara>
+<note>
+<simpara>Elyra-based pipelines are not available with the code-server workbench image.</simpara>
+</note>
+<section xml:id="_installing_extensions_with_code_server">
+<title>Installing extensions with code-server</title>
+<simpara>With the code-server workbench image, you can customize your code-server environment by using extensions to add new languages, themes, and debuggers, and to connect to additional services. You can also enhance the efficiency of your data science work with extensions for syntax highlighting, auto-indentation, and bracket matching.</simpara>
+<simpara>For details about the third-party extensions that you can install with code-server, see the <link xlink:href="https://open-vsx.org/">Open VSX Registry</link>.</simpara>
+<itemizedlist>
+<title>Prerequisites</title>
+<listitem>
+<simpara>You are logged in to Open Data Hub.</simpara>
+</listitem>
+<listitem>
+<simpara>If you use specialized Open Data Hub groups, you are part of the user group or admin group (for example, <literal>odh-users</literal> or <literal>odh-admins</literal>) in OpenShift.</simpara>
+</listitem>
+<listitem>
+<simpara>You have created a data science project that has a code-server workbench.</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Procedure</title>
+<listitem>
+<simpara>From the Open Data Hub dashboard, click <emphasis role="strong">Data Science Projects</emphasis>.</simpara>
+<simpara>The <emphasis role="strong">Data Science Projects</emphasis> page opens.</simpara>
+</listitem>
+<listitem>
+<simpara>Click the name of the project containing the code-server workbench you want to start.</simpara>
+<simpara>A project details page opens.</simpara>
+</listitem>
+<listitem>
+<simpara>Click the <emphasis role="strong">Workbenches</emphasis> tab.</simpara>
+</listitem>
+<listitem>
+<simpara>Click the toggle in the <emphasis role="strong">Status</emphasis> column for the relevant workbench to start a workbench that is not running.</simpara>
+<simpara>The status of the workbench that you started changes from <emphasis role="strong">Stopped</emphasis> to <emphasis role="strong">Running</emphasis>.</simpara>
+</listitem>
+<listitem>
+<simpara>After the workbench has started, click <emphasis role="strong">Open</emphasis> to open the workbench notebook.</simpara>
+</listitem>
+<listitem>
+<simpara>In the Activity Bar, click the <emphasis role="strong">Extensions</emphasis> icon (<inlinemediaobject>
+<imageobject>
+<imagedata fileref="images/codeserver-extensions-icon.png"/>
+</imageobject>
+<textobject><phrase>The Extensions icon</phrase></textobject>
+</inlinemediaobject>).</simpara>
+</listitem>
+<listitem>
+<simpara>Search for the name of the extension you want to install.</simpara>
+</listitem>
+<listitem>
+<simpara>Click <emphasis role="strong">Install</emphasis> to add the extension to your code-server environment.</simpara>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<title>Verification</title>
+<listitem>
+<simpara>In the <emphasis role="strong">Browser - Installed</emphasis> list on the <emphasis role="strong">Extensions</emphasis> panel, you see the extension that you installed.</simpara>
+</listitem>
+</itemizedlist>
+</section>
+</chapter>
+</part>
+</book>
