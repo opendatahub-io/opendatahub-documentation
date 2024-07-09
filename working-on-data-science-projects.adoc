@@ -8,13 +8,42 @@ custom_css: asciidoc.css
 :upstream:
 include::_artifacts/document-attributes-global.adoc[]
 
-
 :doctype: book
 :toc: left
 :compat-mode:
-:context: notebooks
+:context: projects
 
 = Working on data science projects
 
-:context: nb-server
-include::assemblies/working-on-data-science-projects.adoc[leveloffset=+1]
+[role='_abstract']
+As a data scientist, you can organize your data science work into a single project. A data science project in {productname-short} can consist of the following components:
+
+Workbenches:: Creating a workbench allows you to add a Jupyter notebook to your project.
+Cluster storage:: For data science projects that require data retention, you can add cluster storage to the project.
+Data connections:: Adding a data connection to your project allows you to connect data inputs to your workbenches.
+Pipelines:: Standardize and automate machine learning workflows to enable you to further enhance and deploy your data science models.
+Models and model servers:: Deploy a trained data science model to serve intelligent applications. Your model is deployed with an endpoint that allows applications to send requests to the model.
+ifdef::upstream[]
+Bias metrics for models:: Creating bias metrics allows you to monitor your machine learning models for bias.
+endif::[]
+
+[IMPORTANT]
+====
+If you create an OpenShift project outside of the {productname-short} user interface, the project is not shown on the *Data Science Projects* page. In addition, you cannot use features exclusive to {productname-short}, such as workbenches and model serving, with a standard OpenShift project.
+
+To classify your OpenShift project as a data science project, and to make available features exclusive to {productname-short}, you must add the label `opendatahub.io/dashboard: 'true'` to the project namespace. After you add this label, your project is subsequently shown on the *Data Science Projects* page.
+====
+include::assemblies/using-data-science-projects.adoc[leveloffset=+1]
+
+include::assemblies/using-project-workbenches.adoc[leveloffset=+1]
+
+include::assemblies/using-data-connections.adoc[leveloffset=+1]
+
+include::assemblies/configuring-cluster-storage.adoc.adoc[leveloffset=+1]
+
+include::assemblies/managing-access-to-data-science-projects.adoc[leveloffset=+1]
+
+
+
+
+
