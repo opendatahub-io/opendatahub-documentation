@@ -7,7 +7,7 @@
 If you are experiencing errors in {productname-long} relating to distributed workloads, read this section to understand what could be causing the problem, and how to resolve the problem.
 
 ifndef::upstream[]
-If you cannot see the problem here or in the release notes, contact {org-name} Support.
+If the problem is not documented here or in the release notes, contact {org-name} Support.
 endif::[]
 
 == My Ray cluster is in a suspended state
@@ -44,7 +44,7 @@ When a Ray cluster is created, it initially enters a `failed` state.
 This failed state usually resolves after the reconciliation process completes and the Ray cluster pods are running.
 
 .Resolution
-If the failed state persists, review the pod events to identify the cause of the problem.
+If the failed state persists, open the *Events* tab for the pod, and review the pod events to identify the cause of the problem.
 If you cannot resolve the problem, contact your administrator to request assistance.
 
 == I see a *failed to call webhook* error message for the CodeFlare Operator
@@ -223,7 +223,7 @@ By default, Kueue waits for 5 minutes.
 If the pod image is very large and is still being pulled after the 5-minute waiting period elapses, Kueue fails the workload and terminates the related pods.
 
 .Diagnosis
-Review the Events of the Ray head pod to check whether the image pull completed successfully.
+Open the *Events* tab for the Ray head pod, and review the pod events to check whether the image pull completed successfully.
 
 .Resolution
 If the pod takes more than 5 minutes to pull the image, contact your administrator to request assistance.
