@@ -25,11 +25,11 @@ endif::[]
 
 ifndef::upstream[]
 * You have created a data science project. 
-For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project].
+For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project].
 endif::[]
 ifdef::upstream[]
 * You have created a data science project. 
-For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Creating a data science project].
+For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project].
 endif::[]
 
 * You have Admin access for the data science project.
@@ -47,7 +47,9 @@ endif::[]
 $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
 
-. Define a `ConfigMap` object in a YAML file called `config_trainingjob.yaml` with the following contents:
+. Create a training job, as follows:
+.. Create a YAML file named `config_trainingjob.yaml`.
+.. Add the following `ConfigMap` object definition:
 +
 [source]
 ----
@@ -72,32 +74,29 @@ data:
     }
 
 ----
-+
-The `my-config-trainingjob` object configures the parameters of the training job, as follows:
-
-* The `model_name_or_path` field specifies the name of the pre-trained model.
-* The `training_data_path` field specifies the path to the training data that you set in the `training_data.yaml` ConfigMap.
-* The `output_dir` field specifies the output directory for the model.
-* The `num_train_epochs` field specifies the number of epochs for training.
-* The `per_device_train_batch_size` field specifies the batch size; that is, how many examples for the data set are processed together.
-* The `gradient_accumulation_steps` field specifies the number of gradient accumulation steps.
-* The `learning_rate` field specifies the learning rate for the training.
-* The `response_template` field specifies the template formatting for the response.
-* The `dataset_text_field` field specifies the dataset field to be used for training output. This field is set in the `training_data.yaml` ConfigMap.
-* The `use_flash_attn` field specifies whether to use flash attention.
-
-+
-Replace the example namespace value `kfto` with the name of your project, and update the other parameters to suit your environment.
-In this example, the training job is set to run 10 times, processing 4 examples at a time.
-
-. Apply the configuration to create the `my-config-trainingjob` object.
+.. Replace the example namespace value `kfto` with the name of your project.
+.. Edit the parameters of the training job, as follows:
+... In the `model_name_or_path` field, specify the name of the pre-trained model.
+... In the `training_data_path` field, specify the path to the training data that you set in the `training_data.yaml` ConfigMap.
+... In the `output_dir` field, specify the output directory for the model.
+... In the `num_train_epochs` field, specify the number of epochs for training.
+... In the `per_device_train_batch_size` field, specify the batch size; that is, how many data set examples to process together.
+... In the `gradient_accumulation_steps` field, specify the number of gradient accumulation steps.
+... In the `learning_rate` field, specify the learning rate for the training.
+... In the `response_template` field, specify the template formatting for the response.
+... In the `dataset_text_field` field, specify the dataset field for training output. This field is set in the `training_data.yaml` config map.
+... In the `use_flash_attn` field, specify whether to use flash attention.
+.. Save your changes in the `config_trainingjob.yaml` file.
+.. Apply the configuration to create the `my-config-trainingjob` object, as follows:
 +
 [source]
 ----
 $ oc apply -f config_trainingjob.yaml
 ----
 
-. Define a `ConfigMap` object in a YAML file called `training_data.yaml` with the following contents:
+. Create the training data, as follows:
+.. Create a YAML file named `training_data.yaml`.
+.. Add the following `ConfigMap` object definition:
 +
 [source]
 ----
@@ -120,18 +119,19 @@ data:
     ]
 
 ----
-+
-Replace the example namespace value `kfto` with the name of your project.
-
-. Apply the configuration to create the training data.
+.. Replace the example namespace value `kfto` with the name of your project.
+.. Replace the example training data with your training data.
+.. Save your changes in the `training_data.yaml` file.
+.. Apply the configuration to create the training data, as follows:
 +
 [source]
 ----
 $ oc apply -f training_data.yaml
 ----
 
-. Define a `PersistentVolumeClaim` object in a YAML file called `trainedmodelpvc.yaml` with the following contents:
-
+. Create a persistent volume claim (PVC), as follows:
+.. Create a YAML file named `trainedmodelpvc.yaml`.
+.. Add the following `PersistentVolumeClaim` object definition:
 +
 [source]
 ----
@@ -148,10 +148,9 @@ spec:
       storage: 10Gi
 
 ----
-+
-Replace the example namespace value `kfto` with the name of your project, and update the other parameters to suit your environment.
-
-. Apply the configuration to create a Persistent Volume Claim (PVC) for the training job:
+.. Replace the example namespace value `kfto` with the name of your project, and update the other parameters to suit your environment.
+.. Save your changes in the `trainedmodelpvc.yaml` file.
+.. Apply the configuration to create a Persistent Volume Claim (PVC) for the training job, as follows:
 +
 [source]
 ----

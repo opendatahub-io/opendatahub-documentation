@@ -25,11 +25,11 @@ endif::[]
 
 ifndef::upstream[]
 * You have created a data science project. 
-For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project].
+For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project].
 endif::[]
 ifdef::upstream[]
 * You have created a data science project. 
-For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Creating a data science project].
+For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project].
 endif::[]
 
 * You have Admin access for the data science project.
@@ -55,8 +55,9 @@ endif::[]
 $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
 
-. Define a `PyTorchJob` object in a YAML file called `pytorchjob.yaml` with the following contents:
-
+. Create a PyTorch training job, as follows:
+.. Create a YAML file named `pytorchjob.yaml`.
+.. Add the following `PyTorchJob` object definition:
 +
 [source]
 ----
@@ -103,10 +104,10 @@ spec:
     suspend: false
 
 ----
-+
-Replace the example namespace value `kfto` with the name of your project, and update the other parameters to suit your environment.
-
-. Apply the configuration to run the training job:
+.. Replace the example namespace value `kfto` with the name of your project, and update the other parameters to suit your environment.
+.. Edit the parameters of the PyTorch training job, to provide the details for your training job and environment.
+.. Save your changes in the `pytorchjob.yaml` file.
+.. Apply the configuration to run the PyTorch training job, as follows:
 +
 [source]
 ----

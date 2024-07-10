@@ -26,11 +26,11 @@ endif::[]
 
 ifndef::upstream[]
 * You have created a data science project. 
-For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project].
+For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project].
 endif::[]
 ifdef::upstream[]
 * You have created a data science project. 
-For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Creating a data science project].
+For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project].
 endif::[]
 
 * You have Admin access for the data science project.
@@ -48,7 +48,9 @@ endif::[]
 $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
 
-. Define a `ClusterRole` object in a YAML file called `pytorchjob_role.yaml` with the following contents:
+. Create a cluster role with the required access permissions, as follows:
+.. Create a YAML file named `pytorchjob_role.yaml`.
+.. Add the following `ClusterRole` object definition:
 +
 [source]
 ----
@@ -77,17 +79,17 @@ rules:
       - pytorchjobs/status
 
 ----
-+
-The `pytorchjob-role` object configures the access permissions for a new cluster role.
-
-. Apply the configuration to create the `pytorchjob-role` object.
+.. Save your changes in the `pytorchjob_role.yaml` file.
+.. Apply the configuration to create the `pytorchjob-role` object, as follows:
 +
 [source]
 ----
 $ oc apply -f pytorchjob_role.yaml
 ----
 
-. Define a `ServiceAccount` object in a YAML file called `pytorchjob_serviceaccount.yaml` with the following contents:
+. Create a service account, as follows:
+.. Create a YAML file named `pytorchjob_serviceaccount.yaml`.
+.. Add the following `ServiceAccount` object definition:
 +
 [source]
 ----
@@ -97,18 +99,18 @@ metadata:
   name: pytorchjob-sa
   namespace: kfto
 ----
-+
-Replace the example namespace value `kfto` with the name of your project.
-
-. Apply the configuration to create the `pytorchjob-sa` service account.
+.. Replace the example namespace value `kfto` with the name of your project.
+.. Save your changes in the `pytorchjob_serviceaccount.yaml` file.
+.. Apply the configuration to create the `pytorchjob-sa` service account, as follows:
 +
 [source]
 ----
 $ oc apply -f pytorchjob_serviceaccount.yaml
 ----
 
-. Define a `ClusterRoleBinding` object in a YAML file called `pytorchjob_rolebinding.yaml` with the following contents:
-
+. Assign the cluster role to the service account, as follows:
+.. Create a YAML file named `pytorchjob_rolebinding.yaml`.
+.. Add the following `ClusterRoleBinding` object definition:
 +
 [source]
 ----
@@ -126,10 +128,9 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 
 ----
-+
-Replace the example namespace value `kfto` with the name of your project.
-
-. Apply the configuration to assign the `pytorchjob-role` cluster role to the `pytorchjob-sa` service account.
+.. Replace the example namespace value `kfto` with the name of your project.
+.. Save your changes in the `pytorchjob_rolebinding.yaml` file.
+.. Apply the configuration to assign the `pytorchjob-role` cluster role to the `pytorchjob-sa` service account, as follows:
 +
 [source]
 ----
