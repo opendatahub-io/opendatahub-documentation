@@ -4,7 +4,7 @@
 = Duplicating a scheduled pipeline run
 
 [role='_abstract']
-To make it easier to schedule runs to execute as part of your pipeline configuration, you can duplicate existing scheduled runs.
+To make it easier to schedule runs to execute as part of your pipeline experiment, you can duplicate existing scheduled runs.
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -19,27 +19,29 @@ endif::[]
 * A scheduled run is available to duplicate in the *Schedules* tab on the *Runs* page.
 
 .Procedure
-. From the {productname-short} dashboard, click *Data Science Pipelines* -> *Runs*.
-. On the *Runs* page, select the *project* that has the pipeline run that you want to duplicate.
-. Click the *Schedules* tab.
+. From the {productname-short} dashboard, click *Experiments* -> *Experiments and runs*.
+. On the *Experiments* page, from the *Project* drop-down list, select the project that contains the pipeline experiment for the scheduled run that you want to duplicate.
+. From the list of pipeline experiments, click the experiment that contains the pipeline run that you want to duplicate. 
+. On the *Runs* page, click the *Schedules* tab.
 . Click the action menu (*&#8942;*) beside the run that you want to duplicate and click *Duplicate*.
 . On the *Duplicate schedule* page, configure the duplicate run:
+.. From the *Experiment* list, select the pipeline experiment that contains the scheduled pipeline run that you want to duplicate. Alternatively, to create a new pipeline experiment, click *Create new experiment*, and then and complete the relevant fields in the *Create experiment* dialog.
 .. In the *Name* field, enter a name for the duplicate run.
 .. In the *Description* field, enter a description for the duplicate run.
 .. From the *Trigger type* list, select one of the following options:
 * Select *Periodic* to specify an execution frequency. In the *Run every* field, enter a numerical value and select an execution frequency from the list.
-* Select *Cron* to specify the execution schedule in `cron` format. This creates a cron job to execute the run. Click the *Copy* button (image:images/osd-copy.png[]) to copy the cron job schedule to the clipboard. The field furthest to the left represents seconds. For more information about scheduling tasks using the supported `cron` format, see link:https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format[Cron Expression Format].
+* Select *Cron* to specify the execution schedule in `cron` format in the *Cron string* field. This creates a cron job to execute the run. Click the *Copy* button (image:images/osd-copy.png[]) to copy the cron job schedule to the clipboard. The field furthest to the left represents seconds. For more information about scheduling tasks using the supported `cron` format, see link:https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format[Cron Expression Format].
 .. For *Maximum concurrent runs*, specify the number of runs that can execute concurrently, from a range of one to ten.  
 .. For *Start date*, specify a start date for the duplicate run. Select a start date using the *Calendar* and the start time from the list of times.
 .. For *End date*, specify an end date for the duplicate run. Select an end date using the *Calendar* and the end time from the list of times.
 .. For *Catch up*, enable or disable catch up runs. You can use catch up runs to ensure your pipeline runs do not permanently fall behind schedule when paused. For example, if you re-enable a paused recurring run, the run scheduler backfills each missed run interval.
-.. From the *Pipeline* list, select the pipeline that you want to create a duplicate run for. Alternatively, to create a new pipeline, click *Create new pipeline* and complete the relevant fields in the *Import pipeline* dialog.
-.. From the *Pipeline version* list, select the pipeline version to create a duplicate run for. Alternatively, to upload a new version, click *Upload new version* and complete the relevant fields in the *Upload new version* dialog.
+.. From the *Pipeline* list, select the pipeline that you want to create a duplicate run for. Alternatively, to create a new pipeline, click *Create new pipeline*, and then complete the relevant fields in the *Import pipeline* dialog.
+.. From the *Pipeline version* list, select the pipeline version to create a duplicate run for. Alternatively, to upload a new version, click *Upload new version*, and then complete the relevant fields in the *Upload new version* dialog.
 .. Configure the input parameters for the run by selecting the parameters from the list.
 .. Click *Schedule run*.
 
 .Verification
-* The pipeline run that you duplicated appears in the *Schedules* tab on the *Runs* page.
+* The pipeline run that you duplicated appears in the *Schedules* tab on the *Runs* page for the pipeline experiment.
 
 //[role='_additional-resources']
 //.Additional resources

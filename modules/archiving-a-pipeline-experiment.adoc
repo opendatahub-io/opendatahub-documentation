@@ -1,0 +1,32 @@
+:_module-type: PROCEDURE
+
+[id="archiving-a-pipeline-experiment_{context}"]
+= Archiving a pipeline experiment
+
+[role='_abstract']
+You can retain records of your pipeline experiments by archiving them. If required, you can restore pipeline experiments from your archive to reuse, or delete pipeline experiments that are no longer required.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have previously created a data science project that is available and has a pipeline server.
+* You have imported a pipeline to an active pipeline server.
+* A pipeline experiment is available to archive.  
+
+.Procedure
+. From the {productname-short} dashboard, click *Experiments* -> *Experiments and runs*.
+. On the *Experiments* page, from the *Project* drop-down list, select the project that contains the pipeline experiment that you want to archive.
+. Click the action menu (*&#8942;*) beside the pipeline experiment that you want to archive, and then click *Archive*.
+. In the *Archiving experiment* dialog, enter the pipeline experiment name in the text field to confirm that you intend to archive it.
+. Click *Archive*.
+
+.Verification
+* The archived pipeline experiment does not appear in the *Runs* tab, and instead appears in the *Archive* tab on the *Experiments* page for the pipeline experiment.
+
+//[role='_additional-resources']
+//.Additional resources

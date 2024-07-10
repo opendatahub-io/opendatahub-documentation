@@ -44,10 +44,14 @@ A data science pipeline in {productname-short} consists of the following compone
 * Pipeline: A pipeline defines the configuration of your machine learning workflow and the relationship between each component in the workflow.
 ** Pipeline code: A definition of your pipeline in a YAML file.
 ** Pipeline graph: A graphical illustration of the steps executed in a pipeline run and the relationship between them.
+* Pipeline experiment: A workspace where you can try different configurations of your pipelines. You can use experiments to organize your runs into logical groups.
+*** Archived pipeline experiment: An archived pipeline experiment.
+*** Pipeline artifact: An output artifact produced by a pipeline component. 
+*** Pipeline execution: The execution of a task in a pipeline.
 * Pipeline run: An execution of your pipeline.
-** Active run: A pipeline run that is in its execution phase, or is stopped.
-** Scheduled run: A pipeline run scheduled to execute at least once.
-** Archived run: A pipeline run that resides in the run archive and is no longer required. 
+** Active run: A pipeline run that is executing, or stopped.
+** Scheduled run: A pipeline run that is scheduled to execute at least once.
+** Archived run: An archived pipeline run. 
 
 This feature is based on Kubeflow Pipelines 2.0. Use the latest Kubeflow Pipelines 2.0 SDK to build your data science pipeline in Python code. After you have built your pipeline, use the SDK to compile it into an Intermediate Representation (IR) YAML file. The {productname-short} user interface enables you to track and manage pipelines and pipeline runs.
 
@@ -58,12 +62,7 @@ include::modules/enabling-data-science-pipelines-2.adoc[leveloffset=+1]
 
 include::assemblies/managing-data-science-pipelines.adoc[leveloffset=+1]
 
-//Managing pipeline experiments (To be written for a future release)
-// create a new assembly and include these modules:
-//include::modules/overview-of-pipeline-experiments.adoc[leveloffset=+1] 
-//include::modules/creating-a-pipeline-experiment.adoc[leveloffset=+1] 
-//include::modules/updating-a-pipeline-experiment.adoc[leveloffset=+1] 
-//include::modules/deleting-a-pipeline-experiment.adoc[leveloffset=+1] 
+include::assemblies/managing-pipeline-experiments.adoc[leveloffset=+1]
 
 include::assemblies/managing-pipeline-runs.adoc[leveloffset=+1]
 
