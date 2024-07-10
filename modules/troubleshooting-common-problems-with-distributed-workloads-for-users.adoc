@@ -1,7 +1,7 @@
 :_module-type: REFERENCE
 
-[id="troubleshooting-common-problems-with-distributed-workloads_{context}"]
-= Troubleshooting common problems with distributed workloads
+[id="troubleshooting-common-problems-with-distributed-workloads-for-users_{context}"]
+= Troubleshooting common problems with distributed workloads for users
 
 [role='_abstract']
 If you are experiencing errors in {productname-long} relating to distributed workloads, read this section to understand what could be causing the problem, and how to resolve the problem.
@@ -10,12 +10,13 @@ ifndef::upstream[]
 If you cannot see the problem here or in the release notes, contact {org-name} Support.
 endif::[]
 
-== Ray cluster is in suspended state
+== My Ray cluster is in a suspended state
 
 .Problem
-The resource quota specified in the cluster queue configuration is insufficient, or the resource flavor is not yet created.
+The resource quota specified in the cluster queue configuration might be insufficient, or the resource flavor might not yet be created.
 
 .Diagnosis
+The Ray cluster head pod or worker pods remain in a suspended state. 
 Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
 The `status.conditions.message` field provides the reason for the suspended state, as shown in the following example:
 
@@ -32,12 +33,13 @@ status:
 Check your cluster queue configuration to ensure that the resources that you requested are within the limits defined for the project.
 Either reduce your requested resources, or contact your administrator to request more resources. 
 
-== Ray cluster is in failed state
+== My Ray cluster is in a failed state
 
 .Problem
-The Ray cluster head pod or worker pods are not running, perhaps because the user has insufficient resources.
+You might have insufficient resources.
 
 .Diagnosis
+The Ray cluster head pod or worker pods are not running.
 When a Ray cluster is created, it initially enters a `failed` state. 
 This failed state usually resolves after the reconciliation process completes and the Ray cluster pods are running.
 
@@ -45,7 +47,7 @@ This failed state usually resolves after the reconciliation process completes an
 If the failed state persists, review the pod events to identify the cause of the problem.
 If you cannot resolve the problem, contact your administrator to request assistance.
 
-== Error Message: Failed to call CodeFlare Operator webhook
+== I see a *failed to call webhook* error message for the CodeFlare Operator
 
 .Problem
 After you run the `cluster.up()` command, the following error is shown:
@@ -63,7 +65,7 @@ The CodeFlare Operator pod might not be running.
 .Resolution
 Contact your administrator to request assistance.
 
-== Error Message: Failed to call Kueue webhook
+== I see a *failed to call webhook* error message for Kueue
 
 .Problem
 After you run the `cluster.up()` command, the following error is shown:
@@ -83,10 +85,11 @@ The Kueue pod might not be running.
 Contact your administrator to request assistance.
 
 
-== Ray Cluster remains in “Starting” status and no pods are created
+== My Ray cluster doesn't start
 
 .Problem
 After you run the `cluster.up()` command, when you run either the `cluster.details()` command or the `cluster.status()` command, the Ray Cluster remains in the `Starting` status instead of changing to the `Ready` status.
+No pods are created.
 
 .Diagnosis
 Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
@@ -96,7 +99,7 @@ Similarly, check the `status.conditions.message` field for the `RayCluster` reso
 .Resolution
 If you cannot resolve the problem, contact your administrator to request assistance.
 
-== Error Message: Default local queue not found 
+== I see a *Default Local Queue ... not found* error message 
 
 
 .Problem
@@ -130,7 +133,7 @@ local_queue="_<local_queue_name>_"
 * If no local queue exists, contact your administrator to request assistance.
 
  
-== Error Message: Local queue does not exist
+== I see a *local_queue provided does not exist* error message
 
 .Problem
 After you run the `cluster.up()` command, the following error is shown:
@@ -145,6 +148,7 @@ An incorrect value is specified for the local queue in the cluster configuration
 The specified local queue either does not exist, or exists in a different namespace.
 
 .Resolution
+ifdef::upstream,self-managed[]
 . In the {openshift-platform} console, select your project from the *Project* list. 
 endif::[]
 ifdef::cloud-service[]
@@ -158,7 +162,7 @@ If you do not specify a `namespace` value in the cluster configuration, the Ray 
 
 * If no local queue exists, contact your administrator to request assistance.
 
-== Cannot create a Ray cluster or submit jobs
+== I cannot create a Ray cluster or submit jobs
 
 .Problem
 After you run the `cluster.up()` command, an error similar to the following error is shown:
@@ -200,7 +204,7 @@ auth.login()
 ----
 
 
-== Kueue does not monitor Ray cluster or PyTorch job
+== Kueue does not monitor my Ray cluster or PyTorch job
 
 .Problem
 Kueue does not monitor the Ray cluster, or PyTorch jobs, or other machine-learning frameworks.
@@ -211,7 +215,7 @@ The resources (for example,`RayCluster` resources and `PyTorchJob` resources) ar
 .Resolution
 Contact your administrator to request assistance.
 
-== Pod provisioned by Kueue is terminated before image is pulled
+== My pod provisioned by Kueue is terminated before my image is pulled
 
 .Problem
 Kueue waits for a period of time before marking a workload as ready, to enable all of the workload pods to become provisioned and running. 
