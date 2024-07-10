@@ -48,11 +48,12 @@ endif::[]
 
 .Procedure
 ifdef::upstream,self-managed[]
-. In the {openshift-platform} console, click *Workloads* -> *Pods*.
+. In the {openshift-platform} console, select your project from the *Project* list. 
 endif::[]
 ifdef::cloud-service[]
-. In the OpenShift console, click *Workloads* -> *Pods*.
+. In the OpenShift console, select your project from the *Project* list.
 endif::[]
+. Click *Workloads* -> *Pods*.
 
 . Search for the pod that corresponds to the PyTorch job.
 The default pod name is *kfto-demo-master-0*, where `kfto` is the name of the project where the job is running.
@@ -78,7 +79,8 @@ Replace the example namespace value `kfto` with the name of your project.
 
 
 .Verification
-*TO BE PROVIDED*
+. The *_<project-name>_-demo-master-0* pod is running.
+. The *Logs* tab provides information about the job progress and job status.
 
 ////
 [role='_additional-resources']

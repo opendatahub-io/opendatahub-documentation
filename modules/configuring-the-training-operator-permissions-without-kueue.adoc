@@ -25,11 +25,11 @@ ifdef::upstream[]
 endif::[]
 
 ifndef::upstream[]
-* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+* You have created a data science project. 
 For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/working-on-data-science-projects_nb-server#creating-a-data-science-project_nb-server[Creating a data science project].
 endif::[]
 ifdef::upstream[]
-* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+* You have created a data science project. 
 For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#_using_data_science_projects[Creating a data science project].
 endif::[]
 
@@ -138,7 +138,14 @@ $ oc apply -f pytorchjob_rolebinding.yaml
 
 
 .Verification
-*TO BE PROVIDED*
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, select your project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, select your project from the *Project* list.
+endif::[]
+. Click *Workloads -> Service Accounts* and verify that `pytorchjob-sa` is listed.
+. Click *Workloads -> Roles and Role Bindings* and verify that `pytorchjob-role` and `pytorchjob-rolebinding` are correctly created and assigned.
 
 ////
 [role='_additional-resources']

@@ -73,10 +73,22 @@ data:
 
 ----
 +
-The `my-config-trainingjob` object configures the parameters of the training job: the model name, the path to the training data, the output directory, and so on.
-Observe that the training job is set to run 10 times, in batches of 4 per device.
-*OTHER PARAMETERS TO BE EXPLAINED*
+The `my-config-trainingjob` object configures the parameters of the training job, as follows:
+
+* The `model_name_or_path` field specifies the name of the pre-trained model.
+* The `training_data_path` field specifies the path to the training data that you set in the `training_data.yaml` ConfigMap.
+* The `output_dir` field specifies the output directory for the model.
+* The `num_train_epochs` field specifies the number of epochs for training.
+* The `per_device_train_batch_size` field specifies the batch size; that is, how many examples for the data set are processed together.
+* The `gradient_accumulation_steps` field specifies the number of gradient accumulation steps.
+* The `learning_rate` field specifies the learning rate for the training.
+* The `response_template` field specifies the template formatting for the response.
+* The `dataset_text_field` field specifies the dataset field to be used for training output. This field is set in the `training_data.yaml` ConfigMap.
+* The `use_flash_attn` field specifies whether to use flash attention.
+
++
 Replace the example namespace value `kfto` with the name of your project, and update the other parameters to suit your environment.
+In this example, the training job is set to run 10 times, processing 4 examples at a time.
 
 . Apply the configuration to create the `my-config-trainingjob` object.
 +
@@ -151,7 +163,15 @@ $ oc apply -f trainedmodelpvc.yaml
 
 
 .Verification
-*TO BE PROVIDED*
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, select your project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, select your project from the *Project* list.
+endif::[]
+. Click *Workloads -> ConfigMaps* and verify that the `my-config-trainingjob` and `twitter-complaints` ConfigMaps are listed. 
+. Click *Storage -> PersistentVolumeClaims* and verify that the `trained-model` PVC is listed.
+
 
 ////
 [role='_additional-resources']
