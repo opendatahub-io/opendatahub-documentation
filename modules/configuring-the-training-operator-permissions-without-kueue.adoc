@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
-[id="configuring-the-training-operator-permissions-without-kueue_{context}"]
-= Configuring the Training Operator permissions without Kueue
+[id="configuring-the-training-operator-permissions-when-not-using-kueue_{context}"]
+= Configuring the Training Operator permissions when not using Kueue
 
 [role='_abstract']
 If you want to run a PyTorch training job in an environment where Kueue is not installed, you must create a service account and apply access permissions to it.
@@ -59,7 +59,11 @@ kind: ClusterRole
 metadata:
   name: pytorchjob-role
 rules:
-  - verbs:
+  - apiGroups:
+      - "kubeflow.org"
+    resources:
+      - pytorchjobs
+    verbs:
       - create
       - delete
       - get
@@ -67,17 +71,12 @@ rules:
       - patch
       - update
       - watch
-    apiGroups:
-      - kubeflow.org
-    resources:
-      - pytorchjobs
-  - verbs:
-      - get
-    apiGroups:
-      - kubeflow.org
+  - apiGroups:
+      - "kubeflow.org"
     resources:
       - pytorchjobs/status
-
+    verbs:
+      - get
 ----
 .. Save your changes in the `pytorchjob_role.yaml` file.
 .. Apply the configuration to create the `pytorchjob-role` object:
@@ -126,7 +125,6 @@ roleRef:
   kind: ClusterRole
   name: pytorchjob-role
   apiGroup: rbac.authorization.k8s.io
-
 ----
 .. Replace the example namespace value `kfto` with the name of your project.
 .. Save your changes in the `pytorchjob_rolebinding.yaml` file.
