@@ -37,7 +37,7 @@ endif::[]
 ** If you did not create the project, your cluster administrator must give you Admin access.
 
 * You have access to a model.
-* You have access to data to train the model.
+* You have access to data that you can use to train the model.
 
 .Procedure
 . In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
@@ -75,12 +75,14 @@ data:
 
 ----
 .. Replace the example namespace value `kfto` with the name of your project.
-.. Edit the parameters of the training job:
+.. Edit the following parameters of the training job:
 ... In the `model_name_or_path` field, specify the name of the pre-trained model.
 ... In the `training_data_path` field, specify the path to the training data that you set in the `training_data.yaml` ConfigMap.
 ... In the `output_dir` field, specify the output directory for the model.
-... In the `num_train_epochs` field, specify the number of epochs for training.
+... In the `num_train_epochs` field, specify the number of epochs for training. 
+In this example, the training job is set to run 10 times.
 ... In the `per_device_train_batch_size` field, specify the batch size; that is, how many data set examples to process together.
+In this example, the training job processes 4 examples at a time.
 ... In the `gradient_accumulation_steps` field, specify the number of gradient accumulation steps.
 ... In the `learning_rate` field, specify the learning rate for the training.
 ... In the `response_template` field, specify the template formatting for the response.
