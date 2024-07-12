@@ -10,10 +10,10 @@ The example training job in this section is based on the IBM and Hugging Face tu
 
 .Prerequisites
 ifdef::upstream,self-managed[]
-* You have logged in to {openshift-platform} with the `cluster-admin` role.
+* You have logged in to {openshift-platform}.
 endif::[]
 ifdef::cloud-service[]
-* You have logged in to OpenShift with the `cluster-admin` role.
+* You have logged in to OpenShift.
 endif::[]
 
 ifndef::upstream[]
@@ -40,11 +40,11 @@ endif::[]
 * You have access to data that you can use to train the model.
 
 .Procedure
-. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
+. In a terminal window, if you are not already logged in to your OpenShift cluster, log in to the OpenShift CLI as shown in the following example:
 +
 [source,subs="+quotes"]
 ----
-$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+$ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
 ----
 
 . Create a training job, as follows:
@@ -170,8 +170,8 @@ endif::[]
 ifdef::cloud-service[]
 . In the OpenShift console, select your project from the *Project* list.
 endif::[]
-. Click *Workloads -> ConfigMaps* and verify that the `my-config-trainingjob` and `twitter-complaints` ConfigMaps are listed. 
-. Click *Storage -> PersistentVolumeClaims* and verify that the `trained-model` PVC is listed.
+. Click *ConfigMaps* and verify that the `my-config-trainingjob` and `twitter-complaints` ConfigMaps are listed. 
+. Click *Search*. From the *Resources* list, select *PersistentVolumeClaim* and verify that the `trained-model` PVC is listed.
 
 
 ////
