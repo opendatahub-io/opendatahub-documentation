@@ -1,0 +1,14 @@
+:_module-type: PROCEDURE
+
+[id="model-metadata-bias-monitoring_{context}"]
+= Examining TrustyAI's model metadata
+
+We can also verify that TrustyAI sees the models via the `/info` endpoint:
+
+1. Find the route to the TrustyAI Service: `TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})`
+2. Query the `/info` endpoint: `curl -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/info | jq ".[0].data"`. This will output a json file (link:https://github.com/trustyai-explainability/odh-trustyai-demos/blob/main/2-BiasMonitoring/resources/info_response.json[sample provided here]) 
+containing the following information for each model:
+[disc]
+** The names, data types, and positions of fields in the input and output
+** The observed values that these fields take
+** The total number of input-output pairs observed
