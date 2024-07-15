@@ -16,22 +16,37 @@ endif::[]
 The resource quota specified in the cluster queue configuration might be insufficient, or the resource flavor might not yet be created.
 
 .Diagnosis
-The Ray cluster head pod or worker pods remain in a suspended state. 
-Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
-The `status.conditions.message` field provides the reason for the suspended state, as shown in the following example:
+The Ray cluster head pod or worker pods remain in a suspended state.
 
+.Resolution
+
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, select your project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, select your project from the *Project* list.
+endif::[]
+. Check the workload resource:
+.. Click *Search*, and from the *Resources* list, select *Workload*.
+.. Select the workload resource that is created with the Ray cluster resource, and click the *YAML* tab.
+.. Check the text in the `status.conditions.message` field, which provides the reason for the suspended state, as shown in the following example:
++
 [source,bash]
 ----
 status:
  conditions:
    - lastTransitionTime: '2024-05-29T13:05:09Z'
      message: 'couldn''t assign flavors to pod set small-group-jobtest12: insufficient quota for nvidia.com/gpu in flavor default-flavor in ClusterQueue'
-
 ----
+. Check the Ray cluster resource:
+.. Click *Search*, and from the *Resources* list, select *RayCluster*.
+.. Select the Ray cluster resource, and click the *YAML* tab.
+.. Check the text in the `status.conditions.message` field.
+. Check the cluster queue resource:
+.. Click *Search*, and from the *Resources* list, select *ClusterQueue*.
+.. Check your cluster queue configuration to ensure that the resources that you requested are within the limits defined for the project.
+.. Either reduce your requested resources, or contact your administrator to request more resources. 
 
-.Resolution
-Check your cluster queue configuration to ensure that the resources that you requested are within the limits defined for the project.
-Either reduce your requested resources, or contact your administrator to request more resources. 
 
 == My Ray cluster is in a failed state
 
@@ -44,8 +59,19 @@ When a Ray cluster is created, it initially enters a `failed` state.
 This failed state usually resolves after the reconciliation process completes and the Ray cluster pods are running.
 
 .Resolution
-If the failed state persists, open the *Events* tab for the pod, and review the pod events to identify the cause of the problem.
-If you cannot resolve the problem, contact your administrator to request assistance.
+If the failed state persists, complete the following steps:
+
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, select your project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, select your project from the *Project* list.
+endif::[]
+. Click *Search*, and from the *Resources* list, select *Pod*.
+. Click your pod name to open the pod details page.
+. Click the *Events* tab, and review the pod events to identify the cause of the problem.
+. If you cannot resolve the problem, contact your administrator to request assistance.
+
 
 == I see a *failed to call webhook* error message for the CodeFlare Operator
 
@@ -64,6 +90,7 @@ The CodeFlare Operator pod might not be running.
 
 .Resolution
 Contact your administrator to request assistance.
+
 
 == I see a *failed to call webhook* error message for Kueue
 
@@ -92,15 +119,27 @@ After you run the `cluster.up()` command, when you run either the `cluster.detai
 No pods are created.
 
 .Diagnosis
-Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
-The `status.conditions.message` field provides the reason for remaining in the `Starting` state.
-Similarly, check the `status.conditions.message` field for the `RayCluster` resource. 
+
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, select your project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, select your project from the *Project* list.
+endif::[]
+. Check the workload resource:
+.. Click *Search*, and from the *Resources* list, select *Workload*.
+.. Select the workload resource that is created with the Ray cluster resource, and click the *YAML* tab.
+.. Check the text in the `status.conditions.message` field, which provides the reason for remaining in the `Starting` state.
+. Check the Ray cluster resource:
+.. Click *Search*, and from the *Resources* list, select *RayCluster*.
+.. Select the Ray cluster resource, and click the *YAML* tab.
+.. Check the text in the `status.conditions.message` field.
 
 .Resolution
 If you cannot resolve the problem, contact your administrator to request assistance.
 
-== I see a *Default Local Queue ... not found* error message 
 
+== I see a *Default Local Queue ... not found* error message 
 
 .Problem
 After you run the `cluster.up()` command, the following error is shown:
@@ -132,7 +171,7 @@ local_queue="_<local_queue_name>_"
 
 * If no local queue exists, contact your administrator to request assistance.
 
- 
+
 == I see a *local_queue provided does not exist* error message
 
 .Problem
@@ -161,6 +200,7 @@ endif::[]
 If you do not specify a `namespace` value in the cluster configuration, the Ray cluster is created in the current project.
 
 * If no local queue exists, contact your administrator to request assistance.
+
 
 == I cannot create a Ray cluster or submit jobs
 
@@ -204,17 +244,6 @@ auth.login()
 ----
 
 
-== Kueue does not monitor my Ray cluster or PyTorch job
-
-.Problem
-Kueue does not monitor the Ray cluster, or PyTorch jobs, or other machine-learning frameworks.
-
-.Diagnosis
-The resources (for example,`RayCluster` resources and `PyTorchJob` resources) are not created.
-
-.Resolution
-Contact your administrator to request assistance.
-
 == My pod provisioned by Kueue is terminated before my image is pulled
 
 .Problem
@@ -223,7 +252,15 @@ By default, Kueue waits for 5 minutes.
 If the pod image is very large and is still being pulled after the 5-minute waiting period elapses, Kueue fails the workload and terminates the related pods.
 
 .Diagnosis
-Open the *Events* tab for the Ray head pod, and review the pod events to check whether the image pull completed successfully.
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, select your project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, select your project from the *Project* list.
+endif::[]
+. Click *Search*, and from the *Resources* list, select *Pod*.
+. Click the Ray head pod name to open the pod details page.
+. Click the *Events* tab, and review the pod events to check whether the image pull completed successfully.
 
 .Resolution
 If the pod takes more than 5 minutes to pull the image, contact your administrator to request assistance.

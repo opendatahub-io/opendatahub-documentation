@@ -30,9 +30,17 @@ status:
 ----
 
 .Resolution
-Verify that the resource flavor is created.
-Check the user's cluster queue configuration to ensure that the resources that they requested are within the limits defined for the project.
-If necessary, increase the resource quota. 
+. Check whether the resource flavor is created, as follows:
+ifdef::upstream,self-managed[]
+.. In the {openshift-platform} console, select the user's project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+..  In the OpenShift console, select the user's project from the *Project* list.
+endif::[]
+.. Click *Home -> Search*, and from the *Resources* list, select *ResourceFlavor*.
+.. If necessary, create the resource flavor.
+. Check the cluster queue configuration in the user's code, to ensure that the resources that they requested are within the limits defined for the project.
+. If necessary, increase the resource quota. 
 
 ifndef::upstream[]
 For information about configuring resource flavors and quotas, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
@@ -40,6 +48,7 @@ endif::[]
 ifdef::upstream[]
 For information about configuring resource flavors and quotas, see link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
 endif::[]
+
 
 == A user's Ray cluster is in a failed state
 
@@ -52,9 +61,20 @@ When a Ray cluster is created, it initially enters a `failed` state.
 This failed state usually resolves after the reconciliation process completes and the Ray cluster pods are running.
 
 .Resolution
-If the failed state persists, open the *Events* tab for the pod, and review the pod events to identify the cause of the problem.
-Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
+If the failed state persists, complete the following steps:
+
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, select the user's project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, select the user's project from the *Project* list.
+endif::[]
+. Click *Workloads -> Pods*.
+. Click the user's pod name to open the pod details page.
+. Click the *Events* tab, and review the pod events to identify the cause of the problem.
+. Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
 The `status.conditions.message` field provides the reason for the failed state.
+
 
 == A user receives a *failed to call webhook* error message for the CodeFlare Operator
 
@@ -72,6 +92,14 @@ HTTP response body: {"kind":"Status","apiVersion":"v1","metadata":{},"status":"F
 The CodeFlare Operator pod might not be running.
 
 .Resolution
+
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, select the user's project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, select the user's project from the *Project* list.
+endif::[]
+. Click *Workloads -> Pods*.
 . Verify that the CodeFlare Operator pod is running.
 If necessary, restart the CodeFlare Operator pod.
 
@@ -81,6 +109,7 @@ If necessary, restart the CodeFlare Operator pod.
 ----
 INFO	controller-runtime.webhook	  Serving webhook server	{"host": "", "port": 9443}
 ----
+
 
 == A user receives a *failed to call webhook* error message for Kueue
 
@@ -99,6 +128,14 @@ HTTP response body: {"kind":"Status","apiVersion":"v1","metadata":{},"status":"F
 The Kueue pod might not be running.
 
 .Resolution
+
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, select the user's project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, select the user's project from the *Project* list.
+endif::[]
+. Click *Workloads -> Pods*.
 . Verify that the Kueue pod is running.
 If necessary, restart the Kueue pod.
 
@@ -122,6 +159,14 @@ The `status.conditions.message` field provides the reason for remaining in the `
 Similarly, check the `status.conditions.message` field for the `RayCluster` resource. 
 
 .Resolution
+
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, select the user's project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, select the user's project from the *Project* list.
+endif::[]
+. Click *Workloads -> Pods*.
 . Verify that the KubeRay pod is running.
 If necessary, restart the KubeRay pod.
 
@@ -129,7 +174,6 @@ If necessary, restart the KubeRay pod.
 
 
 == A user receives a *Default Local Queue ... not found* error message
-
 
 .Problem
 After the user runs the `cluster.up()` command, the following error is shown:
@@ -247,23 +291,6 @@ auth.login()
 . Verify that the user has the correct permissions and is part of the `rhoai-users` group.
 
 
-== Kueue does not monitor the user's Ray cluster or PyTorch job
-
-.Problem
-Kueue does not monitor the user's Ray cluster, or PyTorch jobs, or other machine-learning frameworks.
-The resources (for example,`RayCluster` resources and `PyTorchJob` resources) are not created.
-
-.Diagnosis
-The logs for the Kueue pod indicate that some setup was skipped, as shown in the following example:
-
-[source,bash]
-----
-{"level":"info","ts":"2024-05-30T11:07:08.761740832Z","logger":"setup","caller":"jobframework/setup.go:69","msg":"No matching API in the server for job framework, skipped setup of controller and webhook","jobFrameworkName":"kubeflow.org/pytorchjob"}
-----
-
-.Resolution
-Restart the Kueue pod.
-
 == The user's pod provisioned by Kueue is terminated before the user's image is pulled
 
 .Problem
@@ -272,7 +299,16 @@ By default, Kueue waits for 5 minutes.
 If the pod image is very large and is still being pulled after the 5-minute waiting period elapses, Kueue fails the workload and terminates the related pods.
 
 .Diagnosis
-Open the *Events* tab for the Ray head pod, and review the pod events to check whether the image pull completed successfully.
+
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, select the user's project from the *Project* list. 
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, select the user's project from the *Project* list.
+endif::[]
+. Click *Workloads -> Pods*.
+. Click the user's pod name to open the pod details page.
+. Click the *Events* tab, and review the pod events to check whether the image pull completed successfully.
 
 .Resolution
 If the pod takes more than 5 minutes to pull the image, resolve the problem in one of the following ways:
