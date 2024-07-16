@@ -4,15 +4,15 @@
 = Enabling data science pipelines 2.0
 
 ifdef::upstream[]
-From {productname-long} version 2.10.0, data science pipelines are based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0]. data science pipelines 2.0 is enabled and deployed by default in {productname-short}.
+From {productname-long} version 2.10.0, data science pipelines are based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0]. Data science pipelines 2.0 is enabled and deployed by default in {productname-short}.
 endif::[]
 
 ifndef::upstream[]
 ifdef::self-managed[]
-From {productname-short} version 2.9, data science pipelines are based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0]. data science pipelines 2.0 is enabled and deployed by default in {productname-short}.
+From {productname-short} version 2.9, data science pipelines are based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0]. Data science pipelines 2.0 is enabled and deployed by default in {productname-short}.
 endif::[]
 ifdef::cloud-service[]
-Data science pipelines in {productname-short} are now based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0]. data science pipelines 2.0 is enabled and deployed by default in {productname-short}.
+Data science pipelines in {productname-short} are now based on link:https://www.kubeflow.org/docs/components/pipelines/v2/[KubeFlow Pipelines (KFP) version 2.0]. Data science pipelines 2.0 is enabled and deployed by default in {productname-short}.
 endif::[]
 endif::[]
 
@@ -102,7 +102,7 @@ To upgrade to data science pipelines 2.0, follow these steps:
 +
 If you upgrade to {productname-short} with data science pipelines 2.0 enabled, and there is an existing installation of Argo Workflows that is not installed by data science pipelines on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable data science pipelines or remove the separate installation of Argo Workflows from your cluster. The component upgrade will then complete automatically. 
 . Update your workbenches to use the notebook image version 2024.1 or later. For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#updating-a-project-workbench_projects[Updating a project workbench].
-. Manually migrate your pipelines from data science pipelines 1.0 to 2.0. For more information, see link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines#migrating_pipelines_from_data-science-pipelines_1_0_to_2_0[Migrating pipelines from data science pipelines 1.0 to 2.0].
+. Manually migrate your pipelines from data science pipelines 1.0 to 2.0. For more information, see link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines#migrating_pipelines_from_data_science_pipelines_1_0_to_2_0[Migrating pipelines from data science pipelines 1.0 to 2.0].
 endif::[]
 
 //RHOAI self-managed & disconnected
@@ -118,7 +118,7 @@ To upgrade to data science pipelines 2.0, follow these steps:
 +
 If you upgrade to {productname-short} 2.9 or later with data science pipelines enabled, and there is an existing installation of Argo Workflows that is not installed by data science pipelines on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable data science pipelines or remove the separate installation of Argo Workflows from your cluster. The component upgrade will then complete automatically.
 . Update your workbenches to use the notebook image version 2024.1 or later. For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#updating-a-project-workbench_projects[Updating a project workbench]. 
-. Manually migrate your pipelines from data science pipelines 1.0 to 2.0. For more information, see link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines#migrating_pipelines_from_data-science-pipelines_1_0_to_2_0[Migrating pipelines from data science pipelines 1.0 to 2.0].
+. Manually migrate your pipelines from data science pipelines 1.0 to 2.0. For more information, see link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines#migrating_pipelines_from_data_science_pipelines_1_0_to_2_0[Migrating pipelines from data science pipelines 1.0 to 2.0].
 endif::[]
 endif::[]
 
@@ -138,14 +138,14 @@ endif::[]
 +
 [NOTE]
 ====
-data science pipelines 2.0 does not use the `kfp-tekton` library. In most cases, you can replace usage of `kfp-tekton` with the `kfp` library.
+Data science pipelines 2.0 does not use the `kfp-tekton` library. In most cases, you can replace usage of `kfp-tekton` with the `kfp` library.
 ====
 . Import your updated pipelines to your new data science pipelines 2.0-based data science project.
 . (Optional) Remove your data science pipelines 1.0 pipeline server.
 
 [IMPORTANT]
 ====
-Data science pipelines 1.0 used the `kfp-tekton` Python libraryData science pipelines 2.0 does not use `kfp-tekton`. You can uninstall `kfp-tekton` when there are no remaining data science pipelines 1.0 pipeline servers in use on your cluster.
+Data science pipelines 1.0 used the `kfp-tekton` Python library. Data science pipelines 2.0 does not use `kfp-tekton`. You can uninstall `kfp-tekton` when there are no remaining data science pipelines 1.0 pipeline servers in use on your cluster.
 
 For Data science pipelines 2.0, use the latest version of the KFP SDK. For more information, see the link:https://kubeflow-pipelines.readthedocs.io[Kubeflow Pipelines SDK API Reference].
 ====
