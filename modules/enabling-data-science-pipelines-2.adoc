@@ -26,11 +26,11 @@ The `PipelineConf` class is deprecated, and there is no KFP 2.0 equivalent.
 Data science pipelines 2.0 contains an installation of Argo Workflows. {productname-short} does not support direct customer usage of this installation of Argo Workflows.
 
 ifdef::upstream[]
-To install or upgrade to {productname-short} 2.10.0 with data science pipelines, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
+To install or upgrade to {productname-short} 2.10.0 or later with data science pipelines, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 ifndef::upstream[]
 ifdef::self-managed[]
-To install or upgrade to {productname-short} 2.9 with data science pipelines, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
+To install or upgrade to {productname-short} 2.9 or later with data science pipelines, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 ifdef::cloud-service[]
 To install or upgrade to {productname-short} with data science pipelines 2.0, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
@@ -49,9 +49,9 @@ Argo Workflows resources that are created by {productname-short} have the follow
 == Installing {productname-short} with data science pipelines 2.0
 
 ifdef::upstream[]
-To install {productname-short} 2.10.0, ensure that there is no installation of Argo Workflows that is not installed by data science pipelines on your cluster, and follow the installation steps described in link:{odhdocshome}/installing-open-data-hub/[Installing {productname-short}].
+To install {productname-short} 2.10.0 or later with data science pipelines, ensure that there is no installation of Argo Workflows that is not installed by data science pipelines on your cluster, and follow the installation steps described in link:{odhdocshome}/installing-open-data-hub/[Installing {productname-short}].
 
-If you install {productname-short} 2.10.0 with the `datasciencepipelines` component while there is an existing installation of Argo Workflows that is not installed by data science pipelines on your cluster, data science pipelines will be disabled after the installation completes.
+If you install {productname-short} 2.10.0 or later with the `datasciencepipelines` component while there is an existing installation of Argo Workflows that is not installed by data science pipelines on your cluster, data science pipelines will be disabled after the installation completes.
 
 To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster. Data science pipelines will be enabled automatically. 
 endif::[]
@@ -68,7 +68,7 @@ endif::[]
 
 //RHOAI self-managed & disconnected
 ifdef::self-managed[]
-To install {productname-short} 2.9, ensure that there is no installation of Argo Workflows that is not installed by data science pipelines on your cluster, and follow the installation steps described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/index[Installing and uninstalling OpenShift AI Self-Managed], or for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment[Installing and uninstalling {productname-long} in a disconnected environment].
+To install {productname-short} 2.9 or later with data science pipelines, ensure that there is no installation of Argo Workflows that is not installed by data science pipelines on your cluster, and follow the installation steps described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/index[Installing and uninstalling OpenShift AI Self-Managed], or for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment[Installing and uninstalling {productname-long} in a disconnected environment].
 
 If there is an existing installation of Argo Workflows that is not installed by data science pipelines on your cluster, data science pipelines will be disabled after you install {productname-short} 2.9 or later.
 
@@ -128,7 +128,7 @@ ifndef::upstream[]
 {productname-short} does not automatically migrate existing data science pipelines 1.0 instances to 2.0. To use existing pipelines with data science pipelines 2.0, you must manually migrate them.
 
 ifdef::self-managed[]
-. On {productname-short} 2.9, create a new data science project.
+. On {productname-short} 2.9 or later, create a new data science project.
 endif::[]
 ifdef::cloud-service[]
 . On {productname-short} with data science pipelines 2.0, create a new data science project.
