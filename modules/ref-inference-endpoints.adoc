@@ -1,0 +1,53 @@
+:_module-type: REFERENCE
+
+[id='ref-supported-runtimes_{context}']
+= Supported model-serving runtimes
+
+[role='_abstract']
+{productname-short} includes several pre-installed model-serving runtimes. You can use pre-installed model-serving runtimes to start serving models without modifying or defining the runtime yourself.
+
+You can also add a custom runtime to support a model. 
+
+ifdef::upstream[]
+For help adding a custom runtime, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+endif::[]
+
+ifndef::upstream[]
+For help adding a custom runtime, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+endif::[]
+
+. Supported model-serving runtimes
+[cols="header"]
+|===
+| Name | Description | Exported model format | HTTP | gRPC | Default serving runtime version
+| Caikit Text Generation Inference Server (Caikit-TGIS) Serving Runtime for KServe <1>| A composite runtime for serving models in the Caikit format | Caikit Text Generation | Custom | Custom | Latest version of `caikit/caikit-nlp` listed in link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/pyproject.toml#L10-L12[`opendatahub-io/caikit-tgis-serving`^].  
+| Caikit Standalone ServingRuntime for KServe <2> | A runtime for serving models in the Caikit embeddings format for embeddings tasks | Caikit Embeddings | v1 | Custom | Latest version of `caikit/caikit-nlp` listed in link:https://github.com/opendatahub-io/caikit-nlp[`opendatahub-io/caikit-caikit-nlp`^].  
+| OpenVINO Model Server | A scalable, high-performance runtime for serving models that are optimized for Intel architectures | PyTorch, TensorFlow, OpenVINO IR, PaddlePaddle, MXNet, Caffe, Kaldi | v1 | v2 | RHOAI 2.11: 2024.1 
+| Text Generation Inference Server (TGIS) Standalone Serving Runtime for KServe <3> |  A runtime for serving TGI-enabled models |  | Custom | Custom |  link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/pyproject.toml#L10-L12[`opendatahub-io/caikit-tgis-serving`^].  
+| vLLM | A high-throughput and memory-efficient inference and serving runtime for large language models | link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^] | OpenAI API | OpenAI API| RHOAI 2.11: v0.5.0.post1-99-g8720c92e and v 0.5 .0.post1 
+|===
+
+ifdef::upstream[]
+
+. The composite Caikit-TGIS runtime is based on link:https://github.com/opendatahub-io/caikit[Caikit^] and link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]. To use this runtime, you must convert your models to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
+
+. The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/markstur/caikit-embeddings/blob/df9c9bc93187c0a17cb66b86d609f2cd102be97d/demo/server/bootstrap_model.py[Bootstrap Model^].
+
+. link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own custom runtime to support a TGI model. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+endif::[]
+
+ifndef::upstream[]
+
+
+
+. The composite Caikit-TGIS runtime is based on link:https://github.com/opendatahub-io/caikit[Caikit^] and link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]. To use this runtime, you must convert your models to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
+
+. The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/markstur/caikit-embeddings/blob/df9c9bc93187c0a17cb66b86d609f2cd102be97d/demo/server/bootstrap_model.py[Bootstrap Model^].
+
+. link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own custom runtime to support a TGI model. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+
+endif::[]
+
+//[role="_additional-resources"]
+//.Additional resources
+// link to endpoints and examples
