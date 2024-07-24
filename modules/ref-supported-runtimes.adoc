@@ -4,16 +4,20 @@
 = Inference endpoints
 
 [role='_abstract']
-Info about inference endpoints
+// Info about inference endpoints
 
-Caikit TGIS ServingRuntime for KServe:: 
+== Supported inference endpoints
+
+Caikit TGIS ServingRuntime for KServe::
+
 * `:443/api/v1/task/text-generation`
 * `:443/api/v1/task/server-streaming-text-generation`
 // * `:443/api/v1/task/text-classification`
 // * `:443/api/v1/task/token-classification`
 
 Caikit Standalone ServingRuntime for KServe::
-
++
+--
 .REST endpoints
 
 * `/api/v1/task/embedding`
@@ -22,7 +26,9 @@ Caikit Standalone ServingRuntime for KServe::
 * `/api/v1/task/sentence-similarity-tasks`
 * `/api/v1/task/rerank`
 * `/api/v1/task/rerank-tasks`
-
+--
++
+--
 .gRPC endpoints
 
 * `:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict`
@@ -31,15 +37,22 @@ Caikit Standalone ServingRuntime for KServe::
 * `:443 caikit.runtime.Nlp.NlpService/SentenceSimilarityTasksPredict`
 * `:443 caikit.runtime.Nlp.NlpService/RerankTaskPredict`
 * `:443 caikit.runtime.Nlp.NlpService/RerankTasksPredict`
-+
+--
+
 ifdef::upstream[]
-NOTE: By default, the Caikit Standalone Runtime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform]. 
+[NOTE]
+--
+By default, the Caikit Standalone Runtime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform]. 
+--
 
 An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
 endif::[]
 
 ifndef::upstream[]
-NOTE: By default, the Caikit Standalone Runtime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+[NOTE]
+--
+By default, the Caikit Standalone Runtime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+--
 
 An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
 endif::[]
@@ -49,7 +62,10 @@ TGIS Standalone ServingRuntime for KServe::
 * `:443 fmaas.GenerationService/Generate`
 * `:443 fmaas.GenerationService/GenerateStream`
 +
-NOTE: To query the endpoint for the TGIS standalone runtime, you must also download the files in the link:https://github.com/opendatahub-io/text-generation-inference/blob/main/proto[proto^] directory of the Open Data Hub `text-generation-inference` repository.
+[NOTE]
+--
+To query the endpoint for the TGIS standalone runtime, you must also download the files in the link:https://github.com/opendatahub-io/text-generation-inference/blob/main/proto[proto^] directory of the Open Data Hub `text-generation-inference` repository.
+--
 
 OpenVINO Model Server::
 
@@ -64,16 +80,26 @@ vLLM ServingRuntime for KServe::
 * `:443/v1/completions`
 * `:443/v1/embeddings`
 +
-NOTE: The vLLM runtime is compatible with the OpenAI REST API. For a list of models that the vLLM runtime supports, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
+[NOTE]
+--
+The vLLM runtime is compatible with the OpenAI REST API. For a list of models that the vLLM runtime supports, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
+--
 +
-NOTE: To use the embeddings inference endpoint in vLLM, you must use an embeddings model that the vLLM supports. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
+[NOTE]
+--
+To use the embeddings inference endpoint in vLLM, you must use an embeddings model that the vLLM supports. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
+--
 +
 
 As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
 
-.Example commands
 
-NOTE: If you enabled token authorization when deploying the model, add the `Authorization` header and specify a token value.
+== Example commands
+
+[NOTE]
+--
+If you enabled token authorization when deploying the model, add the `Authorization` header and specify a token value.
+--
 
 ifdef::upstream[]
 +
