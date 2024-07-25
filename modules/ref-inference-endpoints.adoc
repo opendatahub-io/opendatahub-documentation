@@ -1,50 +1,208 @@
+
 :_module-type: REFERENCE
 
-[id='ref-supported-runtimes_{context}']
-= Supported model-serving runtimes
+[id='ref-inference-endpoints_{context}']
+= Inference endpoints
 
 [role='_abstract']
-{productname-short} includes several pre-installed model-serving runtimes. You can use pre-installed model-serving runtimes to start serving models without modifying or defining the runtime yourself.
+These examples show how to use inference endpoints to query the model.
 
-You can also add a custom runtime to support a model. 
+Caikit TGIS ServingRuntime for KServe::
+
+* `:443/api/v1/task/text-generation`
+* `:443/api/v1/task/server-streaming-text-generation`
+// * `:443/api/v1/task/text-classification`
+// * `:443/api/v1/task/token-classification`
+
+Caikit Standalone ServingRuntime for KServe::
++
+--
+.REST endpoints
+
+* `/api/v1/task/embedding`
+* `/api/v1/task/embedding-tasks`
+* `/api/v1/task/sentence-similarity`
+* `/api/v1/task/sentence-similarity-tasks`
+* `/api/v1/task/rerank`
+* `/api/v1/task/rerank-tasks`
+--
++
+--
+.gRPC endpoints
+
+* `:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict`
+* `:443 caikit.runtime.Nlp.NlpService/EmbeddingTasksPredict`
+* `:443 caikit.runtime.Nlp.NlpService/SentenceSimilarityTaskPredict`
+* `:443 caikit.runtime.Nlp.NlpService/SentenceSimilarityTasksPredict`
+* `:443 caikit.runtime.Nlp.NlpService/RerankTaskPredict`
+* `:443 caikit.runtime.Nlp.NlpService/RerankTasksPredict`
+--
 
 ifdef::upstream[]
-For help adding a custom runtime, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+[NOTE]
+--
+By default, the Caikit Standalone Runtime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform]. 
+--
+
+An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
 endif::[]
 
 ifndef::upstream[]
-For help adding a custom runtime, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+[NOTE]
+--
+By default, the Caikit Standalone Runtime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+--
+
+An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
 endif::[]
 
-. Supported model-serving runtimes
-[cols="header"]
-|===
-| Name | Description | Exported model format | HTTP | gRPC | Default serving runtime version
-| Caikit Text Generation Inference Server (Caikit-TGIS) Serving Runtime for KServe <1>| A composite runtime for serving models in the Caikit format | Caikit Text Generation | Custom | Custom | Latest version of `caikit/caikit-nlp` listed in link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/pyproject.toml#L10-L12[`opendatahub-io/caikit-tgis-serving`^].  
-| Caikit Standalone ServingRuntime for KServe <2> | A runtime for serving models in the Caikit embeddings format for embeddings tasks | Caikit Embeddings | v1 | Custom | Latest version of `caikit/caikit-nlp` listed in link:https://github.com/opendatahub-io/caikit-nlp[`opendatahub-io/caikit-caikit-nlp`^].  
-| OpenVINO Model Server | A scalable, high-performance runtime for serving models that are optimized for Intel architectures | PyTorch, TensorFlow, OpenVINO IR, PaddlePaddle, MXNet, Caffe, Kaldi | v1 | v2 | {productname-short} 2.11: 2024.1 
-| Text Generation Inference Server (TGIS) Standalone Serving Runtime for KServe <3> |  A runtime for serving TGI-enabled models |  | Custom | Custom |  link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/pyproject.toml#L10-L12[`opendatahub-io/caikit-tgis-serving`^].  
-| vLLM | A high-throughput and memory-efficient inference and serving runtime for large language models | link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^] | OpenAI API | OpenAI API| {productname-short}: v0.5.0.post1-99-g8720c92e and v 0.5 .0.post1 
-|===
+TGIS Standalone ServingRuntime for KServe::
+
+* `:443 fmaas.GenerationService/Generate`
+* `:443 fmaas.GenerationService/GenerateStream`
++
+[NOTE]
+--
+To query the endpoint for the TGIS standalone runtime, you must also download the files in the link:https://github.com/opendatahub-io/text-generation-inference/blob/main/proto[proto^] directory of the Open Data Hub `text-generation-inference` repository.
+--
+
+OpenVINO Model Server::
+
+* `/v2/models/<model-name>/infer`
+
+vLLM ServingRuntime for KServe::
+
+* `:443/version`
+* `:443/docs`
+* `:443/v1/models`
+* `:443/v1/chat/completions`
+* `:443/v1/completions`
+* `:443/v1/embeddings`
++
+[NOTE]
+--
+The vLLM runtime is compatible with the OpenAI REST API. For a list of models that the vLLM runtime supports, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
+--
++
+[NOTE]
+--
+To use the embeddings inference endpoint in vLLM, you must use an embeddings model that the vLLM supports. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
+--
++
+
+As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
+
+
+== Example commands
+
+[NOTE]
+--
+If you enabled token authorization when deploying the model, add the `Authorization` header and specify a token value.
+--
 
 ifdef::upstream[]
 
-. The composite Caikit-TGIS runtime is based on link:https://github.com/opendatahub-io/caikit[Caikit^] and link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]. To use this runtime, you must convert your models to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
+--
+*Caikit TGIS ServingRuntime for KServe*
+[source]
+----
+curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' \
+https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation \
+-H 'Authorization: Bearer <token>'
+----
 
-. The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/markstur/caikit-embeddings/blob/df9c9bc93187c0a17cb66b86d609f2cd102be97d/demo/server/bootstrap_model.py[Bootstrap Model^].
+*Caikit Standalone ServingRuntime for KServe*
 
-. link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own custom runtime to support a TGI model. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+.REST
+[source]
+----
+curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>'
+----
+
+.gRPC
+[source]
+----
+grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict -H 'Authorization: Bearer <token>'
+----
+
+*TGIS Standalone ServingRuntime for KServe*
+[source]
+----
+grpcurl -proto text-generation-inference/proto/generation.proto -d \
+'{"requests": [{"text":"<text>"}]}' \
+-insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate \
+-H 'Authorization: Bearer <token>'
+----
+
+*OpenVINO Model Server*
+[source]
+----
+curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d \
+'{ "model_name": "<model_name>", \
+"inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' \
+-H 'Authorization: Bearer <token>'
+----
+
+*vLLM ServingRuntime for KServe*
+[source]
+----
+curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H \
+"Content-Type: application/json" -d '{ \
+"messages": [{ \
+"role": "<role>", \
+"content": "<content>" \
+}] -H 'Authorization: Bearer <token>'
+----
+--
+endif::[]
+ifdef::self-managed,cloud-service[]
+
++
+--
+*Caikit TGIS ServingRuntime for KServe*
+[source]
+----
+curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation -H 'Authorization: Bearer <token>'
+----
+
+*Caikit Standalone ServingRuntime for KServe*
+.REST
+[source]
+----
+curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>'
+----
+
+.gRPC
+[source]
+----
+grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict -H 'Authorization: Bearer <token>'
+----
+
+*TGIS Standalone ServingRuntime for KServe*
+[source]
+----
+grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'Authorization: Bearer <token>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate 
+----
+
+*OpenVINO Model Server*
+[source]
+----
+curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'
+----
+
+*vLLM ServingRuntime for KServe*
+[source]
+----
+curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "messages": [{ "role": "<role>", "content": "<content>" }] -H 'Authorization: Bearer <token>'
+----
+--
 endif::[]
 
-ifndef::upstream[]
-
-. The composite Caikit-TGIS runtime is based on link:https://github.com/opendatahub-io/caikit[Caikit^] and link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]. To use this runtime, you must convert your models to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
-
-. The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/markstur/caikit-embeddings/blob/df9c9bc93187c0a17cb66b86d609f2cd102be97d/demo/server/bootstrap_model.py[Bootstrap Model^].
-
-. link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own custom runtime to support a TGI model. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
-endif::[]
-
-[role="_additional-resources"]
-.Additional resources
-// link to ref-inference-endpoints
+[role='_additional-resources']
+== Additional resources
+* link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]
+* link:https://caikit.readthedocs.io/en/latest/autoapi/caikit/index.html[Caikit API documentation^]
+* link:https://github.com/markstur/caikit-embeddings[Caikit Text Embedding GitHub project^]
+* link:https://docs.openvino.ai/2023.3/ovms_docs_rest_api_kfs.html[OpenVINO KServe-compatible REST API documentation^]
+* link:https://platform.openai.com/docs/api-reference/introduction[OpenAI API documentation]
+* link:modules/ref-inference-endpoints.adoc[Inference endpoints]
