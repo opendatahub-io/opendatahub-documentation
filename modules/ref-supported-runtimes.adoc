@@ -96,8 +96,6 @@ As indicated by the paths shown, the single-model serving platform uses the HTTP
 
 == Example commands
 
-These examples show how to use inference endpoints to query the model.
-
 [NOTE]
 --
 If you enabled token authorization when deploying the model, add the `Authorization` header and specify a token value.
@@ -107,8 +105,7 @@ ifdef::upstream[]
 +
 --
 *Caikit TGIS ServingRuntime for KServe*
-
-[source]
+[source,subs="+quotes"]
 ----
 curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' \
 https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation \
@@ -130,7 +127,6 @@ grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <infere
 ----
 
 *TGIS Standalone ServingRuntime for KServe*
-
 [source]
 ----
 grpcurl -proto text-generation-inference/proto/generation.proto -d \
@@ -140,7 +136,6 @@ grpcurl -proto text-generation-inference/proto/generation.proto -d \
 ----
 
 *OpenVINO Model Server*
-
 [source]
 ----
 curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d \
@@ -150,7 +145,6 @@ curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d \
 ----
 
 *vLLM ServingRuntime for KServe*
-
 [source]
 ----
 curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H \
@@ -167,69 +161,46 @@ ifdef::self-managed,cloud-service[]
 +
 --
 *Caikit TGIS ServingRuntime for KServe*
-
 [source]
 ----
-curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' \
-https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation \
--H 'Authorization: Bearer <token>'
+curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation -H 'Authorization: Bearer <token>'
 ----
 
 *Caikit Standalone ServingRuntime for KServe*
-
 .REST
 [source]
 ----
-curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", \
-"model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding \
--H 'Authorization: Bearer <token>'
+curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>'
 ----
 
 .gRPC
 [source]
 ----
-grpcurl -insecure -d '{"text": "<text>"}' -H \
-\"mm-model-id:<model_id>\" <inference_endpoint_url>:443 \
-caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict \
--H 'Authorization: Bearer <token>'
+grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict -H 'Authorization: Bearer <token>'
 ----
 
 *TGIS Standalone ServingRuntime for KServe*
-
 [source]
 ----
-grpcurl -proto text-generation-inference/proto/generation.proto -d ' \
-{"requests": [{"text":"<text>"}]}' \
--H 'Authorization: Bearer <token>' \
--insecure <inference_endpoint_url>:443 \
-fmaas.GenerationService/Generate 
+grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'Authorization: Bearer <token>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate 
 ----
 
 *OpenVINO Model Server*
-
 [source]
 ----
-curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer \
- -d '{ "model_name": "<model_name>", "inputs": \
-[{ "name": "<name_of_model_input>", "shape": [<shape>],\
-"datatype": "<data_type>", "data": [<data>] }]}' \
--H 'Authorization: Bearer <token>'
+curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'
 ----
 
 *vLLM ServingRuntime for KServe*
-
 [source]
 ----
-curl -v https://<inference_endpoint_url>:443/v1/chat/completions \
--H "Content-Type: application/json" -d '{ "messages": \
-[{ "role": "<role>", "content": "<content>" }] \
--H 'Authorization: Bearer <token>'
+curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "messages": [{ "role": "<role>", "content": "<content>" }] -H 'Authorization: Bearer <token>'
 ----
 --
 endif::[]
 
 [role='_additional-resources']
-== Additional resources
+.Additional resources
 * link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]
 * link:https://caikit.readthedocs.io/en/latest/autoapi/caikit/index.html[Caikit API documentation^]
 * link:https://github.com/markstur/caikit-embeddings[Caikit Text Embedding GitHub project^]
