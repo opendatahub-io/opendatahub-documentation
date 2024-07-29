@@ -26,29 +26,12 @@ Manual installation:: If you have already created a `ServiceMeshControlPlane` or
 
 When you have installed KServe, you can use the {productname-short} dashboard to deploy models using pre-installed or custom model-serving runtimes. 
 
-// {productname-short} includes pre-installed runtimes for KServe. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models/ref-supported-runtimes[Supported runtimes].
-// Update link
- 
 ifdef::upstream[]
-[NOTE]
-==== 
-* link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own, custom runtime to support a TGI model. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
-
-* The composite Caikit-TGIS runtime is based on link:https://github.com/opendatahub-io/caikit[Caikit^] and link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]. To use this runtime, you must convert your models to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
-
-* The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/markstur/caikit-embeddings/blob/df9c9bc93187c0a17cb66b86d609f2cd102be97d/demo/server/bootstrap_model.py[Bootstrap Model^].
-====
+{productname-short} includes pre-installed runtimes for KServe. For more information, see link:{odhdocshome}/serving-models/#ref-supported-runtimes_serving-large-models[Supported runtimes].
 endif::[]
 
 ifndef::upstream[]
-[NOTE]
-==== 
-* link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own, custom runtime to support a TGI model. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
-
-* The composite Caikit-TGIS runtime is based on link:https://github.com/opendatahub-io/caikit[Caikit^] and link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]. To use this runtime, you must convert your models to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
-
-* The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/markstur/caikit-embeddings/blob/df9c9bc93187c0a17cb66b86d609f2cd102be97d/demo/server/bootstrap_model.py[Bootstrap Model^].
-====
+{productname-short} includes pre-installed runtimes for KServe. For more information, see link:{rhoaidocshome}{default-format-url}/serving-models/serving-large-models_serving-large-models#ref-supported-runtimes[Supported runtimes].
 endif::[]
 
 You can also configure monitoring for the single-model serving platform and use Prometheus to scrape the available metrics.
