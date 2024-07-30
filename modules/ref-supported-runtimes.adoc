@@ -16,18 +16,20 @@ ifndef::upstream[]
 For help adding a custom runtime, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
 
+.Model-serving runtimes
+
 |===
-| Name | Description | Exported model format | HTTP | gRPC | Default serving runtime version
+| Name | Description | Exported model format | Default serving runtime version
 
-| Caikit Text Generation Inference Server (Caikit-TGIS) Serving Runtime for KServe (1)| A composite runtime for serving models in the Caikit format | Caikit Text Generation | Custom | Custom | Latest version of `caikit/caikit-nlp` listed in link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/pyproject.toml#L10-L12[`opendatahub-io/caikit-tgis-serving`^].  
+| Caikit Text Generation Inference Server (Caikit-TGIS) Serving Runtime for KServe (1)| A composite runtime for serving models in the Caikit format | Caikit Text Generation | Latest version of `caikit/caikit-nlp` listed in link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/pyproject.toml#L10-L12[`opendatahub-io/caikit-tgis-serving`^]  
 
-| Caikit Standalone ServingRuntime for KServe (2) | A runtime for serving models in the Caikit embeddings format for embeddings tasks | Caikit Embeddings | v1 | Custom | Latest version of `caikit/caikit-nlp` listed in link:https://github.com/opendatahub-io/caikit-nlp[`opendatahub-io/caikit-caikit-nlp`^].  
+| Caikit Standalone ServingRuntime for KServe (2) | A runtime for serving models in the Caikit embeddings format for embeddings tasks | Caikit Embeddings | Latest version of `caikit/caikit-nlp` listed in link:https://github.com/opendatahub-io/caikit-nlp[`opendatahub-io/caikit-caikit-nlp`^]
 
-| OpenVINO Model Server | A scalable, high-performance runtime for serving models that are optimized for Intel architectures | PyTorch, TensorFlow, OpenVINO IR, PaddlePaddle, MXNet, Caffe, Kaldi | v1 | v2 | {productname-short} 2.11: 2024.1 
+| OpenVINO Model Server | A scalable, high-performance runtime for serving models that are optimized for Intel architectures | PyTorch, TensorFlow, OpenVINO IR, PaddlePaddle, MXNet, Caffe, Kaldi | {productname-short} 2.11: 2024.1 
 
-| Text Generation Inference Server (TGIS) Standalone Serving Runtime for KServe (3) |  A runtime for serving TGI-enabled models |  | Custom | Custom |  link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/pyproject.toml#L10-L12[`opendatahub-io/caikit-tgis-serving`^].  
+| Text Generation Inference Server (TGIS) Standalone Serving Runtime for KServe (3) |  A runtime for serving TGI-enabled models | PyTorch Model Formats | Latest version of link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/pyproject.toml#L10-L12[`opendatahub-io/caikit-tgis-serving`^]
 
-| vLLM | A high-throughput and memory-efficient inference and serving runtime for large language models | link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^] | OpenAI API | OpenAI API| {productname-short}: v0.5.0.post1-99-g8720c92e and v 0.5 .0.post1 
+| vLLM | A high-throughput and memory-efficient inference and serving runtime for large language models | link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^] | {productname-short}: v0.5.0.post1-99-g8720c92e and v 0.5 .0.post1 
 
 |===
 
@@ -48,6 +50,24 @@ ifndef::upstream[]
 
 . link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own custom runtime to support a TGI model. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
+
+.Deployment requirements
+
+|===
+| Name | Protocol | Model mesh support | Single node OpenShift support | Deployment mode | Hardware accelerators
+
+| Caikit Text Generation Inference Server (Caikit-TGIS) Serving Runtime for KServe | REST | No | Yes | Raw and serverless |
+
+| Caikit Standalone ServingRuntime for KServe | REST | No | Yes | Raw and serverless |
+
+| OpenVINO Model Server | REST | Yes | Yes | Raw and serverless | CPU (x86, ARM), GPU (OpenCL capable, integrated and discrete), AI accelerators (Intel NPU)
+
+| Text Generation Inference Server (TGIS) Standalone Serving Runtime for KServe (3) | gRPC | No | Yes | Raw and serverless |
+
+| vLLM | REST and gRPC| No | Yes | Raw and serverless | NVIDIA GPUs, AMD CPUs and GPUs, Intel CPUs and GPUs, PowerPC CPUs
+
+
+|===
 
 [role="_additional-resources"]
 .Additional resources
