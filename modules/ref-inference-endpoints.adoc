@@ -15,6 +15,8 @@ Caikit TGIS ServingRuntime for KServe::
 // * `:443/api/v1/task/token-classification`
 
 Caikit Standalone ServingRuntime for KServe::
+
+When serving multiple models, you can query `/info/models` or `:443 caikit.runtime.info.InfoService/GetModelsInfo` to view a list of served models.
 +
 --
 .REST endpoints
@@ -121,7 +123,7 @@ curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<
 .gRPC
 [source]
 ----
-grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict -H 'Authorization: Bearer <token>'
+grpcurl -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict -H 'Authorization: Bearer <token>'
 ----
 
 *TGIS Standalone ServingRuntime for KServe*
@@ -165,6 +167,7 @@ curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<infere
 ----
 
 *Caikit Standalone ServingRuntime for KServe*
+
 .REST
 [source]
 ----
