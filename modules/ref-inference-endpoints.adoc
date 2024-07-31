@@ -16,7 +16,7 @@ Caikit TGIS ServingRuntime for KServe::
 
 Caikit Standalone ServingRuntime for KServe::
 
-When serving multiple models, you can query `/info/models` or `:443 caikit.runtime.info.InfoService/GetModelsInfo` to view a list of served models.
+If you are serving multiple models, you can query `/info/models` or `:443 caikit.runtime.info.InfoService/GetModelsInfo` to view a list of served models.
 +
 --
 .REST endpoints
@@ -27,6 +27,9 @@ When serving multiple models, you can query `/info/models` or `:443 caikit.runti
 * `/api/v1/task/sentence-similarity-tasks`
 * `/api/v1/task/rerank`
 * `/api/v1/task/rerank-tasks`
+* `/info/models`
+* `/info/version`
+* `/info/runtime`
 --
 +
 --
@@ -38,6 +41,8 @@ When serving multiple models, you can query `/info/models` or `:443 caikit.runti
 * `:443 caikit.runtime.Nlp.NlpService/SentenceSimilarityTasksPredict`
 * `:443 caikit.runtime.Nlp.NlpService/RerankTaskPredict`
 * `:443 caikit.runtime.Nlp.NlpService/RerankTasksPredict`
+* `:443 caikit.runtime.info.InfoService/GetModelsInfo`
+* `:443 caikit.runtime.info.InfoService/GetRuntimeInfo`
 --
 
 ifdef::upstream[]
