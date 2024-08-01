@@ -19,17 +19,17 @@ endif::[]
 .Model-serving runtimes
 
 |===
-| Name | Description | Exported model format | Default serving runtime version
+| Name | Description | Exported model format 
 
-| Caikit Text Generation Inference Server (Caikit-TGIS) Serving Runtime for KServe (1)| A composite runtime for serving models in the Caikit format | Caikit Text Generation | Latest version of `caikit/caikit-nlp` listed in link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/pyproject.toml#L10-L12[`opendatahub-io/caikit-tgis-serving`^]  
+| Caikit Text Generation Inference Server (Caikit-TGIS) Serving Runtime for KServe (1)| A composite runtime for serving models in the Caikit format | Caikit Text Generation 
 
-| Caikit Standalone ServingRuntime for KServe (2) | A runtime for serving models in the Caikit embeddings format for embeddings tasks | Caikit Embeddings | Latest version of `caikit/caikit-nlp` listed in link:https://github.com/opendatahub-io/caikit-nlp[`opendatahub-io/caikit-caikit-nlp`^]
+| Caikit Standalone ServingRuntime for KServe (2) | A runtime for serving models in the Caikit embeddings format for embeddings tasks | Caikit Embeddings
 
-| OpenVINO Model Server | A scalable, high-performance runtime for serving models that are optimized for Intel architectures | PyTorch, TensorFlow, OpenVINO IR, PaddlePaddle, MXNet, Caffe, Kaldi | {productname-short} 2.11: 2024.1 
+| OpenVINO Model Server | A scalable, high-performance runtime for serving models that are optimized for Intel architectures | PyTorch, TensorFlow, OpenVINO IR, PaddlePaddle, MXNet, Caffe, Kaldi 
 
-| Text Generation Inference Server (TGIS) Standalone Serving Runtime for KServe (3) |  A runtime for serving TGI-enabled models | PyTorch Model Formats | Latest version of link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/pyproject.toml#L10-L12[`opendatahub-io/caikit-tgis-serving`^]
+| Text Generation Inference Server (TGIS) Standalone Serving Runtime for KServe (3) |  A runtime for serving TGI-enabled models | PyTorch Model Formats
 
-| vLLM | A high-throughput and memory-efficient inference and serving runtime for large language models | link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^] | {productname-short}: v0.5.0.post1-99-g8720c92e and v 0.5 .0.post1 
+| vLLM | A high-throughput and memory-efficient inference and serving runtime for large language models | link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
 
 |===
 
@@ -54,17 +54,17 @@ endif::[]
 .Deployment requirements
 
 |===
-| Name | Protocol | Model mesh support | Single node OpenShift support | Deployment mode
+| Name | Default protocol | Additonal protocol | Model mesh support | Single node OpenShift support | Deployment mode
 
-| Caikit Text Generation Inference Server (Caikit-TGIS) Serving Runtime for KServe | REST | No | Yes | Raw and serverless
+| Caikit Text Generation Inference Server (Caikit-TGIS) Serving Runtime for KServe | REST | gRPC | No | Yes | Raw and serverless
 
-| Caikit Standalone ServingRuntime for KServe | REST and gRPC | No | Yes | Raw and serverless 
+| Caikit Standalone ServingRuntime for KServe | REST | gRPC | No | Yes | Raw and serverless 
 
-| OpenVINO Model Server | REST | Yes | Yes | Raw and serverless 
+| OpenVINO Model Server | REST | None | Yes | Yes | Raw and serverless 
 
-| Text Generation Inference Server (TGIS) Standalone Serving Runtime for KServe (3) | gRPC | No | Yes | Raw and serverless
+| Text Generation Inference Server (TGIS) Standalone Serving Runtime for KServe (3) | gRPC | None | No | Yes | Raw and serverless
 
-| vLLM | REST | No | Yes | Raw and serverless 
+| vLLM | REST | None | No | Yes | Raw and serverless 
 
 |===
 
