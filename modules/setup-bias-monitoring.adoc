@@ -1,16 +1,19 @@
 :_module-type: PROCEDURE
 
 [id="setup-bias-monitoring_{context}"]
-= Before you begin
+= Preparing your cluster
 
-== Cluster setup
-. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:	
+== Setting up your cluster
+. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI:
+... In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
+... After you have logged in, click *Display token*.
+... Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
 +
-[source,subs="+quotes"]
+[source]
 ----
-$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+oc login --token=<token> --server=<openshift_cluster_url>
 ----
-. Create two projects, `opendatahub` and `model-namespace`. These names are arbitrary, but they will be used throughout the rest of this demo:
+. Create two projects, *opendatahub* and *model-namespace*. These names are arbitrary, but they will be used throughout the rest of this demo:
 +
 [source]
 ----
@@ -19,30 +22,38 @@ oc new-project model-namespace
 ----
 
 . Prepare the `model-namespace` for Open Data Hub's model serving: 
-
 +
 [source]
 ----
-oc label namespace model-namespace "modelmesh-enabled=true" --overwrite=true`
+oc label namespace model-namespace "modelmesh-enabled=true" --overwrite=true
 ----
 
 == Enabling user-workload-monitoring
 
 To get enable Open Data Hub's monitoring stack , user-workload-monitoring must be configured:
 
-. Enable user-workload-monitoring:
-[command]`oc apply -f resources/enable_uwm.yaml`
+. To enable user workload monitoring, run the following command from the directory containing the downloaded tutorial files (`odh-trustyai-demos-main`):
+
++
+[source]
+----
+oc apply -f 1-Installation/resources/enable_uwm.yaml
+----
 
 . Configure user-workload-monitoring to hold metric data for 15 days: 
-[command]`oc apply -f resources/uwm_configmap.yaml`
++
+[source]
+----
+oc apply -f 1-Installation/resources/uwm_configmap.yaml
+----
 
 Depending on how your cluster was created, you may need to enable a User Workload Monitoring setting from your cluster management UI (for example, on link:console.redhat.com[console.redhat.com])
 
-== Open Data Hub prerequisites
-[disc]
-** Install the community Authorino Operator. 
-** Install the Red Hat OpenShift Serverless operator.
-** Install the Red Hat OpenShift Service Mesh operator.
+== Installing Open Data Hub
+
+* Install the community Authorino Operator. 
+* Install the Red Hat OpenShift Serverless operator.
+* Install the Red Hat OpenShift Service Mesh operator.
 
 Follow the instructions in link:https://opendatahub.io/docs/installing-open-data-hub/[Installing Open Data Hub]. Afterwards, you should have an Open Data Hub installation, a TrustyAI Operator, and a `model-namespace` project containing an instance of the TrustyAI Service.
 
@@ -50,6 +61,7 @@ Follow the instructions in link:https://opendatahub.io/docs/installing-open-data
 
 [source]
 ----
-export TOKEN=$(oc whoami -t)`
+export TOKEN=$(oc whoami -t)
 ----
 
+This sets a variable (TOKEN) to use later. Note that this command does not return an output.

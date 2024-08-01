@@ -4,9 +4,9 @@
 = Checking model fairness
 
 To compute the model's cumulative fairness up to this point, we can check the `/metrics/group/fairness/spd` endpoint:
-
 [source]
-echo "=== MODEL ALPHA ==="
+----
+echo -e "=== MODEL ALPHA ==="
 curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/ \
      --header 'Content-Type: application/json' \
      --data "{
@@ -17,8 +17,8 @@ curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/me
                  \"outcomeName\": \"Will Default?\",
                  \"favorableOutcome\": 0,
                  \"batchSize\": 5000
-             }"
-echo "\n=== MODEL BETA ==="
+             }" | jq
+echo -e "\n\n=== MODEL BETA ==="
 curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd \
      --header 'Content-Type: application/json' \
      --data "{
@@ -29,45 +29,58 @@ curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/me
                  \"outcomeName\": \"Will Default?\",
                  \"favorableOutcome\": 0,
                  \"batchSize\": 5000
-             }"
+             }" | jq
+echo
+----
 
 The payload is structured as follows:
 
-[disc]
-** `modelId`: The name of the model to query
-** `protectedAttribute`: The name of the feature that distinguishes the groups that we are checking for fairness over.
-** `privilegedAttribute`: The value of the `protectedAttribute` that describes the suspected favored (positively biased) class.
-** `unprivilegedAttribute`: The value of the `protectedAttribute` the describes the suspected unfavored (negatively biased) class.
-** `outcomeName`: The name of the output that provides the output we are examining for fairness.
-** `favorableOutcome`: The value of the `outcomeName` output that describes the favorable or desired model prediction.
-** `batchSize`: The number of previous inferences to include in the calculation.
+* `modelId`: The name of the model to query
+* `protectedAttribute`: The name of the feature that distinguishes the groups that we are checking for fairness over.
+* `privilegedAttribute`: The value of the `protectedAttribute` that describes the suspected favored (positively biased) class.
+* `unprivilegedAttribute`: The value of the `protectedAttribute` that describes the suspected unfavored (negatively biased) class.
+* `outcomeName`: The name of the output that provides the output we are examining for fairness.
+* `favorableOutcome`: The value of the `outcomeName` output that describes the favorable or desired model prediction.
+* `batchSize`: The number of previous inferences to include in the calculation.
 
-These requests will return the following messages:
+These requests return the following messages (numbers may vary):
 
-== Model alpha 
+== Model Alpha
 [source]
+----
 {
-   "timestamp":"2023-10-24T12:06:04.586+00:00",
-   "type":"metric",
-   "value":-0.0029676404469311524,
-   "namedValues":null,
-   "specificDefinition":"The SPD of -0.002968 indicates that the likelihood of Group:Is Male-Identifying?=1.0 receiving Outcome:Will Default?=0 was -0.296764 percentage points lower than that of Group:Is Male-Identifying?=0.0.",
-   "name":"SPD",
-   "id":"d2707d5b-cae9-41aa-bcd3-d950176cbbaf",
-   "thresholds":{"lowerBound":-0.1,"upperBound":0.1,"outsideBounds":false}
+  "timestamp": "2024-07-25T16:26:50.412+00:00",
+  "type": "metric",
+  "value": 0.003056835834369387,
+  "namedValues": null,
+  "specificDefinition": "The SPD of 0.003057 indicates that the likelihood of Group:Is Male-Identifying?=[1.0] receiving Outcome:Will Default?=[0] was 0.305684 percentage points higher than that of Group:Is Male-Identifying?=[0.0].",
+  "name": "SPD",
+  "id": "542bd51e-dd2f-40f6-947f-c1c22bd71765",
+  "thresholds": {
+    "lowerBound": -0.1,
+    "upperBound": 0.1,
+    "outsideBounds": false
+  }
 }
+----
 
-== Model beta 
+== Model Beta
 [source]
+----
 {
-   "timestamp":"2023-10-24T12:06:04.930+00:00",
-   "type":"metric",
-   "value":0.027796371582978097,
-   "namedValues":null,
-   "specificDefinition":"The SPD of 0.027796 indicates that the likelihood of Group:Is Male-Identifying?=1.0 receiving Outcome:Will Default?=0 was 2.779637 percentage points higher than that of Group:Is Male-Identifying?=0.0.",
-   "name":"SPD",
-   "id":"21252b73-651b-4b09-b3af-ddc0be0352d8",
-   "thresholds":{"lowerBound":-0.1,"upperBound":0.1,"outsideBounds":false}
+  "timestamp": "2024-07-25T16:26:50.648+00:00",
+  "type": "metric",
+  "value": 0.029078518433627354,
+  "namedValues": null,
+  "specificDefinition": "The SPD of 0.029079 indicates that the likelihood of Group:Is Male-Identifying?=[1.0] receiving Outcome:Will Default?=[0] was 2.907852 percentage points higher than that of Group:Is Male-Identifying?=[0.0].",
+  "name": "SPD",
+  "id": "df292f06-9255-4158-8b02-4813a8777b7b",
+  "thresholds": {
+    "lowerBound": -0.1,
+    "upperBound": 0.1,
+    "outsideBounds": false
+  }
 }
+----
 
-The `specificDefinition` field is quite useful in understanding the real-world interpretation of these metric values. From these, we see that both model Alpha and Beta are quite fair over the `Is Male-Identifying` field, with the two groups' rates of positive outcomes only differing by -0.3% and 2.8% respectively.
+The `specificDefinition` field is important in understanding the real-world interpretation of these metric values. From these, you see that both model Alpha and Beta are fair over the `Is Male-Identifying` field, with the two groups' rates of positive outcomes only differing by -0.3% and 2.8% respectively.
