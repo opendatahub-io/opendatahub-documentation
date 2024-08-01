@@ -3,19 +3,26 @@
 [id="send-training-data-to-models-bias-monitoring_{context}"]
 = Sending training data to models
 
-Here, we'll pass all the training data through the models, such as to be able to compute baseline fairness values:
+In this section, you'll pass all the training data through the models to be able to compute baseline fairness values.
 
+. In a terminal window, run the following command from `2-BiasMonitoring`:
++
 [source]
-`for batch in 0 250 500 750 1000 1250 1500 1750 2000 2250; do
-  scripts/send_data_batch data/training/$batch.json
-done`
+----
+for batch in 0 250 500 750 1000 1250 1500 1750 2000 2250; do
+  2-BiasMonitoring/scripts/send_data_batch
+2-BiasMonitoring/data/training/$batch.json
+done
+----
 
-This will take a few minutes. The script will print out verification messages indicating whether TrustyAI is receiving the data, but we can also verify in the Cluster Metrics:
+This may take several minutes. The script prints out verification messages indicating whether TrustyAI is receiving the data, but you can also verify in the Cluster Metrics:
 
-1. Navigate to Observe -> Metrics in the OpenShift console.
-2. Set the time window to 5 minutes (top left) and the refresh interval to 15 seconds (top right)
-3. In the "Expression" field, enter `trustyai_model_observations_total` and hit "Run Queries". You should see both models listed, each reporting around 2250 observed inferences:
+. In the OpenShift web console, select *Observe* -> *Metrics*.
+. In the *Expression* field, enter `trustyai_model_observations_total` and hit *Run Queries*. You should see both models listed, each reporting around 2250 observed inferences:
+. Optional step (time range isn't displayed until you run queries):
+  * From the *Time range* list, select 5 minutes.
+  * From the *Refresh interval* list, select 15 seconds.
 
 image::images/observed_inferences.png[]
 
-This means that TrustyAI has catalogued 2250 inputs and outputs for each of the two models, more than enough to begin analysis.
+This means that TrustyAI has cataloged 2250 inputs and outputs for each of the two models, which is adequate to begin analysis.

@@ -2,22 +2,23 @@
 
 [id="results-bias-monitoring_{context}"]
 = Results
-Let's first look at our two models' fairness:
+
+First, look at the two models' fairness:
 
 image::images/final_spd.png[]
 
-Immediately, we notice that the two models have drastically different fairnesses over the real world data. Model Alpha (blue) remained within the "acceptably fair" range between -0.1 and 0.1, ending at around 0.09. However, Model Beta (yellow) plummeted out of the fair range, ending at -0.274, meaning that non-male-identifying applicants were 27 percent less likely to get a favorable outcome from the model than male-identifying applicants; clearly an unacceptable bias.
+The two models have drastically different fairnesses over the real world data. Model Alpha (blue) remained within the "acceptably fair" range between -0.1 and 0.1, ending around 0.09. However, Model Beta (yellow) plummeted out of the fair range, ending at -0.274, meaning that non-male-identifying applicants were 27 percent less likely to get a favorable outcome from the model than male-identifying applicants.
 
-We can investigate this further by examining our identity metrics, first looking at the inbound ratio of male-identifying to non-male-identifying applicants:
+You can investigate this further by examining your identity metrics, first looking at the inbound ratio of male-identifying to non-male-identifying applicants:
 
 image::images/final_male_ident.png[]
 
-We can immediately see that in our training data, the ratio between male/non-male was around 0.8, but in the real-world data, it quickly dropped to 0, meaning every single applicant was non-male. This is a strong indicator that our training data did not match our real-world data, which is very likely to indicate poor or biased model performance.
+In the training data, the ratio between male/non-male was around 0.8, but in the real-world data, it dropped to 0, meaning all applicants were non-male. This is a strong indicator that the training data did not match the real-world data, which is likely to indicate poor or biased model performance.
 
 Meanwhile, looking at the will-default to will-not-default ratio:
 
 image::images/final_default.png[]
 
-We can see that despite seeing only non-male applicants, Model Alpha (green) still provided varying outcomes to the various applicants, predicting "will-default" around 25% of the time. Model Beta (purple) predicted "will-default" 100% of the time: every single applicant was predicted to default on their loan. Again, this is a clear indicator that our model is performing poorly on the real-world data and/or has encoded a systematic bias from its training; it is predicting that every single non-male applicant will default.
+Despite seeing only non-male applicants, Model Alpha (green) still provided varying outcomes to the various applicants, predicting "will-default" around 25% of the time. Model Beta (purple) predicted "will-default" 100% of the time: all applicants were predicted to default on their loan. Again, this is an indicator that the model is performing poorly on the real-world data and/or has encoded a systematic bias from its training; it is predicting that every non-male applicant will default.
 
-These examples show exactly why monitoring bias in production is so important: models that are equally fair at training time may perform drastically differently over real-world data, with hidden biases only manifesting over real-world data. This means these biases are exposed to the public, being imposed upon whoever is subject to your models decisions, and therefore using TrustyAI to provide early warning of these biases can protect you from the damages that problematic models in production can do.
+These examples showcase why monitoring bias in production is so important: models that are equally fair at training time may perform drastically differently over real-world data, with hidden biases only manifesting over real-world data. Using TrustyAI to provide early warning of these biases can protect you from the damages of problematic models in production.
