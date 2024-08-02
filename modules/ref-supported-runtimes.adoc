@@ -1,0 +1,78 @@
+:_module-type: REFERENCE
+
+[id='supported-model-serving-runtimes_{context}']
+= Supported model-serving runtimes
+
+[role='_abstract']
+{productname-short} includes several preinstalled model-serving runtimes. You can use preinstalled model-serving runtimes to start serving models without modifying or defining the runtime yourself. You can also add a custom runtime to support a model. 
+
+ifdef::upstream[]
+For help adding a custom runtime, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+endif::[]
+
+ifndef::upstream[]
+For help adding a custom runtime, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+endif::[]
+
+.Model-serving runtimes
+
+|===
+| Name | Description | Exported model format 
+
+| Caikit Text Generation Inference Server (Caikit-TGIS) ServingRuntime for KServe (1)| A composite runtime for serving models in the Caikit format | Caikit Text Generation 
+
+| Caikit Standalone ServingRuntime for KServe (2) | A runtime for serving models in the Caikit embeddings format for embeddings tasks | Caikit Embeddings
+
+| OpenVINO Model Server | A scalable, high-performance runtime for serving models that are optimized for Intel architectures | PyTorch, TensorFlow, OpenVINO IR, PaddlePaddle, MXNet, Caffe, Kaldi 
+
+| Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe (3) |  A runtime for serving TGI-enabled models | PyTorch Model Formats
+
+| vLLM ServingRuntime for KServe | A high-throughput and memory-efficient inference and serving runtime for large language models | link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
+
+|===
+
+ifdef::upstream[]
+
+. The composite Caikit-TGIS runtime is based on link:https://github.com/opendatahub-io/caikit[Caikit^] and link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]. To use this runtime, you must convert your models to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
+
+. The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/markstur/caikit-embeddings/blob/df9c9bc93187c0a17cb66b86d609f2cd102be97d/demo/server/bootstrap_model.py[Bootstrap Model^].
+
+. link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. {org-name} will continue to develop the standalone TGIS runtime to support TGI models. If a model is incompatible in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own custom runtime to support a TGI model. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+endif::[]
+
+ifndef::upstream[]
+
+. The composite Caikit-TGIS runtime is based on link:https://github.com/opendatahub-io/caikit[Caikit^] and link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]. To use this runtime, you must convert your models to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
+
+. The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/markstur/caikit-embeddings/blob/df9c9bc93187c0a17cb66b86d609f2cd102be97d/demo/server/bootstrap_model.py[Bootstrap Model^].
+
+. link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. {org-name} will continue to develop the standalone TGIS runtime to support TGI models. If a model is incompatible in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own custom runtime to support a TGI model. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+endif::[]
+
+.Deployment requirements
+
+|===
+| Name | Default protocol | Additonal protocol | Model mesh support | Single node OpenShift support | Deployment mode
+
+| Caikit Text Generation Inference Server (Caikit-TGIS) ServingRuntime for KServe | REST | gRPC | No | Yes | Raw and serverless
+
+| Caikit Standalone ServingRuntime for KServe | REST | gRPC | No | Yes | Raw and serverless 
+
+| OpenVINO Model Server | REST | None | Yes | Yes | Raw and serverless 
+
+| Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe (3) | gRPC | None | No | Yes | Raw and serverless
+
+| vLLM ServingRuntime for KServe | REST | None | No | Yes | Raw and serverless 
+
+|===
+
+[role="_additional-resources"]
+.Additional resources
+ifdef::upstream[]
+* link:{odhdocshome}/serving-models/#inference-endpoints_serving-large-models[Inference endpoints]
+endif::[]
+
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/serving-models/serving-large-models_serving-large-models#inference-endpoints[Inference endpoints]
+endif::[]
+
