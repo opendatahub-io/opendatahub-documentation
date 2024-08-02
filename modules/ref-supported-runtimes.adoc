@@ -1,6 +1,6 @@
 :_module-type: REFERENCE
 
-[id='supported-runtimes_{context}']
+[id='supported-model-serving-runtimes_{context}']
 = Supported model-serving runtimes
 
 [role='_abstract']
@@ -21,15 +21,15 @@ endif::[]
 |===
 | Name | Description | Exported model format 
 
-| Caikit Text Generation Inference Server (Caikit-TGIS) Serving Runtime for KServe (1)| A composite runtime for serving models in the Caikit format | Caikit Text Generation 
+| Caikit Text Generation Inference Server (Caikit-TGIS) ServingRuntime for KServe (1)| A composite runtime for serving models in the Caikit format | Caikit Text Generation 
 
 | Caikit Standalone ServingRuntime for KServe (2) | A runtime for serving models in the Caikit embeddings format for embeddings tasks | Caikit Embeddings
 
 | OpenVINO Model Server | A scalable, high-performance runtime for serving models that are optimized for Intel architectures | PyTorch, TensorFlow, OpenVINO IR, PaddlePaddle, MXNet, Caffe, Kaldi 
 
-| Text Generation Inference Server (TGIS) Standalone Serving Runtime for KServe (3) |  A runtime for serving TGI-enabled models | PyTorch Model Formats
+| Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe (3) |  A runtime for serving TGI-enabled models | PyTorch Model Formats
 
-| vLLM | A high-throughput and memory-efficient inference and serving runtime for large language models | link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
+| vLLM ServingRuntime for KServe | A high-throughput and memory-efficient inference and serving runtime for large language models | link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
 
 |===
 
@@ -39,7 +39,7 @@ ifdef::upstream[]
 
 . The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/markstur/caikit-embeddings/blob/df9c9bc93187c0a17cb66b86d609f2cd102be97d/demo/server/bootstrap_model.py[Bootstrap Model^].
 
-. link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own custom runtime to support a TGI model. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+. link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. {org-name} will continue to develop the standalone TGIS runtime to support TGI models. If a model is incompatible in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own custom runtime to support a TGI model. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
 
 ifndef::upstream[]
@@ -48,7 +48,7 @@ ifndef::upstream[]
 
 . The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/markstur/caikit-embeddings/blob/df9c9bc93187c0a17cb66b86d609f2cd102be97d/demo/server/bootstrap_model.py[Bootstrap Model^].
 
-. link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own custom runtime to support a TGI model. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+. link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. {org-name} will continue to develop the standalone TGIS runtime to support TGI models. If a model is incompatible in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own custom runtime to support a TGI model. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
 
 .Deployment requirements
@@ -56,15 +56,15 @@ endif::[]
 |===
 | Name | Default protocol | Additonal protocol | Model mesh support | Single node OpenShift support | Deployment mode
 
-| Caikit Text Generation Inference Server (Caikit-TGIS) Serving Runtime for KServe | REST | gRPC | No | Yes | Raw and serverless
+| Caikit Text Generation Inference Server (Caikit-TGIS) ServingRuntime for KServe | REST | gRPC | No | Yes | Raw and serverless
 
 | Caikit Standalone ServingRuntime for KServe | REST | gRPC | No | Yes | Raw and serverless 
 
 | OpenVINO Model Server | REST | None | Yes | Yes | Raw and serverless 
 
-| Text Generation Inference Server (TGIS) Standalone Serving Runtime for KServe (3) | gRPC | None | No | Yes | Raw and serverless
+| Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe (3) | gRPC | None | No | Yes | Raw and serverless
 
-| vLLM | REST | None | No | Yes | Raw and serverless 
+| vLLM ServingRuntime for KServe | REST | None | No | Yes | Raw and serverless 
 
 |===
 
