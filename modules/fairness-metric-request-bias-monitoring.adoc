@@ -1,0 +1,36 @@
+:_module-type: PROCEDURE
+
+[id="fairness-metric-request-bias-monitoring_{context}"]
+= Scheduling a fairness metric request
+
+While the models are fair over the training data, you want to ensure that they remain fair over real-world inference data as well. To monitor this, you can schedule regular checks during deployment. This is done by sending the same data to the `/metrics/group/fairness/spd/request` endpoint at consistent intervals.
+[source]
+----
+echo -e "\n\n=== MODEL ALPHA ===\n"
+curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/request \
+     --header 'Content-Type: application/json' \
+     --data "{
+                 \"modelId\": \"demo-loan-nn-onnx-alpha\",
+                 \"protectedAttribute\": \"Is Male-Identifying?\",
+                 \"privilegedAttribute\": 1.0,
+                 \"unprivilegedAttribute\": 0.0,
+                 \"outcomeName\": \"Will Default?\",
+                 \"favorableOutcome\": 0,
+                 \"batchSize\": 5000
+             }"
+echo -e "\n\n=== MODEL BETA ===\n"
+curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/request \
+     --header 'Content-Type: application/json' \
+     --data "{
+                 \"modelId\": \"demo-loan-nn-onnx-beta\",
+                 \"protectedAttribute\": \"Is Male-Identifying?\",
+                 \"privilegedAttribute\": 1.0,
+                 \"unprivilegedAttribute\": 0.0,
+                 \"outcomeName\": \"Will Default?\",
+                 \"favorableOutcome\": 0,
+                 \"batchSize\": 5000
+             }"
+echo
+----
+
+These commands return the created request's IDs, which can later be used to delete these scheduled requests.
