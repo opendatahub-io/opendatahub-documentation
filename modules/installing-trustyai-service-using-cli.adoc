@@ -1,0 +1,118 @@
+:_module-type: PROCEDURE
+
+[id='installing-trustyai-service-using-cli_{context}']
+= Installing the TrustyAI Service by using the CLI
+
+[role='_abstract']
+The following procedure describes how to use the OpenShift command-line interface (CLI) to install an instance of the TrustyAI service.
+
+.Prerequisites
+
+* You have configured monitoring for the model serving platform, as described in xref:configuring-monitoring-for-the-multi-model-serving-platform_monitor[Configuring monitoring for the multi-model serving platform].
+
+[NOTE]
+====
+Model monitoring (the TrustyAI feature) is supported only on a _multi-model serving platform_ that is based on the ModelMesh component. It is not supported on a _single-model serving platform_ that is based on the KServe component.
+====
+
+* You have enabled the TrustyAI component, as described in xref:enabling-trustyai-component_monitor[Enabling the TrustyAI component].
+
+ifndef::upstream[]
+* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+
+
+ifndef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. 
+
+* The data scientist has created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project], that contains (or will contain) the models that the data scientist wants to monitor.  
+endif::[]
+
+ifdef::upstream[]
+* If you are using specialized {productname-short} groups, you are part of the administrator group (for example, {odh-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. 
+
+* The data scientist has created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project], that contains (or will contain) the models that the data scientist wants to monitor.  
+endif::[]
+
+.Procedure
+. Open a new terminal window.
+. Follow these steps to log in to your {openshift-platform} cluster as a cluster administrator:
+.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*. 
+.. After you have logged in, click *Display token*.
+.. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
+----
+
+. Navigate to the data science project that contains (or will contain) the models that the data scientist wants to monitor. 
++
+----
+oc project <project-name>
+----
++
+For example:
++
+----
+oc project mydsproject
+----
+
+. Create a `TrustyAIService` custom resource (CR) file, for example `trustyai_crd.yaml`: 
++
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: TrustyAIService
+metadata:
+  name: trustyai-service <1>
+spec:
+  storage:
+	  format: "PVC" <2>
+	  folder: "/inputs" <3>
+	  size: "1Gi" <4>
+  data:
+	  filename: "data.csv" <5>
+	  format: "CSV" <6>
+  metrics:
+  	schedule: "5s" <7>
+  	batchSize: 5000 # Optional, default is 5000 <8>
+----
++
+<1> The name of the TrustyAI service instance.
+<2> The storage format for the data. Currently, only persistent volume control (PVC) format is supported.
+<3> The location within the PVC where you want to store the data.
+<4> The size of the PVC to request.
+<5> The suffix for the stored data files.
+<6> The format of the data. Currently, only comma-separated value (CSV) format is supported.
+<7> The interval at which to calculate the metrics. The default is 5s. The duration is specified with the ISO-8601 format. For example, `5s` for 5 seconds, `5m` for 5 minutes, and `5h` for 5 hours.
+<8> The observation's historical window size to use for metrics calculation. The default is `5000` (that is, the metrics are calculated by using the latest 5000 inferences).
+
+. Add the TrustyAI service's CR to your project:
++
+----
+oc apply -f trustyai_crd.yaml
+----
++
+This command returns output similar to the following:
++
+----
+trusty-service created
+----
+
+
+.Verification
+
+Use this command to verify that you installed the TrustyAI Service:
+
+----
+oc get pods | grep trustyai 
+----
+
+You should see a response similar to the following:
+
+----
+trustyai-service-5d45b5884f-96h5z             1/1     Running
+----
