@@ -3,8 +3,7 @@
 [id="results-bias-monitoring_{context}"]
 = Results
 
-First, look at the two models' fairness:
-
+== Model fairness
 image::images/final_spd.png[]
 
 The two models have drastically different fairnesses over the real world data. Model Alpha (blue) remained within the "acceptably fair" range between -0.1 and 0.1, ending around 0.09. However, Model Beta (yellow) plummeted out of the fair range, ending at -0.274, meaning that non-male-identifying applicants were 27 percent less likely to get a favorable outcome from the model than male-identifying applicants.
@@ -15,7 +14,7 @@ image::images/final_male_ident.png[]
 
 In the training data, the ratio between male/non-male was around 0.8, but in the real-world data, it dropped to 0, meaning all applicants were non-male. This is a strong indicator that the training data did not match the real-world data, which is likely to indicate poor or biased model performance.
 
-Meanwhile, looking at the will-default to will-not-default ratio:
+== Will-default to will-not-default ratio
 
 image::images/final_default.png[]
 

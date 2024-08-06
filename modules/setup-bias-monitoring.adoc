@@ -1,9 +1,16 @@
 :_module-type: PROCEDURE
 
 [id="setup-bias-monitoring_{context}"]
-= Preparing your cluster
+= Before you begin
 
-== Setting up your cluster
+== Downloading tutorial files
+. Go to https://github.com/trustyai-explainability/odh-trustyai-demos/tree/main.
+. Click the *Code* button and then click *Download ZIP* to download the repository.
+. Extract the downloaded repository files.
+
+== Enabling user-workload-monitoring
+To get enable Open Data Hub’s monitoring stack, you must enable monitoring for user-defined projects.
+
 . In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI:
 ... In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
 ... After you have logged in, click *Display token*.
@@ -13,27 +20,8 @@
 ----
 oc login --token=<token> --server=<openshift_cluster_url>
 ----
-. Create two projects, *opendatahub* and *model-namespace*. These names are arbitrary, but they will be used throughout the rest of this demo:
-+
-[source]
-----
-oc new-project opendatahub
-oc new-project model-namespace
-----
-
-. Prepare the `model-namespace` for Open Data Hub's model serving: 
-+
-[source]
-----
-oc label namespace model-namespace "modelmesh-enabled=true" --overwrite=true
-----
-
-== Enabling user-workload-monitoring
-
-To get enable Open Data Hub's monitoring stack , user-workload-monitoring must be configured:
 
 . To enable user workload monitoring, run the following command from the directory containing the downloaded tutorial files (`odh-trustyai-demos-main`):
-
 +
 [source]
 ----
@@ -47,15 +35,43 @@ oc apply -f 1-Installation/resources/enable_uwm.yaml
 oc apply -f 1-Installation/resources/uwm_configmap.yaml
 ----
 
-Depending on how your cluster was created, you may need to enable a User Workload Monitoring setting from your cluster management UI (for example, on link:console.redhat.com[console.redhat.com])
+Depending on how your cluster was created, you may need to enable a User Workload Monitoring setting from your {openshift-platform} (for example, on link:console.redhat.com[console.redhat.com]).
 
-== Installing Open Data Hub
+== Enabling the TrustyAI component
 
-* Install the community Authorino Operator. 
-* Install the Red Hat OpenShift Serverless operator.
-* Install the Red Hat OpenShift Service Mesh operator.
+If you don’t already have an instance of {productname-long}, follow the steps in link:{odhdocshome}/installing-open-data-hub/#installing-odh-v2_installv2[Installing Open Data Hub]. After you have installed {productname-short}, you must enable the TrustyAI component in {productname-short}. 
 
-Follow the instructions in link:https://opendatahub.io/docs/installing-open-data-hub/[Installing Open Data Hub]. Afterwards, you should have an Open Data Hub installation, a TrustyAI Operator, and a `model-namespace` project containing an instance of the TrustyAI Service.
+. Log in to {openshift-platform} as a cluster administrator.
+. In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
+. Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
+. Click the *Data Science Cluster* tab.
+. Click the default instance name (for example, *default-dsc*) to open the instance details page.
+. Click the *YAML* tab to show the instance specifications.
+. In the `spec:components` section, set the `managementState` field for the `trustyai` component to `Managed`:
++
+----
+ trustyai:
+    managementState: Managed
+----
+. Click *Save*.
+
+
+== Setting up a project 
+. Create a new project named `model-namespace`. This name is arbitrary, but  will be used throughout the rest of this demo:
++
+[source]
+----
+oc new-project model-namespace
+----
+
+. Prepare the `model-namespace` for Open Data Hub's model serving: 
++
+[source]
+----
+oc label namespace model-namespace "modelmesh-enabled=true" --overwrite=true
+----
+
+== Authenticating the TrustyAI service
 
 ✏️ TrustyAI endpoints are authenticated via a Bearer token. To obtain this token, run the following command:
 
@@ -64,4 +80,4 @@ Follow the instructions in link:https://opendatahub.io/docs/installing-open-data
 export TOKEN=$(oc whoami -t)
 ----
 
-This sets a variable (TOKEN) to use later. Note that this command does not return an output.
+This sets a variable (TOKEN) to use later. 
