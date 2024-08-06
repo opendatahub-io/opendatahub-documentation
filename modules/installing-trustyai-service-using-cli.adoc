@@ -4,7 +4,7 @@
 = Installing the TrustyAI Service by using the CLI
 
 [role='_abstract']
-The following procedure describes how to use the OpenShift command-line interface (CLI) to install an instance of the TrustyAI service.
+You can use the OpenShift command-line interface (CLI) to install an instance of the TrustyAI service.
 
 .Prerequisites
 
@@ -12,29 +12,29 @@ The following procedure describes how to use the OpenShift command-line interfac
 
 [NOTE]
 ====
-Model monitoring (the TrustyAI feature) is supported only on a _multi-model serving platform_ that is based on the ModelMesh component. It is not supported on a _single-model serving platform_ that is based on the KServe component.
+Model monitoring with TrustyAI is only available on the ModelMesh-based _multi-model serving platform_. Model monitoring with TrustyAI is unavailable on the KServe-based _single-model serving platform_.
 ====
 
 * You have enabled the TrustyAI component, as described in xref:enabling-trustyai-component_monitor[Enabling the TrustyAI component].
 
 ifndef::upstream[]
-* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
+* If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+
 endif::[]
 ifdef::upstream[]
 * If you use specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
 
-
 ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. 
 
-* The data scientist has created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project], that contains (or will contain) the models that the data scientist wants to monitor.  
+* The data scientist has created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project], that contains the models that the data scientist wants to monitor.  
 endif::[]
 
 ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the administrator group (for example, {odh-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. 
 
-* The data scientist has created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project], that contains (or will contain) the models that the data scientist wants to monitor.  
+* The data scientist has created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project], that contains the models that the data scientist wants to monitor.  
 endif::[]
 
 .Procedure
@@ -49,7 +49,7 @@ endif::[]
 $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 ----
 
-. Navigate to the data science project that contains (or will contain) the models that the data scientist wants to monitor. 
+. Navigate to the data science project that contains the models that the data scientist wants to monitor. 
 +
 ----
 oc project <project-name>
@@ -82,13 +82,13 @@ spec:
 ----
 +
 <1> The name of the TrustyAI service instance.
-<2> The storage format for the data. Currently, only persistent volume control (PVC) format is supported.
+<2> The storage format for the data. Currently, only persistent volume claim (PVC) format is supported.
 <3> The location within the PVC where you want to store the data.
 <4> The size of the PVC to request.
 <5> The suffix for the stored data files.
 <6> The format of the data. Currently, only comma-separated value (CSV) format is supported.
-<7> The interval at which to calculate the metrics. The default is 5s. The duration is specified with the ISO-8601 format. For example, `5s` for 5 seconds, `5m` for 5 minutes, and `5h` for 5 hours.
-<8> The observation's historical window size to use for metrics calculation. The default is `5000` (that is, the metrics are calculated by using the latest 5000 inferences).
+<7> The interval at which to calculate the metrics. The default is `5s`. The duration is specified with the ISO-8601 format. For example, `5s` for 5 seconds, `5m` for 5 minutes, and `5h` for 5 hours.
+<8> The observation's historical window size to use for metrics calculation. The default is `5000`, which means that the metrics are calculated using the 5,000 latest inferences.
 
 . Add the TrustyAI service's CR to your project:
 +
@@ -105,7 +105,7 @@ trusty-service created
 
 .Verification
 
-Use this command to verify that you installed the TrustyAI Service:
+Verify that you installed the TrustyAI Service:
 
 ----
 oc get pods | grep trustyai 
