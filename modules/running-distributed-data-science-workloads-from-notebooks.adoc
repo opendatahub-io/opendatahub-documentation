@@ -68,14 +68,35 @@ The examples in this procedure refer to the JupyterLab integrated development en
 . Download the demo notebooks provided by the CodeFlare SDK.
 The demo notebooks provide guidelines for how to use the CodeFlare stack in your own notebooks.
 +
-To access the demo notebooks, clone the `codeflare-sdk` repository as follows:
+To access the demo notebooks, run the `codeflare_sdk.copy_demo_nbs()` function in a Jupyter notebook.
+The function copies the demo notebooks that are packaged with the currently installed version of the CodeFlare SDK, and clones them into the target location. 
++
+The `codeflare_sdk.copy_demo_nbs()` function accepts two arguments:
 
-.. In the JupyterLab interface, click *Git > Clone a Repository*.
-.. In the "Clone a repo" dialog, enter `https://github.com/project-codeflare/codeflare-sdk.git` and then click *Clone*.
-The *codeflare-sdk* repository is listed in the left navigation pane.
-. Locate the downloaded demo notebooks as follows:
-.. In the JupyterLab interface, in the left navigation pane, double-click *codeflare-sdk*.
-.. Double-click *demo-notebooks*, and then double-click *guided-demos*.
+* `dir: str = "./demo-notebooks"` specifies the target location for the cloned demo notebooks. 
+If the leading character is a forward slash (/), the path is absolute. 
+Otherwise, the path is relative to the current directory.
+The default value is `"./demo-notebooks"`.
+
+* `overwrite: bool = False` specifies whether the function should overwrite the contents of an existing directory.
+When this argument is set to `True`, the function overwrites your customizations in the original demo files.
+The default value is `False`.
+
+
++
+Examples:
+
++
+----
+codeflare_sdk.copy_demo_nbs("my-dir")
+codeflare_sdk.copy_demo_nbs("/absolute/path/to/target-dir")
+codeflare_sdk.copy_demo_nbs("my-dir", True)
+codeflare_sdk.copy_demo_nbs(dir="my-dir", overwrite=True)
+----
+
+. Locate the downloaded demo notebooks in the JupyterLab interface.
+In the left navigation pane, double-click *guided-demos*. 
+
 . Update each example demo notebook as follows:
 .. If not already specified, update the `import` section to import the `generate_cert` component:
 +
