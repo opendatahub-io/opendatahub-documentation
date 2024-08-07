@@ -1,0 +1,51 @@
+:_module-type: PROCEDURE
+
+[id='enabling-trustyai-component_{context}']
+= Enabling the TrustyAI component
+
+[role='_abstract']
+To allow your data scientists to use model monitoring, you must enable the TrustyAI component in {productname-short}.
+
+.Prerequisites
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+* You have access to the data science cluster.
+* You have installed {productname-long}.
+
+.Procedure
+. In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
+ifdef::self-managed,cloud-service[]
+. Search for the *Red Hat OpenShift AI* Operator, and then click the Operator name to open the Operator details page.
+endif::[]
+ifdef::upstream[]
+. Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
+endif::[]
+. Click the *Data Science Cluster* tab.
+. Click the default instance name (for example, *default-dsc*) to open the instance details page.
+. Click the *YAML* tab to show the instance specifications.
+. In the `spec:components` section, set the `managementState` field for the `trustyai` component to `Managed`:
++
+----
+ trustyai:
+    managementState: Managed
+----
+
+. Click *Save*.
+
+.Verification
+Check the status of the *trustyai-service-operator* pod as follows:
+
+ifdef::self-managed,cloud-service[]
+. In the {openshift-platform} console, from the *Project* list, select *redhat-ods-applications*.
+endif::[]
+ifdef::upstream[]
+. In the {openshift-platform} console, from the *Project* list, select *opendatahub*.
+endif::[]
+
+. Click *Workloads* -> *Deployments*.
+. Search for the *trustyai-service-operator-contoller-manager* deployment.
+Check the status as follows:
+.. Click the deployment name to open the deployment details page.
+.. Click the *Pods* tab.
+.. Check the pod status.
++
+When the status of the *trustyai-service-operator-controller-manager-_<pod-id>_* pod is *Running*, the pod is ready to use.
