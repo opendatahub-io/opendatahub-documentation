@@ -73,13 +73,13 @@ The function copies the demo notebooks that are packaged with the currently inst
 +
 The `codeflare_sdk.copy_demo_nbs()` function accepts two arguments:
 
-* `dir(str)` specifies the target location for the cloned demo notebooks. 
+* `dir: str = "./demo-notebooks"` specifies the target location for the cloned demo notebooks. 
 If the leading character is a forward slash (/), the path is absolute. 
 Otherwise, the path is relative to the current directory.
 The default value is `"./demo-notebooks"`.
 
-* `overwrite(bool)` allows the function to overwrite the contents of an existing directory.
-When this argument is set to `True`, the function overwrites any customizations that you made in the original demo files.
+* `overwrite: bool = False` specifies whether the function should overwrite the contents of an existing directory.
+When this argument is set to `True`, the function overwrites your customizations in the original demo files.
 The default value is `False`.
 
 
@@ -88,13 +88,10 @@ Examples:
 
 +
 ----
-codeflare_sdk.copy_demo_nbs("my-dir", True)
 codeflare_sdk.copy_demo_nbs("my-dir")
-codeflare_sdk.copy_demo_nbs(dir="my-dir")
-codeflare_sdk.copy_demo_nbs(overwrite=True)
-codeflare_sdk.copy_demo_nbs(dir="my-dir", overwrite=True)
-codeflare_sdk.copy_demo_nbs(overwrite=True, dir="my-dir")
 codeflare_sdk.copy_demo_nbs("/absolute/path/to/target-dir")
+codeflare_sdk.copy_demo_nbs("my-dir", True)
+codeflare_sdk.copy_demo_nbs(dir="my-dir", overwrite=True)
 ----
 
 . Locate the downloaded demo notebooks in the JupyterLab interface.
