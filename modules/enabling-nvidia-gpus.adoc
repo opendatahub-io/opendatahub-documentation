@@ -84,6 +84,12 @@ ifdef::cloud-service[]
 endif::[]
 * The reset *migration-gpu-status* instance is present in the *Instances* tab on the `AcceleratorProfile` custom resource definition (CRD) details page.
 
+[NOTE]
+====
+In {productname-short} {vernum}, {org-name} supports the use of accelerators within the same cluster only. 
+{org-name} does not support remote direct memory access (RDMA) between accelerators, or the use of accelerators across a network, for example, by using technology such as NVIDIA GPUDirect or NVLink.
+====
+
 //the following step applies to downstream only: self-managed (connected and disconnected) and cloud service
 ifndef::upstream[]
 After installing the NVIDIA GPU Operator, create an accelerator profile as described in link:{rhoaidocshome}{default-format-url}/working_with_accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
