@@ -1,0 +1,88 @@
+:_module-type: PROCEDURE
+
+[id="(running-a-ray-distributed-workload-using-a-custom-runtime-image)_{context}"]
+= Running a Ray distributed workload using a custom runtime image
+
+
+[role='_abstract']
+Learn how to build and push a custom Ray container image to your registry, so that you can run distributed workloads in OpenShift AI.
+
+.Prerequisites
+
+* You have logged in to {productname-long}.
+
+* You have Podman installed on your local environment.
+
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/configuring-the-distributed-workloads-components[Configuring distributed workloads components].
+
+* You have logged in to OpenShift with the cluster-admin role.
+
+* You have access to the data science cluster.
+
+* You have access to a Ray cluster image. For information about how to create a Ray cluster, see the Ray Clusters documentation.
+
+* You have access to the data sets and models that the distributed workload uses.
+
+* You have access to the Python dependencies for the distributed workload.
+
+* The resources are physically available in the cluster.
+
+* You have Admin access for the data science project.
+** If you created the project, you automatically have Admin access. 
+** If you did not create the project, your cluster administrator must give you Admin access.
+
+[NOTE]
+====
+These examples are provided for documentation purposes, on how to build custom container images for Distributed Workloads. These container examples are not supported and are not a part of OpenShift AI.
+====
+
+
+
+.Procedure
+. Expose the integrated container registry by using the `defaultRoute` parameter in the `configs.imageregistry.operator.openshift.io/cluster` resource and setting the route to true:
++
+[source, bash]
+----
+oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge
+----
+
+. Wait for the route to the container registry to be admitted:
++
+[source, bash]
+----
+oc wait -n openshift-image-registry route/default-route    –for=jsonpath='{.status.ingress[0].conditions[0].status}'=True
+----
+
+. Log into the integrated container registry with Podman:
+
++
+[source, bash]
+----
+podman login -u $(oc whoami) -p $(oc whoami -t) $(oc registry info)
+----
+
+. Push the image to the integrated container registry using the following commands:
++
+[source, bash]
+----
+podman tag ${IMG} $(oc registry info)/$(oc project -q)/${IMG}
+ podman push $(oc registry info)/$(oc project -q)/${IMG}
+----
+
+. Retrieve the image repository for the tag you want:
++
+[source, bash]
+----
+oc get is ${IMG} -o jsonpath='{.status.tags[?(@.tag=="<TAG>")].items[0].dockerImageReference}'
+----
+
+
+
+
+
+
+.Verification
+XYZ Here is a sentence about how to verify your process, for example the following:
+The notebooks run to completion without errors. In the notebooks, the output from the `cluster.status()` function or `cluster.details()` function indicates that the Ray cluster is `Active`.
+
+
