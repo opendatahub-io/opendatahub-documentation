@@ -1,16 +1,16 @@
 :_module-type: PROCEDURE
 
-[id="viewing-performance-metrics-for-model-server_{context}"]
+[id="viewing-performance-metrics-for-deployed-model_{context}"]
 = Viewing performance metrics for a deployed model
 
 [role='_abstract']
 
 You can monitor the following metrics for a specific model that is deployed on the single-model serving platform:
 
-* *Number of requests* - The number of HTTP requests that have failed or succeeded for a specific model.
+* *Number of requests* - The number of requests that have failed or succeeded for a specific model.
 * *Average response time (ms)* - The average time it takes a specific model to respond to requests.
-* *CPU utilization (%)* - The percentage of the CPU's capacity that is currently being used by a specific model.
-* *Memory utilization (%)* - The percentage of the system's memory that is currently being used by a specific model.
+* *CPU utilization (%)* - The percentage of the CPU limit per model replica that is currently utilized by a specific model.
+* *Memory utilization (%)* - The percentage of the memory limit per model replica that is utilized by a specific model.
 
 You can specify a time range and a refresh interval for these metrics to help you determine, for example, when the peak usage hours are and how the model is performing at a specified time.
 
@@ -26,7 +26,7 @@ endif::[]
 ifdef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
-* The following dashboard configuration options are set to their default values as shown:
+* The following dashboard configuration options are set to the default values as shown:
 +
 [source]
 ----
