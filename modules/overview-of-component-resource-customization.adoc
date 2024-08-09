@@ -6,6 +6,13 @@
 [role='_abstract']
 You can customize deployment resources that are related to the Red Hat Openshift AI Operator, for example, replicas, and CPU and memory limits and requests. For resource customizations to persist without being overwritten by the Operator, the `opendatahub.io/managed: true` annotation must not be present in the YAML file for the component deployment. This annotation is absent by default.
 
+
+ifdef::upstream[]
+
+endif::[]
+ifndef::upstream[]
+
+endif::[]
 OAI: redhat-ods-applications
 ODH: openshift-operators
 
@@ -14,16 +21,16 @@ You can customize
 The following table shows the component resources that are available to customize:
 
 |===
-| Component | Deployment name  
+| Component | Deployment name | Customizable resources
 
-| codeflare | codeflare-operator-manager 
-| kserve | kserve-controller-manager 
-// | trustyai |
-| ray | kuberay-operator 
-| kueue | kueue-controller-manager  
-| workbenches | notebook-controller-deployment / odh-notebook-controller-manager (?)
-| dashboard | rhods-dashboard 
-| modelmeshserving | modelmesh-controller / odh-model-controller (?)
-| datasciencepipelines | data-science-pipelines-operator-controller-manager   
-| trainingoperator |    
+| codeflare | codeflare-operator-manager |
+| kserve | kserve-controller-manager |
+// | trustyai | |
+| ray | kuberay-operator | 
+| kueue | kueue-controller-manager  |
+| workbenches | notebook-controller-deployment / odh-notebook-controller-manager (?) |
+| dashboard | rhods-dashboard |
+| modelmeshserving | modelmesh-controller / odh-model-controller (?) |
+| datasciencepipelines | data-science-pipelines-operator-controller-manager  |
+| trainingoperator |   |
 |===

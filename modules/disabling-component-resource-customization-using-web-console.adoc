@@ -13,6 +13,12 @@ You can disable customization of component deployment resources by adding the `o
 .Procedure
 . Log in to the {openshift-platform} console as a cluster administrator.
 . In the *Administrator* perspective, click *Workloads* > *Deployments*.
+ifdef::upstream[]
+. From the *Project* drop-down list, select `openshift-operators`.
+endif::[]
+ifndef::upstream[]
+. From the *Project* drop-down list, select `redhat-ods-applications`.
+endif::[]
 . In the *Name* column, click the name of the deployment for the component that you want to disable resource customization for. For example, to disable customization of Codeflare resources, click *codeflare-operator-manager*.
 . On the *Deployment details* page that appears, click the *YAML* tab.
 . Find the `?` section.
