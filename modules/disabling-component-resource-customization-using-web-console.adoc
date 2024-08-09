@@ -1,0 +1,49 @@
+:_module-type: PROCEDURE
+
+[id="disabling-component-resource-customization-using-web-console_{context}"]
+= Disabling component resource customization by using the web console
+
+[role='_abstract']
+You can disable customization of component deployment resources by adding the `opendatahub.io/managed: true` annotation to the YAML file for the component deployment.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have admin access to the `DSCInitialization` resources in the {openshift-platform} cluster.
+
+.Procedure
+. Log in to the {openshift-platform} console as a cluster administrator.
+. In the *Administrator* perspective, click *Workloads* > *Deployments*.
+. In the *Name* column, click the name of the deployment for the component that you want to disable resource customization for. For example, to disable customization of Codeflare resources, click *codeflare-operator-manager*.
+. On the *Deployment details* page that appears, click the *YAML* tab.
+. Find the `?` section.
+. Update the value of the field that you want to customize. For example, to customize x for y, make the following changes:
++
+[source]
+----
+metadata:
+  annotations:
+    `opendatahub.io/managed: true`
+----
+. Click *Save*.
+. Click *Reload*.
+
+.Verification
+
+
+//[role='_additional-resources']
+//.Additional resources
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
