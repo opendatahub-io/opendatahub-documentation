@@ -3,12 +3,12 @@
 [id="introduction-bias-monitoring_{context}"]
 == Introduction
 
-Ensuring that your machine learning models are fair and unbiased is essential for building trust with your users. Although fairness can be assessed during model training, it is only in deployment that your models encounter real-world data. Even if your models are unbiased on training data, they can exhibit dangerous biases in real-world scenarios. Therefore, it is crucial to monitor your models for fairness during their real-world deployment.
+Ensuring that your machine learning models are fair and unbiased is essential for building trust with your users. Although you can assess fairness during model training, it is only in deployment that your models encounter real-world data. Even if your models are unbiased on training data, they can exhibit dangerous biases in real-world scenarios. Therefore, it is crucial to monitor your models for fairness during their real-world deployment.
 
 
 In this tutorial, you learn how to monitor models for bias. You will use two example models to complete the following tasks:
 
-* Deploy the models by using `{productname-short}` model serving
+* Deploy the models by using multi-model serving
 * Send training data to the models
 * Examine the metadata for the models
 * Check the fairness for the models
@@ -17,7 +17,7 @@ In this tutorial, you learn how to monitor models for bias. You will use two exa
 
 
 == About the example models
-We will take on the persona of a dev-ops engineer for a credit lender. Our data scientists have created two candidate neural networks to predict if a borrower will default on the loan they hold with us. Both models use the following information about the applicant to make their prediction:
+For this tutorial, your role is the dev-ops engineer for a credit lending company. The company's data scientists have created two candidate neural network models to predict whether a borrower will default on a loan. Both models make their predictions based on the following information from the borrower's application:
 
 * Number of Children
 * Total Income:
@@ -31,5 +31,5 @@ We will take on the persona of a dev-ops engineer for a credit lender. Our data 
 * Age (in days)
 * Length of Employment (in days)
 
-You want to verify that neither of the models are biased over the gender field of *Is Male-Identifying?*. To do this, you can monitor the models with Statistical Parity Difference (SPD) metric, which will report if the difference between how often male-identifying and non-male-identifying applicants are given favorable predictions (i.e., they are predicted to pay back their loans). Ideally, the SPD value would be 0, indicating that both groups have equal likelihood of getting a good outcome. However, an SPD value between -0.1 and 0.1 is also indicative of fairness, indicating that the two groups' rates of getting good outcomes only vary by +/-10%.
+Your task, as the dev-ops engineer, is to verify that the models are not biased towards the Is Male-Identifying? gender field. To complete this task, you can monitor the models with the Statistical Parity Difference (SPD) metric, which reports whether there is a difference between how often male-identifying and non-male-identifying applicants are given favorable predictions (that is, they are predicted to pay off their loans) Ideally, the SPD value would be 0, indicating that both groups have equal likelihood of getting a good outcome. However, an SPD value between -0.1 and 0.1 is also indicative of fairness, indicating that the two groups' rates of getting good outcomes only vary by +/-10%.
 
