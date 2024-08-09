@@ -3,7 +3,7 @@
 [id="check-model-fairness-bias-monitoring_{context}"]
 = Checking model fairness
 
-To compute the model's cumulative fairness up to this point, we can check the `/metrics/group/fairness/spd` endpoint:
+To compute the model's cumulative fairness up to this point, you can check the `/metrics/group/fairness/spd` endpoint:
 [source]
 ----
 echo -e "=== MODEL ALPHA ==="
@@ -36,10 +36,10 @@ echo
 The payload is structured as follows:
 
 * `modelId`: The name of the model to query
-* `protectedAttribute`: The name of the feature that distinguishes the groups that we are checking for fairness over.
+* `protectedAttribute`: The name of the feature that distinguishes the groups that you are checking for fairness over.
 * `privilegedAttribute`: The value of the `protectedAttribute` that describes the suspected favored (positively biased) class.
 * `unprivilegedAttribute`: The value of the `protectedAttribute` that describes the suspected unfavored (negatively biased) class.
-* `outcomeName`: The name of the output that provides the output we are examining for fairness.
+* `outcomeName`: The name of the output that provides the output you are examining for fairness.
 * `favorableOutcome`: The value of the `outcomeName` output that describes the favorable or desired model prediction.
 * `batchSize`: The number of previous inferences to include in the calculation.
 
