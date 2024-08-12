@@ -1,0 +1,75 @@
+:_module-type: PROCEDURE
+
+[id="labeling-data-fields_{context}"]
+= Labeling data fields
+
+[role='_abstract']
+After you send model training data to TrustyAI, you might want to apply a set of name mappings to your inputs and outputs so that the field names are meaningful and easier to work with.
+
+.Prerequisites
+
+* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project where the models are deployed.
+
+* You sent training data to TrustyAI as described in xref:sending-training-data-to-trustyai_monitor[Sending training data to TrustyAI].
+
+.Procedure
+
+. Open a new terminal window.
+. Follow these steps to log in to your {openshift-platform} cluster:
+.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*. 
+.. After you have logged in, click *Display token*.
+.. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
+----
+
+. In the OpenShift CLI, find the route to the TrustyAI service: 
++
+[source]
+----
+$ TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
+----
+
+. To examine TrustyAI's model metadata, query the `/info` endpoint:
++
+[source]
+----
+curl -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/info | jq ".[0].data"
+----
++
+This outputs a JSON file containing the following information for each model:
+
+* The names, data types, and positions of fields in the input and output.
+* The observed values that these fields take.
+* The total number of input-output pairs observed.
+
+. Use `POST /info/names` to apply name mappings to the fields, similar to the following example. 
++
+Change the `model-name`, `original-name`, and `Prediction` values to those used in your model. Change the `New name` values to the labels you want to use. 
++
+[source]
+----
+curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/info/names \
+  -H "Content-Type: application/json"   \
+  -d "{
+    \"modelId\": \"model-name\",
+    \"inputMapping\":
+      {
+        \"original-name-0\": \"New name 0\",
+        \"original-name-1\": \"New name 1\",
+        \"original-name-2\": \"New name 2\",
+        \"original-name-3\": \"New name 3\",
+      },
+    \"outputMapping\": {
+      \"predict-0\": \"Prediction 0\"
+    }
+  }"
+----
++
+For another example, see https://github.com/trustyai-explainability/odh-trustyai-demos/blob/main/2-BiasMonitoring/scripts/apply_name_mapping.sh.
+
+.Verification
+
+You should see a "Feature and output name mapping successfully applied" message.

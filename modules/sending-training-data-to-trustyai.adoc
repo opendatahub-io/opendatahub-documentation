@@ -1,0 +1,61 @@
+:_module-type: PROCEDURE
+
+[id="sending-training-data-to-trustyai{context}"]
+= Sending training data to TrustyAI
+
+[role='_abstract']
+To use TrustyAI for bias monitoring or data drift detection, you need to send training data for your model to TrustyAI.
+
+.Prerequisites
+
+* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project where the models are deployed.
+
+* You authenticated the TrustyAI service as described in xref:authenticating-trusty-ai-service_monitor[Authenticating the TrustyAI service].
+
+.Procedure
+
+. Set the `TRUSTY_ROUTE` variable to the external route for the TrustyAI service pod.
++
+----
+TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
+----
+
+ifdef::upstream[]
+. Get the inference endpoints for the deployed model, as described in link:{odhdocshome}/serving-models/#accessing-inference-endpoint-for-deployed-model_serving-large-models[Accessing the inference endpoint for a deployed model].
+endif::[]
+
+ifndef::upstream[]
+. Get the inference endpoints for the deployed model, as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#accessing-inference-endpoint-for-deployed-model_serving-large-models[Accessing the inference endpoint for a deployed model].
+endif::[]
+
+. Send data to this endpoint. For more information, see the link:https://kserve.github.io/website/0.8/modelserving/inference_api/#server-metadata-response-json-object[KServe v2 Inference Protocol documentation].
+
+.Verification
+Follow these steps to view cluster metrics and verify that TrustyAI is receiving data. 
+
+. Log in to the {openshift-platform} web console.
+. Switch to the *Developer* perspective.
+. In the left menu, click *Observe*.
+. On the *Metrics* page, click the *Select query* list and select *Custom query*.
+. In the *Expression* field, enter `trustyai_model_observations_total` and press Enter. Your model should be listed and reporting observed inferences.
+. Optional: Select a time range from the list above the graph. For example, select *5m*.
+
+////
+. In the OpenShift CLI, find the route to the TrustyAI service: 
++
+[source]
+----
+$ TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
+----
+
+. Query the `/info` endpoint: 
+[source]
+----
+curl -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/info | jq ".[0].data"
+----
++
+This outputs a JSON file containing the following information for each model:
+* The names, data types, and positions of fields in the input and output.
+* The observed values that these fields take.
+* The total number of input-output pairs observed.
+////
