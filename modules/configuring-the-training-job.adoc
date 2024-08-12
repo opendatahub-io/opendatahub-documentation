@@ -56,7 +56,7 @@ $ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: my-config-trainingjob
+  name: training-config
   namespace: kfto
 data:
   config.json: |
@@ -129,7 +129,7 @@ data:
 |===
 
 .. Save your changes in the `config_trainingjob.yaml` file.
-.. Apply the configuration to create the `my-config-trainingjob` object:
+.. Apply the configuration to create the `training-config` object:
 +
 [source]
 ----
@@ -210,7 +210,7 @@ endif::[]
 ifdef::cloud-service[]
 . In the OpenShift console, select your project from the *Project* list.
 endif::[]
-. Click *ConfigMaps* and verify that the `my-config-trainingjob` and `twitter-complaints` ConfigMaps are listed. 
+. Click *ConfigMaps* and verify that the `training-config` and `twitter-complaints` ConfigMaps are listed. 
 . Click *Search*. From the *Resources* list, select *PersistentVolumeClaim* and verify that the `trained-model` PVC is listed.
 
 
