@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
-[id="configuring-the-training-job_{context}"]
-= Configuring the training job
+[id="configuring-the-lora-training-job_{context}"]
+= Configuring the LoRA training job
 
 [role='_abstract']
-Before you can use a training job to tune a model, you must configure the training job. 
+Before you can use a LoRA training job to tune a model, you must configure the training job. 
 The example training job in this section is based on the IBM and Hugging Face tuning example provided link:https://github.com/foundation-model-stack/fms-hf-tuning/tree/main/examples/prompt_tuning_twitter_complaints[here]. 
 
 
@@ -36,6 +36,13 @@ endif::[]
 ** If you created the project, you automatically have Admin access. 
 ** If you did not create the project, your cluster administrator must give you Admin access.
 
+ifndef::upstream[]
+* If Kueue is not installed in your environment, you have configured the Training Operator permissions as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/tuning-a-model-by-using-the-training-operator_distributed-workloads/#configuring-the-training-operator-permissions-when-not-using-kueue_distributed-workloads[Configuring the Training Operator permissions when not using Kueue].
+endif::[]
+ifdef::upstream[]
+* If Kueue is not installed in your environment, you have configured the Training Operator permissions as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-the-training-operator-permissions-when-not-using-kueue_distributed-workloads[Configuring the Training Operator permissions when not using Kueue].
+endif::[]
+
 * You have access to a model.
 * You have access to data that you can use to train the model.
 
@@ -47,8 +54,8 @@ endif::[]
 $ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
 ----
 
-. Configure a training job, as follows:
-.. Create a YAML file named `config_trainingjob.yaml`.
+. Configure a LoRA training job, as follows:
+.. Create a YAML file named `lora-config.yaml`.
 .. Add the following `ConfigMap` object definition:
 +
 [source]
@@ -56,10 +63,10 @@ $ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: my-config-trainingjob
+  name: lora-config
   namespace: kfto
 data:
-  config.json: |
+  lora_config.json: |
     {
       "model_name_or_path": "bigscience/bloom-560m",
       "training_data_path": "/data/input/twitter_complaints.json",
@@ -70,11 +77,15 @@ data:
       "learning_rate": 1e-05,
       "response_template": "\n### Label:",
       "dataset_text_field": "output",
-      "use_flash_attn": false
+      "use_flash_attn": false,
+      "lora_r": 8,
+      "lora_alpha": 8,
+      "lora_dropout": 0.1,
+      "bias": "none",
+      "target_modules": ["q_proj", "v_proj"]
     }
 
 ----
-
 .. Edit the training job metadata as shown in the following table.
 +
 .Training job metadata
@@ -126,14 +137,28 @@ data:
 |`use_flash_attn`
 |Whether to use flash attention
 
-|===
+|`lora_r`
+|Rank of the low-rank decomposition
 
-.. Save your changes in the `config_trainingjob.yaml` file.
+|`lora_alpha`
+|Scale the low-rank matrices to control their influence on the model's adaptations
+
+|`lora_dropout`
+|Dropout rate applied to the LoRA layers, a regularization technique to prevent overfitting
+
+|`bias`
+|Whether to adapt bias terms in the model; setting the bias to “none” indicates that no bias terms will be adapted
+
+|`target_modules`
+|Names of the modules to apply LoRA to; includes ‘q_proj” and ‘v_prod’ by default
+
+|===
+.. Save your changes in the `lora-config.yaml` file.
 .. Apply the configuration to create the `my-config-trainingjob` object:
 +
 [source]
 ----
-$ oc apply -f config_trainingjob.yaml
+$ oc apply -f lora-config.yaml
 ----
 
 . Create the training data, as follows:
@@ -210,7 +235,7 @@ endif::[]
 ifdef::cloud-service[]
 . In the OpenShift console, select your project from the *Project* list.
 endif::[]
-. Click *ConfigMaps* and verify that the `my-config-trainingjob` and `twitter-complaints` ConfigMaps are listed. 
+. Click *ConfigMaps* and verify that the `lora-config` and `twitter-complaints` ConfigMaps are listed. 
 . Click *Search*. From the *Resources* list, select *PersistentVolumeClaim* and verify that the `trained-model` PVC is listed.
 
 

@@ -1,0 +1,25 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+
+[id="tuning-a-model-by-using-lora_{context}"]
+= Tuning a model by using LoRA
+
+[role='_abstract']
+In {productname}, you can use LoRa (Low-Rank Adaptation) to efficiently fine-tune large language models, such as Llama 3. 
+The integration optimizes computational requirements and reduces memory footprint, allowing fine-tuning on consumer-grade GPUs. 
+The solution combines PyTorch Fully Sharded Data Parallel (FSDP) and LoRa to enable scalable, cost-effective model training and inference, enhancing the flexibility and performance of AI workloads within OpenShift environments.
+
+To tune a model by using Low-Rank Adaptation (LoRA), complete the following tasks:
+
+* Configure the LoRA training job
+* Run the LoRA training job
+* Monitor the LoRA training job
+
+include::modules/configuring-the-lora-training-job.adoc[leveloffset=+1]
+include::modules/running-the-lora-training-job.adoc[leveloffset=+1]
+include::modules/monitoring-the-lora-training-job.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
