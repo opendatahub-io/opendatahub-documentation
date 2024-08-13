@@ -4,13 +4,13 @@
 = Re-enabling component resource customization
 
 [role='_abstract']
-You can re-enable customization of component deployment resources after manually disabling it, by removing the `opendatahub.io/managed:` annotation from the YAML file for a component deployment.
+You can re-enable customization of component deployment resources after manually disabling it.
 
 [IMPORTANT]
 ====
 Manually removing, or setting the `opendatahub.io/managed:` annotation to `false`, after adding it to the YAML file for a component deployment may cause unexpected cluster issues. 
 
-To remove the annotation from a deployment, use the following steps to delete the deployment and redeploy the controller pod for the component.
+To remove the annotation from a deployment, use the following steps to delete the deployment. The controller pod for the deployment will automatically redeploy with the default settings.
 ====
 
 .Prerequisites
