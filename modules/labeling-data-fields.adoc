@@ -29,7 +29,7 @@ $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 +
 [source]
 ----
-$ TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
+TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
 ----
 
 . To examine TrustyAI's model metadata, query the `/info` endpoint:

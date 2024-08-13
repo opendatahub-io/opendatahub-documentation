@@ -36,7 +36,7 @@ $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 +
 [source]
 ----
-$ TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
+TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
 ----
 
 .  Optional: To list all currently active requests for a metric, use `GET /metrics/{{metric}}/requests`. For example, to list all currently scheduled SPD metrics, type:
