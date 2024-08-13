@@ -12,6 +12,7 @@ endif::[]
 ifndef::upstream[]
 The following table shows the deployment names for each component in the `redhat-ods-applications` namespace:
 endif::[]
+
 |===
 | Component | Deployment names 
 
@@ -40,21 +41,3 @@ endif::[]
 | Data science pipelines | data-science-pipelines-operator-controller-manager
 | Training Operator | kubeflow-training-operator
 |===
-
-"
-//RHOAIENG-11024
-[id="known-issues_RHOAIENG-11024_{context}"]
-*https://issues.redhat.com/browse/RHOAIENG-11024[RHOAIENG-11024^] - *
---
-Manually removing the `opendatahub.io/managed` annotation from any component deployment YAML file might cause `resource` entry values in the file to be erased.
-
-Workaround::
-To remove the annotation from a deployment, use the following steps to delete the deployment. The controller pod for the component will redeploy automatically with default values.
-
-. Log in to the {openshift-platform} console as a cluster administrator.
-. In the Administrator perspective, click Workloads > Deployments.
-. From the Project drop-down list, select `redhat-ods-applications`.
-. In the Name column, click the name of the deployment for the component for which you want to remove the annotation.
-. Click the Options menu image:images/osd-ellipsis.png[Options menu].
-. Click Delete Deployment.
---
