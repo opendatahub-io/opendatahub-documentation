@@ -15,27 +15,30 @@ endif::[]
 |===
 | Component | Deployment names 
 
-| codeflare | codeflare-operator-manager 
-| kserve 
+| CodeFlare | codeflare-operator-manager 
+| KServe 
 a| * kserve-controller-manager 
 * odh-model-controller
-| trustyai | trustyai-service-operator-controller-manager
-| ray | kuberay-operator 
-| kueue | kueue-controller-manager
-| workbenches
+| TrustyAI | trustyai-service-operator-controller-manager
+| Ray | kuberay-operator 
+| Kueue | kueue-controller-manager
+| Workbenches
 a| * notebook-controller-deployment 
 * odh-notebook-controller-manager
 ifdef::upstream[]
-| dashboard | odh-dashboard
+| Dashboard | odh-dashboard
 endif::[]
 ifndef::upstream[]
-| dashboard | rhods-dashboard
+| Dashboard | rhods-dashboard
 endif::[]
-| modelmeshserving
+| Model serving
 a| * modelmesh-controller 
 * odh-model-controller
-| datasciencepipelines | data-science-pipelines-operator-controller-manager
-| trainingoperator | kubeflow-training-operator
+ifdef::upstream[]
+| Model registry | model-registry-operator-controller-manager
+endif::[]
+| Data science pipelines | data-science-pipelines-operator-controller-manager
+| Training Operator | kubeflow-training-operator
 |===
 
 "
