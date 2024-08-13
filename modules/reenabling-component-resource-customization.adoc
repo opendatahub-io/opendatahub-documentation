@@ -1,0 +1,38 @@
+:_module-type: PROCEDURE
+
+[id="reenabling-component-resource-customization_{context}"]
+= Re-enabling component resource customization
+
+[role='_abstract']
+You can re-enable customization of component deployment resources after manually disabling it, by removing the `opendatahub.io/managed: true` annotation from the YAML file for a component deployment.
+
+[IMPORTANT]
+====
+Manually removing, or setting the `opendatahub.io/managed: true` annotation to `false`, after adding it to the YAML file for a component deployment may cause unexpected cluster issues. 
+
+To remove the annotation from a deployment, use the following steps to delete the deployment and redeploy the controller pod for the component.
+====
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You are part of the administrator group for {productname-short} in {openshift-platform}.
+
+.Procedure
+
+. Log in to the {openshift-platform} console as a cluster administrator.
+. In the *Administrator* perspective, click *Workloads* > *Deployments*.
+ifdef::upstream[]
+. From the *Project* drop-down list, select `openshift-operators`.
+endif::[]
+ifndef::upstream[]
+. From the *Project* drop-down list, select `redhat-ods-applications`.
+endif::[]
+. In the *Name* column, click the name of the deployment for the component for which you want to remove the annotation. 
+. Click the Options menu image:images/osd-ellipsis.png[Options menu].
+. Click *Delete Deployment*.
+
+.Verification
+* Log in to {productname-short} and verify that your resource changes apply.
+
+//[role='_additional-resources']
+//.Additional resources
