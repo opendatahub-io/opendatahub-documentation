@@ -4,13 +4,22 @@
 = Sending training data to TrustyAI
 
 [role='_abstract']
-To use TrustyAI for bias monitoring or data drift detection, you need to send training data for your model to TrustyAI.
+To use TrustyAI for bias monitoring or data drift detection, you must send training data for your model to TrustyAI.
 
 .Prerequisites
 
-* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project where the models are deployed.
+* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project that contains the deployed models.
 
 * You authenticated the TrustyAI service as described in xref:authenticating-trusty-ai-service_monitor[Authenticating the TrustyAI service].
+
+* Your deployed model is registered with TrustyAI. 
++
+Verify that the TrustyAI service has registered your deployed model, as follows:
+
+. In the {openshift-platform} web console, navigate to *Workloads* → *Pods*. 
+. From the project list, select the project that contains your deployed model.
+. Select the pod for your serving platform (for example, `modelmesh-serving-ovms-1.x-xxxxx`).
+. On the *Environment* tab, verify that the `MM_PAYLOAD_PROCESSORS` environment variable is set.
 
 .Procedure
 
@@ -36,16 +45,16 @@ Follow these steps to view cluster metrics and verify that TrustyAI is receiving
 . Log in to the {openshift-platform} web console.
 . Switch to the *Developer* perspective.
 . In the left menu, click *Observe*.
-. On the *Metrics* page, click the *Select query* list and select *Custom query*.
+. On the *Metrics* page, click the *Select query* list and then select *Custom query*.
 . In the *Expression* field, enter `trustyai_model_observations_total` and press Enter. Your model should be listed and reporting observed inferences.
 . Optional: Select a time range from the list above the graph. For example, select *5m*.
 
 ////
-. In the OpenShift CLI, find the route to the TrustyAI service: 
+. In the OpenShift CLI, get the route to the TrustyAI service: 
 +
 [source]
 ----
-$ TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
+TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
 ----
 
 . Query the `/info` endpoint: 

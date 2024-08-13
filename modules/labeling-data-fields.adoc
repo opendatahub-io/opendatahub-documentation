@@ -8,7 +8,7 @@ After you send model training data to TrustyAI, you might want to apply a set of
 
 .Prerequisites
 
-* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project where the models are deployed.
+* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project that contains the deployed models.
 
 * You sent training data to TrustyAI as described in xref:sending-training-data-to-trustyai_monitor[Sending training data to TrustyAI].
 
@@ -25,7 +25,7 @@ After you send model training data to TrustyAI, you might want to apply a set of
 $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 ----
 
-. In the OpenShift CLI, find the route to the TrustyAI service: 
+. In the OpenShift CLI, get the route to the TrustyAI service: 
 +
 [source]
 ----
@@ -41,13 +41,13 @@ curl -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/info | jq ".[0].data"
 +
 This outputs a JSON file containing the following information for each model:
 
-* The names, data types, and positions of fields in the input and output.
-* The observed values that these fields take.
+* The names, data types, and positions of input fields and output fields.
+* The observed field values.
 * The total number of input-output pairs observed.
 
 . Use `POST /info/names` to apply name mappings to the fields, similar to the following example. 
 +
-Change the `model-name`, `original-name`, and `Prediction` values to those used in your model. Change the `New name` values to the labels you want to use. 
+Change the `model-name`, `original-name`, and `Prediction` values to those used in your model. Change the `New name` values to the labels that you want to use. 
 +
 [source]
 ----
@@ -72,4 +72,4 @@ For another example, see https://github.com/trustyai-explainability/odh-trustyai
 
 .Verification
 
-You should see a "Feature and output name mapping successfully applied" message.
+A "Feature and output name mapping successfully applied" message is displayed.
