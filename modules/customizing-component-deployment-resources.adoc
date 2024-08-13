@@ -33,15 +33,18 @@ For more information on the deployment names for each component, see link:{rhoai
 endif::[]
 . On the *Deployment details* page that appears, click the *YAML* tab.
 . Find the `.spec.template.spec.containers.resources` section.
-. Update the value of the resource that you want to customize. For example, to update the memory limit to 5Gi, make the following change:
+. Update the value of the resource that you want to customize. For example, to update the memory limit to 500Mi, make the following change:
 +
 [source]
 ----
 containers:
         - resources:
             limits:
-              cpu: '1'
-              memory: 5Gi
+                cpu: '2'
+                memory: 2Gi
+            requests:
+                cpu: '1'
+                memory: 1Gi
 ----
 . Click *Save*.
 . Click *Reload*.

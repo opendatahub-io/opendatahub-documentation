@@ -10,19 +10,12 @@ You can disable customization of component deployment resources, and restore def
 ====
 Manually removing or setting the `opendatahub.io/managed: true` annotation to `false` after manually adding it to the YAML file for a component deployment may cause unexpected cluster issues. 
 
-To remove the annotation from a deployment, use the following steps to delete the deployment and redeploy the controller pod for the component:
-
-. Log in to the {openshift-platform} console as a cluster administrator.
-. In the *Administrator* perspective, click *Workloads* > *Deployments*.
 ifdef::upstream[]
-. From the *Project* drop-down list, select `openshift-operators`.
+To remove the annotation from a deployment, use the described in link:{odhdocshome}/managing-resources/#reenabling-component-resource-customization_custom-resource[Re-enabling component resource customization].
 endif::[]
 ifndef::upstream[]
-. From the *Project* drop-down list, select `redhat-ods-applications`.
+To remove the annotation from a deployment, use the described in link:{rhoaidocshome}{default-format-url}/customizing-component-deployment-resources/reenabling-component-resource-customization_custom-resource[Re-enabling component resource customization].
 endif::[]
-. In the *Name* column, click the name of the deployment for the component for which you want to remove the annotation. 
-.Click the Options menu image:images/osd-ellipsis.png[Options menu].
-.Click *Delete Deployment*.
 ====
 
 .Prerequisites
@@ -58,13 +51,13 @@ endif::[]
 ----
 metadata:
   annotations:
-    `opendatahub.io/managed: true`
+     opendatahub.io/managed: true
 ----
 . Click *Save*.
 . Click *Reload*.
 
 .Verification
-* Log in to {productname-short} and verify that your resource changes apply.
+* The `opendatahub.io/managed: true` annotation appears in the YAML file for the component deployment.
 
 //[role='_additional-resources']
 //.Additional resources
