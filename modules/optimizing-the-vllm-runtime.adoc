@@ -3,7 +3,11 @@
 [id="optimizing-the-vllm-runtime_{context}"]
 = Optimizing the vLLM model-serving runtime 
 
-To optimize the *vLLM ServingRuntime for KServe* runtime for speculative decoding or multi-modal inferencing, you must add additional arguments in the vLLM model-serving runtime, as described in the following procedure.
+You can configure the *vLLM ServingRuntime for KServe* runtime to use speculative decoding, a parallel processing technique to optimize inferencing time for Large Language Models (LLMs).
+
+You can also configure the runtime to support inferencing for Vision-Language modals (VLMs). VLMs are a subset of multi-modal models that integrate both visual and textual data.
+
+To configure the *vLLM ServingRuntime for KServe* runtime for speculative decoding or multi-modal inferencing, you must add additional arguments in the vLLM model-serving runtime.
 
 [role='_abstract']
 
@@ -16,7 +20,7 @@ endif::[]
 ifndef::upstream[]
 * If you are using specialized {productname-short} groups, you are part of the admin group (for example, `oai-admin-group`) in OpenShift.
 endif::[]
-* To use the vLLM model-serving runtime for speculative decoding with a draft model, you have stored the original model and the speculative model in the same folder within your S3-compatible object storage.
+* If you are using the vLLM model-serving runtime for speculative decoding with a draft model, you have stored the original model and the speculative model in the same folder within your S3-compatible object storage.
 
 
 .Procedure
@@ -42,12 +46,12 @@ The embedded YAML editor opens and shows the contents of the custom model-servin
 containers:
   - args:
       - --speculative-model=[ngram]
-      - --num-speculative-tokens=[NUM_SPECULATIVE_TOKENS]
-      - --ngram-prompt-lookup-max=[NGRAM_PROMPT_LOOKUP_MAX]
+      - --num-speculative-tokens=<NUM_SPECULATIVE_TOKENS>
+      - --ngram-prompt-lookup-max=<NGRAM_PROMPT_LOOKUP_MAX>
       - --use-v2-block-manager
 ----
 + 
-Replace `[NUM_SPECULATIVE_TOKENS]` and `[NGRAM_PROMPT_LOOKUP_MAX]` with your own values.
+Replace `<NUM_SPECULATIVE_TOKENS>` and `<NGRAM_PROMPT_LOOKUP_MAX>` with your own values.
 . To configure the vLLM model-serving runtime for speculative decoding with a draft model, do the following:
 .. Remove the `--model` argument:
 +
@@ -66,12 +70,13 @@ containers:
       - --port=8080
       - --served-model-name={{.Name}}
       - --distributed-executor-backend=mp
+      - --model=/mnt/models/<path_to_original_model>
       - --speculative-model=/mnt/models/<path_to_speculative_model>
-      - --num-speculative-tokens=[NUM_SPECULATIVE_TOKENS]
+      - --num-speculative-tokens=<NUM_SPECULATIVE_TOKENS>
       - --use-v2-block-manager
 ----
 + 
-Replace the `[NUM_SPECULATIVE_TOKENS]` with the desired value and `<path_to_speculative_model>` with the path to the speculative model on your S3-compatible object storage.
+Replace `<path_to_speculative_model>` and `<path_to_original_model>` with the path ths to the speculative model and original model on your S3-compatible object storage.
 . To configure the vLLM model-serving runtime for multi-modal inferencing, add the following arguments as shown:
 +
 [source]
@@ -83,14 +88,14 @@ containers:
 +
 [NOTE]
 ====
-Ensure that you use the `--trust-remote-code` argument with models from trusted sources. 
+Only use the `--trust-remote-code` argument with models from trusted sources. 
 ====
-. Click Update.
+. Click *Update*.
 +
-The *Serving runtimes* page opens and shows the list of runtimes that are installed. Observe that the custom model-serving runtime you updated is shown.
+The *Serving runtimes* page opens and shows the list of runtimes that are installed. Confirm that the custom model-serving runtime you updated is shown.
 . For speculative decoding, you must additionally redeploy the `InferenceService` custom resource definition (CRD) for the vLLM model-serving runtime as follows:
 .. Log in to the OpenShift CLI.
-.. List the available inference services in your namespace.
+.. List the available inference services in your namespace:
 +
 [source]
 ----
@@ -104,14 +109,14 @@ Note the name of the `InferenceService` that needs to be re-deployed.
 oc get -n <namespace> isvc <inference-service-name> -o yaml > inferenceservice.yml
 ----
 Replace the placeholder values with your own.
-.. Delete the exisiting `InferenceService`:
+.. Delete the exisiting `InferenceService` CRD:
 +
 [source]
 ----
 oc delete -n <namespace> isvc <inference-service-name>
 ----
 Replace the placeholder values with your own.
-.. Deploy the modified `InferenceService` CRD using the YAML file that you saved.
+.. Deploy the modified `InferenceService` CRD using the YAML file that you saved:
 +
 [source]
 ----
@@ -125,10 +130,10 @@ oc get pod,isvc -n <namespace>
 ----
 Replace placeholder values with your own.
 ifdef::upstream[]
-. Deploy the model by using the custom runtime  as described in {odhdocshome}{default-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+. Deploy the model by using the custom runtime as described in {odhdocshome}{default-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
 endif::[]
 ifndef::upstream[]
-. Deploy the model by using the custom runtime  as described in {rhoaidocshome}{default-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+. Deploy the model by using the custom runtime as described in {rhoaidocshome}{default-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
 endif::[]
 
 .Verification
