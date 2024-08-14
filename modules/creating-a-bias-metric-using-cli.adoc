@@ -4,9 +4,7 @@
 = Creating a bias metric by using the CLI
 
 [role='_abstract']
-The following procedure describes how to use the OpenShift command-line interface (CLI) to create a bias metric for a model.
-
-//The example in this procedure is from the demo here: https://github.com/trustyai-explainability/odh-trustyai-demos/tree/main/2-BiasMonitoring
+You can use the OpenShift command-line interface (CLI) to create a bias metric for a model. 
 
 .Prerequisites
 
@@ -19,16 +17,9 @@ endif::[]
 
 * You are familiar with the specific data set schema and understand the names and meanings of the inputs and outputs.
 
-* Your OpenShift cluster administrator has configured monitoring for the model serving platform, enabled the TrustyAI component in the {productname-long} {install-package}, and installed the TrustyAI service for the data science project where the models are deployed.
+* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project that contains the deployed models.
 
-* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html[Get Started with the CLI].
-
-ifndef::upstream[]
-* You have a user token for authentication as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/authenticating-trustyai-service_monitor[Authenticating the TrustyAI service].
-endif::[]
-ifdef::upstream[]
-* You have a user token for authentication as described in link:{odhdocshome}/monitoring-data-science-models/#authenticating-trustyai-service_monitor[Authenticating the TrustyAI service].
-endif::[]
+* You set up TrustyAI for your data science project, as described in xref:setting-up-trustyai-for-your-project_monitor[Setting up TrustyAI for your project].
 
 .Procedure
 
@@ -50,7 +41,7 @@ TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
 curl -H "Authorization: Bearer $TOKEN" --location $TRUSTY_ROUTE/q/openapi
 ----
 
-. Configure bias metrics by running a command that uses the following syntax and payload structure:
+. Use `POST /metrics/group/fairness/spd/request` to schedule a recurring bias monitoring metric with the following syntax and payload structure:
 +
 *Syntax*:
 +
