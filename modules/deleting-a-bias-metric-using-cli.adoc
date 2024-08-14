@@ -39,12 +39,17 @@ $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
 ----
 
-.  Optional: To list all currently active requests for a metric, use `GET /metrics/{{metric}}/requests`. For example, to list all currently scheduled SPD metrics, type:
+. Optional: To list all currently active requests for a metric, use `GET /metrics/{{metric}}/requests`. For example, to list all currently scheduled SPD metrics, type:
 +
 ----
 curl -H "Authorization: Bearer $TOKEN" -X GET --location "$TRUSTY_ROUTE/metrics/spd/requests"
 ----
-
++
+Alternatively, to list all currently scheduled metric requests, use `GET /metrics/all/requests`. 
++
+----
+curl -H "Authorization: Bearer $TOKEN" -X GET --location "$TRUSTY_ROUTE/metrics/all/requests"
+----
 . To delete a metric, send an HTTP `DELETE` request to the `/metrics/$METRIC/request` endpoint to stop the periodic calculation, including the id of periodic task that you want to cancel in the payload. For example:
 +
 ----

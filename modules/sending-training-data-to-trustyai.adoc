@@ -60,7 +60,7 @@ TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
 . Query the `/info` endpoint: 
 [source]
 ----
-curl -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/info | jq ".[0].data"
+curl -H "Authorization: Bearer $TOKEN" $TRUSTY_ROUTE/info | jq ".[0].data"
 ----
 +
 This outputs a JSON file containing the following information for each model:

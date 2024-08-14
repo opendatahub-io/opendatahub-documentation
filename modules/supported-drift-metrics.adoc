@@ -1,0 +1,30 @@
+:_module-type: REFERENCE
+
+[id="supported-drift-metrics_{context}"]
+= Supported drift metrics
+
+{productname-long} supports the following data drift metrics.
+
+MeanShift::
+
+The MeanShift metric calculates the per-column probability that the data values in a test data set are from the same distribution as those in a training data set, assuming that the values are normally distributed. This metric works by measuring the difference in the means of specific features between the two datasets. 
++
+MeanShift is useful for identifying straightforward changes in data distributions, such as when the entire distribution has shifted to the left or right along the feature axis.
+
+FourierMMD::
+
+The FourierMMD metric provides the probability that the data values in a test data set have drifted from the training data set distribution, assuming that the computed Maximum Mean Discrepancy (MMD) values are normally distributed. This metric works by comparing the empirical distributions of the data sets by using an MMD measure in the Fourier domain. 
++
+FourierMMD is useful for detecting subtle shifts in data distributions that might be overlooked by simpler statistical measures.
+
+KSTest::
+
+The KSTest metric calculates two Kolmogorov-Smirnov tests for each column to determine whether the data sets are drawn from the same distributions. This metric works by measuring the maximum distance between the empirical cumulative distribution functions (CDFs) of the data sets, without assuming any specific underlying distribution. A larger KS statistic indicates a greater difference between the distributions, suggesting that the data sets might come from different populations. 
++
+KSTest is useful for detecting changes in distribution shape, location, and scale.
+
+ApproxKSTest::
+
+The ApproxKSTest metric performs an approximate Kolmogorov-Smirnov test, ensuring that the maximum error is `6*epsilon` compared to an exact KSTest. 
++
+ApproxKSTest is useful for detecting changes in distributions for large data sets where performing an exact KSTest might be computationally expensive.
