@@ -21,174 +21,36 @@ endif::[]
 . From the {productname-short} dashboard, click *Model Serving*.
 +
 The inference endpoint for the model is shown in the *Inference endpoint* field.
-. Depending on what action you want to perform with the model (and if the model supports that action), copy the inference endpoint shown and then add one of the following paths to the end of the URL:
-+
---
-*Caikit TGIS ServingRuntime for KServe*
+. Depending on what action you want to perform with the model (and if the model supports that action), copy the inference endpoint shown and then add a path to the end of the URL.
 
-* `:443/api/v1/task/text-generation`
-* `:443/api/v1/task/server-streaming-text-generation`
-// * `:443/api/v1/task/text-classification`
-// * `:443/api/v1/task/token-classification`
-
-*Caikit Standalone ServingRuntime for KServe*
-
-.REST endpoints
-* `/api/v1/task/embedding`
-* `/api/v1/task/embedding-tasks`
-* `/api/v1/task/sentence-similarity`
-* `/api/v1/task/sentence-similarity-tasks`
-* `/api/v1/task/rerank`
-* `/api/v1/task/rerank-tasks`
-
-.gRPC endpoints
-* `:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict`
-* `:443 caikit.runtime.Nlp.NlpService/EmbeddingTasksPredict`
-* `:443 caikit.runtime.Nlp.NlpService/SentenceSimilarityTaskPredict`
-* `:443 caikit.runtime.Nlp.NlpService/SentenceSimilarityTasksPredict`
-* `:443 caikit.runtime.Nlp.NlpService/RerankTaskPredict`
-* `:443 caikit.runtime.Nlp.NlpService/RerankTasksPredict`
-+
 ifdef::upstream[]
-NOTE: By default, the Caikit Standalone Runtime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform]. 
-
-An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
+[NOTE]
+====
+For a list of paths to use with the supported runtimes, see link:{odhdocshome}/serving-models/#inference-endpoints_serving-large-models[Inference endpoints].
+====
 endif::[]
 
 ifndef::upstream[]
-NOTE: By default, the Caikit Standalone Runtime exposes REST endpoints for use. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
-
-An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
+[NOTE]
+====
+For a list of paths to use with the supported runtimes, see link:{rhoaidocshome}{default-format-url}/serving-models/serving-large-models_serving-large-models#inference-endpoints[Inference endpoints].
+====
 endif::[]
 
-*TGIS Standalone ServingRuntime for KServe*
-
-* `:443 fmaas.GenerationService/Generate`
-* `:443 fmaas.GenerationService/GenerateStream`
-+
-NOTE: To query the endpoint for the TGIS standalone runtime, you must also download the files in the link:https://github.com/opendatahub-io/text-generation-inference/blob/main/proto[proto^] directory of the Open Data Hub `text-generation-inference` repository.
-
-*OpenVINO Model Server*
-
-* `/v2/models/<model-name>/infer`
-
-*vLLM ServingRuntime for KServe*
-
-* `:443/version`
-* `:443/docs`
-* `:443/v1/models`
-* `:443/v1/chat/completions`
-* `:443/v1/completions`
-* `:443/v1/embeddings`
-+
-NOTE: The vLLM runtime is compatible with the OpenAI REST API. For a list of models that the vLLM runtime supports, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
-+
-NOTE: To use the embeddings inference endpoint in vLLM, you must use an embeddings model that the vLLM supports. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
-+
-
-As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
---
-
-. Use the endpoint to make API requests to your deployed model, as shown in the following example commands:
-+
-NOTE: If you enabled token authorization when deploying the model, add the `Authorization` header and specify a token value.
+. Use the endpoint to make API requests to your deployed model.
 
 ifdef::upstream[]
-+
---
-*Caikit TGIS ServingRuntime for KServe*
-[source,subs="+quotes"]
-----
-curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' \
-https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation \
--H 'Authorization: Bearer <token>'
-----
-
-*Caikit Standalone ServingRuntime for KServe*
-
-.REST
-[source]
-----
-curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>'
-----
-
-.gRPC
-[source]
-----
-grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict -H 'Authorization: Bearer <token>'
-----
-
-*TGIS Standalone ServingRuntime for KServe*
-[source]
-----
-grpcurl -proto text-generation-inference/proto/generation.proto -d \
-'{"requests": [{"text":"<text>"}]}' \
--insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate \
--H 'Authorization: Bearer <token>'
-----
-
-*OpenVINO Model Server*
-[source]
-----
-curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d \
-'{ "model_name": "<model_name>", \
-"inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' \
--H 'Authorization: Bearer <token>'
-----
-
-*vLLM ServingRuntime for KServe*
-[source]
-----
-curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H \
-"Content-Type: application/json" -d '{ \
-"messages": [{ \
-"role": "<role>", \
-"content": "<content>" \
-}] -H 'Authorization: Bearer <token>'
-----
---
+[NOTE]
+====
+For a list of sample commands, see link:{odhdocshome}/serving-models/#inference-endpoints_serving-large-models[Inference endpoints].
+====
 endif::[]
-ifdef::self-managed,cloud-service[]
 
-+
---
-*Caikit TGIS ServingRuntime for KServe*
-[source]
-----
-curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation -H 'Authorization: Bearer <token>'
-----
-
-*Caikit Standalone ServingRuntime for KServe*
-.REST
-[source]
-----
-curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>'
-----
-
-.gRPC
-[source]
-----
-grpcurl -insecure -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict -H 'Authorization: Bearer <token>'
-----
-
-*TGIS Standalone ServingRuntime for KServe*
-[source]
-----
-grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'Authorization: Bearer <token>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate 
-----
-
-*OpenVINO Model Server*
-[source]
-----
-curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'
-----
-
-*vLLM ServingRuntime for KServe*
-[source]
-----
-curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "messages": [{ "role": "<role>", "content": "<content>" }] -H 'Authorization: Bearer <token>'
-----
---
+ifndef::upstream[]
+[NOTE]
+====
+For a list of sample commands, see link:{rhoaidocshome}{default-format-url}/serving-models/serving-large-models_serving-large-models#inference-endpoints[Inference endpoints].
+====
 endif::[]
 
 [role='_additional-resources']
