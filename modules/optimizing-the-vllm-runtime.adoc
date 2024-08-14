@@ -5,7 +5,7 @@
 
 You can configure the *vLLM ServingRuntime for KServe* runtime to use speculative decoding, a parallel processing technique to optimize inferencing time for Large Language Models (LLMs).
 
-You can also configure the runtime to support inferencing for Vision-Language modals (VLMs). VLMs are a subset of multi-modal models that integrate both visual and textual data.
+You can also configure the runtime to support inferencing for vision-language models (VLMs). VLMs are a subset of multi-modal models that integrate both visual and textual data.
 
 To configure the *vLLM ServingRuntime for KServe* runtime for speculative decoding or multi-modal inferencing, you must add additional arguments in the vLLM model-serving runtime.
 
@@ -52,7 +52,7 @@ containers:
 ----
 + 
 Replace `<NUM_SPECULATIVE_TOKENS>` and `<NGRAM_PROMPT_LOOKUP_MAX>` with your own values.
-. To configure the vLLM model-serving runtime for speculative decoding with a draft model, do the following:
+. To configure the vLLM model-serving runtime for speculative decoding with a draft model:
 .. Remove the `--model` argument:
 +
 [source]
@@ -77,7 +77,7 @@ containers:
 ----
 + 
 Replace `<path_to_speculative_model>` and `<path_to_original_model>` with the paths to the speculative model and original model on your S3-compatible object storage. Replace all other placeholder values with your own.
-. To configure the vLLM model-serving runtime for multi-modal inferencing, add the following arguments as shown:
+. To configure the vLLM model-serving runtime for multi-modal inferencing, add the following arguments:
 +
 [source]
 ----
@@ -146,7 +146,7 @@ curl -v https://<inference_endpoint_url>:443/v1/chat/completions
 -H "Content-Type: application/json" 
 -H "Authorization: Bearer <token>"
 ----
-* If you have configured the vLLM model-serving runtime for multi-modal inferencing, use the following example command to verify API requests to the Vision-Language Model (VLM) that you have deployed:
+* If you have configured the vLLM model-serving runtime for multi-modal inferencing, use the following example command to verify API requests to the vision-language model (VLM) that you have deployed:
 +
 [source]
 ----
