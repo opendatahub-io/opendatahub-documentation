@@ -1,0 +1,56 @@
+:_module-type: PROCEDURE
+
+[id="customizing-component-deployment-resources_{context}"]
+= Customizing component deployment resources
+
+[role='_abstract']
+You can customize component deployment resources by updating the `.spec.template.spec.containers.resources` section of the YAML file for the component deployment.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You are part of the administrator group for {productname-short} in {openshift-platform}.
+
+.Procedure
+. Log in to the {openshift-platform} console as a cluster administrator.
+. In the *Administrator* perspective, click *Workloads* > *Deployments*.
+ifdef::upstream[]
+. From the *Project* drop-down list, select `opendatahub`.
+. In the *Name* column, click the name of the deployment for the component that you want to customize resources for. 
++
+[NOTE]
+====
+For more information about the deployment names for each component, see link:{odhdocshome}/managing-resources/#overview-of-component-resource-customization_custom-resource[Overview of component resource customization].
+====
+endif::[]
+ifndef::upstream[]
+. From the *Project* drop-down list, select `redhat-ods-applications`.
+. In the *Name* column, click the name of the deployment for the component that you want to customize resources for. 
++
+[NOTE]
+====
+For more information about the deployment names for each component, see link:{rhoaidocshome}{default-format-url}/customizing-component-deployment-resources/overview-of-component-resource-customization_custom-resource[Overview of component resource customization].
+====
+endif::[]
+. On the *Deployment details* page that appears, click the *YAML* tab.
+. Find the `.spec.template.spec.containers.resources` section.
+. Update the value of the resource that you want to customize. For example, to update the memory limit to 500Mi, make the following change:
++
+[source]
+----
+containers:
+        - resources:
+            limits:
+                cpu: '2'
+                memory: 500Mi
+            requests:
+                cpu: '1'
+                memory: 1Gi
+----
+. Click *Save*.
+. Click *Reload*.
+
+.Verification
+* Log in to {productname-short} and verify that your resource changes apply.
+
+//[role='_additional-resources']
+//.Additional resources
