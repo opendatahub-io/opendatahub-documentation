@@ -4,7 +4,7 @@
 = Authenticating the TrustyAI service
 
 [role='_abstract']
-You can access TrustyAI service external endpoints only if you provide OAuth proxy (oauth-proxy) authentication. You must obtain a user token, or a token from a service account with sufficient privileges, and then pass the token to the TrustyAI service when using `curl` commands.
+To access TrustyAI service external endpoints, you must provide OAuth proxy (oauth-proxy) authentication. You must obtain a user token, or a token from a service account with sufficient privileges, and then pass the token to the TrustyAI service when using `curl` commands.
 
 .Prerequisites
 ifdef::upstream,self-managed[]
@@ -13,20 +13,25 @@ endif::[]
 ifdef::cloud-service[]
 * You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/dedicated/cli_reference/openshift_cli/getting-started-cli.html[Getting started with the CLI] (OpenShift Dedicated) or link:https://docs.openshift.com/rosa/cli_reference/openshift_cli/getting-started-cli.html[Getting started with the CLI] (Red Hat OpenShift Service on AWS)
 endif::[]
-* Your OpenShift cluster administrator has installed {productname-short}, added you as a user to the OpenShift cluster, and installed the TrustyAI service for the data science project where the models are deployed.
+* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project that contains the deployed models.
 
 .Procedure
 
-. In a terminal window, log in to {openshift-platform} where {productname-short} is deployed.
+. Open a new terminal window.
+. Follow these steps to log in to your {openshift-platform} cluster:
+.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*. 
+.. After you have logged in, click *Display token*.
+.. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
 +
+[source,subs="+quotes"]
 ----
-oc login
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 ----
 
 . Enter the following command to set a user token variable on {openshift-platform}:
 +
 ----
-TOKEN=$(oc whoami -t)
+export TOKEN=$(oc whoami -t)
 ----
 
 .Verification

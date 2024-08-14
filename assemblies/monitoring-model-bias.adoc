@@ -2,23 +2,18 @@
 
 ifdef::context[:parent-context: {context}]
 
-:productname-long: Open Data Hub
-:productname-short: Open Data Hub
-
 :context: bias-monitoring
 
 [id="monitoring-model-bias_{context}"]
 = Monitoring model bias
-:upstream:
-//:preview:
 
-ifdef::preview[]
-include::../_artifacts/document-attributes-global.adoc[]
-endif::preview[]
+[role='_abstract']
 
 As a data scientist, you might want to monitor your machine learning models for bias. This means monitoring for algorithmic deficiencies that might skew the outcomes or decisions that the model produces. Importantly, this type of monitoring helps you to ensure that the model is not biased against particular protected groups or features.
 
 {productname-long} provides a set of metrics that help you to monitor your models for bias. You can use the {productname-short} interface to choose an available metric and then configure model-specific details such as a protected attribute, the privileged and unprivileged groups, the outcome you want to monitor, and a threshold for bias. You then see a chart of the calculated values for a specified number of model inferences.
+
+For more information about the specific bias metrics, see link:https://opendatahub.io/docs/monitoring-data-science-models/#supported-bias-metrics_bias-monitoring[Supported bias metrics].
 
 include::modules/creating-a-bias-metric.adoc[leveloffset=+1]
 

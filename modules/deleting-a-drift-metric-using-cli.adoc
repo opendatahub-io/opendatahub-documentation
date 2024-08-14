@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
-[id='deleting-a-bias-metric-using-cli_{context}']
-= Deleting a bias metric by using the CLI
+[id='deleting-a-drift-metric-using-cli_{context}']
+= Deleting a drift metric by using the CLI
 
 [role='_abstract']
-You can use the OpenShift command-line interface (CLI) to delete a bias metric for a model.
+You can use the OpenShift command-line interface (CLI) to delete a drift metric for a model.
 
 .Prerequisites
 
@@ -17,7 +17,7 @@ ifdef::upstream[]
 * You have a user token for authentication as described in link:{odhdocshome}/monitoring-data-science-models/#authenticating-trustyai-service_monitor[Authenticating the TrustyAI service].
 endif::[]
 
-* There is an existing bias metric that you want to delete.
+* There is an existing drift metric that you want to delete.
 
 .Procedure
 
@@ -39,10 +39,10 @@ $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
 ----
 
-. Optional: To list all currently active requests for a metric, use `GET /metrics/{{metric}}/requests`. For example, to list all currently scheduled SPD metrics, type:
+. Optional: To list all currently active requests for a metric, use `GET /metrics/{{metric}}/requests`. For example, to list all currently scheduled MeanShift metrics, type:
 +
 ----
-curl -H "Authorization: Bearer $TOKEN" -X GET --location "$TRUSTY_ROUTE/metrics/spd/requests"
+curl -k -H "Authorization: Bearer $TOKEN" -X GET --location "$TRUSTY_ROUTE/metrics/drift/meanshift/requests"
 ----
 +
 Alternatively, to list all currently scheduled metric requests, use `GET /metrics/all/requests`. 
@@ -50,13 +50,14 @@ Alternatively, to list all currently scheduled metric requests, use `GET /metric
 ----
 curl -H "Authorization: Bearer $TOKEN" -X GET --location "$TRUSTY_ROUTE/metrics/all/requests"
 ----
+
 . To delete a metric, send an HTTP `DELETE` request to the `/metrics/$METRIC/request` endpoint to stop the periodic calculation, including the id of periodic task that you want to cancel in the payload. For example:
 +
 ----
-curl -H "Authorization: Bearer $TOKEN" -X DELETE --location "$TRUSTY_ROUTE/metrics/spd/request" \
+curl -k -H "Authorization: Bearer $TOKEN" -X DELETE --location "$TRUSTY_ROUTE/metrics/drift/meanshift/request" \
     -H "Content-Type: application/json" \
     -d "{
-          \"requestId\": \"3281c891-e2a5-4eb3-b05d-7f3831acbb56\"
+          \"requestId\": \"$id\"
         }"
 ----
 
@@ -64,6 +65,6 @@ curl -H "Authorization: Bearer $TOKEN" -X DELETE --location "$TRUSTY_ROUTE/metri
 Use `GET /metrics/{{metric}}/requests` to list all currently active requests for the metric and verify the metric that you deleted is not shown. For example:
 
 ----
-curl -H "Authorization: Bearer $TOKEN" -X GET --location "$TRUSTY_ROUTE/metrics/spd/requests"
+curl -H "Authorization: Bearer $TOKEN" -X GET --location "$TRUSTY_ROUTE/metrics/drift/meanshift/requests"
 ----
 
