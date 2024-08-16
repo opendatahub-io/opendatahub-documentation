@@ -38,7 +38,7 @@ $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 
 . Optional: If you want to use a TLS connection between TrustyAI and the database, create a TrustyAI service database TLS secret that uses the same certificates that you want to use for the database.
 
-.. Create a YAML file to contain your TLS secret and add the following YAML code:
+.. Create a YAML file to contain your TLS secret and add the following code:
 +
 [source,subs="+quotes"]
 ----
@@ -57,7 +57,7 @@ data:
 
 .. Save the file with the file name *_<service_name>_-db-tls.yaml*. For example, if your service name is `trustyai-service`, save the file as *trustyai-service-db-tls.yaml*.
 
-.. Apply the YAML file in the data science project that contains the models that the data scientist wants to monitor.
+.. Apply the YAML file in the data science project that contains the models that the data scientist wants to monitor:
 +
 [source,subs="+quotes"]
 ----
@@ -66,7 +66,7 @@ $ oc apply -f __<service_name>__-db-tls.yaml -n __<project_name>__
 
 . Create a secret that has your database credentials.
 
-.. Create a YAML file to contain your secret and add the following YAML code:
+.. Create a YAML file to contain your secret and add the following code:
 +
 [source,subs="+quotes"]
 ----
@@ -86,7 +86,7 @@ stringData:
 ----
 +
 <1> The database kind, either `mariadb` or `mysql`.
-<2> The username you want TrustyAI to use when interfacing with database.
+<2> The username you want TrustyAI to use when interfacing with the database.
 <3> The password for the database username.
 <4> The Kubernetes (K8s) service through which your database is accessed.
 <5> The port the database is listening on.
@@ -95,7 +95,7 @@ stringData:
 
 .. Save the file with the file name *db-credentials.yaml*. You will need this name later when you install or change the TrustyAI service.
 
-.. Apply the YAML file in the data science project that contains the models that the data scientist wants to monitor.
+.. Apply the YAML file in the data science project that contains the models that the data scientist wants to monitor:
 +
 [source,subs="+quotes"]
 ----
@@ -104,9 +104,9 @@ $ oc apply -f db-credentials.yaml -n __<project_name>__
 
 . If you are installing TrustyAI for the first time on a project, continue to xref:installing-trustyai-service-using-cli[Installing the TrustyAI service by using the CLI].
 +
-Otherwise, to change an existing TrustyAI service to use a database instead of a PVC, follow these steps:
+If you already installed TrustyAI on a project, you can migrate the existing TrustyAI service from using a PVC to using a database.
 
-.. Create a YAML file to update the TrustyAI service custom resource (CR) and add the following YAML code:
+.. Create a YAML file to update the TrustyAI service custom resource (CR) and add the following code:
 +
 [source,subs="+quotes"]
 ----
@@ -128,7 +128,7 @@ spec:
     schedule: "5s" <8>
 ----
 +
-<1> Set this field to `true` to prompt the migration from PVC to database storage.
+<1> Set to `true` to prompt the migration from PVC to database storage.
 <2> The name of the TrustyAI service instance. 
 <3> The storage format for the data. Set this field to `DATABASE`.
 <4> The location within the PVC where you were storing the data. This must match the value specified in the existing CR.
@@ -139,7 +139,7 @@ spec:
 
 .. Save the file. For example, *trustyai_crd.yaml*.
 
-.. Apply the new TrustyAI service CR to the data science project that contains the models that the data scientist wants to monitor.
+.. Apply the new TrustyAI service CR to the data science project that contains the models that the data scientist wants to monitor:
 +
 [source,subs="+quotes"]
 ----
