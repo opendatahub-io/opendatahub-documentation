@@ -1,0 +1,147 @@
+:_module-type: PROCEDURE
+
+[id='configuring-trustyai-with-a-database_{context}']
+= Configuring TrustyAI with a database
+
+[role='_abstract']
+
+If you have a relational database in your {openshift-platform} cluster such as MySQL or MariaDB, you can configure TrustyAI to use your database instead of a persistent volume claim (PVC). Using a database instead of a PVC for storage can improve scalability, performance, and data management in TrustyAI.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI].
+
+* You have enabled the TrustyAI component, as described in _Enabling the TrustyAI component_.
+
+ifndef::upstream[]
+* The data scientist has created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project], that contains the models that the data scientist wants to monitor.  
+endif::[]
+
+ifdef::upstream[]
+* The data scientist has created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project], that contains the models that the data scientist wants to monitor.  
+endif::[]
+
+* If you are configuring the TrustyAI service with an external MySQL database, your database must already be in your cluster and use at least MySQL version 5.x. However, {org-name} recommends that you use MySQL version 8.x. 
+
+* If you are configuring the TrustyAI service with a MariaDB database, your database must already be in your cluster and use MariaDB version 10.3 or later. However, {org-name} recommends that you use at least MariaDB version 10.5.
+
+.Procedure
+
+. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+. Optional: If you want to use a TLS connection between TrustyAI and the database, create a TrustyAI service database TLS secret that uses the same certificates that you want to use for the database.
+
+.. Create a YAML file to contain your TLS secret and add the following code:
++
+[source,subs="+quotes"]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: __<service_name>__-db-tls
+type: kubernetes.io/tls
+data:
+  tls.crt: |
+    __<TLS CERTIFICATE>__ 
+  
+  tls.key: |
+    __<TLS KEY>__ 
+----
+
+.. Save the file with the file name *_<service_name>_-db-tls.yaml*. For example, if your service name is `trustyai-service`, save the file as *trustyai-service-db-tls.yaml*.
+
+.. Apply the YAML file in the data science project that contains the models that the data scientist wants to monitor:
++
+[source,subs="+quotes"]
+----
+$ oc apply -f __<service_name>__-db-tls.yaml -n __<project_name>__
+----
+
+. Create a secret that has your database credentials.
+
+.. Create a YAML file to contain your secret and add the following code:
++
+[source,subs="+quotes"]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-credentials
+type: Opaque
+stringData:
+  databaseKind: __<mariadb or mysql>__ <1>
+  databaseUsername: __<TrustyAI_username>__ <2>
+  databasePassword: __<TrustyAI_password>__ <3>
+  databaseService: mariadb-service <4>
+  databasePort: '3306' <5>
+  databaseGeneration: update <6>
+  databaseName: trustyai_service <7>
+----
++
+<1> The database kind, either `mariadb` or `mysql`.
+<2> The username you want TrustyAI to use when interfacing with the database.
+<3> The password for the database username.
+<4> The Kubernetes (K8s) service through which your database is accessed.
+<5> The port the database is listening on.
+<6> The setting for the link:https://quarkus.io/guides/ibernate-orm#quarkus-hibernate-orm_quarkus-hibernate-orm-database-generation[`quarkus.hibernate-orm.database.generation`] argument, which determines how TrustyAI interacts with the database on its initial connection. Set to `none`, `create`, `drop-and-create`, `drop`, `update`, or `validate`. 
+<7> The name of the individual database within the database service that the username and password authenticate to.
+
+.. Save the file with the file name *db-credentials.yaml*. You will need this name later when you install or change the TrustyAI service.
+
+.. Apply the YAML file in the data science project that contains the models that the data scientist wants to monitor:
++
+[source,subs="+quotes"]
+----
+$ oc apply -f db-credentials.yaml -n __<project_name>__
+----
+
+. If you are installing TrustyAI for the first time on a project, continue to xref:installing-trustyai-service-using-cli[Installing the TrustyAI service by using the CLI].
++
+If you already installed TrustyAI on a project, you can migrate the existing TrustyAI service from using a PVC to using a database.
+
+.. Create a YAML file to update the TrustyAI service custom resource (CR) and add the following code:
++
+[source,subs="+quotes"]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: TrustyAIService
+metadata:
+  annotations:
+    trustyai.opendatahub.io/db-migration: "true" <1>
+  name: trustyai-service <2>
+spec:
+  storage:
+    format: "DATABASE" <3>
+    folder: "/inputs" <4>
+      size: "1Gi" <5>
+    databaseConfigurations: __<database_secret_credentials>__ <6>
+  data:
+    filename: "data.csv" <7>
+  metrics:
+    schedule: "5s" <8>
+----
++
+<1> Set to `true` to prompt the migration from PVC to database storage.
+<2> The name of the TrustyAI service instance. 
+<3> The storage format for the data. Set this field to `DATABASE`.
+<4> The location within the PVC where you were storing the data. This must match the value specified in the existing CR.
+<5> The size of the data to request.
+<6> The name of the secret with your database credentials that you created in an earlier step. For example, `db-credentials`.
+<7> The suffix for the existing stored data files. This must match the value specified in the existing CR.
+<8> The interval at which to calculate the metrics. The default is `5s`. The duration is specified with the ISO-8601 format. For example, `5s` for 5 seconds, `5m` for 5 minutes, and `5h` for 5 hours.
+
+.. Save the file. For example, *trustyai_crd.yaml*.
+
+.. Apply the new TrustyAI service CR to the data science project that contains the models that the data scientist wants to monitor:
++
+[source,subs="+quotes"]
+----
+$ oc apply -f trustyai_crd.yaml -n __<project_name>__
+----
