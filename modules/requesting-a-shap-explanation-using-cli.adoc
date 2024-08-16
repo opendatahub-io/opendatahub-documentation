@@ -1,0 +1,144 @@
+:_module-type: PROCEDURE
+
+[id='requesting-a-shap-explanation-using-CLI_{context}']
+= Requesting a SHAP explanation by using the CLI
+
+[role='_abstract']
+You can use the OpenShift command-line interface (CLI) to request a SHAP explanation.
+
+.Prerequisites
+
+* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project that contains the deployed models.
+
+* You authenticated the TrustyAI service, as described in link:{odhdocshome}/monitoring-data-science-models/#authenticating-trustyai-service_monitor[Authenticating the TrustyAI service].
+
+* You have real-world data from the deployed models.
+
+ifdef::upstream,self-managed[]
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html[Get Started with the CLI].
+endif::[]
+ifdef::cloud-service[]
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.openshift.com/dedicated/cli_reference/openshift_cli/getting-started-cli.html[Getting started with the CLI] (OpenShift Dedicated) or link:https://docs.openshift.com/rosa/cli_reference/openshift_cli/getting-started-cli.html[Getting started with the CLI] (Red Hat OpenShift Service on AWS)
+endif::[]
+
+.Procedure
+
+. Open a new terminal window.
+. Follow these steps to log in to your {openshift-platform} cluster:
+.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*. 
+.. After you have logged in, click *Display token*.
+.. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
+----
+
+. Set an environment variable to define the external route for the TrustyAI service pod.
++
+----
+export TRUSTY_ROUTE=$(oc get route trustyai-service -n $NAMESPACE -o jsonpath='{.spec.host}')
+----
+
+. Set an environment variable to define the name of your model.
++
+----
+export MODEL="model-name"
+----
+
+. Use `GET /info/inference/ids/${MODEL}` to get a list of all inference IDs within your model inference data set.
++
+[source]
+----
+curl -skv -H "Authorization: Bearer ${TOKEN}" \
+   https://${TRUSTY_ROUTE}/info/inference/ids/${MODEL}?type=organic
+----
++
+You see output similar to the following:
++
+[source]
+----
+[
+  {
+    "id":"a3d3d4a2-93f6-4a23-aedb-051416ecf84f",
+    "timestamp":"2024-06-25T09:06:28.75701201"
+  }
+]
+----
+
+. Set environment variables to define the two latest inference IDs (highest and lowest predictions).
++
+[source]
+----
+export ID_LOWEST=$(curl -s ${TRUSTY_ROUTE}/info/inference/ids/${MODEL}?type=organic | jq -r '.[-1].id')
+
+export ID_HIGHEST=$(curl -s ${TRUSTY_ROUTE}/info/inference/ids/${MODEL}?type=organic | jq -r '.[-2].id')
+----
+
+. Use `POST /explainers/local/shap` to request the SHAP explanation with the following syntax and payload structure:
++
+*Sytnax*:
++
+----
+curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST \
+ -H "Content-Type: application/json" \
+ -d <payload>
+----
++
+*Payload structure*:
+
+`PredictionId`:: The inference ID.
+`config`:: The configuration for the SHAP explanation, including `model` and `explainer` parameters. For more information, see link:https://trustyai-explainability.github.io/trustyai-site/main/trustyai-service-api-reference.html#ModelConfig[Model configuration parameters] and link:https://trustyai-explainability.github.io/trustyai-site/main/trustyai-service-api-reference.html#SHAPExplainerConfig[SHAP explainer configuration parameters].
+
+For example:
+
+[source]
+----
+echo "Requesting SHAP for lowest"
+curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"predictionId\": \"$ID_LOWEST\",
+    \"config\": {
+        \"model\": { <1>
+            \"target\": \"modelmesh-serving:8033\", <2>
+            \"name\": \"${MODEL}\",
+            \"version\": \"v1\"
+        },
+        \"explainer\": { <3>
+          \"n_samples\": 75
+        }
+    }
+  }" \
+  ${TRUSTYAI_ROUTE}/explainers/local/shap
+----
+
+[source]
+----
+echo "Requesting SHAP for highest"
+curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST \
+    -H "Content-Type: application/json" \
+    -d "{
+        \"predictionId\": \"$ID_HIGHEST\",
+        \"config\": {
+            \"model\": { <1>
+                \"target\": \"modelmesh-serving:8033\", <2>
+                \"name\": \"${MODEL}\",
+                \"version\": \"v1\"
+            },
+            \"explainer\": { <3>
+              \"n_samples\": 75
+            }
+        }
+    }" \
+    ${TRUSTYAI_ROUTE}/explainers/local/shap
+
+----
+<1> Specifies configuration for the model. For more information about the model configuration options, see link:https://trustyai-explainability.github.io/trustyai-site/main/trustyai-service-api-reference.html#ModelConfig[Model configuration parameters].
+<2> Specifies the model server service URL. This field only accepts model servers in the same namespace as the TrustyAI service, with or without protocol or port number.
++
+* `http[s]://service[:port]`
+* `service[:port]`
+<3> Specifies the configuration for the explainer. For more information about the explainer configuration parameters, see link:https://trustyai-explainability.github.io/trustyai-site/main/trustyai-service-api-reference.html#SHAPExplainerConfig[SHAP explainer configuration parameters].
+
+//.Verification
