@@ -13,7 +13,9 @@ You can execute a run once, that is, immediately after its creation, or on a rec
 * Periodic: used for scheduling runs to execute in intervals.
 * Cron: used for scheduling runs as a cron job.
 
-You can also configure multiple instances of the same run to execute concurrently, from a range of one to ten. When executed, you can track the run's progress from the run *Details* page on the {productname-short} user interface. From here, you can view the run's graph, and output artifacts. A pipeline run can be in one of the following states: 
+You can also configure up to 10 instances of the same run to execute concurrently. You can track the progress of a run from the run details page on the {productname-short} user interface. From here, you can view the graph and output artifacts for the run. 
+
+A pipeline run can be in one of the following states: 
 
 * Scheduled: A pipeline run that is scheduled to execute at least once
 * Active: A pipeline run that is executing, or stopped.
@@ -21,7 +23,7 @@ You can also configure multiple instances of the same run to execute concurrentl
 
 You can use catch up runs to ensure your pipeline runs do not permanently fall behind schedule when paused. For example, if you re-enable a paused recurring run, the run scheduler backfills each missed run interval. If you disable catch up runs, and you have a scheduled run interval ready to execute, the run scheduler only schedules the run execution for the latest run interval. Catch up runs are enabled by default. However, if your pipeline handles backfill internally, Red Hat recommends that you disable catch up runs to avoid duplicate backfill. 
 
-After a pipeline run executes, you can view details of its executed tasks on the *Executions* page, along with its artifacts, on the *Artifacts* page. From the *Executions* page, you can view the execution status of each task, which indicates whether it completed successfully. You can also view further information about each executed task by clicking the execution name in the list. From the *Artifacts* page, you can view the the details of each pipeline artifact, such as its name, unique ID, type, and URI. Pipeline artifacts can help you to evaluate the performance of your pipeline runs and make it easier to understand your pipeline components. Pipeline artifacts can range from plain text data or detailed, interactive data visualizations.  
+After a pipeline run executes, you can view details of its executed tasks on the *Executions* page, along with its artifacts, on the *Artifacts* page. From the *Executions* page, you can view the execution status of each task, which indicates whether it completed successfully. You can also view further information about each executed task by clicking the execution name in the list. From the *Artifacts* page, you can view the details of each pipeline artifact, such as its name, unique ID, type, and URI. Pipeline artifacts can help you to evaluate the performance of your pipeline runs and make it easier to understand your pipeline components. Pipeline artifacts can range from plain text data to detailed, interactive data visualizations.  
 
 You can review and analyze logs for each step in an active pipeline run. With the log viewer, you can search for specific log messages, view the log for each step, and download the step logs to your local machine.
 
