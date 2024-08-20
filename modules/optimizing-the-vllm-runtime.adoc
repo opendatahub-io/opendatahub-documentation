@@ -75,7 +75,7 @@ containers:
 ----
 + 
 .. Replace `<path_to_speculative_model>` and `<path_to_original_model>` with the paths to the speculative model and original model on your S3-compatible object storage. 
-.. Replace all other placeholder values with your own.
+.. Replace `<NUM_SPECULATIVE_TOKENS>` with your own value.
 . To configure the vLLM model-serving runtime for multi-modal inferencing, add the following arguments:
 +
 [source]
@@ -92,42 +92,6 @@ Only use the `--trust-remote-code` argument with models from trusted sources.
 . Click *Update*.
 +
 The *Serving runtimes* page opens and shows the list of runtimes that are installed. Confirm that the custom model-serving runtime you updated is shown.
-. For speculative decoding, you must additionally redeploy the `InferenceService` custom resource definition (CRD) for the vLLM model-serving runtime as follows:
-.. Log in to the OpenShift CLI.
-.. List the available inference services in your namespace:
-+
-[source]
-----
-oc get -n <namespace> isvc
-----
-.. Note the name of the `InferenceService` that needs to be redeployed.
-.. Save the `InferenceService` manifest to a YAML file:
-+
-[source]
-----
-oc get -n <namespace> isvc <inference-service-name> -o yaml > inferenceservice.yml
-----
-.. Replace the placeholder values with your own.
-.. Delete the exisiting `InferenceService` CRD:
-+
-[source]
-----
-oc delete -n <namespace> isvc <inference-service-name>
-----
-.. Replace the placeholder values with your own.
-.. Deploy the modified `InferenceService` CRD using the YAML file that you saved:
-+
-[source]
-----
-oc apply -f inferenceservice.yml
-----
-.. Optional: Check the status of the `InferenceService` deployment as follows:
-+
-[source]
-----
-oc get pod,isvc -n <namespace>
-----
-.. Replace placeholder values with your own.
 ifdef::upstream[]
 . Deploy the model by using the custom runtime as described in {odhdocshome}/serving-models/#deploying-models-using-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
 endif::[]
