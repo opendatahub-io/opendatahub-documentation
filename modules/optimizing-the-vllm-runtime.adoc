@@ -3,7 +3,7 @@
 [id="optimizing-the-vllm-runtime_{context}"]
 = Optimizing the vLLM model-serving runtime 
 
-You can configure the *vLLM ServingRuntime for KServe* runtime to use speculative decoding, a parallel processing technique to optimize inferencing time for Large Language Models (LLMs).
+You can configure the *vLLM ServingRuntime for KServe* runtime to use speculative decoding, a parallel processing technique to optimize inferencing time for large language models (LLMs).
 
 You can also configure the runtime to support inferencing for vision-language models (VLMs). VLMs are a subset of multi-modal models that integrate both visual and textual data.
 
@@ -48,8 +48,12 @@ containers:
       - --ngram-prompt-lookup-max=<NGRAM_PROMPT_LOOKUP_MAX>
       - --use-v2-block-manager
 ----
-+ 
 .. Replace `<NUM_SPECULATIVE_TOKENS>` and `<NGRAM_PROMPT_LOOKUP_MAX>` with your own values.
++
+[NOTE]
+====
+Inferencing throughput varies depending on the model used for speculating with n-grams.
+====
 . To configure the vLLM model-serving runtime for speculative decoding with a draft model:
 .. Remove the `--model` argument:
 +
@@ -76,7 +80,8 @@ containers:
 + 
 .. Replace `<path_to_speculative_model>` and `<path_to_original_model>` with the paths to the speculative model and original model on your S3-compatible object storage. 
 .. Replace `<NUM_SPECULATIVE_TOKENS>` with your own value.
-. To configure the vLLM model-serving runtime for multi-modal inferencing, add the following arguments:
+. To configure the vLLM model-serving runtime for multi-modal inferencing: 
+.. Add the following arguments:
 +
 [source]
 ----
