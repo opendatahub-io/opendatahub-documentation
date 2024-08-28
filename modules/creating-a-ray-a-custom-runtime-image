@@ -1,14 +1,14 @@
 :_module-type: PROCEDURE
 
-[id="(running-a-ray-distributed-workload-using-a-custom-runtime-image)_{context}"]
-= Running a Ray distributed workload using a custom runtime image
+[id="(creating-a-ray-a-custom-runtime-image)_{context}"]
+= Creating a Ray custom runtime image
 
 
 [role='_abstract']
-Learn how to build and push a custom Ray container image to your registry, so that you can run distributed workloads in OpenShift AI.
+Learn how to build and push a custom Ray runtime image to your registry, so that you can run distributed workloads in :productname-short:.
 [NOTE]
 ====
-These examples are provided for documentation purposes, on how to build custom container images for Distributed Workloads. These container examples are not supported and are not a part of OpenShift AI.
+These examples are provided for documentation purposes, on how to build custom container runtime images for distributed workloads. These examples are not supported by :openshift-platform: and are not a part of :productname-short:.
 ==== 
 
 .Prerequisites
@@ -19,8 +19,7 @@ These examples are provided for documentation purposes, on how to build custom c
 
 * You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/configuring-the-distributed-workloads-components[Configuring distributed workloads components].
 
-* You have access to a Ray cluster image. For information about how to create a Ray cluster, see the Ray Clusters documentation.
-
+* You have access to a Ray cluster image. 
 
 .Procedure
 
@@ -42,23 +41,23 @@ cd $IMG
 podman build -t ${IMG} -f Dockerfile
 ----
 +
-[Optional] use the integrated OpenShift container registry. 
+[Optional] use the integrated :productname-short: container registry. 
 
-. [If using the OpenShift registry] Expose the integrated container registry by using the `defaultRoute` parameter in the `configs.imageregistry.operator.openshift.io/cluster` resource and setting the route to true:
+. [If using the :productname-short: registry] Expose the integrated container registry by using the `defaultRoute` parameter in the `configs.imageregistry.operator.openshift.io/cluster` resource and setting the route to true:
 +
 [source, bash]
 ----
 oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge
 ----
 
-. [If using the OpenShift registry] Wait for the route to the container registry to be admitted:
+. [If using the :productname-short: registry] Wait for the route to the container registry to be admitted:
 +
 [source, bash]
 ----
 oc wait -n openshift-image-registry route/default-route    –for=jsonpath='{.status.ingress[0].conditions[0].status}'=True
 ----
 
-. [If using the OpenShift registry] Log into the integrated container registry with Podman:
+. [If using the :productname-short: registry] Log into the integrated container registry with Podman:
 
 +
 [source, bash]
@@ -74,7 +73,7 @@ podman tag ${IMG} $(oc registry info)/$(oc project -q)/${IMG}
  podman push $(oc registry info)/$(oc project -q)/${IMG}
 ----
 
-. [If using the OpenShift registry] Retrieve the image repository for the tag you want:
+. [If using the :productname-short: registry] Retrieve the image repository for the tag you want:
 +
 [source, bash]
 ----
@@ -84,6 +83,3 @@ oc get is ${IMG} -o jsonpath='{.status.tags[?(@.tag=="<TAG>")].items[0].dockerIm
 
 .Next steps
 Use the custom image to create a Ray cluster. See the [Ray documentation](https://docs.ray.io/en/latest/cluster/getting-started.html) for further information 
-
-
-
