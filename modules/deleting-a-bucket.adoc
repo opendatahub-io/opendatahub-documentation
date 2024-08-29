@@ -1,0 +1,47 @@
+:_module-type: PROCEDURE
+
+[id="deleting-a-s3-bucket_{context}"]
+= Deleting a bucket from your object store
+
+[role='_abstract']
+To delete a bucket from your object store from your workbench, use the `delete_bucket()` method.
+
+.Prerequisites
+* You have cloned the `odh-doc-examples` repository to your workbench.
+* You have opened the `s3client_examples.ipynb` file in your workbench.
+* You have installed Boto3 and configured an S3 client.
+* You have ensured that the bucket that you want to delete is empty.
+
+.Procedure
+. In the notebook, locate the following instructions to delete a bucket:
++
+[source]
+----
+#Delete bucket
+s3_client.delete_bucket(Bucket='<bucket_name>')
+----
+. Replace `<bucket_name>` with the name of the bucket that you want to delete and run the code cell.
++
+[source]
+----
+#Delete bucket
+s3_client.delete_bucket(Bucket='aqs971-image-registry') 
+----
++
+The output displays an HTTP response status code of `200`, which indicates that the request was successful.
+
+.Verification
+
+* Locate the instructions to list buckets, and execute the code cell.
++
+[source,subs="+quotes"]
+----
+for bucket in s3_client.list_bucket()[‘Buckets’]:
+    print(bucket[‘Name’])
+----
++
+The bucket that you deleted does not appear in the output.
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete

@@ -1,0 +1,69 @@
+:_module-type: PROCEDURE
+
+[id="listing-files-in-available-amazon-s3-buckets-using-notebook-cells_{context}"]
+= Listing files in your bucket
+
+[role='_abstract']
+To list files in a specific bucket, use the `list_bucket_v2()` method. 
+
+.Prerequisites
+* You have cloned the `odh-doc-examples` repository to your workbench.
+* You have opened the `s3client_examples.ipynb` file in your workbench.
+* You have installed Boto3 and configured an S3 client.
+
+.Procedure
+. In the notebook, locate the following code for listing files.
++
+[source]
+----
+#List files
+#Replace <bucket_name> with the name of the bucket.
+bucket_name = ‘<bucket_name>’
+s3_client.list_objects_v2(Bucket=bucket_name)
+----
+. Replace `<bucket_name>` with the name of your own bucket, as shown in the example, and then run the code cell.
++
+[source]
+----
+#List files
+#Replace <bucket_name> with the name of the bucket.
+bucket_name = ‘aqs27-registry’
+s3_client.list_objects_v2(Bucket=bucket_name)
+----
++
+The output displays information about the files that are available in the specified bucket.
+. Locate the code cell that lists only the names of the files.
++
+[source]
+----
+#Print only names of files
+bucket_name = ‘<bucket_name>’
+for key in s3_client.list_objects_v2(Bucket=bucket_name)[‘Contents’]:
+	print(key[‘Key’])
+----
++
+. Replace `_<bucket_name>_` with the name of your bucket, as shown in the example, and run the code cell:
++
+[source]
+----
+#Print only names of files
+bucket_name = ‘aqs27-registry’
+for key in s3_client.list_objects_v2(Bucket=bucket_name)[‘Contents’]:
+print(key[‘Key’])
+---- 
++
+The output displays a list of file names that are available in the specified bucket.
+. Refine the previous query to specify a file path, by locating the following code cell:
++
+[source,subs="verbatim,macros",options="nowrap"]
+----
+bucket_name = ‘<bucket_name>’
+for key in s3_client.list_objects_v2(Bucket=bucket_name,Prefix=’<start_of_file_path’)[‘Contents’]:
+print(key[‘Key’])
+----
+. Replace `_<bucket_name>_` and `_<start_of_file_path>_` with your own values and run the code cell.
+
+//[role="_additional-resources"]
+//.Additional resources
+//* link:{rhoaidocshome}{default-format-url}/integrating_data_from_amazon_s3/creating-an-amazon-s3-client-using-notebook-cells_s3[Creating an Amazon S3 client using notebook cells]
+//* link:https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Client.list_objects_v2[Amazon Web Services list objects command reference]

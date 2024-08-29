@@ -1,0 +1,114 @@
+:_module-type: PROCEDURE
+
+[id="creating-an-s3-client_{context}"]
+= Creating an S3 client
+
+[role='_abstract']
+To interact with data stored in an S3-compatible object store from your workbench, you must create a local client to handle requests to the AWS S3 service by using an AWS SDK such as Boto3.
+
+Boto3 is an AWS SDK for Python that provides an API for creating and managing AWS services, such as AWS S3 or S3-compatible object storage. 
+
+After you have configured a Boto3 client for the S3 service from your workbench, you can connect and work with data in your S3-compatible object store.
+
+.Prerequisites
+* You have access to an S3-compatible object store.
+* You have stored files in a bucket on your object store.
+* You have logged in to {productname-long}.
+* If you are using specialized {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-user-group}) in OpenShift.
+* You have created a data science project.
+* You have added a workbench to the project using a Jupyter notebook image.
+* You have configured a data connection for your workbench based on the credentials of your S3-compatible storage account. 
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Projects*.
+. Click the name of the project that contains the workbench that you want to start.
+. To start a workbench that is not running, click the toggle in the *Status* column for that workbench.
+. Click the *Open* link next to your workbench.
++ 
+Your Jupyter environment window opens.
+. On the toolbar, click the *Git Clone* icon and then select *Clone a Repository*.
+. In the *Clone a repo* dialog, enter the following URL `https://github.com/opendatahub-io/odh-doc-examples.git` and then click *Clone*.
+. In the file browser, select the newly-created `odh-doc-examples` folder.
+. Double-click the newly created `storage` folder.
++ 
+You see a Jupyter notebook named `s3client_examples.ipynb`.
+. Double-click the `s3client_examples.ipynb` file to launch the notebook.
++
+The notebook opens. You see code examples for the following tasks: 
++
+** Installing Boto3 and required Boto3 libraries
+** Creating an S3 client session 
+** Creating an S3 client connection
+** Listing files
+** Creating a bucket
+** Uploading a file to a bucket
+** Downloading a file from a bucket
+** Copying files between buckets
+** Deleting an object from a bucket
+** Deleting a bucket
+. In the notebook, locate the following instructions to install Boto3 and its required libraries, and run the code cell:
++
+[source,subs="+quotes"]
+----
+#Upgrade pip to the latest version
+!pip3 install --upgrade pip
+
+#Install Boto3
+!pip3 install boto3
+ 
+#Install Boto3 libraries
+import os 
+import boto3 
+from botocore.client import Config
+from boto3 import session
+
+#Check Boto3 version
+!pip3 show boto3
+----
++
+The instructions in the code cell update the Python Package Manager (pip) to the latest version, install Boto3 and its required libraries, and display the version of Boto3 installed. 
+. Locate the following instructions to create an S3 client and session. Run the code cell. 
++
+[source,subs="+quotes"]
+----
+#Creating an S3 client
+#Define credentials
+key_id = os.environ.get('AWS_ACCESS_KEY_ID') 
+secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY') 
+endpoint = os.environ.get('AWS_S3_ENDPOINT')
+region = os.environ.get('AWS_DEFAULT_REGION')
+
+#Define client session
+session = Boto3.session.Session(aws_access_key_id=key_id, 
+aws_secret_access_key=secret_key) 
+
+#Define client connection
+s3_client = Boto3.client('s3', aws_access_key_id=key_id, 
+aws_secret_access_key=secret_key,aws_session_token=None,
+    config=Boto3.session.Config(signature_version='s3v4'),
+                        endpoint_url=endpoint,
+                        region_name=region)
+----
++
+The instructions in the code cell configure an S3 client and establish a session to your S3-compatible object store.
+
+.Verification
+* To use the S3 client to connect to your object store and list the available buckets, locate the following instructions to list buckets and run the code cell:
++
+[source,subs="+quotes"]
+----
+s3_client.list_buckets()
+----
++
+A successful response includes a `HTTPStatusCode` of `200` and a list of buckets similar to the following output:
++
+[source,subs="+quotes"]
+----
+'HTTPStatusCode': 200,
+'Buckets': [{'Name': 'aqs086-image-registry',
+'CreationDate': datetime.datetime(2024, 1, 16, 20, 21, 36, 244000, tzinfo=tzlocal  ())}]
+----
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete
