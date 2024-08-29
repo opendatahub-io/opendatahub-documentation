@@ -37,7 +37,7 @@ sum(increase(vllm:request_success_total{namespace='${namespace}',model_name='${m
 +
 [NOTE]
 --
-To generate certain vLLM runtime metrics, you must first send an inference request. Idle servers do not generate runtime metrics.
+Certain vLLM metrics are available only after an inference request is processed by a deployed model. To generate and view these metrics, you must first make an inference request to the model.
 --
 .. The following query displays the number of successful inference requests over a period of time for a model deployed with the standalone TGIS runtime:
 +
