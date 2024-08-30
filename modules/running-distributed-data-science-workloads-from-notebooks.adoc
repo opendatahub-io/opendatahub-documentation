@@ -68,10 +68,18 @@ The examples in this procedure refer to the JupyterLab integrated development en
 . Download the demo notebooks provided by the CodeFlare SDK.
 The demo notebooks provide guidelines for how to use the CodeFlare stack in your own notebooks.
 +
-To access the demo notebooks, run the `codeflare_sdk.copy_demo_nbs()` function in a Jupyter notebook.
+To download the demo notebooks, run the `copy_demo_nbs()` function in a Jupyter notebook, as follows:
++
+.Download the demo notebooks
+[source,bash]
+----
+from codeflare_sdk import copy_demo_nbs
+copy_demo_nbs()
+----
++
 The function copies the demo notebooks that are packaged with the currently installed version of the CodeFlare SDK, and clones them into the target location. 
 +
-The `codeflare_sdk.copy_demo_nbs()` function accepts two arguments:
+The `copy_demo_nbs()` function accepts two arguments:
 
 * `dir: str = "./demo-notebooks"` specifies the target location for the cloned demo notebooks. 
 If the leading character is a forward slash (/), the path is absolute. 
@@ -88,14 +96,14 @@ Examples:
 
 +
 ----
-codeflare_sdk.copy_demo_nbs("my-dir")
-codeflare_sdk.copy_demo_nbs("/absolute/path/to/target-dir")
-codeflare_sdk.copy_demo_nbs("my-dir", True)
-codeflare_sdk.copy_demo_nbs(dir="my-dir", overwrite=True)
+copy_demo_nbs("my-dir")
+copy_demo_nbs("/absolute/path/to/target-dir")
+copy_demo_nbs("my-dir", True)
+copy_demo_nbs(dir="my-dir", overwrite=True)
 ----
 
 . Locate the downloaded demo notebooks in the JupyterLab interface.
-In the left navigation pane, double-click *guided-demos*. 
+In the left navigation pane, double-click *demo-notebooks*, and then double-click *guided-demos*. 
 
 . Update each example demo notebook as follows:
 .. If not already specified, update the `import` section to import the `generate_cert` component:
