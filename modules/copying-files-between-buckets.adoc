@@ -1,0 +1,72 @@
+:_module-type: PROCEDURE
+
+[id="copying-files-to-between-buckets_{context}"]
+= Copying files between buckets
+
+[role='_abstract']
+To copy files between buckets in your object store from your workbench, use the `copy()` method. 
+
+.Prerequisites
+* You have cloned the `odh-doc-examples` repository to your workbench.
+* You have opened the `s3client_examples.ipynb` file in your workbench.
+* You have installed Boto3 and configured an S3 client.
+* You know the key of the source file that you want to copy, and the bucket that the file is stored in.
+
+.Procedure
+. In the notebook, locate the following instructions to copy files between buckets:
++
+[source]
+----
+#Copying files between buckets
+#Replace the placeholder values with your own.
+copy_source = {
+    	'Bucket': '<bucket_name>',
+    	'Key': '<key>'
+}
+s3_client.copy(copy_source, '<destination bucket>', '<destination_key>') 
+----
+. Within the `copy_source` block, replace `_<bucket_name>_` with the name of the source bucket and `_<key>_` with the key of the source file, as shown in the example.
++
+[source]
+----
+copy_source = {
+    	'Bucket': 'aqs086-image-registry',
+    	'Key': 'series43-image12-086.csv'
+}
+----
+. Replace the `<destination_bucket>` with the name of the bucket to copy to, and `<destination_key>`  with the name of the key to copy to, as shown in the example. Execute the code cell.
++
+[source]
+----
+s3_client.copy(copy_source, 'aqs971-image-registry', '/tmp/series43-image12-086.csv')
+----
+
+.Verification
+
+* Locate the following instructions to list objects in a bucket.
++
+[source]
+----
+#Copy Verification
+bucket_name = '<bucket_name>' 
+for key in s3_client.list_objects_v2(Bucket=bucket_name)['Contents']:
+    					print(key['Key'])
+----
++
+* Replace `<bucket_name>`  with the name of the destination bucket, as shown in the example, and run the code cell.
++
+[source]
+----
+#Copy Verification
+bucket_name = 'aqs971-image-registry' 
+for key in s3_client.list_objects_v2(Bucket=bucket_name)['Contents']:
+print(key['Key']). 
+----
++
+The file that you copied is displayed in the output.
+
+
+//[role="_additional-resources"]
+//.Additional resources
+//* link:{rhoaidocshome}{default-format-url}/integrating_data_from_amazon_s3/creating-an-amazon-s3-client-using-notebook-cells_s3[Creating an Amazon S3 client using notebook cells]
+//* link:https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Client.upload_file[Amazon Web Services upload file command reference]

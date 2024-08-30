@@ -1,0 +1,58 @@
+:_module-type: PROCEDURE
+
+[id="uploading-files-to-available-amazon-s3-buckets-using-notebook-cells_{context}"]
+= Uploading files to your bucket
+
+[role='_abstract']
+To upload files to your bucket from your workbench, use the `upload_file()` method. 
+
+.Prerequisites
+* You have cloned the `odh-doc-examples` repository to your workbench.
+* You have opened the `s3client_examples.ipynb` file in your workbench.
+* You have installed Boto3 and configured an S3 client.
+* You have imported the files that you want to upload to your object store to your workbench.
+
+.Procedure
+. In the notebook, locate the instructions to upload files to a bucket.
++
+[source]
+----
+#Upload file to bucket
+#Replace <file_name>, <bucket_name>, and <object_name> with your values.
+#<file_name>: Name of the file to upload. This must include the full local path to the file on your notebook.
+#<bucket_name>: The name of the bucket to upload the file to.
+#<object_name>: The full key to use to save the file to the bucket. 
+
+s3_client.upload_file('<file_name>', '<bucket_name>', '<object_name>')
+----
+. Replace `_<file_name>_`, `_<bucket_name>_` and `_<object_name>_` with your own values, as shown in the example, and then run the code cell.
++
+[source]
+----
+s3_client.upload_file('image-973-series123.csv', 'aqs973-image-registry', '/tmp/image-973-series124.csv')
+----
+
+.Verification
+
+* Locate the following instructions to list files in a bucket:
++
+[source]
+----
+#Upload Verification
+for key in s3_client.list_objects_v2(Bucket='<bucket_name>')['Contents']:    
+print(key['Key'])
+----
+* Replace `<bucket_name>` with the name of your bucket, as shown in the example, and then run the code cell.
++
+[source]
+----
+#Upload Verification
+for key in s3_client.list_objects_v2(Bucket='aqs973-image-registry')['Contents']:  print(key['Key'])
+----
++
+The file that you uploaded is displayed in the output.
+
+//[role="_additional-resources"]
+//.Additional resources
+//* link:{rhoaidocshome}{default-format-url}/integrating_data_from_amazon_s3/creating-an-amazon-s3-client-using-notebook-cells_s3[Creating an Amazon S3 client using notebook cells]
+//* link:https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Client.upload_file[Amazon Web Services upload file command reference]

@@ -1,0 +1,53 @@
+:_module-type: PROCEDURE
+
+[id="listing-available-amazon-buckets_{context}"]
+= Listing available buckets in your object store
+
+[role='_abstract']
+To list buckets that are available in your object store, use the `list_bucket()` method.
+
+.Prerequisites
+* You have cloned the `odh-doc-examples` repository to your workbench.
+* You have opened the `s3client_examples.ipynb` file in your workbench.
+* You have installed Boto3 and configured the S3 client.
+
+.Procedure
+. In the notebook, locate the following instructions that lists available buckets and then run the code cell.
++
+[source,subs="+quotes"]
+----
+#List available buckets
+s3_client.list_buckets()
+----
++
+A successful response includes an HTTP request status code of `200` and a list of buckets, similar to the following output:
++
+[source]
+----
+'HTTPStatusCode': 200,
+'Buckets': [{'Name': 'aqs086-image-registry',
+'CreationDate': datetime.datetime(2024, 1, 16, 20, 21, 36, 244000, tzinfo=tzlocal( ))},
+----
+. Locate the instructions that prints only the names of available buckets and execute the code cell.
++
+[source]
+----
+#Print only names of available buckets
+for bucket in s3_client.list_buckets()[‘Buckets’]:
+    print(bucket[‘Name’])
+----
++
+The output displays the names of the buckets, similar to the following example.
++
+[source]
+----
+aqs086-image-registry
+aqs087-image-registry
+aqs135-image-registry
+aqs246-image-registry
+----
+
+//[role="_additional-resources"]
+// .Additional resources
+// * link:{rhoaidocshome}{default-format-url}/integrating_data_from_amazon_s3/creating-an-amazon-s3-client-using-notebook-cells_s3[Creating an Amazon S3 client using notebook cells]
+// * link:https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Client.list_buckets[Amazon Web Services list buckets command reference]

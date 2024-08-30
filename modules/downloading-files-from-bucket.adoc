@@ -1,0 +1,48 @@
+:_module-type: PROCEDURE
+
+[id="downloading-files-from-available-amazon-s3-buckets-using-notebook-cells_{context}"]
+= Downloading files from your bucket
+
+[role='_abstract']
+To download a file from your bucket to your workbench, use the `download_file()` method.
+
+.Prerequisites
+
+* You have cloned the `odh-doc-examples` repository to your workbench.
+* You have opened the `s3client_examples.ipynb` file in your workbench.
+* You have installed Boto3 and configured an S3 client.
+
+.Procedure
+
+. In the notebook, locate the following instructions to download files from a bucket:
++
+[source,subs="verbatim,macros"]
+----
+#Download file from bucket
+#Replace the following values with your own:
+#<bucket_name>: The name of the bucket.
+#<object_name>: The name of the file to download. Must include full path to the file on the bucket.
+#<file_name>: The name of the file when downloaded.
+
+s3_client.download_file('<bucket_name>','<object_name>','<file_name>')
+----
+. Modify the code sample:
+.. Replace `<bucket_name>` with the name of the bucket that the file is located in... Replace `<object_name>` with the name of the file that you want to download. 
+.. Replace `<file_name>` with the name and path that you want the file to be downloaded to, as shown in the example.
++
+[source]
+----
+s3_client.download_file('aqs086-image-registry',
+                        'series35-image36-086.csv',
+                        '\tmp\series35-image36-086.csv_old')
+----
+. Run the code cell.
+
+.Verification
+
+* The file that you downloaded appears in the path that you specified on your workbench.
+
+//[role="_additional-resources"]
+//.Additional resources
+//* link:{rhoaidocshome}{default-format-url}/integrating_data_from_amazon_s3/creating-an-amazon-s3-client-using-notebook-cells_s3[Creating an Amazon S3 client using notebook cells]
+//* link:https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Client.download_file[Amazon Web Services download file command reference]
