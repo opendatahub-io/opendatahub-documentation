@@ -1,0 +1,80 @@
+:_module-type: PROCEDURE
+
+[id="downloading-the-demo-notebooks-from-the-codeflare-sdk_{context}"]
+= Downloading the demo notebooks from the CodeFlare SDK
+
+[role='_abstract']
+If you want to run distributed workloads from notebooks, the demo notebooks from the CodeFlare SDK provide guidelines on how to use the CodeFlare stack in your own notebooks.
+
+If you do not want to run distributed workloads from notebooks, you can skip this section.
+
+.Prerequisites
+ifndef::upstream[]
+* You can access a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+ifdef::upstream[]
+* You can access a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* You can access a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about projects and workbenches, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects[Working on data science projects].
+endif::[]
+ifdef::upstream[]
+* You can access a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about projects and workbenches, see link:{odhdocshome}/working-on-data-science-projects[Working on data science projects].
+endif::[]
+
+* You have Admin access for the data science project.
+** If you created the project, you automatically have Admin access. 
+** If you did not create the project, your cluster administrator must give you Admin access.
+
+* You have logged in to {productname-long}.
+* You have launched your notebook server and logged in to your notebook editor.
+The examples in this procedure refer to the JupyterLab integrated development environment (IDE).
+
+.Procedure
+. In the JupyterLab interface, click *File > New > Notebook*, and then click *Select*. 
++
+A new notebook is created in a file with a default name, for example, `Untitled.ipynb`.
+. Add the following code to a cell in the new notebook:
++
+.Code to download the demo notebooks
+[source,bash]
+----
+from codeflare_sdk import copy_demo_nbs
+copy_demo_nbs()
+----
+
+. Select the cell, and click *Run > Run selected cell*.
++
+After a few seconds, the `copy_demo_nbs()` function copies the demo notebooks that are packaged with the currently installed version of the CodeFlare SDK, and clones them into the `demo-notebooks` folder.
+
+. In the left navigation pane, right-click the new notebook and click *Delete*.
+. Click *Delete* to confirm.
+
+
+.Verification
+Locate the downloaded demo notebooks in the JupyterLab interface, as follows:
+
+. In the left navigation pane, double-click *demo-notebooks*.
+. Double-click *additional-demos* and verify that the folder contains several demo notebooks.
+. Click *demo-notebooks*.
+. Double-click *guided-demos* and verify that the folder contains several demo notebooks. 
+
+ifndef::upstream[]
+You can run these demo notebooks as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-distributed-workloads_distributed-workloads#running-distributed-data-science-workloads-from-notebooks_distributed-workloads[Running distributed data science workloads from notebooks].
+endif::[]
+ifdef::upstream[]
+You can run these demo notebooks as described in link:{odhdocshome}/working_with_distributed_workloads/#running-distributed-data-science-workloads-from-notebooks_distributed-workloads[Running distributed data science workloads from notebooks].
+endif::[]
+
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////
