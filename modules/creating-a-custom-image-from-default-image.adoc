@@ -1,0 +1,82 @@
+:_module-type: PROCEDURE
+
+[id='creating-a-custom-image-from-default-image_{context}']
+= Creating a custom image from a default {productname-short} image
+
+After {productname-long} is installed on a cluster, you can find the default workbench images under the `redhat-ods-applications` project in the OpenShift console.
+
+You can create a custom image by adding OS packages or applications to a default {productname-short} image.
+
+.Prerequisites
+
+* You know which default image you want to use as the base for your custom image. 
+ifndef::upstream[]
++
+See link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations] for a list of the {productname-short} default workbench images and their pre-installed packages.
+endif::[]
+
+* You have access to the OpenShift console for the cluster where {productname-short} is installed. 
+
+
+.Procedure
+
+. Obtain the location of the default image that you want to use as the base for your custom image.
+.. In the OpenShift console, select *Builds* -> *ImageStreams*.
+.. Select the *redhat-ods-applications* project.
+.. From the list of installed imagestreams, click the name of the image that you want to use as the base for your custom image. For example, click *pytorch*.
+.. On the ImageStream details page, click *YAML*.
+.. In the `spec:tags` section, find the tag for the version of the image that you want to use. 
++
+The location of the original image is shown in the tag's `from:name`` section, for example: 
++
+`name: 'quay.io/modh/odh-pytorch-notebook@sha256:b68e0192abf7d…'`
+
+.. Copy this location for use in your custom image.
+
+. Create a standard Containerfile or Dockerfile.
+
+. For the `FROM` instruction, specify the base image location that you copied in Step 1, for example:
++
+`FROM quay.io/modh/odh-pytorch-notebook@sha256:b68e0…`
+
+. Optional: Install OS images:
+
+.. Switch to `USER 0`. (USER 0 is required to install OS packages.)
+.. Install the packages.
+.. Switch back to `USER 1001`.
++
+The following example creates a custom workbench image that adds Java to the default PyTorch image:
++
+[source,subs="+quotes"]
+----
+ FROM quay.io/modh/odh-pytorch-notebook@sha256:b68e0…
+
+ USER 0
+
+ RUN INSTALL_PKGS="java-11-openjdk java-11-openjdk-devel" && \
+    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    yum -y clean all --enablerepo='*'
+
+ USER 1001
+----
+
+. Optional: Add Python packages:
+
+.. Specify `USER 1001`.
+.. Copy the `requirements.txt` file.
+.. Install the packages.
++
+The following example installs packages from the `requirements.txt` file in the default PyTorch image:
++
+[source,subs="+quotes"]
+----
+ FROM quay.io/modh/odh-pytorch-notebook@sha256:b68e0…
+
+ USER 1001
+
+ COPY requirements.txt ./requirements.txt
+ 
+ RUN pip install -r requirements.txt
+----  
+
+. Place your custom image file in an image registry that is accessible to {productname-short}.

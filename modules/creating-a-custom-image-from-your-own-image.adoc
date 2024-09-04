@@ -1,0 +1,160 @@
+:_module-type: PROCEDURE
+
+[id='creating-a-custom-image-from-your-own-image_{context}']
+= Creating a custom image from your own image
+
+You can build your own custom image. However, you must make sure that your image is compatible with OpenShift and {productname-short}.
+
+.Additional resources
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/images/creating-images#images-create-guide-general_create-images[General Container image guidelines section] in the OpenShift Container Platform Images documentation.
+
+* Red Hat Universal Base Image: https://catalog.redhat.com/software/base-images
+
+* Red Hat Ecosystem Catalog: https://catalog.redhat.com/
+
+== Basic guidelines for creating your own workbench image
+
+The following basic guidelines provide information to consider when you build your own custom notebook image.
+
+*Designing your image to run with USER 1001*
+
+In OpenShift, your container will run with a random UID and a GID of `0`. Make sure that your image is compatible with these user and group requirements, especially if you need write access to directories. Best practice is to design your image to run with `USER 1001`.
+
+*Avoid placing artifacts in $HOME*
+
+The persistent volume attached to the workbench will be mounted on `/opt/app-root/src`. This location is also the location of `$HOME`. Therefore, do not put any files or other resources directly in `$HOME` because they won’t be visible after the workbench is deployed (and the persistent volume is mounted).
+
+*Specifying the API endpoint*
+
+OpenShift readiness and liveness probes will query the `/api` endpoint. For a Jupyter IDE, this is the default endpoint. For other IDEs, you must specify the `/api` endpoint. 
+
+== Advanced guidelines for creating your own workbench image
+
+The following guidelines provide information to consider when you build your own custom notebook image.
+
+*Minimizing image size*
+
+A notebook image uses a "layered" file system. Every time you use a COPY or a RUN command in your notebook image file, a new layer is created. Artifacts are not deleted. When you remove an artifact, for example , a file,, it is "masked" in the next layer. Therefore, consider the following guidelines when you create your notebook image file.
+
+* Avoid using the `yum update` command. 
+
+** If you start from an image that is constantly updated, such as `ubi9/python-39` from the Red Hat Catalog, you might not need to use the yum update command. This command fetches new metadata, updates files that might not have impact, and increases the notebook image size.
+
+** Rebuild your images from scratch. Avoid running a `yum update` command on a previous version.
+
+* Group `RUN` commands. Chain your commands by adding `&& \` at the end of each line.
+
+* If you must compile code (such as a library or an application) to include in your custom image, implement multi-stage builds so that you avoid including the build artifacts in your final image. That is, compile the library or application in an intermediate image and then copy the result to your final image, leaving behind build artifacts that you do not want included.
+
+*Setting access to files and directories*
+
+* Set the ownership of files and folders to `1001:0` (user "default", group "0"), for example:
++
+----
+COPY --chown=1001:0 os-packages.txt ./
+----
++
+On OpenShift, every container is in a standard namespace (unless you modify security). The container runs with a user that has a random user ID (uid) and with a group ID (gid) of `0`. Therefore, all folders that you want to write to - and all the files you want to (temporarily) modify - in your image must be accessible by the user that has the random user ID (uid).
+Alternatively, you can set access to any user, as shown in the following example:
++
+----
+COPY --chown=775:0 os-packages.txt ./
+----
+
+* Build your image with `/opt/app-root/src` as the default location for the data that you want persisted, for example:
++
+----
+WORKDIR /opt/app-root/src
+----
++
+When a user launches a notebook from the {productname-short}*Applications* -> *Enabled* page, the "personal" volume of the user is mounted at `/opt/app-root/src`. Because this location is not configurable, when you build your custom image, you must specify this default location for persisted data.
+
+* Fix permissions to support PIP (the package manager for Python packages) in OpenShift environments. Add the following command to your custom image:
++
+----
+chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+   fix-permissions /opt/app-root -P
+----
+
+* A service within your notebook image must answer at `${NB_PREFIX}/api`, otherwise the OpenShift liveness/readiness probes fail and delete the pod for the workbench image.
++
+The `NB_PREFIX` environment variable specifies the URL path where the container is expected to be listening.
++
+The following is an example of an Nginx configuration:
++
+----
+location = ${NB_PREFIX}/api {
+	return 302  /health;
+	access_log  off;
+}
+----
+
+* For idle culling to work, the `${NB_PREFIX}/api/kernels` URL must return a specifically-formatted JSON payload, as shown in the following example:
++
+The following is an example of an Nginx configuration:
++
+----
+location = ${NB_PREFIX}/api/kernels {
+	return 302 $custom_scheme://$http_host/api/kernels/;
+	access_log  off;
+}
+
+location ${NB_PREFIX}/api/kernels/ {
+	return 302 $custom_scheme://$http_host/api/kernels/;
+	access_log  off;
+}
+
+location /api/kernels/ {
+  index access.cgi;
+  fastcgi_index access.cgi;
+  gzip  off;
+  access_log	off;
+ }
+----
++
+The returned JSON payload should be:
++
+----
+{"id":"rstudio","name":"rstudio","last_activity":(time in ISO8601 format),"execution_state":"busy","connections": 1}
+----
+
+*Enabling CodeReady Builder (CRB) and Extra Packages for Enterprise Linux (EPEL)*
+
+CRB and EPEL are repositories that provide packages which are absent from a standard Red Hat Enterprise Linux (RHEL) or Universal Base Image (UBI) installation. They are useful and required for installing some software, for example, RStudio.
+
+On UBI9 images, CRB is enabled by default. To enable EPEL on UBI9-based images, run the following command:
+
+----
+ RUN yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+----
+
+To enable CRB and EPEL on Centos Stream 9-based images, run the following command:
+
+----
+ RUN yum install -y yum-utils && \
+    yum-config-manager --enable crb && \
+    yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+
+----
+
+*Adding Elyra compatibility*
+
+If you want your custom image to support OpenShift AI pipelines V2, you must address the following requirements:
+
+* Include the `odh-elyra`` package (not the `elyra`` package), for example:
++
+----
+ FROM quay.io/modh/odh-pytorch-notebook@sha256:b68e0…
+
+ USER 0
+
+ RUN INSTALL_PKGS="odh-elyra" && \
+    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    yum -y clean all --enablerepo='*'
+
+ USER 1001
+----
+
+* Add an annotation to the imagestream 
+

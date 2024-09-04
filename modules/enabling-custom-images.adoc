@@ -1,0 +1,31 @@
+:_module-type: PROCEDURE
+
+[id='enabling-custom-images_{context}']
+= Enabling custom images in {productname-short}
+
+All {productname-short} admin users can import custom workbench images, by default, by selecting the *Settings* -> *Notebook images* navigation option in the {productname-short} dashboard.
+
+If the *Settings* -> *Notebook images* option is not available, check the following settings, depending on which navigation element does not appear in the dashboard:
+
+* The *Settings* menu does not appear in the {productname-short} navigation bar
++
+The visibility of the OpenShift AI dashboard’s Settings menu is determined by your user permissions. By default, the Settings menu is available to OpenShift AI administration users (users that are members of the rhoai-admins group). Users with the OpenShift  cluster-admin role, are automatically added to the rhoai-admins group and are granted administrator access in OpenShift AI. 
++ 
+ifdef::upstream[]
+For more information about user permissions, see link:{odhdocshome}/managing-odh/#managing-groups-and-users[Managing groups and users].
+endif::[]
+ifndef::upstream[]
+For more information about user permissions, see link:{rhoaidocshome}{default-format-url}/managing_rhoai/managing-groups-and-users[Managing groups and users].
+endif::[]
+* The *Notebook images* menu option does not appear under the *Settings* menu
++
+The visibility of the*Notebook images* menu option is controlled in the dashboard configuration, by the value of the `dashboardConfig: disableBYONImageStream` option. It is set to *false* (the *Notebook images* menu option is visible) by the default. 
++
+You need `cluster-admin` permissions to edit the dashboard configuration. 
++
+ifdef::upstream[]
+For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-odh/#customizing-the-dashboard[Customizing the dashboard].
+endif::[]
+ifndef::upstream[]
+For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_rhoai/customizing-the-dashboard[Customizing the dashboard].
+endif::[]
