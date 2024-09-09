@@ -18,7 +18,7 @@ ifdef::upstream[]
 endif::[]
 
 * You can access the following software from your data science cluster:
-** A Ray cluster image
+** A Ray cluster image that is compatible with your hardware architecture
 ** The data sets and models to be used by the workload
 ** The Python dependencies for the workload, either in a Ray image or in your own Python Package Index (PyPI) server
 
@@ -53,10 +53,10 @@ endif::[]
 Notebook files are named `_<filename>_.ipynb`.
 . In each notebook, ensure that the `import` section imports the required components from the CodeFlare SDK, as follows:
 +
-.Import section
+.Example import section
 [source,bash]
 ----
-from codeflare_sdk import Cluster, ClusterConfiguration, TokenAuthentication, generate_cert
+from codeflare_sdk import Cluster, ClusterConfiguration, TokenAuthentication
 ----
 
 . In each notebook, update the `TokenAuthentication` section to provide the `token` and `server` details to authenticate to the OpenShift cluster by using the CodeFlare SDK.
@@ -77,16 +77,39 @@ The `token` and `server` values are security credentials, treat them with care.
 
 * Do not save the token and server details in a notebook. 
 * Do not store the token and server details in Git.
+
+The token expires after 24 hours.
 ====
+
+. If you want to use custom certificates, update the `TokenAuthentication` section to add the `ca_cert_path` parameter to specify the location of the custom certificates, as shown in the following example:
++
+.Example authentication section
+[source,bash]
+----
+auth = TokenAuthentication(
+    token = "XXXXX",
+    server = "XXXXX",
+    skip_tls=False,
+    ca_cert_path="/path/to/cert"
+)
+auth.login()
+----
++
+Alternatively, you can set the `CF_SDK_CA_CERT_PATH` environment variable to specify the location of the custom certificates.
 
 . In each notebook, update the cluster configuration section as follows:
 .. If the `namespace` value is specified, replace the example value with the name of your project.
 If you omit this line, the Ray cluster is created in the current project. 
 .. If the `image` value is specified, replace the example value with a link to your Ray cluster image.
 If you omit this line, the default community Ray image `quay.io/rhoai/ray:2.23.0-py39-cu121` is used.
++
+[NOTE]
+====
+The default Ray image is an AMD64 image, which might not work on other architectures.
+====
 
 ifndef::upstream[]
-.. If your cluster admin has not configured a default local queue as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], specify the local queue for the Ray cluster, as shown in the following example:
+.. If you use Kueue to manage resource quotas and your cluster admin has not configured a default local queue as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], specify the local queue for the Ray cluster, as shown in the following example:
 +
 .Example local queue assignment
 [source,bash,subs="+quotes"]
@@ -100,7 +123,7 @@ You can show the list of local queues for your project as follows:
 ... Click *Search*, and from the *Resources* list, select *LocalQueue*.
 endif::[]
 ifdef::upstream[]
-.. If your cluster admin has not configured a default local queue as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], specify the local queue for the Ray cluster, as shown in the following example:
+.. If you use Kueue to manage resource quotas and your cluster admin has not configured a default local queue as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], specify the local queue for the Ray cluster, as shown in the following example:
 +
 .Example local queue assignment
 [source,bash]
@@ -133,11 +156,12 @@ where
 labels = {"exampleLabel1": "exampleLabel1Value", "exampleLabel2": "exampleLabel2Value"}
 ----
 
-. In each notebook, ensure that the following Ray cluster authentication code is included after the Ray cluster creation section.
+. In the `2_basic_interactive.ipynb` notebook, ensure that the following Ray cluster authentication code is included after the Ray cluster creation section.
 +
 .Ray cluster authentication code
 [source,bash,subs="+quotes"]
 ----
+from codeflare_sdk import generate_cert
 generate_cert.generate_tls_cert(cluster.config.name, cluster.config.namespace)
 generate_cert.export_env(cluster.config.name, cluster.config.namespace)
 ----
@@ -149,15 +173,17 @@ You must include the Ray cluster authentication code to enable the Ray client th
 ====
 
 ifndef::upstream[]
-. Run each cell in each notebook in turn, and review the cell output.
+. In each notebook, run each cell in turn, and review the cell output.
 +
-If an error is shown, review the output for information on the required corrective action. 
+If an error is shown, review the output to find information about the problem and the required corrective action. 
+For example, replace any deprecated parameters as instructed.
 See also link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/troubleshooting-common-problems-with-distributed-workloads-for-users_distributed-workloads[Troubleshooting common problems with distributed workloads for users].
 endif::[]
 ifdef::upstream[]
-. Run each cell in each notebook in turn, and review the cell output.
+. In each notebook, run each cell in turn, and review the cell output.
 +
-If an error is shown, review the output for information on the required corrective action. 
+If an error is shown, review the output to find information about the problem and the required corrective action. 
+For example, replace any deprecated parameters as instructed.
 See also link:{odhdocshome}/working_with_distributed_workloads/#troubleshooting-common-problems-with-distributed-workloads-for-users_distributed-workloads[Troubleshooting common problems with distributed workloads for users].
 endif::[]
 
