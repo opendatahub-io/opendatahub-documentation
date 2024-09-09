@@ -17,6 +17,40 @@ ifdef::upstream[]
 * You can access a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
 endif::[]
 
+ifndef::upstream[]
+* Your cluster administrator has created the required Kueue resources as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
+endif::[]
+ifdef::upstream[]
+* Your cluster administrator has created the required Kueue resources as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* Optional: Your cluster administrator has defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to the configuration details for that `LocalQueue` resource, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
++
+[source,bash]
+----
+"kueue.x-k8s.io/default-queue": "true"
+----
++
+[NOTE]
+====
+If your cluster administrator does not define a default local queue, you must specify a local queue in each pipeline.
+====
+endif::[]
+ifdef::upstream[]
+* Optional: Your cluster administrator has defined a _default_ local queue for the Ray cluster by creating a `LocalQueue` resource and adding the following annotation to the configuration details for that `LocalQueue` resource, as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads]:
++
+[source,bash]
+----
+"kueue.x-k8s.io/default-queue": "true"
+----
++
+[NOTE]
+====
+If your cluster administrator does not define a default local queue, you must specify a local queue in each pipeline.
+====
+endif::[]
+
 * You can access the following software from your data science cluster:
 ** A Ray cluster image that is compatible with your hardware architecture
 ** The data sets and models to be used by the workload
@@ -109,7 +143,7 @@ The default Ray image is an AMD64 image, which might not work on other architect
 ====
 
 ifndef::upstream[]
-.. If you use Kueue to manage resource quotas and your cluster admin has not configured a default local queue as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], specify the local queue for the Ray cluster, as shown in the following example:
+.. If you use Kueue to manage resource quotas and your cluster administrator has not configured a default local queue as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], specify the local queue for the Ray cluster, as shown in the following example:
 +
 .Example local queue assignment
 [source,bash,subs="+quotes"]
@@ -123,7 +157,7 @@ You can show the list of local queues for your project as follows:
 ... Click *Search*, and from the *Resources* list, select *LocalQueue*.
 endif::[]
 ifdef::upstream[]
-.. If you use Kueue to manage resource quotas and your cluster admin has not configured a default local queue as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], specify the local queue for the Ray cluster, as shown in the following example:
+.. If you use Kueue to manage resource quotas and your cluster administrator has not configured a default local queue as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-quota-management-for-distributed-workloads_distributed-workloads[Configuring quota management for distributed workloads], specify the local queue for the Ray cluster, as shown in the following example:
 +
 .Example local queue assignment
 [source,bash]
