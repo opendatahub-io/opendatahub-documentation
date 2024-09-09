@@ -171,17 +171,6 @@ You can see the list of local queues for your project as follows:
 ... Click *Search*, and from the *Resources* list, select *LocalQueue*.
 endif::[]
 
-.. In disconnected environments, if any of the Python packages required by the workload are not available in the Ray cluster, configure the Ray cluster to download the Python packages from a private PyPI server.
-+
-For example, set the `PIP_INDEX_URL` and `PIP_TRUSTED_HOST` environment variables for the Ray cluster, to specify the location of the Python dependencies, as shown in the following example:
-+
-----
-PIP_INDEX_URL: https://pypi-notebook.apps.mylocation.com/simple
-PIP_TRUSTED_HOST: pypi-notebook.apps.mylocation.com
-----
-where
-* `PIP_INDEX_URL` specifies the base URL of your private PyPI server (the default value is https://pypi.org).
-* `PIP_TRUSTED_HOST` configures Python to mark the specified host as trusted, regardless of whether that host has a valid SSL certificate or is using a secure channel.
 .. Optional: Assign a dictionary of `labels` parameters to the Ray cluster for identification and management purposes, as shown in the following example:
 +
 .Example labels assignment
