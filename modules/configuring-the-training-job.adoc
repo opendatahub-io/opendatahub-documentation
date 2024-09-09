@@ -49,7 +49,7 @@ $ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
 
 . Configure a training job, as follows:
 .. Create a YAML file named `config_trainingjob.yaml`.
-.. Add the following `ConfigMap` object definition:
+.. Add the `ConfigMap` object definition as follows:
 +
 [source]
 ----
@@ -75,9 +75,24 @@ data:
 
 ----
 
-.. Edit the training job metadata as shown in the following table.
+.. Optional: To fine-tune with Low Rank Adaptation (LoRA), update the `config.json` section to add the `lora_r`, `lora_alpha`, `lora_dropout`, `bias`, and `target_modules` parameters, as shown in the following example:
 +
-.Training job metadata
+[source]
+----
+      ...
+      "use_flash_attn": false,
+      "lora_r": 8,
+      "lora_alpha": 8,
+      "lora_dropout": 0.1,
+      "bias": "none",
+      "target_modules": ["q_proj", "v_proj"]
+    }
+
+----
+
+.. Edit the metadata of the training-job configuration as shown in the following table.
++
+.Training-job configuration metadata
 [cols="16,84"]
 |===
 |Parameter | Value
@@ -89,15 +104,15 @@ data:
 |Name of your project
 |===
 
-.. Edit the parameters of the training job as shown in the following table.
+.. Edit the parameters of the training-job configuration as shown in the following table.
 +
-.Training job parameters
+.Training-job configuration parameters
 [cols="30,70"]
 |===
 |Parameter | Value
 
 |`model_name_or_path`
-|Name of the pre-trained model
+|Name of the pre-trained model or the path to the model in the training-job container; in this example, the model name is taken from the Hugging Face web page
 
 |`training_data_path`
 |Path to the training data that you set in the `training_data.yaml` ConfigMap
@@ -126,6 +141,21 @@ data:
 |`use_flash_attn`
 |Whether to use flash attention
 
+|`lora_r`
+|LoRA: Rank of the low-rank decomposition
+
+|`lora_alpha`
+|LoRA: Scale the low-rank matrices to control their influence on the model's adaptations
+
+|`lora_dropout`
+|LoRA: Dropout rate applied to the LoRA layers, a regularization technique to prevent overfitting
+
+|`bias`
+|LoRA: Whether to adapt bias terms in the model; setting the bias to “none” indicates that no bias terms will be adapted
+
+|`target_modules`
+|LoRA: Names of the modules to apply LoRA to; includes ‘q_proj” and ‘v_proj’ by default
+
 |===
 
 .. Save your changes in the `config_trainingjob.yaml` file.
@@ -136,7 +166,13 @@ data:
 $ oc apply -f config_trainingjob.yaml
 ----
 
-. Create the training data, as follows:
+. Create the training data.
++
+[NOTE]
+====
+The training data in this simple example is for demonstration purposes only, and is not suitable for production use.
+The usual method for providing training data is to use persistent volumes. 
+====
 .. Create a YAML file named `training_data.yaml`.
 .. Add the following `ConfigMap` object definition:
 +
@@ -187,10 +223,11 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 50Gi
 
 ----
 .. Replace the example namespace value `kfto` with the name of your project, and update the other parameters to suit your environment.
+To calculate the `storage` value, multiply the model size by the number of epochs, and add a little extra as a buffer.
 .. Save your changes in the `trainedmodelpvc.yaml` file.
 .. Apply the configuration to create a Persistent Volume Claim (PVC) for the training job:
 +
