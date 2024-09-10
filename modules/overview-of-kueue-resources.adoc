@@ -4,7 +4,10 @@
 = Overview of Kueue resources
 
 [role='_abstract']
-Cluster administrators can configure Kueue resource flavors, cluster queues, and local queues to manage distributed workload resources across multiple nodes in an OpenShift cluster.
+// ENG-12318: Commenting out references to multiple cluster queues for now, and replacing with edited version
+//Cluster administrators can configure Kueue resource flavors, cluster queues, and local queues to manage distributed workload resources across multiple nodes in an OpenShift cluster.
+// When multiple cluster queues are supported, delete the following line and uncomment the previous line.
+Cluster administrators can configure Kueue resource flavors, cluster queue, and local queues to manage distributed workload resources across multiple nodes in an OpenShift cluster.
 
 == Resource flavor
 The Kueue `ResourceFlavor` object describes the resource variations that are available in a cluster. 
@@ -25,6 +28,9 @@ metadata:
   name: default-flavor
 ----
 
+// ENG-12318: Commenting out references to multiple cluster queues for now
+// When multiple cluster queues are supported, uncomment the following lines
+////
 If a cluster has heterogeneous resources, cluster administrators can define a different resource flavor for each variation in the resources available. 
 Example variations include different CPUs, different memory, or different accelerators.
 Cluster administrators can then associate the resource flavors with cluster nodes by using labels, taints, and tolerations, as shown in the following example.
@@ -49,13 +55,13 @@ spec:
     effect: "NoSchedule"
 
 ----
-
+////
 
 ifndef::upstream[]
 
 [NOTE]
 ====
-In {productname-short} {vernum}, {org-name} supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
+In {productname-short} {vernum}, {org-name} supports only empty resource flavors.
 ====
 endif::[]
 
@@ -66,10 +72,16 @@ For more information about configuring resource flavors, see link:https://kueue.
 == Cluster queue
 
 The Kueue `ClusterQueue` object manages a pool of cluster resources such as pods, CPUs, memory, and accelerators. 
-A cluster can have multiple cluster queues, and each cluster queue can reference multiple resource flavors.
+// ENG-12318: Commenting out references to multiple cluster queues for now, and replacing with edited version
+//A cluster can have multiple cluster queues, and each cluster queue can reference multiple resource flavors.
+// When multiple cluster queues are supported, delete the following line and uncomment the previous line.
+A cluster queue can reference multiple resource flavors.
 
-Cluster administrators can configure cluster queues to define the resource flavors that the queue manages, and assign a quota for each resource in each resource flavor.
-Cluster administrators can also configure usage limits and queueing strategies to apply fair sharing rules across multiple cluster queues in a cluster.
+
+Cluster administrators can configure a cluster queue to define the resource flavors that the queue manages, and assign a quota for each resource in each resource flavor.
+// ENG-12318: Commenting out references to multiple cluster queues for now
+// When multiple cluster queues are supported, uncomment the following line
+//Cluster administrators can also configure usage limits and queueing strategies to apply fair sharing rules across multiple cluster queues in a cluster.
  
 The following example configures a cluster queue to assign a quota of 9 CPUs, 36 GiB memory, 5 pods, and 5 NVIDIA GPUs.
 
@@ -111,8 +123,8 @@ Cluster administrators can configure local queues to specify the project name an
 Each local queue then grants access to the resources that its specified cluster queue manages.
 A cluster administrator can optionally define one local queue in a project as the default local queue for that project.
 
-When configuring a distributed workload, the user specifies the local queue name.
-If a cluster administrator configured a default local queue, the user can omit the local queue specification from the distributed workload code.
+When configuring a distributed workload, the user can specify the local queue name.
+If a cluster administrator configured a default local queue, or if not using Kueue to manage resources, the user can omit the local queue specification from the distributed workload code.
 
 Kueue allocates the resources for a distributed workload from the cluster queue that is associated with the local queue, if the total requested resources are within the quota limits specified in that cluster queue.
 
