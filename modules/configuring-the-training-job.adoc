@@ -5,7 +5,7 @@
 
 [role='_abstract']
 Before you can use a training job to tune a model, you must configure the training job. 
-The example training job in this section is based on the IBM and Hugging Face tuning example provided link:https://github.com/foundation-model-stack/fms-hf-tuning/tree/main/examples/prompt_tuning_twitter_complaints[here]. 
+The example training job in this section is based on the IBM and Hugging Face tuning example provided in link:https://github.com/foundation-model-stack/fms-hf-tuning/tree/main/examples/prompt_tuning_twitter_complaints[GitHub]. 
 
 
 .Prerequisites
@@ -49,14 +49,15 @@ $ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
 
 . Configure a training job, as follows:
 .. Create a YAML file named `config_trainingjob.yaml`.
-.. Add the following `ConfigMap` object definition:
+.. Add the `ConfigMap` object definition as follows:
 +
+.Example training-job configuration
 [source]
 ----
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: my-config-trainingjob
+  name: training-config
   namespace: kfto
 data:
   config.json: |
@@ -70,33 +71,118 @@ data:
       "learning_rate": 1e-05,
       "response_template": "\n### Label:",
       "dataset_text_field": "output",
-      "use_flash_attn": false
+      "use_flash_attn": false,
+      "peft_method": 
+
     }
 
 ----
-.. Replace the example namespace value `kfto` with the name of your project.
-.. Edit the following parameters of the training job:
-... In the `model_name_or_path` field, specify the name of the pre-trained model.
-... In the `training_data_path` field, specify the path to the training data that you set in the `training_data.yaml` ConfigMap.
-... In the `output_dir` field, specify the output directory for the model.
-... In the `num_train_epochs` field, specify the number of epochs for training. 
-In this example, the training job is set to run 10 times.
-... In the `per_device_train_batch_size` field, specify the batch size; that is, how many data set examples to process together.
-In this example, the training job processes 4 examples at a time.
-... In the `gradient_accumulation_steps` field, specify the number of gradient accumulation steps.
-... In the `learning_rate` field, specify the learning rate for the training.
-... In the `response_template` field, specify the template formatting for the response.
-... In the `dataset_text_field` field, specify the dataset field for training output. This field is set in the `training_data.yaml` config map.
-... In the `use_flash_attn` field, specify whether to use flash attention.
+
+.. Optional: To fine-tune with Low Rank Adaptation (LoRA), update the `config.json` section as follows:
+
+... Set the `peft_method` parameter to `"lora"`.
+... Add the `lora_r`, `lora_alpha`, `lora_dropout`, `bias`, and `target_modules` parameters.
++
+.Example LoRA configuration
+[source]
+----
+      ...
+      "peft_method": "lora",
+      "lora_r": 8,
+      "lora_alpha": 8,
+      "lora_dropout": 0.1,
+      "bias": "none",
+      "target_modules": ["q_proj", "v_proj"]
+    }
+
+----
+
+.. Edit the metadata of the training-job configuration as shown in the following table.
++
+.Training-job configuration metadata
+[cols="16,84"]
+|===
+|Parameter | Value
+
+|`name`
+|Name of the training job
+
+|`namespace`
+|Name of your project
+|===
+
+.. Edit the parameters of the training-job configuration as shown in the following table.
++
+.Training-job configuration parameters
+[cols="30,70"]
+|===
+|Parameter | Value
+
+|`model_name_or_path`
+|Name of the pre-trained model or the path to the model in the training-job container; in this example, the model name is taken from the Hugging Face web page
+
+|`training_data_path`
+|Path to the training data that you set in the `training_data.yaml` ConfigMap
+
+|`output_dir`
+|Output directory for the model
+
+|`num_train_epochs`
+|Number of epochs for training; in this example, the training job is set to run 10 times
+
+|`per_device_train_batch_size`
+|Batch size, the number of data set examples to process together; in this example, the training job processes 4 examples at a time
+
+|`gradient_accumulation_steps`
+|Number of gradient accumulation steps
+
+|`learning_rate`
+|Learning rate for the training
+
+|`response_template`
+|Template formatting for the response
+
+|`dataset_text_field`
+|Dataset field for training output, as set in the `training_data.yaml` config map
+
+|`use_flash_attn`
+|Whether to use flash attention
+
+|`peft_method`
+|Tuning method: for fine-tuning, leave this field blank; for LoRA, set to `"lora"`; for prompt tuning, set to `"pt"`
+
+|`lora_r`
+|LoRA: Rank of the low-rank decomposition
+
+|`lora_alpha`
+|LoRA: Scale the low-rank matrices to control their influence on the model's adaptations
+
+|`lora_dropout`
+|LoRA: Dropout rate applied to the LoRA layers, a regularization technique to prevent overfitting
+
+|`bias`
+|LoRA: Whether to adapt bias terms in the model; setting the bias to `"none"` indicates that no bias terms will be adapted
+
+|`target_modules`
+|LoRA: Names of the modules to apply LoRA to; includes `"q_proj"` and `"v_proj"` by default
+
+|===
+
 .. Save your changes in the `config_trainingjob.yaml` file.
-.. Apply the configuration to create the `my-config-trainingjob` object:
+.. Apply the configuration to create the `training-config` object:
 +
 [source]
 ----
 $ oc apply -f config_trainingjob.yaml
 ----
 
-. Create the training data, as follows:
+. Create the training data.
++
+[NOTE]
+====
+The training data in this simple example is for demonstration purposes only, and is not suitable for production use.
+The usual method for providing training data is to use persistent volumes. 
+====
 .. Create a YAML file named `training_data.yaml`.
 .. Add the following `ConfigMap` object definition:
 +
@@ -147,10 +233,11 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 50Gi
 
 ----
 .. Replace the example namespace value `kfto` with the name of your project, and update the other parameters to suit your environment.
+To calculate the `storage` value, multiply the model size by the number of epochs, and add a little extra as a buffer.
 .. Save your changes in the `trainedmodelpvc.yaml` file.
 .. Apply the configuration to create a Persistent Volume Claim (PVC) for the training job:
 +
@@ -170,7 +257,7 @@ endif::[]
 ifdef::cloud-service[]
 . In the OpenShift console, select your project from the *Project* list.
 endif::[]
-. Click *ConfigMaps* and verify that the `my-config-trainingjob` and `twitter-complaints` ConfigMaps are listed. 
+. Click *ConfigMaps* and verify that the `training-config` and `twitter-complaints` ConfigMaps are listed. 
 . Click *Search*. From the *Resources* list, select *PersistentVolumeClaim* and verify that the `trained-model` PVC is listed.
 
 

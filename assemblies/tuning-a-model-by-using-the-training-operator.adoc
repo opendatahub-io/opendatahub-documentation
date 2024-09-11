@@ -7,14 +7,12 @@ ifdef::context[:parent-context: {context}]
 = Tuning a model by using the Training Operator
 
 [role='_abstract']
-To tune a model by using the Kubeflow Training Operator, complete the following tasks:
+To tune a model by using the Kubeflow Training Operator, you configure and run a training job.
 
-* Configure the Training Operator permissions (you can skip this task if you use Kueue to run PyTorch jobs)
-* Configure the training job
-* Run the training job
-* Monitor the training job
+Optionally, you can use Low-Rank Adaptation (LoRA) to efficiently fine-tune large language models, such as Llama 3. 
+The integration optimizes computational requirements and reduces memory footprint, allowing fine-tuning on consumer-grade GPUs. 
+The solution combines PyTorch Fully Sharded Data Parallel (FSDP) and LoRA to enable scalable, cost-effective model training and inference, enhancing the flexibility and performance of AI workloads within OpenShift environments.
 
-include::modules/configuring-the-training-operator-permissions-when-not-using-kueue.adoc[leveloffset=+1]
 include::modules/configuring-the-training-job.adoc[leveloffset=+1]
 include::modules/running-the-training-job.adoc[leveloffset=+1]
 include::modules/monitoring-the-training-job.adoc[leveloffset=+1]
