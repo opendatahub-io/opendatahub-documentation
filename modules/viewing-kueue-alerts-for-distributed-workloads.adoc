@@ -1,0 +1,96 @@
+:_module-type: PROCEDURE
+
+[id="viewing-kueue-alerts-for-distributed-workloads_{context}"]
+= Viewing Kueue alerts for distributed workloads
+
+[role='_abstract']
+
+In {productname-short}, you can view Kueue alerts for your cluster.
+Each alert provides a link to a _runbook_.
+The runbook provides instructions on how to resolve the situation that triggered the alert.
+
+.Prerequisites
+ifdef::upstream,self-managed[]
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to OpenShift with the `cluster-admin` role.
+endif::[]
+
+ifndef::upstream[]
+* You can access a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+ifdef::upstream[]
+* You can access a data science cluster that is configured to run distributed workloads as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-distributed-workloads_distributed-workloads[Configuring distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* You can access a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about projects and workbenches, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects[Working on data science projects].
+endif::[]
+ifdef::upstream[]
+* You can access a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+For information about projects and workbenches, see link:{odhdocshome}/working-on-data-science-projects[Working on data science projects].
+endif::[]
+
+* You have logged in to {productname-long}.
+* Your data science project contains distributed workloads.
+
+.Procedure
+
+ifdef::upstream,self-managed[]
+. In the {openshift-platform} console, click *Observe* -> *Alerting*.
+endif::[]
+ifdef::cloud-service[]
+. In the OpenShift console, click *Observe* -> *Alerting*.
+endif::[]
+
+. Click the *Alerting rules* tab to view a list of all alerting rules. 
+
+* The *Severity* column indicates whether the alert is informational, a warning, or critical.
+* The *Alert state* column indicates whether a rule is currently firing.
+
+. Click the name of an alerting rule to see more details about what causes the rule to fire.  
+The alerting rules for Kueue resources are listed in the following table.
++
+.Alerting rules for Kueue resources
+[cols="15,20,65"]
+|===
+|Severity | Name | Fires when ...
+
+|*Critical*
+|`KueuePodDown`
+|The Kueue pod is not ready for a period of 5 minutes.
+
+|*Info*
+|`LowClusterQueueResourceUsage`
+|Resource usage in the cluster queue is below 20% of its nominal quota for more than 1 day. 
+Resource usage refers to any resources listed in the cluster queue, such as CPU, memory, and so on.
+
+|*Info*
+|`ResourceReservationExceedsQuota`
+|Resource reservation is 10 times the available quota in the cluster queue. 
+Resource reservation refers to any resources listed in the cluster queue, such as CPU, memory, and so on.
+
+|*Info*
+|`PendingWorkloadPods`
+|A pod has been in a `Pending` state for more than 3 days.
+
+|===
+
+. If the *Alert state* of an alerting rule is set to *Firing*, complete the following steps:
+.. Click *Observe* -> *Alerting* and then click the *Alerts* tab. 
+.. Click each alert for the firing rule, to see more details.
+Note that a separate alert is fired for each resource type affected by the alerting rule.
+
+.. On the alert details page, in the *Runbook* section, click the link to open a GitHub page that provides troubleshooting information.
+.. Complete the runbook steps to identify the cause of the alert and resolve the situation.
+
+
+
+.Verification
+
+After you resolve the cause of the alert, the alerting rule stops firing.
+
+//.See also
+//Viewing HTTP request metrics for a deployed model
