@@ -51,6 +51,7 @@ $ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
 .. Create a YAML file named `config_trainingjob.yaml`.
 .. Add the `ConfigMap` object definition as follows:
 +
+.Example training-job configuration
 [source]
 ----
 kind: ConfigMap
@@ -70,17 +71,23 @@ data:
       "learning_rate": 1e-05,
       "response_template": "\n### Label:",
       "dataset_text_field": "output",
-      "use_flash_attn": false
+      "use_flash_attn": false,
+      "peft_method": 
+
     }
 
 ----
 
-.. Optional: To fine-tune with Low Rank Adaptation (LoRA), update the `config.json` section to add the `lora_r`, `lora_alpha`, `lora_dropout`, `bias`, and `target_modules` parameters, as shown in the following example:
+.. Optional: To fine-tune with Low Rank Adaptation (LoRA), update the `config.json` section as follows:
+
+... Set the `peft_method` parameter to `"lora"`.
+... Add the `lora_r`, `lora_alpha`, `lora_dropout`, `bias`, and `target_modules` parameters.
 +
+.Example LoRA configuration
 [source]
 ----
       ...
-      "use_flash_attn": false,
+      "peft_method": "lora",
       "lora_r": 8,
       "lora_alpha": 8,
       "lora_dropout": 0.1,
@@ -140,6 +147,9 @@ data:
 
 |`use_flash_attn`
 |Whether to use flash attention
+
+|`peft_method`
+|Tuning method: for fine-tuning, leave this field blank; for LoRA, set to `"lora"`; for prompt tuning, set to `"pt"`
 
 |`lora_r`
 |LoRA: Rank of the low-rank decomposition
