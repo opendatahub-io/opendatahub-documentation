@@ -25,7 +25,14 @@ You can use catch up runs to ensure your pipeline runs do not permanently fall b
 
 After a pipeline run executes, you can view details of its executed tasks on the *Executions* page, along with its artifacts, on the *Artifacts* page. From the *Executions* page, you can view the execution status of each task, which indicates whether it completed successfully. You can also view further information about each executed task by clicking the execution name in the list. From the *Artifacts* page, you can view the details of each pipeline artifact, such as its name, unique ID, type, and URI. Pipeline artifacts can help you to evaluate the performance of your pipeline runs and make it easier to understand your pipeline components. Pipeline artifacts can range from plain text data to detailed, interactive data visualizations.
 
-You can view further information about each artifact by clicking the artifact name in the list. You can also view or download the content of the artifact itself by clicking the artifact URI in the list. If your browser can display the artifact content, for example, if the artifact is plain text, HTML, or markdown, the content does not download, but is automatically displayed in a new browser tab. If your browser cannot display the artifact content, for example, if the artifact is a model, the artifact automatically downloads instead. To download an artifact which is displayed in a browser tab, right-click on the content and then click *Save as*. 
+You can view further information about each artifact by clicking the artifact name in the list. You can also view or download the content of artifacts that are stored in S3-compatible object storage by clicking the active artifact URI link in the list. 
+
+[NOTE]
+====
+Artifacts that are not stored in S3-compatible object storage are not available to download, and will not appear with an active URI link.
+====
+
+If your browser can display the artifact content, for example, if the artifact is plain text, HTML, or markdown, the content does not download, but is automatically displayed in a new browser tab. If your browser cannot display the artifact content, for example, if the artifact is a model, the artifact automatically downloads instead. To download an artifact which is displayed in a browser tab, right-click on the content and then click *Save as*. 
 
 You can review and analyze logs for each step in an active pipeline run. With the log viewer, you can search for specific log messages, view the log for each step, and download the step logs to your local machine.
 
