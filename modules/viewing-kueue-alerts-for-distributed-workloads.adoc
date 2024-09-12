@@ -39,24 +39,24 @@ endif::[]
 .Procedure
 
 ifdef::upstream,self-managed[]
-. In the {openshift-platform} console, click *Observe* -> *Alerting*.
+. In the {openshift-platform} console, in the *Administrator* perspective, click *Observe* -> *Alerting*.
 endif::[]
 ifdef::cloud-service[]
-. In the OpenShift console, click *Observe* -> *Alerting*.
+. In the OpenShift console, in the *Administrator* perspective, click *Observe* -> *Alerting*.
 endif::[]
 
-. Click the *Alerting rules* tab to view a list of all alerting rules. 
+. Click the *Alerting rules* tab to view a list of alerting rules for default and user-defined projects.
 
 * The *Severity* column indicates whether the alert is informational, a warning, or critical.
 * The *Alert state* column indicates whether a rule is currently firing.
 
-. Click the name of an alerting rule to see more details about what causes the rule to fire.  
-The alerting rules for Kueue resources are listed in the following table.
+. Click the name of an alerting rule to see more details, such as the condition that triggers the alert.  
+The following table summarizes the alerting rules for Kueue resources.
 +
 .Alerting rules for Kueue resources
 [cols="15,20,65"]
 |===
-|Severity | Name | Fires when ...
+|Severity | Name | Trigger condition
 
 |*Critical*
 |`KueuePodDown`
