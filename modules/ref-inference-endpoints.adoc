@@ -159,6 +159,15 @@ curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H \
 "content": "<content>" \
 }] -H 'Authorization: Bearer <token>'
 ----
+[NOTE]
+--
+As of vLLM v0.5.5, you must provide a chat template while querying a model using the `/v1/chat/completions` endpoint. If your model does not include a built-in chat template, you can provide one by using the `chat-template` parameter within your custom vLLM runtime and also use the example templates provided in the vLLM image under `/apps/data/template`:
++
+[source]
+----
+--chat-template=/apps/data/template/template_chatml.jinja
+----
+--
 --
 endif::[]
 ifdef::self-managed,cloud-service[]
