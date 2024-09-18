@@ -87,14 +87,20 @@ vLLM ServingRuntime for KServe::
 * `:443/detokenize`
 +
 [NOTE]
---
-The vLLM runtime is compatible with the OpenAI REST API. For a list of models that the vLLM runtime supports, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
---
+====
+* The vLLM runtime is compatible with the OpenAI REST API. For a list of models that the vLLM runtime supports, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
+* To use the embeddings inference endpoint in vLLM, you must use an embeddings model that the vLLM supports. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
+* As of vLLM v0.5.5, you must provide a chat template while querying a model using the `/v1/chat/completions` endpoint. If your model does not include a predefined chat template, you can use the `chat-template` command-line parameter to specify a chat template in your custom vLLM runtime, as shown in the example. Replace `<CHAT_TEMPLATE>` with the path to your template.
 +
-[NOTE]
---
-To use the embeddings inference endpoint in vLLM, you must use an embeddings model that the vLLM supports. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
---
+[source]
+----
+containers:
+  - args:
+      - --chat-template=<CHAT_TEMPLATE>
+----
++
+You can use the chat templates that are available as `.jinja` files link:https://github.com/opendatahub-io/vllm/tree/main/examples[here] or with the vLLM image under `/apps/data/template`. For more information, see link:https://huggingface.co/docs/transformers/main/chat_templating[Chat templates].
+====
 +
 
 As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
