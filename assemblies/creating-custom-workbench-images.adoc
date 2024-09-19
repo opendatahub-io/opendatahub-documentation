@@ -1,0 +1,73 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: custom-images
+
+[id="creating-custom-workbench-images"]
+= Creating custom workbench images
+:upstream:
+//:preview:
+
+{productname-long} includes a selection of default workbench images that a data scientist can select when they create or edit a workbench.
+
+In addition, you can import a custom workbench image, for example, if you want to add libraries that data scientists often use, or if your data scientists require a specific version of a library that is different from the version provided in a default image. Custom workbench images are also useful if your data scientists require operating system packages or applications because they cannot install them directly in their running environment (data scientist users don't have root access, which is needed for those operations).
+
+A custom workbench image is simply a container image. You build one as you would build any standard container image, by using a Containerfile (or Dockerfile). You start from an existing image (the `FROM` instruction), and then add your required elements.
+
+You have the following options for creating a custom workbench image:
+
+ifdef::upstream[]
+* Start from one of the default images, as described in 
+link:{odhdocshome}/managing-resources/#creating-a-custom-image-from-default-image_custom-images[Creating a custom image from a default {productname-short} image]
+
+* Create your own image by following the guidelines for making it compatible with OpenShift AI, as described in 
+link:{odhdocshome}/managing-resources/#creating-a-custom-image-from-your-own-image_custom-images[Creating a custom image from your own image]
+endif::[]
+
+ifndef::upstream[]
+* Start from one of the default images, as described in 
+link:{rhoaidocshome}{default-format-url}/managing_resources/creating-custom-workbench-images#creating-a-custom-image-from-default-image_custom-images[Creating a custom image from a default {productname-short} image]
+
+* Create your own image by following the guidelines for making it compatible with OpenShift AI, as described in 
+link:{rhoaidocshome}{default-format-url}/managing_resources/creating-custom-workbench-images#creating-a-custom-image-from-your-own-image_custom-images[Creating a custom image from your own image]
+endif::[]
+
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+{org-name} supports adding custom workbench images to your deployment of {productname-short}, ensuring that they are available for selection when creating a workbench. However, {org-name} does not support the contents of your custom workbench image. That is, if your custom workbench image is available for selection during workbench creation, but does not create a usable workbench, {org-name} does not provide support to fix your custom workbench image.
+
+
+====
+endif::[]
+
+.Additional resources
+
+ifndef::upstream[]
+For a list of the {productname-short} default workbench images and their pre-installed packages, see link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations].
+end
+endif::[]
+
+For more information about creating images, see the following resources:
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/images/creating-images[Red Hat OpenShift Container Platform - Creating Images]
+* link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/4/html/images/creating-images#creating-images[Red Hat OpenShift Service on AWS - Creating images]
+* link:https://docs.docker.com/engine/reference/builder/[Red Hat OpenShift Dedicated - Dockerfile reference documentation]
+
+
+ifdef::preview[]
+include::../_artifacts/document-attributes-global.adoc[]
+endif::preview[]
+
+include::modules/creating-a-custom-image-from-default-image.adoc[leveloffset=+1]
+
+include::modules/creating-a-custom-image-from-your-own-image.adoc[leveloffset=+1]
+
+include::modules/enabling-custom-images.adoc[leveloffset=+1]
+
+include::modules/importing-a-custom-workbench-image.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

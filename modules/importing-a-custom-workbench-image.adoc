@@ -1,0 +1,75 @@
+:_module-type: PROCEDURE
+
+[id='importing-a-custom-workbench-image_{context}']
+= Importing a custom workbench image
+
+[role='_abstract']
+ifdef::upstream[]
+You can import custom workbench images that cater to your {productname-short} project's specific requirements. From the *Notebook images* page, you can enable or disable a previously imported workbench image and create an accelerator profile as a recommended accelerator for existing notebook images.
+endif::[]
+ifndef::upstream[]
+In addition to workbench images provided and supported by {org-name} and independent software vendors (ISVs), you can import custom workbench images that cater to your project's specific requirements.
+endif::[]
+
+You must import it so that your {productname-short} users (data scientists) can access it when they create a project workbench.
+
+ifndef::upstream[]
+{org-name} supports adding custom workbench images to your deployment of {productname-short}, ensuring that they are available for selection when creating a workbench. However, {org-name} does not support the contents of your custom workbench image. That is, if your custom workbench image is available for selection during workbench creation, but does not create a usable workbench, {org-name} does not provide support to fix your custom workbench image.
+endif::[]
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* You have {productname-short} administrator permissions.
+* Your custom image exists in an image registry that is accessible to {productname-short}.
+
+ifdef::upstream[]
+* The *Settings* -> *Notebook images* dashboard navigation menu option is enabled, as described in link:{odhdocshome}/managing-resources/#enabling-custom-images_custom-images[Creating a custom image from a default {productname-short} image].
+endif::[]
+ifndef::upstream[]
+* The *Settings* -> *Notebook images* dashboard navigation menu option is enabled, as described in link:{rhoaidocshome}{default-format-url}/managing_resources/creating-custom-workbench-images#enabling-custom-images_custom-images[Enabling custom workbench images in {productname-short}].
+endif::[]
+
+* If you want to associate an accelerator with the custom image that you want to import, you know the accelerator's identifier - the unique string that identifies the hardware accelerator.
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Notebook images*.
++
+The *Notebook images* page appears. Previously imported images are displayed. To enable or disable a previously imported image, on the row containing the relevant image, click the toggle in the *Enable* column. 
+
+. Optional: If you want to associate an accelerator and you have not already created an accelerator profile, click  *Create profile* on the row containing the image and complete the relevant fields. If the image does not contain an accelerator identifier, you must manually configure one before creating an associated accelerator profile.  
+
+. Click *Import new image*. Alternatively, if no previously imported images were found, click *Import image*.
++
+The *Import Notebook images* dialog appears.
+. In the *Image location* field, enter the URL of the repository containing the image. For example: `quay.io/my-repo/my-image:tag`, `quay.io/my-repo/my-image@sha256:xxxxxxxxxxxxx`, or
+`docker.io/my-repo/my-image:tag`.
+
+. In the *Name* field, enter an appropriate name for the image.
+. Optional: In the *Description* field, enter a description for the image.
+. Optional: From the *Accelerator identifier* list, select an identifier to set its accelerator as recommended with the image. If the image contains only one accelerator identifier, the identifier name displays by default.
+. Optional: Add software to the image. After the import has completed, the software is added to the image's meta-data and displayed on the Jupyter server creation page.
+.. Click the *Software* tab.
+.. Click the *Add software* button.
+.. Click *Edit* (image:images/rhoai-edit-icon.png[The Edit icon]).
+.. Enter the *Software* name.
+.. Enter the software *Version*.
+.. Click *Confirm* (image:images/rhoai-confirm-icon.png[The Confirm icon]) to confirm your entry.
+.. To add additional software, click *Add software*, complete the relevant fields, and confirm your entry.
+. Optional: Add packages to the notebook images. After the import has completed, the packages are added to the image's meta-data and displayed on the Jupyter server creation page.
+.. Click the *Packages* tab.
+.. Click the  *Add package* button.
+.. Click *Edit* (image:images/rhoai-edit-icon.png[The Edit icon]).
+.. Enter the *Package* name. For example, if you want to include data science pipeline V2 automatically, as a runtime configuration, type `odh-elyra`.
+.. Enter the package *Version*. For example, type `3.16.7`.
+.. Click *Confirm* (image:images/rhoai-confirm-icon.png[The Confirm icon]) to confirm your entry.
+.. To add an additional package, click *Add package*, complete the relevant fields, and confirm your entry.
+. Click *Import*.
+
+.Verification
+* The image that you imported is displayed in the table on the *Notebook images* page.
+* Your custom image is available for selection when a user creates a workbench.
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://docs.openshift.com/container-platform/{ocp-latest-version}/openshift_images/image-streams-manage.html[Managing image streams]
+* link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cicd/builds/understanding-buildconfigs.html[Understanding build configurations]

@@ -12,16 +12,28 @@ ifndef::upstream[]
 For information about Red Hat support of workbench images and packages, see link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations].
 endif::[]
 
-{productname-long} contains the following notebook images that are available by default.
+The following table lists the workbench images that are installed with {productname-long} by default.
+
+If the pre-installed packages that are provided in these images are not sufficient for your use case, you have the following options:
+
+* Install additional libraries after launching a default image. This option is good if you want to add libraries on an adhoc basis as you develop models. However, it can be challenging to manage the dependencies of installed libraries and your changes are not saved when the workbench restarts.
+
+
+ifdef::upstream[]
+* Create a custom image that includes the additional libraries or packages. For more information, see
+link:{odhdocshome}/managing-resources/#creating-custom-workbench-images_custom-images[Creating custom workbench images]
+endif::[]
 
 ifndef::upstream[]
+* Create a custom image that includes the additional libraries or packages. For more information, see link:{rhoaidocshome}{default-format-url}/managing_resources/#creating-custom-workbench-images_custom-images[Creating custom workbench images].
+
 [IMPORTANT]
 ====
 Notebook images denoted with `(Technology Preview)` in this table are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete. {org-name} does not recommend using Technology Preview features in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
 ====
 endif::[]
 
-.Default notebook images
+.Default workbench images
 [cols="1,5"]
 |===
 | Image name | Description
