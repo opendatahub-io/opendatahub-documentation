@@ -37,11 +37,11 @@ The following guidelines provide information to consider when you build your own
 
 A notebook image uses a "layered" file system. Every time you use a COPY or a RUN command in your notebook image file, a new layer is created. Artifacts are not deleted. When you remove an artifact, for example , a file,, it is "masked" in the next layer. Therefore, consider the following guidelines when you create your notebook image file.
 
-* Avoid using the `yum update` command. 
+* Avoid using the `dnf update` command. 
 
-** If you start from an image that is constantly updated, such as `ubi9/python-39` from the Red Hat Catalog, you might not need to use the yum update command. This command fetches new metadata, updates files that might not have impact, and increases the notebook image size.
+** If you start from an image that is constantly updated, such as `ubi9/python-39` from the Red Hat Catalog, you might not need to use the `dnf update` command. This command fetches new metadata, updates files that might not have impact, and increases the notebook image size.
 
-** Rebuild your images from scratch. Avoid running a `yum update` command on a previous version.
+** Point to a newer version of your base image rather than performing a `dnf update` on an older version.
 
 * Group `RUN` commands. Chain your commands by adding `&& \` at the end of each line.
 
@@ -59,7 +59,7 @@ On OpenShift, every container is in a standard namespace (unless you modify secu
 Alternatively, you can set access to any user, as shown in the following example:
 +
 ----
-COPY --chown=775:0 os-packages.txt ./
+COPY --chmod=775 os-packages.txt ./
 ----
 
 * Build your image with `/opt/app-root/src` as the default location for the data that you want persisted, for example:
@@ -68,9 +68,9 @@ COPY --chown=775:0 os-packages.txt ./
 WORKDIR /opt/app-root/src
 ----
 +
-When a user launches a notebook from the {productname-short}*Applications* -> *Enabled* page, the "personal" volume of the user is mounted at `/opt/app-root/src`. Because this location is not configurable, when you build your custom image, you must specify this default location for persisted data.
+When a user launches a workbench from the {productname-short}*Applications* -> *Enabled* page, the "personal" volume of the user is mounted at `/opt/app-root/src`. Because this location is not configurable, when you build your custom image, you must specify this default location for persisted data.
 
-* Fix permissions to support PIP (the package manager for Python packages) in OpenShift environments. Add the following command to your custom image:
+* Fix permissions to support PIP (the package manager for Python packages) in OpenShift environments. Add the following command to your custom image (if needed, change `python3.9` to the Python version that you are using):
 +
 ----
 chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
@@ -85,7 +85,7 @@ The following is an example of an Nginx configuration:
 +
 ----
 location = ${NB_PREFIX}/api {
-	return 302  /health;
+	return 302  /healthz;
 	access_log  off;
 }
 ----
@@ -140,9 +140,11 @@ To enable CRB and EPEL on Centos Stream 9-based images, run the following comman
 
 *Adding Elyra compatibility*
 
-If you want your custom image to support OpenShift AI pipelines V2, you must address the following requirements:
+Support for data science pipelines V2 (provided with the `odh-elyra` package) is available in {productname-long} version 2.9 and later. Previous versions of {productname-short} support data science pipelines V1 (provided with the `elyra` package).
 
-* Include the `odh-elyra` package (not the `elyra` package), for example:
+If you want your custom image to support data science pipelines V2, you must address the following requirements:
+
+* Include the `odh-elyra` package for having support with Data Science pipeline V2 (not the `elyra` package), for example:
 +
 ----
  FROM quay.io/modh/odh-pytorch-notebook@sha256:b68e0…
@@ -156,5 +158,5 @@ If you want your custom image to support OpenShift AI pipelines V2, you must add
  USER 1001
 ----
 
-* Add an annotation to the imagestream 
+* If you want to include the data science pipeline configuration automatically, as a runtime configuration, add an annotation when you import a custom workbench image. 
 

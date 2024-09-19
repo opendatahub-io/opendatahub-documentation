@@ -3,7 +3,7 @@
 [id='creating-a-custom-image-from-default-image_{context}']
 = Creating a custom image from a default {productname-short} image
 
-After {productname-long} is installed on a cluster, you can find the default workbench images under the `redhat-ods-applications` project in the OpenShift console.
+After {productname-long} is installed on a cluster, you can find the default workbench images in the OpenShift console, under *Builds* for the `redhat-ods-applications` project.
 
 You can create a custom image by adding OS packages or applications to a default {productname-short} image.
 
@@ -15,7 +15,7 @@ ifndef::upstream[]
 See link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations] for a list of the {productname-short} default workbench images and their pre-installed packages.
 endif::[]
 
-* You have access to the OpenShift console for the cluster where {productname-short} is installed. 
+* You have `cluster-admin` access to the OpenShift console for the cluster where {productname-short} is installed. 
 
 
 .Procedure
@@ -54,8 +54,8 @@ The following example creates a custom workbench image that adds Java to the def
  USER 0
 
  RUN INSTALL_PKGS="java-11-openjdk java-11-openjdk-devel" && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
-    yum -y clean all --enablerepo='*'
+    dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    dnf -y clean all --enablerepo='*'
 
  USER 1001
 ----
@@ -79,4 +79,12 @@ The following example installs packages from the `requirements.txt` file in the 
  RUN pip install -r requirements.txt
 ----  
 
-. Place your custom image file in an image registry that is accessible to {productname-short}.
+. Build the image file. For example, you can use `podman build` locally where the image file is located and then push the image to a registry that is accessible to {productname-short}:
++
+----
+$ podman build -t my-registry/my-custom-image:0.0.1 .
+$ podman push my-registry/my-custom-image:0.0.1
+----
++
+Alternatively, you can leverage OpenShift's image build capabilities by using link:https://docs.openshift.com/container-platform/4.16/cicd/builds/understanding-buildconfigs.html[BuildConfig]. 
+
