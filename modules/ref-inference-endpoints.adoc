@@ -12,7 +12,7 @@ These examples show how to use inference endpoints to query the model.
 If you enabled token authorization when deploying the model, add the `Authorization` header and specify a token value.
 --
 
-Caikit TGIS ServingRuntime for KServe::
+== Caikit TGIS ServingRuntime for KServe
 
 * `:443/api/v1/task/text-generation`
 * `:443/api/v1/task/server-streaming-text-generation`
@@ -34,7 +34,7 @@ curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<infere
 ----
 endif::[]
 
-Caikit Standalone ServingRuntime for KServe::
+== Caikit Standalone ServingRuntime for KServe
 
 If you are serving multiple models, you can query `/info/models` or `:443 caikit.runtime.info.InfoService/GetModelsInfo` to view a list of served models.
 +
@@ -98,7 +98,7 @@ grpcurl -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoi
 ----
 --
 
-TGIS Standalone ServingRuntime for KServe::
+== TGIS Standalone ServingRuntime for KServe
 
 * `:443 fmaas.GenerationService/Generate`
 * `:443 fmaas.GenerationService/GenerateStream`
@@ -126,7 +126,7 @@ grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests":
 ----
 endif::[]
 
-OpenVINO Model Server::
+== OpenVINO Model Server
 
 * `/v2/models/<model-name>/infer`
 
@@ -148,7 +148,7 @@ curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name
 ----
 endif::[]
 
-vLLM ServingRuntime for KServe::
+== vLLM ServingRuntime for KServe
 
 * `:443/version`
 * `:443/docs`
