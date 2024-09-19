@@ -6,7 +6,6 @@ ifdef::context[:parent-context: {context}]
 
 [id="creating-custom-workbench-images"]
 = Creating custom workbench images
-:upstream:
 //:preview:
 
 {productname-long} includes a selection of default workbench images that a data scientist can select when they create or edit a workbench.
@@ -17,38 +16,13 @@ A custom workbench image is simply a container image. You build one as you would
 
 You have the following options for creating a custom workbench image:
 
-ifdef::upstream[]
 * Start from one of the default images, as described in 
 link:{odhdocshome}/managing-resources/#creating-a-custom-image-from-default-image_custom-images[Creating a custom image from a default {productname-short} image]
 
 * Create your own image by following the guidelines for making it compatible with OpenShift AI, as described in 
 link:{odhdocshome}/managing-resources/#creating-a-custom-image-from-your-own-image_custom-images[Creating a custom image from your own image]
-endif::[]
-
-ifndef::upstream[]
-* Start from one of the default images, as described in 
-link:{rhoaidocshome}{default-format-url}/managing_resources/creating-custom-workbench-images#creating-a-custom-image-from-default-image_custom-images[Creating a custom image from a default {productname-short} image]
-
-* Create your own image by following the guidelines for making it compatible with OpenShift AI, as described in 
-link:{rhoaidocshome}{default-format-url}/managing_resources/creating-custom-workbench-images#creating-a-custom-image-from-your-own-image_custom-images[Creating a custom image from your own image]
-endif::[]
-
-
-ifndef::upstream[]
-[IMPORTANT]
-====
-{org-name} supports adding custom workbench images to your deployment of {productname-short}, ensuring that they are available for selection when creating a workbench. However, {org-name} does not support the contents of your custom workbench image. That is, if your custom workbench image is available for selection during workbench creation, but does not create a usable workbench, {org-name} does not provide support to fix your custom workbench image.
-
-
-====
-endif::[]
 
 .Additional resources
-
-ifndef::upstream[]
-For a list of the {productname-short} default workbench images and their pre-installed packages, see link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations].
-end
-endif::[]
 
 For more information about creating images, see the following resources:
 
