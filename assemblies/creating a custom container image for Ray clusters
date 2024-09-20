@@ -1,0 +1,35 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="creating-a-custom-container-image-for-ray-clusters_{context}"]
+= Creating a custom container image for Ray clusters
+
+[role='_abstract']
+Learn how to build and push a custom container image for Ray clusters to your registry, so that you can run distributed workloads in {productname-short}.
+
+There are two options for creating a custom container image for Ray clusters: 
+
+. Building custom ray container images using Podman
+
+. Building custom ray container images using the integrated {productname-short} registry
+
+[NOTE]
+====
+Any examples are provided for documentation purposes on how to build custom container images for distributed workloads. These examples are not supported by {openshift-platform} and are not a part of {productname-short}.
+====
+
+include::modules/
+building-custom-ray-container-images-using-podman.adoc
+[leveloffset=+1]
+
+
+include::modules/running-distributed-data-science-workloads-from-ds-pipelines.adoc[leveloffset=+1]
+
+
+ifdef::self-managed[]
+include::modules/running-distributed-data-science-workloads-disconnected-env.adoc[leveloffset=+1]
+endif::[]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

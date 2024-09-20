@@ -1,0 +1,73 @@
+:_module-type: PROCEDURE
+
+[id="(building-custom-ray-container-images-using-the-integrated-registry)_{context}"]
+= Building custom ray container images using the integrated registry
+
+[role='_abstract']
+Build and push custom container images to your registry using the integrated {openshift-platform} container registry, so they can be used to run distributed workloads in {productname-short}.
+
+
+.Prerequisites
+
+* You have logged in to {productname-long}.
+* You have Podman or Docker installed on your local environment.
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/configuring-the-distributed-workloads-components[Configuring distributed workloads components].
+* You have access to a Ray cluster image.
+
+
+.Procedure
+
+. In a terminal window, if you are not already logged in to your OpenShift cluster, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
+----
+
+. Expose the integrated container registry by using the `defaultRoute` parameter in the `configs.imageregistry.operator.openshift.io/cluster` resource and setting the route to true:
++
+[source, bash]
+----
+oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge
+----
+
+. Wait for the route to the container registry to be admitted:
++
+[source, bash]
+----
+oc wait -n openshift-image-registry route/default-route –for=jsonpath='{.status.ingress[0].conditions[0].status}'=True
+----
+
+. Log into the integrated container registry with Podman:
++
+[source, bash]
+----
+podman login -u $(oc whoami) -p $(oc whoami -t) $(oc registry info)
+----
+
+. Push the image to the integrated container registry using the following commands:
++
+[source, bash]
+----
+podman tag ${IMG} $(oc registry info)/$(oc project -q)/${IMG}
+podman push $(oc registry info)/$(oc project -q)/${IMG}
+----
+
+. Retrieve the image repository for the tag you want:
++
+[source, bash]
+----
+oc get is ${IMG} -o jsonpath='{.status.tags[?(@.tag=="<TAG>")].items[0].dockerImageReference}'
+----
+
+
+.Next steps
+Use the custom container image to create a Ray cluster. See the [Ray documentation](https://docs.ray.io/en/latest/cluster/getting-started.html) for further information.
+
+
+
+
+
+
+
+

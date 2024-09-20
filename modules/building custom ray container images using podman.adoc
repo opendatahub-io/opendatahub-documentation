@@ -1,0 +1,53 @@
+:_module-type: PROCEDURE
+
+[id="(building-custom-ray-container-images-using-podman)_{context}"]
+= Building custom ray container images using Podman
+
+[role='_abstract']
+Build and push custom container images to your registry using Podman, so they can be used to run distributed workloads in  {productname-short}.
+
+
+.Prerequisites
+
+* You have logged in to {productname-long}.
+* You have Podman or Docker installed on your local environment.
+* You have access to a data science cluster that is configured to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/configuring-the-distributed-workloads-components[Configuring distributed workloads components].
+* You have access to a Ray cluster image.
+
+
+.Procedure
+
+. In a terminal window, if you are not already logged in to your OpenShift cluster, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
+----
+. Create a Dockerfile in the working directory where you want to build and push your custom image, as shown in the following example for the `ray-torch` image:
++
+[source, bash]
+----
+FROM quay.io/modh/ray:2.23.0-py39-cu121
+RUN python3 -m pip install torch==2.3.1
+----
+
+. Build the container image using Podman. Here is an example for building `ray-torch`:
++
+[source, bash]
+----
+export IMG=ray-torch
+cd $IMG
+podman build -t ${IMG} -f Dockerfile
+----
+
+. Push the image to the integrated container registry using the following commands:
++
+[source, bash]
+
+----
+podman tag ${IMG} $(oc registry info)/$(oc project -q)/${IMG}
+podman push $(oc registry info)/$(oc project -q)/${IMG}
+----
+
+.Next steps
+Use the custom container image to create a Ray cluster. See the [Ray documentation](https://docs.ray.io/en/latest/cluster/getting-started.html) for further information.
