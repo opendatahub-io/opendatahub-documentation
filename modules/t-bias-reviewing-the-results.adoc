@@ -1,0 +1,24 @@
+:_module-type: PROCEDURE
+
+[id="t-bias-reviewing-the-results_{context}"]
+= Reviewing the results
+
+== Are the models biased?
+
+image::images/final_spd.png[]
+
+The two models have drastically different fairness levels when applied to real-world data. Model Alpha (blue) stayed within the "acceptably fair" range between -0.1 and 0.1, ending around 0.09. However, Model Beta (yellow) plummeted out of the fair range, ending at -0.274. This indicates that non-male-identifying applicants were 27% less likely to receive a favorable outcome from Model Beta compared to male-identifying applicants.
+
+To explore this further, you can analyze your identity metrics, starting by looking at the inbound ratio of male-identifying to non-male-identifying applicants:
+
+image::images/final_male_ident.png[]
+
+In the training data, the ratio between male and non-male was around 0.8, but in the real-world data, it dropped to 0, meaning all applicants were non-male. This is a strong indicator that the training data did not match the real-world data, which is likely to indicate poor or biased model performance.
+
+== How does the production data compare to the training data?
+
+image::images/final_default.png[]
+
+Even though Model Alpha (green) was only exposed to non-male applicants, it still provided varying outcomes to the various applicants, predicting "will-default" in about 25% of cases. In contrast, Model Beta (purple) predicted "will-default" 100% of the time, meaning it predicted that every non-male applicant would default on their loan. This suggests that Model Beta is performing poorly on the real-world data or has encoded a systematic bias from its training, leading to the assumption that all non-male applicants will default.
+
+These examples highlight the critical importance of monitoring bias in production. Models that are equally fair during training can perform very differently when applied to real-world data, with hidden biases emerging only in actual use. By using TrustyAI to detect these biases early, you can safeguard against the potential harm caused by biased models in production.

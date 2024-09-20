@@ -1,9 +1,12 @@
 :_module-type: PROCEDURE
 
-[id="check-model-fairness-bias-monitoring_{context}"]
+[id="t-bias-checking-model-fairness_{context}"]
 = Checking model fairness
 
-To compute the model's cumulative fairness up to this point, you can check the `/metrics/group/fairness/spd` endpoint:
+.Procedure
+
+* To compute the model's cumulative fairness up to this point, you can check the `/metrics/group/fairness/spd` endpoint:
++
 [source]
 ----
 echo -e "=== MODEL ALPHA ==="
@@ -33,19 +36,22 @@ curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/me
 echo
 ----
 
-The payload is structured as follows:
+The payload structure is as follows:
 
-* `modelId`: The name of the model to query
+* `modelId`: The name of the model to query.
 * `protectedAttribute`: The name of the feature that distinguishes the groups that you are checking for fairness over.
 * `privilegedAttribute`: The value of the `protectedAttribute` that describes the suspected favored (positively biased) class.
 * `unprivilegedAttribute`: The value of the `protectedAttribute` that describes the suspected unfavored (negatively biased) class.
 * `outcomeName`: The name of the output that provides the output you are examining for fairness.
-* `favorableOutcome`: The value of the `outcomeName` output that describes the favorable or desired model prediction.
+* `favorableOutcome`: The value of the `outcomeName` output that describes the favorable model prediction.
 * `batchSize`: The number of previous inferences to include in the calculation.
 
-These requests return the following messages (numbers may vary):
+.Verification
 
-== Model Alpha
+Confirm that you see outputs similar to the following examples:
+
+Model Alpha::
+
 [source]
 ----
 === MODEL ALPHA ===
@@ -65,7 +71,8 @@ These requests return the following messages (numbers may vary):
 }
 ----
 
-== Model Beta
+Model Beta::
+
 [source]
 ----
 === MODEL BETA ===
@@ -85,4 +92,4 @@ These requests return the following messages (numbers may vary):
 }
 ----
 
-The `specificDefinition` field is important in understanding the real-world interpretation of these metric values. From these, you see that both model Alpha and Beta are fair over the `Is Male-Identifying` field, with the two groups' rates of positive outcomes only differing by -0.3% and 2.8% respectively.
+The `specificDefinition` field is important in understanding the real-world interpretation of these metric values; you can see that both model Alpha and Beta are fair over the `Is Male-Identifying` field, with the two groups' rates of positive outcomes only differing by -0.3% for model Alpha and 2.8% for model Beta.

@@ -1,0 +1,22 @@
+:_module-type: PROCEDURE
+
+[id="t-bias-simulating-real-world-data_{context}"]
+= Simulating real world data
+
+Now that you have scheduled your fairness and identify metric requests, you can send some "real world" data through your models to see if they remain fair.
+
+.Procedure
+
+* In a terminal window, run the following command from the directory containing the downloaded tutorial files (`odh-trustyai-demos-main`):
++
+[source]
+----
+for batch in "01" "02" "03" "04" "05" "06" "07" "08"; do
+  ./2-BiasMonitoring/scripts/send_data_batch 2-BiasMonitoring/data/batch_$batch.json
+  sleep 5
+done
+----
+
+.Verification
+
+* In the {openshift-platform} web console, click *Observe* -> *Metrics* and watch the SPD and identity metric request values change.
