@@ -1,0 +1,48 @@
+:_module-type: PROCEDURE
+
+[id='registering-a-model_{context}']
+= Registering a model
+
+[role='_abstract']
+You can register a model...
+
+.Prerequisites
+* 
+* 
+
+.Procedure
+. From the {productname-short} dashboard, click *Model Registry*.
+. From the *Model registry* dropdown menu, select the model registry that you want to register a model in.
+. Click *Register model*.
++
+The *Register model* page opens.
+. In the *Model details* section, configure details to apply to all versions of the model:
+.. In the **Model name** field, enter
+.. Optional: In the **Model description** field, enter
+. In the *Version details* section, enter details to apply to the first version of the model:
+.. In the *Version name* field, enter
+.. Optional: In the **Version description* field, enter a description for the first version of the model.
+.. In the **Source model format** field, enter
+.. In the **Source model format version** field, enter
+. In the *Model location* section, specify the location of the model by providing either object storage details, or a URI.
+. To provide object storage details, ensure that the *Object storage* radio button is selected. 
+.. To autofill the details of an existing data connection, click *Autofill from data connection*. In the *Autofill from data connection* dialog that opens, from the *Project* drop-down list, select the data science project that contains the data connection.
+... From the **Data connection name* dropdown list, select the data connection that you want to use. 
++
+This list contains only object storage types which contain a bucket.
+. Click *Autofill*.
+. Alternatively, manually fill out your object storage details:
+.. In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
+.. In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
+.. In the *Region* field, enter the default region of your S3-compatible object storage account.
+.. In the **Path** field, enter a path to a model or folder. This path cannot point to a root folder.
+. To provide a URI, ensure that the *URI* radio button is selected.
+.. In the *URI* field, enter the URI for the model.
+. Click *Register model*.
+
+.Verification
+* The new model appears on the *Model Registry* page.
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete
