@@ -3,11 +3,11 @@
 [id="t-bias-sending-training-data-to-the-models_{context}"]
 = Sending training data to the models
 
-Pass the training data through the models to be able to compute baseline fairness values.
+Pass the training data through the models.
 
 .Procedure
 
-* In a terminal window, run the following command from the directory containing the downloaded tutorial files (`odh-trustyai-demos-main`):
+* In a terminal window, run the following command from the directory that contains the downloaded tutorial files (`odh-trustyai-demos-main`):
 +
 [source]
 ----
@@ -21,7 +21,8 @@ This process can take several minutes.
 
 .Verification
 
-The script returns verification messages indicating whether TrustyAI is receiving the data, but you can also verify in the cluster metrics:
+View the script verification messages that indicate whether TrustyAI is receiving the data.
+In addition, you can verify that the process is running by viewing the cluster metrics:
 
 . In the {openshift-platform} web console, click *Observe* -> *Metrics*.
 . In the *Expression* field, enter `trustyai_model_observations_total` and click *Run Queries*. 
@@ -30,6 +31,6 @@ You should see both models listed with around 2250 inferences each, indicating t
 +
 image::images/observed_inferences.png[]
 
-. Optional: After running a query, you can select a time range and refresh interval.
+. Optional: After running a query, you can select a time range and refresh interval:
   * From the *Time range* list, select 5 minutes.
   * From the *Refresh interval* list, select 15 seconds.
