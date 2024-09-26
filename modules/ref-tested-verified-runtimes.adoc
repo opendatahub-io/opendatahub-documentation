@@ -1,0 +1,42 @@
+:_module-type: REFERENCE
+
+[id='tested-verified-runtimes_{context}']
+= Tested and verified model-serving runtimes
+
+[role='_abstract']
+
+Tested and verified runtimes are community versions of model-serving runtimes that have been tested and verified against specific versions of {productname-short}.
+
+[NOTE]
+===
+Tested and verified runtimes are not directly supported by {org-name}. You are responsible for ensuring that you are licensed to use any tested and verified runtimes that you add, and for correctly configuring and maintaining them.
+===
+
+.Model-serving runtimes
+
+|===
+| Name | Description | Exported model format 
+
+| NVIDIA Triton Inference Server | An open-source inference-serving software for fast and scalable AI in applications. | TensorRT, TensorFlow, PyTorch, ONNX, OpenVINO, Python, RAPIDS FIL, and more
+
+|===
+
+.Deployment requirements
+
+|===
+| Name | Default protocol | Additonal protocol | Model mesh support | Single node OpenShift support | Deployment mode
+
+| NVIDIA Triton Inference Server | gRPC | REST | Yes | Yes | Raw and serverless
+
+|===
+
+[role="_additional-resources"]
+.Additional resources
+ifdef::upstream[]
+* link:{odhdocshome}/serving-models/#inference-endpoints_serving-large-models[Inference endpoints]
+endif::[]
+
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#inference-endpoints_serving-large-models[Inference endpoints]
+endif::[]
+
