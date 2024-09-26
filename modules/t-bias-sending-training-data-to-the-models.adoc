@@ -1,0 +1,60 @@
+:_module-type: PROCEDURE
+
+[id="t-bias-sending-training-data-to-the-models_{context}"]
+= Sending training data to the models
+
+Pass the training data through the models.
+
+.Procedure
+
+* In a terminal window, run the following command from the directory that contains the downloaded tutorial files (`odh-trustyai-demos-main`):
++
+[source]
+----
+for batch in 0 250 500 750 1000 1250 1500 1750 2000 2250; do
+  2-BiasMonitoring/scripts/send_data_batch
+2-BiasMonitoring/data/training/$batch.json
+done
+----
++
+This process can take several minutes. 
+
+.Verification
+
+* View the script verification messages that indicate whether TrustyAI is receiving the data.
+
+* Verify that the process is running by viewing the cluster metrics:
+. In the {openshift-platform} web console, click *Observe* -> *Metrics*.
+. In the *Expression* field, enter `trustyai_model_observations_total` and click *Run Queries*. 
+. Confirm that both models are listed with around 2250 inferences each, which indicates that TrustyAI has cataloged enough inputs and outputs to begin analysis.
++
+image::images/observed_inferences.png[]
+
+. Optional: You can select a time range and refresh interval:
++
+** From the *Time range* list, select 5 minutes.
+** From the *Refresh interval* list, select 15 seconds.
+
+* Verify that TrustyAI can access the models by examining the model metadata:
+. Find the route to the TrustyAI service:
++
+[source]
+----
+TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}}); echo $TRUSTY_ROUTE
+----
+
+. Query the `/info` endpoint:
++
+[source]
+----
+curl -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/info | jq
+----
++
+A JSON file is generated with the following information for each model:
++
+** The names, data types, and positions of fields in the input and output.
+** The observed values that these fields take.
+** The total number of input-output pairs observed.
+
++
+For an example output file, see the `odh-trustyai-demos-main/2-BiasMonitoring/scripts/info_response.json` file in your downloaded tutorial files.

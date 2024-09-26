@@ -1,0 +1,97 @@
+:_module-type: PROCEDURE
+
+[id="t-bias-checking-model-fairness_{context}"]
+= Checking model fairness
+
+Compute the model's cumulative fairness up to this point.
+
+.Procedure
+
+* In a terminal window, run the following script from the directory containing the downloaded tutorial files (`odh-trustyai-demos-main`) to check the `/metrics/group/fairness/spd` endpoint:
++
+[source]
+----
+echo -e "=== MODEL ALPHA ==="
+curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/ \
+     --header 'Content-Type: application/json' \
+     --data "{
+                 \"modelId\": \"demo-loan-nn-onnx-alpha\",
+                 \"protectedAttribute\": \"Is Male-Identifying?\",
+                 \"privilegedAttribute\": 1.0,
+                 \"unprivilegedAttribute\": 0.0,
+                 \"outcomeName\": \"Will Default?\",
+                 \"favorableOutcome\": 0,
+                 \"batchSize\": 5000
+             }" | jq
+echo -e "\n\n=== MODEL BETA ==="
+curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd \
+     --header 'Content-Type: application/json' \
+     --data "{
+                 \"modelId\": \"demo-loan-nn-onnx-beta\",
+                 \"protectedAttribute\": \"Is Male-Identifying?\",
+                 \"privilegedAttribute\": 1.0,
+                 \"unprivilegedAttribute\": 0.0,
+                 \"outcomeName\": \"Will Default?\",
+                 \"favorableOutcome\": 0,
+                 \"batchSize\": 5000
+             }" | jq
+echo
+----
+
+The payload structure is as follows:
+
+* `modelId`: The name of the model to query.
+* `protectedAttribute`: The name of the feature that distinguishes the groups that you are checking for fairness over.
+* `privilegedAttribute`: The value of the `protectedAttribute` that describes the suspected favored (positively biased) class.
+* `unprivilegedAttribute`: The value of the `protectedAttribute` that describes the suspected unfavored (negatively biased) class.
+* `outcomeName`: The name of the output that provides the output you are examining for fairness.
+* `favorableOutcome`: The value of the `outcomeName` output that describes the favorable model prediction.
+* `batchSize`: The number of previous inferences to include in the calculation.
+
+.Verification
+
+Confirm that you see outputs similar to the following examples:
+
+Model Alpha::
+
+[source]
+----
+=== MODEL ALPHA ===
+{
+  "timestamp": "2024-07-25T16:26:50.412+00:00",
+  "type": "metric",
+  "value": 0.003056835834369387,
+  "namedValues": null,
+  "specificDefinition": "The SPD of 0.003057 indicates that the likelihood of Group:Is Male-Identifying?=[1.0] receiving Outcome:Will Default?=[0] was 0.305684 percentage points higher than that of Group:Is Male-Identifying?=[0.0].",
+  "name": "SPD",
+  "id": "542bd51e-dd2f-40f6-947f-c1c22bd71765",
+  "thresholds": {
+    "lowerBound": -0.1,
+    "upperBound": 0.1,
+    "outsideBounds": false
+  }
+}
+----
+
+Model Beta::
+
+[source]
+----
+=== MODEL BETA ===
+{
+  "timestamp": "2024-07-25T16:26:50.648+00:00",
+  "type": "metric",
+  "value": 0.029078518433627354,
+  "namedValues": null,
+  "specificDefinition": "The SPD of 0.029079 indicates that the likelihood of Group:Is Male-Identifying?=[1.0] receiving Outcome:Will Default?=[0] was 2.907852 percentage points higher than that of Group:Is Male-Identifying?=[0.0].",
+  "name": "SPD",
+  "id": "df292f06-9255-4158-8b02-4813a8777b7b",
+  "thresholds": {
+    "lowerBound": -0.1,
+    "upperBound": 0.1,
+    "outsideBounds": false
+  }
+}
+----
+
+The `specificDefinition` field is important in understanding the real-world interpretation of these metric values; you can see that both model Alpha and Beta are fair over the `Is Male-Identifying` field, with the two groups' rates of positive outcomes only differing by -0.3% for model Alpha and 2.8% for model Beta.

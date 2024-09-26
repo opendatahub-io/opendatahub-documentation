@@ -1,0 +1,93 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+
+[id="t-bias-setting-up-your-environment_{context}"]
+= Setting up your environment
+
+To set up your environment for this tutorial, complete the following tasks:
+
+* Download tutorial files from the link:https://github.com/trustyai-explainability/odh-trustyai-demos/tree/main[trustyai-explainability^] repository.
+* Log in to the OpenShift cluster from the command line.
+* Configure monitoring for the model serving platform.
+* Enable the TrustyAI component in the {productname-long} Operator.
+* Set up a project.
+* Authenticate the TrustyAI service.
+
+.Prerequisites
+* The {productname-long} Operator is installed on your {openshift-platform} cluster. 
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.openshift.com/container-platform/{ocp-latest-version}/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI].
+
+== Downloading the tutorial files
+
+. Go to https://github.com/trustyai-explainability/odh-trustyai-demos/tree/main.
+. Click the *Code* button and then click *Download ZIP* to download the repository.
+. Extract the downloaded repository files.
+
+== Logging in to the OpenShift cluster from the command line
+
+. Obtain the command for logging in to the OpenShift cluster from the command line:
+.. In the upper-right corner of the {openshift-platform} web console, click your user name and select *Copy login command*. 
+.. Log in with your credentials and then click *Display token*.
+.. Copy the *Log in with this token* command, which has the following syntax: 
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
+----
+. In a terminal window, paste and run the login command.
+
+== Configuring monitoring for the model serving platform
+
+To enable monitoring on user-defined projects, you must configure monitoring for the model serving platform.
+
+. Run the following command from the directory containing the downloaded tutorial files (`odh-trustyai-demos-main`):
++
+[source]
+----
+oc apply -f 1-Installation/resources/enable_uwm.yaml
+----
+
+. To configure monitoring to store metric data for 15 days, run the following command from the directory containing the downloaded tutorial files (`odh-trustyai-demos-main`):
++
+[source]
+----
+oc apply -f 1-Installation/resources/uwm_configmap.yaml
+----
+
+For more information, see link:https://opendatahub.io/docs/monitoring-data-science-models/#configuring-monitoring-for-the-multi-model-serving-platform_monitor[Configuring monitoring for the multi-model serving platform].
+
+include::enabling-trustyai-component.adoc[leveloffset=+1]
+
+== Setting up a project
+
+For this tutorial, you must create a project named `model-namespace`.
+
+. To create a new project named `model-namespace`, run the following command from the directory containing the downloaded tutorial files (`odh-trustyai-demos-main`):
++
+[source]
+----
+oc new-project model-namespace
+----
+
+. Prepare the `model-namespace` project for multi-model serving:
++
+[source]
+----
+oc label namespace model-namespace "modelmesh-enabled=true" --overwrite=true
+----
++
+[NOTE]
+====
+Model monitoring with TrustyAI is only available on the ModelMesh-based _multi-model serving platform_. Model monitoring with TrustyAI is unavailable on the KServe-based _single-model serving platform_.
+====
+
+== Authenticating the TrustyAI service
+
+TrustyAI endpoints are authenticated with a Bearer token. To obtain this token and set a variable (TOKEN) to use later, run the following command:
+
+[source]
+----
+export TOKEN=$(oc whoami -t)
+----

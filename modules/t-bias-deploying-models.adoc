@@ -1,0 +1,61 @@
+:_module-type: PROCEDURE
+
+[id="t-bias-deploying-models_{context}"]
+= Deploying models
+
+.Procedure
+
+To deploy the models for this tutorial, run the following commands from the directory containing the downloaded tutorial files (`odh-trustyai-demos-main`).
+
+. Navigate to the `model-namespace` project you created:
++
+[source]
+----
+oc project model-namespace
+----
+
+. Deploy the model's storage container:
++
+[source]
+----
+oc apply -f 2-BiasMonitoring/resources/model_storage_container.yaml
+----
+
+. Deploy the OVMS 1.x serving runtime: 
++
+[source]
+----
+oc apply -f 2-BiasMonitoring/resources/ovms-1.x.yaml
+----
+
+. Deploy the first model: 
++
+[source]
+----
+oc apply -f 2-BiasMonitoring/resources/model_alpha.yaml
+----
+
+. Deploy the second model: 
++
+[source]
+----
+oc apply -f 2-BiasMonitoring/resources/model_beta.yaml
+----
+
+.Verification
+
+. In the {openshift-platform} console, click *Workloads* → *Pods*.
+. Confirm that there are four pods:
++
+* `minio`
+* `modelmesh-serving-ovms-1.x-xxxxxxxxxx-xxxxx`
+* `modelmesh-serving-ovms-1.x-xxxxxxxxxx-xxxxx`
+* `trustyai-service-xxxxxxxxxx-xxxxx`
++
+When the TrustyAI service has registered the deployed models, the  `modelmesh-serving-ovms-1.x-xxxxx` pods are redeployed.
+
+. To verify that TrustyAI has registered the models:
+.. Select one of the `modelmesh-serving-ovms-1.x-xxxxx` pods. 
+.. Click the *Environment* tab and confirm that the `MM_PAYLOAD_PROCESSORS` field is set.
++
+image::images/model_environment.png[]
