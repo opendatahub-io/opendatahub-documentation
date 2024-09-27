@@ -54,7 +54,9 @@ In the Operator's DSCI object, you can set the `spec.trustedCABundle.managementS
 
 * `Managed`: The {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap and adds it to all non-reserved existing and new namespaces (the ConfigMap is not added to any reserved or system namespaces, such as `default`, `openshift-\*` or `kube-*`). The ConfigMap is automatically updated to reflect any changes made to the `customCABundle` field. This is the default value after installing {productname-long}.
 
+ifdef::self-managed[]
 * `Removed`: The {productname-long} Operator removes the `odh-trusted-ca-bundle` ConfigMap (if present) and disables the creation of the ConfigMap in new namespaces. If you change this field from `Managed` to `Removed`, the `odh-trusted-ca-bundle` ConfigMap is also deleted from namespaces. This is the default value after upgrading {productname-long} from 2.7 or earlier versions to {vernum}.
+endif::[]
 
 * `Unmanaged`: The {productname-long} Operator does not manage the `odh-trusted-ca-bundle` ConfigMap, allowing for an administrator to manage it instead. Changing the `managementState` from `Managed` to `Unmanaged` does not remove the `odh-trusted-ca-bundle` ConfigMap, but the ConfigMap is not updated if you make changes to the `customCABundle` field.
 
