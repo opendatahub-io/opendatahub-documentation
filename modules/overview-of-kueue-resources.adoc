@@ -58,11 +58,18 @@ spec:
 ////
 
 ifndef::upstream[]
-
+ifdef::self-managed[]
 [NOTE]
 ====
 In {productname-short} {vernum}, {org-name} supports only empty resource flavors.
 ====
+endif::[]
+ifdef::cloud-service[]
+[NOTE]
+====
+In {productname-short}, {org-name} supports only empty resource flavors.
+====
+endif::[]
 endif::[]
 
 
@@ -78,11 +85,18 @@ The Kueue `ClusterQueue` object manages a pool of cluster resources such as pods
 A cluster queue can reference multiple resource flavors.
 
 ifndef::upstream[]
-
+ifdef::self-managed[]
 [NOTE]
 ====
 In {productname-short} {vernum}, {org-name} supports only a single cluster queue per cluster.
 ====
+endif::[]
+ifdef::cloud-service[]
+[NOTE]
+====
+In {productname-short}, {org-name} supports only a single cluster queue per cluster.
+====
+endif::[]
 endif::[]
 
 Cluster administrators can configure a cluster queue to define the resource flavors that the queue manages, and assign a quota for each resource in each resource flavor.

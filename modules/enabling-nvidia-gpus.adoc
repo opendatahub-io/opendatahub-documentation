@@ -86,11 +86,20 @@ endif::[]
 
 //the following note applies to downstream only: self-managed (connected and disconnected) and cloud service
 ifndef::upstream[]
+ifdef::self-managed[]
 [NOTE]
 ====
 In {productname-short} {vernum}, {org-name} supports the use of accelerators within the same cluster only. 
 {org-name} does not support remote direct memory access (RDMA) between accelerators, or the use of accelerators across a network, for example, by using technology such as NVIDIA GPUDirect or NVLink.
 ====
+endif::[]
+ifdef::cloud-service[]
+[NOTE]
+====
+In {productname-short}, {org-name} supports the use of accelerators within the same cluster only. 
+{org-name} does not support remote direct memory access (RDMA) between accelerators, or the use of accelerators across a network, for example, by using technology such as NVIDIA GPUDirect or NVLink.
+====
+endif::[]
 endif::[]
 
 //the following step applies to downstream only: self-managed (connected and disconnected) and cloud service
