@@ -29,12 +29,22 @@ endif::[]
 
 * You have access to a Ray cluster image. For information about how to create a Ray cluster, see the link:https://docs.ray.io/en/latest/cluster/getting-started.html[Ray Clusters documentation].
 +
+ifdef::self-managed[]
 [NOTE]
 ====
 Mutual Transport Layer Security (mTLS) is enabled by default in the CodeFlare component in {productname-short}.
 {productname-short} {vernum} does not support the `submissionMode=K8sJobMode` setting in the Ray job specification, so the KubeRay Operator cannot create a submitter Kubernetes Job to submit the Ray job.
 Instead, users must configure the Ray job specification to set `submissionMode=HTTPMode` only, so that the KubeRay Operator sends a request to the RayCluster to create a Ray job.
 ====
+endif::[]
+ifdef::cloud-service[]
+[NOTE]
+====
+Mutual Transport Layer Security (mTLS) is enabled by default in the CodeFlare component in {productname-short}.
+{productname-short}, does not support the `submissionMode=K8sJobMode` setting in the Ray job specification, so the KubeRay Operator cannot create a submitter Kubernetes Job to submit the Ray job.
+Instead, users must configure the Ray job specification to set `submissionMode=HTTPMode` only, so that the KubeRay Operator sends a request to the RayCluster to create a Ray job.
+====
+endif::[]
 * You have access to the data sets and models that the distributed workload uses.
 * You have access to the Python dependencies for the distributed workload.
 
@@ -49,12 +59,22 @@ ifndef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
 See link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-nvidia-gpus_cluster-mgmt[Enabling NVIDIA GPUs].
 +
+ifdef::self-managed[]
 [NOTE]
 ====
 In {productname-short} {vernum}, for distributed workloads, {org-name} supports only NVIDIA GPU accelerators.
 {org-name} supports the use of accelerators within the same cluster only. 
 {org-name} does not support remote direct memory access (RDMA) between accelerators, or the use of accelerators across a network, for example, by using technology such as NVIDIA GPUDirect or NVLink.
 ====
+endif::[]
+ifdef::cloud-service[]
+[NOTE]
+====
+In {productname-short}, for distributed workloads, {org-name} supports only NVIDIA GPU accelerators.
+{org-name} supports the use of accelerators within the same cluster only. 
+{org-name} does not support remote direct memory access (RDMA) between accelerators, or the use of accelerators across a network, for example, by using technology such as NVIDIA GPUDirect or NVLink.
+====
+endif::[]
 endif::[]
 ifdef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support.

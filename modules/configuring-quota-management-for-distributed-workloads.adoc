@@ -38,6 +38,7 @@ endif::[]
 * You have sufficient resources. In addition to the base {productname-short} resources, you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
 
 ifndef::upstream[]
+ifdef::self-managed[]
 * The resources are physically available in the cluster.
 +
 [NOTE]
@@ -46,6 +47,17 @@ In {productname-short} {vernum}, {org-name} supports only a single cluster queue
 For more information about Kueue resources, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/overview-of-distributed-workloads_distributed-workloads#overview-of-kueue-resources_distributed-workloads[Overview of Kueue resources].
 ====
 endif::[]
+ifdef::cloud-service[]
+* The resources are physically available in the cluster.
++
+[NOTE]
+====
+In {productname-short}, {org-name} supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
+For more information about Kueue resources, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/overview-of-distributed-workloads_distributed-workloads#overview-of-kueue-resources_distributed-workloads[Overview of Kueue resources].
+====
+endif::[]
+endif::[]
+
 ifdef::upstream[]
 * The resources are physically available in the cluster.
 +
@@ -59,10 +71,18 @@ ifndef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
 See link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-nvidia-gpus_cluster-mgmt[Enabling NVIDIA GPUs].
 +
+ifdef::self-managed[]
 [NOTE]
 ====
 In {productname-short} {vernum}, {org-name} supports only NVIDIA GPU accelerators for distributed workloads.
 ====
+endif::[]
+ifdef::cloud-service[]
+[NOTE]
+====
+In {productname-short}, {org-name} supports only NVIDIA GPU accelerators for distributed workloads.
+====
+endif::[]
 endif::[]
 ifdef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support.
