@@ -123,16 +123,32 @@ auth.login()
 Alternatively, you can set the `CF_SDK_CA_CERT_PATH` environment variable to specify the location of the custom certificates.
 
 . In each notebook, update the cluster configuration section as follows:
-.. If the `namespace` value is specified, replace the example value with the name of your project.
-If you omit this line, the Ray cluster is created in the current project. 
-.. If the `image` value is specified, replace the example value with a link to your Ray cluster image.
-If you omit this line, the default community Ray image `quay.io/rhoai/ray:2.23.0-py39-cu121` is used.
-+
-[NOTE]
-====
-The default Ray image is an AMD64 image, which might not work on other architectures.
-====
 
+.. If the `namespace` value is specified, replace the example value with the name of your project.
++
+If you omit this line, the Ray cluster is created in the current project. 
+
+.. If the `image` value is specified, replace the example value with a link to your Ray cluster image.
++
+If you omit this line, the default Ray cluster image `quay.io/modh/ray:2.35.0-py39-cu121` is used.
+The default Ray image is CUDA-compatible and is tested and verified.
+This image is an AMD64 image, which might not work on other architectures. 
++
+A ROCm-compatible Ray cluster image `quay.io/modh/ray:2.35.0-py39-rocm61` is available as Developer Preview software.
+This image is also an AMD64 image, which might not work on other architectures.
++
+[IMPORTANT]
+====
+The ROCm-compatible Ray cluster image is Developer Preview software only. 
+Developer Preview software is not supported by Red{nbsp}Hat in any way and is not functionally complete or production-ready. 
+Do not use Developer Preview software for production or business-critical workloads. 
+Developer Preview software provides early access to upcoming product software in advance of its possible inclusion in a Red{nbsp}Hat product offering. 
+Customers can use this software to test functionality and provide feedback during the development process. 
+This software might not have any documentation, is subject to change or removal at any time, and has received limited testing. 
+Red{nbsp}Hat might provide ways to submit feedback on Developer Preview software without an associated SLA.
+
+For more information about the support scope of Red{nbsp}Hat Developer Preview software, see link:https://access.redhat.com/support/offerings/devpreview/[Developer Preview Support Scope].
+====
 
 .. If your cluster administrator has not configured a default local queue, specify the local queue for the Ray cluster, as shown in the following example:
 +
