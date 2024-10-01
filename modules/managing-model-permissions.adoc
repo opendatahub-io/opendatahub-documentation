@@ -1,0 +1,51 @@
+:_module-type: PROCEDURE
+
+[id="managing-model-permissions{context}"]
+= Managing model permissions 
+
+[role='_abstract']
+You can manage access to a model registry for individual users and user groups in your organization, and for service accounts in a project.
+
+.Prerequisites
+* admin user prereq
+* There must be an existing model registry...
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Model registry settings*.
+. Click *Manage permissions* beside the model registry for which you want to manage access.
++
+The permissions page for the model registry opens.
+. Provide one or more OpenShift groups with access to the project.
+.. On the *Users* tab, in the *Groups* section, click *Add group*.
+.. From the *Select a group* drop-down list, select a group.
++
+[NOTE]
+====
+To enable access for all cluster users, add `system:authenticated` to the group list.
+====
+.. To confirm your entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
+.. Optional: To add an additional group, click *Add group* and repeat the process.
+. Provide one or more users with access to the model registry.
+.. On the *Users* tab, in the *Users* section, click *Add user*.
+.. In the *Type username* field, enter the username of the user to whom you want to provide access.
+.. To confirm your entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
+.. Optional: To add an additional user, click *Add user* and repeat the process.
+. Provide all service accounts in a project with access to the model registry.
+.. On the *Projects* tab, in the *Projects* section, click *Add projects*.
+.. In the *Select or enter a project* field, select or enter the name of the project to which you want to provide access.
+.. To confirm your entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
+.. Optional: To add an additional project, click *Add project* and repeat the process.
+
+.Verification
+* Users, groups, and accounts that were granted access to the model registry can [x].
+* The *Users* and *Groups* sections on the *Permissions* tab show the respective users and groups that you granted access to the model registry.
+* The *Projects* sections on the *Projects* tab show the projects that you granted access to the model registry.
+
+
+
+
+
+
+
+
+
