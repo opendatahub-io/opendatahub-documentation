@@ -86,6 +86,21 @@ spec:
       priority: 1
       version: "2"
 ----
+. In the `metadata.name` field, make sure that the value of the runtime you are adding does not match a runtime that you have already added).
+
+. Optional: To use a custom display name for the runtime that you are adding, add a `metadata.annotations.openshift.io/display-name` field and specify a value, as shown in the following example:
++
+[source]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  name: tensorflow-triton-rest-kserve
+  annotations:
+    openshift.io/display-name: Triton ServingRuntime
+----
++
+NOTE: If you do not configure a custom display name for your runtime, {productname-short} shows the value of the `metadata.name` field.
 . Click *Create*.
 +
 The *Serving runtimes* page opens and shows the updated list of runtimes that are installed. Observe that the runtime that you added is automatically enabled. The API protocol that you specified when creating the runtime is shown.
