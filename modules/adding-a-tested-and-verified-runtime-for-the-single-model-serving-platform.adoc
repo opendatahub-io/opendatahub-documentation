@@ -1,0 +1,105 @@
+:_module-type: PROCEDURE
+
+[id="adding-a-tested-and-verified-model-serving-runtime-for-the-single-model-serving-platform_{context}"]
+
+= Adding a tested and verified model-serving runtime for the single-model serving platform
+
+In addition to preinstalled and custom model-serving runtimes, you can also use {org-name} tested and verified model-serving runtimes such as the *NVIDIA Triton Inference Server* to support your needs. For more information about {org-name} tested and verified runtimes, see link:https://access.redhat.com/articles/7089743[Tested and verified runtimes for {productname-long}^].
+ 
+You can use the {productname-long} dashboard to add and enable the *NVIDIA Triton Inference Server* runtime for the single-model serving platform. You can then choose the runtime when you deploy a model on the single-model serving platform.
+
+[role='_abstract']
+
+.Prerequisites
+* You have logged in to {productname-short} as an administrator.
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* > *Serving runtimes*.
++
+The *Serving runtimes* page opens and shows the model-serving runtimes that are already installed and enabled.
+
+. Click *Add serving runtime*.
+
+. In the *Select the model serving platforms this runtime supports* list, select *Single-model serving platform*.
+
+. In the *Select the API protocol this runtime supports* list, select *REST* or *gRPC*.
+
+.. Click *Start from scratch*.
+
+.. Enter or paste the following YAML code directly in the embedded editor.
++
+[source]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  name: tensorflow-triton-rest-kserve
+spec:
+  annotations:
+    prometheus.kserve.io/path: /metrics
+    prometheus.kserve.io/port: "8002"
+  containers:
+    - args:
+        - tritonserver
+        - --model-store=/mnt/models
+        - --grpc-port=9000
+        - --http-port=8080
+        - --allow-grpc=true
+        - --allow-http=true
+        - --log-verbose=2
+      image: nvcr.io/nvidia/tritonserver:23.05-py3
+      name: kserve-container
+      resources:
+        limits:
+          cpu: "1"
+          memory: 2Gi
+        requests:
+          cpu: "1"
+          memory: 2Gi
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+  protocolVersions:
+    - v2
+    - grpc-v2
+  supportedModelFormats:
+    - autoSelect: true
+      name: tensorrt
+      priority: 1
+      version: "8"
+    - autoSelect: true
+      name: tensorflow
+      priority: 1
+      version: "1"
+    - autoSelect: true
+      name: tensorflow
+      priority: 1
+      version: "2"
+    - autoSelect: true
+      name: onnx
+      priority: 1
+      version: "1"
+    - name: pytorch
+      version: "1"
+    - autoSelect: true
+      name: triton
+      priority: 1
+      version: "2"
+----
+. Click *Create*.
++
+The *Serving runtimes* page opens and shows the updated list of runtimes that are installed. Observe that the runtime that you added is automatically enabled. The API protocol that you specified when creating the runtime is shown.
+
+. Optional: To edit the runtime, click the action menu (&#8942;) and select *Edit*.
+
+.Verification
+* The model-serving runtime that you added is shown in an enabled state on the *Serving runtimes* page.
+
+[role='_additional-resources']
+.Additional resources
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#tested-and-verified-model-serving-runtimes_serving-large-models[Tested and verified model-serving runtimes]
+endif::[]
+ifdef::upstream[]
+* link:odhdocshome}/serving_models/serving-models#tested-and-verified-model-serving-runtimes_serving-large-models[Tested and verified model-serving runtimes]
+endif::[]
