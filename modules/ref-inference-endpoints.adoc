@@ -210,11 +210,25 @@ endif::[]
 --
 
 .Example command
+ifndef::upstream[]
 [source]
 ----
 curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'
 ----
-
+endif::[]
+ifdef::upstream[]
+[source]
+----
+curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d /
+'{ "model_name": "<model_name>", \
+   "inputs": \
+	[{ "name": "<name_of_model_input>", \
+           "shape": [<shape>], \
+           "datatype": "<data_type>", \
+           "data": [<data>] \
+         }]}' -H 'Authorization: Bearer <token>'
+----
+endif::[]
 --
 .gRPC endpoints
 * `:443 inference.GRPCInferenceService/ModelInfer`
@@ -226,6 +240,7 @@ curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name
 --
 
 .Example command
+ifdef::upstream[]
 [source]
 ----
 grpcurl -insecure \
@@ -236,6 +251,12 @@ grpcurl -insecure \
         <inference_endpoint_url>:443 \
         inference.GRPCInferenceService/ModelMetadata
 ----
+endif::[]
+ifndef::upstream[]
+----
+grpcurl -insecure -cacert ./openshift_ca_istio_knative.crt -proto ./grpc_predict_v2.proto -d @ -H "Authorization: Bearer <token>" <inference_endpoint_url>:443 inference.GRPCInferenceService/ModelMetadata
+----
+endif::[]
 
 [role='_additional-resources']
 == Additional resources
