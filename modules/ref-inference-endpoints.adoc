@@ -197,6 +197,67 @@ curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Typ
 ----
 endif::[]
 
+== NVIDIA Triton Inference Server
+
+--
+.REST endpoints
+* `v2/models/[/versions/<model_version>]/infer`
+* `v2/models/<model_name>[/versions/<model_version>]`
+* `v2/health/ready`
+* `v2/health/live`
+* `v2/models/<model_name>[/versions/]/ready`
+* `v2`
+--
+
+.Example command
+ifndef::upstream[]
+[source]
+----
+curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'
+----
+endif::[]
+ifdef::upstream[]
+[source]
+----
+curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d /
+'{ "model_name": "<model_name>", \
+   "inputs": \
+	[{ "name": "<name_of_model_input>", \
+           "shape": [<shape>], \
+           "datatype": "<data_type>", \
+           "data": [<data>] \
+         }]}' -H 'Authorization: Bearer <token>'
+----
+endif::[]
+--
+.gRPC endpoints
+* `:443 inference.GRPCInferenceService/ModelInfer`
+* `:443 inference.GRPCInferenceService/ModelReady`
+* `:443 inference.GRPCInferenceService/ModelMetadata`
+* `:443 inference.GRPCInferenceService/ServerReady`
+* `:443 inference.GRPCInferenceService/ServerLive`
+* `:443 inference.GRPCInferenceService/ServerMetadata`
+--
+
+.Example command
+ifdef::upstream[]
+[source]
+----
+grpcurl -insecure \
+        -cacert ./openshift_ca_istio_knative.crt \
+        -proto ./grpc_predict_v2.proto \
+        -d @ \
+        -H "Authorization: Bearer <token>" \
+        <inference_endpoint_url>:443 \
+        inference.GRPCInferenceService/ModelMetadata
+----
+endif::[]
+ifndef::upstream[]
+----
+grpcurl -insecure -cacert ./openshift_ca_istio_knative.crt -proto ./grpc_predict_v2.proto -d @ -H "Authorization: Bearer <token>" <inference_endpoint_url>:443 inference.GRPCInferenceService/ModelMetadata
+----
+endif::[]
+
 [role='_additional-resources']
 == Additional resources
 * link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]
@@ -204,6 +265,7 @@ endif::[]
 * link:https://github.com/caikit/caikit-nlp[Caikit NLP GitHub project^]
 * link:https://docs.openvino.ai/2023.3/ovms_docs_rest_api_kfs.html[OpenVINO KServe-compatible REST API documentation^]
 * link:https://platform.openai.com/docs/api-reference/introduction[OpenAI API documentation^]
+* link:https://kserve.github.io/website/master/modelserving/data_plane/v2_protocol/[Open Inference Protocol]
 ifdef::upstream[]
 * link:{odhdocshome}/serving-models/#supported-runtimes_serving-large-models[Supported model-serving runtimes]
 endif::[]
