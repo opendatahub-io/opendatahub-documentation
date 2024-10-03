@@ -26,22 +26,24 @@ ifndef::upstream[]
 ** Bucket name 
 --
 +
-For information about working with data stored in AWS S3, see 
-link:{rhoaidocshome}{default-format-url}/working_with_data_in_an_s3-compatible_object_store[Working with data in an S3-compatible object store].
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_data_in_an_s3-compatible_object_store[Working with data in an S3-compatible object store].
 endif::[]
 
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Projects*.
-
++
+The *Data Science Projects* page opens.
 . Click the name of the project that you want to add the workbench to.
 +
-A *Details* page for the project opens.
-. In the *Workbenches* section, click *Create a workbench*.
-. In the *Create workbench* page, configure the properties of the workbench that you are creating.
-.. In the *Name* field, enter a name for your workbench.
-.. Optional: In the *Description* field, enter a description to define your workbench.
-.. In the *Notebook image* section, complete the fields to specify the workbench image to use with your workbench.
+A project details page opens.
+. Click the *Workbenches* tab.
+. Click *Create workbench*.
++
+The *Create workbench* page opens.
+. In the *Name* field, enter a name for your workbench.
+. Optional: In the *Description* field, enter a description to define your workbench.
+. In the *Notebook image* section, complete the fields to specify the workbench image to use with your workbench.
 +
 From the *Image selection* list, select a workbench image that suits your use case. A workbench image includes an IDE and Python packages (reusable code). Optionally, click the *View package information* option to view a list of packages that are included in the image that you selected.
 +
@@ -49,9 +51,9 @@ If the workbench image has multiple versions available, select the workbench ima
 +
 NOTE: You can change the workbench image after you create the workbench.
 
-.. In the *Deployment size* section, from the *Container size* list, select a container size for your server. The container size controls the number of CPUs, the amount of memory, and the minimum and maximum request capacity of the container. 
+. In the *Deployment size* section, from the *Container size* list, select a container size for your server. The container size controls the number of CPUs, the amount of memory, and the minimum and maximum request capacity of the container. 
 
-.. Optional: Select and specify values for any environment variables. 
+. Optional: In the *Environment variables* section, select and specify values for any environment variables. 
 +
 Setting environment variables during the workbench configuration helps you save time later because you do not need to define them in the body of your notebooks, or with the IDE command line interface. 
 +
@@ -64,27 +66,33 @@ If you are using S3-compatible storage, add these recommended environment variab
 +
 {productname-short} stores the credentials as Kubernetes secrets in a protected namespace if you select *Secret* when you add the variable. 
 
-.. Configure the storage for your workbench. Select one of the following options:
-** *Create new persistent storage* to create storage that is retained after you shut down your workbench. Complete the relevant fields to define the storage. 
-** *Use existing persistent storage* to reuse existing storage and select the storage from the *Persistent storage* list. 
+. In the *Cluster storage* section, configure the storage for your workbench. Select one of the following options:
+* *Create new persistent storage* to create storage that is retained after you shut down your workbench. Complete the relevant fields to define the storage:
+.. Enter a *name* for the cluster storage.
+.. Enter a *description* for the cluster storage.
+.. Select a *storage class* for the cluster storage.
++
+NOTE: You cannot change the storage class after you add the cluster storage to the workbench.
+.. Under *Persistent storage size*, enter a new size in gibibytes. The minimum size is 1 GiB, and the maximum size is 16384 GiB.
+* *Use existing persistent storage* to reuse existing storage and select the storage from the *Persistent storage* list. 
 
-.. Optionally, you can add a data connection to your workbench. A data connection is a resource that contains the configuration parameters needed to connect to a data source or an object storage bucket. Currently, only S3-Compatible data connections are supported. You can use storage buckets for storing data, models, and pipeline artifacts. You can also use a data connection to specify the location of a model that you want to deploy.
+. Optional: You can add a data connection to your workbench. A data connection is a resource that contains the configuration parameters needed to connect to a data source or an object storage bucket. Currently, only S3-Compatible data connections are supported. You can use storage buckets for storing data, models, and pipeline artifacts. You can also use a data connection to specify the location of a model that you want to deploy.
 +
 In the *Data connections* section, select the *Use a data connection* checkbox. 
 +
 --
 * Create a new data connection as follows:
-... Select *Create new data connection*.
-... In the *Name* field, enter a unique name for the data connection.
-... In the *Access key* field, enter the access key ID for the S3-compatible object storage provider.
-... In the *Secret key* field, enter the secret access key for the S3-compatible object storage account that you specified.
-... In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
-... In the *Region* field, enter the default region of your S3-compatible object storage account.
-... In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
+.. Select *Create new data connection*.
+.. In the *Name* field, enter a unique name for the data connection.
+.. In the *Access key* field, enter the access key ID for the S3-compatible object storage provider.
+.. In the *Secret key* field, enter the secret access key for the S3-compatible object storage account that you specified.
+.. In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
+.. In the *Region* field, enter the default region of your S3-compatible object storage account.
+.. In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
 
 * Use an existing data connection as follows:
-... Select *Use existing data connection*.
-... From the *Data connection* list, select a data connection that you previously defined.
+.. Select *Use existing data connection*.
+.. From the *Data connection* list, select a data connection that you previously defined.
 --
 +
 . Click *Create workbench*.
@@ -93,4 +101,4 @@ In the *Data connections* section, select the *Use a data connection* checkbox.
 * The workbench that you created appears on the *Workbenches* tab for the project.
 * Any cluster storage that you associated with the workbench during the creation process appears on the *Cluster storage* tab for the project.
 * The *Status* column on the *Workbenches* tab displays a status of *Starting* when the workbench server is starting, and *Running* when the workbench has successfully started.
-* Optionally, click the *Open* link to open the IDE in a new window.
+* Optional: Click the *Open* link to open the IDE in a new window.
