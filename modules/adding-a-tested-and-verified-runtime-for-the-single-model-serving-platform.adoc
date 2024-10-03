@@ -24,16 +24,16 @@ The *Serving runtimes* page opens and shows the model-serving runtimes that are 
 
 . In the *Select the API protocol this runtime supports* list, select *REST* or *gRPC*.
 
-.. Click *Start from scratch*.
+. Click *Start from scratch*.
 
-.. Enter or paste the following YAML code directly in the embedded editor.
+.. If you selected the *REST* API protocol, enter or paste the following YAML code directly in the embedded editor.
 +
 [source]
 ----
 apiVersion: serving.kserve.io/v1alpha1
 kind: ServingRuntime
 metadata:
-  name: tensorflow-triton-rest-kserve
+  name: triton-kserve-rest
 spec:
   annotations:
     prometheus.kserve.io/path: /metrics
@@ -46,7 +46,6 @@ spec:
         - --http-port=8080
         - --allow-grpc=true
         - --allow-http=true
-        - --log-verbose=2
       image: nvcr.io/nvidia/tritonserver:23.05-py3
       name: kserve-container
       resources:
@@ -64,10 +63,6 @@ spec:
     - grpc-v2
   supportedModelFormats:
     - autoSelect: true
-      name: tensorrt
-      priority: 1
-      version: "8"
-    - autoSelect: true
       name: tensorflow
       priority: 1
       version: "1"
@@ -82,9 +77,73 @@ spec:
     - name: pytorch
       version: "1"
     - autoSelect: true
-      name: triton
+      name: keras
       priority: 1
       version: "2"
+----
+
+.. If you selected the *gRPC* API protocol, enter or paste the following YAML code directly in the embedded editor.
++
+[source]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  name: triton-kserve-grpc
+spec:
+  annotations:
+    prometheus.kserve.io/path: /metrics
+    prometheus.kserve.io/port: "8002"
+  containers:
+    - args:
+        - tritonserver
+        - --model-store=/mnt/models
+        - --grpc-port=9000
+        - --http-port=8080
+        - --allow-grpc=true
+        - --allow-http=true
+      image: nvcr.io/nvidia/tritonserver:23.05-py3
+      name: kserve-container
+      ports:
+        - containerPort: 9000
+          name: h2c
+          protocol: TCP
+      volumeMounts:
+        - mountPath: /dev/shm
+          name: shm
+      resources:
+        limits:
+          cpu: "1"
+          memory: 2Gi
+        requests:
+          cpu: "1"
+          memory: 2Gi
+  protocolVersions:
+    - v2
+    - grpc-v2
+  supportedModelFormats:
+    - autoSelect: true
+      name: keras
+      version: "2"
+    - autoSelect: true
+      name: tensorflow
+      priority: 1
+      version: "1"
+    - autoSelect: true
+      name: tensorflow
+      priority: 1
+      version: "2"
+    - autoSelect: true
+      name: onnx
+      priority: 1
+      version: "1"
+    - name: pytorch
+      version: "1"
+volumes:
+  - emptyDir: null
+    medium: Memory
+    sizeLimit: 2Gi
+    name: shm
 ----
 . In the `metadata.name` field, make sure that the value of the runtime you are adding does not match a runtime that you have already added).
 
@@ -95,7 +154,7 @@ spec:
 apiVersion: serving.kserve.io/v1alpha1
 kind: ServingRuntime
 metadata:
-  name: tensorflow-triton-rest-kserve
+  name: kserve-triton
   annotations:
     openshift.io/display-name: Triton ServingRuntime
 ----

@@ -243,8 +243,7 @@ endif::[]
 ifdef::upstream[]
 [source]
 ----
-grpcurl -insecure \
-        -cacert ./openshift_ca_istio_knative.crt \
+grpcurl -cacert ./openshift_ca_istio_knative.crt \
         -proto ./grpc_predict_v2.proto \
         -d @ \
         -H "Authorization: Bearer <token>" \
@@ -254,7 +253,7 @@ grpcurl -insecure \
 endif::[]
 ifndef::upstream[]
 ----
-grpcurl -insecure -cacert ./openshift_ca_istio_knative.crt -proto ./grpc_predict_v2.proto -d @ -H "Authorization: Bearer <token>" <inference_endpoint_url>:443 inference.GRPCInferenceService/ModelMetadata
+grpcurl -cacert ./openshift_ca_istio_knative.crt -proto ./grpc_predict_v2.proto -d @ -H "Authorization: Bearer <token>" <inference_endpoint_url>:443 inference.GRPCInferenceService/ModelMetadata
 ----
 endif::[]
 
