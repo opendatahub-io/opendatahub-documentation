@@ -7,8 +7,15 @@
 You can create a model registry...
 
 .Prerequisites
-* 
-* 
+* You have logged in to {productname-long}.
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the administrator group (for example, {odh-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group.
+endif::[]
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#adding-administrative-users-in-{openshift-platform-url}_install[Adding administrative users in {openshift-platform}].
+endif::[]
+* An available model registry exists in your deployment.
+* <MR component enablement/installation steps complete>
 
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *Model registry settings*.
@@ -25,6 +32,11 @@ The *Create model registry* page opens.
 .. In the *Password* field, enter the password for the default user account.
 .. In the *Database* field, enter the database name.
 . Click *Create*.
+
+[NOTE]
+====
+To find the resource name or type of a model registry, click the help icon image:images/rhoai-help-icon.png[Help icon] beside the registry name. Resource names and types are used to find your resources in OpenShift.
+====   
 
 .Verification
 * The new model registry appears on the *Model Registry Settings* page.
