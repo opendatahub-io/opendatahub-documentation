@@ -1,0 +1,41 @@
+:_module-type: PROCEDURE
+
+[id="selecting-admin-and-user-groups_{context}"]
+= Selecting {productname-short} administrator and user groups
+
+By default, all users authenticated in OpenShift can access {productname-short}.
+
+Also by default, users with `cluster-admin` permissions are {productname-short} administrators. A `cluster admin` is a superuser that can perform any action in any project in the OpenShift cluster. When bound to a user with a local binding, they have full control over quota and every action on every resource in the project. 
+
+After `cluster admin` user defines additional administrator and user groups in OpenShift, you can add those groups to {productname-short} by selecting them in the {productname-short} dashboard.
+
+.Prerequisites
+
+* You have administrator privileges in {productname-short} and can view the *Settings* navigation option in the {productname-short} dashboard.
+
+ifdef::upstream[]
+* You have logged in to {productname-long} as described in link:{odhdocshome}/getting-started-with-open-data-hub/#logging-in_get-started[Logging in to {productname-short}].
+
+* The groups that you want to select as administrator and user groups for {productname-short} already exist in {openshift-platform}. For more information, see
+link:{odhdocshome}/managing-odh/#managing-users-and-groups[Managing users and groups].
+endif::[]
+
+ifndef::upstream[]
+* You have logged in to {productname-long} as described in link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/logging-in_get-started[Logging in to {productname-short}].
+
+* The groups that you want to select as administrator and user groups for {productname-short} already exist in {openshift-platform}. For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/index#managing-users-and-groups[Managing users and groups].
+endif::[]
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *User management*.
+. Select your {productname-short} admin groups: Under *Data science administrator groups*, click the text box and select an OpenShift group. Repeat this process to define multiple admin groups.
+. Select your {productname-short} user groups: Under *Data science user groups*, click the text box and select an OpenShift group. Repeat this process to define multiple user groups.
++
+IMPORTANT: The `system:authenticated` setting allows all users authenticated in OpenShift to access {productname-short}.
+
+. Click *Save changes*.
+
+.Verification
+* Administrator users can successfully log in to {productname-short} and have access to the *Settings* navigation menu.
+* Non-administrator users can successfully log in to {productname-short}. They can also access and use individual components, such as projects and workbenches.
+
