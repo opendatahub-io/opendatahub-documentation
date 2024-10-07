@@ -38,7 +38,8 @@ metadata:
   annotations:
     enable-route: "true"
   name: modelmesh-triton
-  namespace: triton-modelmesh
+  labels:
+    opendatahub.io/dashboard: "true"
 spec:
   annotations:
     opendatahub.io/modelServingSupport: '["multi"x`x`]'
@@ -59,7 +60,7 @@ spec:
         - -c
         - 'mkdir -p /models/_triton_models;  chmod 777
           /models/_triton_models;  exec
-          tritonserver  "--log-verbose=2"  "--model-repository=/models/_triton_models"  "--model-control-mode=explicit"  "--strict-model-config=false"  "--strict-readiness=false"  "--allow-http=true"  "--allow-grpc=true"  '
+          tritonserver "--model-repository=/models/_triton_models" "--model-control-mode=explicit" "--strict-model-config=false" "--strict-readiness=false" "--allow-http=true" "--allow-grpc=true"  '
       command:
         - /bin/sh
       image: nvcr.io/nvidia/tritonserver:23.05-py3
