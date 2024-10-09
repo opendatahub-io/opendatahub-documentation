@@ -1,0 +1,69 @@
+:_module-type: PROCEDURE
+
+[id="deploying-models-on-the-NVIDIA-NIM-model-serving-platform_{context}"]
+= Deploying models on the NVIDIA NIM model serving platform
+
+[role='_abstract']
+When you have enabled the *NVIDIA NIM model serving platform*, you can start to deploy NVIDIA optimized models on the platform.
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+The NVIDIA NIM feature is currently available in {productname-long} as a Technology Preview feature only. Technology Preview features are not supported with Red Hat production service level agreements (SLAs) and might not be functionally complete. Red Hat does not recommend using them in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of Red Hat Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview[Technology Preview Features Support Scope]
+====
+endif::[]
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have enabled the *NVIDIA NIM model serving platform*.
+* You have created a data science project.
+ifndef::upstream[]
+* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. See link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-nvidia-gpus_cluster-mgmt[Enabling NVIDIA GPUs^].
+endif::[]
+
+ifdef::self-managed[]
+[NOTE]
+====
+In {productname-short} {vernum}, {org-name} supports only NVIDIA GPU accelerators for model serving.
+====
+endif::[]
+ifdef::cloud-service[]
+[NOTE]
+====
+In {productname-short}, {org-name} supports only NVIDIA GPU accelerators for model serving.
+====
+endif::[]
+
+.Procedure
+. In the left menu, click *Data Science Projects*.
++
+The *Data Science Projects* page opens.
+. Click the name of the project that you want to deploy a model in.
++
+A project details page opens.
+. Click the *Models* tab.
+. Find the *​​NVIDIA NIM model serving platform* tile, click *Deploy model* on the tile.
++
+The *Deploy model* dialog opens.
+. Configure properties for deploying your model as follows:
+.. In the *Model deployment name* field, enter a unique name for the deployment.
+.. In the *NVIDIA NIM* field, select the NVIDIA NIM model that you want to deploy.
+.. From the *Model framework* list, select a value.
+.. In the *Number of model server replicas to deploy* field, specify a value.
+.. From the *Model server size* list, select a value.
+.. In the *Accelerator* field, select the *NVIDIA GPU* accelerator.
+.. Click *Deploy*.
+
+.Verification
+* Confirm that the deployed model is shown on the *Models* tab for the project, and on the *Model Serving* page of the dashboard with a checkmark in the *Status* column.
+
+// [role="_additional-resources"]
+// .Additional resources

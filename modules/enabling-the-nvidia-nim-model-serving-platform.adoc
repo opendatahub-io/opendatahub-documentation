@@ -1,0 +1,53 @@
+:_module-type: PROCEDURE
+
+[id="enabling-the-nvidia-nim-model-serving-platform_{context}"]
+= Enabling the NVIDIA NIM model serving platform
+
+[role="_abstract"]
+As an administrator, you can use the {productname-long} dashboard to enable the NVIDIA NIM model serving platform.
+ifndef::upstream[]
+[IMPORTANT]
+====
+The NVIDIA NIM feature is currently available in {productname-long} as a Technology Preview feature only. Technology Preview features are not supported with Red Hat production service level agreements (SLAs) and might not be functionally complete. Red Hat does not recommend using them in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of Red Hat Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview[Technology Preview Features Support Scope]
+====
+endif::[]
+
+
+.Prerequisites
+* You have logged in to {productname-long} as an administrator.
+* You have enabled the single-model serving platform..
+* The following {productname-short} dashboard configuration is enabled as shown.
++
+[source]
+----
+disableNIMModelServing:true
+----
++
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}/html/managing_resources/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[]
+ifdef::upstream[]
+For more information, see link:https:{odhdocshome}/managing-resources/#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[]
+ifndef::upstream[]
+* You have enabled GPU support in {productname-short}. For more information, see link:{rhoaidocshome}{default-format-url}/managing_resources/managing-cluster-resources_cluster-mgmt#enabling-nvidia-gpus_cluster-mgmt[Enabling NVIDIA GPUs^].
+endif::[]
+ifdef::upstream[]
+* You have enabled GPU support. For more information, see https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
+endif::[]
+* You have access to the NVIDIA AI Enterprise license key.
+
+.Procedure
+. On the {productname-short} home page, click *Explore*.
+. On the *Explore* page, find the *NVIDIA NIM* tile.
+. Click *Enable* on the application tile.
+. Enter the NVIDIA AI Enterprise license key and then click *Submit*.
+
+
+.Verification
+* The NVIDIA NIM application that you enabled appears on the *Enabled* page.
+
+// [role="_additional-resources"]
+// .Additional resources
