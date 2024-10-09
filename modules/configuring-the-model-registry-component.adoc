@@ -1,0 +1,80 @@
+:_module-type: PROCEDURE
+
+[id='configuring-the-model-registry-component_{context}']
+= Configuring the model registry component
+
+[role='_abstract']
+To configure the model registry feature for your data scientists to use in {productname-short}, you must install the following Operators in OpenShift, and then enable the `modelregistry` component in {productname-short}.
+
+* Red Hat Authorino Operator
+* Red Hat OpenShift Serverless Operator
+* Red Hat OpenShift Service Mesh Operator
+ifdef::upstream[]
+* Open Data Hub Operator version 2
+endif::[]
+ifndef::upstream[]
+* {productname-long} Operator
+endif::[]
+
+For more information about installing Operators in OpenShift, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
+
+ifdef::upstream[]
+For information about installing the Open Hub Operator, see link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing Open Data Hub Operator version 2].
+endif::[]
+ifndef::upstream[]
+For more information about installing the {productname-long} Operator, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#installing-the-openshift-data-science-operator_operator-install[Installing the {productname-long} Operator]
+endif::[]
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have access to the data science cluster.
+* You have installed {productname-long}.
+ifdef::cloud-service[]
+* You have sufficient resources. In addition to the minimum {productname-short} resources described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install[Installing and deploying {productname-short}], you need [x] to deploy the model registry component.
+endif::[]
+ifdef::self-managed[]
+* You have sufficient resources. In addition to the minimum {productname-short} resources described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install[Installing and deploying {productname-short}] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/deploying-openshift-ai-in-a-disconnected-environment_install[Deploying {productname-short} in a disconnected environment]), you need  [x] to deploy the model registry component.
+endif::[]
+ifdef::upstream[]
+* You have sufficient resources. In addition to the minimum {productname-short} resources described in link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing the {productname-short} Operator version 2], you need [x] to deploy the model registry component.
+endif::[]
+
+.Procedure
+. In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
+ifdef::self-managed,cloud-service[]
+. Search for the *Red Hat OpenShift AI* Operator, and then click the Operator name to open the Operator details page.
+endif::[]
+ifdef::upstream[]
+. Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
+endif::[]
+. Click the *Data Science Cluster* tab.
+. Click the default instance name (for example, *default-dsc*) to open the instance details page.
+. Click the *YAML* tab to show the instance specifications.
+. In the `spec:components` section, set the `managementState` field for the `trustyai` component to `Managed`:
++
+[source]
+----
+ modelregistry:
+    managementState: Managed
+----
+. Click *Save*.
+
+.Verification
+Check the status of the *model-registry-operator-controller-manager* pod:
+
+ifdef::self-managed,cloud-service[]
+. In the {openshift-platform} console, from the *Project* list, select *redhat-ods-applications*.
+endif::[]
+ifdef::upstream[]
+. In the {openshift-platform} console, from the *Project* list, select *opendatahub*.
+endif::[]
+. Click *Workloads* -> *Deployments*.
+. Search for the *model-registry-operator-controller-manager* deployment.
+Check the status:
+.. Click the deployment name to open the deployment details page.
+.. Click the *Pods* tab.
+.. View the pod status.
++
+When the status of the *model-registry-operator-controller-manager-_<pod-id>_* pod is *Running*, the pod is ready to use.
+
+//.Next step

@@ -4,7 +4,7 @@
 = Registering a model
 
 [role='_abstract']
-You can register a model...
+As a data scientist, you can register a model...
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -28,8 +28,8 @@ The *Register model* page opens.
 . In the *Version details* section, enter details to apply to the first version of the model:
 .. In the *Version name* field, enter a name for the model version.
 .. Optional: In the *Version description* field, enter a description for the first version of the model.
-.. In the **Source model format** field, enter
-.. In the **Source model format version** field, enter
+.. In the *Source model format* field, enter
+.. In the *Source model format version* field, enter
 . In the *Model location* section, specify the location of the model by providing either object storage details, or a URI.
 . To provide object storage details, ensure that the *Object storage* radio button is selected. 
 .. To autofill the details of an existing data connection, click *Autofill from data connection*. In the *Autofill from data connection* dialog that opens, from the *Project* drop-down list, select the data science project that contains the data connection.
@@ -44,9 +44,12 @@ This list contains only object storage types which contain a bucket.
 .. In the **Path** field, enter a path to a model or folder. This path cannot point to a root folder.
 . To provide a URI, ensure that the *URI* radio button is selected.
 .. In the *URI* field, enter the URI for the model.
++
+[IMPORTANT]
+====
+Deployment of models that are registered using a URI is not supported in this Technology Preview feature.
+====
 . Click *Register model*.
-
-<URI NOTE NEEDED>
 
 .Verification
 * The new model appears on the *Model Registry* page.
