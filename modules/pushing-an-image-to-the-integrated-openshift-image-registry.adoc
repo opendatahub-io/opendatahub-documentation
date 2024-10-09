@@ -1,0 +1,68 @@
+:_module-type: PROCEDURE
+
+[id='pushing-an-image-to-the-integrated-openshift-image-registry_{context}']
+= Pushing an image to the integrated OpenShift image registry
+
+To make an image available to other users in your OpenShift cluster, you can push the image to the _integrated OpenShift image registry_, a built-in container image registry.
+
+For more information about the integrated OpenShift image registry, see link:https://docs.openshift.com/container-platform/{ocp-latest-version}/registry/index.html#registry-integrated-openshift-registry_registry-overview[Integrated OpenShift image registry].
+
+.Prerequisites
+
+* Your cluster administrator has exposed the integrated image registry, as described in link:https://docs.openshift.com/container-platform/{ocp-latest-version}/registry/securing-exposing-registry.html[Exposing the registry]. 
+
+* You have Podman installed in your local environment.
++
+For more information about Podman and container registries, see link:https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/building_running_and_managing_containers/index[Building, running, and managing containers].
+
+
+.Procedure
+
+. In a terminal window, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+. Set the `IMG` environment variable to the name of your image.
+In the example commands in this section, `my_training_image` is the name of the image.
++
+.Set the environment variable
+[source,subs="+quotes"]
+----
+export IMG=my_training_image
+----
+
+. Log in to the integrated image registry:
++
+[source,subs="+quotes"]
+----
+podman login -u $(oc whoami) -p $(oc whoami -t) $(oc registry info)
+----
+
+. Tag the image for the integrated image registry:
++
+.Tag the image
+[source,subs="+quotes"]
+----
+podman tag ${IMG} $(oc registry info)/$(oc project -q)/${IMG}
+----
+
+. Push the image to the integrated image registry:
++
+.Push the image
+[source,subs="+quotes"]
+----
+podman push $(oc registry info)/$(oc project -q)/${IMG}
+----
+
+. Retrieve the image repository location for the tag that you want:
++
+.Retrieve the image location
+[source,subs="+quotes"]
+----
+oc get is ${IMG} -o jsonpath=\'{.status.tags[?(@.tag=="_<TAG>_")].items[0].dockerImageReference}'
+----
++
+Any user can now use your image by specifying this retrieved image location value in the `image` parameter of a notebook or pipeline.

@@ -1,19 +1,19 @@
 :_module-type: PROCEDURE
 
-[id='creating-a-custom-ray-image_{context}']
-= Creating a custom Ray image
+[id='creating-a-custom-training-image_{context}']
+= Creating a custom training image
 
-You can create a custom Ray image by adding packages to a base Ray cluster image.
+You can create a custom training image by adding packages to a base training image.
 
 .Prerequisites
 
-* You have chosen a Ray cluster image to use as the base for your custom image. 
+* You have chosen a training image to use as the base for your custom image. 
 ifndef::upstream[]
 +
-See link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations] for a list of the {productname-short} base Ray cluster images and their preinstalled packages.
+See link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations] for a list of the {productname-short} base training images and their preinstalled packages.
 endif::[]
 
-* You can access the base Ray cluster image.
+* You can access the base training image.
 * You have Podman installed in your local environment, and you can access a container registry.
 +
 For more information about Podman and container registries, see link:https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/building_running_and_managing_containers/index[Building, running, and managing containers].
@@ -23,28 +23,28 @@ For more information about Podman and container registries, see link:https://doc
 
 . In a terminal window, create a directory for your work, and change to that directory. 
 +
-In the example commands in this section, `ray-torch` is the name of the working directory _and_ the name of the image you create.
+In the example commands in this section, `my_training_image` is the name of the working directory _and_ the name of the image you create.
 +
 .Create a working directory
 [source,bash]
 ----
-export IMG=ray-torch
+export IMG=my_training_image
 mkdir $IMG
 cd $IMG
 ----
 
 . Create a file named `Dockerfile` with the following content:
 
-.. Use the `FROM` instruction to specify the base image location.
+.. Use the `FROM` instruction to specify the base training image location.
 
-* To create a CUDA-compatible Ray cluster image, specify the CUDA base image location:
+* To create a CUDA-compatible Ray cluster image, specify the CUDA-compatible Ray base image location:
 +
 [source,bash]
 ----
 FROM quay.io/modh/ray:2.35.0-py39-cu121
 ----
 
-* To create a ROCm-compatible Ray cluster image, specify the Developer Preview ROCm base image location:
+* To create a ROCm-compatible Ray cluster image, specify the Developer Preview ROCm-compatible Ray base image location:
 +
 [source,bash]
 ----
@@ -53,15 +53,15 @@ FROM quay.io/modh/ray:2.35.0-py39-rocm61
 +
 [IMPORTANT]
 ====
-The ROCm-compatible Ray cluster image is Developer Preview software only. 
-Developer Preview software is not supported by Red{nbsp}Hat in any way and is not functionally complete or production-ready. 
+The ROCm-compatible Ray base cluster image is Developer Preview software only. 
+Developer Preview software is not supported by {org-name} in any way and is not functionally complete or production-ready. 
 Do not use Developer Preview software for production or business-critical workloads. 
-Developer Preview software provides early access to upcoming product software in advance of its possible inclusion in a Red{nbsp}Hat product offering. 
+Developer Preview software provides early access to upcoming product software in advance of its possible inclusion in a {org-name} product offering. 
 Customers can use this software to test functionality and provide feedback during the development process. 
 This software might not have any documentation, is subject to change or removal at any time, and has received limited testing. 
-Red{nbsp}Hat might provide ways to submit feedback on Developer Preview software without an associated SLA.
+{org-name} might provide ways to submit feedback on Developer Preview software without an associated SLA.
 
-For more information about the support scope of Red{nbsp}Hat Developer Preview software, see link:https://access.redhat.com/support/offerings/devpreview/[Developer Preview Support Scope].
+For more information about the support scope of {org-name} Developer Preview software, see link:https://access.redhat.com/support/offerings/devpreview/[Developer Preview Support Scope].
 ====
 
 
@@ -114,5 +114,5 @@ If your new image was created successfully, it is included in the list of images
 podman push ${IMG}:0.0.1
 ----
 
-. Optional: Make your new image available to other users, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/registering-an-image-in-the-integrated-openshift-image-registry_distributed-workloads[Registering an image in the integrated OpenShift image registry].
+. Optional: Make your new image available to other users, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/pushing-an-image-to-the-integrated-openshift-image-registry_distributed-workloads[Pushing an image to the integrated OpenShift image registry].
 
