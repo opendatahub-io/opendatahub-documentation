@@ -4,7 +4,7 @@
 = Deploying a model version from a model registry
 
 [role='_abstract']
-You can deploy a version of a registered model...
+You can deploy a version of a registered model directly from a model registry.
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -28,10 +28,41 @@ The details page for the model version opens.
 . In the *Deploy model* dialog, configure properties for deploying the model.
 .. From the *Project* drop-down list, select a target project.
 .. Click *Deploy*.
-.. 
+. Configure the following properties for deploying your model:
+.. From the *Project* drop-down list, select a project in which to deploy your model.
+.. Optional: In the *Model deployment name* field, enter a name for the model deployment. 
++
+Each deployment is named in the following format by default:
++
+`<model name> <model version name> <deployment creation timestamp>`
++
+This will be the name of the inference service that is created when the model is deployed.
+.. From the *Serving runtime* drop-down list, select a serving runtime.
+.. From the *Model framework (name - version)* drop-down list, select a model framework.
+.. In the *Number of model server replicas to deploy* field, specify a value.
+.. From the *Model server size* drop-down list, select a model server size.
+.. Optional: In the *Model route* section, select the *Make deployed models available through an external route* checkbox to make your deployed models available to external clients. 						
+.. Optional: In the *Token authentication* section, select the *Require token authentication* checkbox to require token authentication for your model server. To finish configuring token authentication, perform the following actions: 						
+... In the *Service account name* field, enter a service account name for which the token will be generated. The generated token is created and displayed in the *Token secret* field when the model server is configured. 								
+... To add an additional service account, click *Add a service account* and enter another service account name. 
+.. In the *Source model location* section, configure the location of the source model:
+* *To use an existing data connection*:
+... Select *Existing data connection*.
+... From the *Name* list, select a data connection that you previously defined.
+... In the *Path* field, enter the folder path that contains the model in your specified data source.
+* *To use a new data connection*:
+... To define a new data connection that your model can access, select *New data connection*.
+... In the *Name* field, enter a unique name for the data connection.
+... In the *Access key* field, enter the access key ID for your S3-compatible object storage provider.
+... In the *Secret key* field, enter the secret access key for the S3-compatible object storage account that you specified.
+... In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
+... In the *Region* field, enter the default region of your S3-compatible object storage account.
+... In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
+... In the *Path* field, enter the folder path in your S3-compatible object storage that contains your data file.
+.. Click *Deploy*.			 
 
 .Verification
-* The 
+* The model version appears on the *Deployments* tab for the model version.
 
 // [role="_additional-resources"]
 // .Additional resources
