@@ -25,6 +25,8 @@ ifndef::upstream[]
 For more information about installing the {productname-long} Operator, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#installing-the-openshift-data-science-operator_operator-install[Installing the {productname-long} Operator]
 endif::[]
 
+After you install the Operators, you can use the following steps to enable the `modelregistry` component.
+
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have access to the data science cluster.
@@ -50,7 +52,7 @@ endif::[]
 . Click the *Data Science Cluster* tab.
 . Click the default instance name (for example, *default-dsc*) to open the instance details page.
 . Click the *YAML* tab to show the instance specifications.
-. In the `spec:components` section, set the `managementState` field for the `trustyai` component to `Managed`:
+. Add the following `modelregistry` component entry to the `spec:components` section, with the `managementState` field set to `Managed`:
 +
 [source]
 ----
