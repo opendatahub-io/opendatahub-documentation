@@ -71,6 +71,8 @@ data:
       "learning_rate": 1e-05,
       "response_template": "\n### Label:",
       "dataset_text_field": "output",
+      "padding_free": ["huggingface"],
+      "multipack": [16],
       "use_flash_attn": false
     }
 
@@ -85,13 +87,40 @@ data:
 [source]
 ----
       ...
-      "use_flash_attn": false,
       "peft_method": "lora",
       "lora_r": 8,
       "lora_alpha": 8,
       "lora_dropout": 0.1,
       "bias": "none",
       "target_modules": ["all-linear"]
+    }
+
+----
+
+.. Optional: To fine-tune with Quantized Low Rank Adaptation (QLoRA), update the `config.json` section as follows:
+
+... Set the `use_flash_attn` parameter to `"true"`.
+... Set the `peft_method` parameter to `"lora"`.
+... Add the LoRA parameters: `lora_r`, `lora_alpha`, `lora_dropout`, `bias`, and `target_modules`.
+... Add the QLoRA mandatory parameters: `auto_gptq`, `torch_dtype`, and `fp16`.
+... If required, add the QLoRA optional parameters: `fused_lora` and `fast_kernels`.
++
+.Example QLoRA configuration
+[source]
+----
+      ...
+      "use_flash_attn": true,
+      "peft_method": "lora",
+      "lora_r": 8,
+      "lora_alpha": 8,
+      "lora_dropout": 0.1,
+      "bias": "none",
+      "target_modules": ["all-linear"],
+      "auto_gptq": ["triton_v2"],
+      "torch_dtype": float16,
+      "fp16": true,
+      "fused_lora": ["auto_gptq", true],
+      "fast_kernels": [true, true, true]
     }
 
 ----
@@ -144,11 +173,17 @@ data:
 |`dataset_text_field`
 |Dataset field for training output, as set in the `training_data.yaml` config map
 
+|`padding_free`
+|Whether to use a technique to process multiple examples in a single batch without adding padding tokens that waste compute resources; if used, this parameter must be set to `["huggingface"]`
+
+|`multipack`
+|Whether to use a technique for multi-GPU training to balance the number of tokens processed in each device, to minimize waiting time; you can experiment with different values to find the optimum value for your training job
+
 |`use_flash_attn`
 |Whether to use flash attention
 
 |`peft_method`
-|Tuning method: for full fine-tuning, omit this parameter; for LoRA, set to `"lora"`; for prompt tuning, set to `"pt"`
+|Tuning method: for full fine-tuning, omit this parameter; for LoRA and QLoRA, set to `"lora"`; for prompt tuning, set to `"pt"`
 
 |`lora_r`
 |LoRA: Rank of the low-rank decomposition
@@ -164,6 +199,21 @@ data:
 
 |`target_modules`
 |LoRA: Names of the modules to apply LoRA to; to include all linear layers, set to "all_linear"; optional parameter for some models
+
+|`auto_gptq`
+|QLoRA: Sets 4-bit GPTQ-LoRA with AutoGPTQ; when used, this parameter must be set to `["triton_v2"]` 
+
+|`torch_dtype`
+|QLoRA: Tensor datatype; when used, this parameter must be set to `float16`
+
+|`fp16`
+|QLoRA: Whether to use half-precision floating-point format; when used, this parameter must be set to `true` 
+
+|`fused_lora`
+|QLoRA: Whether to use fused LoRA for more efficient LoRA training; if used, this parameter must be set to `["auto_gptq", true]`
+
+|`fast_kernels`
+|QLoRA: Whether to use fast cross-entropy, rope, rms loss kernels; if used, this parameter must be set to `[true, true, true]`
 
 |===
 
