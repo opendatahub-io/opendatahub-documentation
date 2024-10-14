@@ -35,7 +35,7 @@ The following guidelines provide information to consider when you build your own
 
 *Minimizing image size*
 
-A notebook image uses a "layered" file system. Every time you use a COPY or a RUN command in your notebook image file, a new layer is created. Artifacts are not deleted. When you remove an artifact, for example , a file,, it is "masked" in the next layer. Therefore, consider the following guidelines when you create your notebook image file.
+A notebook image uses a "layered" file system. Every time you use a COPY or a RUN command in your notebook image file, a new layer is created. Artifacts are not deleted. When you remove an artifact, for example, a file, it is "masked" in the next layer. Therefore, consider the following guidelines when you create your notebook image file.
 
 * Avoid using the `dnf update` command. 
 
@@ -68,7 +68,7 @@ COPY --chmod=775 os-packages.txt ./
 WORKDIR /opt/app-root/src
 ----
 +
-When a user launches a workbench from the {productname-short}*Applications* -> *Enabled* page, the "personal" volume of the user is mounted at `/opt/app-root/src`. Because this location is not configurable, when you build your custom image, you must specify this default location for persisted data.
+When a user launches a workbench from the {productname-short} *Applications* -> *Enabled* page, the "personal" volume of the user is mounted at `/opt/app-root/src`. Because this location is not configurable, when you build your custom image, you must specify this default location for persisted data.
 
 * Fix permissions to support PIP (the package manager for Python packages) in OpenShift environments. Add the following command to your custom image (if needed, change `python3.9` to the Python version that you are using):
 +

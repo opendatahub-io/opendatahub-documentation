@@ -6,6 +6,14 @@
 [role='_abstract']
 If your data science work requires you to change the identifying information of a project's cluster storage or the workbench that the storage is connected to, you can update your project's cluster storage to change these properties.
 
+NOTE: You cannot directly change the *storage class* for cluster storage that is already configured for a workbench or project. To switch to a different storage class, you need to migrate your data to a new cluster storage instance that uses the required storage class. 
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/configuring-cluster-storage_projects#changing-the-storage-class-for-an-existing-cluster-storage-instance_projects[Changing the storage class for an existing cluster storage instance].
+endif::[]
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-on-data-science-projects/#changing-the-storage-class-for-an-existing-cluster-storage-instance_projects[Changing the storage class for an existing cluster storage instance].
+endif::[].
+
 .Prerequisites
 * You have logged in to {productname-long}.
 ifndef::upstream[]
@@ -28,9 +36,6 @@ A project details page opens.
 +
 The *Edit storage* page opens.
 . Update the storage's properties.
-+
-NOTE: You cannot change the *storage class* for cluster storage that is already configured for a data science project. 
-
 .. Update the *name* for the storage, if applicable.
 .. Update the *description* for the storage, if applicable.
 .. Increase the *Persistent storage size* for the storage, if applicable.
