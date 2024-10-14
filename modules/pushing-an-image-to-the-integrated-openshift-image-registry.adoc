@@ -65,4 +65,4 @@ podman push $(oc registry info)/$(oc project -q)/${IMG}
 oc get is ${IMG} -o jsonpath=\'{.status.tags[?(@.tag=="_<TAG>_")].items[0].dockerImageReference}'
 ----
 +
-Any user can now use your image by specifying this retrieved image location value in the `image` parameter of a notebook or pipeline.
+Any user can now use your image by specifying this retrieved image location value in the `image` parameter of a Ray cluster or training job.
