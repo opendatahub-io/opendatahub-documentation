@@ -5,7 +5,7 @@
 
 [role="_abstract"]
 The base training images for distributed workloads are optimized with the tools and libraries that you need to run distributed training jobs. 
-You can use the provided base images, or an {productname-short} admin user can create custom images adapted to your needs.
+You can use the provided base images, or you can create custom images adapted to your needs.
 
 ifndef::upstream[]
 For information about Red Hat support of training images and packages, see link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations].
@@ -17,7 +17,7 @@ If the preinstalled packages that are provided in these images are not sufficien
 
 * Install additional libraries after launching a default image. 
 This option is good if you want to add libraries on an ad·hoc basis as you run training jobs. 
-However, it can be challenging to manage the dependencies of installed libraries, and your changes are not saved when the workbench restarts.
+However, it can be challenging to manage the dependencies of installed libraries.
 
 
 ifdef::upstream[]
@@ -49,7 +49,7 @@ endif::[]
 | Image type | Description
 
 | Ray CUDA
-| If you are working with compute-intensive data science models that require NVIDIA GPU support, you can use the Ray Compute Unified Device Architecture (CUDA) base image to gain access to the NVIDIA CUDA Toolkit. 
+| If you are working with compute-intensive data science models and you want to accelerate the model performance with NVIDIA GPU support, you can use the Ray Compute Unified Device Architecture (CUDA) base image to gain access to the NVIDIA CUDA Toolkit. 
 Using this toolkit, you can accelerate your work by using libraries and tools that are optimized for NVIDIA GPUs.
 
 ifndef::upstream[]
@@ -58,7 +58,7 @@ endif::[]
 ifdef::upstream[]
 | Ray ROCm 
 endif::[]
-| If you are working with compute-intensive data science models that require AMD GPU support, you can use the Ray ROCm base image to gain access to the AMD ROCm software stack. 
+| If you are working with compute-intensive data science models and you want to accelerate the model performance with AMD GPU support, you can use the Ray ROCm base image to gain access to the AMD ROCm software stack. 
 Using this software stack, you can accelerate your work by using libraries and tools that are optimized for AMD GPUs. 
 
 |===
