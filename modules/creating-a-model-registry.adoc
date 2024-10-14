@@ -14,8 +14,8 @@ endif::[]
 ifndef::upstream[]
 * If you are using {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#adding-administrative-users-in-{openshift-platform-url}_install[Adding administrative users in {openshift-platform}].
 endif::[]
-* A cluster administrator has installed and enabled the model registry component in your Open Data Hub deployment. For more information on installing the model registry component, see <link to installation steps>.
-* An available model registry exists in your deployment.
+* A cluster administrator has configured and enabled the model registry component in your {productname-short} deployment. For more information on configuring the model registry component, see link:[Configuring model registry].
+* The model registry component is enabled for your {productname-short} deployment.
 * Your external MySQL database must already be in your cluster and use at least MySQL version 8.0.3.
 
 .Procedure
@@ -24,15 +24,28 @@ endif::[]
 +
 The *Create model registry* page opens.
 . In the *Name* field, enter a name for the model registry.
-. In the *Resource Name* field, enter a resource name for the model registry. Resource names are what your resources are labeled as in OpenShift.
+. Optional: In the *Resource Name* field, enter a specific resource name for the model registry. By default, the resource name will match the name of the model registry.
 +
 [IMPORTANT]
 ====
-Your resource name must consist of lowercase alphanumeric characters or '-', and must start and end with an alphanumeric character. Resource names are not editable after creation.
+Resource names are what your resources are labeled as in OpenShift. Your resource name must consist of lowercase alphanumeric characters or '-', and must start and end with an alphanumeric character. Resource names are not editable after creation.
 ====
 . Optional: In the *Description* field, enter a description for the model registry.
 . In the *Connect to external MySQL database* section, enter the information for the external database where your model data is stored.
 .. In the *Host* field, enter the database's host name.
+ifdef::upstream[]
+... If the database is running in running in the `odh-model-registries` namespace, enter only the hostname for the database.
+... If the database is running in a different namespace from `odh-model-registries`, enter the database hostname details in the following format:
+endif::[]
+ifndef::upstream[]
+... If the database is running in running in the `rhoai-model-registries` namespace, enter only the hostname for the database.
+... If the database is running in a different namespace from `rhoai-model-registries`, enter the database hostname details in the following format:
+endif::[]
++
+[source]
+====
+<host name>.<namespace>.svc.cluster.local
+====
 .. In the *Port* field, enter the database's port.
 .. In the *Username* field, enter the default user name that is connected to the database.
 .. In the *Password* field, enter the password for the default user account.

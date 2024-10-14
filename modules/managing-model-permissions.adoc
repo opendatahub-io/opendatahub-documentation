@@ -15,6 +15,14 @@ ifndef::upstream[]
 * If you are using {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#adding-administrative-users-in-{openshift-platform-url}_install[Adding administrative users in {openshift-platform}].
 endif::[]
 * An available model registry exists in your deployment.
+ifdef::upstream[]
+* The users and groups that you want to provide access to already exist in {openshift-platform}. For more information, see
+link:{odhdocshome}/managing-odh/#managing-users-and-groups[Managing users and groups].
+endif::[]
+
+ifndef::upstream[]
+* The users and groups that you want to provide access to already exist in {openshift-platform}. For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/index#managing-users-and-groups[Managing users and groups].
+endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *Model registry settings*.
@@ -47,11 +55,13 @@ To enable access for all cluster users, add `system:authenticated` to the group 
 * The *Users* and *Groups* sections on the *Permissions* tab show the respective users and groups that you granted access to the model registry.
 * The *Projects* sections on the *Projects* tab show the projects that you granted access to the model registry.
 
-
-
-
-
-
+[role='_additional-resources']
+.Additional resources
+ifdef::upstream[]
+For more information on 
+endif::[]
+ifndef::upstream[]
+endif::[]
 
 
 
