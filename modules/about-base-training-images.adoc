@@ -1,17 +1,17 @@
 :_module-type: CONCEPT
 
-[id="about-base-images-for-distributed-workloads_{context}"]
-= About base images for distributed workloads
+[id="about-base-training-images_{context}"]
+= About base training images
 
 [role="_abstract"]
-The base images for distributed workloads are optimized with the tools and libraries that you need to run distributed training jobs. 
-You can use the provided base images or an {productname-short} admin user can create custom images adapted to your needs.
+The base training images for distributed workloads are optimized with the tools and libraries that you need to run distributed training jobs. 
+You can use the provided base images, or an {productname-short} admin user can create custom images adapted to your needs.
 
 ifndef::upstream[]
-For information about Red Hat support of distributed workload images and packages, see link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations].
+For information about Red Hat support of training images and packages, see link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations].
 endif::[]
 
-The following table lists the distributed workload images that are installed with {productname-long} by default.
+The following table lists the training images that are installed with {productname-long} by default.
 
 If the preinstalled packages that are provided in these images are not sufficient for your use case, you have the following options:
 
@@ -23,16 +23,16 @@ However, it can be challenging to manage the dependencies of installed libraries
 ifdef::upstream[]
 * Create a custom image that includes the additional libraries or packages. 
 For more information, see
-link:{odhdocshome}/working-with-distributed-workloads/#creating-a-custom-ray-image_distributed-workloads[Creating a custom Ray image].
+link:{odhdocshome}/working-with-distributed-workloads/#creating-a-custom-training-image_distributed-workloads[Creating a custom training image].
 endif::[]
 
 ifndef::upstream[]
 * Create a custom image that includes the additional libraries or packages. 
-For more information, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/creating-a-custom-ray-image_distributed-workloads[Creating a custom Ray image].
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/creating-a-custom-training-image_distributed-workloads[Creating a custom training image].
 
 [IMPORTANT]
 ====
-The ROCm-compatible Ray cluster image is Developer Preview software only. 
+The ROCm-compatible Ray cluster training image is Developer Preview software only. 
 Developer Preview software is not supported by {org-name} in any way and is not functionally complete or production-ready. 
 Do not use Developer Preview software for production or business-critical workloads. 
 Developer Preview software provides early access to upcoming product software in advance of its possible inclusion in a {org-name} product offering. 
@@ -48,17 +48,17 @@ endif::[]
 |===
 | Image type | Description
 
-| CUDA
-| If you are working with compute-intensive data science models that require NVIDIA GPU support, use the Compute Unified Device Architecture (CUDA) base image to gain access to the NVIDIA CUDA Toolkit. 
+| Ray CUDA
+| If you are working with compute-intensive data science models that require NVIDIA GPU support, you can use the Ray Compute Unified Device Architecture (CUDA) base image to gain access to the NVIDIA CUDA Toolkit. 
 Using this toolkit, you can accelerate your work by using libraries and tools that are optimized for NVIDIA GPUs.
 
 ifndef::upstream[]
-| ROCm (Developer Preview)
+| Ray ROCm (Developer Preview)
 endif::[]
 ifdef::upstream[]
-| ROCm 
+| Ray ROCm 
 endif::[]
-| If you are working with compute-intensive data science models that require AMD GPU support, use the ROCm base image to gain access to the AMD ROCm software stack. 
+| If you are working with compute-intensive data science models that require AMD GPU support, you can use the Ray ROCm base image to gain access to the AMD ROCm software stack. 
 Using this software stack, you can accelerate your work by using libraries and tools that are optimized for AMD GPUs. 
 
 |===
