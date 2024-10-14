@@ -27,7 +27,7 @@ The persistent volume attached to the workbench will be mounted on `/opt/app-roo
 
 *Specifying the API endpoint*
 
-OpenShift readiness and liveness probes will query the `/api` endpoint. For a Jupyter IDE, this is the default endpoint. For other IDEs, you must specify the `/api` endpoint. 
+OpenShift readiness and liveness probes will query the `/api` endpoint. For a Jupyter IDE, this is the default endpoint. For other IDEs, you must implement the `/api` endpoint. 
 
 == Advanced guidelines for creating your own workbench image
 
@@ -147,15 +147,9 @@ If you want your custom image to support data science pipelines V2, you must add
 * Include the `odh-elyra` package for having support with Data Science pipeline V2 (not the `elyra` package), for example:
 +
 ----
- FROM quay.io/modh/odh-pytorch-notebook@sha256:b68e0…
-
- USER 0
-
- RUN INSTALL_PKGS="odh-elyra" && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
-    yum -y clean all --enablerepo='*'
-
  USER 1001
+ 
+ pip install odh-elyra
 ----
 
 * If you want to include the data science pipeline configuration automatically, as a runtime configuration, add an annotation when you import a custom workbench image. 
