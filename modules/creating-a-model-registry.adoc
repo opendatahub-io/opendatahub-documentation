@@ -36,17 +36,12 @@ Resource names are what your resources are labeled as in OpenShift. Your resourc
 .. In the *Host* field, enter the database's host name.
 ifdef::upstream[]
 ... If the database is running in running in the `odh-model-registries` namespace, enter only the hostname for the database.
-... If the database is running in a different namespace from `odh-model-registries`, enter the database hostname details in the following format:
+... If the database is running in a different namespace from `odh-model-registries`, enter the database hostname details in `<host name>.<namespace>.svc.cluster.local` format.
 endif::[]
 ifndef::upstream[]
 ... If the database is running in running in the `rhoai-model-registries` namespace, enter only the hostname for the database.
-... If the database is running in a different namespace from `rhoai-model-registries`, enter the database hostname details in the following format:
+... If the database is running in a different namespace from `rhoai-model-registries`, enter the database hostname details in `<host name>.<namespace>.svc.cluster.local` format.
 endif::[]
-+
-[source]
-====
-<host name>.<namespace>.svc.cluster.local
-====
 .. In the *Port* field, enter the port number for the database.
 .. In the *Username* field, enter the default user name that is connected to the database.
 .. In the *Password* field, enter the password for the default user account.
