@@ -7,13 +7,12 @@ You can create a custom training image by adding packages to a base training ima
 
 .Prerequisites
 
-* You have chosen a training image to use as the base for your custom image. 
+* You can access the training image that you have chosen to use as the base for your custom image. 
 ifndef::upstream[]
 +
 See link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations] for a list of the {productname-short} base training images and their preinstalled packages.
 endif::[]
 
-* You can access the base training image.
 * You have Podman installed in your local environment, and you can access a container registry.
 +
 For more information about Podman and container registries, see link:https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/building_running_and_managing_containers/index[Building, running, and managing containers].
@@ -22,15 +21,14 @@ For more information about Podman and container registries, see link:https://doc
 .Procedure
 
 . In a terminal window, create a directory for your work, and change to that directory. 
+
+. Set the `IMG` environment variable to the name of your image.
+In the example commands in this section, `my_training_image` is the name of the image.
 +
-In the example commands in this section, `my_training_image` is the name of the working directory _and_ the name of the image you create.
-+
-.Create a working directory
-[source,bash]
+.Set the environment variable
+[source,subs="+quotes"]
 ----
 export IMG=my_training_image
-mkdir $IMG
-cd $IMG
 ----
 
 . Create a file named `Dockerfile` with the following content:
@@ -66,7 +64,7 @@ For more information about the support scope of {org-name} Developer Preview sof
 
 
 .. Use the `RUN` instruction to install additional packages.
-You can also add comments to the Dockerfile by prefixing the comment lines with a number sign (`#`).
+You can also add comments to the Dockerfile by prefixing each comment line with a number sign (`#`).
 +
 The following example shows how to install a specific version of the Python PyTorch package:
 +
@@ -79,7 +77,7 @@ RUN python3 -m pip install torch==2.4.0
 
 
 . Build the image file. 
-Use the `-t` option to create an image tag that specifies the image name and version, to make it easier to reference and manage the image: 
+Use the `-t` option with the `podman build` command to create an image tag that specifies the image name and version, to make it easier to reference and manage the image: 
 +
 .Build the image
 [source,subs="+quotes"]
