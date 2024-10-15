@@ -4,17 +4,16 @@
 = Configuring the distributed workloads components
 
 [role='_abstract']
-To configure the distributed workloads feature for your data scientists to use in {productname-short}, you must enable several components.
+To configure the distributed workloads feature for use in {productname-short}, you must enable several components.
 
 .Prerequisites
 ifdef::upstream,self-managed[]
-* You have logged in to {openshift-platform} with the `cluster-admin` role.
+* You have logged in to {openshift-platform} with the `cluster-admin` role and you can access the data science cluster.
 endif::[]
 ifdef::cloud-service[]
-* You have logged in to OpenShift with the `cluster-admin` role.
+* You have logged in to OpenShift with the `cluster-admin` role and you can access the data science cluster.
 endif::[]
 
-* You have access to the data science cluster.
 * You have installed {productname-long}.
 
 ifdef::cloud-service[]
@@ -26,27 +25,6 @@ endif::[]
 ifdef::upstream[]
 * You have sufficient resources. In addition to the minimum {productname-short} resources described in link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing the {productname-short} Operator version 2], you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
 endif::[]
-
-* You have access to a Ray cluster image. For information about how to create a Ray cluster, see the link:https://docs.ray.io/en/latest/cluster/getting-started.html[Ray Clusters documentation].
-+
-ifdef::self-managed[]
-[NOTE]
-====
-Mutual Transport Layer Security (mTLS) is enabled by default in the CodeFlare component in {productname-short}.
-{productname-short} {vernum} does not support the `submissionMode=K8sJobMode` setting in the Ray job specification, so the KubeRay Operator cannot create a submitter Kubernetes Job to submit the Ray job.
-Instead, users must configure the Ray job specification to set `submissionMode=HTTPMode` only, so that the KubeRay Operator sends a request to the RayCluster to create a Ray job.
-====
-endif::[]
-ifdef::cloud-service[]
-[NOTE]
-====
-Mutual Transport Layer Security (mTLS) is enabled by default in the CodeFlare component in {productname-short}.
-{productname-short}, does not support the `submissionMode=K8sJobMode` setting in the Ray job specification, so the KubeRay Operator cannot create a submitter Kubernetes Job to submit the Ray job.
-Instead, users must configure the Ray job specification to set `submissionMode=HTTPMode` only, so that the KubeRay Operator sends a request to the RayCluster to create a Ray job.
-====
-endif::[]
-* You have access to the data sets and models that the distributed workload uses.
-* You have access to the Python dependencies for the distributed workload.
 
 ifndef::upstream[]
 * You have removed any previously installed instances of the CodeFlare Operator, as described in the Knowledgebase solution link:https://access.redhat.com/solutions/7043796[How to migrate from a separately installed CodeFlare Operator in your data science cluster].
@@ -159,10 +137,17 @@ endif::[]
 . Click the default instance name (for example, *default-dsc*) to open the instance details page.
 . Click the *YAML* tab to show the instance specifications.
 . Enable the required distributed workloads components.
-In the `spec:components` section, set the `managementState` field correctly for the required components.
-The `trainingoperator` component is required only if you want to use the Kubeflow Training Operator to tune models.
-The list of required components depends on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
+In the `spec:components` section, set the `managementState` field correctly for the required components:
 +
+* If you want to use the CodeFlare framework to tune models, enable the `codeflare`, `kueue`, and `ray` components.
+* if you want to use the Kubeflow Training Operator to tune models, enable the `kueue` and `trainingoperator` components.
+
+
++
+The list of required components depends on whether the distributed workload is run from a pipeline or notebook or both, as shown in the following table.
+
++
+
 .Components required for distributed workloads
 [cols="38,18,18,26"]
 |===
