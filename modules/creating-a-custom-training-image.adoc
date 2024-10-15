@@ -25,7 +25,6 @@ For more information about Podman and container registries, see link:https://doc
 . Set the `IMG` environment variable to the name of your image.
 In the example commands in this section, `my_training_image` is the name of the image.
 +
-.Set the environment variable
 [source,subs="+quotes"]
 ----
 export IMG=my_training_image
@@ -48,10 +47,17 @@ FROM quay.io/modh/ray:2.35.0-py39-cu121
 ----
 FROM quay.io/modh/ray:2.35.0-py39-rocm61
 ----
+
+* To create a CUDA-compatible KFTO cluster image, specify the Developer Preview CUDA-compatible KFTO base image location:
++
+[source,bash]
+----
+FROM quay.io/opendatahub/training-ubi9-py311-cuda121
+----
 +
 [IMPORTANT]
 ====
-The ROCm-compatible Ray base cluster image is Developer Preview software only. 
+The ROCm-compatible Ray base image and CUDA-compatible KFTO base image are Developer Preview software only. 
 Developer Preview software is not supported by {org-name} in any way and is not functionally complete or production-ready. 
 Do not use Developer Preview software for production or business-critical workloads. 
 Developer Preview software provides early access to upcoming product software in advance of its possible inclusion in a {org-name} product offering. 
@@ -68,7 +74,6 @@ You can also add comments to the Dockerfile by prefixing each comment line with 
 +
 The following example shows how to install a specific version of the Python PyTorch package:
 +
-.Install additional packages
 [source,bash]
 ----
 # Install PyTorch
@@ -79,7 +84,6 @@ RUN python3 -m pip install torch==2.4.0
 . Build the image file. 
 Use the `-t` option with the `podman build` command to create an image tag that specifies the image name and version, to make it easier to reference and manage the image: 
 +
-.Build the image
 [source,subs="+quotes"]
 ----
 podman build -t _<image-name>_:_<version>_ -f Dockerfile
@@ -96,7 +100,6 @@ The build output indicates when the build process is complete.
 
 . Display a list of your images:
 +
-.List your images
 [source,subs="+quotes"]
 ----
 podman images
@@ -106,7 +109,6 @@ If your new image was created successfully, it is included in the list of images
 
 . Push the image to your container registry:
 +
-.Push the image
 [source,bash]
 ----
 podman push ${IMG}:0.0.1
