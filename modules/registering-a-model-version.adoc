@@ -43,7 +43,17 @@ This list contains only object storage types which contain a bucket.
 ... In the *Region* field, enter the region of your S3-compatible object storage account.
 ... In the **Path** field, enter a path to a model or folder. This path cannot point to a root folder.
 . To provide a URI, ensure that the *URI* radio button is selected.
-.. In the *URI* field, enter the URI for the model.
+.. In the *URI* field, enter the S3 URI for the model in the following format:
++
+[source]
+----
+s3://<AWS_S3_BUCKET>/<PATH>?endpoint=<AWS_S3_ENDPOINT>&defaultRegion=<AWS_DEFAULT_REGION>
+----
++
+[IMPORTANT]
+====
+Deployment of models that are registered using other URI formats is not currently supported for this feature.
+====
 . Click *Register new version*.
 
 .Verification
