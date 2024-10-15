@@ -16,14 +16,27 @@ ifndef::upstream[]
 * {productname-long} Operator version 2.14+
 endif::[]
 
+ifdef::upstream[]
+[IMPORTANT]
+====
+You must install the required Operators in the listed order. You should install the Open Data Hub Operator only after the other listed Operators are installed and in a running state.
+
 For more information about installing Operators in OpenShift, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
 
-ifdef::upstream[]
 For information about installing the Open Hub Operator, see link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing Open Data Hub Operator version 2].
+====
 endif::[]
+
 ifndef::upstream[]
+[IMPORTANT]
+====
+You must install the required Operators in the listed order. You should install the {productname-long} Operator only after the other listed Operators are installed and in a running state.
+
+For more information about installing Operators in OpenShift, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
+
 For more information about installing the {productname-long} Operator, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#installing-the-openshift-data-science-operator_operator-install[Installing the {productname-long} Operator]
 endif::[]
+====
 
 After you install the Operators, you can use the following steps to enable the `modelregistry` component.
 

@@ -6,6 +6,8 @@
 [role='_abstract']
 You can manage access to a model registry for individual users and user groups in your organization, and for service accounts in a project.
 
+You can provide and limit access
+
 .Prerequisites
 * You have logged in to {productname-long}.
 ifdef::upstream[]
@@ -37,6 +39,11 @@ The permissions page for the model registry opens.
 ====
 To enable access for all cluster users, add `system:authenticated` to the group list.
 ====
++
+[NOTE]
+====
+{productname-short} creates the `<model-registry-name>-users` group automatically for use with model registry. You can add users to this group in OpenShift, or ask the cluster admin to do so.
+====
 .. To confirm your entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
 .. Optional: To add an additional group, click *Add group* and repeat the process.
 . Provide one or more users with access to the model registry.
@@ -51,17 +58,11 @@ To enable access for all cluster users, add `system:authenticated` to the group 
 .. Optional: To add an additional project, click *Add project* and repeat the process.
 
 .Verification
-* Users, groups, and accounts that were granted access to the model registry can [x].
+* Users, groups, and accounts that were granted access to a model registry can register, view, edit, version, deploy, delete, archive, and restore models in that registry.
 * The *Users* and *Groups* sections on the *Permissions* tab show the respective users and groups that you granted access to the model registry.
 * The *Projects* sections on the *Projects* tab show the projects that you granted access to the model registry.
 
-[role='_additional-resources']
-.Additional resources
-ifdef::upstream[]
-For more information on 
-endif::[]
-ifndef::upstream[]
-endif::[]
+
 
 
 
