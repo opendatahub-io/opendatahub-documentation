@@ -35,8 +35,9 @@ You must install the required Operators in the listed order. You should install 
 For more information about installing Operators in OpenShift, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
 
 For more information about installing the {productname-long} Operator, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#installing-the-openshift-data-science-operator_operator-install[Installing the {productname-long} Operator]
-endif::[]
 ====
+endif::[]
+
 
 After you install the Operators, you can use the following steps to enable the `modelregistry` component.
 
@@ -101,7 +102,6 @@ ifndef::upstream[]
 endif::[]
 
 * Check the status of the *model-registry-operator-controller-manager* pod:
-
 ifdef::self-managed,cloud-service[]
 . In the {openshift-platform} console, from the *Project* list, select *redhat-ods-applications*.
 endif::[]
@@ -116,3 +116,9 @@ Check the status:
 .. View the pod status.
 +
 When the status of the *model-registry-operator-controller-manager-_<pod-id>_* pod is *Running*, the pod is ready to use.
+
+ifndef::upstream[]
+.Next step
+
+{productname-short} administrators can create, delete, and manage permissions for model registries. For more information, see link:{rhoaidocshome}{default-format-url}/managing_model_registry/index[Managing model registry].
+endif::[]
