@@ -10,7 +10,7 @@ You can create a model registry to store, share, version, deploy, and track your
 * You have logged in to {productname-long}.
 ifdef::upstream[]
 * If you are using {productname-short} groups, you are part of the administrator group (for example, {odh-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group.
-* A cluster administrator has configured and enabled the model registry component in your {productname-short} deployment. For more information on configuring the model registry component, see link:{odhdocshome}/working-with-model-registry/#configuring-the-model-registry-component[Configuring the model registry component].
+* A cluster administrator has configured and enabled the model registry component in your {productname-short} deployment. For more information on configuring the model registry component, see link:{odhdocshome}/working-with-model-registries/#configuring-the-model-registry-component[Configuring the model registry component].
 endif::[]
 ifndef::upstream[]
 * If you are using {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#adding-administrative-users-in-{openshift-platform-url}_install[Adding administrative users in {openshift-platform}].
@@ -47,7 +47,7 @@ endif::[]
 ====
 <host name>.<namespace>.svc.cluster.local
 ====
-.. In the *Port* field, enter the database's port.
+.. In the *Port* field, enter the port number for the database.
 .. In the *Username* field, enter the default user name that is connected to the database.
 .. In the *Password* field, enter the password for the default user account.
 .. In the *Database* field, enter the database name.
@@ -60,7 +60,13 @@ To find the resource name or type of a model registry, click the help icon image
 
 .Verification
 * The new model registry appears on the *Model Registry Settings* page.
-* You can view the database configuration for the model by clicking the action menu (*&#8942;*) beside the model registry, and then clicking *View database configuration*.
+* You can view the database configuration for the model registry by clicking the action menu (*&#8942;*) beside it, and then clicking *View database configuration*.
+ifdef::upstream[]
+* You can register a model with the model registry from the *Model Registry* tab. For more information about working with model registries, see link:{odhdocshome}/working-with-model-registries/#working-with-model-registries[Working with model registries].
+endif::[]
+ifndef::upstream[]
+* You can register a model with the model registry from the *Model Registry* tab. For more information about working with model registries, see link:{rhoaidocshome}{default-format-url}/working_with_model_registry/index[Working with model registries].
+endif::[]
 
 // [role="_additional-resources"]
 // .Additional resources
