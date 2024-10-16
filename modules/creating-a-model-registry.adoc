@@ -1,0 +1,68 @@
+:_module-type: PROCEDURE
+
+[id='creating-a-model-registry_{context}']
+= Creating a model registry
+
+[role='_abstract']
+You can create a model registry to store, share, version, deploy, and track your models.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the administrator group (for example, {odh-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group.
+* A cluster administrator has configured and enabled the model registry component in your {productname-short} deployment. For more information on configuring the model registry component, see link:{odhdocshome}/working-with-model-registries/#configuring-the-model-registry-component[Configuring the model registry component].
+endif::[]
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#adding-administrative-users-in-{openshift-platform-url}_install[Adding administrative users in {openshift-platform}].
+* A cluster administrator has configured and enabled the model registry component in your {productname-short} deployment. For more information on configuring the model registry component, see link:{rhoaidocshome}{default-format-url}/configuring_model_registry/configuring-the-model-registry-component_model-registry-config[Configuring the model registry component].
+endif::[]
+* The model registry component is enabled for your {productname-short} deployment.
+* You have access to an external MySQL database which uses at least MySQL version 5.x. However, {org-name} recommends that you use MySQL version 8.x.
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Model registry settings*.
+. Click *Create model registry*.
++
+The *Create model registry* page opens.
+. In the *Name* field, enter a name for the model registry.
+. Optional: In the *Resource Name* field, enter a specific resource name for the model registry. By default, the resource name will match the name of the model registry.
++
+[IMPORTANT]
+====
+Resource names are what your resources are labeled as in OpenShift. Your resource name must consist of lowercase alphanumeric characters or '-', and must start and end with an alphanumeric character. Resource names are not editable after creation.
+====
+. Optional: In the *Description* field, enter a description for the model registry.
+. In the *Connect to external MySQL database* section, enter the information for the external database where your model data is stored.
+.. In the *Host* field, enter the database's host name.
+ifdef::upstream[]
+... If the database is running in running in the `odh-model-registries` namespace, enter only the hostname for the database.
+... If the database is running in a different namespace from `odh-model-registries`, enter the database hostname details in `<host name>.<namespace>.svc.cluster.local` format.
+endif::[]
+ifndef::upstream[]
+... If the database is running in the `rhoai-model-registries` namespace, enter only the hostname for the database.
+... If the database is running in a different namespace from `rhoai-model-registries`, enter the database hostname details in `<host name>.<namespace>.svc.cluster.local` format.
+endif::[]
+.. In the *Port* field, enter the port number for the database.
+.. In the *Username* field, enter the default user name that is connected to the database.
+.. In the *Password* field, enter the password for the default user account.
+.. In the *Database* field, enter the database name.
+. Click *Create*.
+
+[NOTE]
+====
+To find the resource name or type of a model registry, click the help icon image:images/rhoai-help-icon.png[Help icon] beside the registry name. Resource names and types are used to find your resources in OpenShift.
+====   
+
+.Verification
+* The new model registry appears on the *Model Registry Settings* page.
+* You can view the database configuration for the model registry by clicking the action menu (*&#8942;*) beside it, and then clicking *View database configuration*.
+ifdef::upstream[]
+* You can register a model with the model registry from the *Model Registry* tab. For more information about working with model registries, see link:{odhdocshome}/working-with-model-registries/#working-with-model-registries[Working with model registries].
+endif::[]
+ifndef::upstream[]
+* You can register a model with the model registry from the *Model Registry* tab. For more information about working with model registries, see link:{rhoaidocshome}{default-format-url}/working_with_model_registry/index[Working with model registries].
+endif::[]
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete
