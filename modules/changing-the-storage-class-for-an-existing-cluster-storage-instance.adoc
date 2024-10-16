@@ -1,0 +1,89 @@
+:_module-type: PROCEDURE
+
+[id="changing-the-storage-class-for-an-existing-cluster-storage-instance_{context}"]
+= Changing the storage class for an existing cluster storage instance
+
+[role='_abstract']
+When you create a workbench with cluster storage, the cluster storage is tied to a specific storage class. Later, if your data science work requires a different storage class, or if the current storage class has been deprecated, you cannot directly change the storage class on the existing cluster storage instance. Instead, you must migrate your data to a new cluster storage instance that uses the storage class that you want to use.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* You have created a workbench or data science project that contains cluster storage.
+
+.Procedure
+
+. Stop the workbench with the storage class that you want to change.
+.. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data Science Projects* page opens.
+.. Click the name of the project with the cluster storage instance that uses the storage class you want to change.
++
+The project details page opens.
+.. Click the *Workbenches* tab.
+.. Click the action menu (*&#8942;*) beside the applicable workbench and then click *Stop*.
++
+Wait until the *Status* column for the relevant workbench changes from *Running* to *Stopped*.
+
+. Add a new cluster storage instance that uses the needed storage class.
+
+.. Click the *Cluster storage* tab.
+.. Click *Add cluster storage*.
++
+The *Add cluster storage* dialog opens.
+.. Enter a *name* for the cluster storage.
+.. Optional: Enter a *description* for the cluster storage.
+.. Select the needed *storage class* for the cluster storage.
+.. Under *Persistent storage size*, enter a size in gibibytes or mebibytes. 
+.. Under *Connected workbench*, select the workbench with the storage class that you want to change.
+.. Under *Mount folder name*, enter a new storage directory for the cluster storage to mount to. For example, `backup`.
+.. Click *Add storage*.
+
+. Copy the data from the existing cluster storage instance to the new cluster storage instance.
+.. Click the *Workbenches* tab.
+.. Click the action menu (*&#8942;*) beside the workbench with the storage class that you want to change and then click *Start*.
+.. When the workbench status is *Running*, click *Open* to open the workbench.
+.. In JupyterLab, click *File* -> *New* -> *Terminal*.
+.. Copy the data to the new storage directory. Replace _<mount_folder_name>_ with the storage directory of your new cluster storage instance.
++
+[source]
+----
+rsync -avO --exclude='/opt/app-root/src/__<mount_folder_name>__' /opt/app-root/src/ /opt/app-root/src/__<mount_folder_name>__/
+----
++
+For example:
++
+[source]
+----
+rsync -avO --exclude='/opt/app-root/src/backup' /opt/app-root/src/ /opt/app-root/src/backup/
+----
+.. After the data has finished copying, log out of JupyterLab.
+
+. Stop the workbench.
+.. Click the *Workbenches* tab.
+.. Click the action menu (*&#8942;*) beside the applicable workbench and then click *Stop*.
++
+Wait until the *Status* column for the relevant workbench changes from *Running* to *Stopped*.
+
+. Edit the workbench to use the new cluster storage instance.
+.. Click the *Cluster storage* tab.
+.. Click the action menu (*&#8942;*) beside the cluster storage that the workbench currently uses then click *Edit storage*.
+.. Under *Existing connected workbenches*, remove the workbench.
+.. Click *Update*.
+.. Click the *Workbenches* tab.
+.. Click the action menu (*&#8942;*) beside the applicable workbench and then click *Edit workbench*.
+.. In the *Cluster storage* section, under *Use existing persistent storage*, select your new cluster storage.
+.. Click *Update workbench.*
+
+. Restart the workbench.
+.. Click the *Workbenches* tab.
+.. Click the action menu (*&#8942;*) beside the applicable workbench and then click *Start*.
+
+. Optional: The initial cluster storage that uses the previous storage class still appears on the *Cluster storage* tab. If you no longer need this cluster storage (for example, if the storage class is deprecated), you can delete it. 
+
+. Optional: You can delete the mount folder of your new cluster storage instance (for example, the `backup` folder).
+
+.Verification
+* On the *Cluster storage* tab for the project, the new cluster storage instance appears with the needed storage class in the *Storage class* column and the applicable workbench in the *Connected workbenches* column.
+
+//[role='_additional-resources']
+//.Additional resources
