@@ -6,9 +6,9 @@
 [role='_abstract']
 To configure the model registry feature for your data scientists to use in {productname-short}, you must install the following Operators in OpenShift, and then enable the `modelregistry` component in {productname-short}.
 
-* Red Hat Authorino Operator (Technical Preview)
-* Red Hat OpenShift Serverless Operator
-* Red Hat OpenShift Service Mesh Operator
+* {org-name} Authorino Operator (Technical Preview)
+* {org-name} OpenShift Serverless Operator
+* {org-name} OpenShift Service Mesh Operator
 ifdef::upstream[]
 * Open Data Hub Operator version 2
 endif::[]
@@ -23,7 +23,7 @@ You must install the required Operators in the listed order. You should install 
 
 For more information about installing Operators in OpenShift, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
 
-For information about installing the Open Hub Operator, see link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing Open Data Hub Operator version 2].
+For information about installing the Open Data Hub Operator, see link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing Open Data Hub Operator version 2].
 ====
 endif::[]
 
@@ -46,22 +46,22 @@ After you install the Operators, you can use the following steps to enable the `
 * You have access to the data science cluster.
 * You have installed {productname-long}.
 ifdef::cloud-service[]
-* You have installed the Red Hat Authorino, Red Hat OpenShift Serverless, Red Hat OpenShift Service Mesh, and Red Hat OpenShift AI Operators.
+* You have installed the {org-name} Authorino, {org-name} OpenShift Serverless, {org-name} OpenShift Service Mesh, and {org-name} OpenShift AI Operators.
 * You have sufficient resources. For more information about the minimum resources required to use {productname-short}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install[Installing and deploying {productname-short}].
 endif::[]
 ifdef::self-managed[]
-* You have installed the Red Hat Authorino, Red Hat OpenShift Serverless, Red Hat OpenShift Service Mesh, and Red Hat OpenShift AI Operators.
+* You have installed the {org-name} Authorino, {org-name} OpenShift Serverless, {org-name} OpenShift Service Mesh, and {org-name} OpenShift AI Operators.
 * You have sufficient resources. For more information about the minimum resources required to use {productname-short}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install[Installing and deploying {productname-short}] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/deploying-openshift-ai-in-a-disconnected-environment_install[Deploying {productname-short} in a disconnected environment]).
 endif::[]
 ifdef::upstream[]
-* You have installed the Red Hat Authorino, Red Hat OpenShift Serverless, Red Hat OpenShift Service Mesh, and Open Data Hub Operators.
+* You have installed the {org-name} Authorino, {org-name} OpenShift Serverless, {org-name} OpenShift Service Mesh, and Open Data Hub Operators.
 * You have sufficient resources. For more information about the minimum resources required to use {productname-short}, see link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing the {productname-short} Operator version 2].
 endif::[]
 
 .Procedure
 . In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
 ifdef::self-managed,cloud-service[]
-. Search for the *Red Hat OpenShift AI Operator* version 2.14+, and then click the Operator name to open the Operator details page.
+. Search for the *{productname-long} Operator* version 2.14+, and then click the Operator name to open the Operator details page.
 endif::[]
 ifdef::upstream[]
 . Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
@@ -70,7 +70,7 @@ endif::[]
 . Click the default instance name (for example, *default-dsc*) to open the instance details page.
 . Click the *YAML* tab to show the instance specifications.
 ifdef::upstream[]
-. Find the `spec:components` section, and then add or update it to include the following `modelregistry` component entry, with the `managementState` field set to `Managed`, and the `registriesNamespace` field set to `odh-model-registries`:
+. Find the `spec.components` section, and then add or update it to include the following `modelregistry` component entry, with the `managementState` field set to `Managed`, and the `registriesNamespace` field set to `odh-model-registries`:
 +
 [source]
 ----
@@ -80,7 +80,7 @@ ifdef::upstream[]
 ----
 endif::[]
 ifndef::upstream[]
-. Find the `spec:components` section, and then add or update it to include the following `modelregistry` component entry, with the `managementState` field set to `Managed`, and the `registriesNamespace` field set to `rhoai-model-registries`:
+. Find the `spec.components` section, and then add or update it to include the following `modelregistry` component entry, with the `managementState` field set to `Managed`, and the `registriesNamespace` field set to `rhoai-model-registries`:
 +
 [source]
 ----

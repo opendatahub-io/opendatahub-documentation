@@ -10,12 +10,7 @@ You can manage access to a model registry for individual users and user groups i
 
 .Prerequisites
 * You have logged in to {productname-long}.
-ifdef::upstream[]
-* If you are using {productname-short} groups, you are part of the administrator group (for example, {odh-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group.
-endif::[]
-ifndef::upstream[]
-* If you are using {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#adding-administrative-users-in-{openshift-platform-url}_install[Adding administrative users in {openshift-platform}].
-endif::[]
+* You have {productname-short} administrator privileges.
 * An available model registry exists in your deployment.
 ifdef::upstream[]
 * The users and groups that you want to provide access to already exist in {openshift-platform}. For more information, see
@@ -47,7 +42,7 @@ To enable access for all cluster users, add `system:authenticated` to the group 
 .. To confirm your entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
 .. Optional: To add an additional user, click *Add user* and repeat the process.
 . Provide all service accounts in a project with access to the model registry.
-.. On the *Projects* tab, in the *Projects* section, click *Add projects*.
+.. On the *Projects* tab, in the *Projects* section, click *Add project*.
 .. In the *Select or enter a project* field, select or enter the name of the project to which you want to provide access.
 .. To confirm your entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
 .. Optional: To add an additional project, click *Add project* and repeat the process.
