@@ -1,0 +1,58 @@
+:_module-type: PROCEDURE
+
+[id="managing-model-registry-permissions{context}"]
+= Managing model registry permissions 
+
+[role='_abstract']
+You can manage access to a model registry for individual users and user groups in your organization, and for service accounts in a project.
+
+{productname-short} creates the `<model-registry-name>-users` group automatically for use with model registries. You can add users to this group in OpenShift, or ask the cluster admin to do so.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* You have {productname-short} administrator privileges.
+* An available model registry exists in your deployment.
+ifdef::upstream[]
+* The users and groups that you want to provide access to already exist in {openshift-platform}. For more information, see
+link:{odhdocshome}/managing-odh/#managing-users-and-groups[Managing users and groups].
+endif::[]
+
+ifndef::upstream[]
+* The users and groups that you want to provide access to already exist in {openshift-platform}. For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/index#managing-users-and-groups[Managing users and groups].
+endif::[]
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Model registry settings*.
+. Click *Manage permissions* beside the model registry that you want to manage access for.
++
+The permissions page for the model registry opens.
+. Provide one or more OpenShift groups with access to the project.
+.. On the *Users* tab, in the *Groups* section, click *Add group*.
+.. From the *Select a group* drop-down list, select a group.
++
+[NOTE]
+====
+To enable access for all cluster users, add `system:authenticated` to the group list.
+====
+.. To confirm your entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
+.. Optional: To add an additional group, click *Add group* and repeat the process.
+. Provide one or more users with access to the model registry.
+.. On the *Users* tab, in the *Users* section, click *Add user*.
+.. In the *Type username* field, enter the username of the user to whom you want to provide access.
+.. To confirm your entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
+.. Optional: To add an additional user, click *Add user* and repeat the process.
+. Provide all service accounts in a project with access to the model registry.
+.. On the *Projects* tab, in the *Projects* section, click *Add project*.
+.. In the *Select or enter a project* field, select or enter the name of the project to which you want to provide access.
+.. To confirm your entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
+.. Optional: To add an additional project, click *Add project* and repeat the process.
+
+.Verification
+* Users, groups, and accounts that were granted access to a model registry can register, view, edit, version, deploy, delete, archive, and restore models in that registry.
+* The *Users* and *Groups* sections on the *Permissions* tab show the respective users and groups that you granted access to the model registry.
+* The *Projects* sections on the *Projects* tab show the projects that you granted access to the model registry.
+
+
+
+
+

@@ -1,0 +1,35 @@
+:_module-type: PROCEDURE
+
+[id="deleting-a-model-registry_{context}"]
+= Deleting a model registry
+
+[role='_abstract']
+You can delete model registries that you no longer require.
+
+[IMPORTANT]
+====
+When you delete a model registry, databases connected to the model registry will not be removed. To remove any remaining databases, contact your cluster administrator.
+====
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the administrator group (for example, {odh-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group.
+endif::[]
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using specialized groups, you are part of the {openshift-platform} administrator group. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#adding-administrative-users-in-{openshift-platform-url}_install[Adding administrative users in {openshift-platform}].
+endif::[]
+* An available model registry exists in your deployment.
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Model registry settings*.
+. Click the action menu (*&#8942;*) beside the model registry that you want to delete.
+. Click *Delete model registry*.
+. In the *Delete model registry?* dialog that appears, enter the name of the model registry in the text field to confirm that you intend to delete it.
+. Click *Delete model registry*.
+
+.Verification
+* The model registry no longer appears on the *Model Registry Settings* page.
+
+//[role='_additional-resources']
+//.Additional resources

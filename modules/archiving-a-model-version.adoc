@@ -1,0 +1,37 @@
+:_module-type: PROCEDURE
+
+[id="archiving-a-model-version_{context}"]
+= Archiving a model version
+
+[role='_abstract']
+You can archive a model version that you no longer require. The model version will be archived and unavailable for use unless it is restored.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* An available model registry exists in your deployment, and contains at least 1 registered model.
+* You have access to the model registry that contains the model version that you want to archive.
+
+.Procedure
+. From the {productname-short} dashboard, click *Model Registry*.
+. From the *Model registry* drop-down menu, select the model registry that you want to archive a model in.
+. In the *Model name* column, click the name of the model that contains the version that you want to archive.
++
+The details page for the model version opens.
+. Click the action menu (*&#8942;*) beside the version that you want to archive.
+. Click *Archive model version*.
+. In the *Archive version?* dialog that appears, enter the name of the model version in the text field to confirm that you intend to archive it.
+. Click *Archive*.
+
+.Verification
+* The model version no longer appears on the details page for the model.
+* The model version now appears on the archived versions page for the model.
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete
