@@ -21,12 +21,19 @@ ifdef::cloud-service[]
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.openshift.com/dedicated/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI] (Red Hat OpenShift Dedicated) or link:https://docs.openshift.com/rosa/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI] (Red Hat OpenShift Service on AWS).
 endif::[]
 
-ifndef::upstream[]
-* You have enabled the required distributed workloads components as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/configuring-distributed-workloads_distributed-workloads#configuring-the-distributed-workloads-components_distributed-workloads[Configuring the distributed workloads components].
-endif::[]
+
 ifdef::upstream[]
-* You have enabled the required distributed workloads components as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-the-distributed-workloads-components_distributed-workloads[Configuring the distributed workloads components].
+* You have installed the required distributed workloads components as described in link:{odhdocshome}/installing-open-data-hub/#installing-distributed-workload-components_installv2[Installing the distributed workloads components].
 endif::[]
+
+ifdef::self-managed[]
+* You have installed the required distributed workloads components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#installing-distributed-workload-components_component-install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-and-deploying-openshift-ai_install#installing-distributed-workload-components_component-install[Installing the distributed workloads components]).
+endif::[]
+
+ifdef::cloud-service[]
+* You have installed the required distributed workloads components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#installing-distributed-workload-components_component-install[Installing the distributed workloads components].
+endif::[]
+
 
 ifndef::upstream[]
 * You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project]. 
@@ -44,7 +51,7 @@ ifdef::self-managed[]
 [NOTE]
 ====
 In {productname-short} {vernum}, {org-name} supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
-For more information about Kueue resources, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/overview-of-distributed-workloads_distributed-workloads#overview-of-kueue-resources_distributed-workloads[Overview of Kueue resources].
+For more information about Kueue resources, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing_distributed_workloads#overview-of-kueue-resources_managing-rhoai[Overview of Kueue resources].
 ====
 endif::[]
 ifdef::cloud-service[]
@@ -53,7 +60,7 @@ ifdef::cloud-service[]
 [NOTE]
 ====
 In {productname-short}, {org-name} supports only a single cluster queue per cluster (that is, homogenous clusters), and only empty resource flavors.
-For more information about Kueue resources, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/overview-of-distributed-workloads_distributed-workloads#overview-of-kueue-resources_distributed-workloads[Overview of Kueue resources].
+For more information about Kueue resources, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing_distributed_workloads#overview-of-kueue-resources_managing-rhoai[Overview of Kueue resources].
 ====
 endif::[]
 endif::[]
@@ -63,7 +70,7 @@ ifdef::upstream[]
 +
 [NOTE]
 ====
-For more information about Kueue resources, see link:{odhdocshome}/working-with-distributed-workloads/#overview-of-kueue-resources_distributed-workloads[Overview of Kueue resources].
+For more information about Kueue resources, see link:{odhdocshome}/managing-odh/#overview-of-kueue-resources_managing-odh[Overview of Kueue resources].
 ====
 endif::[]
 
