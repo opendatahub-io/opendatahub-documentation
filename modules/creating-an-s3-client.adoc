@@ -4,11 +4,11 @@
 = Creating an S3 client
 
 [role='_abstract']
-To interact with data stored in an S3-compatible object store from your workbench, you must create a local client to handle requests to the AWS S3 service by using an AWS SDK such as Boto3.
+To interact with data stored in an S3-compatible object store from a workbench, you must create a local client to handle requests to the AWS S3 service by using an AWS SDK such as Boto3.
 
 Boto3 is an AWS SDK for Python that provides an API for creating and managing AWS services, such as AWS S3 or S3-compatible object storage. 
 
-After you have configured a Boto3 client for the S3 service from your workbench, you can connect and work with data in your S3-compatible object store.
+After you have configured a Boto3 client for the S3 service from a workbench, you can connect and work with data in your S3-compatible object store.
 
 .Prerequisites
 * You have access to an S3-compatible object store.
@@ -26,11 +26,14 @@ endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *Data Science Projects*.
-. Click the name of the project that contains the workbench that you want to start.
-. If the workbench that you want to use is not already running, click the action menu (*&#8942;*) beside the workbench, and click *Start*.
+. Click the name of the project that contains the workbench.
+. Click the *Workbenches* tab.
+. If the status of the workbench is *Running*, skip to the next step. 
++
+If the status of the workbench is *Stopped*, in the *Status* column for the workbench, click *Start*. 
 +
 The *Status* column changes from *Stopped* to *Starting* when the workbench server is starting, and then to *Running* when the workbench has successfully started.
-. After the workbench has started, click the *Open* link next to your workbench.
+.  Click the *Open* link next to the workbench.
 + 
 Your Jupyter environment window opens.
 . On the toolbar, click the *Git Clone* icon and then select *Clone a Repository*.
