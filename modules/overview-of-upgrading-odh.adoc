@@ -15,8 +15,8 @@ See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{
 
 * By default, the {productname-short} Operator follows a sequential update process. This means that if there are several minor versions between the current version and the version that you plan to upgrade to, Operator Lifecycle Manager (OLM) upgrades the Operator to each of the minor versions before it upgrades it to the final, target version. If you configure automatic upgrades, OLM automatically upgrades the Operator to the latest available version, without human intervention. If you configure manual upgrades, a cluster administrator must manually approve each sequential update between the current version and the final, target version.
 
-* When you upgrade {productname-short}, the upgrade process automatically uses the values of the previous version's `DataScienceCluster` object. After the upgrade, you should inspect the default `DataScienceCluster` object to check and optionally update the  `managementState` status of the components.
-
+* When you upgrade {productname-short}, the upgrade process automatically uses the values of the previous version's `DataScienceCluster` object. After the upgrade, you should inspect the default `DataScienceCluster` object to check and optionally update the `managementState` status of the components.
++
 [NOTE]
 ====
 New components are not automatically added to the `DataScienceCluster` object during upgrade. If you want to use a new component, you must manually edit the `DataScienceCluster` object to add the component entry.
