@@ -17,6 +17,11 @@ See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{
 
 * When you upgrade {productname-short}, the upgrade process automatically uses the values of the previous version's `DataScienceCluster` object. After the upgrade, you should inspect the default `DataScienceCluster` object to check and optionally update the  `managementState` status of the components.
 
+[NOTE]
+====
+New components are not automatically added to the `DataScienceCluster` object during upgrade. If you want to use a new component, you must manually edit the `DataScienceCluster` object to add the component entry.
+====
+
 * For any components that you update, {productname-short} initiates a rollout that affects all pods to use the updated image.
 
 * Notebook images are integrated into the image stream during the upgrade and subsequently appear in the {productname-short} dashboard. 
