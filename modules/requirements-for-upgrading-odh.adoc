@@ -12,6 +12,11 @@ When you upgrade to version {vernum}, the upgrade process automatically uses the
 
 After the upgrade, you should inspect the {vernum} `DataScienceCluster` object and optionally update the status of any components as described in link:{odhdocshome}/upgrading-open-data-hub/#installing-odh-components_upgradev1[Installing Open Data Hub components].
 
+[NOTE]
+====
+New components are not automatically added to the `DataScienceCluster` object during upgrade. If you want to use a new component, you must manually edit the `DataScienceCluster` object to add the component entry.
+====
+
 *Recreate existing pipeline runs*
 
 When you upgrade to version {vernum}, any existing pipeline runs that you created in version 1 continue to refer to the previous version's image (as expected).
