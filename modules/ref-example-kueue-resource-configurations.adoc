@@ -1,0 +1,198 @@
+
+:_module-type: REFERENCE
+
+[id='example-kueue-resource-configurations_{context}']
+= Example Kueue resource configurations
+
+[role='_abstract']
+These examples show how to configure Kueue resource flavors and cluster queues. 
+
+ifndef::upstream[]
+ifdef::self-managed[]
+[NOTE]
+====
+In {productname-short} {vernum}, {org-name} does not support shared cohorts.
+====
+endif::[]
+ifdef::cloud-service[]
+[NOTE]
+====
+In {productname-short}, {org-name} does not support shared cohorts.
+====
+endif::[]
+endif::[]
+
+
+== NVIDIA GPUs without shared cohort
+
+=== NVIDIA RTX A400 GPU resource flavor
+
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ResourceFlavor
+metadata:
+  name: "A400-node"
+spec:
+  nodeLabels:
+    instance-type: amd-node
+  tolerations:
+  - key: "HasGPU"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+----
+
+=== NVIDIA RTX A1000 GPU resource flavor
+
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ResourceFlavor
+metadata:
+  name: "A1000-node"
+spec:
+  nodeLabels:
+    instance-type: nvidia-node
+  tolerations:
+  - key: "HasGPU"
+    operator: "Exists"
+    effect: "NoSchedule"
+----
+
+=== NVIDIA RTX A400 GPU cluster queue
+
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "A400-queue"
+spec:
+  namespaceSelector: {} # match all.
+  resourceGroups:
+  - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
+    - name: "A400-node"
+      resources:
+      - name: "cpu"
+        nominalQuota: 16
+      - name: "memory"
+        nominalQuota: 64Gi
+      - name: "nvidia.com/gpu"
+        nominalQuota: 2
+
+----
+
+=== NVIDIA RTX A1000 GPU cluster queue
+
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "A1000-queue"
+spec:
+  namespaceSelector: {} # match all.
+  resourceGroups:
+  - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
+    flavors:
+    - name: "A1000-node"
+      resources:
+      - name: "cpu"
+        nominalQuota: 16
+      - name: "memory"
+        nominalQuota: 64Gi
+      - name: "nvidia.com/gpu"
+        nominalQuota: 2
+
+----
+
+
+== NVIDIA GPUs and AMD GPUs without shared cohort
+
+=== AMD GPU resource flavor
+
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ResourceFlavor
+metadata:
+  name: "amd-node"
+spec:
+  nodeLabels:
+    instance-type: amd-node
+  tolerations:
+  - key: "HasGPU"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+----
+
+=== NVIDIA GPU resource flavor
+
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ResourceFlavor
+metadata:
+  name: "nvidia-node"
+spec:
+  nodeLabels:
+    instance-type: nvidia-node
+  tolerations:
+  - key: "HasGPU"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+----
+
+=== AMD GPU cluster queue
+
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "team-a-amd-queue"
+spec:
+  namespaceSelector: {} # match all.
+  resourceGroups:
+  - coveredResources: ["cpu", "memory", "amd.com/gpu"]
+    - name: "amd-node"
+      resources:
+      - name: "cpu"
+        nominalQuota: 16
+      - name: "memory"
+        nominalQuota: 64Gi
+      - name: "amd.com/gpu"
+
+----
+
+=== NVIDIA GPU cluster queue
+
+[source,bash]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "team-a-nvidia-queue"
+spec:
+  namespaceSelector: {} # match all.
+  resourceGroups:
+  - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
+    flavors:
+    - name: "nvidia-node"
+      resources:
+      - name: "cpu"
+        nominalQuota: 16
+      - name: "memory"
+        nominalQuota: 64Gi
+      - name: "nvidia.com/gpu"
+        nominalQuota: 2
+
+----
+
+[role='_additional-resources']
+== Additional resources
+* link:https://kueue.sigs.k8s.io/docs/concepts/resource_flavor/[Resource Flavor] in the Kueue documentation
+* link:https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/[Cluster Queue] in the Kueue documentation
