@@ -23,7 +23,9 @@ endif::[]
 endif::[]
 
 
-== NVIDIA GPUs without shared cohort
+//== NVIDIA GPUs without shared cohort
+// When AMD GPUs are supported, uncomment the above line and delete the following line
+== NVIDIA GPUs 
 
 === NVIDIA RTX A400 GPU resource flavor
 
@@ -35,7 +37,7 @@ metadata:
   name: "A400-node"
 spec:
   nodeLabels:
-    instance-type: amd-node
+    instance-type: nvidia-node
   tolerations:
   - key: "HasGPU"
     operator: "Exists"
@@ -107,7 +109,9 @@ spec:
 
 ----
 
+// When AMD GPUs are supported, uncomment the following lines
 
+////
 == NVIDIA GPUs and AMD GPUs without shared cohort
 
 === AMD GPU resource flavor
@@ -128,6 +132,8 @@ spec:
 
 ----
 
+////
+
 === NVIDIA GPU resource flavor
 
 [source,bash]
@@ -145,6 +151,10 @@ spec:
     effect: "NoSchedule"
 
 ----
+
+// When AMD GPUs are supported, uncomment the following lines
+
+////
 
 === AMD GPU cluster queue
 
@@ -167,6 +177,9 @@ spec:
       - name: "amd.com/gpu"
 
 ----
+
+////
+
 
 === NVIDIA GPU cluster queue
 
