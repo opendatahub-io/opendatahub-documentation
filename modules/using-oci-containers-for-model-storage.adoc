@@ -127,6 +127,7 @@ oc new-project oci-model-example
 oc process -n opendatahub -o yaml kserve-ovms | oc apply -f -
 ----
 +
+--
 .. Verify that the `ServingRuntime` has been created with the `kserve-ovms` name:
 +
 [source]
@@ -136,8 +137,10 @@ oc get servingruntimes
 NAME          DISABLED   MODELTYPE     CONTAINERS         AGE
 kserve-ovms              openvino_ir   kserve-container   1m
 ----
+--
 +
 . Create an `InferenceService` YAML resource with the following values:
++
 [source]
 ----
 apiVersion: serving.kserve.io/v1beta1
