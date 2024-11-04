@@ -1,0 +1,199 @@
+:_module-type: PROCEDURE
+
+[id="using-oci-containers-for-model-storage_{context}"]
+= Using OCI containers for model storage
+
+[role='_abstract']
+
+As an alternative to storing a model in an S3 bucket or URI, you can upload models to OCI containers. Using OCI containers for model storage can help you:
+Reduce start up times by avoiding downloading the same model multiple times.
+Reduce disk space usage by reducing the number of models downloaded locally.
+Improve model performance by allowing pre-fetching images.
+
+This guide shows how to manually deploy a MobileNet v2-7 model in an ONNX format, stored in an OCI image on an OpenVINO model server.
+
+[NOTE]
+====
+By default in KServe, models are exposed outside the cluster and are not protected with authorization. 
+====
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+Using OCI containers for model storage is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+Using OCI containers for model storage is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with Red{nbsp}Hat production service level agreements (SLAs) and might not be functionally complete.
+Red{nbsp}Hat does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of Red{nbsp}Hat Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+.Prerequisites
+* You have a model in the ONNX format.
+
+== Creating an OCI image and uploading a model to the container image
+
+.Procedure
+. From your local machine, create a temporary directory to store both the downloaded model and support files to create the OCI image:
++
+[source]
+----
+cd $(mktemp -d)
+----
++
+. Create a `models/` folder inside the temporary directory and download your model:
++
+[source]
+----
+mkdir -p models/1
+
+DOWNLOAD_URL=https://github.com/onnx/models/raw/main/validated/vision/classification/mobilenet/model/mobilenetv2-7.onnx
+curl -L $DOWNLOAD_URL -O --output-dir models/1/
+----
++
+[NOTE]
+====
+The subdirectory `1` is used because OpenVINO requires numbered subdirectories for model versioning. If you are not using OpenVINO, you do not need to create the `1` subdirectory to use OCI container images.
+====
+. Create a Docker file named `Containerfile` with the following contents:
++
+[source]
+----
+FROM registry.access.redhat.com/ubi8/ubi-micro:latest
+COPY --chown=0:0 models /models
+RUN chmod -R a=rX /models
+
+# nobody user
+USER 65534 
+----
++
+[NOTE]
+====
+* In this example, `ubi8-micro` is used as a base container image. You cannot use empty images that do not provide a shell, such as `scratch`, because KServe uses the shell to ensure the model files are accessible to the model server. 
+* Ownership of the copied model files and read permissions are granted to the `root` group. OpenShift runs containers with a random user ID and the `root` group ID. Changing ownership of the group ensures that the model server can access them.
+====
++
+. Confirm that the models follow the directory structure shown using the `tree` command:
++
+[source]
+----
+tree
+
+.
+├── Containerfile
+└── models
+    └── 1
+        └── mobilenetv2-7.onnx
+----
++
+. Create the OCI container image with Podman, and upload it to a registry. For
+example, using Quay as the registry:
++
+[source]
+----
+podman build --format=oci -t quay.io/<user_name>/<repository_name>:<tag_name> .
+podman push quay.io/<user_name>/<repository_name>:<tag_name>
+----
++
+[NOTE]
+====
+If your repository is private, ensure you are authenticated to the registry before uploading your container image.
+====
+
+== Deploying a model stored in an OCI image in a public repository
+
+[NOTE]
+====
+By default in KServe, models are exposed outside the cluster and not protected with authorization. 
+====
+
+. Create a namespace to deploy the model:
++
+[source]
+----
+oc new-project oci-model-example
+----
++
+. Use the OpenData Hub project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new namespace:
++
+[source]
+----
+oc process -n opendatahub -o yaml kserve-ovms | oc apply -f -
+----
++
+.. Verify that the `ServingRuntime` has been created with the `kserve-ovms` name:
++
+[source]
+----
+oc get servingruntimes
+
+NAME          DISABLED   MODELTYPE     CONTAINERS         AGE
+kserve-ovms              openvino_ir   kserve-container   1m
+----
++
+. Create an `InferenceService` YAML resource with the following values:
+[source]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: sample-isvc-using-oci
+spec:
+  predictor:
+    model:
+      runtime: kserve-ovms # Ensure this matches the name of the ServingRuntime resource
+      modelFormat:
+        name: onnx
+      storageUri: oci://quay.io/<user_name>/<repository_name>:<tag_name>
+----
++
+[NOTE]
+====
+The `ServingRuntime` and `InferenceService` configurations do not set any resource limits.
+====
+
+.Verification
+After you create the `InferenceService` resource, KServe deploys the model stored in the OCI image referred to by the `storageUri` field. Check the status of the deployment with the following command:
+[source]
+----
+oc get inferenceservice
+
+NAME                    URL                                                       READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION                     AGE
+sample-isvc-using-oci   https://sample-isvc-using-oci-oci-model-example.example   True           100                              sample-isvc-using-oci-predictor-00001   1m
+----
+
+== Deploying a model stored in an OCI image from a private repository
+
+To deploy a model stored from a private OCI repository, you must configure an image pull secret. For more information about creating an image pull secret, see link:https://docs.openshift.com/container-platform/latest/openshift_images/managing_images/using-image-pull-secrets.html[Using image pull secrets^].
+
+. Follow the steps in the previous section for deploying a model. However, when creating the `InferenceService` in step 3, specify your pull secret in the
+`spec.predictor.imagePullSecrets` field:
++
+[source]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: sample-isvc-using-private-oci
+spec:
+  predictor:
+    model:
+      runtime: kserve-ovms
+      modelFormat:
+        name: onnx
+      storageUri: oci://quay.io/<user_name>/<repository_name>:<tag_name>
+    imagePullSecrets: # Specify image pull secrets to use for fetching container images (including OCI model images)
+    - name: <pull-secret-name>
+----
+
+ifdef::upstream[]
+[role='_additional-resources']
+.Additional resources
+* link:https://kserve.github.io/website/latest/modelserving/storage/oci/[Serving models with OCI images]
+endif::[]
