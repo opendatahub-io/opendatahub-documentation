@@ -12,11 +12,6 @@ As an alternative to storing a model in an S3 bucket or URI, you can upload mode
 
 This guide shows how to manually deploy a MobileNet v2-7 model in an ONNX format, stored in an OCI image on an OpenVINO model server.
 
-[NOTE]
-====
-By default in KServe, models are exposed outside the cluster and are not protected with authorization. 
-====
-
 ifndef::upstream[]
 [IMPORTANT]
 ====
@@ -65,7 +60,7 @@ The subdirectory `1` is used because OpenVINO requires numbered subdirectories f
 +
 [source]
 ----
-FROM registry.access.redhat.com/ubi8/ubi-micro:latest
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest
 COPY --chown=0:0 models /models
 RUN chmod -R a=rX /models
 
@@ -75,7 +70,7 @@ USER 65534
 +
 [NOTE]
 ====
-* In this example, `ubi8-micro` is used as a base container image. You cannot use empty images that do not provide a shell, such as `scratch`, because KServe uses the shell to ensure the model files are accessible to the model server. 
+* In this example, `ubi9-micro` is used as a base container image. You cannot use empty images that do not provide a shell, such as `scratch`, because KServe uses the shell to ensure the model files are accessible to the model server. 
 * Ownership of the copied model files and read permissions are granted to the `root` group. OpenShift runs containers with a random user ID and the `root` group ID. Changing ownership of the group ensures that the model server can access them.
 ====
 +
@@ -106,7 +101,7 @@ podman push quay.io/<user_name>/<repository_name>:<tag_name>
 If your repository is private, ensure you are authenticated to the registry before uploading your container image.
 ====
 
-== Deploying a model stored in an OCI image in a public repository
+== Deploying a model stored in an OCI image from a public repository
 
 [NOTE]
 ====
@@ -121,12 +116,22 @@ oc new-project oci-model-example
 ----
 +
 . Use the OpenData Hub project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new namespace:
+ifndef::upstream[]
++
+[source]
+----
+oc process -n redhat-ods-applications -o yaml kserve-ovms | oc apply -f -
+----
++
+endif::[]
+ifdef::upstream[]
 +
 [source]
 ----
 oc process -n opendatahub -o yaml kserve-ovms | oc apply -f -
 ----
 +
+endif::[]
 --
 .. Verify that the `ServingRuntime` has been created with the `kserve-ovms` name:
 +
@@ -156,7 +161,7 @@ spec:
       storageUri: oci://quay.io/<user_name>/<repository_name>:<tag_name>
 ----
 +
-[NOTE]
+[IMPORTANT]
 ====
 The `ServingRuntime` and `InferenceService` configurations do not set any resource limits.
 ====
