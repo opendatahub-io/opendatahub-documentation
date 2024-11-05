@@ -116,12 +116,23 @@ By default in KServe, models are exposed outside the cluster and not protected w
 oc new-project oci-model-example
 ----
 +
-. Use the `redhat-ods-applications`` project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new namespace:
+
+ifndef::upstream[]
+. Use the {productname-short} Applications project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new namespace:
 +
 [source]
 ----
 oc process -n redhat-ods-applications -o yaml kserve-ovms | oc apply -f -
 ----
+endif::[]
+ifdef::upstream[]
+. Use the {productname-short} project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new namespace:
++
+[source]
+----
+oc process -n opendatahub -o yaml kserve-ovms | oc apply -f -
+----
+endif::[]
 +
 --
 .. Verify that the `ServingRuntime` has been created with the `kserve-ovms` name:
