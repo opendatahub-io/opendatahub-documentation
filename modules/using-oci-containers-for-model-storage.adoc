@@ -33,7 +33,7 @@ endif::[]
 .Prerequisites
 * You have a model in the ONNX format.
 
-== Creating an OCI image and uploading a model to the container image
+== Creating an OCI image and storing a model in the container image
 
 .Procedure
 . From your local machine, create a temporary directory to store both the downloaded model and support files to create the OCI image:
@@ -116,23 +116,13 @@ By default in KServe, models are exposed outside the cluster and not protected w
 oc new-project oci-model-example
 ----
 +
-. Use the OpenData Hub project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new namespace:
-ifndef::upstream[]
+. Use the `redhat-ods-applications`` project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new namespace:
 +
 [source]
 ----
 oc process -n redhat-ods-applications -o yaml kserve-ovms | oc apply -f -
 ----
 +
-endif::[]
-ifdef::upstream[]
-+
-[source]
-----
-oc process -n opendatahub -o yaml kserve-ovms | oc apply -f -
-----
-+
-endif::[]
 --
 .. Verify that the `ServingRuntime` has been created with the `kserve-ovms` name:
 +
