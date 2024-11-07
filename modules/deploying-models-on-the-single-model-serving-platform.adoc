@@ -24,8 +24,19 @@ ifdef::upstream[]
 endif::[]
 * You have installed KServe.
 * You have enabled the single-model serving platform.
-ifndef::upstream[]
-* To enable token authorization and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see {rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+ifdef::self-managed[]
+ifndef::disconnected[]
+* To enable token authorization and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+endif::[]
+ifdef::disconnected[]
+To enable token authorization and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+endif::[]
+endif::[]
+ifdef::cloud-service[]
+To enable token authorization and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+endif::[]
+ifdef::upstream[]
+To enable token authorization and external model routes for deployed models, you have added Authorino as an authorization provider.
 endif::[]
 * You have created a data science project.
 * You have access to S3-compatible object storage.
