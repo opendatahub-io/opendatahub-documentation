@@ -24,6 +24,9 @@ ifdef::upstream[]
 endif::[]
 * You have installed KServe.
 * You have enabled the single-model serving platform.
+ifndef::upstream[]
+* To enable token authorization and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see {rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+endif::[]
 * You have created a data science project.
 * You have access to S3-compatible object storage.
 * For the model that you want to deploy, you know the associated folder path in your S3-compatible object storage bucket.
@@ -70,10 +73,10 @@ A project details page opens.
 +
 The *Deploy model* dialog opens.
 
-. In the *Model name* field, enter a unique name for the model that you are deploying.
+. In the *Model deployment name* field, enter a unique name for the model that you are deploying.
 . In the *Serving runtime* field, select an enabled runtime.
-. From the *Model framework* list, select a value.
-. In the *Number of model replicas to deploy* field, specify a value.
+. From the *Model framework (name - version)* list, select a value.
+. In the *Number of model server replicas to deploy* field, specify a value.
 . From the *Model server size* list, select a value.
 . Optional: In the *Model route* section, select the *Make deployed models available through an external route* checkbox to make your deployed models available to external clients.
 . To require token authorization for inference requests to the deployed model, perform the following actions:
