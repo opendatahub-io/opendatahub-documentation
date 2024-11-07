@@ -153,9 +153,12 @@ If no accelerators are required, set the value to 0 or omit the line.
 Note: To specify the requested accelerators for the Ray cluster, use the `worker_extended_resource_requests` parameter instead of the deprecated `num_gpus` parameter.
 For more details, see the link:https://github.com/project-codeflare/codeflare-sdk/blob/v0.18.0/src/codeflare_sdk/cluster/config.py#L43-L73[CodeFlare SDK documentation].
 <6> Specifies the location of the Ray cluster image. 
-If you omit this line, one of the default Ray cluster images is used, based on the Python version detected in the workbench.
+If you omit this line, one of the default CUDA-compatible Ray cluster images is used, based on the Python version detected in the workbench.
 The default Ray images are AMD64 images, which might not work on other architectures.
 If you are running this code in a disconnected environment, replace the default value with the location for your environment. 
+ifndef::upstream[]
+For information about the latest available training images and their preinstalled packages, see link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations].
+endif::[]
 <7> Specifies the local queue to which the Ray cluster will be submitted. If a default local queue is configured, you can omit this line.
 <8> Creates a Ray cluster by using the specified image and configuration.
 <9> Waits until the Ray cluster is ready before proceeding.
