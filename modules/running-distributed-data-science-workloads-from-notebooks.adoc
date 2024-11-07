@@ -125,19 +125,25 @@ Alternatively, you can set the `CF_SDK_CA_CERT_PATH` environment variable to spe
 +
 If you omit this line, the Ray cluster is created in the current project. 
 
-.. If the `image` value is specified, replace the example value with a link to your Ray cluster image.
+.. If the `image` value is specified, replace the example value with a link to a suitable Ray cluster image.
+The Python version in the Ray cluster image must be the same as the Python version in the workbench.
 +
-If you omit this line, the default Ray cluster image `quay.io/modh/ray:2.35.0-py39-cu121` is used.
-The default Ray image is compatible with NVIDIA GPUs that are supported by CUDA 12.1.
-This image is an AMD64 image, which might not work on other architectures. 
-+
-An additional Ray cluster image `quay.io/modh/ray:2.35.0-py39-rocm61` is available as Developer Preview software.
-This image is compatible with AMD accelerators that are supported by ROCm 6.1. 
-This image is an AMD64 image, which might not work on other architectures.
-+
+--
+If you omit this line, one of the following Ray cluster images is used by default, based on the Python version detected in the workbench:
+
+* Python 3.9: `quay.io/modh/ray:2.35.0-py39-cu121`
+* Python 3.11: `quay.io/modh/ray:2.35.0-py311-cu121`
+
+The default Ray images are compatible with NVIDIA GPUs that are supported by CUDA 12.1.
+The default images are AMD64 images, which might not work on other architectures. 
+
+Additional ROCm-compatible Ray cluster images are available as Developer Preview software.
+These images are compatible with AMD accelerators that are supported by ROCm 6.1. 
+These images are AMD64 images, which might not work on other architectures.
+
 [IMPORTANT]
 ====
-The ROCm-compatible Ray cluster image is Developer Preview software only. 
+The ROCm-compatible Ray cluster images are Developer Preview software only. 
 Developer Preview software is not supported by Red{nbsp}Hat in any way and is not functionally complete or production-ready. 
 Do not use Developer Preview software for production or business-critical workloads. 
 Developer Preview software provides early access to upcoming product software in advance of its possible inclusion in a Red{nbsp}Hat product offering. 
@@ -147,6 +153,11 @@ Red{nbsp}Hat might provide ways to submit feedback on Developer Preview software
 
 For more information about the support scope of Red{nbsp}Hat Developer Preview software, see link:https://access.redhat.com/support/offerings/devpreview/[Developer Preview Support Scope].
 ====
+
+ifndef::upstream[]
+For information about the latest available training images and their preinstalled packages, see link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations].
+endif::[]
+--
 
 .. If your cluster administrator has not configured a default local queue, specify the local queue for the Ray cluster, as shown in the following example:
 +
