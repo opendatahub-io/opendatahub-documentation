@@ -32,24 +32,53 @@ export IMG=my_training_image
 
 . Create a file named `Dockerfile` with the following content:
 
-.. Use the `FROM` instruction to specify the base training image location.
-
-* To create a CUDA-compatible Ray cluster image, specify the CUDA-compatible Ray base image location:
+.. Use the `FROM` instruction to specify the location of a suitable base training image.
 +
+The Python version in the training image must be the same as the Python version in the workbench.
+
+* To create a CUDA-compatible Ray cluster image, specify the location of a CUDA-compatible Ray base image, as shown in the following examples:
++
+.CUDA-compatible Ray base image with Python 3.9
 [source,bash]
 ----
 FROM quay.io/modh/ray:2.35.0-py39-cu121
 ----
-
-* To create a ROCm-compatible Ray cluster image, specify the Developer Preview ROCm-compatible Ray base image location:
 +
+.CUDA-compatible Ray base image with Python 3.11
+[source,bash]
+----
+FROM quay.io/modh/ray:2.35.0-py311-cu121
+----
+* To create a ROCm-compatible Ray cluster image, specify the location of a Developer Preview ROCm-compatible Ray base image, as shown in the following examples:
++
+.ROCm-compatible Ray base image with Python 3.9
 [source,bash]
 ----
 FROM quay.io/modh/ray:2.35.0-py39-rocm61
 ----
++
+.ROCm-compatible Ray base image with Python 3.11
+[source,bash]
+----
+FROM quay.io/modh/ray:2.35.0-py311-rocm61
+----
++
+[IMPORTANT]
+====
+The ROCm-compatible Ray base images are Developer Preview software only. 
+Developer Preview software is not supported by {org-name} in any way and is not functionally complete or production-ready. 
+Do not use Developer Preview software for production or business-critical workloads. 
+Developer Preview software provides early access to upcoming product software in advance of its possible inclusion in a {org-name} product offering. 
+Customers can use this software to test functionality and provide feedback during the development process. 
+This software might not have any documentation, is subject to change or removal at any time, and has received limited testing. 
+{org-name} might provide ways to submit feedback on Developer Preview software without an associated SLA.
+
+For more information about the support scope of {org-name} Developer Preview software, see link:https://access.redhat.com/support/offerings/devpreview/[Developer Preview Support Scope].
+====
 
 * To create a CUDA-compatible KFTO cluster image, specify the Developer Preview CUDA-compatible KFTO base image location:
 +
+.CUDA-compatible KFTO base image with Python 3.11
 [source,bash]
 ----
 FROM quay.io/opendatahub/training:py311-cuda121-torch241
@@ -57,7 +86,7 @@ FROM quay.io/opendatahub/training:py311-cuda121-torch241
 +
 [IMPORTANT]
 ====
-The ROCm-compatible Ray base image and CUDA-compatible KFTO base image are Developer Preview software only. 
+The CUDA-compatible KFTO base image is Developer Preview software only. 
 Developer Preview software is not supported by {org-name} in any way and is not functionally complete or production-ready. 
 Do not use Developer Preview software for production or business-critical workloads. 
 Developer Preview software provides early access to upcoming product software in advance of its possible inclusion in a {org-name} product offering. 
