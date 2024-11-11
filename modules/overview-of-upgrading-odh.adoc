@@ -27,3 +27,12 @@ New components are not automatically added to the `DataScienceCluster` object du
 * Notebook images are integrated into the image stream during the upgrade and subsequently appear in the {productname-short} dashboard. 
 +
 NOTE: Notebook images are constructed externally; they are prebuilt images that undergo quarterly changes and they do not change with every {productname-short} upgrade.
+
+ifdef::upstream[]
+[IMPORTANT]
+====
+After upgrading from {productname-short} 2.19 to 2.20, existing instances of the model registry component are not updated, which causes the instance pods to use older images than the ones referenced by the operator pod.
+
+To resolve this issue, you can create a new model registry instance that points to the same backing database, and delete the old model registry. Your new model registry instance will retain all existing registered models and their metadata. 
+====
+endif::[]
