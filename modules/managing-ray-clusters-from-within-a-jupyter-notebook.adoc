@@ -65,7 +65,7 @@ A new notebook is created in an `.ipynb` file.
 .Code to import the interactive browser controls
 [source,bash]
 ----
-from codeflare_sdk import Cluster, ClusterConfiguration, TokenAuthentication, view_clusters
+from codeflare_sdk import TokenAuthentication, view_clusters
 ----
 +
 The `view_clusters` package provides the interactive browser controls.
@@ -138,15 +138,19 @@ The cluster details section is updated to show details about the selected cluste
 Click this button to delete the selected cluster.
 This button is equivalent to the *Cluster Down* button.
 The cluster is deleted immediately, you are not prompted to confirm the deletion.
-No message is shown to confirm the deletion, but the corresonding button is no longer shown under the *Select an existing cluster* heading.
+A message is shown to confirm the deletion, and the corresponding button is no longer shown under the *Select an existing cluster* heading.
 
 * *View Jobs*
 +
 Click this button to open the *Jobs* tab in the Ray dashboard for the selected cluster, and view details of the submitted jobs.
+The corresponding URL is shown in the notebook.
 
 * *Open Ray Dashboard*
 +
 Click this button to open the *Overview* tab in the Ray dashboard for the selected cluster.
+The corresponding URL is shown in the notebook.
+
+* 
 
 
 .Verification
