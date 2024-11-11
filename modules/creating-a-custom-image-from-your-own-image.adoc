@@ -15,7 +15,7 @@ You can build your own custom image. However, you must make sure that your image
 
 == Basic guidelines for creating your own workbench image
 
-The following basic guidelines provide information to consider when you build your own custom notebook image.
+The following basic guidelines provide information to consider when you build your own custom workbench image.
 
 *Designing your image to run with USER 1001*
 
@@ -31,15 +31,15 @@ OpenShift readiness and liveness probes will query the `/api` endpoint. For a Ju
 
 == Advanced guidelines for creating your own workbench image
 
-The following guidelines provide information to consider when you build your own custom notebook image.
+The following guidelines provide information to consider when you build your own custom workbench image.
 
 *Minimizing image size*
 
-A notebook image uses a "layered" file system. Every time you use a COPY or a RUN command in your notebook image file, a new layer is created. Artifacts are not deleted. When you remove an artifact, for example, a file, it is "masked" in the next layer. Therefore, consider the following guidelines when you create your notebook image file.
+A workbench image uses a "layered" file system. Every time you use a COPY or a RUN command in your workbench image file, a new layer is created. Artifacts are not deleted. When you remove an artifact, for example, a file, it is "masked" in the next layer. Therefore, consider the following guidelines when you create your workbench image file.
 
 * Avoid using the `dnf update` command. 
 
-** If you start from an image that is constantly updated, such as `ubi9/python-39` from the Red Hat Catalog, you might not need to use the `dnf update` command. This command fetches new metadata, updates files that might not have impact, and increases the notebook image size.
+** If you start from an image that is constantly updated, such as `ubi9/python-39` from the Red Hat Catalog, you might not need to use the `dnf update` command. This command fetches new metadata, updates files that might not have impact, and increases the workbench image size.
 
 ** Point to a newer version of your base image rather than performing a `dnf update` on an older version.
 
@@ -77,7 +77,7 @@ chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
    fix-permissions /opt/app-root -P
 ----
 
-* A service within your notebook image must answer at `${NB_PREFIX}/api`, otherwise the OpenShift liveness/readiness probes fail and delete the pod for the workbench image.
+* A service within your workbench image must answer at `${NB_PREFIX}/api`, otherwise the OpenShift liveness/readiness probes fail and delete the pod for the workbench image.
 +
 The `NB_PREFIX` environment variable specifies the URL path where the container is expected to be listening.
 +
