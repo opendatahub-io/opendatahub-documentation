@@ -11,24 +11,20 @@ After a `cluster admin` user defines additional administrator and user groups in
 
 .Prerequisites
 
-* You have administrator privileges in {productname-short} and can view the *Settings* navigation option in the {productname-short} dashboard.
+* You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
 
 ifdef::upstream[]
-* You have logged in to {productname-long} as described in link:{odhdocshome}/getting-started-with-open-data-hub/#logging-in_get-started[Logging in to {productname-short}].
-
 * The groups that you want to select as administrator and user groups for {productname-short} already exist in {openshift-platform}. For more information, see
 link:{odhdocshome}/managing-odh/#managing-users-and-groups[Managing users and groups].
 endif::[]
 
 ifndef::upstream[]
-* You have logged in to {productname-long} as described in link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/logging-in_get-started[Logging in to {productname-short}].
-
 * The groups that you want to select as administrator and user groups for {productname-short} already exist in {openshift-platform}. For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/index#managing-users-and-groups[Managing users and groups].
 endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *User management*.
-. Select your {productname-short} admin groups: Under *Data science administrator groups*, click the text box and select an OpenShift group. Repeat this process to define multiple admin groups.
+. Select your {productname-short} administrator groups: Under *Data science administrator groups*, click the text box and select an OpenShift group. Repeat this process to define multiple administrator groups.
 . Select your {productname-short} user groups: Under *Data science user groups*, click the text box and select an OpenShift group. Repeat this process to define multiple user groups.
 +
 IMPORTANT: The `system:authenticated` setting allows all users authenticated in OpenShift to access {productname-short}.
