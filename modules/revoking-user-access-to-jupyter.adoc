@@ -4,9 +4,9 @@
 = Revoking user access to Jupyter
 
 [role='_abstract']
-You can revoke a user's access to Jupyter by removing the user from the specialized user groups that define access to {productname-short}. When you remove a user from the specialized user groups, the user is prevented from accessing the {productname-short} dashboard and from using associated services that consume resources in your cluster.
+You can revoke a user's access to Jupyter by removing the user from the {productname-short} user groups that define access to {productname-short}. When you remove a user from the user groups, the user is prevented from accessing the {productname-short} dashboard and from using associated services that consume resources in your cluster.
 
-IMPORTANT: Follow these steps only if you have implemented specialized user groups to restrict access to {productname-short}. To completely remove a user from {productname-short}, you must remove them from the allowed group in your OpenShift identity provider.
+IMPORTANT: Follow these steps only if you have implemented {productname-short} user groups to restrict access to {productname-short}. To completely remove a user from {productname-short}, you must remove them from the allowed group in your OpenShift identity provider.
 
 .Prerequisites
 * You have stopped any notebook servers owned by the user you want to delete.
@@ -16,15 +16,10 @@ endif::[]
 ifdef::self-managed[]
 * You are assigned the `cluster-admin` role in {openshift-platform}.
 endif::[]
-* You are using specialized user groups for {productname-short}, and the user is part of the specialized user group, administrator group, or both.
+* You are using {productname-short} user groups, and the user is part of the user group, administrator group, or both.
 
 .Procedure
-ifdef::upstream,self-managed[]
 . In the {openshift-platform} web console, click *User Management* -> *Groups*.
-endif::[]
-ifdef::cloud-service[]
-. In the OpenShift web console, click *User Management* -> *Groups*.
-endif::[]
 . Click the name of the group that you want to remove the user from.
 ** For administrative users, click the name of your administrator group, for example, {oai-admin-group}.
 ** For non-administrator users, click the name of your user group, for example, {oai-user-group}.
