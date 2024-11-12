@@ -25,11 +25,9 @@ ifdef::self-managed[]
 * You have backed up the user's storage data.
 endif::[]
 
-* If you are using {productname-short} groups, you are part of the administrator group (for example, {oai-admin-group}). If you are not using groups, you have OpenShift `cluster-admin` privileges.
+* You have logged in to the {openshift-platform} web console as a user with the `cluster-admin` role.
 
-* You have logged in to the {openshift-platform} web console.
-
-* You have logged in to {productname-short}.
+//* You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
 
 .Procedure
 . Delete the user's persistent volume claim (PVC).
@@ -59,10 +57,5 @@ The *Delete ConfigMap* dialog appears.
 // TODO: When RHOAIENG-1137 is corrected, change to:
 //* The user is not visible in the Jupyter administration interface.
 * The user cannot access Jupyter any more, and sees an "Access permission needed" message if they try. 
-ifdef::upstream,self-managed[]
 * The user's single-user profile, persistent volume claim (PVC), and ConfigMap are not visible in {openshift-platform}.
-endif::[]
-ifdef::cloud-service[]
-* The user's single-user profile, persistent volume claim (PVC), and ConfigMap are not visible in OpenShift.
-endif::[]
 
