@@ -4,15 +4,26 @@
 = Managing Ray clusters from within a Jupyter notebook
 
 [role='_abstract']
-You can use interactive browser controls to simplify Ray cluster tasks, such as starting and shutting down the clusters, when working within a Jupyter notebook.
-These controls also enable you to view cluster information, such as cluster status and allocated resources, for all of your Ray clusters.
-You can view this information from within the notebook, without switching to the {openshift-platform} console or the Ray dashboard.
+You can use interactive browser controls to simplify Ray cluster tasks when working within a Jupyter notebook.
 
 This new functionality supplements the existing commands.
 You can continue to manage the Ray clusters by running commands within the notebook, for ease of use in scripts and pipelines.
 
-You can add the interactive browser controls to existing notebooks, or manage the Ray clusters from a separate notebook.
-In the example in this procedure, you create a new notebook to manage the Ray clusters.
+Several different interactive browser controls are available:
+
+* When you run a cell that provides the cluster configuration, the notebook automatically shows the controls for starting or deleting the cluster.
+
+* You can run the `view_clusters()` command to add controls that provide the following functionality:
+** View a list of Ray clusters that you can access.
+** View cluster information, such as cluster status and allocated resources, for the selected Ray cluster.
+You can view this information from within the notebook, without switching to the {openshift-platform} console or the Ray dashboard.
+** Open the Ray dashboard directly from the notebook, to view the submitted jobs.
+
++
+You can add these controls to existing notebooks, or manage the Ray clusters from a separate notebook.
+
+The `3_widget_example.ipynb` demo notebook shows all of the available interactive browser controls.
+In the example in this procedure, you create a new notebook to manage the Ray clusters, similar to the example provided in the `3_widget_example.ipynb` demo notebook.
 
 
 .Prerequisites
@@ -53,6 +64,27 @@ endif::[]
 
 .Procedure
 
+ifndef::upstream[]
+. Run all of the demo notebooks in the order indicated by the file-name prefix (`0_`, `1_`, and so on), as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-distributed-workloads_distributed-workloads#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo notebooks from the CodeFlare SDK].
+endif::[]
+ifdef::upstream[]
+. Run all of the demo notebooks in the order indicated by the file-name prefix (`0_`, `1_`, and so on), as described in link:{odhdocshome}/working-with-distributed-workloads/#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo notebooks from the CodeFlare SDK].
+endif::[]
+
+. In each demo notebook, when you run the cluster configuration step, the following interactive controls are automatically shown in the notebook:
+
+* *Cluster Up*: You can click this button to start the Ray cluster. 
+This button is equivalent to the `cluster.up()` command. 
+A message is displayed to indicate whether the cluster was successfully created or not.
+
+* *Cluster Down*: You can click this button to delete the Ray cluster. 
+This button is equivalent to the `cluster.down()` command.
+The cluster is deleted immediately, you are not prompted to confirm the deletion.
+A message is displayed to indicate whether the cluster was successfully deleted or not.
+
+* *Wait for Cluster*: You can select this option to specify that the notebook should wait for the Ray cluster dashboard to be ready before proceeding to the next step. 
+This option is equivalent to the `cluster.wait_ready()` command.
+
 . In the JupyterLab interface, create a new notebook to manage the Ray clusters, as follows:
 
 .. Click *File > New > Notebook*. 
@@ -62,13 +94,13 @@ A new notebook is created in an `.ipynb` file.
 
 .. Add the following code to a cell in the new notebook:
 +
-.Code to import the interactive browser controls
+.Code to import the required packages
 [source,bash]
 ----
 from codeflare_sdk import TokenAuthentication, view_clusters
 ----
 +
-The `view_clusters` package provides the interactive browser controls.
+The `view_clusters` package provides the interactive browser controls for listing the clusters, showing the cluster details, and opening the Ray dashboard.
 
 .. Add a new cell to the notebook, and add the following code to the new cell:
 +
@@ -92,44 +124,32 @@ endif::[]
 
 .. Add a new cell to the notebook, and add the following code to the new cell:
 +
-.Code to view cluster details
+.Code to view clusters in the current project
 [source,bash]
 ----
 view_clusters()
 ----
 +
-The `view_clusters()` package provides similar information to the `cluster.details()` function.
+When you run the `view_clusters()` command with no arguments specified, you generate a list of all of the Ray clusters in the _current_ project, and provide similar information to the `cluster.details()` function.
++
+If you have access to another project, you can list the Ray clusters in that project by specifying the project name as shown in the following example:
++
+.Code to view clusters in another project
+[source,bash]
+----
+view_clusters("my_second_project")
+----
 
 .. Click *File > Save Notebook As*, enter `demo-notebooks/guided-demos/manage_ray_clusters.ipynb`, and click *Save*.
 
-ifndef::upstream[]
-. Run all of the demo notebooks in the order indicated by the file-name prefix (`0_`, `1_`, and so on), as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-distributed-workloads_distributed-workloads#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo notebooks from the CodeFlare SDK].
-endif::[]
-ifdef::upstream[]
-. Run all of the demo notebooks in the order indicated by the file-name prefix (`0_`, `1_`, and so on), as described in link:{odhdocshome}/working-with-distributed-workloads/#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo notebooks from the CodeFlare SDK].
-endif::[]
-
-. In each demo notebook, when you run the cluster configuration step, the following interactive controls are added to the notebook:
-
-* *Cluster Up*: You can click this button to start the Ray cluster. 
-This button is equivalent to the `cluster.up()` command. 
-A message is displayed to indicate whether the cluster was successfully created or not.
-
-* *Cluster Down*: You can click this button to delete the Ray cluster. 
-This button is equivalent to the `cluster.down()` command.
-The cluster is deleted immediately, you are not prompted to confirm the deletion.
-A message is displayed to indicate whether the cluster was successfully deleted or not.
-
-* *Wait for Cluster*: You can select this option to specify that the notebook should wait for the Ray cluster dashboard to be ready before proceeding to the next step. 
-This option is equivalent to the `cluster.wait_ready()` command.
 
 . In the `demo-notebooks/guided-demos/manage_ray_clusters.ipynb` notebook, select each cell in turn, and click *Run > Run selected cell*.
 
-. When you run the cell with the `view_clusters()` function, the notebook shows the following information about all running Ray clusters:
+. When you run the cell with the `view_clusters()` function, the notebook shows the following information about the existing Ray clusters:
 
 * *Select an existing cluster* 
 +
-Under this heading, a button is shown for each running cluster. 
+Under this heading, a toggle button is shown for each existing cluster. 
 Click a cluster name to select the cluster.
 The cluster details section is updated to show details about the selected cluster; for example, cluster name, {productname-short} project name, cluster resource information, and cluster status.
 
