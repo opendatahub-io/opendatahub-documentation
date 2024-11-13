@@ -22,7 +22,7 @@ For caching to be effective, the following criteria determines if a task can use
 
 Cached steps in pipelines are visually indicated in the user interface (UI):
 
-* Tasks that use cached results display a green icon, helping you quickly identify which steps were cached.
+* Tasks that use cached results display a green icon, helping you quickly identify which steps were cached. The *Status* field in the side panel displays `Cached` for cached tasks.  
 * The UI also includes information about when the task was previously executed, allowing for easy verification of cache usage.
 
 To confirm caching status for specific tasks, navigate to the pipeline details view in the UI, where all cached and non-cached tasks are indicated.
@@ -46,7 +46,7 @@ You can re-enable caching for individual tasks by setting `set_caching_options(T
 
 === Disabling caching for pipelines
 
-If necessary, you can disable caching for the entire pipeline during pipeline submission by setting the `enable_caching` parameter to `False`. This setting ensures that no steps are cached during pipeline execution.
+If necessary, you can disable caching for the entire pipeline during pipeline submission by setting the `enable_caching` parameter to `False` in your pipeline code. This setting ensures that no steps are cached during pipeline execution. The `enable_caching` parameter is available only when using the `kfp.client` to submit pipelines or start pipeline runs, such as the `run_pipeline` method
 
 Example:
 
@@ -59,7 +59,7 @@ When disabling caching at the pipeline level, all tasks are re-executed, potenti
 
 == Verification and troubleshooting
 
-After configuring caching settings, you can verify that caching behaves as expected by:
+After configuring caching settings, you can verify that caching behaves as expected by using one of the following methods:
 
 * *Checking the UI*: Confirm cached steps by locating the steps with the green icon in the task list.
 * *Testing task re-runs*: Disable caching on individual tasks or the pipeline and check for re-execution to verify cache bypassing.
@@ -67,4 +67,7 @@ After configuring caching settings, you can verify that caching behaves as expec
 
 [role="_additional-resources"]
 .Additional resources
-* Kubeflow Caching Documentation: link:https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/caching/[Kubeflow Pipelines - Caching]
+* Kubeflow caching documentation: link:https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/caching/[Kubeflow Pipelines - Caching]
+* The `kfp.client` module documentation for the `enable_caching` parameter: link:https://kubeflow-pipelines.readthedocs.io/en/sdk-2.9.0/source/client.html#kfp.client.Client.run_pipeline.enable_caching[Kubeflow Pipelines - Caching]
+
+
