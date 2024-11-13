@@ -1,0 +1,310 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="lmeval-scenarios.adoc_{context}"]
+= LM-Eval scenarios
+
+[role='_abstract']
+The procedures below outline different example scenarios which you may find useful for your ML-Eval setup. 
+
+== Environment Variables
+
+If the LMEvalJob needs to access a model on HuggingFace with the access token, you can set up the HF_TOKEN as one of the environment variables for the lm-eval container.
+
+.Prerequisites
+* You have logged in to Red Hat OpenShift AI.
+
+* Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
+
+.Procedure
+* xyz
+* another xyz
+
+Enter the following code:
+
+[source]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: evaljob-sample
+spec:
+  model: hf
+  modelArgs:
+  - name: pretrained
+    value: huggingfacespace/model
+  taskList:
+    taskNames:
+    - unfair_tos/
+  logSamples: true
+  pod:
+    container:
+      env:
+      - name: HF_TOKEN
+        value: "My HuggingFace token"
+----
+Or you can create a secret to store the token and refer the key from the secret object using the reference syntax:
+
+(only attach the env part)
+
+[source]
+----
+   env:
+      - name: HF_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: my-secret
+            key: hf-token
+----
+
+
+
+== Custom Unitxt Card
+
+.Prerequisites
+* You have logged in to Red Hat OpenShift AI.
+
+* Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
+
+.Procedure
+* xyz
+* Pass a custom Unitxt Card in JSON format:
+
+[source]
+
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: evaljob-sample
+spec:
+  model: hf
+  modelArgs:
+  - name: pretrained
+    value: google/flan-t5-base
+  taskList:
+    taskRecipes:
+    - template: "templates.classification.multi_class.relation.default"
+      card:
+        custom: |
+          {
+            "__type__": "task_card",
+            "loader": {
+              "__type__": "load_hf",
+              "path": "glue",
+              "name": "wnli"
+            },
+            "preprocess_steps": [
+              {
+                "__type__": "split_random_mix",
+                "mix": {
+                  "train": "train[95%]",
+                  "validation": "train[5%]",
+                  "test": "validation"
+                }
+              },
+              {
+                "__type__": "rename",
+                "field": "sentence1",
+                "to_field": "text_a"
+              },
+              {
+                "__type__": "rename",
+                "field": "sentence2",
+                "to_field": "text_b"
+              },
+              {
+                "__type__": "map_instance_values",
+                "mappers": {
+                  "label": {
+                    "0": "entailment",
+                    "1": "not entailment"
+                  }
+                }
+              },
+              {
+                "__type__": "set",
+                "fields": {
+                  "classes": [
+                    "entailment",
+                    "not entailment"
+                  ]
+                }
+              },
+              {
+                "__type__": "set",
+                "fields": {
+                  "type_of_relation": "entailment"
+                }
+              },
+              {
+                "__type__": "set",
+                "fields": {
+                  "text_a_type": "premise"
+                }
+              },
+              {
+                "__type__": "set",
+                "fields": {
+                  "text_b_type": "hypothesis"
+                }
+              }
+            ],
+            "task": "tasks.classification.multi_class.relation",
+            "templates": "templates.classification.multi_class.relation.all"
+          }
+  logSamples: true
+----
+
+* Inside the custom card, it uses the HuggingFace dataset loader:
+
+[source]
+----
+
+"loader": {
+              "__type__": "load_hf",
+              "path": "glue",
+              "name": "wnli"
+            },
+
+----
+You can use other link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#module-unitxt.loaders[loaders] and use the `volumes` and `volumeMounts` to mount the dataset from persistent volumes. For example, if you use link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#unitxt.loaders.LoadCSV[LoadCSV], you need to mount the files to the container and make the dataset accessible for the evaluation process.
+
+
+
+== Using PVCs as storage
+
+To use a PVC as storage for the LMEvalJob results, there are two supported modes, at the moment: managed and existing PVCs. Managed PVCs, are managed by the TrustyAI operator. Existing PVCs are created by the end-user and exist when the `LMEvalJob` is created.
+
+[NOTE]
+--
+In the case where both managed and existing PVCs are referenced in outputs, the TrustyAI operator will prefer the managed PVC and ignore the existing one.
+--
+
+.Prerequisites
+* You have logged in to Red Hat OpenShift AI.
+
+* Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
+
+
+=== Managed PVCs
+
+To enable a managed PVC simply specify its size. This creates a PVC named `<job-name>-pvc` (in this case `evaljob-sample-pvc`) which will be available after the job finishes, but is deleted when the LMEvalJob is deleted.
+
+.Procedure
+* Enter the following code:
++
+[source]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: evaljob-sample
+spec:
+  # other fields omitted ...
+  outputs: 
+    pvcManaged: 
+      size: 5Gi 
+----
+
+.Notes on the code
+* `outputs` is the section for specifying custom storage locations
+* `pvcManaged` will create an operator-managed PVC
+* `size` (compatible with standard PVC syntax) is the only supported value
+
+
+=== Existing PVCs
+
+To use an already existing PVC you can pass its name as a reference. The PVC must already exist when the LMEvalJob is created. 
+In this case, the PVC is not managed by the TrustyAI operator, so it will be available even after deleting the LMEvalJob.
+
+
+.Procedure
+* Create a PVC. An example is the following.
++
+[source]
+----
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "my-pvc"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+----
+* Reference this PVC from the LMEvalJob (note that `pvcName` references the already existing PVC `my-pvc`)
++
+[source]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: evaljob-sample
+spec:
+  # other fields omitted ...
+  outputs:
+    pvcName: "my-pvc" 
+----
+
+
+
+== Using an InferenceService
+
+This example assumes that the vLLM model is already deployed in your cluster.
+.Prerequisites
+* You have logged in to Red Hat OpenShift AI.
+
+* Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
+
+.Procedure
+* Define your LMEvalJob CR:
+[source]
+----
+  apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: evaljob
+spec:
+  model: local-completions
+  taskList:
+    taskNames:
+      - mmlu
+  logSamples: true
+  batchSize: 1
+  modelArgs:
+    - name: model
+      value: granite
+    - name: base_url
+      value: $ROUTE_TO_MODEL/v1/completions 
+    - name: num_concurrent
+      value:  "1"
+    - name: max_retries
+      value:  "3"
+    - name: tokenized_requests
+      value: "False"
+    - name: tokenizer
+      value: ibm-granite/granite-7b-instruct
+ env:
+   - name: OPENAI_TOKEN
+     valueFrom:
+          secretKeyRef: 
+            name: <secret-name> 
+            key: token 
+----
+
+* Apply this CR into the same namespace as your model. You should see a pod spin up in your model namespace called `evaljob`. In the pod terminal, you can see the output via `tail -f output/stderr.log`
+
+.Notes on the code
+* `base_url` should be set to the route/service URL of your model. Make sure to include the `/v1/completions` endpoint in the URL.
+* `env.valueFrom.secretKeyRef.name` should point to a secret that contains a token that can authenticate to your model. `secretRef.name` should be the secret's name in the namespace, while `secretRef.key` should point at the token's key within the secret.
+* `secretKeyRef.name` can equal the output of:
++
+[source]
+----
+oc get secrets -o custom-columns=SECRET:.metadata.name --no-headers | grep user-one-token
+----
+
+* `secretKeyRef.key` should equal `token`
