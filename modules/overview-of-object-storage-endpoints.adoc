@@ -1,0 +1,75 @@
+:_module-type: CONCEPT
+
+[id='overview-of-object-storage-endpoints_{context}']
+= Overview of object storage endpoints
+
+[role='_abstract']
+To ensure correct configuration of object storage in {productname-short}, you must format endpoints correctly for the different types of object storage supported. These instructions are for formatting endpoints for Amazon S3, MinIO, or other S3-compatible storage solutions, minimizing configuration errors and ensuring compatibility.
+
+[IMPORTANT]
+====
+Properly formatted endpoints enable connectivity and reduce the risk of misconfigurations. Use the appropriate endpoint format for your object storage type. Improper formatting might cause connection errors or restrict access to storage resources.
+====
+
+== MinIO (On-Cluster)
+
+For on-cluster MinIO instances, use a local endpoint URL format. Ensure the following when configuring MinIO endpoints:
+
+* Prefix the endpoint with `http://` or `https://` depending on your MinIO security setup.
+* Include the cluster IP or hostname, followed by the port number if specified.
+* Use a port number if your MinIO instance requires one (default is typically `9000`).
+
+Example:
+
+http://minio-cluster.local:9000
+
+[Note]
+====
+Verify that the MinIO instance is accessible within the cluster by checking your cluster DNS settings and network configurations.
+====
+
+== Amazon S3
+
+When configuring endpoints for Amazon S3, use region-specific URLs. Amazon S3 endpoints generally follow this format:
+
+* Prefix the endpoint with `https://`.
+* Format as `<bucket-name>.s3.<region>.amazonaws.com`, where `<bucket-name>` is the name of your S3 bucket, and `<region>` is the AWS region code (for example, `us-west-1`, `eu-central-1`).
+
+Example:
+
+https://my-bucket.s3.us-west-2.amazonaws.com
+
+[NOTE]
+====
+For improved security and compliance, ensure that your Amazon S3 bucket is in the correct region.
+====
+
+== Other S3-Compatible Object Stores
+
+For S3-compatible storage solutions other than Amazon S3, follow the specific endpoint format required by your provider. Generally, these endpoints include the following items:
+
+* The provider base URL, prefixed with `https://`.
+* The bucket name and region parameters as specified by the provider.
+
+* Review the documentation from your S3-compatible provider to confirm required endpoint formats.
+* Replace placeholder values like `<bucket-name>` and `<region>` with your specific configuration details.
+
+[WARNING]
+====
+Incorrectly formatted endpoints for S3-compatible providers might lead to access denial. Always verify the format in your storage provider documentation to ensure compatibility.
+====
+
+== Verification and Troubleshooting
+
+After configuring endpoints, verify connectivity by performing a test upload or accessing the object storage directly through the {productname-short} dashboard. For troubleshooting, check the following items:
+
+* *Network Accessibility*: Confirm that the endpoint is reachable from your {productname-short} cluster.
+* *Authentication*: Ensure correct access credentials for each storage type.
+* *Endpoint Accuracy*: Double-check the endpoint URL format for any typos or missing components.
+
+
+[role="_additional-resources"]
+.Additional resources
+* Amazon S3 Region and Endpoint Documentation: link:https://docs.aws.amazon.com/general/latest/gr/s3.html[AWS S3 Documentation]
+
+
