@@ -25,7 +25,7 @@ ifdef::upstream[]
 For more information, see link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
 endif::[]
 
-ifdef::self-managed,cloud-service[]
+ifdef::self-managed[]
 ifndef::disconnected[]
 For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
 endif::[]
@@ -35,6 +35,10 @@ For more information, see link:{rhoaidocshome}{default-format-url}/installing_an
 endif::[]
 endif::[]
 
+ifdef::cloud-service[]
+For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
+endif::[]
+
 |`ObjectStorageAvailable`
 
 Ready
@@ -42,12 +46,12 @@ Ready
 
 False
 |`Could not connect to Object Store
-Deployment for component "ds-pipeline-pipelines-definition" is missing - pre-requisite component may not yet be available.
-Deployment for component "ds-pipeline-persistenceagent-pipelines-definition" is missing - pre-requisite component may not yet be available.
-Deployment for component "ds-pipeline-scheduledworkflow-pipelines-definition" is missing - pre-requisite component may not yet be available.`
-|In clusters running RHOAI 2.8.x, the Data Science Pipelines Manager may fail to connect to the object storage, and the Pipeline Server may not be created. This can happen for several reasons.
+Deployment for component "ds-pipeline-pipelines-definition" is missing - prerequisite component might not yet be available.
+Deployment for component "ds-pipeline-persistenceagent-pipelines-definition" is missing - prerequisite component might not yet be available.
+Deployment for component "ds-pipeline-scheduledworkflow-pipelines-definition" is missing - prerequisite component might not yet be available.`
+|In clusters running {productname-short} 2.8.x, the data science pipelines manager might fail to connect to the object storage, and the pipeline server might not be created. 
 
-Ensure that your object store credentials and connection information are accurate, and verify that the object store is accessible from within the DS Project's associated OpenShift Namespace. One common issue is that the object storage SSL certificate may not be trusted, particularly if self-signed certificates are used.
+Ensure that your object store credentials and connection information are accurate, and verify that the object store is accessible from within the data science project's associated OpenShift namespace. One common issue is that the object storage SSL certificate is not trusted, particularly if self-signed certificates are used.
 
 Verify and update your object storage credentials, then retry the operation.
 
@@ -59,18 +63,6 @@ Ready
 False
 |`Wrong credentials for Object Storage: Could not connect to (minio-my-project.apps.my-cluster.com), Error: The request signature we calculated does not match the signature you provided. Check your key and signing method.`
 |Provide the correct credentials for your object storage and retry the operation.
-
-|`ObjectStorageAvailable`
-
-Ready
-|False
-
-False
-|`FailingToDeploy: Couldn’t connect to (minio-myproject.namespace.svc.cluster.local.9000), Error: Get “http://minio-myproject.namespace.svc.cluster.local.9000/mlpipeline/?location=”`
-|
-
-This is an internal API used for development purposes. If the error persists beyond 60 seconds, investigate for underlying issues related to misconfigurations or network problems.
-
 
 |`DatabaseAvailable`
 
@@ -88,14 +80,13 @@ Ready
 
 False
 |`Unable to connect to external database: tls: failed to verify certificate: x509: certificate signed by unknown authority`
-|This issue can occur when you use an external database, such as Amazon RDS. The data science pipelines manager is unable to connect to the database as it does not trust the database SSL certificate. This prevents the creation of the pipeline server. This issue can occur with any external database solution. Contact your IT operations administrator to add the relevant certificates. 
+|This issue can occur when you use any external database, such as Amazon RDS. The data science pipelines manager cannot connect to the database because it does not trust the database SSL certificate, preventing the creation of the pipeline server.  Contact your IT operations administrator to add the relevant certificates.
 
 ifdef::upstream[]
 For more information, see link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
 endif::[]
 
-ifdef::self-managed,cloud-service[]
-
+ifdef::self-managed[]
 ifndef::disconnected[]
 For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
 endif::[]
@@ -103,7 +94,10 @@ endif::[]
 ifdef::disconnected[]
 For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs[Working with certificates].
 endif::[]
+endif::[]
 
+ifdef::cloud-service[]
+For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
 endif::[]
 
 |`DatabaseAvailable`
@@ -113,7 +107,7 @@ Ready
 
 False
 |`Error 1129: Host 'A.B.C.D' is blocked because of many connection errors.`
-| This issue can occur when you use an external database, such as Amazon RDS. The data science pipelines manager is unable to connect to the database as it does not trust the database SSL certificate. This prevents the creation of the pipeline server. This issue can occur with any external database solution.
+| This issue can occur when you use any external database, such as Amazon RDS. The data science pipelines manager cannot connect to the database because it does not trust the database SSL certificate, preventing the creation of the pipeline server.  Contact your IT operations administrator to add the relevant certificates.
 
 For more information on how resolve this issue for an external Amazon RDS database, see link:https://repost.aws/knowledge-center/rds-blocked-host-error[Resolving "Host is blocked because of many connection errors" error in Amazon RDS for MySQL].
 
