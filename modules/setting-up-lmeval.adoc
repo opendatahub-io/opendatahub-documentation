@@ -1,0 +1,71 @@
+:_module-type: REFERENCE
+
+ifdef::context[:parent-context: {context}]
+[id="setting-up-lmeval.adoc_{context}"]
+= Setting up LM-Eval
+
+[role='_abstract']
+LM-Eval is a service for large language model evaluation. It is integrated into the TrustyAI Kubernetes Operator and is underpinned by two open-source projects - link:https://github.com/EleutherAI/lm-evaluation-harness[lm-evaluation-harness] and link:https://www.unitxt.ai/en/latest/[Unitxt]. 
+
+[NOTE]
+--
+    LM-Eval is only available in the latest community builds. In order to use it on Open Data Hub, you need to add the following `devFlag` to your `DataScienceCluster` resource:
++
+
+[source]
+----
+    trustyai:
+    devFlags:
+        manifests:
+        - contextDir: config
+            sourcePath: ''
+            uri: https://github.com/trustyai-explainability/trustyai-service-operator/tarball/main
+    managementState: Managed
+----
+--
+ 
+.Global settings for LM-Eval
+
+There are some configurable global settings for LM-Eval services which are stored in the TrustyAI operator global `ConfigMap`, named `trustyai-service-operator-config`, located in the same namespace as the operator.
+
+Here is a list of properties and their default settings for LM-Eval:
+
+.LM-Eval properties
+[cols="1,1,5"]
+|===
+| Property | Default | Description
+
+| `lmes-detect-device`
+| `true/false`
+| Detect if there are available GPUs or not and assign the proper value for --device argument for lm-evaluation-harness. If GPU(s) is found, it uses cuda as the value for --device; otherwise, it uses cpu.
+
+| `lmes-pod-image`
+| `quay.io/trustyai/ta-lmes-job:latest`
+| The image for the LM-Eval job. The image contains the necessary Python packages for lm-evaluation-harness and Unitxt.
+
+| `lmes-driver-image`
+| `quay.io/trustyai/ta-lmes-driver:latest`
+| The image for the LM-Eval driver. Check cmd/lmes_driver directory for detailed information about the driver.
+
+| `lmes-image-pull-policy` 
+| `Always`
+| The image-pulling policy when running the evaluation job.
+
+| `lmes-default-batch-size`
+| 8
+| The default batch size when invoking the model inference API. This only works for local models.
+
+| `lmes-max-batch-size`
+| 24
+| The maximum batch size that users can specify in an evaluation job.
+
+| `lmes-pod-checking-interval`
+| 10s
+| The interval to check the job pod for an evaluation job.
+ 
+|===
+
+[NOTE]
+--
+After updating the settings in the `ConfigMap`, the new values only take effect when the operator restarts.
+--
