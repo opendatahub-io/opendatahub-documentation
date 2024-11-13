@@ -1,0 +1,73 @@
+:_module-type: CONCEPT
+
+[id='overview-of-data-science-pipelines-caching_{context}']
+= Overview of data science pipelines caching
+
+[role='_abstract']
+{productname-short} supports caching within data science pipelines to optimize execution times and improve resource efficiency. Using caching reduces redundant task execution by reusing results from previous runs with identical inputs. 
+
+Caching is particularly beneficial for iterative tasks, where intermediate steps might not need to be repeated. Understanding caching can help you design more efficient pipelines and save time in model development.
+
+Caching operates by storing the outputs of successfully completed tasks and comparing the inputs of new tasks against previously cached ones. If a match is found, {productname-short} reuses the cached results instead of re-executing the task, reducing computation time and resource usage.
+
+== Caching criteria
+
+For caching to be effective, the following criteria determines if a task can use previously cached results:
+
+* *Input data and parameters*: If the input data and parameters for a task are unchanged from a previous run, cached results are eligible for reuse.
+* *Task code and configuration*: Changes to the task code or configurations invalidate the cache to ensure that modifications are always reflected.
+* *Pipeline environment*: Changes to the pipeline environment, such as dependency versions, also affect caching eligibility to maintain consistency.
+
+== Viewing cached steps in the {productname-short} user interface
+
+Cached steps in pipelines are visually indicated in the user interface (UI):
+
+* Tasks that use cached results display a green icon, helping you quickly identify which steps were cached. The *Status* field in the side panel displays `Cached` for cached tasks.  
+* The UI also includes information about when the task was previously executed, allowing for easy verification of cache usage.
+
+To confirm caching status for specific tasks, navigate to the pipeline details view in the UI, where all cached and non-cached tasks are indicated. When a pipeline task is cached, its execution logs are not available. This is because the task uses previously generated outputs, eliminating the need for re-execution.
+
+== Disabling caching for specific tasks or pipelines
+
+In {productname-short}, caching is enabled by default, but there are situations where disabling caching for specific tasks or the entire pipeline is necessary. For example, tasks that rely on frequently updated data or unique computational needs might not benefit from caching.
+
+=== Disabling caching for individual tasks
+
+To disable caching for a particular task, apply the `set_caching_options` method directly to the task in your pipeline code:
+
+`task_name.set_caching_options(False)`
+
+After applying this setting, {productname-short} executes the task in all future pipeline runs, ignoring any cached results.
+
+[NOTE]
+====
+You can re-enable caching for individual tasks by setting `set_caching_options(True)`.
+====
+
+=== Disabling caching for pipelines
+
+If necessary, you can disable caching for the entire pipeline during pipeline submission by setting the `enable_caching` parameter to `False` in your pipeline code. This setting ensures that no steps are cached during pipeline execution. The `enable_caching` parameter is available only when using the `kfp.client` to submit pipelines or start pipeline runs, such as the `run_pipeline` method
+
+Example:
+
+`pipeline_func(enable_caching=False)`
+
+[CAUTION]
+====
+When disabling caching at the pipeline level, all tasks are re-executed, potentially increasing compute time and resource usage.
+====
+
+== Verification and troubleshooting
+
+After configuring caching settings, you can verify that caching behaves as expected by using one of the following methods:
+
+* *Checking the UI*: Confirm cached steps by locating the steps with the green icon in the task list.
+* *Testing task re-runs*: Disable caching on individual tasks or the pipeline and check for re-execution to verify cache bypassing.
+* *Validating inputs*: Ensure the task inputs, parameters, and environment remain unchanged if caching applies.
+
+[role="_additional-resources"]
+.Additional resources
+* Kubeflow caching documentation: link:https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/caching/[Kubeflow Pipelines - Caching]
+* The `kfp.client` module documentation for the `enable_caching` parameter: link:https://kubeflow-pipelines.readthedocs.io/en/sdk-2.9.0/source/client.html#kfp.client.Client.run_pipeline.enable_caching[Kubeflow Pipelines - Caching]
+
+
