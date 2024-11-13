@@ -34,7 +34,5 @@ ifdef::upstream[]
 After upgrading from {productname-short} 2.19 to 2.20, existing instances of the model registry component are not updated, which causes the instance pods to use older images than the ones referenced by the operator pod.
 
 To resolve this issue, create a new instance of each existing model registry, using the same database configuration, and delete the old model registry instance. The new model registry instance contains all existing registered models and their metadata.
-
-NOTE: Model registry names must be unique. If you want to use the same model registry name as your original registry, you must delete the original registry before creating the new one.
 ====
 endif::[]
