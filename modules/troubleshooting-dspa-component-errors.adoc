@@ -17,26 +17,19 @@ Ready
 
 False
 |`Could not connect to Object Store: tls: failed to verify certificate: x509: certificate signed by unknown authority`
-|This issue occurs in clusters that use self-signed certificates with {productname-short} version 2.9 or later. The data science pipelines manager cannot connect to the object storage as it does not trust the object storage SSL certificate. Therefore, the pipeline server cannot be created. 
-
-Contact your IT operations administrator to add the relevant Certificate Authority bundle. 
+|This issue occurs in clusters that use self-signed certificates with {productname-short} version 2.9 or later. The data science pipelines manager cannot connect to the object storage as it does not trust the object storage SSL certificate. Therefore, the pipeline server cannot be created. Contact your IT operations administrator to add the relevant Certificate Authority bundle. 
 
 ifdef::upstream[]
 For more information, see link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
 endif::[]
 
-ifdef::self-managed[]
+ifndef::upstream[]
+ifdef::disconnected[]
+For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
+endif::[]
 ifndef::disconnected[]
 For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
 endif::[]
-
-ifdef::disconnected[]
-For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs[Working with certificates].
-endif::[]
-endif::[]
-
-ifdef::cloud-service[]
-For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
 endif::[]
 
 |`ObjectStorageAvailable`
@@ -86,18 +79,13 @@ ifdef::upstream[]
 For more information, see link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
 endif::[]
 
-ifdef::self-managed[]
+ifndef::upstream[]
+ifdef::disconnected[]
+For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
+endif::[]
 ifndef::disconnected[]
 For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
 endif::[]
-
-ifdef::disconnected[]
-For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs[Working with certificates].
-endif::[]
-endif::[]
-
-ifdef::cloud-service[]
-For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
 endif::[]
 
 |`DatabaseAvailable`
@@ -107,7 +95,7 @@ Ready
 
 False
 |`Error 1129: Host 'A.B.C.D' is blocked because of many connection errors.`
-| This issue can occur when you use any external database, such as Amazon RDS. The data science pipelines manager cannot connect to the database because it does not trust the database SSL certificate, preventing the creation of the pipeline server.  Contact your IT operations administrator to add the relevant certificates.
+| This issue might occur when using an external database, such as Amazon RDS. Initially, the pipeline server is created successfully. However, after some time, the {productname-short} dashboard displays an "Error displaying pipelines" message, and the DSPA conditions indicate that the host is blocked due to multiple connection errors.
 
 For more information on how resolve this issue for an external Amazon RDS database, see link:https://repost.aws/knowledge-center/rds-blocked-host-error[Resolving "Host is blocked because of many connection errors" error in Amazon RDS for MySQL].
 
@@ -162,31 +150,31 @@ False
 
 The following table lists errors that might occur across multiple DSPA components:
 
-[cols="1,1,1,2,2", options="header"]
+[cols="10%,10%,20%,30%,30%", options="header",]
 |===
 |Deployment condition |Condition type |Status |Error message |Solution
 |Component Deployment Not Found
 |`ComponentDeploymentNotFound`
 |False
-|`Deployment for component `<component>` is missing - prerequisite component may not yet be available.`
+|`Deployment for component <component> is missing - prerequisite component might not yet be available.`
 |The deployment for the component does not exist. Typically, this is due to missing deployments or issues that occurred during creation.
 
 |Deployment Scaled Down
 |`MinimumReplicasAvailable`
 |False
-|`Deployment for component `<component>` is scaled down.`
+|`Deployment for component <component> is scaled down.`
 |The component is unavailable as the deployment replica count is set to zero.
 
 |Component Failing to Progress
 |`FailingToDeploy`
 |False
-|`Component `<component>` has failed to progress. Reason: `<progressingCond.Reason>`. Message: `<progressingCond.Message>``
-|The deployment has stalled due to "ProgressDeadlineExceeded" or `ReplicaSetCreateError` issues, or similar.
+|`Component <component> has failed to progress. Reason: <progressingCond.Reason>. Message: <progressingCond.Message>`
+|The deployment has stalled due to `ProgressDeadlineExceeded` or `ReplicaSetCreateError` issues, or similar.
 
 |Replica Creation Failure
 |`FailingToDeploy`
 |False
-|Component's replica `<component>` has failed to create. Reason: `<replicaFailureCond.Reason>`. Message: `<replicaFailureCond.Message>`
+|`Component's replica <component> has failed to create. Reason: <replicaFailureCond.Reason>. Message: <replicaFailureCond.Message>`
 |Replica creation has failed, typically due to an error in the replica set or with the service accounts.
 
 |Pod-Level Failures
@@ -198,18 +186,18 @@ The following table lists errors that might occur across multiple DSPA component
 |Pod in CrashLoopBackOff
 |`FailingToDeploy`
 |False
-|`Component `<component>` is in CrashLoopBackOff. Message from pod: `<crashLoopBackOffMessage>``
+|`Component <component> is in CrashLoopBackOff. Message from pod: <crashLoopBackOffMessage>`
 |Pod containers are failing repeatedly, often due to incorrect environment variables or missing service accounts.
 
 |Component Deploying (No Errors)
 |`Deploying`
 |False
-|`Component `<component>` is deploying.`
+|`Component <component> is deploying.`
 |The component deployment process is ongoing with no errors detected.
 
 |Component Minimally Available
 |`MinimumReplicasAvailable`
 |True
-|Component `<component>` is minimally available.`
+|`Component <component> is minimally available.`
 |The component is available, but only with the minimum number of replicas running.
 |===
