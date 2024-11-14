@@ -34,7 +34,7 @@ endif::[]
 .Procedure
 . Open a new terminal window.
 . Follow these steps to log in to your {openshift-platform} cluster as a cluster administrator:
-.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*. 
+.. In the {openshift-platform} web console, click your user name and select *Copy login command*. 
 .. After you have logged in, click *Display token*.
 .. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
 +
@@ -75,11 +75,13 @@ spec:
 ----
 +
 <1> The name of the TrustyAI service instance.
-<2> The storage format for the data, either `DATABASE` or `PVC` (persistent volume claim).
+<2> The storage format for the data, either `DATABASE` or `PVC` (persistent volume claim). We recommend using a database setup for better scalability, performance, and data management in TrustyAI.
 <3> The size of the data to request.
 <4> The name of the secret with your database credentials that you created in link:{odhdocshome}/monitoring-data-science-models/#configuring-trustyai-with-a-database_monitor[Configuring TrustyAI with a database]. For example, `db-credentials`.
 <5> The interval at which to calculate the metrics. The default is `5s`. The duration is specified with the ISO-8601 format. For example, `5s` for 5 seconds, `5m` for 5 minutes, and `5h` for 5 hours.
+
 +
+
 .Example CR file for TrustyAI using a PVC
 [source,subs="+quotes"]
 ----
@@ -100,6 +102,7 @@ spec:
   	batchSize: 5000 <8>
 ----
 +
+
 <1> The name of the TrustyAI service instance.
 <2> The storage format for the data, either `DATABASE` or `PVC` (persistent volume claim).
 <3> The location within the PVC where you want to store the data.

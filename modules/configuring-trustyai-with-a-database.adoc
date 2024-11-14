@@ -5,7 +5,8 @@
 
 [role='_abstract']
 
-If you have a relational database in your {openshift-platform} cluster such as MySQL or MariaDB, you can configure TrustyAI to use your database instead of a persistent volume claim (PVC). Using a database instead of a PVC for storage can improve scalability, performance, and data management in TrustyAI.
+If you have a relational database in your {openshift-platform} cluster such as MySQL or MariaDB, you can configure TrustyAI to use your database instead of a persistent volume claim (PVC). Using a database instead of a PVC for storage can improve scalability, performance, and data management in TrustyAI. 
+TrustyAI needs to be provided a database configuration secret before deployment. You can create a secret or specify the name of an existing Kubernetes secret within your project. 
 
 .Prerequisites
 
@@ -64,7 +65,7 @@ data:
 $ oc apply -f __<service_name>__-db-tls.yaml -n __<project_name>__
 ----
 
-. Create a secret that has your database credentials.
+. Create a secret (or specify an existing one) that has your database credentials.
 
 .. Create a YAML file to contain your secret and add the following code:
 +
@@ -76,7 +77,7 @@ metadata:
   name: db-credentials
 type: Opaque
 stringData:
-  databaseKind: __<mariadb or mysql>__ <1>
+  databaseKind: __<mariadb>__ <1>
   databaseUsername: __<TrustyAI_username>__ <2>
   databasePassword: __<TrustyAI_password>__ <3>
   databaseService: mariadb-service <4>
@@ -85,13 +86,13 @@ stringData:
   databaseName: trustyai_service <7>
 ----
 +
-<1> The database kind, either `mariadb` or `mysql`.
+<1> The only currently supported `databaseKind` value is `mariadb`.
 <2> The username you want TrustyAI to use when interfacing with the database.
-<3> The password for the database username.
-<4> The Kubernetes (K8s) service through which your database is accessed.
-<5> The port the database is listening on.
-<6> The setting for the link:https://quarkus.io/guides/hibernate-orm#quarkus-hibernate-orm_quarkus-hibernate-orm-database-generation[`quarkus.hibernate-orm.database.generation`] argument, which determines how TrustyAI interacts with the database on its initial connection. Set to `none`, `create`, `drop-and-create`, `drop`, `update`, or `validate`. 
-<7> The name of the individual database within the database service that the username and password authenticate to.
+<3> The password that TrustyAi should use when connecting to the database.
+<4> `databaseService` (default, pre-filled value=mariadb) is the Kubernetes (K8s) service that TrustyAI should use when connecting to the database.
+<5> The `databasePort` is given a default, pre-filled value=3306 and is the port that TrustyAI should use when connecting to the database.
+<6>  The database schema generation strategy to be used by TrustyAI. It is the setting for the link:https://quarkus.io/guides/hibernate-orm#quarkus-hibernate-orm_quarkus-hibernate-orm-database-generation[`quarkus.hibernate-orm.database.generation`] argument, which determines how TrustyAI interacts with the database on its initial connection. Set to `none`, `create`, `drop-and-create`, `drop`, `update`, or `validate`. 
+<7> The name of the individual database within the database service that the username and password authenticate to, as well as the specific database name that TrustyAI should read and write to on the database server.
 
 .. Save the file with the file name *db-credentials.yaml*. You will need this name later when you install or change the TrustyAI service.
 
