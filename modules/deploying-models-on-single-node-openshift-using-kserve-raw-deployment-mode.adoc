@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
 [id="deploying-models-on-single-node-openshift-using-kserve-raw-deployment-mode_{context}"]
-= Deploying models on single node openshift using kserve raw deployment mode
+= Deploying models on single node {openshift-platform} using KServe raw deployment mode
 
 [role='_abstract']
-You can deploy a machine learning model by using KServe raw deployment mode on single node OpenShift. Raw deployment mode offers several advantages over Knative, such as the ability to mount multiple volumes.
+You can deploy a machine learning model by using KServe raw deployment mode on single node {openshift-platform}. Raw deployment mode offers several advantages over Knative, such as the ability to mount multiple volumes.
 
 [IMPORTANT]
 ====
@@ -14,7 +14,7 @@ Deploying a machine learning model using KServe raw deployment mode on single no
 .Prerequisites
 * You have logged in to {productname-long}.
 * You have cluster administrator privileges for your {openshift-platform} cluster.
-* You have created an OpenShift cluster that has a node with at least 4 CPUs and 16 GB memory.
+* You have created an {openshift-platform} cluster that has a node with at least 4 CPUs and 16 GB memory.
 * You have installed the {productname-long} (RHOAI) Operator.
 * You have installed the OpenShift command-line interface (CLI). For more information about installing the OpenShift command-line interface (CLI), see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#cli-getting-started[Getting started with the OpenShift CLI].
 * You have installed KServe.
@@ -31,15 +31,15 @@ ifdef::upstream[]
 endif::[]
 
 .Procedure
-. Open a command-line terminal and log in to your OpenShift cluster as cluster administrator:
+. Open a command-line terminal and log in to your {openshift-platform} cluster as cluster administrator:
 +
 [source]
 ----
 $ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 ----
 
-. By default, OpenShift uses a service mesh for network traffic management. As KServe raw deployment mode does not require a service mesh, disable {org-name} OpenShift Service Mesh:
-.. Enter the following command to disable {org-name} OpenShift Service Mesh:
+. By default, {openshift-platform} uses a service mesh for network traffic management. Because KServe raw deployment mode does not require a service mesh, disable {org-name} {openshift-platform} Service Mesh:
+.. Enter the following command to disable {org-name} {openshift-platform} Service Mesh:
 +
 [source]
 ----
@@ -64,7 +64,7 @@ $ oc new-project <project_name> --description="<description>" --display-name="<d
 For information about creating projects, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/building_applications/projects#working-with-projects[Working with projects].
 
 . Create a data science cluster:
-.. In the Red Hat OpenShift web console *Administrator* view, click *Operators* → *Installed Operators* and then click the {productname-long} Operator.
+.. In the {org-name} {openshift-platform} web console *Administrator* view, click *Operators* → *Installed Operators* and then click the {productname-long} Operator.
 .. Click the *Data Science Cluster* tab.
 .. Click the *Create DataScienceCluster* button.
 .. In the *Configure via* field, click the *YAML view* radio button.
