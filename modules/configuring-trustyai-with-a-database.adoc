@@ -14,13 +14,15 @@ Provide TrustyAI with a database configuration secret before deployment. You can
 
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
 
-* You have enabled the TrustyAI component, as described in link:{odhdocshome}/monitoring-data-science-models/#enabling-trustyai-component_monitor[Enabling the TrustyAI component].
-
 ifndef::upstream[]
+* You have enabled the TrustyAI component, as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-trustyai_monitor#enabling-trustyai-component_monitor[Enabling the TrustyAI component].
+
 * The data scientist has created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project], that contains the models that the data scientist wants to monitor.  
 endif::[]
 
 ifdef::upstream[]
+* You have enabled the TrustyAI component, as described in link:{odhdocshome}/monitoring-data-science-models/#enabling-trustyai-component_monitor[Enabling the TrustyAI component].
+
 * The data scientist has created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project], that contains the models that the data scientist wants to monitor.  
 endif::[]
 
@@ -107,8 +109,12 @@ stringData:
 ----
 $ oc apply -f db-credentials.yaml -n __<project_name>__
 ----
-
-. If you are installing TrustyAI for the first time on a project, continue to _Installing the TrustyAI service by using the CLI_.
+ifndef::upstream[]
+. If you are installing TrustyAI for the first time on a project, continue to link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-trustyai_monitor#installing-trustyai-service_monitor[Installing the TrustyAI service for a project].
+endif::[]
+ifdef::upstream[]
+. If you are installing TrustyAI for the first time on a project, continue to link:{odhdocshome}/monitoring-data-science-models/#installing-trustyai-service_monitor[Installing the TrustyAI service for a project].
+endif::[]
 +
 If you already installed TrustyAI on a project, you can migrate the existing TrustyAI service from using a PVC to using a database.
 

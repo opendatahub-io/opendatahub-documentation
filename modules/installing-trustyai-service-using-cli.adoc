@@ -12,17 +12,23 @@ You can use the OpenShift command-line interface (CLI) to install an instance of
 
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
 
+ifndef::upstream[]
+* You have configured monitoring for the model serving platform, as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-trustyai_monitor#configuring-monitoring-for-the-multi-model-serving-platform_monitor[Configuring monitoring for the multi-model serving platform].
+
+* You have enabled the TrustyAI component, as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-trustyai_monitor#enabling-trustyai-component_monitor[Enabling the TrustyAI component].
+
+* If you are using TrustyAI with a database instead of PVC, you have configured TrustyAI to use the database, as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-trustyai_monitor#configuring-trustyai-with-a-database_monitor[Configuring TrustyAI with a database].
+
+* The data scientist has created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project], that contains the models that the data scientist wants to monitor.  
+endif::[]
+
+ifdef::upstream[]
 * You have configured monitoring for the model serving platform, as described in link:{odhdocshome}/monitoring-data-science-models/#configuring-monitoring-for-the-multi-model-serving-platform_monitor[Configuring monitoring for the multi-model serving platform].
 
 * You have enabled the TrustyAI component, as described in link:{odhdocshome}/monitoring-data-science-models/#enabling-trustyai-component_monitor[Enabling the TrustyAI component].
 
 * If you are using TrustyAI with a database instead of PVC, you have configured TrustyAI to use the database, as described in link:{odhdocshome}/monitoring-data-science-models/#configuring-trustyai-with-a-database_monitor[Configuring TrustyAI with a database].
 
-ifndef::upstream[]
-* The data scientist has created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project], that contains the models that the data scientist wants to monitor.  
-endif::[]
-
-ifdef::upstream[]
 * The data scientist has created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project], that contains the models that the data scientist wants to monitor.  
 endif::[]
 
@@ -72,7 +78,12 @@ spec:
 <1> The name of the TrustyAI service instance.
 <2> The storage format for the data, either `DATABASE` or `PVC` (persistent volume claim). {org-name} recommends that you use a database setup for better scalability, performance, and data management in TrustyAI.
 <3> The size of the data to request.
+ifndef::upstream[]
+<4> The name of the secret with your database credentials that you created in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-trustyai_monitor#configuring-trustyai-with-a-database_monitor[Configuring TrustyAI with a database]. For example, `db-credentials`.
+endif::[]
+ifdef::upstream[]
 <4> The name of the secret with your database credentials that you created in link:{odhdocshome}/monitoring-data-science-models/#configuring-trustyai-with-a-database_monitor[Configuring TrustyAI with a database]. For example, `db-credentials`.
+endif::[]
 <5> The interval at which to calculate the metrics. The default is `5s`. The duration is specified with the ISO-8601 format. For example, `5s` for 5 seconds, `5m` for 5 minutes, and `5h` for 5 hours.
 
 +
