@@ -173,7 +173,7 @@ textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluati
 | This parameter defines a custom output location to store the the evaluation results. Only Persistent Volume Claims (PVC) are supported.
 
 | `outputs.pvcManaged`
-| Create an operator-managed PVC to store this job's results. The PVC will be named `<job-name>-pvc` and will be owned by the `LMEvalJob`. After job completion, the PVC will still be available, but it will be deleted upon deleting the `LMEvalJob`. Supports the following fields:
+| Creates an operator-managed PVC to store this job's results. The PVC is named `<job-name>-pvc` and is owned by the `LMEvalJob`. After the job finishes, the PVC is still be available, but it is deleted with the `LMEvalJob`. Supports the following fields:
 * `size`: The PVC's size, compatible with standard PVC syntax (e.g. 5Gi)
 
 | `outputs.pvcName`
