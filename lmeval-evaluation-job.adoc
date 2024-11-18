@@ -131,7 +131,7 @@ textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluati
 | Specifies a list of tasks supported by `lm-evaluation-harness`.
 
 | `taskList.taskRecipes`
-| Specify the task using the Unitxt recipe format:
+| Specifies the task using the Unitxt recipe format:
 * `card`: Use the `name` to specify a Unitxt card or `custom` for a custom card
 ** `name`: Specify a Unitxt card from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the card's ID as the value. For example: The ID of link:https://www.unitxt.ai/en/latest/catalog/catalog.cards.wnli.html[Wnli card] is `cards.wnli`.
 ** `custom`: Define a custom card and use it. The value is a JSON string for a custom Unitxt card which contains the custom dataset. Use the link:https://www.unitxt.ai/en/latest/docs/adding_dataset.html#adding-to-the-catalog[Unitxt documentation] to compose a custom card, store it as a JSON file, and use the JSON content as the value here. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, you have to set up corresponding resources under the `pod` field. Check the `pod` field below.
