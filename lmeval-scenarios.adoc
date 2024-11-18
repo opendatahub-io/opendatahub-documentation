@@ -298,7 +298,8 @@ spec:
             key: token 
 ----
 
-* Apply this CR into the same namespace as your model. You should see a pod spin up in your model namespace called `evaljob`. In the pod terminal, you can see the output via `tail -f output/stderr.log`
+. Apply this custom resource into the same namespace as your model. 
+.. A pod named `evaljob` is created in your model namespace. In the pod terminal, you can see the output using `tail -f output/stderr.log`
 
 .Notes on the code
 * <1> `base_url` is the route or service URL of your model. Include the `/v1/completions` endpoint in the URL.
