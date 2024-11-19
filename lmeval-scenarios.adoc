@@ -5,11 +5,13 @@ ifdef::context[:parent-context: {context}]
 = LM-Eval scenarios
 
 [role='_abstract']
-The procedures below outline different example scenarios which you may find useful for your ML-Eval setup. 
 
-== Environment Variables
+The procedures below outline different example scenarios which you may find useful for your ML-Eval setup.
 
-If the LMEvalJob needs to access a model on HuggingFace with the access token, you can set up the HF_TOKEN as one of the environment variables for the lm-eval container.
+== Configuring the ML-eval environment
+
+If the `LMEvalJob` needs to access a model on HuggingFace with the access token, you can set up the `HF_TOKEN` as one of the environment variables for the `lm-eval` container.
+
 
 .Prerequisites
 * You have logged in to Red Hat OpenShift AI.
@@ -17,8 +19,6 @@ If the LMEvalJob needs to access a model on HuggingFace with the access token, y
 * Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
 
 .Procedure
-* xyz
-* another xyz
 
 Enter the following code:
 
@@ -43,20 +43,20 @@ spec:
       - name: HF_TOKEN
         value: "My HuggingFace token"
 ----
-Or you can create a secret to store the token and refer the key from the secret object using the reference syntax:
 
-(only attach the env part)
+You can also create a secret to store the token, then refer the key from the `secretKeyRef` object using the following reference syntax:
 
 [source]
 ----
-   env:
-      - name: HF_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: my-secret
-            key: hf-token
-----
 
+env:
+  - name: HF_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: my-secret
+        key: hf-token
+
+----
 
 
 == Custom Unitxt Card
@@ -67,11 +67,9 @@ Or you can create a secret to store the token and refer the key from the secret 
 * Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
 
 .Procedure
-* xyz
 * Pass a custom Unitxt Card in JSON format:
 
 [source]
-
 ----
 apiVersion: trustyai.opendatahub.io/v1alpha1
 kind: LMEvalJob
@@ -156,7 +154,7 @@ spec:
   logSamples: true
 ----
 
-* Inside the custom card, it uses the HuggingFace dataset loader:
+* Inside the custom card specify the Hugging Face dataset loader:
 
 [source]
 ----
@@ -168,17 +166,16 @@ spec:
             },
 
 ----
-You can use other link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#module-unitxt.loaders[loaders] and use the `volumes` and `volumeMounts` to mount the dataset from persistent volumes. For example, if you use link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#unitxt.loaders.LoadCSV[LoadCSV], you need to mount the files to the container and make the dataset accessible for the evaluation process.
-
+You can use other link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#module-unitxt.loaders[loaders] that use the `volumes` and `volumeMounts` parameters to mount the dataset from persistent volumes. For example, if you use link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#unitxt.loaders.LoadCSV[LoadCSV], mount the files to the container and make the dataset accessible for the evaluation process.
 
 
 == Using PVCs as storage
 
-To use a PVC as storage for the LMEvalJob results, there are two supported modes, at the moment: managed and existing PVCs. Managed PVCs, are managed by the TrustyAI operator. Existing PVCs are created by the end-user and exist when the `LMEvalJob` is created.
+To use a PVC as storage for the LMEvalJob results, you can use either managed PVCS or existing PVCs. Managed PVCs are managed by the TrustyAI operator. Existing PVCs are created by the end-user before the `LMEvalJob` is created.
 
 [NOTE]
 --
-In the case where both managed and existing PVCs are referenced in outputs, the TrustyAI operator will prefer the managed PVC and ignore the existing one.
+If both managed and existing PVCs are referenced in outputs, the TrustyAI operator defaults to the managed PVC.
 --
 
 .Prerequisites
@@ -189,7 +186,7 @@ In the case where both managed and existing PVCs are referenced in outputs, the 
 
 === Managed PVCs
 
-To enable a managed PVC simply specify its size. This creates a PVC named `<job-name>-pvc` (in this case `evaljob-sample-pvc`) which will be available after the job finishes, but is deleted when the LMEvalJob is deleted.
+To create a managed PVC, specify its size. The managed PVC is named `<job-name>-pvc` and is available after the job finishes. When the `LMEvalJob` is deleted, the managed PVC is also deleted.
 
 .Procedure
 * Enter the following code:
@@ -215,12 +212,11 @@ spec:
 
 === Existing PVCs
 
-To use an already existing PVC you can pass its name as a reference. The PVC must already exist when the LMEvalJob is created. 
-In this case, the PVC is not managed by the TrustyAI operator, so it will be available even after deleting the LMEvalJob.
-
+To use an existing PVC, pass its name as a reference. The PVC must exist when you create the `LMEvalJob`. 
+The PVC is not managed by the TrustyAI operator, so it is available after deleting the `LMEvalJob`.
 
 .Procedure
-* Create a PVC. An example is the following.
+* Create a PVC. An example is the following:
 +
 [source]
 ----
@@ -235,7 +231,9 @@ spec:
     requests:
       storage: 1Gi
 ----
-* Reference this PVC from the LMEvalJob (note that `pvcName` references the already existing PVC `my-pvc`)
+
+* Reference the new PVC from the `LMEvalJob`.
+
 +
 [source]
 ----
@@ -295,6 +293,7 @@ spec:
             key: token 
 ----
 
+
 * Apply this CR into the same namespace as your model. You should see a pod spin up in your model namespace called `evaljob`. In the pod terminal, you can see the output via `tail -f output/stderr.log`
 
 .Notes on the code
@@ -306,5 +305,4 @@ spec:
 ----
 oc get secrets -o custom-columns=SECRET:.metadata.name --no-headers | grep user-one-token
 ----
-
-* `secretKeyRef.key` should equal `token`
+* `secretKeyRef.key` is set to `token`

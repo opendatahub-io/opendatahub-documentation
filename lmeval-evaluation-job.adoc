@@ -7,24 +7,24 @@ ifdef::context[:parent-context: {context}]
 [role='_abstract']
 LM-Eval service defines a new Custom Resource Definition (CRD) called `LMEvalJob`. An `LMEvalJob` object represents an evaluation job. `LMEvalJob` objects are monitored by the TrustyAI Kubernetes operator.
 
- Therefore, to run an evaluation job, you first need to create an `LMEvalJob` object with the following information: `model`, `model arguments`, `task`, and `secret`. 
+To run an evaluation job, you create an `LMEvalJob` object with the following information: `model`, `model arguments`, `task`, and `secret`. 
 
-Once the `LMEvalJob` is created, the LM-Eval service will run the evaluation job and update the status and results to the `LMEvalJob` object when the information is available.
+After the `LMEvalJob` is created, the LM-Eval service runs the evaluation job.  The status and results of the `LMEvalJob` object update when the information is available.
 
 [NOTE]
 --
-It is not recommended to deploy the TrustyAI custom resource (CR) in any namespace that contains non-tabular models. Such models are unsupported by TrustyAI, and may cause errors within the TrustyAI service.
+TrustyAI does not support non-tabular models. Deploying the TrustyAI custom resource (CR) in a namespace that contains non-tabular models can cause errors within the TrustyAI service.
 --
 
 .Sample LMEvalJob object 
 
-Below is an example of an `LMEvalJob` object. 
+The sample `LMEvalJob` object contains the following features: 
 
-* It uses the `google/flan-t5-base` model from link:https://huggingface.co/google/flan-t5-base[Hugging Face]. 
+* The `google/flan-t5-base` model from link:https://huggingface.co/google/flan-t5-base[Hugging Face]. 
 
-* The dataset is from the `wnli` subset of the link:https://huggingface.co/datasets/nyu-mll/glue[General Language Understanding Evaluation (GLUE)]. You can find more details details of the `wnli` `TaskCard` on the link:https://www.unitxt.ai/en/latest/catalog/catalog.cards.wnli.html[Unitxt website].
+* The dataset from the `wnli` subset of the link:https://huggingface.co/datasets/nyu-mll/glue[General Language Understanding Evaluation (GLUE)]. For more information about the `wnli` `TaskCard`, see link:https://www.unitxt.ai/en/latest/catalog/catalog.cards.wnli.html[Unitxt website].
 
-* This example contains the following defaults for the link:https://www.unitxt.ai/en/latest/catalog/catalog.tasks.classification.multi_class.relation.html[multi_class.relation template] Unitxt task:`f1_micro`, `f1_macro`, and `accuracy`.
+* The following default parameters for the link:https://www.unitxt.ai/en/latest/catalog/catalog.tasks.classification.multi_class.relation.html[multi_class.relation template] Unitxt task:`f1_micro`, `f1_macro`, and `accuracy`.
 
 [source]
 ----
@@ -47,17 +47,17 @@ spec:
 
 ----
 
-After you apply the example `LMEvalJob` above, check its state by using the following command:
+After you apply the sample `LMEvalJob`, check its state by using the following command:
 
 [source]
 ----
 oc get lmevaljob evaljob-sample
 ----
-The expected output looks like the following:
-NAME `evaljob-sample`
+Output similar to the following appears:
+NAME: `evaljob-sample`
 STATE: `Running`
 
-When its state becomes `Complete`, the evaluation results will be available. Both the model and dataset in this example are small. The evaluation job should finish within 10 minutes on a CPU-only node.
+Evaluation results are available when the object's state changes to `Complete`. Both the model and dataset in this example are small. The evaluation job should finish within 10 minutes on a CPU-only node.
 
 Use the following command to get the results:
 
@@ -67,7 +67,7 @@ oc get lmevaljobs.trustyai.opendatahub.io evaljob-sample \
   -o template --template={{.status.results}} | jq '.results'
 ----
 
-Here are the example results:
+Output similar to the following appears:
 
 [source]
 ----
@@ -92,7 +92,8 @@ Here are the example results:
 
 .LMEvalJob properties
 
-Below is a table with each property in the `LMEvalJob` and its usage:
+
+The following table lists each property in the `LMEvalJob` and its usage:
 
 .LM-Eval properties
 [cols="2,5"]
@@ -100,7 +101,9 @@ Below is a table with each property in the `LMEvalJob` and its usage:
 | Parameter | Description
 
 | `model`
-| Specify which model type or provider is evaluated. This field directly maps to the `--model` argument of the `lm-evaluation-harness`. Supported model types and providers include:
+
+| Specifies which model type or provider is evaluated. This field directly maps to the `--model` argument of the `lm-evaluation-harness`. Supported model types and providers include:
+
 
 * `hf`: HuggingFace models
 
@@ -128,52 +131,53 @@ Below is a table with each property in the `LMEvalJob` and its usage:
 textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/textsynth.py#L52[textsynth.py]
 
 | `taskList.taskNames`
-| Specify a list of tasks supported by `lm-evaluation-harness`.
+| Specifies a list of tasks supported by `lm-evaluation-harness`.
 
 | `taskList.taskRecipes`
-| Specify the task using the Unitxt recipe format:
+| Specifies the task using the Unitxt recipe format:
 * `card`: Use the `name` to specify a Unitxt card or `custom` for a custom card
-** `name`: Specify a Unitxt card from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the card's ID as the value. For example: The ID of link:https://www.unitxt.ai/en/latest/catalog/catalog.cards.wnli.html[Wnli card] is `cards.wnli`.
-** `custom`: Define a custom card and use it. The value is a JSON string for a custom Unitxt card which contains the custom dataset. Use the link:https://www.unitxt.ai/en/latest/docs/adding_dataset.html#adding-to-the-catalog[Unitxt documentation] to compose a custom card, store it as a JSON file, and use the JSON content as the value here. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, you have to set up corresponding resources under the `pod` field. Check the `pod` field below.
-* `template`: Specify a Unitxt template from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the template's ID as the value.
-* `task` (optional): Specify a Unitxt task from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the task's ID as the value. A Unitxt card has a predefined task. Only specify a value for this if you want to run a different task.
-* `metrics` (optional):  Specify a Unitxt task from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the metric's ID as the value. A Unitxt task has a set of pre-defined metrics. Only specify a set of metrics if you need different metrics.
-* `format` (optional): Specify a Unitxt format from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the format's ID as the value.
-* `loaderLimit` (optional): Specifies the maximum number of instances per stream to be returned from the loader (used to reduce loading time in large datasets).
-* `numDemos` (optional): Number of fewshot to be used.
-* `demosPoolSize` (optional): Size of the fewshot pool.
+** `name`: Specifies a Unitxt card from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the card's ID as the value. For example, the ID of link:https://www.unitxt.ai/en/latest/catalog/catalog.cards.wnli.html[Wnli card] is `cards.wnli`.
+** `custom`: Defines and uses a custom card. The value is a JSON object that contains the custom dataset. For more information about creating a custom card, see the link:https://www.unitxt.ai/en/latest/docs/adding_dataset.html#adding-to-the-catalog[Unitxt documentation]. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, set up corresponding resources in the `pod` field.
+* `template`: Specifies a Unitxt template from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the template's ID as the value.
+* `task` (optional): Specifies a Unitxt task from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the task's ID as the value. A Unitxt card has a predefined task. Only specify a value for this if you want to run a different task.
+* `metrics` (optional):  Specifies a Unitxt task from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the metric's ID as the value. A Unitxt task has a set of pre-defined metrics. Only specify a set of metrics if you need different metrics.
+* `format` (optional): Specifies a Unitxt format from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the format's ID as the value.
+* `loaderLimit` (optional): Specifies the maximum number of instances per stream to be returned from the loader. You can use this parameter to reduce loading time in large datasets.
+* `numDemos` (optional): Number of few-shot to be used.
+* `demosPoolSize` (optional): Size of the few-shot pool.
 
 
 | `numFewShot`
-| Sets the number of few-shot examples to place in context. If you are using a task from Unitxt, don't use this field. Use `numDemos` under the `taskRecipes` instead.
+| Sets the number of few-shot examples to place in context. If you are using a task from Unitxt, do not use this field. Use `numDemos` under the `taskRecipes` instead.
 
 | `limit`
-| Instead of running the whole dataset, set a limit to run the tasks. Accepts an integer, or a float between 0.0 and 1.0.
+| Set a limit to run the tasks instead of running the entire dataset. Accepts either an integer or a float between 0.0 and 1.0.
 
 | `genArgs`
-| Map to `--gen_kwargs` parameter for the lm-evaluation-harness. Read more in the link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/docs/interface.md#command-line-interface[lm-evaluation-harness documentation].
+| Maps to the `--gen_kwargs` parameter for the `lm-evaluation-harness`. For more information, see the link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/docs/interface.md#command-line-interface[`lm-evaluation-harness` documentation].
 
 | `logSamples`
-| If this flag is passed, then the model's outputs, and the text fed into the model, will be saved at per-document granularity.
+| If this flag is passed, then the model's outputs and the text fed into the model will be saved at per-document granularity.
 
 | `batchSize`
-| Batch size for the evaluation. The auto:`N` batch size is not used for API models, but numeric batch sizes are used for APIs. Only int batch size supported at the moment.
+| Specifies the batch size for the evaluation in integer format. The `auto:N` batch size is not used for API models, but numeric batch sizes are used for APIs. 
 
 | `pod`
-| Specify extra information for the lm-eval job's pod. 
-* `container`: Extra container settings for the lm-eval container.
-** `env`: Specify environment variables. It uses the `EnvVar` data structure of kubernetes.
-** `volumeMounts`: Mount the volumes into the lm-eval container
+| Specifies extra information for the `lm-eval` job's pod. 
+* `container`: Specifies additional container settings for the `lm-eval` container.
+** `env`: Specifies environment variables. This parameter uses the `EnvVar` data structure of Kubernetes.
+** `volumeMounts`: Mounts the volumes into the `lm-eval` container
 ** `resources`: Specify the resources for the lm-eval container.
-* `volumes`: Specify the volume information for the lm-eval and other containers. It uses the `Volume`  data structure of kubernetes.
-* `sideCars`: A list of containers that run along with the lm-eval container. It uses the `Container` data structure of kubernetes.
+* `volumes`: Specifies the volume information for the `lm-eval` and other containers. This parameter uses the `Volume` data structure of Kubernetes.
+* `sideCars`: A list of containers that run along with the `lm-eval` container. It uses the `Container` data structure of Kubernetes.
 
 
 | `outputs`
-| This section defines custom output locations for the evaluation results storage. At the moment only Persistent Volume Claims (PVC) are supported.
+| This parameter defines a custom output location to store the the evaluation results. Only Persistent Volume Claims (PVC) are supported.
 
 | `outputs.pvcManaged`
-| Create an operator-managed PVC to store this job's results. The PVC will be named `<job-name>-pvc` and will be owned by the `LMEvalJob`. After job completion, the PVC will still be available, but it will be deleted upon deleting the `LMEvalJob`. Supports the following fields:
+| Creates an operator-managed PVC to store this job's results. The PVC is named `<job-name>-pvc` and is owned by the `LMEvalJob`. After the job finishes, the PVC is still be available, but it is deleted with the `LMEvalJob`. Supports the following fields:
+
 * `size`: The PVC's size, compatible with standard PVC syntax (e.g. 5Gi)
 
 | `outputs.pvcName`

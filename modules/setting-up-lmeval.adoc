@@ -9,7 +9,8 @@ LM-Eval is a service for large language model evaluation. It is integrated into 
 
 [NOTE]
 --
-    LM-Eval is only available in the latest community builds. In order to use it on Open Data Hub, you need to add the following `devFlag` to your `DataScienceCluster` resource:
+
+LM-Eval is only available in the latest community builds. To use LM-Eval on {productname-long}, add the following `devFlag` to your `DataScienceCluster` resource:
 +
 
 [source]
@@ -26,9 +27,11 @@ LM-Eval is a service for large language model evaluation. It is integrated into 
  
 .Global settings for LM-Eval
 
-There are some configurable global settings for LM-Eval services which are stored in the TrustyAI operator global `ConfigMap`, named `trustyai-service-operator-config`, located in the same namespace as the operator.
 
-Here is a list of properties and their default settings for LM-Eval:
+Configurable global settings for LM-Eval services are stored in the TrustyAI operator global `ConfigMap`, named `trustyai-service-operator-config`. The global settings are located in the same namespace as the operator.
+
+You can configure the following properties for LM-Eval:
+
 
 .LM-Eval properties
 [cols="1,1,5"]
@@ -37,15 +40,15 @@ Here is a list of properties and their default settings for LM-Eval:
 
 | `lmes-detect-device`
 | `true/false`
-| Detect if there are available GPUs or not and assign the proper value for --device argument for lm-evaluation-harness. If GPU(s) is found, it uses cuda as the value for --device; otherwise, it uses cpu.
+| Detect if there are GPUs available and assign a value for `--device argument` for `lm-evaluation-harness`. If GPUs are available, the value is `cuda`. If there are no GPUs available, the value is `cpu`.
 
 | `lmes-pod-image`
 | `quay.io/trustyai/ta-lmes-job:latest`
-| The image for the LM-Eval job. The image contains the necessary Python packages for lm-evaluation-harness and Unitxt.
+| The image for the LM-Eval job. The image contains the Python packages for `lm-evaluation-harness` and Unitxt.
 
 | `lmes-driver-image`
 | `quay.io/trustyai/ta-lmes-driver:latest`
-| The image for the LM-Eval driver. Check cmd/lmes_driver directory for detailed information about the driver.
+| The image for the LM-Eval driver. For detailed information about the driver, see the  `cmd/lmes_driver` directory.
 
 | `lmes-image-pull-policy` 
 | `Always`
@@ -53,7 +56,8 @@ Here is a list of properties and their default settings for LM-Eval:
 
 | `lmes-default-batch-size`
 | 8
-| The default batch size when invoking the model inference API. This only works for local models.
+| The default batch size when invoking the model inference API. Default batch size is only available for local models.
+
 
 | `lmes-max-batch-size`
 | 24
@@ -67,5 +71,5 @@ Here is a list of properties and their default settings for LM-Eval:
 
 [NOTE]
 --
-After updating the settings in the `ConfigMap`, the new values only take effect when the operator restarts.
+After updating the settings in the `ConfigMap`, restart the operator to apply the new values.
 --
