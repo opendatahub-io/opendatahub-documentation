@@ -6,16 +6,12 @@ ifdef::context[:parent-context: {context}]
 
 [role='_abstract']
 
-This procedure outlines example scenarios that can be used in an LM-Eval setup. 
+The procedures below outline different example scenarios which you may find useful for your ML-Eval setup.
 
 == Configuring the ML-eval environment
-. If the `LMEvalJob` needs to access a model on Hugging Face with the access token, you can set up the `HF_TOKEN` as one of the environment variables for the `lm-eval` container. To configure an `HF_TOKEN`, add the following code to your environment variables:
-.. <code sample option 1>
-.. <code sample option 2>
-. Create a custom Unitxt card <reason why>
-...etc
 
-If the` LMEvalJob` accesses a model on Hugging Face with an access token, you can set up the `HF_TOKEN` as one of the environment variables for the `lm-eval `container.
+If the `LMEvalJob` needs to access a model on HuggingFace with the access token, you can set up the `HF_TOKEN` as one of the environment variables for the `lm-eval` container.
+
 
 .Prerequisites
 * You have logged in to Red Hat OpenShift AI.
@@ -23,7 +19,6 @@ If the` LMEvalJob` accesses a model on Hugging Face with an access token, you ca
 * Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
 
 .Procedure
-
 
 Enter the following code:
 
@@ -49,10 +44,7 @@ spec:
         value: "My HuggingFace token"
 ----
 
-You can also create a secret to store the token and refer the key from the `secretKeyRef` object using the following reference syntax:
-
-
-(only attach the env part)
+You can also create a secret to store the token, then refer the key from the `secretKeyRef` object using the following reference syntax:
 
 [source]
 ----
@@ -67,7 +59,6 @@ env:
 ----
 
 
-
 == Custom Unitxt Card
 
 .Prerequisites
@@ -79,7 +70,6 @@ env:
 * Pass a custom Unitxt Card in JSON format:
 
 [source]
-
 ----
 apiVersion: trustyai.opendatahub.io/v1alpha1
 kind: LMEvalJob
@@ -164,7 +154,6 @@ spec:
   logSamples: true
 ----
 
-
 * Inside the custom card specify the Hugging Face dataset loader:
 
 [source]
@@ -181,7 +170,6 @@ You can use other link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#modul
 
 
 == Using PVCs as storage
-
 
 To use a PVC as storage for the LMEvalJob results, you can use either managed PVCS or existing PVCs. Managed PVCs are managed by the TrustyAI operator. Existing PVCs are created by the end-user before the `LMEvalJob` is created.
 
@@ -224,12 +212,11 @@ spec:
 
 === Existing PVCs
 
-
 To use an existing PVC, pass its name as a reference. The PVC must exist when you create the `LMEvalJob`. 
 The PVC is not managed by the TrustyAI operator, so it is available after deleting the `LMEvalJob`.
 
 .Procedure
-* Create a PVC. An example is the following.
+* Create a PVC. An example is the following:
 +
 [source]
 ----
