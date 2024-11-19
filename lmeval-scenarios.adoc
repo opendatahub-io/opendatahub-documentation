@@ -5,6 +5,7 @@ ifdef::context[:parent-context: {context}]
 = LM-Eval scenarios
 
 [role='_abstract']
+
 This procedure outlines example scenarios that can be used in an LM-Eval setup. 
 
 == Configuring the ML-eval environment
@@ -22,6 +23,7 @@ If the` LMEvalJob` accesses a model on Hugging Face with an access token, you ca
 * Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
 
 .Procedure
+
 
 Enter the following code:
 
@@ -46,18 +48,22 @@ spec:
       - name: HF_TOKEN
         value: "My HuggingFace token"
 ----
+
 You can also create a secret to store the token and refer the key from the `secretKeyRef` object using the following reference syntax:
+
 
 (only attach the env part)
 
 [source]
 ----
+
 env:
   - name: HF_TOKEN
     valueFrom:
       secretKeyRef:
         name: my-secret
         key: hf-token
+
 ----
 
 
@@ -158,6 +164,7 @@ spec:
   logSamples: true
 ----
 
+
 * Inside the custom card specify the Hugging Face dataset loader:
 
 [source]
@@ -173,8 +180,8 @@ spec:
 You can use other link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#module-unitxt.loaders[loaders] that use the `volumes` and `volumeMounts` parameters to mount the dataset from persistent volumes. For example, if you use link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#unitxt.loaders.LoadCSV[LoadCSV], mount the files to the container and make the dataset accessible for the evaluation process.
 
 
-
 == Using PVCs as storage
+
 
 To use a PVC as storage for the LMEvalJob results, you can use either managed PVCS or existing PVCs. Managed PVCs are managed by the TrustyAI operator. Existing PVCs are created by the end-user before the `LMEvalJob` is created.
 
@@ -217,9 +224,9 @@ spec:
 
 === Existing PVCs
 
+
 To use an existing PVC, pass its name as a reference. The PVC must exist when you create the `LMEvalJob`. 
 The PVC is not managed by the TrustyAI operator, so it is available after deleting the `LMEvalJob`.
-
 
 .Procedure
 * Create a PVC. An example is the following.
@@ -237,7 +244,9 @@ spec:
     requests:
       storage: 1Gi
 ----
+
 * Reference the new PVC from the `LMEvalJob`.
+
 +
 [source]
 ----
@@ -260,7 +269,6 @@ This example assumes that the vLLM model is already deployed in your cluster.
 * You have logged in to Red Hat OpenShift AI.
 
 * Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
-* You have deployed a vLLM model in your cluster.
 
 .Procedure
 * Define your LMEvalJob CR:
@@ -298,17 +306,16 @@ spec:
             key: token 
 ----
 
-. Apply this custom resource into the same namespace as your model. 
-.. A pod named `evaljob` is created in your model namespace. In the pod terminal, you can see the output using `tail -f output/stderr.log`
+
+* Apply this CR into the same namespace as your model. You should see a pod spin up in your model namespace called `evaljob`. In the pod terminal, you can see the output via `tail -f output/stderr.log`
 
 .Notes on the code
-* <1> `base_url` is the route or service URL of your model. Include the `/v1/completions` endpoint in the URL.
-* <2> `env.valueFrom.secretKeyRef.name` is a secret that contains a token to authenticate to your model. `secretRef.name` is the secret's name in the namespace, while `secretRef.key` is the token's key within the secret.
-* <3> `secretKeyRef.name` is the following output:
+* `base_url` should be set to the route/service URL of your model. Make sure to include the `/v1/completions` endpoint in the URL.
+* `env.valueFrom.secretKeyRef.name` should point to a secret that contains a token that can authenticate to your model. `secretRef.name` should be the secret's name in the namespace, while `secretRef.key` should point at the token's key within the secret.
+* `secretKeyRef.name` can equal the output of:
 +
 [source]
 ----
 oc get secrets -o custom-columns=SECRET:.metadata.name --no-headers | grep user-one-token
 ----
-
 * `secretKeyRef.key` is set to `token`

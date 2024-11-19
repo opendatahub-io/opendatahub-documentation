@@ -54,7 +54,7 @@ After you apply the sample `LMEvalJob`, check its state by using the following c
 oc get lmevaljob evaljob-sample
 ----
 Output similar to the following appears:
-NAME `evaljob-sample`
+NAME: `evaljob-sample`
 STATE: `Running`
 
 Evaluation results are available when the object's state changes to `Complete`. Both the model and dataset in this example are small. The evaluation job should finish within 10 minutes on a CPU-only node.
@@ -92,6 +92,7 @@ Output similar to the following appears:
 
 .LMEvalJob properties
 
+
 The following table lists each property in the `LMEvalJob` and its usage:
 
 .LM-Eval properties
@@ -100,7 +101,9 @@ The following table lists each property in the `LMEvalJob` and its usage:
 | Parameter | Description
 
 | `model`
+
 | Specifies which model type or provider is evaluated. This field directly maps to the `--model` argument of the `lm-evaluation-harness`. Supported model types and providers include:
+
 
 * `hf`: HuggingFace models
 
@@ -174,6 +177,7 @@ textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluati
 
 | `outputs.pvcManaged`
 | Creates an operator-managed PVC to store this job's results. The PVC is named `<job-name>-pvc` and is owned by the `LMEvalJob`. After the job finishes, the PVC is still be available, but it is deleted with the `LMEvalJob`. Supports the following fields:
+
 * `size`: The PVC's size, compatible with standard PVC syntax (e.g. 5Gi)
 
 | `outputs.pvcName`
