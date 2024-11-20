@@ -13,7 +13,7 @@ After the `LMEvalJob` is created, the LM-Eval service runs the evaluation job.  
 
 [NOTE]
 --
-Other TrustyAI features (e.g. bias and drift metrics) do not support non-tabular models (e.g. LLMs). Deploying the TrustyAIService custom resource (CR) in a namespace that contains non-tabular models (such as the namespace where an evaluation job is being executed) can cause errors within the TrustyAI service.
+Other TrustyAI features (such as  bias and drift metrics) do not support non-tabular models (including LLMs). Deploying the TrustyAIService custom resource (CR) in a namespace that contains non-tabular models (such as the namespace where an evaluation job is being executed) can cause errors within the TrustyAI service.
 --
 
 .Sample LMEvalJob object 
@@ -178,7 +178,7 @@ textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluati
 | `outputs.pvcManaged`
 | Creates an operator-managed PVC to store this job's results. The PVC is named `<job-name>-pvc` and is owned by the `LMEvalJob`. After the job finishes, the PVC is still be available, but it is deleted with the `LMEvalJob`. Supports the following fields:
 
-* `size`: The PVC's size, compatible with standard PVC syntax (e.g. 5Gi)
+* `size`: The PVC's size, compatible with standard PVC syntax (for example, 5Gi)
 
 | `outputs.pvcName`
 | Binds an existing PVC to a job by specifying its name. The PVC must be created separately and must already exist when creating the job.
