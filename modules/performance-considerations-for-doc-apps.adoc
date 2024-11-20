@@ -1,0 +1,19 @@
+:_module-type: CONCEPT
+
+[id="performance-considerations-for-document-based-apps_{context}"]
+
+= Performance considerations for document-based applications
+[role="_abstract"]
+
+Document-based Q&A applications that allow users to upload PDFs and query the content of the PDFs require the following factors to be taken into consideration:
+
+* *Longer Input Sequences*: The input sequence length is likely to be significantly longer than in a typical chat application, if each user query includes a large amount of context from the PDF. The longer input sequence length increases the **prefill time**, the time the model takes to process the initial input sequence before generating a response, which can then lead to a higher **Time-to-First-Token (TTFT)**. A longer TTFT may impact the responsiveness of the application. It is necessary to minimize this latency for optimal user experience.
+
+* *KV Cache Usage*: Longer sequences require more GPU memory for the **key-value (KV) cache**. The KV cache stores intermediate attention data to improve model performance during generation. A high KV cache utilization per request would require a hardware setup with sufficient free GPU memory. This is particularly crucial if multiple users are querying the model concurrently, as each request adds to the total memory load.
+
+* *Optimal Hardware Configuration*: To maintain responsiveness and avoid memory bottlenecks, you must consider a GPU configuration with sufficient memory. For instance, instead of running an 8B model on a single 24GB GPU, deploying it on a larger GPU (e.g., 48GB or 80GB) or across multiple GPUs can improve performance by providing more memory headroom for the KV cache and reducing inter-token latency. Multi-GPU setups with tensor parallelism can also help manage memory demands and improve efficiency for larger input sequences.
+
+In summary, to ensure optimal responsiveness and scalability for document-based applications, you must prioritize hardware with high GPU memory capacity and also consider multi-GPU configurations to handle the increased memory requirements of long input sequences and KV caching.
+
+//[role="_additional-resources"]
+//.Additional resources
