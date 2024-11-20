@@ -13,7 +13,7 @@ After the `LMEvalJob` is created, the LM-Eval service runs the evaluation job.  
 
 [NOTE]
 --
-TrustyAI does not support non-tabular models. Deploying the TrustyAI custom resource (CR) in a namespace that contains non-tabular models can cause errors within the TrustyAI service.
+Other TrustyAI features (e.g. bias and drift metrics) do not support non-tabular models (e.g. LLMs). Deploying the TrustyAIService custom resource (CR) in a namespace that contains non-tabular models (such as the namespace where an evaluation job is being executed) can cause errors within the TrustyAI service.
 --
 
 .Sample LMEvalJob object 

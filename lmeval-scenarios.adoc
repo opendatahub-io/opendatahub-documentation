@@ -8,7 +8,7 @@ ifdef::context[:parent-context: {context}]
 
 The procedures below outline different example scenarios which you may find useful for your ML-Eval setup.
 
-== Configuring the ML-eval environment
+== Configuring the LM-eval environment
 
 If the `LMEvalJob` needs to access a model on HuggingFace with the access token, you can set up the `HF_TOKEN` as one of the environment variables for the `lm-eval` container.
 
@@ -20,7 +20,7 @@ If the `LMEvalJob` needs to access a model on HuggingFace with the access token,
 
 .Procedure
 
-Enter the following code:
+In order to start an evaluation job for a `huggingface` model, apply the following YAML file:
 
 [source]
 ----
@@ -60,6 +60,8 @@ env:
 
 
 == Custom Unitxt Card
+
+It is also possible to run evaluations using custom unitxt cards. To do so, add the custom unitxt card in JSON format to the LMEvalJob yaml.
 
 .Prerequisites
 * You have logged in to Red Hat OpenShift AI.
@@ -251,14 +253,19 @@ spec:
 
 == Using an InferenceService
 
-This example assumes that the vLLM model is already deployed in your cluster.
+In order to run an evaluation job on an InferenceService which is already deployed and running in your namespace, define your LMEvalJob CR, then apply this CR into the same namespace as your model.
+
 .Prerequisites
 * You have logged in to Red Hat OpenShift AI.
 
 * Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
 
+* You have a namespace that contains an InferenceService with a vLLM model. (This example assumes that the vLLM model is already deployed in your cluster.)
+
 .Procedure
+
 * Define your LMEvalJob CR:
+
 [source]
 ----
   apiVersion: trustyai.opendatahub.io/v1alpha1
