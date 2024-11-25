@@ -122,6 +122,14 @@ ifdef::self-managed,cloud-service[]
 IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
 endif::[]
 --
+. (Optional) Customize the runtime parameters in the *Configuration parameters* section:
+.. Modify the values in *Additional serving runtime arguments* to define how the deployed model behaves.
+.. Modify the values in *Additional environment variables* to define variables in the model's environment.
++
+The *Configuration parameters* section shows predefined serving runtime parameters, if any are available.
++
+NOTE: Do not modify the `port` or `-–model` serving runtime arguments, because they require specific values to be set. Overwriting these parameters can cause the deployment to fail.
++
 . Click *Deploy*.
 
 .Verification
