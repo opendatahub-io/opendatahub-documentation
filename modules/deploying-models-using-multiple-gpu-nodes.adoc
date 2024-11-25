@@ -1,0 +1,257 @@
+:_module-type: PROCEDURE
+
+[id="deploying-models-using-multiple-gpu-nodes_{context}"]
+= Deploying models using multiple GPU nodes
+
+[role='_abstract']
+Deploying models using multiple graphical processing units (GPUs) across multiple nodes can help when deploying large models such as large language models (LLMs).
+
+This procedure shows you how to serve models on {productname-long} across multiple GPU nodes using the vLLM serving framework.
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+*Deploying models using multiple GPU nodes* is currently available in {productname-long} as a Technology Preview feature only. Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete. {org-name} does not recommend using them in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview[Technology Preview Features Support Scope]
+====
+endif::[]
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have downloaded and installed the {openshift-platform} command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
+ifndef::upstream[]
+* You have enabled the operators for your GPU type, such as Node Feature Discovery Operator, NVIDIA GPU Operator, and so on. For more information about enabling accelerators, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators[Enabling accelerators^].
+endif::[]
+ifdef::upstream[]
+* You have enabled the operators for your GPU type, such as Node Feature Discovery Operator, NVIDIA GPU Operator, and so on. For more information about enabling accelerators, see link:{odhdocshome}/enabling_accelerators[Enabling accelerators^].
+endif::[]
+
+    * You are using one of the following GPU types: `nvidia.com/gpu` (default), `intel.com/gpu`, `amd.com/gpu`, `habana.ai/gaudi`, or you have specified another GPU type in the annotations of the ISVC. 
+    * Specify the GPU type through either the `ServingRuntime` or `InferenceService`. If the GPU type specified in the `ServingRuntime` differs from what is set in the `InferenceService`, both GPU types are assigned to the resource and can cause errors. 
+
+ifndef::upstream[]
+* You have set up model-serving in raw deployment mode. For more information about raw deployment, see link:{rhoaidocshome}{default-format-url}serving_models/serving-large-models_serving-large-models#deploying-models-on-single-node-openshift-using-kserve-raw-deployment-mode_serving-large-models[Deploying models on single node {openshift-platform} using KServe raw deployment mode]
+endif::[]
+ifdef::upstream[]
+* You have set up model-serving in raw deployment mode.
+// todo: add upstream link
+endif::[]
+
+* You have only 1 head pod in your setup. The replica count for the head pod can be adjusted using the `min_replicas` or `max_replicas` settings in the `InferenceService`. Creating additional head pods can cause them to be excluded from the Ray cluster.	
+* You have a Persistent Volume Claim (PVC) set up and configured for ReadWriteMany (RWM) access mode. 
+* You have set the storage protocol for the `StorageURI` to `PVC`.
+* Your Autoscaler is configured as `external`.
+
+== Creating the `vllm-multinode-runtime` ServingRuntime template
+
+Add the `vllm-multinode-runtime` ServingRuntime as a custom runtime to enable multi-node inferencing. The `vllm-multinode-runtime` ServingRuntime uses the same vLLM image as the `vllm-runtime` but it includes information necessary for multi-GPU inferencing.
+
+NOTE: Ensure that `TENSOR_PARALLEL_SIZE` and `PIPELINE_PARALLEL_SIZE` are not already configured through environment variables.
+
+.Procedure
+. In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the {openshift-platform} CLI as shown in the following example:
++
+[source]
+----
+$ oc login <openshift_cluster_url> -u <admin_username> -p <password>
+----
++
+. From the namespace where you would like to deploy the model, define a ServingRuntime object in a YAML file called `vllm-multinode-runtime.yaml` with the following contents:
++
+[source]
+----
+... 
+ predictor:
+    model:
+      runtime: vllm-multinode-runtime
+      modelFormat:
+        name: vLLM
+      storageUri: pvc://llama-3-8b-pvc/hf/8b_instruction_tuned  
+    workerSpec: {} # Specifying workerSpec indicates that multi-node functionality will be used    
+----
+
+After you create the `vllm-multinode-runtime.yaml` file, the following configurations are added to the serving runtime:
+* `workerSpec.tensorParallelSize`: Determines how many GPUs are used per node. The GPU type count in both the head and worker node deployment resources is updated automatically. Ensure that the value of `workerSpec.tensorParallelSize` is at least `1`.
+* `workerSpec.pipelineParallelSize`: Determines how many nodes are involved in the deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`.
+
+== Serving a vLLM model using multiple nodes
+
+This procedure describes how to serve a vLLM model using a multi-node setup. 
+
+NOTE: If you have already configured a persistent volume claim (PVC) and uploaded a model for deployment, you can skip the first 2 steps.
+
+.Procedure
+
+. In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
++
+[source]
+----
+$ oc login <openshift_cluster_url> -u <admin_username> -p <password>
+----
++
+. From the namespace where you would like to deploy the model, create a PVC for model storage and provide the name of your storage class. The storage class must be file storage.
++
+[source]
+----
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: llama-3-8b-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: __<fileStorageClassName>__
+EOF
+----
++
+. Download the model by exporting your token as an environment variable. In this example, `HF_TOKEN` is the exported token:
++
+[source]
+----
+export HF_TOKEN=__<token>__
+export MODEL=meta-llama/Meta-Llama-3-8B-Instruct
+
+curl -o download-model-to-pvc.yaml https://raw.githubusercontent.com/kserve/website/a5a8661de3c3bd55b1faa1acf9125d05b10bfefd/docs/modelserving/v1beta1/llm/huggingface/multi-node/download-model-to-pvc.yaml
+envsubst < download-model-to-pvc.yaml | kubectl create -f -
+----
++
+
+ifndef::upstream[]
+. From {productname-long}, create a custom model serving runtime in your data science project. For more information, see link:{rhoaidocshome}{default-format-url}serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[].
+endif::[]
+ifdef::upstream[]
+. From {productname-long}, create a custom model serving runtime in your data science project.
+// todo: add link
+endif::[]
+
+. Modify the serving runtime with the path to your `vllm-multinode-runtime.yaml` file.
++
+[source]
+----
+oc process vllm-multinode-runtime-template  -n redhat-ods-applications|oc apply -n kserve-demo -f -
+----
++
+. Deploy the model using the following `InferenceService` configuration:
++
+[source]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  annotations:
+    serving.kserve.io/deploymentMode: RawDeployment
+    serving.kserve.io/autoscalerClass: external
+  name: vllm-llama3-8b
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: vLLM
+      runtime: vllm-multinode-runtime
+      storageUri: pvc://llama-3-8b-pvc/hf/8b_instruction_tuned
+    workerSpec: {}    
+----
++
+
+.Verification
+To confirm that you have set up your environment to deploy models on multiple GPU nodes, check the GPU resource status, the InferenceService status, the ray cluster status, and send a request to the model.
+
+=== Check GPU resource status
+To check the GPU resource status, follow these steps:
+
+. Retrieve the pod names for the head and worker nodes:
++
+[source]
+----
+# Get pod name
+podName=$(oc get pod -l app=isvc.vllm-llama3-8b-predictor --no-headers|cut -d' ' -f1)
+workerPodName=$(kubectl get pod -l app=isvc.vllm-llama3-8b-predictor-worker --no-headers|cut -d' ' -f1)
+
+oc wait --for=condition=ready pod/${podName} --timeout=300s
+Check the GPU memory size for both the head and worker pods:
+echo "### HEAD NODE GPU Memory Size"
+kubectl exec $podName -- nvidia-smi
+echo "### Worker NODE GPU Memory Size"
+kubectl exec $workerPodName -- nvidia-smi
+----
++
+
+.Sample response
++
+[source]
+----
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.90.07              Driver Version: 550.90.07      CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A10G                    On  |   00000000:00:1E.0 Off |                    0 |
+|  0%   33C    P0             71W /  300W |19031MiB /  23028MiB <1>|      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+         ...                                                               
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.90.07              Driver Version: 550.90.07      CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A10G                    On  |   00000000:00:1E.0 Off |                    0 |
+|  0%   30C    P0             69W /  300W |18959MiB /  23028MiB <2>|      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+        
+----
++
+Confirm that the model loaded properly by checking the values of <1> and <2>. If the model did not load, the value of these fields is `0MiB`.
+
+=== Check InferenceService status
+. To verify the status of your InferenceService, run the following command:
++
+[source]
+----
+oc wait --for=condition=ready pod/${podName} -n $DEMO_NAMESPACE --timeout=300s
+export isvc_url=$(oc get route -n $DEMO_NAMESPACE |grep $MODEL_NAME| awk '{print $2}')
+----
+
+.Sample response
++
+[source]
+----
+   NAME                 URL                                                   READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION                          AGE
+    vllm-llama3-8b   http://vllm-llama3-8b.default.example.com   
+----
+
+=== Send a request to the model
+. Send a request to the model to confirm that the model is available for inference:
++
+[source]
+----
+oc wait --for=condition=ready pod/${podName} -n vllm-multinode --timeout=300s
+export isvc_url=$(oc get route |grep vllm-llama3-8b-vllm-multinode| awk '{print $2}')
+
+oc port-forward $podName 8080:8080 &
+
+curl http://localhost:8080/v1/completions \
+       -H "Content-Type: application/json" \
+       -d "{
+            'model': "$MODEL_NAME",
+            'prompt': 'At what temperature does Nitrogen boil?',
+            'max_tokens': 100,
+            'temperature': 0
+        }"
+----
+
+
+
+
