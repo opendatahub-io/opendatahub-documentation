@@ -70,27 +70,26 @@ endif::[]
 
 ifndef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
-See link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs].
+If you use NVIDIA GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]. If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#amd-gpu-integration_managing-rhoai[AMD GPU integration^].
 +
 ifdef::self-managed[]
 [NOTE]
 ====
-In {productname-short} {vernum}, {org-name} supports only NVIDIA GPU accelerators for distributed workloads.
+In {productname-short} {vernum}, {org-name} supports only NVIDIA and AMD GPU accelerators for distributed workloads.
 ====
 endif::[]
 ifdef::cloud-service[]
 [NOTE]
 ====
-In {productname-short}, {org-name} supports only NVIDIA GPU accelerators for distributed workloads.
+In {productname-short}, {org-name} supports only NVIDIA and AMD GPU accelerators for distributed workloads.
 ====
 endif::[]
 endif::[]
 ifdef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support.
-This process includes installing the Node Feature Discovery Operator and the NVIDIA GPU Operator.
+This process includes installing the Node Feature Discovery Operator and the NVIDIA GPU and AMD GPU Operators.
 For more information, see https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
 endif::[]
-
 
 .Procedure
 
@@ -132,7 +131,7 @@ metadata:
 spec:
   namespaceSelector: {}  # match all.
   resourceGroups:
-  - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
+  - coveredResources: ["cpu", "memory", "nvidia.com/gpu"] # If you use AMD GPUs, substitute "nvidia.com/gpu" with "amd.com/gpu"
     flavors:
     - name: "default-flavor"
       resources:
@@ -140,7 +139,7 @@ spec:
         nominalQuota: 9
       - name: "memory"
         nominalQuota: 36Gi
-      - name: "nvidia.com/gpu"
+      - name: "nvidia.com/gpu" # If you use AMD GPUs, substitute "nvidia.com/gpu" with "amd.com/gpu"
         nominalQuota: 5
 ----
 +
