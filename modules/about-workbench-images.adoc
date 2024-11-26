@@ -28,7 +28,7 @@ ifndef::upstream[]
 
 [IMPORTANT]
 ====
-Notebook images denoted with `(Technology Preview)` in this table are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete. {org-name} does not recommend using Technology Preview features in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+Workbench images denoted with `(Technology Preview)` in this table are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete. {org-name} does not recommend using Technology Preview features in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
 ====
 endif::[]
 
@@ -38,44 +38,39 @@ endif::[]
 | Image name | Description
 
 | CUDA
-| If you are working with compute-intensive data science models that require GPU support, use the Compute Unified Device Architecture (CUDA) notebook image to gain access to the NVIDIA CUDA Toolkit. Using this toolkit, you can optimize your work by using GPU-accelerated libraries and optimization tools.
+| If you are working with compute-intensive data science models that require GPU support, use the Compute Unified Device Architecture (CUDA) workbench image to gain access to the NVIDIA CUDA Toolkit. Using this toolkit, you can optimize your work by using GPU-accelerated libraries and optimization tools.
 
 | Standard Data Science
-| Use the Standard Data Science notebook image for models that do not require TensorFlow or PyTorch. This image contains commonly-used libraries to assist you in developing your machine learning models.
+| Use the Standard Data Science workbench image for models that do not require TensorFlow or PyTorch. This image contains commonly-used libraries to assist you in developing your machine learning models.
 
 | TensorFlow
 | TensorFlow is an open source platform for machine learning. With TensorFlow, you can build, train and deploy your machine learning models. TensorFlow contains advanced data visualization features, such as computational graph visualizations. It also allows you to easily monitor and track the progress of your models.
 
 | PyTorch
-| PyTorch is an open source machine learning library optimized for deep learning. If you are working with computer vision or natural language processing models, use the Pytorch notebook image.
+| PyTorch is an open source machine learning library optimized for deep learning. If you are working with computer vision or natural language processing models, use the Pytorch workbench image.
 
 | Minimal Python
 | If you do not require advanced machine learning features, or additional resources for compute-intensive data science work, you can use the Minimal Python image to develop your models.
 
 | TrustyAI
-| Use the TrustyAI notebook image to leverage your data science work with model explainability, tracing, and accountability, and runtime monitoring. See the link:https://github.com/trustyai-explainability/trustyai-explainability-python-examples[TrustyAI Explainability repository^] for some example Jupyter notebooks.
+| Use the TrustyAI workbench image to leverage your data science work with model explainability, tracing, and accountability, and runtime monitoring. See the link:https://github.com/trustyai-explainability/trustyai-explainability-python-examples[TrustyAI Explainability repository^] for some example workbenches.
 
-ifndef::upstream[]
-| code-server (Technology Preview)
-endif::[]
-ifdef::upstream[]
 | code-server 
-endif::[]
-a| With the code-server notebook image, you can customize your notebook environment to meet your needs using a variety of extensions to add new languages, themes, debuggers, and connect to additional services. Enhance the efficiency of your data science work with syntax highlighting, auto-indentation, and bracket matching, as well as an automatic task runner for seamless automation. For more information, see link:https://github.com/coder/code-server[code-server in GitHub]. +
+| With the code-server workbench image, you can customize your workbench environment to meet your needs using a variety of extensions to add new languages, themes, debuggers, and connect to additional services. Enhance the efficiency of your data science work with syntax highlighting, auto-indentation, and bracket matching, as well as an automatic task runner for seamless automation. For more information, see link:https://github.com/coder/code-server[code-server in GitHub]. +
 
-NOTE: Elyra-based pipelines are not available with the code-server notebook image.
+NOTE: Elyra-based pipelines are not available with the code-server workbench image.
 
 ifdef::upstream[]
 | RStudio Server 
-a| Use the RStudio Server notebook image to access the RStudio IDE, an integrated development environment for R, a programming language for statistical computing and graphics.
+a| Use the RStudio Server workbench image to access the RStudio IDE, an integrated development environment for R, a programming language for statistical computing and graphics.
 For more information, see link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site]. +
 endif::[]
 ifndef::upstream[]
 | RStudio Server (Technology preview)
-a| Use the RStudio Server notebook image to access the RStudio IDE, an integrated development environment for R, a programming language for statistical computing and graphics.
+a| Use the RStudio Server workbench image to access the RStudio IDE, an integrated development environment for R, a programming language for statistical computing and graphics.
 For more information, see link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site]. +
 
-To use the *RStudio Server* notebook image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `rstudio-rhel9` image stream. For more information, see link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-workbench-select-ide_get-started#building-the-rstudio-server-workbench-images_get-started[Building the RStudio Server workbench images].
+To use the *RStudio Server* workbench image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `rstudio-rhel9` image stream. For more information, see link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-workbench-select-ide_get-started#building-the-rstudio-server-workbench-images_get-started[Building the RStudio Server workbench images].
 
 [IMPORTANT] 
 ====
@@ -86,23 +81,23 @@ endif::[]
 
 ifdef::upstream[]
 | CUDA - RStudio Server
-a| Use the CUDA - RStudio Server notebook image to access the RStudio IDE and NVIDIA CUDA Toolkit. RStudio is an integrated development environment for R, a programming language for statistical computing and graphics. With the NVIDIA CUDA toolkit, you can optimize your work using GPU-accelerated libraries and optimization tools.
+a| Use the CUDA - RStudio Server workbench image to access the RStudio IDE and NVIDIA CUDA Toolkit. RStudio is an integrated development environment for R, a programming language for statistical computing and graphics. With the NVIDIA CUDA toolkit, you can optimize your work using GPU-accelerated libraries and optimization tools.
 For more information, see link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site]. +
 endif::[]
 
 ifndef::upstream[]
 | CUDA - RStudio Server (Technology Preview)
-a| Use the CUDA - RStudio Server notebook image to access the RStudio IDE and NVIDIA CUDA Toolkit. RStudio is an integrated development environment for R, a programming language for statistical computing and graphics. With the NVIDIA CUDA toolkit, you can optimize your work using GPU-accelerated libraries and optimization tools.
+a| Use the CUDA - RStudio Server workbench image to access the RStudio IDE and NVIDIA CUDA Toolkit. RStudio is an integrated development environment for R, a programming language for statistical computing and graphics. With the NVIDIA CUDA toolkit, you can optimize your work using GPU-accelerated libraries and optimization tools.
 For more information, see link:https://posit.co/products/open-source/rstudio-server/[the RStudio Server site]. 
 
-To use the *CUDA - RStudio Server* notebook image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `cuda-rstudio-rhel9` image stream. For more information, see link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-workbench-select-ide_get-started#building-the-rstudio-server-workbench-images_get-started[Building the RStudio Server workbench images]. +
+To use the *CUDA - RStudio Server* workbench image, you must first build it by creating a secret and triggering the BuildConfig, and then enable it in the {productname-short} UI by editing the `cuda-rstudio-rhel9` image stream. For more information, see link:{rhoaidocshome}{default-format-url}/getting_started_with_{url-productname-long}/creating-a-workbench-select-ide_get-started#building-the-rstudio-server-workbench-images_get-started[Building the RStudio Server workbench images]. +
 
 [IMPORTANT] 
 ====
 *Disclaimer:* +
 {org-name} supports managing workbenches in {productname-short}. However, {org-name} does not provide support for the RStudio software. RStudio Server is available through link:https://rstudio.org/[https://rstudio.org/] and is subject to RStudio licensing terms. Review the licensing terms before you use this sample workbench. 
 
-The *CUDA - RStudio Server* notebook image contains NVIDIA CUDA technology. CUDA licensing information is available at link:https://docs.nvidia.com/cuda/[https://docs.nvidia.com/cuda/]. Review the licensing terms before you use this sample workbench.
+The *CUDA - RStudio Server* workbench image contains NVIDIA CUDA technology. CUDA licensing information is available at link:https://docs.nvidia.com/cuda/[https://docs.nvidia.com/cuda/]. Review the licensing terms before you use this sample workbench.
 ====
 endif::[]
 |===
