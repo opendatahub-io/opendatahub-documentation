@@ -23,11 +23,12 @@ The *Configuration parameters* section shows predefined serving runtime paramete
 .. Modify the values in *Additional serving runtime arguments* to define how the deployed model behaves.
 .. Modify the values in *Additional environment variables* to define variables in the model's environment.
 +
-NOTE: Do not modify the `port` or `-–model` serving runtime arguments, because they require specific values to be set. Overwriting these parameters can cause the deployment to fail.
+NOTE: Do not modify the port or model serving runtime arguments, because they require specific values to be set. Overwriting these parameters can cause the deployment to fail.
 . After you are done customizing the runtime parameters, click *Redeploy* to save and deploy the model with your changes.
 
-// .Verification
-// <How do they verify that the parameters were customized successfully? Where would they see errors if it failed?>
+.Verification
+* Confirm that the deployed model is shown on the *Models* tab for the project, and on the *Model Serving* page of the dashboard with a checkmark in the *Status* column.
+* Confirm that the arguments and variables that you set appear in the InferenceService under `spec.predictor.model.args` and `spec.predictor.model.env`, respectively.
 
 // .Additional resources
 // <Link to reference with info on parameters that can be customized>
