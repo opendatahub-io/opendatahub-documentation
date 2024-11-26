@@ -41,7 +41,7 @@ ifdef::upstream[]
 endif::[]
 
 * You have only 1 head pod in your setup. The replica count for the head pod can be adjusted using the `min_replicas` or `max_replicas` settings in the `InferenceService`. Creating additional head pods can cause them to be excluded from the Ray cluster.	
-* You have a Persistent Volume Claim (PVC) set up and configured for ReadWriteMany (RWM) access mode. 
+* You have a Persistent Volume Claim (PVC) set up and configured for ReadWriteMany (RWX) access mode. 
 * You have set the storage protocol for the `StorageURI` to `PVC`.
 * Your Autoscaler is configured as `external`.
 
@@ -59,7 +59,14 @@ NOTE: Ensure that `TENSOR_PARALLEL_SIZE` and `PIPELINE_PARALLEL_SIZE` are not al
 $ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 ----
 +
-. From the namespace where you would like to deploy the model, define a ServingRuntime object in a YAML file called `vllm-multinode-runtime.yaml` with the following contents:
+. Select or create a namespace where you would like to deploy the model. In this example, `kserve-demo` is used and can be created using the following command:
++
+[source]
+----
+oc new-project kserve-demo
+----
++
+. From the namespace, define a ServingRuntime object in a YAML file called `vllm-multinode-runtime.yaml` with the following contents:
 +
 [source]
 ----
@@ -113,11 +120,11 @@ spec:
 EOF
 ----
 +
-. Download the model by exporting your token as an environment variable. In this example, `HF_TOKEN` is the exported token:
+. Download the model by exporting your token as an environment variable. In this example, `HF_TEST_TOKEN` is the exported token:
 +
 [source]
 ----
-export HF_TOKEN=__<token>__
+export HF_TEST_TOKEN=__<token>__
 export MODEL=meta-llama/Meta-Llama-3-8B-Instruct
 
 curl -o download-model-to-pvc.yaml https://raw.githubusercontent.com/kserve/website/a5a8661de3c3bd55b1faa1acf9125d05b10bfefd/docs/modelserving/v1beta1/llm/huggingface/multi-node/download-model-to-pvc.yaml
@@ -137,7 +144,7 @@ endif::[]
 +
 [source]
 ----
-oc process vllm-multinode-runtime-template  -n redhat-ods-applications|oc apply -n kserve-demo -f -
+oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply -n kserve-demo -f -
 ----
 +
 . Deploy the model using the following `InferenceService` configuration:
@@ -174,10 +181,10 @@ To check the GPU resource status, follow these steps:
 ----
 # Get pod name
 podName=$(oc get pod -l app=isvc.vllm-llama3-8b-predictor --no-headers|cut -d' ' -f1)
-workerPodName=$(kubectl get pod -l app=isvc.vllm-llama3-8b-predictor-worker --no-headers|cut -d' ' -f1)
+workerPodName=$(oc get pod -l app=isvc.vllm-llama3-8b-predictor-worker --no-headers|cut -d' ' -f1)
 
 oc wait --for=condition=ready pod/${podName} --timeout=300s
-Check the GPU memory size for both the head and worker pods:
+# Check the GPU memory size for both the head and worker pods:
 echo "### HEAD NODE GPU Memory Size"
 kubectl exec $podName -- nvidia-smi
 echo "### Worker NODE GPU Memory Size"
@@ -222,7 +229,7 @@ Confirm that the model loaded properly by checking the values of <1> and <2>. If
 [source]
 ----
 oc wait --for=condition=ready pod/${podName} -n $DEMO_NAMESPACE --timeout=300s
-export isvc_url=$(oc get route -n $DEMO_NAMESPACE |grep $MODEL_NAME| awk '{print $2}')
+export MODEL_NAME=vllm-llama3-8b
 ----
 +
 
@@ -241,7 +248,6 @@ export isvc_url=$(oc get route -n $DEMO_NAMESPACE |grep $MODEL_NAME| awk '{print
 [source]
 ----
 oc wait --for=condition=ready pod/${podName} -n vllm-multinode --timeout=300s
-export isvc_url=$(oc get route |grep vllm-llama3-8b-vllm-multinode| awk '{print $2}')
 
 oc port-forward $podName 8080:8080 &
 
