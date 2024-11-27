@@ -1,0 +1,54 @@
+:_module-type: PROCEDURE
+
+[id="adding-a-connection-to-your-data-science-project_{context}"]
+= Adding a connection to your data science project
+
+[role='_abstract']
+You can enhance your data science project by adding a connection to a data source. When you want to work with a very large data sets, you can store your data in an S3-compatible object storage bucket, so that you do not fill up your local storage. You also have the option of associating the connection with an existing workbench that does not already have a connection.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have created a data science project that you can add a connection to.
+* You have access to S3-compatible object storage.
+* If you intend to add the connection to an existing workbench, you have saved any data in the workbench to avoid losing work.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data Science Projects* page opens.
+. Click the name of the project that you want to add a connection to.
++
+A project details page opens.
+. Click the *Connections* tab.
+. Click *Add connection*.
++
+The *Add connection* dialog opens.
+. In the *Name* field, enter a unique name for the connection.
+. In the *Access key* field, enter the access key ID for your S3-compatible object storage provider.
+. In the *Secret key* field, enter the secret access key for the S3-compatible object storage account you specified.
+. In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
++
+NOTE: Use the appropriate endpoint format for your object storage type. Improper formatting might cause connection errors or restrict access to storage resources. 
+ifdef::upstream[]
+For more information on how to format object storage endpoints, see link:{odhdocshome}/managing-resources/#overview-of-object-storage-endpoints[Overview of object storage endpoints].
+endif::[]
+ifndef::upstream[]
+For more information on how to format object storage endpoints, see link:{rhoaidocshome}/managing-resources/#overview-of-object-storage-endpoints[Overview of object storage endpoints].
+endif::[]
+. In the *Region* field, enter the default region of your S3-compatible object storage account.
+. In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
+. Optional: From the *Connected workbench* list, select a workbench to connect.
+. Click *Add connection*.
+
+.Verification
+* The connection that you added appears on the *Connections* tab for the project.
+* If you selected a workbench, the workbench is visible in the *Connected workbenches* column on the *Connections* tab for the project.
+
+//[role='_additional-resources']
+//.Additional resources
