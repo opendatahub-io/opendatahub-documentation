@@ -109,6 +109,8 @@ If your repository is private, ensure you are authenticated to the registry befo
 By default in KServe, models are exposed outside the cluster and not protected with authorization. 
 ====
 
+.Procedure
+
 . Create a namespace to deploy the model:
 +
 [source]
@@ -181,6 +183,8 @@ sample-isvc-using-oci   https://sample-isvc-using-oci-oci-model-example.example 
 == Deploying a model stored in an OCI image from a private repository
 
 To deploy a model stored from a private OCI repository, you must configure an image pull secret. For more information about creating an image pull secret, see link:https://docs.openshift.com/container-platform/latest/openshift_images/managing_images/using-image-pull-secrets.html[Using image pull secrets^].
+
+.Procedure
 
 . Follow the steps in the previous section for deploying a model. However, when creating the `InferenceService` in step 3, specify your pull secret in the `spec.predictor.imagePullSecrets` field:
 +
