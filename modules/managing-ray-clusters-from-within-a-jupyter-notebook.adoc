@@ -14,10 +14,11 @@ Several different interactive browser controls are available:
 * When you run a cell that provides the cluster configuration, the notebook automatically shows the controls for starting or deleting the cluster.
 
 * You can run the `view_clusters()` command to add controls that provide the following functionality:
-** View a list of Ray clusters that you can access.
+** View a list of the Ray clusters that you can access.
 ** View cluster information, such as cluster status and allocated resources, for the selected Ray cluster.
 You can view this information from within the notebook, without switching to the {openshift-platform} console or the Ray dashboard.
 ** Open the Ray dashboard directly from the notebook, to view the submitted jobs.
+** Refresh the Ray cluster list and the cluster information for the selected cluster.
 
 +
 You can add these controls to existing notebooks, or manage the Ray clusters from a separate notebook.
@@ -100,7 +101,7 @@ A new notebook is created in an `.ipynb` file.
 from codeflare_sdk import TokenAuthentication, view_clusters
 ----
 +
-The `view_clusters` package provides the interactive browser controls for listing the clusters, showing the cluster details, and opening the Ray dashboard.
+The `view_clusters` package provides the interactive browser controls for listing the clusters, showing the cluster details, opening the Ray dashboard, and refreshing the cluster data.
 
 .. Add a new cell to the notebook, and add the following code to the new cell:
 +
@@ -130,7 +131,7 @@ endif::[]
 view_clusters()
 ----
 +
-When you run the `view_clusters()` command with no arguments specified, you generate a list of all of the Ray clusters in the _current_ project, and provide similar information to the `cluster.details()` function.
+When you run the `view_clusters()` command with no arguments specified, you generate a list of all of the Ray clusters in the _current_ project, and display information similar to the `cluster.details()` function.
 +
 If you have access to another project, you can list the Ray clusters in that project by specifying the project name as shown in the following example:
 +
@@ -145,7 +146,16 @@ view_clusters("my_second_project")
 
 . In the `demo-notebooks/guided-demos/manage_ray_clusters.ipynb` notebook, select each cell in turn, and click *Run > Run selected cell*.
 
-. When you run the cell with the `view_clusters()` function, the notebook shows the following information about the existing Ray clusters:
+. When you run the cell with the `view_clusters()` function, the output depends on whether any Ray clusters exist.
++
+If no Ray clusters exist, the following text is shown, where `_[project-name]_` is the name of the target project:
++
+[source,bash,subs="+quotes"]
+----
+No clusters found in the _[project-name]_ namespace.
+----
++
+Otherwise, the notebook shows the following information about the existing Ray clusters:
 
 * *Select an existing cluster* 
 +
@@ -169,6 +179,11 @@ The corresponding URL is shown in the notebook.
 +
 Click this button to open the *Overview* tab in the Ray dashboard for the selected cluster.
 The corresponding URL is shown in the notebook.
+
+* *Refresh Data*
++
+Click this button to refresh the list of Ray clusters, and the cluster details for the selected cluster, on demand.
+The cluster details are automatically refreshed when you select a cluster and when you delete the selected cluster.
 
 
 .Verification
