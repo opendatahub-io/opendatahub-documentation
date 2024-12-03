@@ -221,16 +221,16 @@ Confirm that the model loaded properly by checking the values of <1> and <2>. If
 
 * Verify the status of your InferenceService using the following command:
 +
+NOTE: In the Technology Preview, you can only use port forwarding for inferencing.
++
 [source]
 ----
 oc wait --for=condition=ready pod/${podName} -n $DEMO_NAMESPACE --timeout=300s
 export MODEL_NAME=vllm-llama3-8b
 ----
 +
-NOTE: In the Technology Preview, you can only use port forwarding for inferencing.
 
 .Sample response
-
 [source]
 ----
    NAME                 URL                                                   READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION                          AGE
