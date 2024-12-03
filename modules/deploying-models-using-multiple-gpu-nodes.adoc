@@ -44,35 +44,33 @@ endif::[]
 * You have set the storage protocol for the `StorageURI` to `PVC`.
 * Your Autoscaler is configured as `external`.
 
-== Creating the `vllm-multinode-runtime` ServingRuntime template
-
-Add the `vllm-multinode-runtime` ServingRuntime as a custom runtime to enable multi-node inferencing. The `vllm-multinode-runtime` ServingRuntime uses the same vLLM image as the `vllm-runtime` but it includes information necessary for multi-GPU inferencing.
 
 NOTE: Ensure that `TENSOR_PARALLEL_SIZE` and `PIPELINE_PARALLEL_SIZE` are not already configured through environment variables.
 
 .Procedure
-. In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the {openshift-platform} CLI as shown in the following example:
+. Create the `vllm-multinode-runtime` ServingRuntime template as follows. The `vllm-multinode-runtime` ServingRuntime uses the same vLLM image as the `vllm-runtime` but it includes information necessary for multi-GPU inferencing.
+.. In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the {openshift-platform} CLI as shown in the following example:
 +
 [source]
 ----
 $ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 ----
 +
-. Select or create a namespace where you would like to deploy the model. In this example, `kserve-demo` is used and can be created using the following command:
+.. Select or create a namespace where you would like to deploy the model. In this example, `kserve-demo` is used and can be created using the following command:
 +
 [source]
 ----
 oc new-project kserve-demo
 ----
 +
-. Create a ServingRuntime using the multi node template:
+.. Add the`vllm-multinode-runtime` ServingRuntime as a custom runtime:
 +
 [source]
 ----
 oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply  -f -
 ----
 +
-. From the namespace, define an InferenceService object in a YAML file called `vllm-multinode.yaml` with the following contents:
+.. From the namespace, define an InferenceService object in a YAML file called `vllm-multinode.yaml` with the following contents:
 +
 [source]
 ----
@@ -85,28 +83,15 @@ oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply  
       storageUri: pvc://llama-3-8b-pvc/hf/8b_instruction_tuned  
     workerSpec: {} # Specifying workerSpec indicates that multi-node functionality will be used    
 ----
-
++
 After you create the `vllm-multinode-runtime.yaml` file, the following configurations are added to the serving runtime:
-
++
 * `workerSpec.tensorParallelSize`: Determines how many GPUs are used per node. The GPU type count in both the head and worker node deployment resources is updated automatically. Ensure that the value of `workerSpec.tensorParallelSize` is at least `1`.
 * `workerSpec.pipelineParallelSize`: Determines how many nodes are involved in the deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`.
-
-== Serving a vLLM model using multiple nodes
-
-This procedure describes how to serve a vLLM model using a multi-node setup. 
-
-NOTE: If you have already configured a persistent volume claim (PVC) and uploaded a model for deployment, you can skip the first 2 steps.
-
-.Procedure
-
-. In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
-+
-[source]
-----
-$ oc login <openshift_cluster_url> -u <admin_username> -p <password>
-----
 +
 . From the namespace where you would like to deploy the model, create a PVC for model storage and provide the name of your storage class. The storage class must be file storage.
++
+NOTE: If you have already configured a persistent volume claim (PVC), you can skip this step.
 +
 [source]
 ----
@@ -177,7 +162,7 @@ spec:
 .Verification
 To confirm that you have set up your environment to deploy models on multiple GPU nodes, check the GPU resource status, the InferenceService status, the ray cluster status, and send a request to the model.
 
-=== Check GPU resource status
+== Check GPU resource status
 To check the GPU resource status, follow these steps:
 
 . Retrieve the pod names for the head and worker nodes:
@@ -228,7 +213,7 @@ kubectl exec $workerPodName -- nvidia-smi
 +
 Confirm that the model loaded properly by checking the values of <1> and <2>. If the model did not load, the value of these fields is `0MiB`.
 
-=== Check InferenceService status
+== Check InferenceService status
 . To verify the status of your InferenceService, run the following command:
 +
 [source]
@@ -249,7 +234,7 @@ NOTE: In the Technology Preview, you can only use port forwarding for inferencin
 ----
 
 
-=== Send a request to the model
+== Send a request to the model
 . Send a request to the model to confirm that the model is available for inference:
 +
 [source]
