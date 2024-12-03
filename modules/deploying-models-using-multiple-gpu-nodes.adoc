@@ -89,12 +89,10 @@ After you create the `vllm-multinode-runtime.yaml` file, the following configura
 * `workerSpec.pipelineParallelSize`: Determines how many nodes are involved in the deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`.
 
 . From the namespace where you would like to deploy the model, create a PVC for model storage and provide the name of your storage class. The storage class must be file storage.
-
 NOTE: If you have already configured a persistent volume claim (PVC), you can skip this step.
-
 [source]
 ----
-kubectl apply -f - <<EOF
+kubectl apply -f - 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -107,7 +105,6 @@ spec:
     requests:
       storage: 50Gi
   storageClassName: __<fileStorageClassName>__
-EOF
 ----
 . Download the model by exporting your token as an environment variable. In this example, `HF_TEST_TOKEN` is the exported token:
 +
