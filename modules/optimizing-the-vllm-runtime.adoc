@@ -1,102 +1,69 @@
 :_module-type: PROCEDURE
 
-[id="optimizing-the-vllm-runtime_{context}"]
-= Optimizing the vLLM model-serving runtime 
+[id="enabling-speculative-decoding-and-multi-modal-inferencing_{context}"]
+= Enabling speculative decoding and multi-modal inferencing 
 
 You can configure the *vLLM ServingRuntime for KServe* runtime to use speculative decoding, a parallel processing technique to optimize inferencing time for large language models (LLMs).
 
 You can also configure the runtime to support inferencing for vision-language models (VLMs). VLMs are a subset of multi-modal models that integrate both visual and textual data.
 
-To configure the *vLLM ServingRuntime for KServe* runtime for speculative decoding or multi-modal inferencing, you must add additional arguments in the vLLM model-serving runtime.
+The following procedure describes customizing the *vLLM ServingRuntime for KServe* runtime for speculative decoding and multi-modal inferencing.
 
 [role='_abstract']
 
 .Prerequisites
 
 * You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
-ifdef::upstream[]
-* If you used the pre-installed *vLLM ServingRuntime for KServe* runtime, you duplicated the runtime to create a custom version. For more information about duplicating the pre-installed vLLM runtime, see {odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
-endif::[]
-ifndef::upstream[]
-* If you used the pre-installed *vLLM ServingRuntime for KServe* runtime, you duplicated the runtime to create a custom version. For more information about duplicating the pre-installed vLLM runtime, see {rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
-endif::[]
 * If you are using the vLLM model-serving runtime for speculative decoding with a draft model, you have stored the original model and the speculative model in the same folder within your S3-compatible object storage.
 
 
 .Procedure
-. From the {productname-short} dashboard, click *Settings* > *Serving runtimes*.
-+
-The *Serving runtimes* page opens and shows the model-serving runtimes that are already installed and enabled.
-. Find the custom vLLM model-serving runtime that you created, click the action menu (&#8942;) next to the runtime and select *Edit*.
-+
-The embedded YAML editor opens and shows the contents of the custom model-serving runtime.
-. To configure the vLLM model-serving runtime for speculative decoding by matching n-grams in the prompt:
-.. Add the following arguments:
+
+. Follow the steps to deploy a model as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Depyoing models on the single-model serving platform].
+. In the *Serving runtime* field, select the *vLLM ServingRuntime for KServe* runtime.
+. To configure the vLLM model-serving runtime for speculative decoding by matching n-grams in the prompt, add the following arguments under *Additional serving runtime arguments* in the *Configuration parameters* section:
 +
 [source]
 ----
-containers:
-  - args:
-      - --speculative-model=[ngram]
-      - --num-speculative-tokens=<NUM_SPECULATIVE_TOKENS>
-      - --ngram-prompt-lookup-max=<NGRAM_PROMPT_LOOKUP_MAX>
-      - --use-v2-block-manager
+--speculative-model=[ngram]
+--num-speculative-tokens=<NUM_SPECULATIVE_TOKENS>
+--ngram-prompt-lookup-max=<NGRAM_PROMPT_LOOKUP_MAX>
+--use-v2-block-manager
 ----
-.. Replace `<NUM_SPECULATIVE_TOKENS>` and `<NGRAM_PROMPT_LOOKUP_MAX>` with your own values.
+... Replace `<NUM_SPECULATIVE_TOKENS>` and `<NGRAM_PROMPT_LOOKUP_MAX>` with your own values.
 +
 [NOTE]
 ====
 Inferencing throughput varies depending on the model used for speculating with n-grams.
 ====
-. To configure the vLLM model-serving runtime for speculative decoding with a draft model:
-.. Remove the `--model` argument:
+. To configure the vLLM model-serving runtime for speculative decoding with a draft model, add the following arguments under *Additional serving runtime arguments* in the *Configuration parameters* section:
 +
 [source]
 ----
-containers:
-  - args:
-      - --model=/mnt/models
-----
-.. Add the following arguments:
-+
-[source]
-----
-containers:
-  - args:
-      - --port=8080
-      - --served-model-name={{.Name}}
-      - --distributed-executor-backend=mp
-      - --model=/mnt/models/<path_to_original_model>
-      - --speculative-model=/mnt/models/<path_to_speculative_model>
-      - --num-speculative-tokens=<NUM_SPECULATIVE_TOKENS>
-      - --use-v2-block-manager
+--port=8080
+--served-model-name={{.Name}}
+--distributed-executor-backend=mp
+--model=/mnt/models/<path_to_original_model>
+--speculative-model=/mnt/models/<path_to_speculative_model>
+--num-speculative-tokens=<NUM_SPECULATIVE_TOKENS>
+--use-v2-block-manager
 ----
 + 
-.. Replace `<path_to_speculative_model>` and `<path_to_original_model>` with the paths to the speculative model and original model on your S3-compatible object storage. 
+.. Replace `<path_to_speculative_model>` and `<path_to_original_model>` with the paths to the speculative model and original model on your S3-compatible object storage.
 .. Replace `<NUM_SPECULATIVE_TOKENS>` with your own value.
-. To configure the vLLM model-serving runtime for multi-modal inferencing: 
-.. Add the following arguments:
+. To configure the vLLM model-serving runtime for multi-modal inferencing, add the following arguments under *Additional serving runtime arguments* in the *Configuration parameters* section:
 +
 [source]
 ----
-containers:
-  - args:
-      - --trust-remote-code
+--trust-remote-code
 ----
 +
 [NOTE]
 ====
-Only use the `--trust-remote-code` argument with models from trusted sources. 
+Only use the `--trust-remote-code` argument with models from trusted sources.
 ====
-. Click *Update*.
-+
-The *Serving runtimes* page opens and shows the list of runtimes that are installed. Confirm that the custom model-serving runtime you updated is shown.
-ifdef::upstream[]
-. Deploy the model by using the custom runtime as described in {odhdocshome}/serving-models/#deploying-models-using-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
-endif::[]
-ifndef::upstream[]
-. Deploy the model by using the custom runtime as described in {rhoaidocshome}{default-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
-endif::[]
+. Click *Deploy*.
+
 
 .Verification
 
@@ -104,17 +71,17 @@ endif::[]
 +
 [source]
 ----
-curl -v https://<inference_endpoint_url>:443/v1/chat/completions 
--H "Content-Type: application/json" 
+curl -v https://<inference_endpoint_url>:443/v1/chat/completions
+-H "Content-Type: application/json"
 -H "Authorization: Bearer <token>"
 ----
 * If you have configured the vLLM model-serving runtime for multi-modal inferencing, use the following example command to verify API requests to the vision-language model (VLM) that you have deployed:
 +
 [source]
 ----
-curl -v https://<inference_endpoint_url>:443/v1/chat/completions 
--H "Content-Type: application/json" 
--H "Authorization: Bearer <token>" 
+curl -v https://<inference_endpoint_url>:443/v1/chat/completions
+-H "Content-Type: application/json"
+-H "Authorization: Bearer <token>"
 -d '{"model":"<model_name>",
      "messages":
         [{"role":"<role>",
