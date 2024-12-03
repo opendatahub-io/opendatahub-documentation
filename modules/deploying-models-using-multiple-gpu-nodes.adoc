@@ -62,7 +62,7 @@ $ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 oc new-project kserve-demo
 ----
 +
-.. Add the`vllm-multinode-runtime` ServingRuntime as a custom runtime:
+.. Add the `vllm-multinode-runtime` ServingRuntime as a custom runtime:
 +
 [source]
 ----
@@ -91,7 +91,7 @@ After you create the `vllm-multinode-runtime.yaml` file, the following configura
 . From the namespace where you would like to deploy the model, create a PVC for model storage and provide the name of your storage class. The storage class must be file storage.
 
 NOTE: If you have already configured a persistent volume claim (PVC), you can skip this step.
-+
+
 [source]
 ----
 kubectl apply -f - <<EOF
@@ -109,7 +109,7 @@ spec:
   storageClassName: __<fileStorageClassName>__
 EOF
 ----
-+
+
 . Download the model by exporting your token as an environment variable. In this example, `HF_TEST_TOKEN` is the exported token:
 +
 [source]
