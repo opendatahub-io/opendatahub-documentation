@@ -39,7 +39,7 @@ ifdef::upstream[]
 * You have set up model-serving in raw deployment mode.
 endif::[]
 
-* You have only 1 head pod in your setup. The replica count for the head pod can be adjusted using the `min_replicas` or `max_replicas` settings in the `InferenceService`. Creating additional head pods can cause them to be excluded from the Ray cluster.	
+* You have only 1 head pod in your setup. Do not adjust the replica count using the `min_replicas` or `max_replicas` settings in the `InferenceService`. Creating additional head pods can cause them to be excluded from the Ray cluster.	
 * You have a Persistent Volume Claim (PVC) set up and configured for ReadWriteMany (RWX) access mode. 
 * You have set the storage protocol for the `StorageURI` to `PVC`.
 * Your Autoscaler is configured as `external`.
@@ -65,7 +65,14 @@ $ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 oc new-project kserve-demo
 ----
 +
-. From the namespace, define a ServingRuntime object in a YAML file called `vllm-multinode-runtime.yaml` with the following contents:
+. Create a ServingRuntime using the multi node template:
++
+[source]
+----
+oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply  -f -
+----
++
+. From the namespace, define an InferenceService object in a YAML file called `vllm-multinode.yaml` with the following contents:
 +
 [source]
 ----
