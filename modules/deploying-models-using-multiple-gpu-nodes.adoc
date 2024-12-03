@@ -54,6 +54,7 @@ NOTE: Ensure that `TENSOR_PARALLEL_SIZE` and `PIPELINE_PARALLEL_SIZE` are not al
 $ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 ----
 +
+
 . Select or create a namespace where you would like to deploy the model. In this example, `kserve-demo` is used and can be created using the following command:
 +
 [source]
@@ -61,7 +62,9 @@ $ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 oc new-project kserve-demo
 ----
 +
+
 . Create the `vllm-multinode-runtime` ServingRuntime template as follows:
+
 .. Add the `vllm-multinode-runtime` ServingRuntime as a custom runtime:
 +
 [source]
@@ -69,6 +72,7 @@ oc new-project kserve-demo
 oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply  -f -
 ----
 +
+
 .. From the namespace, define an InferenceService object in a YAML file called `vllm-multinode.yaml` with the following contents:
 +
 [source]
@@ -84,8 +88,11 @@ oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply  
 ----
 +
 After you create the `vllm-multinode-runtime.yaml` file, the following configurations are added to the serving runtime:
++
 * `workerSpec.tensorParallelSize`: Determines how many GPUs are used per node. The GPU type count in both the head and worker node deployment resources is updated automatically. Ensure that the value of `workerSpec.tensorParallelSize` is at least `1`.
 * `workerSpec.pipelineParallelSize`: Determines how many nodes are involved in the deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`.
++
+
 . From the namespace where you would like to deploy the model, create a PVC for model storage and provide the name of your storage class. The storage class must be file storage.
 +
 NOTE: If you have already configured a persistent volume claim (PVC), you can skip this step.
@@ -107,6 +114,7 @@ spec:
   storageClassName: __<fileStorageClassName>__
 ----
 +
+
 . Download the model by exporting your token as an environment variable. In this example, `HF_TEST_TOKEN` is the exported token:
 +
 [source]
@@ -119,11 +127,14 @@ envsubst < download-model-to-pvc.yaml | kubectl create -f -
 ----
 +
 ifndef::upstream[]
+
 . From {productname-long}, create a custom model serving runtime in your data science project. For more information, see link:{rhoaidocshome}{default-format-url}serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime].
 endif::[]
 ifdef::upstream[]
+
 . From {productname-long}, create a custom model serving runtime in your data science project. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-multi-model-serving-platform_model-serving[Adding a custom model-serving runtime].
 endif::[]
+
 . Modify the serving runtime with the path to your `vllm-multinode-runtime.yaml` file.
 +
 [source]
@@ -131,6 +142,7 @@ endif::[]
 oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply -n kserve-demo -f -
 ----
 +
+
 . Deploy the model using the following `InferenceService` configuration:
 +
 [source]
@@ -154,10 +166,12 @@ spec:
 +
 
 .Verification
+
 To confirm that you have set up your environment to deploy models on multiple GPU nodes, check the GPU resource status, the InferenceService status, the ray cluster status, and send a request to the model.
 
-. Check the GPU resource status:
-.. Retrieve the pod names for the head and worker nodes:
+* Check the GPU resource status:
+
+** Retrieve the pod names for the head and worker nodes:
 +
 [source]
 ----
@@ -205,7 +219,7 @@ kubectl exec $workerPodName -- nvidia-smi
 +
 Confirm that the model loaded properly by checking the values of <1> and <2>. If the model did not load, the value of these fields is `0MiB`.
 
-. Verify the status of your InferenceService using the following command:
+* Verify the status of your InferenceService using the following command:
 +
 [source]
 ----
@@ -223,7 +237,7 @@ NOTE: In the Technology Preview, you can only use port forwarding for inferencin
     vllm-llama3-8b   http://vllm-llama3-8b.default.example.com   
 ----
 
-. Send a request to the model to confirm that the model is available for inference:
+* Send a request to the model to confirm that the model is available for inference:
 +
 [source]
 ----
