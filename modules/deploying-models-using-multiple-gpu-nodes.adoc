@@ -6,7 +6,7 @@
 [role='_abstract']
 Deploying models using multiple graphical processing units (GPUs) across multiple nodes can help when deploying large models such as large language models (LLMs).
 
-This procedure shows you how to serve models on {productname-long} across multiple GPU nodes using the vLLM serving framework.
+This procedure shows you how to serve models on {productname-long} across multiple GPU nodes using the vLLM serving framework. Multi-node inferencing uses the `vllm-multinode-runtime` ServingRuntime as a custom runtime. The `vllm-multinode-runtime` ServingRuntime uses the same vLLM image as the `vllm-runtime` and also includes information necessary for multi-GPU inferencing.
 
 ifndef::upstream[]
 [IMPORTANT]
@@ -44,11 +44,10 @@ endif::[]
 * You have set the storage protocol for the `StorageURI` to `PVC`.
 * Your Autoscaler is configured as `external`.
 
-
 NOTE: Ensure that `TENSOR_PARALLEL_SIZE` and `PIPELINE_PARALLEL_SIZE` are not already configured through environment variables.
 
 .Procedure
-. Create the `vllm-multinode-runtime` ServingRuntime template as follows. The `vllm-multinode-runtime` ServingRuntime uses the same vLLM image as the `vllm-runtime` but it includes information necessary for multi-GPU inferencing.
+. Create the `vllm-multinode-runtime` ServingRuntime template as follows:
 .. In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the {openshift-platform} CLI as shown in the following example:
 +
 [source]
@@ -85,12 +84,12 @@ oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply  
 ----
 +
 After you create the `vllm-multinode-runtime.yaml` file, the following configurations are added to the serving runtime:
-+
+
 * `workerSpec.tensorParallelSize`: Determines how many GPUs are used per node. The GPU type count in both the head and worker node deployment resources is updated automatically. Ensure that the value of `workerSpec.tensorParallelSize` is at least `1`.
 * `workerSpec.pipelineParallelSize`: Determines how many nodes are involved in the deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`.
-+
+
 . From the namespace where you would like to deploy the model, create a PVC for model storage and provide the name of your storage class. The storage class must be file storage.
-+
+
 NOTE: If you have already configured a persistent volume claim (PVC), you can skip this step.
 +
 [source]
@@ -162,10 +161,8 @@ spec:
 .Verification
 To confirm that you have set up your environment to deploy models on multiple GPU nodes, check the GPU resource status, the InferenceService status, the ray cluster status, and send a request to the model.
 
-== Check GPU resource status
-To check the GPU resource status, follow these steps:
-
-. Retrieve the pod names for the head and worker nodes:
+. Check the GPU resource status:
+.. Retrieve the pod names for the head and worker nodes:
 +
 [source]
 ----
@@ -213,8 +210,7 @@ kubectl exec $workerPodName -- nvidia-smi
 +
 Confirm that the model loaded properly by checking the values of <1> and <2>. If the model did not load, the value of these fields is `0MiB`.
 
-== Check InferenceService status
-. To verify the status of your InferenceService, run the following command:
+. Verify the status of your InferenceService using the following command:
 +
 [source]
 ----
@@ -224,7 +220,6 @@ export MODEL_NAME=vllm-llama3-8b
 +
 NOTE: In the Technology Preview, you can only use port forwarding for inferencing.
 
-
 .Sample response
 
 [source]
@@ -233,8 +228,6 @@ NOTE: In the Technology Preview, you can only use port forwarding for inferencin
     vllm-llama3-8b   http://vllm-llama3-8b.default.example.com   
 ----
 
-
-== Send a request to the model
 . Send a request to the model to confirm that the model is available for inference:
 +
 [source]
