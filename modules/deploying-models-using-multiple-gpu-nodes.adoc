@@ -143,17 +143,24 @@ oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply  
 +
 [source]
 ----
-... 
- predictor:
-    model:
-      runtime: vllm-multinode-runtime
-      modelFormat:
-        name: vLLM
-      storageUri: pvc://granite-8b-code-base-pvc/hf/8b_instruction_tuned  
-    workerSpec: {} # Specifying workerSpec indicates that multi-node functionality will be used    
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+annotations:
+serving.kserve.io/deploymentMode: RawDeployment
+serving.kserve.io/autoscalerClass: external
+name: granite-8b-code-base-pvc
+spec:
+predictor:
+model:
+modelFormat:
+name: vLLM
+runtime: vllm-multinode-runtime
+storageUri: pvc://granite-8b-code-base-pvc/granite-8b-code-base 
+workerSpec: {}
 ----
 +
-After you create the `vllm-multinode-runtime.yaml` file, the following configurations are added to the serving runtime:
+The following configuration can be added to the InferenceService:
 +
 * `workerSpec.tensorParallelSize`: Determines how many GPUs are used per node. The GPU type count in both the head and worker node deployment resources is updated automatically. Ensure that the value of `workerSpec.tensorParallelSize` is at least `1`.
 * `workerSpec.pipelineParallelSize`: Determines how many nodes are involved in the deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`.
