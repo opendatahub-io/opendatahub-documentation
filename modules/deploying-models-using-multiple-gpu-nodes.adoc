@@ -106,7 +106,7 @@ spec:
       imagePullPolicy: IfNotPresent
       image: quay.io/modh/kserve-storage-initializer@sha256:83ab292e87f2d30c5db4f756dac7d99d0a0252a4563f784f30a2d75cbbd46330
       args:
-        - 's3://$(BUCKET_NAME)/granite-8b-code-base/'
+        - 's3://$<bucket_name>/granite-8b-code-base/'
         - /mnt/models/granite-8b-code-base
       env:
         - name: AWS_ACCESS_KEY_ID
@@ -114,7 +114,7 @@ spec:
         - name: AWS_SECRET_ACCESS_KEY
           value: <secret>
         - name: BUCKET_NAME
-          value: <bucket>
+          value: <bucket_name>
         - name: S3_USE_HTTPS
           value: "1"
         - name: AWS_ENDPOINT_URL
@@ -129,9 +129,7 @@ spec:
 ----
 +
 
-. Create the `vllm-multinode-runtime` ServingRuntime template as follows:
-
-.. Add the `vllm-multinode-runtime` ServingRuntime as a custom runtime:
+. Create the `vllm-multinode-runtime` ServingRuntime as a custom runtime:
 +
 [source]
 ----
@@ -143,45 +141,32 @@ oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply  
 +
 [source]
 ----
-apiVersion: serving.kserve.io/v1beta1
-kind: InferenceService
-metadata:
-annotations:
-serving.kserve.io/deploymentMode: RawDeployment
-serving.kserve.io/autoscalerClass: external
-name: granite-8b-code-base-pvc
-spec:
-predictor:
-model:
-modelFormat:
-name: vLLM
-runtime: vllm-multinode-runtime
-storageUri: pvc://granite-8b-code-base-pvc/granite-8b-code-base 
-workerSpec: {}
+apiVersion: serving.kserve.io/v1beta1 
+kind: InferenceService 
+metadata: 
+  name: vllm-multi 
+    annotations: 
+      serving.kserve.io/deploymentMode: RawDeployment 
+      serving.kserve.io/autoscalerClass: external
+spec: 
+  predictor: 
+      model: 
+            modelFormat: 
+              name: vLLM
+            runtime: vllm-multinode-runtime 
+            storageUri: pvc://granite-8b-code-claim/granite-8b-code-base 
+          workerSpec: {}
 ----
-+
-The following configuration can be added to the InferenceService:
-+
-* `workerSpec.tensorParallelSize`: Determines how many GPUs are used per node. The GPU type count in both the head and worker node deployment resources is updated automatically. Ensure that the value of `workerSpec.tensorParallelSize` is at least `1`.
-* `workerSpec.pipelineParallelSize`: Determines how many nodes are involved in the deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`.
-+
 
-ifndef::upstream[]
+// For GA, not for 2.16
+// ifndef::upstream[]
 
-. From {productname-long}, create a custom model serving runtime in your data science project. For more information, see link:{rhoaidocshome}{default-format-url}serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime].
-endif::[]
-ifdef::upstream[]
+// . From {productname-long}, create a custom model serving runtime in your data science project. For more information, see link:{rhoaidocshome}{default-format-url}serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime].
+// endif::[]
+// ifdef::upstream[]
 
-. From {productname-long}, create a custom model serving runtime in your data science project. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-multi-model-serving-platform_model-serving[Adding a custom model-serving runtime].
-endif::[]
-
-. Modify the serving runtime with the path to your `vllm-multinode-runtime.yaml` file.
-+
-[source]
-----
-oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply -n kserve-demo -f -
-----
-+
+// . From {productname-long}, create a custom model serving runtime in your data science project. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-multi-model-serving-platform_model-serving[Adding a custom model-serving runtime].
+// endif::[]
 
 . Deploy the model using the following `InferenceService` configuration:
 +
@@ -203,6 +188,11 @@ spec:
       storageUri: pvc://granite-8b-code-base-pvc/hf/8b_instruction_tuned
     workerSpec: {}    
 ----
++
+The following configuration can be added to the InferenceService:
++
+* `workerSpec.tensorParallelSize`: Determines how many GPUs are used per node. The GPU type count in both the head and worker node deployment resources is updated automatically. Ensure that the value of `workerSpec.tensorParallelSize` is at least `1`.
+* `workerSpec.pipelineParallelSize`: Determines how many nodes are involved in the deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`.
 +
 
 .Verification
