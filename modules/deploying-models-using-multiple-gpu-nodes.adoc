@@ -137,28 +137,6 @@ oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply  
 ----
 +
 
-. From the namespace, define an InferenceService object in a YAML file called `vllm-multinode.yaml` with the following contents:
-+
-[source]
-----
-apiVersion: serving.kserve.io/v1beta1 
-kind: InferenceService 
-metadata: 
-  name: vllm-multi 
-    annotations: 
-      serving.kserve.io/deploymentMode: RawDeployment 
-      serving.kserve.io/autoscalerClass: external
-spec: 
-  predictor: 
-      model: 
-            modelFormat: 
-              name: vLLM
-            runtime: vllm-multinode-runtime 
-            storageUri: pvc://granite-8b-code-claim/granite-8b-code-base 
-          workerSpec: {}
-----
-+
-
 . Deploy the model using the following `InferenceService` configuration:
 +
 [source]
