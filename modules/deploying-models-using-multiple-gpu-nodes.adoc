@@ -33,7 +33,7 @@ endif::[]
 ** Specify the GPU type through either the `ServingRuntime` or `InferenceService`. If the GPU type specified in the `ServingRuntime` differs from what is set in the `InferenceService`, both GPU types are assigned to the resource and can cause errors. 
 * You have enabled KServe on your cluster.
 * You have only 1 head pod in your setup. Do not adjust the replica count using the `min_replicas` or `max_replicas` settings in the `InferenceService`. Creating additional head pods can cause them to be excluded from the Ray cluster.	
-* You have a Persistent Volume Claim (PVC) set up and configured for ReadWriteMany (RWX) access mode. 
+* You have a persistent volume claim (PVC) set up and configured for ReadWriteMany (RWX) access mode. 
 
 .Procedure
 . In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the {openshift-platform} CLI as shown in the following example:
@@ -54,7 +54,7 @@ oc new-project kserve-demo
 
 . From the namespace where you would like to deploy the model, create a PVC for model storage and provide the name of your storage class. The storage class must be file storage.
 +
-NOTE: If you have already configured a persistent volume claim (PVC), you can skip this step.
+NOTE: If you have already configured a PVC, you can skip this step.
 +
 [source]
 ----
