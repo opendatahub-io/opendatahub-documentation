@@ -7,17 +7,17 @@
 You can install Python packages that are not part of the default workbench image by adding the package and the version to a `requirements.txt` file and then running the `pip install` command in a terminal window.
 
 ifndef::upstream[]
-NOTE: You can also install packages directly, but {org-name} recommends using a `requirements.txt` file so that the packages stated in the file can be easily re-used across different notebooks. In addition, using a `requirements.txt` file is also useful when using a S2I build to deploy a model.
+NOTE: You can install packages directly, but {org-name} recommends using a `requirements.txt` file so that the packages stated in the file can be easily re-used across different notebooks. In addition, a `requirements.txt` file is helpful when you want to deploy a model with an S2I build.
 endif::[]
 ifdef::upstream[]
-NOTE: You can also install packages directly, but using a `requirements.txt` file so that the packages stated in the file can be easily re-used across different notebooks is recommended. In addition, using a `requirements.txt` file is also useful when using a S2I build to deploy a model.
+NOTE: You can install packages directly, but using a `requirements.txt` file so that the packages stated in the file can be easily re-used across different notebooks is recommended. In addition, a `requirements.txt` file is helpful when you want to deploy a model with an S2I build.
 endif::[]
 
 .Prerequisites
-* A launched and running code-server workbench.
+* You have opened a workbench in code-server.
 
 .Procedure
-. In your code-server workbench, from the Activity Bar, select the menu icon (image:images/codeserver-menu-icon.png[The Menu icon]) > *File* > *New Text File* to create a new text file.
+. In your code-server window, from the Activity Bar, select the menu icon (image:images/codeserver-menu-icon.png[The Menu icon]) -> *File* -> *New Text File* to create a new text file.
 . Add the packages to install to the text file.
 +
 [source]
@@ -43,7 +43,7 @@ Specifying exact package versions to enhance the stability of your workbench ove
 endif::[]
 To install multiple packages at the same time, place each package on a separate line.
 . Save the text file as `requirements.txt`.
-. From the Activity Bar, select the menu icon (image:images/codeserver-menu-icon.png[The Menu icon]) > *Terminal* > *New Terminal*  to open a terminal window.
+. From the Activity Bar, select the menu icon (image:images/codeserver-menu-icon.png[The Menu icon]) -> *Terminal* -> *New Terminal*  to open a terminal window.
 . Install the packages in `requirements.txt` to your server by using the following command:
 +
 [source]
@@ -53,7 +53,7 @@ pip install -r requirements.txt
 +
 [IMPORTANT]
 ====
-This command installs the package on your workbench, but you must still run the `import` statement to use the package in your code.
+The `pip install` command installs the package on your workbench. However, you must run the `import` statement to use the package in your code.
 
 ----
 import altair
@@ -61,7 +61,7 @@ import altair
 ====
 
 .Verification
-* Confirm that the packages in `requirements.txt` appear in the list of packages installed on the workbench. 
+* Confirm that the packages in `requirements.txt` file appear in the list of packages installed on the workbench. 
 ifndef::upstream[]
 See link:{rhoaidocshome}{default-format-url}/working_in_your_data_science_ide/#viewing-python-packages-installed-on-your-code-server-workbench_{context}[Viewing Python packages installed on your code-server workbench] for details.
 endif::[]
