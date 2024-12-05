@@ -171,14 +171,12 @@ containers:
   - args:
       - --chat-template=<CHAT_TEMPLATE>
 ----
-+
 You can use the chat templates that are available as `.jinja` files link:https://github.com/opendatahub-io/vllm/tree/main/examples[here] or with the vLLM image under `/apps/data/template`. For more information, see link:https://huggingface.co/docs/transformers/main/chat_templating[Chat templates].
 ====
 +
 As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
 
 .Example command
-
 ifdef::upstream[]
 [source]
 ----
@@ -195,6 +193,15 @@ ifdef::self-managed,cloud-service[]
 ----
 curl -v https://<inference_endpoint_url>:443/v1/chat/completions -H "Content-Type: application/json" -d '{ "messages": [{ "role": "<role>", "content": "<content>" }] -H 'Authorization: Bearer <token>'
 ----
+endif::[]
+
+== vLLM ServingRuntime with Gaudi accelerators support for KServe 
+
+ifndef::upstream[]
+See link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#vllm_servingruntime_for_kserve[vLLM ServingRuntime for KServe^].
+endif::[]
+ifdef::upstream[]
+See link:{odhdocshome}/serving_models/serving-large-models_serving-large-models#vllm_servingruntime_for_kserve[vLLM ServingRuntime for KServe^].
 endif::[]
 
 == NVIDIA Triton Inference Server
