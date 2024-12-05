@@ -158,7 +158,7 @@ spec:
     workerSpec: {}    
 ----
 +
-The following configuration can be added to the InferenceService:
+The following configuration can be added to the `InferenceService`:
 +
 * `workerSpec.tensorParallelSize`: Determines how many GPUs are used per node. The GPU type count in both the head and worker node deployment resources is updated automatically. Ensure that the value of `workerSpec.tensorParallelSize` is at least `1`.
 * `workerSpec.pipelineParallelSize`: Determines how many nodes are involved in the deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`.
@@ -166,7 +166,7 @@ The following configuration can be added to the InferenceService:
 
 .Verification
 
-To confirm that you have set up your environment to deploy models on multiple GPU nodes, check the GPU resource status, the InferenceService status, the ray cluster status, and send a request to the model.
+To confirm that you have set up your environment to deploy models on multiple GPU nodes, check the GPU resource status, the `InferenceService` status, the ray cluster status, and send a request to the model.
 
 * Check the GPU resource status:
 
@@ -218,9 +218,11 @@ kubectl exec $workerPodName -- nvidia-smi
 +
 Confirm that the model loaded properly by checking the values of <1> and <2>. If the model did not load, the value of these fields is `0MiB`.
 
-* Verify the status of your InferenceService using the following command:
+* Verify the status of your `InferenceService` using the following command:
 +
+ifndef::upstream[]
 NOTE: In the Technology Preview, you can only use port forwarding for inferencing.
+endif::[]
 +
 [source]
 ----
