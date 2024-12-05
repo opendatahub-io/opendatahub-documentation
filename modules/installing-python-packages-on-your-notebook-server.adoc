@@ -7,23 +7,18 @@
 [role='_abstract']
 You can install Python packages that are not part of the default notebook server by adding the package and the version to a `requirements.txt` file and then running the `pip install` command in a notebook cell.
 
-ifndef::upstream[]
-NOTE: You can install packages directly, but {org-name} recommends using a `requirements.txt` file so that the packages stated in the file can be easily re-used across different notebooks. In addition, a `requirements.txt` file is helpful when you want to deploy a model with an S2I build.
-endif::[]
-ifdef::upstream[]
-NOTE: You can install packages directly, but using a `requirements.txt` file so that the packages stated in the file can be easily re-used across different notebooks is recommended. In addition, a `requirements.txt` file is helpful when you want to deploy a model with an S2I build.
-endif::[]
+NOTE: Although you can install packages directly, it is recommended that you use a `requirements.txt` file so that the packages stated in the file can be easily re-used across different notebooks.
 
 .Prerequisites
 * Log in to JupyterLab and open a notebook.
 
 .Procedure
 . Create a new text file using one of the following methods:
-** Click *+* to open a new launcher and click *Text file*.
+** Click *+* to open a new launcher and then click *Text file*.
 ** Click *File* -> *New* -> *Text File*.
 . Rename the text file to `requirements.txt`.
-.. Right-click the name of the file and click *Rename Text*. The *Rename File* dialog opens.
-.. Enter `requirements.txt` in the *New Name* field and click *Rename*.
+.. Right-click the name of the file and then click *Rename Text*. The *Rename File* dialog opens.
+.. Enter `requirements.txt` in the *New Name* field and then click *Rename*.
 . Add the packages to install to the `requirements.txt` file.
 +
 [source]
@@ -68,7 +63,7 @@ import altair
 ====
 
 .Verification
-* Confirm that the packages in `requirements.txt` file appear in the list of packages installed on the notebook server. 
+* Confirm that the packages in the `requirements.txt` file appear in the list of packages installed on the notebook server. 
 ifndef::upstream[]
 See link:{rhoaidocshome}{default-format-url}/working_in_your_data_science_ide/#viewing-python-packages-installed-on-your-notebook-server_{context}[Viewing Python packages installed on your notebook server] for details.
 endif::[]
