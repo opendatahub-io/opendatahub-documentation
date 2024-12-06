@@ -92,7 +92,7 @@ spec:
   restartPolicy: Never
   initContainers:
     - name: fix-volume-permissions
-      image: quay.io/quay/busybox@sha256:92f3298bf80a1ba949140d77987f5de081f010337880cd771f7e7fc928f8c74d 
+      image: quay.io/quay/busybox@sha256:xxxxx
       command: ["sh"]
       args: ["-c", "mkdir -p /mnt/models/granite-8b-code-base && chmod -R 777 /mnt/models"]
       volumeMounts:
@@ -104,7 +104,7 @@ spec:
           memory: 40Gi
       name: download-model
       imagePullPolicy: IfNotPresent
-      image: quay.io/modh/kserve-storage-initializer@sha256:83ab292e87f2d30c5db4f756dac7d99d0a0252a4563f784f30a2d75cbbd46330
+      image: quay.io/modh/kserve-storage-initializer@sha256:xxxxx
       args:
         - 's3://$<bucket_name>/granite-8b-code-base/'
         - /mnt/models/granite-8b-code-base
