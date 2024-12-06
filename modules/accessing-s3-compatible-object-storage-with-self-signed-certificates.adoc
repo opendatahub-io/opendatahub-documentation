@@ -1,0 +1,45 @@
+:_module-type: PROCEDURE
+
+[id='accessing-s3-compatible-object-storage-with-self-signed-certificates_{context}']
+= Accessing S3-compatible object storage with self-signed certificates
+
+[role='_abstract']
+To use object storage solutions or databases that are deployed in an OpenShift cluster that uses self-signed certificates, you need to configure {productname-short} to trust the cluster's certificate authority (CA).
+
+Each namespace has a ConfigMap called `kube-root-ca.crt` that contains the CA certificates of the internal API Server. Use the following steps to configure {productname-short} to trust the certificates issued by `kube-root-ca.crt`.
+
+.Prerequisite
+* 
+
+.Procedure
+. Login to the cluster
++
+[source]
+----
+oc login api.<<CLUSTER_NAME>>.<<CLUSTER_DOMAIN>>:6443 --web
+----
+. Get current OpenShift AI trusted CA configuration.
++
+[source]
+----
+oc get dscinitializations.dscinitialization.opendatahub.io default-dsci -o json | jq '.spec.trustedCABundle.customCABundle' > /tmp/my-rhoai-custom-ca-bundles.crt
+----
+. Add the  cluster's kube-root-ca.crt:
++
+[source]
+----
+oc get configmap kube-root-ca.crt -o jsonpath="{['data']['ca\.crt']}" >> /tmp/my-rhoai-custom-ca-bundles.crt
+----
+. Update OpenShift AI trusted CA configuration to trust the certificates issued by the CAs in kube-root-ca.crt
++
+[source]
+----
+oc patch dscinitialization default-dsci --type='json' -p='[{"op":"replace","path":"/spec/trustedCABundle/customCABundle","value":"'"$(awk '{printf "%s\\n", $0}' /tmp/my-rhoai-custom-ca-bundles.crt)"'"}]'
+----
+
+.Verification
+* 
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete
