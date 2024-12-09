@@ -7,23 +7,18 @@
 [role='_abstract']
 You can install Python packages that are not part of the default notebook server by adding the package and the version to a `requirements.txt` file and then running the `pip install` command in a notebook cell.
 
-ifndef::upstream[]
-NOTE: You can also install packages directly, but {org-name} recommends using a `requirements.txt` file so that the packages stated in the file can be easily re-used across different notebooks. In addition, using a `requirements.txt` file is also useful when using a S2I build to deploy a model.
-endif::[]
-ifdef::upstream[]
-NOTE: You can also install packages directly, but using a `requirements.txt` file so that the packages stated in the file can be easily re-used across different notebooks is recommended. In addition, using a `requirements.txt` file is also useful when using a S2I build to deploy a model.
-endif::[]
+NOTE: Although you can install packages directly, it is recommended that you use a `requirements.txt` file so that the packages stated in the file can be easily re-used across different notebooks.
 
 .Prerequisites
 * Log in to JupyterLab and open a notebook.
 
 .Procedure
 . Create a new text file using one of the following methods:
-** Click *+* to open a new launcher and click *Text file*.
+** Click *+* to open a new launcher and then click *Text file*.
 ** Click *File* -> *New* -> *Text File*.
 . Rename the text file to `requirements.txt`.
-.. Right-click on the name of the file and click *Rename Text*. The *Rename File* dialog opens.
-.. Enter `requirements.txt` in the *New Name* field and click *Rename*.
+.. Right-click the name of the file and then click *Rename Text*. The *Rename File* dialog opens.
+.. Enter `requirements.txt` in the *New Name* field and then click *Rename*.
 . Add the packages to install to the `requirements.txt` file.
 +
 [source]
@@ -48,7 +43,7 @@ ifdef::upstream[]
 Specifying exact package versions to enhance the stability of your notebook server over time is recommended. New package versions can introduce undesirable or unexpected changes in your environment's behavior. 
 endif::[]
 To install multiple packages at the same time, place each package on a separate line.
-. Install the packages in `requirements.txt` to your server using a notebook cell.
+. Install the packages in `requirements.txt` to your server by using a notebook cell.
 .. Create a new cell in your notebook and enter the following command:
 +
 [source]
@@ -60,7 +55,7 @@ To install multiple packages at the same time, place each package on a separate 
 +
 [IMPORTANT]
 ====
-This command installs the package on your notebook server, but you must still run the `import` directive in a code cell to use the package in your code.
+The `pip install` command installs the package on your notebook server. However, you must run the `import` statement in a code cell to use the package in your code.
 
 ----
 import altair
@@ -68,7 +63,7 @@ import altair
 ====
 
 .Verification
-* Confirm that the packages in `requirements.txt` appear in the list of packages installed on the notebook server. 
+* Confirm that the packages in the `requirements.txt` file appear in the list of packages installed on the notebook server. 
 ifndef::upstream[]
 See link:{rhoaidocshome}{default-format-url}/working_in_your_data_science_ide/#viewing-python-packages-installed-on-your-notebook-server_{context}[Viewing Python packages installed on your notebook server] for details.
 endif::[]

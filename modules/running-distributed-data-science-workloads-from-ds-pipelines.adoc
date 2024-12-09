@@ -39,17 +39,17 @@ endif::[]
 
 .Procedure
 ifndef::upstream[]
-. Create a data connection to connect the object storage to your data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-connections_projects#adding-a-data-connection-to-your-data-science-project_projects[Adding a data connection to your data science project].
+. Create a connection to connect the object storage to your data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
 endif::[]
 ifdef::upstream[]
-. Create a data connection to connect the object storage to your data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#adding-a-data-connection-to-your-data-science-project_projects[Adding a data connection to your data science project].
+. Create a connection to connect the object storage to your data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
 endif::[]
 
 ifndef::upstream[]
-. Configure a pipeline server to use the data connection, as described in link:working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+. Configure a pipeline server to use the connection, as described in link:working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
 endif::[]
 ifdef::upstream[]
-. Configure a pipeline server to use the data connection, as described in link:{odhdocshome}/working-with-data-science-pipelines/#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+. Configure a pipeline server to use the connection, as described in link:{odhdocshome}/working-with-data-science-pipelines/#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
 endif::[]
 
 . Create the data science pipeline as follows:
@@ -62,7 +62,15 @@ $ pip install kfp
 .. Install any other dependencies that are required for your pipeline.
 .. Build your data science pipeline in Python code.
 +
-For example, create a file named `compile_example.py` with the following content:
+For example, create a file named `compile_example.py` with the following content.
+ifdef::upstream[]
++
+[NOTE]
+--
+If you copy and paste the following code example, remember to remove the _callouts_, which are not part of the code.
+The callouts (parenthetical numbers, highlighted in bold font in this document) map the relevant line of code to an explanatory note in the text immediately after the code example. 
+--
+endif::[]
 +
 [source,Python]
 ----

@@ -13,18 +13,6 @@ endif::[]
 
 The following table lists the training images that are installed with {productname-long} by default.
 
-[IMPORTANT]
-====
-Training images that are denoted with `(Developer Preview)` in this table are not supported by {org-name} in any way and are not functionally complete or production-ready. 
-Do not use Developer Preview software for production or business-critical workloads. 
-Developer Preview software provides early access to upcoming product software in advance of its possible inclusion in a {org-name} product offering. 
-Customers can use this software to test functionality and provide feedback during the development process. 
-This software might not have any documentation, is subject to change or removal at any time, and has received limited testing. 
-{org-name} might provide ways to submit feedback on Developer Preview software without an associated SLA.
-For more information about the support scope of {org-name} Developer Preview software, see link:https://access.redhat.com/support/offerings/devpreview/[Developer Preview Support Scope].
-====
-
-
 .Default training base images
 [cols="1,6"]
 |===
@@ -34,23 +22,18 @@ For more information about the support scope of {org-name} Developer Preview sof
 | If you are working with compute-intensive models and you want to accelerate the training job with NVIDIA GPU support, you can use the Ray Compute Unified Device Architecture (CUDA) base image to gain access to the NVIDIA CUDA Toolkit. 
 Using this toolkit, you can accelerate your work by using libraries and tools that are optimized for NVIDIA GPUs.
 
-ifndef::upstream[]
-| Ray ROCm (Developer Preview)
-endif::[]
-ifdef::upstream[]
 | Ray ROCm 
-endif::[]
 | If you are working with compute-intensive models and you want to accelerate the training job with AMD GPU support, you can use the Ray ROCm base image to gain access to the AMD ROCm software stack. 
 Using this software stack, you can accelerate your work by using libraries and tools that are optimized for AMD GPUs. 
 
-ifndef::upstream[]
-| KFTO CUDA (Developer Preview)
-endif::[]
-ifdef::upstream[]
 | KFTO CUDA 
-endif::[]
 | If you are working with compute-intensive models and you want to accelerate the training job with NVIDIA GPU support, you can use the Kubeflow Training Operator (KFTO) CUDA base image to gain access to the NVIDIA CUDA Toolkit.
 Using this toolkit, you can accelerate your work by using libraries and tools that are optimized for NVIDIA GPUs. 
+
+| KFTO ROCm 
+| If you are working with compute-intensive models and you want to accelerate the training job with AMD GPU support, you can use the KFTO ROCm base image to gain access to the AMD ROCm software stack.
+Using this software stack, you can accelerate your work by using libraries and tools that are optimized for AMD GPUs. 
+
 
 |===
 

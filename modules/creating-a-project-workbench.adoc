@@ -3,7 +3,7 @@
 [id="creating-a-project-workbench_{context}"]
 = Creating a workbench
 
-When you create a workbench, you specify an image (an IDE, packages, and other dependencies). You can also configure data connections, cluster storage, and add container storage.
+When you create a workbench, you specify an image (an IDE, packages, and other dependencies). You can also configure connections, cluster storage, and add container storage.
 
 
 .Prerequisites
@@ -16,7 +16,7 @@ ifdef::upstream[]
 endif::[]
 * You created a project. 
 ifndef::upstream[]
-* If you created a Simple Storage Service (S3) account outside of {productname-long} and you want to create data connections to your existing S3 storage buckets, you have the following credential information for the storage buckets:
+* If you created a Simple Storage Service (S3) account outside of {productname-long} and you want to create connections to your existing S3 storage buckets, you have the following credential information for the storage buckets:
 +
 --			
 ** Endpoint URL 						
@@ -58,7 +58,7 @@ You can edit only the display name and the description.
 +
 From the *Image selection* list, select a workbench image that suits your use case. A workbench image includes an IDE and Python packages (reusable code). Optionally, click *View package information* to view a list of packages that are included in the image that you selected.
 +
-If the workbench image has multiple versions available, select the workbench image version to use from the *Versions* section. To use the latest package versions, Red Hat recommends that you use the most recently added image. 
+If the workbench image has multiple versions available, select the workbench image version to use from the *Version selection* list. To use the latest package versions, Red Hat recommends that you use the most recently added image. 
 +
 NOTE: You can change the workbench image after you create the workbench.
 
@@ -87,23 +87,23 @@ NOTE: You cannot change the storage class after you add the cluster storage to t
 .. Under *Persistent storage size*, enter a new size in gibibytes or mebibytes.
 * *Use existing persistent storage* to reuse existing storage and select the storage from the *Persistent storage* list. 
 
-. Optional: You can add a data connection to your workbench. A data connection is a resource that contains the configuration parameters needed to connect to a data source or an object storage bucket. Currently, only S3-Compatible data connections are supported. You can use storage buckets for storing data, models, and pipeline artifacts. You can also use a data connection to specify the location of a model that you want to deploy.
+. Optional: You can add a connection to your workbench. A connection is a resource that contains the configuration parameters needed to connect to a data source or sink, such as an object storage bucket. You can use storage buckets for storing data, models, and pipeline artifacts. You can also use a connection to specify the location of a model that you want to deploy.
 +
-In the *Data connections* section, select the *Use a data connection* checkbox. 
+In the *Connections* section, select the *Use a connection* checkbox. 
 +
 --
-* Create a new data connection as follows:
-.. Select *Create new data connection*.
-.. In the *Name* field, enter a unique name for the data connection.
+* Create a new connection as follows:
+.. Select *Create new connection*.
+.. In the *Name* field, enter a unique name for the connection.
 .. In the *Access key* field, enter the access key ID for the S3-compatible object storage provider.
 .. In the *Secret key* field, enter the secret access key for the S3-compatible object storage account that you specified.
 .. In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
 .. In the *Region* field, enter the default region of your S3-compatible object storage account.
 .. In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
 
-* Use an existing data connection as follows:
-.. Select *Use existing data connection*.
-.. From the *Data connection* list, select a data connection that you previously defined.
+* Use an existing connection as follows:
+.. Select *Use existing connection*.
+.. From the *Connection* list, select a connection that you previously defined.
 --
 +
 . Click *Create workbench*.

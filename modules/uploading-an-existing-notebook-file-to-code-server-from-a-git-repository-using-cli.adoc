@@ -1,0 +1,44 @@
+:_module-type: PROCEDURE
+
+[id='uploading-an-existing-notebook-file-to-code-server-from-a-git-repository-using-cli_{context}']
+= Uploading an existing notebook file to code-server from a Git repository by using the CLI
+
+[role='_abstract']
+You can use the command line interface to clone a Git repository into your workspace to continue your work or integrate files from an external project.
+
+.Prerequisites
+* You have a running code-server workbench.
+
+.Procedure
+. Copy the HTTPS URL for the Git repository.
++
+** In GitHub, click *&#10515; Code* -> *HTTPS* and then click the *Copy URL to clipboard* icon.
+** In GitLab, click *Code* and then click the *Copy URL* icon under *Clone with HTTPS*.
+. In your code-server window, from the Activity Bar, select the menu icon (image:images/codeserver-menu-icon.png[Menu icon]) -> *Terminal* -> *New Terminal*  to open a terminal window.
+. Enter the `git clone` command:
++
+[source,subs="+quotes"]
+----
+git clone _<git-clone-URL>_
+----
++
+Replace `<git-clone-URL>` with the HTTPS URL, for example:
++
+[source,subs="+quotes"]
+----
+$ *git clone https://github.com/example/myrepo.git*
+Cloning into 'myrepo'...
+remote: Enumerating objects: 11, done.
+remote: Counting objects: 100% (11/11), done.
+remote: Compressing objects: 100% (10/10), done.
+remote: Total 2821 (delta 1), reused 5 (delta 1), pack-reused 2810
+Receiving objects: 100% (2821/2821), 39.17 MiB | 23.89 MiB/s, done.
+Resolving deltas: 100% (1416/1416), done.
+----
+
+.Verification
+* Check that the contents of the repository are visible in the code-server Explorer view, or run the `ls` command in the terminal to verify that the repository shows as a directory.
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete

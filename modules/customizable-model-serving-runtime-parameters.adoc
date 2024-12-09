@@ -1,0 +1,36 @@
+
+:_module-type: REFERENCE
+
+[id='customizable-model-serving-runtime-parameters_{context}']
+= Customizable model serving runtime parameters
+
+[role='_abstract']
+You can modify the parameters of an existing model serving runtime to suit your deployment needs.
+
+For more information about parameters for each of the supported serving runtimes, see the following table:
+
+|===
+| Serving runtime | Resource 
+
+| NVIDIA Triton Inference Server | link:https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/tensorrtllm_backend/docs/model_config.html?#model-configuration[NVIDIA Triton Inference Server: Model Parameters]
+| Caikit Text Generation Inference Server (Caikit-TGIS) ServingRuntime for KServe | 
+link:https://github.com/opendatahub-io/caikit-nlp?tab=readme-ov-file#configuration[Caikit NLP: Configuration] +
+link:https://github.com/IBM/text-generation-inference?tab=readme-ov-file#model-configuration[TGIS: Model configuration]
+| Caikit Standalone ServingRuntime for KServe | link:https://github.com/opendatahub-io/caikit-nlp?tab=readme-ov-file#configuration[Caikit NLP: Configuration]
+|OpenVINO Model Server | link:https://docs.openvino.ai/2024/openvino-workflow/model-server/ovms_docs_dynamic_input.html[OpenVINO Model Server Features: Dynamic Input Parameters]
+|Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe	| link:https://github.com/IBM/text-generation-inference?tab=readme-ov-file#model-configuration[TGIS: Model configuration]
+|vLLM ServingRuntime for KServe | link:https://docs.vllm.ai/en/stable/models/engine_args.html[vLLM: Engine arguments] +
+link:https://docs.vllm.ai/en/stable/serving/openai_compatible_server.html#[OpenAI Compatible Server] 
+|=== 
+
+[role='_additional-resources']
+.Additional resources
+ifdef::upstream[]
+* link:{odhdocshome}/serving-models/#customizing-parameters-serving-runtime_serving-large-models[Customizing the parameters of a deployed model serving runtime]
+endif::[]
+
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#customizing-parameters-serving-runtime_serving-large-models[Customizing the parameters of a deployed model serving runtime]
+endif::[]
+
+

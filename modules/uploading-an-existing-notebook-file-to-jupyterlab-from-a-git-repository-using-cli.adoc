@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
-[id='uploading-an-existing-notebook-file-from-a-git-repository-using-the-command-line-interface_{context}']
-= Uploading an existing notebook file from a Git repository by using the command line interface
+[id='uploading-an-existing-notebook-file-to-jupyterlab-from-a-git-repository-using-cli_{context}']
+= Uploading an existing notebook file to JupyterLab from a Git repository by using the CLI
 
 [role='_abstract']
 You can use the command line interface to clone a Git repository into your workspace to continue your work or integrate files from an external project.
@@ -12,17 +12,17 @@ You can use the command line interface to clone a Git repository into your works
 .Procedure
 . Copy the HTTPS URL for the Git repository.
 +
-** On GitHub, click *&#10515; Code* -> *HTTPS* and click the Clipboard button.
-** On GitLab, click *Clone* and click the Clipboard button under *Clone with HTTPS*.
+** In GitHub, click *&#10515; Code* -> *HTTPS* and then click the *Copy URL to clipboard* icon.
+** In GitLab, click *Code* and then click the *Copy URL* icon under *Clone with HTTPS*.
 . In JupyterLab, click *File* -> *New* -> *Terminal* to open a terminal window.
-. Enter the `git clone` command.
+. Enter the `git clone` command:
 +
 [source,subs="+quotes"]
 ----
 git clone _<git-clone-URL>_
 ----
 +
-Replace _`<git-clone-URL>`_ with the HTTPS URL, for example:
+Replace `git-clone-URL>` with the HTTPS URL, for example:
 +
 [source,subs="+quotes"]
 ----
@@ -44,7 +44,7 @@ Resolving deltas: 100% (1416/1416), done.
 // . If prompted, enter your username and password for the Git repository.
 
 .Verification
-* Check that the contents of the repository are visible in the file browser in JupyterLab, or run the *ls* command in the terminal to verify that the repository is shown as a directory.
+* Check that the contents of the repository are visible in the file browser in JupyterLab, or run the `ls` command in the terminal to verify that the repository shows as a directory.
 
 // [role="_additional-resources"]
 // .Additional resources
