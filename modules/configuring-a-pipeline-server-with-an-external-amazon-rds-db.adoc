@@ -1,0 +1,47 @@
+:_module-type: PROCEDURE
+
+[id='configuring-a-pipeline-server-with-an-external-amazon-rds-db_{context}']
+= Configuring a pipeline server with an external Amazon RDS database
+
+To configure a pipeline server with an external Amazon Relational Database Service (RDS) database, you must configure {productname-short} to trust the certificates issued by its certificate authorities (CA).
+
+[IMPORTANT]
+====
+If you are configuring a pipeline server for production pipeline workloads, {org-name} recommends that you use an external MySQL or MariaDB database. 
+====
+
+.Prerequisite
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group} ) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have created a data science project that you can add a pipeline server to.
+* You have an existing S3-compatible object storage bucket and you have configured write access to your S3 bucket on your storage account.
+
+.Procedure
+. After successfully creating your pipeline server, from link:https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.CertificatesAllRegions[Amazon RDS: Certificate bundles by AWS Region], download the PEM certificate bundle for the region that the database was created in. 
++
+For example, if the database was created in the `us-east-1` region, download `us-east-1-bundle.pem`.
+. In a terminal window, log in to the OpenShift cluster where {productname-short} is deployed.
++
+----
+oc login
+----
+. Configure {productname-short} to trust the certificates issued by the CAs included in `us-east-1-bundle.pem`:
++
+----
+oc patch dscinitialization default-dsci --type='json' -p='[{"op":"replace","path":"/spec/trustedCABundle/customCABundle","value":"'"$(awk '{printf "%s\\n", $0}' us-east-1-bundle.pem)"'"}]' 
+----
+.
+
+.Verification
+* 
+
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete
