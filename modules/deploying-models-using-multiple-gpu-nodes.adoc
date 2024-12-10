@@ -1,12 +1,12 @@
 :_module-type: PROCEDURE
 
 [id="deploying-models-using-multiple-gpu-nodes_{context}"]
-= Deploying models using multiple GPU nodes
+= Deploying models by using multiple GPU nodes
 
 [role='_abstract']
-Deploying models using multiple graphical processing units (GPUs) across multiple nodes can help when deploying large models such as large language models (LLMs).
+Deploy models across multiple GPU nodes to handle large models, such as large language models (LLMs).
 
-This procedure shows you how to serve models on {productname-long} across multiple GPU nodes using the vLLM serving framework. Multi-node inferencing uses the `vllm-multinode-runtime` ServingRuntime as a custom runtime. The `vllm-multinode-runtime` ServingRuntime uses the same vLLM image as the `vllm-runtime` and also includes information necessary for multi-GPU inferencing.
+This procedure shows you how to serve models on {productname-long} across multiple GPU nodes using the vLLM serving framework. Multi-node inferencing uses the `vllm-multinode-runtime` ServingRuntime as a custom runtime. The `vllm-multinode-runtime` ServingRuntime uses the same vLLM image as the `vllm-runtime` ServingRuntime and also includes information necessary for multi-GPU inferencing.
 
 ifndef::upstream[]
 [IMPORTANT]
@@ -30,9 +30,9 @@ ifdef::upstream[]
 endif::[]
 
 ** You are using an NVIDIA GPU (`nvidia.com/gpu`).
-** Specify the GPU type through either the `ServingRuntime` or `InferenceService`. If the GPU type specified in the `ServingRuntime` differs from what is set in the `InferenceService`, both GPU types are assigned to the resource and can cause errors. 
+** You have specified the GPU type through either the `ServingRuntime` or `InferenceService`. If the GPU type specified in the `ServingRuntime` differs from what is set in the `InferenceService`, both GPU types are assigned to the resource and can cause errors. 
 * You have enabled KServe on your cluster.
-* You have only 1 head pod in your setup. Do not adjust the replica count using the `min_replicas` or `max_replicas` settings in the `InferenceService`. Creating additional head pods can cause them to be excluded from the Ray cluster.	
+* You have only one head pod in your setup. Do not adjust the replica count using the `min_replicas` or `max_replicas` settings in the `InferenceService`. Creating additional head pods can cause them to be excluded from the Ray cluster.	
 * You have a persistent volume claim (PVC) set up and configured for ReadWriteMany (RWX) access mode. 
 
 .Procedure
@@ -44,7 +44,7 @@ $ oc login <openshift_cluster_url> -u <admin_username> -p <password>
 ----
 +
 
-. Select or create a namespace where you would like to deploy the model. In this example, `kserve-demo` is used and can be created using the following command:
+. Select or create a namespace for deploying the model. For example, you can create the `kserve-demo` namespace by running the following command:
 +
 [source]
 ----
@@ -52,7 +52,8 @@ oc new-project kserve-demo
 ----
 +
 
-. From the namespace where you would like to deploy the model, create a PVC for model storage and provide the name of your storage class. The storage class must be file storage.
+. In the target namespace, create a PVC for model storage and specify the name of your storage class. The storage class must be file storage.
+// todo: check with SMEs about what last sentence means
 +
 NOTE: If you have already configured a PVC, you can skip this step.
 +
@@ -75,6 +76,7 @@ spec:
 +
 
 . Download the model to the PVC. For example:
+// todo: How does this example download the model?
 +
 [source]
 ----
