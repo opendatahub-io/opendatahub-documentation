@@ -4,35 +4,69 @@
 = Enabling Intel Gaudi AI accelerators
 
 [role='_abstract']
-Before you can use Intel Gaudi AI accelerators in {productname-short}, you must install the necessary dependencies and deploy the HabanaAI Operator. 
+Before you can use Intel Gaudi AI accelerators in {productname-short}, you must install the required dependencies, deploy the Intel Gaudi AI Accelerator Operator, and configure the environment.
 
 .Prerequisites
 ifdef::upstream,self-managed[]
-* You have logged in to {openshift-platform}.
+* You are logged in to {openshift-platform}.
 * You have the `cluster-admin` role in {openshift-platform}.
+* Intel Gaudi devices are installed and detected in your environment.
+* Your OpenShift environment supports EC2 DL1 instances if you are running on Amazon Web Services (AWS).
 endif::[]
 ifdef::cloud-service[]
-* You have logged in to OpenShift.
+* You are logged in to OpenShift.
 * You have the `cluster-admin` role in OpenShift.
+* Intel Gaudi devices are installed and detected in your environment.
+* Your OpenShift environment supports EC2 DL1 instances if you are running on Amazon Web Services (AWS).
 endif::[]
 
 .Procedure
-. To enable Intel Gaudi AI accelerators in {productname-short}, follow the instructions at link:https://docs.habana.ai/en/latest/Orchestration/HabanaAI_Operator/index.html[HabanaAI Operator for OpenShift].
-
-.Verification
-* From the *Administrator* perspective, the following Operators appear on the *Operators* -> *Installed Operators* page.
-** HabanaAI
-** Node Feature Discovery (NFD)
-** Kernel Module Management (KMM)
-
+. Install version 1.18 of the Intel Gaudi AI Accelerator Operator, as described in link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/Intel_Gaudi_Base_Operator/index.html[GaudiAI Operator OpenShift installation].
+ifndef::upstream[]
+. Create a custom workbench image for Intel Gaudi AI accelerators, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/creating-custom-workbench-images[Creating custom workbench images].
+endif::[]
+ifdef::upstream[]
+. Create a custom workbench image for Intel Gaudi AI accelerators, as described in link:{odhdocshome}/managing-odh/#creating-custom-workbench-images[Creating custom workbench images].
+endif::[]
 //downstream - all
 ifndef::upstream[]
-After installing the HabanaAI Operator, create an accelerator profile as described in link:{rhoaidocshome}{default-format-url}/working_with_accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+. After installing the HabanaAI Operator, create an accelerator profile, as described in link:{rhoaidocshome}{default-format-url}/working_with_accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
 endif::[]
 //upstream only
 ifdef::upstream[]
-After installing the HabanaAI Operator, create an accelerator profile as described in link:{odhdocshome}/working-with-accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+. After installing the HabanaAI Operator, create an accelerator profile, as described in link:{odhdocshome}/working-with-accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
 endif::[]
+
+.Verification
+From the *Administrator* perspective, go to the *Operators* -> *Installed Operators* page. Confirm that the following Operators appear:
+
+* Intel Gaudi AI Accelerator
+* Node Feature Discovery (NFD)
+* Kernel Module Management (KMM)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //[role='_additional-resources']
