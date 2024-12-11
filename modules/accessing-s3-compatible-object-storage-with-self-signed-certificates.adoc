@@ -6,7 +6,27 @@
 [role='_abstract']
 To use object storage solutions or databases that are deployed in an OpenShift cluster that uses self-signed certificates, you need to configure {productname-short} to trust the cluster's certificate authority (CA).
 
-Each namespace has a ConfigMap called `kube-root-ca.crt` that contains the CA certificates of the internal API Server. Use the following steps to configure {productname-short} to trust the certificates issued by `kube-root-ca.crt`. 
+Each namespace has a ConfigMap called `kube-root-ca.crt` that contains the CA certificates of the internal API Server. Use the following steps to configure Open Data Hub to trust the certificates issued by `kube-root-ca.crt`.
+
+ifdef::upstream[]
+Alternatively, you can add a custom CA bundle by using the OpenShift console, as described in link:{odhdocshome}/installing-open-data-hub/#adding-a-ca-bundle_certs[Adding a CA bundle].
+endif::[]
+
+ifdef::self-managed[]
+
+ifndef::disconnected[]
+Alternatively, you can add a custom CA bundle by using the OpenShift console, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#adding-a-ca-bundle_certs[Adding a CA bundle].
+endif::[]
+
+ifdef::disconnected[]
+Alternatively, you can add a custom CA bundle by using the OpenShift console, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs#adding-a-ca-bundle_certs[Adding a CA bundle].
+endif::[]
+
+endif::[]
+
+ifdef::cloud-service[]
+Alternatively, you can add a custom CA bundle by using the OpenShift console, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#adding-a-ca-bundle_certs[Adding a CA bundle].
+endif::[]
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -40,7 +60,7 @@ oc patch dscinitialization default-dsci --type='json' -p='[{"op":"replace","path
 ----
 
 .Verification
-* Components configured to use object storage solutions or databases that are deployed in the OpenShift cluster connect successfully. For example, a pipeline server that is configured to use a database deployed in the cluster starts successfully.
+* You can successfully deploy components configured to use object storage solutions or databases that are deployed in the OpenShift cluster. For example, a pipeline server that is configured to use a database deployed in the cluster starts successfully.
 
 // [role="_additional-resources"]
 // .Additional resources

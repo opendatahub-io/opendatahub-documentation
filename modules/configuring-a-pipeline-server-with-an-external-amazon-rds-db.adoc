@@ -37,6 +37,7 @@ oc get dscinitializations.dscinitialization.opendatahub.io default-dsci -o json 
 cat us-east-1-bundle.pem >> /tmp/my-custom-ca-bundles.crt
 ----
 . Run the following command to update the {productname-short} trusted CA configuration to trust certificates issued by the CAs included in the new custom CA configuration file.
++
 ----
 oc patch dscinitialization default-dsci --type='json' -p='[{"op":"replace","path":"/spec/trustedCABundle/customCABundle","value":"'"$(awk '{printf "%s\\n", $0}' /tmp/my-custom-ca-bundles.crt)"'"}]'
 ----
