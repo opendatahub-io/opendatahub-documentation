@@ -4,15 +4,15 @@
 = Intel Gaudi AI Accelerator integration  
 
 [role='_abstract']
-To accelerate your high-performance deep learning (DL) models, you can integrate Intel Gaudi AI accelerators into {productname-short}. This integration enables your data scientists to use Gaudi libraries and software associated with Intel Gaudi AI accelerators through custom-configured workbench instances.  
+To accelerate your high-performance deep learning models, you can integrate Intel Gaudi AI accelerators into {productname-short}. This integration enables your data scientists to use Gaudi libraries and software associated with Intel Gaudi AI accelerators through custom-configured workbench instances.  
 
 Intel Gaudi AI accelerators offer optimized performance for deep learning workloads, with the latest Gaudi 3 devices providing significant improvements in training speed and energy efficiency. These accelerators are suitable for enterprises running machine learning and AI applications on {productname-short}.  
 
 Before you can enable Intel Gaudi AI accelerators in {productname-short}, you must complete the following steps:
 
-1. Install version 1.18 of the Intel Gaudi AI Accelerator Operator from OperatorHub.  
-2. Create and configure a custom workbench image for Intel Gaudi AI accelerators. A prebuilt workbench image for Gaudi accelerators is not included in {productname-short}.  
-3. Manually define and configure an accelerator profile for each Intel Gaudi AI device in your environment.  
+. Install version 1.18 of the Intel Gaudi AI Accelerator Operator from OperatorHub.  
+. Create and configure a custom workbench image for Intel Gaudi AI accelerators. A prebuilt workbench image for Gaudi accelerators is not included in {productname-short}.  
+. Manually define and configure an accelerator profile for each Intel Gaudi AI device in your environment.  
 
 {productname-short} supports Intel Gaudi devices up to Intel Gaudi 3. The Intel Gaudi 3 accelerators, in particular, offer:
 
@@ -20,7 +20,7 @@ Before you can enable Intel Gaudi AI accelerators in {productname-short}, you mu
 * Energy Efficiency: Lower power consumption while maintaining high performance, reducing operational costs for large-scale deployments.  
 * Scalable Architecture: Support for scaling across multiple devices and nodes, making them effective for distributed training configurations on OpenShift.  
 
-Your OpenShift platform must support EC2 DL1 instances to use Intel Gaudi AI accelerators in an Amazon EC2 DL1 instance. Once the accelerators are enabled, the custom workbench image is created, and the accelerator profiles are configured, Intel Gaudi AI accelerators become available for use in workbench instances or model serving.  
+Your OpenShift platform must support EC2 DL1 instances to use Intel Gaudi AI accelerators in an Amazon EC2 DL1 instance. You can use Intel Gaudi AI accelerators in workbench instances or model serving after you enable the accelerators, create a custom workbench image, and configure the accelerator profile.
 
 To identify the Intel Gaudi AI accelerators present in your deployment, use the `lspci` utility. For more information, see link:https://linux.die.net/man/8/lspci[lspci(8) - Linux man page].  
 
