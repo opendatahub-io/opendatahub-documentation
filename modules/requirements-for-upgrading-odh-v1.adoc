@@ -1,10 +1,15 @@
 :_module-type: REFERENCE
 
-[id="requirements-for-upgrading-odh_{context}"]
-= Requirements for upgrading {productname-short}
+[id="requirements-for-upgrading-odh-v1_{context}"]
+= Requirements for upgrading {productname-short} version 1
 
 [role="_abstract"]
-This section describes the tasks that you should complete when upgrading {productname-short}.
+This section describes the tasks that you should complete when upgrading {productname-short} version 1 to version 2.
+
+[NOTE]
+--
+After you install {productname-short} {vernum}, pipelines created with data science pipelines 1.0 continue to run, but are inaccessible from the {productname-short} dashboard. If you are a current data science pipelines user, do not install {productname-short} with data science pipelines 2.0 until you are ready to migrate to the new pipelines solution.
+--
 
 *Check the components in the `DataScienceCluster` object*
 
@@ -19,9 +24,9 @@ New components are not automatically added to the `DataScienceCluster` object du
 
 *Recreate existing pipeline runs*
 
-When you upgrade to version {vernum}, any existing pipeline runs that you created in version 1 continue to refer to the previous version's image (as expected).
+When you upgrade to {productname-short} {vernum}, any existing pipeline runs that you created in version 1 continue to refer to the previous version's image (as expected).
 
-You must delete the pipeline runs (not the pipelines) and create new pipeline runs. The pipeline runs that you create in version {vernum} correctly refer to the version {vernum} image.
+After upgrading, you must delete the pipeline runs (not the pipelines) and create new pipeline runs. The pipeline runs that you create in version {vernum} correctly refer to the version {vernum} image.
 
 For more information about pipeline runs, see link:{odhdocshome}/working-with-data-science-pipelines/#managing-pipeline-runs_ds-pipelines[Managing pipeline runs].
 
@@ -31,7 +36,7 @@ For KServe (single-model serving platform), you must meet these requirements:
 
 * Install dependent Operators, including the Red Hat OpenShift Serverless and Red Hat OpenShift Service Mesh Operators. For more information, see link:{odhdocshome}/serving-models/#serving-large-models_serving-large-models[Serving large models].
 
-* After the upgrade, you must inspect the default `DataScienceCluster` object and verify that the value of the  `managementState` field for the `kserve` component is `Managed`.
+* After upgrading, you must inspect the default `DataScienceCluster` object and verify that the value of the  `managementState` field for the `kserve` component is `Managed`.
 
 * In {productname-long} version 1, the KServe component is a Limited Availability feature. If you enabled the `kserve` component and created models in version 1, then after you upgrade to version {vernum}, you must update some {productname-short} resources as follows:
 
@@ -63,8 +68,4 @@ $ oc patch crd inferenceservices.serving.kserve.io --type=json -p='[{"op": "remo
 + 
 
 * If you deployed a model by using KServe in {productname-short} version 1, when you upgrade to version {vernum} the model does not automatically appear in the {productname-short} dashboard. To update the dashboard view, redeploy the model by using the {productname-short} dashboard.
-
-
-
-
 
