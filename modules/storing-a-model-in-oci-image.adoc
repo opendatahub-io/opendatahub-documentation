@@ -1,0 +1,87 @@
+:_module-type: PROCEDURE
+
+[id="storing-a-model-in-oci-image{context}"]
+= Storing a model in an OCI image
+
+[role='_abstract']
+
+You can store a model in an OCI image. The following procedure uses the example of storing a MobileNet v2-7 model in ONNX format.
+
+.Prerequisites
+* You have a model in the ONNX format. The example in this procedure uses the link:https://github.com/onnx/models/raw/main/validated/vision/classification/mobilenet/model/mobilenetv2-7.onnx[MobileNet v2-7 model].
+* You have installed the Podman tool.
+
+.Procedure
+. From your local machine, create a temporary directory for storing both the model and the support files that you need to create the OCI image:
++
+[source]
+----
+cd $(mktemp -d)
+----
++
+. Create a `models` folder inside the temporary directory:
++
+[source]
+----
+mkdir -p models/1
+----
++
+[NOTE]
+====
+The subdirectory `1` is used because OpenVINO requires numbered subdirectories for model versioning. If you are not using OpenVINO, you do not need to create the `1` subdirectory to use OCI container images.
+====
+. Download the model and support files:
++
+[source]
+----
+DOWNLOAD_URL=https://github.com/onnx/models/raw/main/validated/vision/classification/mobilenet/model/mobilenetv2-7.onnx
+curl -L $DOWNLOAD_URL -O --output-dir models/1/
+----
+. Create a Docker file named `Containerfile` with the following contents:
++
+[source]
+----
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest
+COPY --chown=0:0 models /models
+RUN chmod -R a=rX /models
+
+# nobody user
+USER 65534 
+----
++
+[NOTE]
+====
+* In this example, `ubi9-micro` is used as a base container image. You cannot use empty images that do not provide a shell, such as `scratch`, because KServe uses the shell to ensure the model files are accessible to the model server. 
+* Ownership of the copied model files and read permissions are granted to the `root` group. OpenShift runs containers with a random user ID and the `root` group ID. Changing ownership of the group ensures that the model server can access them.
+====
++
+. Use the `tree` command to confirm that the models follow the directory structure:
++
+[source]
+----
+tree
+----
++
+The `tree` command should return a directory structure similar to the following example:
+[source]
+----
+.
+├── Containerfile
+└── models
+    └── 1
+        └── mobilenetv2-7.onnx
+----
++
+. Use `podman build` commands to create the OCI container image and upload it to a registry. The following commands use Quay as the registry.
++
+[NOTE]
+====
+If your repository is private, ensure you are authenticated to the registry before uploading your container image.
+====
++
+[source]
+----
+podman build --format=oci -t quay.io/<user_name>/<repository_name>:<tag_name> .
+podman push quay.io/<user_name>/<repository_name>:<tag_name>
+----
++
