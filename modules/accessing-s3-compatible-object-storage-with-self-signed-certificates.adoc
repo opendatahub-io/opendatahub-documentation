@@ -6,50 +6,41 @@
 [role='_abstract']
 To use object storage solutions or databases that are deployed in an OpenShift cluster that uses self-signed certificates, you need to configure {productname-short} to trust the cluster's certificate authority (CA).
 
-Each namespace has a ConfigMap called `kube-root-ca.crt` that contains the CA certificates of the internal API Server. Use the following steps to configure {productname-short} to trust the certificates issued by `kube-root-ca.crt`.
+Each namespace has a ConfigMap called `kube-root-ca.crt` that contains the CA certificates of the internal API Server. Use the following steps to configure {productname-short} to trust the certificates issued by `kube-root-ca.crt`. 
 
-.Prerequisite
+.Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
 * You have access to S3-compatible cloud storage.
-ifdef::upstream[]
-* You have added self-signed certificates to a central CA bundle as described in link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
-endif::[]
-ifdef::self-managed[]
-* You have added self-signed certificates to a central CA bundle as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs[Working with certificates]).
-endif::[]
-ifdef::cloud-service[]
-* You have added self-signed certificates to a central CA bundle as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
-endif::[]
 
 .Procedure
 . In a terminal window, log in to the OpenShift CLI as shown in the following example:
 +
 [source]
 ----
-oc login api.<<CLUSTER_NAME>>.<<CLUSTER_DOMAIN>>:6443 --web
+oc login api.<cluster_name>.<cluster_domain>:6443 --web
 ----
-. Run the following command to display the current {productname-short} trusted CA configuration.
+. Run the following command to fetch the current {productname-short} trusted CA configuration and store it in a new file.
 +
 [source]
 ----
-oc get dscinitializations.dscinitialization.opendatahub.io default-dsci -o json | jq '.spec.trustedCABundle.customCABundle' > /tmp/my-rhoai-custom-ca-bundles.crt
+oc get dscinitializations.dscinitialization.opendatahub.io default-dsci -o json | jq '.spec.trustedCABundle.customCABundle' > /tmp/my-custom-ca-bundles.crt
 ----
 . Add the cluster's `kube-root-ca.crt` to the {productname-short} trusted CA configuration:
 +
 [source]
 ----
-oc get configmap kube-root-ca.crt -o jsonpath="{['data']['ca\.crt']}" >> /tmp/my-rhoai-custom-ca-bundles.crt
+oc get configmap kube-root-ca.crt -o jsonpath="{['data']['ca\.crt']}" >> /tmp/my-custom-ca-bundles.crt
 ----
 . Update the {productname-short} trusted CA configuration to trust certificates issued by the certificate authorities in `kube-root-ca.crt`:
 +
 [source]
 ----
-oc patch dscinitialization default-dsci --type='json' -p='[{"op":"replace","path":"/spec/trustedCABundle/customCABundle","value":"'"$(awk '{printf "%s\\n", $0}' /tmp/my-rhoai-custom-ca-bundles.crt)"'"}]'
+oc patch dscinitialization default-dsci --type='json' -p='[{"op":"replace","path":"/spec/trustedCABundle/customCABundle","value":"'"$(awk '{printf "%s\\n", $0}' /tmp/my-custom-ca-bundles.crt)"'"}]'
 ----
 
 .Verification
-* 
+* Components configured to use object storage solutions or databases that are deployed in the OpenShift cluster connect successfully. For example, a pipeline server that is configured to use a database deployed in the cluster starts successfully.
 
 // [role="_additional-resources"]
 // .Additional resources
