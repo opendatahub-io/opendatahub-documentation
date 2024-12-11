@@ -1,0 +1,83 @@
+:_module-type: PROCEDURE
+
+[id="configuring-monitoring-for-your-model-serving-platform_{context}"]
+= Configuring monitoring for your model serving platform
+
+[role="_abstract"]
+
+{productname-short} provides the following model serving platforms:
+
+Single-model serving platform::
+For deploying large models such as large language models (LLMs), {productname-short} includes a single model serving platform that is based on the link:https://github.com/kserve/kserve[KServe] component. Each model is deployed from its own model server. Use the single model serving platform in situations where you need to deploy, monitor, scale, and maintain large models that require increased resources.
+
+Multi-model serving platform::
+For deploying small and medium-sized models, {productname-short} includes a multi-model serving platform that is based on the link:https://github.com/kserve/modelmesh[ModelMesh] component. On the multi-model serving platform, you can deploy multiple models on the same model server. Each of the deployed models shares the server resources. This approach can be useful on {productname-short} clusters that have finite compute resources or pods.
+
+The process for configuring monitoring for either a single (KServe) or a multi-model (ModelMesh) serving platform is the same.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You are familiar with link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-the-monitoring-stack#creating-user-defined-workload-monitoring-configmap_configuring-the-monitoring-stack[creating a config map] for monitoring a user-defined workflow. You will perform similar steps in this procedure.
+* You are familiar with link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/enabling-monitoring-for-user-defined-projects[enabling monitoring] for user-defined projects in OpenShift. You will perform similar steps in this procedure.
+* You have link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/enabling-monitoring-for-user-defined-projects#granting-users-permission-to-monitor-user-defined-projects_enabling-monitoring-for-user-defined-projects[assigned] the `monitoring-rules-view` role to users that will monitor metrics.
+
+.Procedure
+. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+. Define a `ConfigMap` object in a YAML file called `uwm-cm-conf.yaml` with the following contents:
++
+[source]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-workload-monitoring-config
+  namespace: openshift-user-workload-monitoring
+data:
+  config.yaml: |
+    prometheus:
+      logLevel: debug 
+      retention: 15d
+----
++
+The `user-workload-monitoring-config` object configures the components that monitor user-defined projects.  Observe that the retention time is set to the recommended value of 15 days.
+
+. Apply the configuration to create the `user-workload-monitoring-config` object.
++
+[source]
+----
+$ oc apply -f uwm-cm-conf.yaml
+----
+
+. Define another `ConfigMap` object in a YAML file called `uwm-cm-enable.yaml` with the following contents:
+
++
+[source]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-monitoring-config
+  namespace: openshift-monitoring
+data:
+  config.yaml: |
+    enableUserWorkload: true
+----
++
+The `cluster-monitoring-config` object enables monitoring for user-defined projects.
+
+. Apply the configuration to create the `cluster-monitoring-config` object.
++
+[source]
+----
+$ oc apply -f uwm-cm-enable.yaml
+----
+
+// [role="_additional-resources"]
+// .Additional resources
