@@ -20,9 +20,16 @@ endif::[]
 +
 [IMPORTANT]
 ====
-To ensure the runtime configuration is created automatically, you must have created the pipeline server before you created the workbench.
+To ensure that the runtime configuration is created automatically, you must create the pipeline server before you create the workbench.
 ====
-* You have created and launched a workbench using a notebook image that contains the Elyra extension (Standard data science, TensorFlow, TrustyAI, or PyTorch).
+ifndef::upstream[]
+* You have created a workbench with a workbench image that contains the Elyra extension (Standard Data Science, TensorFlow, TrustyAI, or PyTorch), as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE].
+* You have started the workbench and opened the JupyterLab interface, as described in link:{rhoaidocshome}{default-format-url}/working_in_your_data_science_ide/accessing-your-workbench-ide_ide[Accessing your workbench IDE].
+endif::[]
+ifdef::upstream[]
+* You have created a workbench with a workbench image that contains the Elyra extension (Standard Data Science, TensorFlow, TrustyAI, or PyTorch), as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE].
+* You have started the workbench and opened the JupyterLab interface, as described in link:{odhdocshome}/working-in-your-data-science-ide/#accessing-your-workbench-ide_ide[Accessing your workbench IDE].
+endif::[]
 * You have access to S3-compatible storage.
 
 .Procedure
