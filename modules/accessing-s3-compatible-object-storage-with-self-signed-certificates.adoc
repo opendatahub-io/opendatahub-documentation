@@ -6,11 +6,13 @@
 [role='_abstract']
 To use object storage solutions or databases that are deployed in an OpenShift cluster that uses self-signed certificates, you need to configure {productname-short} to trust the cluster's certificate authority (CA).
 
-Each namespace has a ConfigMap called `kube-root-ca.crt` that contains the CA certificates of the internal API Server. Use the following steps to configure Open Data Hub to trust the certificates issued by `kube-root-ca.crt`.
+Each namespace has a ConfigMap called `kube-root-ca.crt` that contains the CA certificates of the internal API Server. Use the following steps to configure {productname-short} to trust the certificates issued by `kube-root-ca.crt`.
 
 ifdef::upstream[]
 Alternatively, you can add a custom CA bundle by using the OpenShift console, as described in link:{odhdocshome}/installing-open-data-hub/#adding-a-ca-bundle_certs[Adding a CA bundle].
 endif::[]
+
+ifndef::upstream[]
 
 ifdef::self-managed[]
 
@@ -28,10 +30,12 @@ ifdef::cloud-service[]
 Alternatively, you can add a custom CA bundle by using the OpenShift console, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#adding-a-ca-bundle_certs[Adding a CA bundle].
 endif::[]
 
+endif::[]
+
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
-* You have access to S3-compatible cloud storage.
+* You have an object storage solution or database deployed in your OpenShift cluster.
 
 .Procedure
 . In a terminal window, log in to the OpenShift CLI as shown in the following example:
@@ -44,7 +48,7 @@ oc login api.<cluster_name>.<cluster_domain>:6443 --web
 +
 [source]
 ----
-oc get dscinitializations.dscinitialization.opendatahub.io default-dsci -o json | jq '.spec.trustedCABundle.customCABundle' > /tmp/my-custom-ca-bundles.crt
+oc get dscinitializations.dscinitialization.opendatahub.io default-dsci -o json | jq -r '.spec.trustedCABundle.customCABundle' > /tmp/my-custom-ca-bundles.crt
 ----
 . Add the cluster's `kube-root-ca.crt` to the {productname-short} trusted CA configuration:
 +
@@ -60,7 +64,16 @@ oc patch dscinitialization default-dsci --type='json' -p='[{"op":"replace","path
 ----
 
 .Verification
-* You can successfully deploy components configured to use object storage solutions or databases that are deployed in the OpenShift cluster. For example, a pipeline server that is configured to use a database deployed in the cluster starts successfully.
+* You can successfully deploy components that are configured to use object storage solutions or databases that are deployed in the OpenShift cluster. For example, a pipeline server that is configured to use a database deployed in the cluster starts successfully.
+
+ifndef::upstream[]
+[NOTE]
+====
+You can test your new certificate configuration by following the steps in the {productname-short} tutorial fraud detection example to run a script to install local object storage buckets and create connections, and then enable data science pipelines.
+
+For more information, see link:{rhoaidocshome}{default-format-url}/openshift_ai_tutorial_-_fraud_detection_example/setting-up-a-project-and-storage#running-a-script-to-install-storage[Running a script to install local object storage buckets and create connections] and link:{rhoaidocshome}{default-format-url}/openshift_ai_tutorial_-_fraud_detection_example/setting-up-a-project-and-storage#enabling-data-science-pipelines[Enabling data science pipelines.]
+====
+endif::[]
 
 // [role="_additional-resources"]
 // .Additional resources
