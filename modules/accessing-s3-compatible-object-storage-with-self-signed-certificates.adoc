@@ -4,7 +4,7 @@
 = Accessing S3-compatible object storage with self-signed certificates
 
 [role='_abstract']
-To use object storage solutions or databases that are deployed in an OpenShift cluster that uses self-signed certificates, you need to configure {productname-short} to trust the cluster's certificate authority (CA).
+To use object storage solutions or databases that are deployed in an OpenShift cluster that uses self-signed certificates, you must configure {productname-short} to trust the cluster's certificate authority (CA).
 
 Each namespace has a ConfigMap called `kube-root-ca.crt` that contains the CA certificates of the internal API Server. Use the following steps to configure {productname-short} to trust the certificates issued by `kube-root-ca.crt`.
 
@@ -44,13 +44,13 @@ endif::[]
 ----
 oc login api.<cluster_name>.<cluster_domain>:6443 --web
 ----
-. Run the following command to fetch the current {productname-short} trusted CA configuration and store it in a new file.
+. Run the following command to fetch the current {productname-short} trusted CA configuration and store it in a new file:
 +
 [source]
 ----
 oc get dscinitializations.dscinitialization.opendatahub.io default-dsci -o json | jq -r '.spec.trustedCABundle.customCABundle' > /tmp/my-custom-ca-bundles.crt
 ----
-. Add the cluster's `kube-root-ca.crt` to the {productname-short} trusted CA configuration:
+. Add the cluster's `kube-root-ca.crt` ConfigMap to the {productname-short} trusted CA configuration:
 +
 [source]
 ----
@@ -69,9 +69,9 @@ oc patch dscinitialization default-dsci --type='json' -p='[{"op":"replace","path
 ifndef::upstream[]
 [NOTE]
 ====
-You can test your new certificate configuration by following the steps in the {productname-short} tutorial fraud detection example to run a script to install local object storage buckets and create connections, and then enable data science pipelines.
+You can verify your new certificate configuration by following the steps in the {productname-short} fraud detection tutorial. Run the script to install local object storage buckets and create connections, and then enable data science pipelines.
 
-For more information, see link:{rhoaidocshome}{default-format-url}/openshift_ai_tutorial_-_fraud_detection_example/setting-up-a-project-and-storage#running-a-script-to-install-storage[Running a script to install local object storage buckets and create connections] and link:{rhoaidocshome}{default-format-url}/openshift_ai_tutorial_-_fraud_detection_example/setting-up-a-project-and-storage#enabling-data-science-pipelines[Enabling data science pipelines.]
+For more information, see link:{rhoaidocshome}{default-format-url}/openshift_ai_tutorial_-_fraud_detection_example/setting-up-a-project-and-storage#running-a-script-to-install-storage[Running a script to install local object storage buckets and create connections] and link:{rhoaidocshome}{default-format-url}/openshift_ai_tutorial_-_fraud_detection_example/setting-up-a-project-and-storage#enabling-data-science-pipelines[Enabling data science pipelines].
 ====
 endif::[]
 

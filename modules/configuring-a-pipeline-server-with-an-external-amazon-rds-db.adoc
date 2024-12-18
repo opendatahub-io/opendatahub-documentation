@@ -25,18 +25,18 @@ For example, if the database was created in the `us-east-1` region, download `us
 ----
 oc login api.<cluster_name>.<cluster_domain>:6443 --web
 ----
-. Run the following command to fetch the current {productname-short} trusted CA configuration and store it in a new file.
+. Run the following command to fetch the current {productname-short} trusted CA configuration and store it in a new file:
 +
 [source]
 ----
 oc get dscinitializations.dscinitialization.opendatahub.io default-dsci -o json | jq '.spec.trustedCABundle.customCABundle' > /tmp/my-custom-ca-bundles.crt
 ----
-. Run the following command to append the PEM certificate bundle that you downloaded to the new custom CA configuration file.
+. Run the following command to append the PEM certificate bundle that you downloaded to the new custom CA configuration file:
 +
 ----
 cat us-east-1-bundle.pem >> /tmp/my-custom-ca-bundles.crt
 ----
-. Run the following command to update the {productname-short} trusted CA configuration to trust certificates issued by the CAs included in the new custom CA configuration file.
+. Run the following command to update the {productname-short} trusted CA configuration to trust certificates issued by the CAs included in the new custom CA configuration file:
 +
 ----
 oc patch dscinitialization default-dsci --type='json' -p='[{"op":"replace","path":"/spec/trustedCABundle/customCABundle","value":"'"$(awk '{printf "%s\\n", $0}' /tmp/my-custom-ca-bundles.crt)"'"}]'
