@@ -3,50 +3,37 @@
 [id="editing-a-connection-type_{context}"]
 = Editing a connection type
 
-
 [role='_abstract']
-As an {productname-short} administrator, you can create a connection type for users in your organization.
+As an {productname-short} administrator, you can edit a connection type for users in your organization.
 
+ifdef::upstream[]
+Note that you cannot edit the connection types that are pre-installed with {productname-short}. Instead, you have the option of duplicating a pre-installed connection type, as described in link:{odhdocshome}/managing-odh/#duplicating-a-connection-type_resource-mgmt[Duplicating a connection type].
+endif::[]
+ifndef::upstream[]
+Note that you cannot edit the connection types that are pre-installed with {productname-short}. Instead, you have the option of duplicating a pre-installed connection type, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-connection-types#duplicating-a-connection-type_resource-mgmt[Duplicating a connection type].
+endif::[]
 
+When you edit a connection type, your edits do not apply to any existing connections that users previously created. If you want to keep track of previous versions of this connection type, consider duplicating it instead of editing it.
 
 .Prerequisites
 * You have logged in to {productname-short} as a user with {productname-short} administrator privileges. 
 
 .Procedure
+
 . From the {productname-short} dashboard, click *Settings* -> *Connection types*.
+
+. From the list of available connection types, find the connection type that you want to edit. 
+
+. Click the Options menu image:images/osd-ellipsis.png[Options menu], and then click *Edit*.
 +
-The *Connection types* page appears, displaying the available connection types.
+The *Edit connection type* form appears.
 
-. Click *Create connection type*.
+. Edit the form fields and sections.
 
-. In the *Create connection type* form, enter the following information:
-
-.. Type a name for the connection type.
-+
-A resource name is generated based on the name of the connection type, with a *ct-* prefix. A resource name is the label for the underlying resource in OpenShift. 
-
-.. Optionally, edit the default resource name. Note that you cannot change the resource name after you create the connection type.
-
-.. Optionally, provide a description of the connection type.
-
-.. Specify at least one category label. By default, the category labels are database, model registry, object storage, and URI. Optionally, you can create a new category but typing the new category label in the field. You can specify more than one category.
-+
-The category label is for descriptive purposes only. It allows you and the users in your origanization to sort the available connection types when viewing them in the {productname-short} dashboard interface.
-
-.. Check the *Enable users in your organization to use this connection type when adding connections"* option if you want the connection type to appear in the list of connections available to users, for example, when they configure a workbench, a model server, or a pipeline.
-
-.. For the *Fields* section, add the fields and section headings that you want your users to see in the form when they add a connection type to a workbench, pipeline, or model server.
-+
-Note that the connection name and description fields are included by default, so you do not need to add them. 
-
-** Optionally, select a model serving compatible type to automatically add the fields required to use its corresponding model serving method.
-
-** Click *Add field* to add a field to prompt users to input information, and optionally assign default values to those fields. 
-
-** Click *Add section heading* to organize the fields under headings.
+. Click *Preview* to open a preview of connection form that your users will see and verify that the form appears as you expect.
 
 . Click *Save*.
 
 .Verification
 
-In the *Settings* -> *Connection types* page, the new connection type appears in the list.
+In the *Settings* -> *Connection types* page, the duplicated connection type appears in the list.
