@@ -4,7 +4,9 @@
 = Adding a connection to your data science project
 
 [role='_abstract']
-You can enhance your data science project by adding a connection to a data source. When you want to work with a very large data sets, you can store your data in an S3-compatible object storage bucket, so that you do not fill up your local storage. You also have the option of associating the connection with an existing workbench that does not already have a connection.
+You can enhance your data science project by adding a connection that contains the configuration parameters needed to connect to a data source or sink.
+
+When you want to work with a very large data sets, you can store your data in an S3-compatible object storage bucket or a URI-based repository, so that you do not fill up your local storage. You also have the option of associating the connection with an existing workbench that does not already have a connection.
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -15,7 +17,7 @@ ifdef::upstream[]
 * If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
 * You have created a data science project that you can add a connection to.
-* You have access to S3-compatible object storage.
+* You have access to S3-compatible object storage or a URI-based repository.
 * If you intend to add the connection to an existing workbench, you have saved any data in the workbench to avoid losing work.
 
 .Procedure
@@ -28,27 +30,38 @@ A project details page opens.
 . Click the *Connections* tab.
 . Click *Add connection*.
 +
-The *Add connection* dialog opens.
-. In the *Name* field, enter a unique name for the connection.
-. In the *Access key* field, enter the access key ID for your S3-compatible object storage provider.
-. In the *Secret key* field, enter the secret access key for the S3-compatible object storage account you specified.
-. In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
+. In the *Add connection* modal, select a *Connection type*. The *S3 compatible object storage* and *URI* options are pre-installed connection types. Additional options might be available if your {productname-short} administrator added them.
 +
-NOTE: Use the appropriate endpoint format for your object storage type. Improper formatting might cause connection errors or restrict access to storage resources. 
+The *Add connection* form opens with fields specific to the connection type that you selected.
+
+. Enter a unique name for the connection.
++
+A resource name is generated based on the name of the connection. A resource name is the label for the underlying resource in OpenShift. 
+
+. Optional: Edit the default resource name. Note that you cannot change the resource name after you create the connection.
+
+. Optional: Provide a description of the connection.
+
+. Complete the form depending on the connection type that you selected. For example:
+** If you selected *S3 compatible object storage* as the connection type, configure the connection details:
+... In the *Access key* field, enter the access key ID for the S3-compatible object storage provider.
+... In the *Secret key* field, enter the secret access key for the S3-compatible object storage account that you specified.
+... In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
++
+NOTE: Make sure to use the appropriate endpoint format. Improper formatting might cause connection errors or restrict access to storage resources. 
 ifdef::upstream[]
 For more information about how to format object storage endpoints, see link:{odhdocshome}/managing-resources/#overview-of-object-storage-endpoints_managing-resources[Overview of object storage endpoints].
 endif::[]
 ifndef::upstream[]
 For more information about how to format object storage endpoints, see link:{rhoaidocshome}{default-format-url}/managing_resources/managing-storage-classes#overview-of-object-storage-endpoints_resource-mgmt[Overview of object storage endpoints].
 endif::[]
-. In the *Region* field, enter the default region of your S3-compatible object storage account.
-. In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
-. Optional: From the *Connected workbench* list, select a workbench to connect.
+... In the *Region* field, enter the default region of your S3-compatible object storage account.
+... In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
+... Click *Create*.
+** If you selected *URI* in the preceding step, in the *URI* field, enter the Uniform Resource Identifier (URI).
+
 . Click *Add connection*.
 
 .Verification
 * The connection that you added appears on the *Connections* tab for the project.
-* If you selected a workbench, the workbench is visible in the *Connected workbenches* column on the *Connections* tab for the project.
-
-//[role='_additional-resources']
-//.Additional resources
+ 

@@ -1,0 +1,63 @@
+:_module-type: PROCEDURE
+
+[id="creating-a-connection-type_{context}"]
+= Creating a connection type
+
+[role='_abstract']
+As an {productname-short} administrator, you can create a connection type for users in your organization.
+
+ifdef::upstream[]
+You can create a new connection type as described in this procedure or you can create a copy of an existing connection type and edit it, as described 
+in link:{odhdocshome}/managing-odh/#duplicating-a-connection-type_resource-mgmt[Duplicating a connection type].
+endif::[]
+ifndef::upstream[]
+You can create a new connection type as described in this procedure or you can create a copy of an existing connection type and edit it, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-connection-types#duplicating-a-connection-type_resource-mgmt[Duplicating a connection type].
+endif::[]
+
+.Prerequisites
+* You have logged in to {productname-short} as a user with {productname-short} administrator privileges. 
+
+* You know the environment variables that are required or optional for the connection type that you want to create.
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Connection types*.
++
+The *Connection types* page appears, displaying the available connection types.
+
+. Click *Create connection type*.
+
+. In the *Create connection type* form, enter the following information:
+
+.. Enter a name for the connection type.
++
+A resource name is generated based on the name of the connection type. A resource name is the label for the underlying resource in OpenShift. 
+
+.. Optionally, edit the default resource name. Note that you cannot change the resource name after you create the connection type.
+
+.. Optionally, provide a description of the connection type.
+
+.. Specify at least one category label. By default, the category labels are database, model registry, object storage, and URI. Optionally, you can create a new category by typing the new category label in the field. You can specify more than one category.
++
+The category label is for descriptive purposes only. It allows you and the users in your origanization to sort the available connection types when viewing them in the {productname-short} dashboard interface.
+
+.. Check the *Enable users in your organization to use this connection type when adding connections"* option if you want the connection type to appear in the list of connections available to users, for example, when they configure a workbench, a model server, or a pipeline. 
++
+Note that you can also enable/disable the connection type after you create it.
+
+.. For the *Fields* section, add the fields and section headings that you want your users to see in the form when they add a connection to a project resource (such as a workbench or a model server).
++
+Note that the connection name and description fields are included by default, so you do not need to add them. 
+
+** Optionally, select a model serving compatible type to automatically add the fields required to use its corresponding model serving method.
+
+** Click *Add field* to add a field to prompt users to input information, and optionally assign default values to those fields. 
+
+** Click *Add section heading* to organize the fields under headings.
+
+. Click *Preview* to open a preview of the connection form as it will appear to your users.
+
+. Click *Save*.
+
+.Verification
+
+. On the *Settings* -> *Connection types* page, the new connection type appears in the list.
