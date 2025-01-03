@@ -135,7 +135,7 @@ spec:
 +
 [source]
 ----
-oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply  -f -
+oc process vllm-multinode-runtime-template -n redhat-ods-applications|oc apply -n kserve-demo -f -
 ----
 +
 
@@ -156,7 +156,7 @@ spec:
       modelFormat:
         name: vLLM
       runtime: vllm-multinode-runtime
-      storageUri: pvc://granite-8b-code-base-pvc/hf/8b_instruction_tuned
+      storageUri: pvc://granite-8b-code-base-pvc/granite-8b-code-base
     workerSpec: {}    
 ----
 +
