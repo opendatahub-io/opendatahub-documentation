@@ -47,7 +47,7 @@ oc process -n opendatahub -o yaml kserve-ovms | oc apply -f -
 ----
 endif::[]
 +
---
+
 . Verify that the `ServingRuntime` named `kserve-ovms` is created:
 +
 [source]
@@ -62,7 +62,6 @@ The command should return output similar to the following:
 NAME          DISABLED   MODELTYPE     CONTAINERS         AGE
 kserve-ovms              openvino_ir   kserve-container   1m
 ----
---
 +
 . Create an `InferenceService` YAML resource, depending on whether the model is stored from a private or a public OCI repository:
 ** For a model stored in a public OCI repository, create an InferenceService YAML file with the following values, replacing `<user_name>`, `<repository_name>`, and `<tag_name>` with values specific to your environment:
