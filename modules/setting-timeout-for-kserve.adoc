@@ -20,7 +20,7 @@ To resolve this issue, you can set a custom `progress-deadline` in the KServe `I
 . Log in to the {openshift-platform} console as a cluster administrator.
 . Select the project where you have deployed the model.
 . In the *Administrator* perspective, click *Home* -> *Search*.
-. From the *Resources* dropdown menu, search for InferenceService. 
+. From the *Resources* dropdown menu, search for `InferenceService`. 
 . Under `spec.predictor.annotations`, modify the `serving.knative.dev/progress-deadline` with the new timeout:
 +
 [source]
@@ -37,5 +37,5 @@ spec:
 +
 [NOTE]
 ====
-Ensure that you set the `progress-deadline` on the `spec.predictor.annotations` level, so the InferenceService can copy the `progress-deadline` back to the KNative Service object.
+Ensure that you set the `progress-deadline` on the `spec.predictor.annotations` level, so that the InferenceService can copy the `progress-deadline` back to the KNative Service object.
 ====
