@@ -7,7 +7,7 @@
 
 When deploying large models or using node autoscaling with KServe, the operation may time out before a model is deployed because the default `progress-deadline` that KNative Serving sets is 10 minutes.
 
-If a pod using KNative Serving takes longer than 10 minutes to deploy, the pod might be automatically marked as failed. This can happen if you are deploying large models that take longer than 10 minutes to pull from S3 or if you are using node autoscaling to reduce the consumption of GPU nodes.
+If a pod using KNative Serving takes longer than 10 minutes to deploy, the pod might be automatically marked as failed. This can happen if you are deploying large models that take longer than 10 minutes to pull from S3-compatible object storage or if you are using node autoscaling to reduce the consumption of GPU nodes.
 
 To resolve this issue, you can set a custom `progress-deadline` in the KServe `InferenceService` for your application.
 
