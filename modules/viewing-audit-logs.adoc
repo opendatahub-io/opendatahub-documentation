@@ -1,0 +1,68 @@
+:_module-type: PROCEDURE
+
+[id='viewing-audit-records_{context}']
+= Viewing audit records
+
+[role='_abstract']
+Cluster administrators can use {openshift-platform} auditing to see changes made to the {productname-short} Operator configuration by reviewing modifications to the DataScienceCluster (DSC) and DSCInitialization (DSCI) custom resources. Audit logging is enabled by default in standard {openshift-platform} cluster configurations. 
+For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-view#audit-log-view[Viewing audit logs^] in the {openshift-platform} documentation.
+
+ifdef::self-managed[]
+NOTE: In {org-name} OpenShift Service on Amazon Web Services with hosted control planes (ROSA HCP), audit logging is disabled by default because the Elasticsearch log store does not provide secure storage for audit logs. To send the audit logs to Amazon CloudWatch, see link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/logging/log-collection-and-forwarding#cluster-logging-collector-log-forward-cloudwatch_configuring-log-forwarding[Forwarding logs to Amazon CloudWatch].
+endif::[]
+
+The following example shows how to use the {openshift-platform} audit logs to see the history of changes made (by users) to the DSC and DSCI custom resources.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
+.Procedure
+. In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the {openshift-platform} CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+. To access the full content of the changed custom resources, set the {openshift-platform} audit log policy to `WriteRequestBodies` or a more comprehensive profile. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-policy-config#configuring-audit-policy_audit-log-policy-config[About audit log policy profiles^].
+
+. Fetch the audit log files that are available for the relevant control plane nodes. For example:
++
+[source]
+----
+oc adm node-logs --role=master --path=kube-apiserver/ \
+  | awk '{ print $1 }' | sort -u \
+  | while read node ; do
+      oc adm node-logs $node --path=kube-apiserver/audit.log < /dev/null
+    done \
+  | grep opendatahub > /tmp/kube-apiserver-audit-opendatahub.log
+----
+
+. Search the files for the DSC and DSCI custom resources. For example:
++
+[source]
+----
+jq 'select((.objectRef.apiGroup == "dscinitialization.opendatahub.io"
+                or .objectRef.apiGroup == "datasciencecluster.opendatahub.io")
+              and .user.username != "system:serviceaccount:redhat-ods-operator:redhat-ods-operator-controller-manager"
+              and .verb != "get" and .verb != "watch" and .verb != "list")' < /tmp/kube-apiserver-audit-opendatahub.log 
+----
+
+.Verification
+* The commands return relevant log entries. 
+
+[TIP]
+====
+To configure the log retention time, see the following resources:
+
+* {openshift-platform} {ocp-minimum-version} to 4.16: link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/logging/log-storage-3#cluster-logging-elasticsearch-retention_logging-config-es-store[Configuring log retention time in Elasticsearch] or link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/logging/log-storage-3#logging-loki-retention_cluster-logging-loki[Enabling stream-based retention with Loki]
+
+* {openshift-platform} 4.17: link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/logging/logging-6-1#logging-loki-retention_log6x-loki-6.1[Enabling stream-based retention with Loki]
+====
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-view#audit-log-view[Viewing audit logs]
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-policy-config#configuring-audit-policy_audit-log-policy-config[About audit log policy profiles]
