@@ -1,0 +1,62 @@
+:_module-type: PROCEDURE
+
+[id='viewing-audit-records_{context}']
+= Viewing audit records
+
+[role='_abstract']
+Cluster administrators can use {openshift-platform} auditing to see changes to the {productname-short} Operator configuration by reviewing modifications to the DataScienceCluster (DSC) and DSCInitialization (DSCI) custom resources. Audit logging is enabled by default in standard {openshift-platform} cluster configurations. 
+For more information, see https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-view#audit-log-view[Viewing audit logs^] in the {openshift-platform} documentation.
+
+//are logs NA at all or by default?
+ifdef::self-managed[]
+NOTE: Audit logs are not available in {org-name} OpenShift Service on Amazon Web Services with hosted control planes (ROSA HCP).
+endif::[]
+
+The following example shows how to use the {openshift-platform} audit logs to see the history of changes made (by users) to the DSC and DSCI custom resources.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
+.Procedure
+. In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the {openshift-platform} CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+. To access the full content of the changed custom resources, set the {openshift-platform} audit log policy to `WriteRequestBodies` or a more comprehensive profile. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-policy-config#configuring-audit-policy_audit-log-policy-config[About audit log policy profiles^].
+
+. Fetch the audit log files that are available for the relevant control plane nodes. For example:
++
+[source]
+----
+oc adm node-logs --role=master --path=kube-apiserver/ \
+  | awk '{ print $1 }' | sort -u \
+  | while read node ; do
+      oc adm node-logs $node --path=kube-apiserver/audit.log < /dev/null
+    done \
+  | grep opendatahub > /tmp/kube-apiserver-audit-opendatahub.log
+----
+
+. Search the files for the DSC and DSCI custom resources. For example:
++
+[source]
+----
+jq 'select((.objectRef.apiGroup == "dscinitialization.opendatahub.io"
+                or .objectRef.apiGroup == "datasciencecluster.opendatahub.io")
+              and .user.username != "system:serviceaccount:redhat-ods-operator:redhat-ods-operator-controller-manager"
+              and .verb != "get" and .verb != "watch" and .verb != "list")' < /tmp/kube-apiserver-audit-opendatahub.log 
+----
+
+.Verification
+* The commands return relevant log entries. 
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-view#audit-log-view[Viewing audit logs]
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-policy-config#configuring-audit-policy_audit-log-policy-config[About audit log policy profiles]
+
+//For information about configuring the retention time of audit logs, see the {org-name} Knowledgebase article https://access.redhat.com/solutions/6095671.
