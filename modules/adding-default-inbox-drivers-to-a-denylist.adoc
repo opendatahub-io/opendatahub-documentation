@@ -1,0 +1,78 @@
+:_module-type: PROCEDURE
+
+[id="adding-default-inbox-drivers-to-a-denylist_{context}"]
+= Adding default inbox drivers to a denylist
+
+[role='_abstract']
+Before you can install the AMD GPU Operator, you must add the default AMD GPU inbox drivers to a denylist on nodes in your {openshift-platform} cluster using a MachineConfig. This prevents conflicts with the specialized drivers installed by the AMD GPU Operator, ensuring stability and compatibility.
+
+.Prerequisites
+* You have administrative access to the {openshift-platform} cluster.
+* You have a running OpenShift cluster with nodes equipped with AMD GPUs.
+* You have access to the OpenShift CLI (`oc`).
+
+.Procedure
+. Create a MachineConfig to deny the default AMD GPU drivers:
+.. Save the following YAML configuration as `denylist-amd-drivers.yaml`:
++
+----
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: 99-denylist-amd-drivers
+  labels:
+    machineconfiguration.openshift.io/role: worker
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    storage:
+      files:
+      - path: /etc/modprobe.d/denylist-amdgpu.conf
+        mode: 0644
+        contents:
+          source: data:base64,denylist+amdgpu
+----
+.. Apply the MachineConfig to the cluster:
++
+----
+oc apply -f denylist-amd-drivers.yaml
+----
+. Verify that the MachineConfig has been applied:
+.. Check the MachineConfig status:
++
+----
+oc get machineconfig
+----
+.. Ensure that `99-denylist-amd-drivers` appears in the output.
+. Reboot the nodes to apply the changes:
+.. List all worker nodes in your cluster:
++
+----
+oc get nodes -l node-role.kubernetes.io/worker
+----
+.. Reboot each worker node to load the updated configuration:
++
+----
+oc debug node/<node_name> -- chroot /host reboot
+----
+. Confirm that the inbox drivers are present on the denylist:
+.. SSH into a worker node and inspect the denylist file:
++
+----
+oc debug node/<node_name> -- chroot /host cat /etc/modprobe.d/denylist-amdgpu.conf
+----
+.. Ensure the file contains the following content:
++
+----
+denylist amdgpu
+----
+
+.Verification
+* The `99-denylist-amd-drivers` MachineConfig is listed in the output of `oc get machineconfig`.
+* The `/etc/modprobe.d/denylist-amdgpu.conf` file exists on all worker nodes.
+* The default AMD GPU drivers are no longer loaded on the nodes.
+
+//[role="_additional-resources"]
+//.Additional resources
+

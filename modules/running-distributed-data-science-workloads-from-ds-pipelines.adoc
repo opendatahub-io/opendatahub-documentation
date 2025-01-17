@@ -62,15 +62,7 @@ $ pip install kfp
 .. Install any other dependencies that are required for your pipeline.
 .. Build your data science pipeline in Python code.
 +
-For example, create a file named `compile_example.py` with the following content.
-ifdef::upstream[]
-+
-[NOTE]
---
-If you copy and paste the following code example, remember to remove the _callouts_, which are not part of the code.
-The callouts (parenthetical numbers, highlighted in bold font in this document) map the relevant line of code to an explanatory note in the text immediately after the code example. 
---
-endif::[]
+For example, if you use NVIDIA GPUs, create a file named `compile_example.py` with the following content:
 +
 [source,Python]
 ----
@@ -87,7 +79,7 @@ def ray_fn():
    import ray <1>
    from codeflare_sdk import Cluster, ClusterConfiguration, generate_cert <2>
 
-
+   # If you do not use NVIDIA GPUs, substitute “nvidia.com/gpu” with the correct value for your accelerator
    cluster = Cluster( <3>
        ClusterConfiguration(
            namespace="my_project", <4>

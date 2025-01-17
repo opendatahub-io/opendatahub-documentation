@@ -35,12 +35,11 @@ endif::[]
 
 ifndef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
-See link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs].
+If you use NVIDIA GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs]. If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#amd-gpu-integration_managing-rhoai[AMD GPU integration^].
 +
 ifdef::self-managed[]
 [NOTE]
 ====
-In {productname-short} {vernum}, for distributed workloads, {org-name} supports only NVIDIA GPU accelerators.
 {org-name} supports the use of accelerators within the same cluster only. 
 {org-name} does not support remote direct memory access (RDMA) between accelerators, or the use of accelerators across a network, for example, by using technology such as NVIDIA GPUDirect or NVLink.
 ====
@@ -48,7 +47,6 @@ endif::[]
 ifdef::cloud-service[]
 [NOTE]
 ====
-In {productname-short}, for distributed workloads, {org-name} supports only NVIDIA GPU accelerators.
 {org-name} supports the use of accelerators within the same cluster only. 
 {org-name} does not support remote direct memory access (RDMA) between accelerators, or the use of accelerators across a network, for example, by using technology such as NVIDIA GPUDirect or NVLink.
 ====
@@ -56,7 +54,7 @@ endif::[]
 endif::[]
 ifdef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support.
-This process includes installing the Node Feature Discovery Operator and the NVIDIA GPU Operator.
+This process includes installing the Node Feature Discovery Operator and the relevant GPU Operator.
 For more information, see https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
 endif::[]
 
@@ -220,4 +218,3 @@ endif::[]
 ifndef::upstream[]
 Configure the distributed workloads feature as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing_distributed_workloads[Managing distributed workloads].
 endif::[]
-
