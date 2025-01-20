@@ -85,13 +85,17 @@ spec:
       modelFormat:
         name: onnx
       storageUri: oci://quay.io/<user_name>/<repository_name>:<tag_name>
+      resources:
+        requests:
+          memory: 500Mi
+          cpu: 100m
+          # nvidia.com/gpu: "1" # Only required if you have GPUs available and the model and runtime will use it
+        limits:
+          memory: 4Gi
+          cpu: 500m
+          # nvidia.com/gpu: "1" # Only required if you have GPUs available and the model and runtime will use it
 ----
 +
-[IMPORTANT]
-====
-The `ServingRuntime` and `InferenceService` configurations do not set any resource limits. 
-====
-// todo: why is this important?
 
 ** For a model stored in a private OCI repository, create an InferenceService YAML file that specifies your pull secret in the `spec.predictor.imagePullSecrets` field, as shown in the following example:
 +
@@ -104,11 +108,20 @@ metadata:
 spec:
   predictor:
     model:
-      runtime: kserve-ovms
+      runtime: kserve-ovms # Ensure this matches the name of the ServingRuntime resource
       modelFormat:
         name: onnx
       storageUri: oci://quay.io/<user_name>/<repository_name>:<tag_name>
-    imagePullSecrets: # Specify image pull secrets to use for fetching container images (including OCI model images)
+      resources:
+        requests:
+          memory: 500Mi
+          cpu: 100m
+          # nvidia.com/gpu: "1" # Only required if you have GPUs available and the model and runtime will use it
+        limits:
+          memory: 4Gi
+          cpu: 500m
+          # nvidia.com/gpu: "1" # Only required if you have GPUs available and the model and runtime will use it
+    imagePullSecrets: # Specify image pull secrets to use for fetching container images, including OCI model images
     - name: <pull-secret-name>
 ----
 +
