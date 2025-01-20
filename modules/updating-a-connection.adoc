@@ -1,0 +1,36 @@
+:_module-type: PROCEDURE
+
+[id="updating-a-connection_{context}"]
+= Updating a connection
+
+[role='_abstract']
+You can edit the configuration of an existing connection as described in this procedure. 
+
+NOTE: Any changes that you make to a connection are not applied to dependent resources (for example, a workbench) until those resources are restarted, redeployed, or otherwise regenerated.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have created a data science project, created a workbench, and you have defined a connection. 
+
+.Procedure
+. From the {productname-short} dashboard, click *Data Science Projects*.
++
+The *Data Science Projects* page opens.
+. Click the name of the project that contains the connection that you want to change.
++
+A project details page opens.
+. Click the *Connections* tab.
+. Click the action menu (*&#8942;*) beside the connection that you want to change and then click *Edit*.
++
+The *Edit connection* form opens.
+. Make your changes.
+. Click *Save*.
+
+.Verification
+* The updated connection is displayed on the *Connections* tab for the project.

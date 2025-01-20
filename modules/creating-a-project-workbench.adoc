@@ -47,7 +47,7 @@ The *Create workbench* page opens.
 +
 The resource name is what your resource is labeled in OpenShift.
 Valid characters include lowercase letters, numbers, and hyphens (-).
-The resource name cannot exceed 30 characters, and must start and end with a letter or number.
+The resource name cannot exceed 30 characters, and it must start with a letter and end with a letter or number.
 +
 *Note:* You cannot change the resource name after the workbench is created.
 You can edit only the display name and the description.
@@ -62,7 +62,7 @@ If the workbench image has multiple versions available, select the workbench ima
 +
 NOTE: You can change the workbench image after you create the workbench.
 
-. In the *Deployment size* section, from the *Container size* list, select a container size for your server. The container size controls the number of CPUs, the amount of memory, and the minimum and maximum request capacity of the container. 
+. In the *Deployment size* section, from the *Container size* list, select a container size for your server. The container size specifies the number of CPUs and the amount of memory allocated to the container, setting the guaranteed minimum (request) and maximum (limit) for both.
 
 . Optional: In the *Environment variables* section, select and specify values for any environment variables. 
 +
@@ -89,21 +89,30 @@ NOTE: You cannot change the storage class after you add the cluster storage to t
 
 . Optional: You can add a connection to your workbench. A connection is a resource that contains the configuration parameters needed to connect to a data source or sink, such as an object storage bucket. You can use storage buckets for storing data, models, and pipeline artifacts. You can also use a connection to specify the location of a model that you want to deploy.
 +
-In the *Connections* section, select the *Use a connection* checkbox. 
+In the *Connections* section, use an existing connection or create a new connection: 
 +
 --
-* Create a new connection as follows:
-.. Select *Create new connection*.
-.. In the *Name* field, enter a unique name for the connection.
-.. In the *Access key* field, enter the access key ID for the S3-compatible object storage provider.
-.. In the *Secret key* field, enter the secret access key for the S3-compatible object storage account that you specified.
-.. In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
-.. In the *Region* field, enter the default region of your S3-compatible object storage account.
-.. In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
-
 * Use an existing connection as follows:
-.. Select *Use existing connection*.
+.. Click *Attach existing connections*.
 .. From the *Connection* list, select a connection that you previously defined.
+
+* Create a new connection as follows:
+.. Click *Create connection*. The *Add connection* dialog appears.
+.. From the *Connection type* drop-down list, select the type of connection. The *Connection details* section appears.
+.. If you selected *S3 compatible object storage* in the preceding step, configure the connection details:
+... In the *Connection name* field, enter a unique name for the connection.
+... Optional: In the *Description* field, enter a description for the connection.
+... In the *Access key* field, enter the access key ID for the S3-compatible object storage provider.
+... In the *Secret key* field, enter the secret access key for the S3-compatible object storage account that you specified.
+... In the *Endpoint* field, enter the endpoint of your S3-compatible object storage bucket.
+... In the *Region* field, enter the default region of your S3-compatible object storage account.
+... In the *Bucket* field, enter the name of your S3-compatible object storage bucket.
+... Click *Create*.
+.. If you selected *URI* in the preceding step, configure the connection details:
+... In the *Connection name* field, enter a unique name for the connection.
+... Optional: In the *Description* field, enter a description for the connection.
+... In the *URI* field, enter the Uniform Resource Identifier (URI).
+... Click *Create*.
 --
 +
 . Click *Create workbench*.

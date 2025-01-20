@@ -1,0 +1,41 @@
+:_module-type: PROCEDURE
+
+[id="setting-timeout-for-kserve_{context}"]
+= Setting a timeout for KServe
+
+[role="_abstract"]
+
+When deploying large models or using node autoscaling with KServe, the operation may time out before a model is deployed because the default `progress-deadline` that KNative Serving sets is 10 minutes.
+
+If a pod using KNative Serving takes longer than 10 minutes to deploy, the pod might be automatically marked as failed. This can happen if you are deploying large models that take longer than 10 minutes to pull from S3-compatible object storage or if you are using node autoscaling to reduce the consumption of GPU nodes.
+
+To resolve this issue, you can set a custom `progress-deadline` in the KServe `InferenceService` for your application.
+
+.Prerequisites
+
+* You have namespace edit access for your {openshift-platform} cluster.
+
+.Procedure
+
+. Log in to the {openshift-platform} console as a cluster administrator.
+. Select the project where you have deployed the model.
+. In the *Administrator* perspective, click *Home* -> *Search*.
+. From the *Resources* dropdown menu, search for `InferenceService`. 
+. Under `spec.predictor.annotations`, modify the `serving.knative.dev/progress-deadline` with the new timeout:
++
+[source]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: InferenceService
+metadata:
+  name: my-inference-service
+spec:
+  predictor:
+    annotations:
+      serving.knative.dev/progress-deadline: 30m
+----
++
+[NOTE]
+====
+Ensure that you set the `progress-deadline` on the `spec.predictor.annotations` level, so that the KServe `InferenceService` can copy the `progress-deadline` back to the KNative Service object.
+====

@@ -204,6 +204,15 @@ ifdef::upstream[]
 See link:{odhdocshome}/serving_models/serving-large-models_serving-large-models#vllm_servingruntime_for_kserve[vLLM ServingRuntime for KServe^].
 endif::[]
 
+== vLLM ROCm ServingRuntime for KServe
+
+ifndef::upstream[]
+See link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#vllm_servingruntime_for_kserve[vLLM ServingRuntime for KServe^].
+endif::[]
+ifdef::upstream[]
+See link:{odhdocshome}/serving_models/serving-large-models_serving-large-models#vllm_servingruntime_for_kserve[vLLM ServingRuntime for KServe^].
+endif::[]
+
 == NVIDIA Triton Inference Server
 
 --
@@ -215,6 +224,15 @@ endif::[]
 * `v2/models/<model_name>[/versions/]/ready`
 * `v2`
 --
+
+[NOTE]
+====
+ModelMesh does not support the following REST endpoints:
+
+* `v2/health/live`
+* `v2/health/ready`
+* `v2/models/<model_name>[/versions/]/ready`
+====
 
 .Example command
 ifndef::upstream[]

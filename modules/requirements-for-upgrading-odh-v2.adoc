@@ -1,0 +1,59 @@
+:_module-type: REFERENCE
+
+[id="requirements-for-upgrading-odh-v2_{context}"]
+= Requirements for upgrading {productname-short} version 2
+
+[role="_abstract"]
+This section describes the tasks that you should complete when upgrading {productname-short} version 2.0 or 2.1 to version 2.2 or later.
+
+*Check the components in the `DataScienceCluster` object*
+
+When you upgrade to version {vernum}, the upgrade process automatically uses the values from the `DataScienceCluster` object in the previous version.
+
+After the upgrade, you should inspect the {vernum} `DataScienceCluster` object and optionally update the status of any components as described in link:{odhdocshome}/upgrading-open-data-hub/#installing-odh-components_upgradev1[Installing Open Data Hub components].
+
+[NOTE]
+====
+New components are not automatically added to the `DataScienceCluster` object during upgrade. If you want to use a new component, you must manually edit the `DataScienceCluster` object to add the component entry.
+====
+
+Note that Open Data Hub Operator versions 2.2 and later use an upgraded API version for a DataScienceCluster instance, resulting in the following differences.
+
+.DataScienceCluster instance differences
+|===
+| | ODH 2.1 and earlier | ODH 2.2 and later
+
+|API version
+|`v1alpha1`
+|`v1`
+
+|Enable component
+|`.spec.components.[component_name].enabled: true`
+|`.spec.components.[component_name].managementState: Managed`
+
+|Disable component
+|`.spec.components.[component_name].enabled: false`
+|`.spec.components.[component_name].managementState: Removed`
+|===
+
+*Migrate data science pipelines* 
+
+Previously, data science pipelines in {productname-short} were based on KubeFlow Pipelines v1. Starting with {productname-short} 2.10.0, data science pipelines are based on KubeFlow Pipelines v2, which uses a different workflow engine. Data science pipelines 2.0 is enabled and deployed by default in {productname-short}.
+
+Starting with {productname-short} 2.16, data science pipelines 1.0 resources are no longer supported or managed by {productname-short}. It is no longer possible to deploy, view, or edit the details of pipelines that are based on data science pipelines 1.0 from either the dashboard or the KFP API server.
+
+{productname-short} does not automatically migrate existing data science pipelines 1.0 instances to 2.0. Before upgrading to {productname-short} 2.16 or later, you must manually migrate your existing data science pipelines 1.0 instances. For more information, see link:{odhdocshome}/working-with-data-science-pipelines/#migrating-to-data-science-pipelines-2_ds-pipelines[Migrating to data science pipelines 2.0].
+
+[IMPORTANT]
+====
+Data science pipelines 2.0 contains an installation of Argo Workflows. {productname-short} does not support direct usage of this installation of Argo Workflows.
+
+If you upgrade to {productname-short} 2.10.0 or later with data science pipelines enabled and an Argo Workflows installation that is not installed by data science pipelines exists on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable data science pipelines or remove the separate installation of Argo Workflows. The component upgrade will complete automatically.
+====
+
+*Recreate model registries*
+
+When you upgrade from {productname-short} 2.19 or earlier to {productname-short} 2.20 or later versions, existing instances of the model registry component are not updated, which causes the instance pods to use older images than the ones referenced by the operator pod.
+
+To resolve this issue, after upgrading, create a new instance of each existing model registry, using the same database configuration, and delete the old model registry instance. The new model registry instance contains all existing registered models and their metadata.
+
