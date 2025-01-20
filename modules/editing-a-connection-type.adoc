@@ -1,0 +1,41 @@
+:_module-type: PROCEDURE
+
+[id="editing-a-connection-type_{context}"]
+= Editing a connection type
+
+[role='_abstract']
+As an {productname-short} administrator, you can edit a connection type for users in your organization.
+
+ifdef::upstream[]
+Note that you cannot edit the connection types that are pre-installed with {productname-short}. Instead, you have the option of duplicating a pre-installed connection type, as described in link:{odhdocshome}/managing-resources/#duplicating-a-connection-type_resource-mgmt[Duplicating a connection type].
+endif::[]
+ifndef::upstream[]
+Note that you cannot edit the connection types that are pre-installed with {productname-short}. Instead, you have the option of duplicating a pre-installed connection type, as described in link:{rhoaidocshome}{default-format-url}/managing_resources/managing-connection-types#duplicating-a-connection-type_resource-mgmt[Duplicating a connection type].
+endif::[]
+
+When you edit a connection type, your edits do not apply to any existing connections that users previously created. If you want to keep track of previous versions of this connection type, consider duplicating it instead of editing it.
+
+.Prerequisites
+* You have logged in to {productname-short} as a user with {productname-short} administrator privileges. 
+
+* The connection type must exist and must not be a pre-installed connection type (which you are unable to edit).
+
+.Procedure
+
+. From the {productname-short} dashboard, click *Settings* -> *Connection types*.
+
+. From the list of available connection types, find the connection type that you want to edit. 
+
+. Click the Options menu image:images/osd-ellipsis.png[Options menu], and then click *Edit*.
++
+The *Edit connection type* form appears.
+
+. Edit the form fields and sections.
+
+. Click *Preview* to open a preview of the connection form as it will appear to your users and verify that the form appears as you expect.
+
+. Click *Save*.
+
+.Verification
+
+In the *Settings* -> *Connection types* page, the duplicated connection type appears in the list.

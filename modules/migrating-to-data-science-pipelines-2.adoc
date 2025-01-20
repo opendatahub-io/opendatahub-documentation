@@ -1,0 +1,219 @@
+:_module-type: PROCEDURE
+
+[id='migrating-to-data-science-pipelines-2_{context}']
+= Migrating to data science pipelines 2.0
+:page-aliases: enabling-data-science-pipelines-2.adoc
+
+ifdef::upstream[]
+From {productname-long} version 2.10.0, data science pipelines are based on link:https://www.kubeflow.org/docs/components/pipelines/[KubeFlow Pipelines (KFP) version 2.0]. Data science pipelines 2.0 is enabled and deployed by default in {productname-short}. 
+endif::[]
+
+ifndef::upstream[]
+ifdef::self-managed[]
+From {productname-short} version 2.9, data science pipelines are based on link:https://www.kubeflow.org/docs/components/pipelines/[KubeFlow Pipelines (KFP) version 2.0]. Data science pipelines 2.0 is enabled and deployed by default in {productname-short}.
+endif::[]
+ifdef::cloud-service[]
+Data science pipelines in {productname-short} are now based on link:https://www.kubeflow.org/docs/components/pipelines/[KubeFlow Pipelines (KFP) version 2.0]. Data science pipelines 2.0 is enabled and deployed by default in {productname-short}.
+endif::[]
+endif::[]
+
+[IMPORTANT]
+====
+Data science pipelines 2.0 contains an installation of Argo Workflows. {productname-short} does not support direct customer usage of this installation of Argo Workflows.
+
+ifdef::upstream[]
+To install or upgrade to {productname-short} 2.10.0 or later with data science pipelines, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}. 
+endif::[]
+ifndef::upstream[]
+ifdef::self-managed[]
+To install or upgrade to {productname-short} 2.9 or later with data science pipelines, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
+endif::[]
+ifdef::cloud-service[]
+To install or upgrade to {productname-short} with data science pipelines 2.0, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
+endif::[]
+endif::[]
+If there is an existing installation of Argo Workflows that is not installed by data science pipelines on your cluster, data science pipelines will be disabled after you install or upgrade {productname-short}. To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster. Data science pipelines will be enabled automatically. 
+
+Argo Workflows resources that are created by {productname-short} have the following labels in the OpenShift Console under *Administration > CustomResourceDefinitions*, in the `argoproj.io` group:
+[source]
+----
+ labels:
+    app.kubernetes.io/part-of: data-science-pipelines-operator
+    app.opendatahub.io/data-science-pipelines-operator: 'true'
+----
+====
+
+== Upgrading to data science pipelines 2.0
+//upstream
+ifdef::upstream[]
+Starting with {productname-short} 2.16, data science pipelines 1.0 resources are no longer supported or managed by {productname-short}. It is no longer possible to deploy, view, or edit the details of pipelines that are based on data science pipelines 1.0 from either the dashboard or the KFP API server.
+
+{productname-short} does not automatically migrate existing data science pipelines 1.0 instances to 2.0. If you are upgrading to {productname-short} 2.16 or later, you must manually migrate your existing data science pipelines 1.0 instances.
+
+To upgrade to data science pipelines 2.0, follow these steps:
+
+. Ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}, and then follow the upgrade steps described in link:{odhdocshome}/upgrading-open-data-hub/#upgrading-odh-v2_upgradev2[Upgrading Open Data Hub version 2.0 to version 2.2].
++
+If you upgrade to {productname-short} with data science pipelines 2.0 enabled, and there is an existing installation of Argo Workflows that is not installed by data science pipelines on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable data science pipelines or remove the separate installation of Argo Workflows from your cluster. The component upgrade will then complete automatically. 
+. Update your workbenches to use the notebook image version 2024.1 or later. For more information, see link:{odhdocshome}/working-on-data-science-projects/#updating-a-project-workbench_projects[Updating a project workbench].
+. Manually migrate your pipelines from data science pipelines 1.0 to 2.0:
+
+.. Create a new data science project.
+.. Configure a new pipeline server.
++
+[IMPORTANT]
+====
+If you use an external database, you must use a different external database than the one you use for data science pipelines 1.0, as the database is migrated to data science pipelines 2.0 format.
+====
+.. Update and recompile your data science pipelines 1.0 pipelines as described in link:https://www.kubeflow.org/docs/components/pipelines/user-guides/migration/[Migrate to Kubeflow Pipelines v2].
++
+[NOTE]
+====
+Data science pipelines 2.0 does not use the `kfp-tekton` library. In most cases, you can replace usage of `kfp-tekton` with the `kfp` library.
+====
+.. Import your updated pipelines to your new data science pipelines 2.0-based data science project.
+. Remove your data science pipelines 1.0 pipeline servers.
+. Optional: Remove your data science pipelines 1.0 resources.
+
+[IMPORTANT]
+====
+Data science pipelines 1.0 used the `kfp-tekton` Python library. Data science pipelines 2.0 does not use `kfp-tekton`. You can uninstall `kfp-tekton` when there are no remaining data science pipelines 1.0 pipeline servers in use on your cluster.
+
+For Data science pipelines 2.0, use the latest version of the KFP SDK. For more information, see the link:https://kubeflow-pipelines.readthedocs.io[Kubeflow Pipelines SDK API Reference].
+====
+endif::[]
+
+//downstream
+ifndef::upstream[]
+ifdef::self-managed[]
+Starting with {productname-short} 2.16, data science pipelines 1.0 resources are no longer supported or managed by {productname-short}. It is no longer possible to deploy, view, or edit the details of pipelines that are based on data science pipelines 1.0 from either the dashboard or the KFP API server.
+
+{productname-short} does not automatically migrate existing data science pipelines 1.0 instances to 2.0. If you are upgrading to {productname-short} 2.16 or later, you must manually migrate your existing data science pipelines 1.0 instances and update your workbenches.
+
+To upgrade to {productname-short} 2.16 or later with data science pipelines 2.0, follow these steps:
+endif::[]
+
+ifdef::cloud-service[]
+Data science pipelines 1.0 resources are no longer supported or managed by {productname-short}. It is no longer possible to deploy, view, or edit the details of pipelines that are based on data science pipelines 1.0 from either the dashboard or the KFP API server.
+
+{productname-short} does not automatically migrate existing data science pipelines 1.0 instances to 2.0. If you are upgrading {productname-short} and have existing data science pipelines 1.0 instances, you must manually migrate them.
+
+To upgrade to data science pipelines 2.0, follow these steps:
+endif::[]
+
+[NOTE]
+====
+If you are using GitOps to manage your data science pipelines 1.0 pipeline runs, pause any sync operations related to data science pipelines including PipelineRuns or DataSciencePipelinesApplications (DSPAs) management. After migrating to data science pipelines 2.0, your PipelineRuns will be managed independently of data science pipelines, similar to any other Tekton resources.
+====
+
+. Back up your pipelines data.
+ifdef::self-managed[]
+. Deploy a new cluster (or use a different existing cluster) with {productname-long} {vernum} to use as an intermediate cluster. You will use this intermediate cluster to upload, test, and verify your new pipelines.
+. In {productname-short} {vernum} on the intermediate cluster, do the following tasks:
+endif::[]
+ifdef::cloud-service[]
+. Deploy a new cluster (or use a different existing cluster) with {productname-long} with data science pipelines 2.0 to use as an intermediate cluster. You will use this intermediate cluster to upload, test, and verify your new pipelines.
+. In {productname-short} on the intermediate cluster, do the following tasks:
+endif::[]
+.. Create a new data science project. 
+.. Configure a new pipeline server.
++
+[IMPORTANT]
+====
+If you use an external database, you must use a different external database than the one you use for data science pipelines 1.0, as the database is migrated to data science pipelines 2.0 format.
+====
+.. Update and recompile your data science pipelines 1.0 pipelines as described in link:https://www.kubeflow.org/docs/components/pipelines/user-guides/migration/[Migrate to Kubeflow Pipelines v2].
++
+[NOTE]
+====
+Data science pipelines 2.0 does not use the `kfp-tekton` library. In most cases, you can replace usage of `kfp-tekton` with the `kfp` library. For data science pipelines 2.0, use the latest version of the KFP SDK. For more information, see the link:https://kubeflow-pipelines.readthedocs.io[Kubeflow Pipelines SDK API Reference].
+====
++
+[TIP]
+====
+You can view historical data science pipelines 1.0 pipeline run information on your primary cluster in the {openshift-platform} Console *Developer* perspective under *Pipelines* -> *Project* -> *PipelineRuns*. 
+====
+.. Import your updated pipelines to the new data science project.
+.. Test and verify your new pipelines.
+. On your primary cluster, do the following tasks:
+.. Remove your data science pipelines 1.0 pipeline servers.
+.. Optional: Remove your data science pipelines 1.0 resources. For more information, see link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/migrating-to-data-science-pipelines-2_ds-pipelines#removing_data_science_pipelines_1_0_resources[Removing data science pipelines 1.0 resources].
+ifdef::self-managed[]
+.. Upgrade to {productname-long} {vernum}. For more information, see link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed/index[Upgrading {productname-short} Self-Managed], or for disconnected environments, link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_self-managed_in_a_disconnected_environment/index[Upgrading {productname-long} in a disconnected environment].
+. In the upgraded instance of {productname-long} {vernum} on your primary cluster, do the following tasks:
+endif::[]
+ifdef::cloud-service[]
+.. Upgrade {productname-long}. For more information, see link:{rhoaidocshome}{default-format-url}/upgrading_openshift_ai_cloud_service/index[Upgrading {productname-short} Cloud Service].
+. In the upgraded instance of {productname-long} on your primary cluster, do the following tasks:
+endif::[]
+.. Recreate the pipeline servers for each data science project where the data science pipelines 1.0 pipeline servers existed.
++
+[NOTE]
+====
+If you are using GitOps to manage your DSPAs, do the following tasks in your DSPAs before performing sync operations:
+
+* Set `spec.dspVersion` to `v2`.
+* Verify that the `apiVersion` is using `v1` instead of `v1alpha1`.
+====
+.. Import your updated data science pipelines to the applicable pipeline servers.
++
+[TIP]
+====
+You can perform a batch upload by creating a script that uses the link:https://kubeflow-pipelines.readthedocs.io/en/sdk-2.9.0/source/client.html[KFP SDK Client] and the `.upload_pipeline` and `.get_pipeline` methods.
+====
+. For any workbenches that communicate with data science pipelines 1.0, do the following tasks in the upgraded instance of {productname-long}:
+.. Delete the existing workbench. For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#deleting-a-workbench-from-a-data-science-project_projects[Deleting a workbench from a data science project].
+.. If you want to use the notebook image version 2024.2, upgrade to Python 3.11 before creating a new workbench. 
+.. Create a new workbench that uses the existing persistent storage of the deleted workbench. For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a workbench].
+.. Run the pipeline so that the data science pipelines 2.0 pipeline server schedules it.
+endif::[]
+
+== Removing data science pipelines 1.0 resources
+
+When your migration to data science pipelines 2.0 is complete on the intermediate cluster, you can clean up the data science pipelines 1.0 resources in your cluster.
+
+[IMPORTANT]
+====
+Before removing data science pipelines 1.0 resources, ensure that migration of your data science pipelines 1.0 pipelines to 2.0 is complete.
+====
+
+. Identify the `DataSciencePipelinesApplication` (DSPA) resource that corresponds to the data science pipelines 1.0 pipeline server:
++
+[source]
+----
+oc get dspa -n <YOUR_DS_PROJECT>
+----
+. Delete the cluster role binding associated with this DSPA: 
++
+[source]
+----
+oc delete clusterrolebinding
+ds-pipeline-ui-auth-delegator-<YOUR_DS_PROJECT>-dspa
+----
+. Delete the DSPA:
++
+[source]
+----
+oc delete dspa dspa -n <YOUR_DS_PROJECT>
+----
+. If necessary, delete the `DataSciencePipelinesApplication` finalizer to complete the removal of the resource:
++
+[source]
+----
+oc patch dspa dspa -n <YOUR_DS_PROJECT> --type=merge 
+-p "{\"metadata\":{\"finalizers\":null}}"
+----
+. If you are not using OpenShift Pipelines for any purpose other than data science pipelines 1.0, you can remove the OpenShift Pipelines Operator.
+. Data science pipelines 1.0 used the `kfp-tekton` Python library. Data science pipelines 2.0 does not use `kfp-tekton`. You can uninstall `kfp-tekton` when there are no remaining data science pipelines 1.0 pipeline servers in use on your cluster.
+
+ifndef::upstream[]
+[role="_additional-resources"]
+.Additional resources
+
+* link:https://pypi.org/project/kfp/[PyPI: kfp^]
+* link:https://kubeflow-pipelines.readthedocs.io[Kubeflow Pipelines SDK API Reference].
+* link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project]
+* link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server]
+* link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#importing-a-data-science-pipeline_ds-pipelines[Importing a data science pipeline]
+* link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#deleting-a-pipeline-server_ds-pipelines[Deleting a pipeline server]
+endif::[]

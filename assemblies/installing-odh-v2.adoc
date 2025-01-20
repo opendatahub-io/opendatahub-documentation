@@ -17,23 +17,6 @@ Installing Open Data Hub involves the following tasks:
 . Installing Open Data Hub components.
 . Accessing the Open Data Hub dashboard.
 
-[NOTE]
---
-Version 2 of the Open Data Hub Operator represents an alpha release, accessible only on the *fast* channel. Later releases will change to the *rolling* channel when the Operator is more stable.
---
-[NOTE]
---
-After you install {productname-short} {vernum}, pipelines created with data science pipelines 1.0 continue to run, but are inaccessible from the {productname-short} dashboard. If you are a current data science pipelines user, do not install {productname-short} with data science pipelines 2.0 until you are ready to migrate to the new pipelines solution.
---
-[IMPORTANT]
-====
-Data science pipelines 2.0 contains an installation of Argo Workflows. {productname-short} does not support direct customer usage of this installation of Argo Workflows. To install {productname-short} 2.10.0 or later with data science pipelines, ensure that no separate installation of Argo Workflows exists on your cluster.
-
-If you install {productname-short} 2.10.0 or later with the `datasciencepipelines` component while there is an existing installation of Argo Workflows that is not installed by data science pipelines on your cluster, data science pipelines will be disabled after the installation completes.
-
-To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster. Data science pipelines will be enabled automatically. 
-====
-
 include::modules/installing-the-odh-operator-v2.adoc[leveloffset=+1]
 
 include::modules/installing-odh-components.adoc[leveloffset=+1]
