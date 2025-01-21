@@ -102,39 +102,29 @@ The following table lists each property in the `LMEvalJob` and its usage:
 
 | `model`
 
-| Specifies which model type or provider is evaluated. This field directly maps to the `--model` argument of the `lm-evaluation-harness`. Supported model types and providers include:
-
+a| Specifies which model type or provider is evaluated. This field directly maps to the `--model` argument of the `lm-evaluation-harness`. Supported model types and providers include:
 
 * `hf`: HuggingFace models
-
 * `openai-completions`: OpenAI Completions API models
-
 * `openai-chat-completions`: link:https://platform.openai.com/docs/guides/text-generation[Chat Completions API models]
-
 * `local-completions` and `local-chat-completions`: OpenAI API-compatible servers
-
 * `textsynth`: link:https://textsynth.com/documentation.html#engines[TextSynth APIs]
 
 | `modelArgs`
-| A list of paired name and value arguments for the model type. Each model type or provider supports different arguments:
+a| A list of paired name and value arguments for the model type. Each model type or provider supports different arguments:
 
 * `hf` (HuggingFace): Check the link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/huggingface.py#L55[huggingface.py]
-
 * `local-completions` (OpenAI API-compatible server): Check the link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L13[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-
 * `local-chat-completions` (OpenAI API-compatible server): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L99[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-
 * openai-completions (OpenAI Completions API models): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L177[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-
 * openai-chat-completions (ChatCompletions API models): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L209[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-
-textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/textsynth.py#L52[textsynth.py]
+* textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/textsynth.py#L52[textsynth.py]
 
 | `taskList.taskNames`
 | Specifies a list of tasks supported by `lm-evaluation-harness`.
 
 | `taskList.taskRecipes`
-| Specifies the task using the Unitxt recipe format:
+a| Specifies the task using the Unitxt recipe format:
 * `card`: Use the `name` to specify a Unitxt card or `custom` for a custom card
 ** `name`: Specifies a Unitxt card from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the card's ID as the value. For example, the ID of link:https://www.unitxt.ai/en/latest/catalog/catalog.cards.wnli.html[Wnli card] is `cards.wnli`.
 ** `custom`: Defines and uses a custom card. The value is a JSON object that contains the custom dataset. For more information about creating a custom card, see the link:https://www.unitxt.ai/en/latest/docs/adding_dataset.html#adding-to-the-catalog[Unitxt documentation]. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, set up corresponding resources in the `pod` field.
@@ -163,7 +153,7 @@ textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluati
 | Specifies the batch size for the evaluation in integer format. The `auto:N` batch size is not used for API models, but numeric batch sizes are used for APIs. 
 
 | `pod`
-| Specifies extra information for the `lm-eval` job's pod. 
+a| Specifies extra information for the `lm-eval` job's pod. 
 * `container`: Specifies additional container settings for the `lm-eval` container.
 ** `env`: Specifies environment variables. This parameter uses the `EnvVar` data structure of Kubernetes.
 ** `volumeMounts`: Mounts the volumes into the `lm-eval` container
