@@ -126,7 +126,9 @@ a| A list of paired name and value arguments for the model type. Each model type
 | `taskList.taskRecipes`
 a| Specifies the task using the Unitxt recipe format:
 * `card`: Use the `name` to specify a Unitxt card or `custom` for a custom card
+
 ** `name`: Specifies a Unitxt card from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the card's ID as the value. For example, the ID of link:https://www.unitxt.ai/en/latest/catalog/catalog.cards.wnli.html[Wnli card] is `cards.wnli`.
+
 ** `custom`: Defines and uses a custom card. The value is a JSON object that contains the custom dataset. For more information about creating a custom card, see the link:https://www.unitxt.ai/en/latest/docs/adding_dataset.html#adding-to-the-catalog[Unitxt documentation]. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, set up corresponding resources in the `pod` field.
 * `template`: Specifies a Unitxt template from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the template's ID as the value.
 * `task` (optional): Specifies a Unitxt task from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the task's ID as the value. A Unitxt card has a predefined task. Only specify a value for this if you want to run a different task.
@@ -155,8 +157,11 @@ a| Specifies the task using the Unitxt recipe format:
 | `pod`
 a| Specifies extra information for the `lm-eval` job's pod. 
 * `container`: Specifies additional container settings for the `lm-eval` container.
+
 ** `env`: Specifies environment variables. This parameter uses the `EnvVar` data structure of Kubernetes.
+
 ** `volumeMounts`: Mounts the volumes into the `lm-eval` container
+
 ** `resources`: Specify the resources for the lm-eval container.
 * `volumes`: Specifies the volume information for the `lm-eval` and other containers. This parameter uses the `Volume` data structure of Kubernetes.
 * `sideCars`: A list of containers that run along with the `lm-eval` container. It uses the `Container` data structure of Kubernetes.
