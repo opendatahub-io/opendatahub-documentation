@@ -1,7 +1,7 @@
 :_module-type: REFERENCE
 
 ifdef::context[:parent-context: {context}]
-[id="lmeval-evaluation-job.adoc_{context}"]
+[id="lmeval-evaluation-job_{context}"]
 = LM-Eval evaluation job
 
 [role='_abstract']
@@ -102,41 +102,34 @@ The following table lists each property in the `LMEvalJob` and its usage:
 
 | `model`
 
-| Specifies which model type or provider is evaluated. This field directly maps to the `--model` argument of the `lm-evaluation-harness`. Supported model types and providers include:
-
+a| Specifies which model type or provider is evaluated. This field directly maps to the `--model` argument of the `lm-evaluation-harness`. Supported model types and providers include:
 
 * `hf`: HuggingFace models
-
 * `openai-completions`: OpenAI Completions API models
-
 * `openai-chat-completions`: link:https://platform.openai.com/docs/guides/text-generation[Chat Completions API models]
-
 * `local-completions` and `local-chat-completions`: OpenAI API-compatible servers
-
 * `textsynth`: link:https://textsynth.com/documentation.html#engines[TextSynth APIs]
 
 | `modelArgs`
-| A list of paired name and value arguments for the model type. Each model type or provider supports different arguments:
+a| A list of paired name and value arguments for the model type. Each model type or provider supports different arguments:
 
 * `hf` (HuggingFace): Check the link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/huggingface.py#L55[huggingface.py]
-
 * `local-completions` (OpenAI API-compatible server): Check the link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L13[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-
 * `local-chat-completions` (OpenAI API-compatible server): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L99[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-
 * openai-completions (OpenAI Completions API models): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L177[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-
 * openai-chat-completions (ChatCompletions API models): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L209[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-
-textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/textsynth.py#L52[textsynth.py]
+* textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/textsynth.py#L52[textsynth.py]
 
 | `taskList.taskNames`
 | Specifies a list of tasks supported by `lm-evaluation-harness`.
 
 | `taskList.taskRecipes`
-| Specifies the task using the Unitxt recipe format:
-* `card`: Use the `name` to specify a Unitxt card or `custom` for a custom card
+a| Specifies the task using the Unitxt recipe format:
+
+* `card`: Use the `name` to specify a Unitxt card or `custom` for a custom card.
+
 ** `name`: Specifies a Unitxt card from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the card's ID as the value. For example, the ID of link:https://www.unitxt.ai/en/latest/catalog/catalog.cards.wnli.html[Wnli card] is `cards.wnli`.
+
 ** `custom`: Defines and uses a custom card. The value is a JSON object that contains the custom dataset. For more information about creating a custom card, see the link:https://www.unitxt.ai/en/latest/docs/adding_dataset.html#adding-to-the-catalog[Unitxt documentation]. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, set up corresponding resources in the `pod` field.
 * `template`: Specifies a Unitxt template from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the template's ID as the value.
 * `task` (optional): Specifies a Unitxt task from the link:https://www.unitxt.ai/en/latest/catalog/catalog.__dir__.html[Unitxt catalog]. Use the task's ID as the value. A Unitxt card has a predefined task. Only specify a value for this if you want to run a different task.
@@ -163,20 +156,23 @@ textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluati
 | Specifies the batch size for the evaluation in integer format. The `auto:N` batch size is not used for API models, but numeric batch sizes are used for APIs. 
 
 | `pod`
-| Specifies extra information for the `lm-eval` job's pod. 
+a| Specifies extra information for the `lm-eval` job's pod:
+
 * `container`: Specifies additional container settings for the `lm-eval` container.
+
 ** `env`: Specifies environment variables. This parameter uses the `EnvVar` data structure of Kubernetes.
-** `volumeMounts`: Mounts the volumes into the `lm-eval` container
-** `resources`: Specify the resources for the lm-eval container.
+
+** `volumeMounts`: Mounts the volumes into the `lm-eval` container.
+
+** `resources`: Specifies the resources for the `lm-eval` container.
 * `volumes`: Specifies the volume information for the `lm-eval` and other containers. This parameter uses the `Volume` data structure of Kubernetes.
 * `sideCars`: A list of containers that run along with the `lm-eval` container. It uses the `Container` data structure of Kubernetes.
-
 
 | `outputs`
 | This parameter defines a custom output location to store the the evaluation results. Only Persistent Volume Claims (PVC) are supported.
 
 | `outputs.pvcManaged`
-| Creates an operator-managed PVC to store this job's results. The PVC is named `<job-name>-pvc` and is owned by the `LMEvalJob`. After the job finishes, the PVC is still be available, but it is deleted with the `LMEvalJob`. Supports the following fields:
+a| Creates an operator-managed PVC to store this job's results. The PVC is named `<job-name>-pvc` and is owned by the `LMEvalJob`. After the job finishes, the PVC is still be available, but it is deleted with the `LMEvalJob`. Supports the following fields: 
 
 * `size`: The PVC's size, compatible with standard PVC syntax (for example, 5Gi)
 
