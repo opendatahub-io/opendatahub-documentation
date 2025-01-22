@@ -54,8 +54,14 @@ disableServingRuntimeParams` | `false` | Shows the *Configuration parameters* se
 disableStorageClasses` | `false` | Shows the *Settings → Storage classes* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
 | `dashboardConfig:
 disableSupport` | `false` | Shows the *Support* menu option when a user clicks the Help icon in the dashboard toolbar. To hide this menu option, set the value to `true`.
+ifdef::upstream[]
 | `dashboardConfig:
-disableTracking` | `true` | Allows {org-name} to collect data about {productname-short} usage in your cluster. To enable data collection, set the value to `false`. You can also set this option in the {productname-short} dashboard interface from the *Settings → Cluster settings* navigation menu.	
+disableTracking` | `true` | Disables the collection of data about {productname-short} usage in your cluster. To enable data collection, set the value to `false`. You can also set this option in the {productname-short} dashboard interface from the *Settings → Cluster settings* navigation menu.	
+endif::[]
+ifndef::upstream[]
+| `dashboardConfig:
+disableTracking` | `false` | Allows {org-name} to collect data about {productname-short} usage in your cluster. To disable data collection, set the value to `true`. You can also set this option in the {productname-short} dashboard interface from the *Settings → Cluster settings* navigation menu.	
+endif::[]
 | `dashboardConfig:
 disableTrustyBiasMetrics` | `false` | Shows the *Model Bias* tab on the *Model Serving* page. To hide this tab, set the value to `true`. 
 | `dashboardConfig:
