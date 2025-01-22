@@ -1,0 +1,152 @@
+:_module-type: PROCEDURE
+
+[id="deploying-model-stored-in-oci-container_{context}"]
+= Deploying a model stored in an OCI image
+
+[role='_abstract']
+
+You can deploy a model that is stored in an OCI image. 
+
+The following procedure uses the example of deploying a MobileNet v2-7 model in ONNX format, stored in an OCI image on an OpenVINO model server.
+
+[NOTE]
+====
+By default in KServe, models are exposed outside the cluster and not protected with authorization. 
+====
+
+.Prerequisites
+
+ifndef::upstream[]
+* You have stored a model in an OCI image as described in link:{rhoaidocshome}{default-format-url}/serving_models/storing-a-model-in-oci-image_serving-large-models[Storing a model in an OCI image].
+endif::[]
+ifdef::upstream[]
+* You have stored a model in an OCI image as described in link:{odhdocshome}/serving-models/storing-a-model-in-oci-image[Storing a model in an OCI image].
+endif::[]
+
+* If you want to deploy a model that is stored in a private OCI repository, you must configure an image pull secret. For more information about creating an image pull secret, see link:https://docs.openshift.com/container-platform/latest/openshift_images/managing_images/using-image-pull-secrets.html[Using image pull secrets^].
+* You are logged in to your OpenShift cluster.
+
+.Procedure
+
+. Create a namespace to deploy the model:
++
+[source]
+----
+oc new-project oci-model-example
+----
++
+
+ifndef::upstream[]
+. Use the {productname-short} Applications project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new namespace:
++
+[source]
+----
+oc process -n redhat-ods-applications -o yaml kserve-ovms | oc apply -f -
+----
+endif::[]
+ifdef::upstream[]
+. Use the {productname-short} project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new namespace:
++
+[source]
+----
+oc process -n opendatahub -o yaml kserve-ovms | oc apply -f -
+----
+endif::[]
++
+
+. Verify that the `ServingRuntime` named `kserve-ovms` is created:
++
+[source]
+----
+oc get servingruntimes
+----
++
+The command should return output similar to the following:
++
+[source]
+----
+NAME          DISABLED   MODELTYPE     CONTAINERS         AGE
+kserve-ovms              openvino_ir   kserve-container   1m
+----
++
+. Create an `InferenceService` YAML resource, depending on whether the model is stored from a private or a public OCI repository:
+** For a model stored in a public OCI repository, create an InferenceService YAML file with the following values, replacing `<user_name>`, `<repository_name>`, and `<tag_name>` with values specific to your environment:
++
+[source]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: sample-isvc-using-oci
+spec:
+  predictor:
+    model:
+      runtime: kserve-ovms # Ensure this matches the name of the ServingRuntime resource
+      modelFormat:
+        name: onnx
+      storageUri: oci://quay.io/<user_name>/<repository_name>:<tag_name>
+      resources:
+        requests:
+          memory: 500Mi
+          cpu: 100m
+          # nvidia.com/gpu: "1" # Only required if you have GPUs available and the model and runtime will use it
+        limits:
+          memory: 4Gi
+          cpu: 500m
+          # nvidia.com/gpu: "1" # Only required if you have GPUs available and the model and runtime will use it
+----
++
+
+** For a model stored in a private OCI repository, create an InferenceService YAML file that specifies your pull secret in the `spec.predictor.imagePullSecrets` field, as shown in the following example:
++
+[source]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: sample-isvc-using-private-oci
+spec:
+  predictor:
+    model:
+      runtime: kserve-ovms # Ensure this matches the name of the ServingRuntime resource
+      modelFormat:
+        name: onnx
+      storageUri: oci://quay.io/<user_name>/<repository_name>:<tag_name>
+      resources:
+        requests:
+          memory: 500Mi
+          cpu: 100m
+          # nvidia.com/gpu: "1" # Only required if you have GPUs available and the model and runtime will use it
+        limits:
+          memory: 4Gi
+          cpu: 500m
+          # nvidia.com/gpu: "1" # Only required if you have GPUs available and the model and runtime will use it
+    imagePullSecrets: # Specify image pull secrets to use for fetching container images, including OCI model images
+    - name: <pull-secret-name>
+----
++
+After you create the `InferenceService` resource, KServe deploys the model stored in the OCI image referred to by the `storageUri` field. 
+
+
+.Verification
+Check the status of the deployment:
+
+[source]
+----
+oc get inferenceservice
+----
+
+The command should return output similar to the following:
+
+[source]
+----
+NAME                    URL                                                       READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION                     AGE
+sample-isvc-using-oci   https://sample-isvc-using-oci-oci-model-example.example   True           100                              sample-isvc-using-oci-predictor-00001   1m
+----
+
+
+ifdef::upstream[]
+[role='_additional-resources']
+.Additional resources
+* link:https://kserve.github.io/website/latest/modelserving/storage/oci/[Serving models with OCI images]
+endif::[]

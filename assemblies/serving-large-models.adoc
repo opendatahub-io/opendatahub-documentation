@@ -8,7 +8,7 @@ ifdef::context[:parent-context: {context}]
 = Serving large models
 
 [role='_abstract']
-For deploying large models such as large language models (LLMs), {productname-long} includes a single-model serving platform that is based on the KServe component. Because each model is deployed from its own model server, the single-model serving platform helps you to deploy, monitor, scale, and maintain large models that require more resources.
+For deploying large models, such as large language models (LLMs), {productname-long} includes a single-model serving platform that is based on the KServe component. Because each model is deployed from its own model server, the single-model serving platform helps you to deploy, monitor, scale, and maintain large models that require more resources.
 
 include::modules/about-the-single-model-serving-platform.adoc[leveloffset=+1]
 include::modules/about-kserve-deployment-modes.adoc[leveloffset=+1]
@@ -23,12 +23,12 @@ include::modules/setting-timeout-for-kserve.adoc[leveloffset=+2]
 include::modules/customizing-parameters-serving-runtime.adoc[leveloffset=+2]
 include::modules/customizable-model-serving-runtime-parameters.adoc[leveloffset=+2]
 include::modules/using-oci-containers-for-model-storage.adoc[leveloffset=+2]
-include::modules/using-accelerators-with-vllm.adoc[leveloffset=+2]
+include::modules/storing-a-model-in-oci-image.adoc[leveloffset=+3]
+include::modules/deploying-model-stored-in-oci-image.adoc[leveloffset=+3]
 include::modules/accessing-inference-endpoint-for-model-deployed-on-single-model-serving-platform.adoc[leveloffset=+2]
 ifdef::self-managed[]
 include::modules/deploying-models-on-single-node-openshift-using-kserve-raw-deployment-mode.adoc[leveloffset=+3]
 endif::[]
-
 // Conditionalized for self-managed because monitoring of user-defined projects is enabled on OSD and ROSA by default
 ifdef::upstream,self-managed[]
 include::modules/configuring-monitoring-for-the-single-model-serving-platform.adoc[leveloffset=+1]
