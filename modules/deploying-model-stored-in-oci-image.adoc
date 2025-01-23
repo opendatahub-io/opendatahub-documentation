@@ -28,7 +28,7 @@ endif::[]
 
 .Procedure
 
-. Create a namespace to deploy the model:
+. Create a project to deploy the model:
 +
 [source]
 ----
@@ -37,7 +37,7 @@ oc new-project oci-model-example
 +
 
 ifndef::upstream[]
-. Use the {productname-short} Applications project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new namespace:
+. Use the {productname-short} Applications project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new project:
 +
 [source]
 ----
@@ -45,7 +45,7 @@ oc process -n redhat-ods-applications -o yaml kserve-ovms | oc apply -f -
 ----
 endif::[]
 ifdef::upstream[]
-. Use the {productname-short} project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new namespace:
+. Use the {productname-short} project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new project:
 +
 [source]
 ----
@@ -70,7 +70,7 @@ kserve-ovms              openvino_ir   kserve-container   1m
 ----
 +
 . Create an `InferenceService` YAML resource, depending on whether the model is stored from a private or a public OCI repository:
-** For a model stored in a public OCI repository, create an InferenceService YAML file with the following values, replacing `<user_name>`, `<repository_name>`, and `<tag_name>` with values specific to your environment:
+** For a model stored in a public OCI repository, create an `InferenceService` YAML file with the following values, replacing `<user_name>`, `<repository_name>`, and `<tag_name>` with values specific to your environment:
 +
 [source]
 ----
@@ -97,7 +97,7 @@ spec:
 ----
 +
 
-** For a model stored in a private OCI repository, create an InferenceService YAML file that specifies your pull secret in the `spec.predictor.imagePullSecrets` field, as shown in the following example:
+** For a model stored in a private OCI repository, create an `InferenceService` YAML file that specifies your pull secret in the `spec.predictor.imagePullSecrets` field, as shown in the following example:
 +
 [source]
 ----
@@ -136,14 +136,7 @@ Check the status of the deployment:
 oc get inferenceservice
 ----
 
-The command should return output similar to the following:
-
-[source]
-----
-NAME                    URL                                                       READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION                     AGE
-sample-isvc-using-oci   https://sample-isvc-using-oci-oci-model-example.example   True           100                              sample-isvc-using-oci-predictor-00001   1m
-----
-
+The command should return output that includes information, such as the URL of the deployed model and its readiness state.
 
 ifdef::upstream[]
 [role='_additional-resources']
