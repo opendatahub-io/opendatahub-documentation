@@ -60,11 +60,13 @@ The `tree` command should return a directory structure similar to the following 
 
 . Create a Docker file named `Containerfile`:
 +
+--
 [NOTE]
 ====
 * Specify a base image that provides a shell. In the following example, `ubi9-micro` is the base container image. You cannot specify an empty image that does not provide a shell, such as `scratch`, because KServe uses the shell to ensure the model files are accessible to the model server.
 * Change the ownership of the copied model files and grant read permissions to the root group to ensure that the model server can access the files. OpenShift runs containers with a random user ID and the root group ID.
 ====
++
 [source]
 ----
 FROM registry.access.redhat.com/ubi9/ubi-micro:latest
@@ -74,17 +76,20 @@ RUN chmod -R a=rX /models
 # nobody user
 USER 65534 
 ----
+--
 +
 
 . Use `podman build` commands to create the OCI container image and upload it to a registry. The following commands use Quay as the registry.
 +
+--
 [NOTE]
 ====
 If your repository is private, ensure that you are authenticated to the registry before uploading your container image.
 ====
++
 [source]
 ----
 podman build --format=oci -t quay.io/<user_name>/<repository_name>:<tag_name> .
 podman push quay.io/<user_name>/<repository_name>:<tag_name>
 ----
-+
+--
