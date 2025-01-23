@@ -77,7 +77,6 @@ RUN chmod -R a=rX /models
 USER 65534 
 ----
 --
-+
 
 . Use `podman build` commands to create the OCI container image and upload it to a registry. The following commands use Quay as the registry.
 +
@@ -86,7 +85,7 @@ USER 65534
 ====
 If your repository is private, ensure that you are authenticated to the registry before uploading your container image.
 ====
-+
+
 [source]
 ----
 podman build --format=oci -t quay.io/<user_name>/<repository_name>:<tag_name> .
