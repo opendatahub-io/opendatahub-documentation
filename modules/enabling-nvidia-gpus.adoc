@@ -32,10 +32,12 @@ endif::[]
 ifdef::upstream,self-managed[]
 * You have logged in to your {openshift-platform} cluster.
 * You have the `cluster-admin` role in your {openshift-platform} cluster.
+* You have installed an NVIDIA GPU and confirmed that it is detected in your environment.
 endif::[]
 ifdef::cloud-service[]
 * You have logged in to your OpenShift cluster.
 * You have the `cluster-admin` role in your OpenShift cluster.
+* You have installed an NVIDIA GPU and confirmed that it is detected in your environment.
 endif::[]
 
 .Procedure
@@ -76,13 +78,12 @@ endif::[]
 .. Wait until the *Status* column indicates that all pods in the rollout have fully restarted.
 
 .Verification
-ifdef::upstream,self-managed[]
-* The NVIDIA GPU Operator appears on the *Operators* -> *Installed Operators* page in the {openshift-platform} web console.
-endif::[]
-ifdef::cloud-service[]
-* The NVIDIA GPU Operator appears on the *Operators* -> *Installed Operators* page in the OpenShift web console.
-endif::[]
 * The reset *migration-gpu-status* instance is present on the *Instances* tab on the `AcceleratorProfile` custom resource definition (CRD) details page.
+From the *Administrator* perspective, go to the *Operators* -> *Installed Operators* page. Confirm that the following Operators appear:
+
+* NVIDIA GPU
+* Node Feature Discovery (NFD)
+* Kernel Module Management (KMM)
 
 //the following note applies to downstream only: self-managed (connected and disconnected) and cloud service
 ifndef::upstream[]
