@@ -20,11 +20,11 @@ Other TrustyAI features (such as bias and drift metrics) do not support non-tabu
 
 The sample `LMEvalJob` object contains the following features: 
 
-* The `google/flan-t5-base` model from link:https://huggingface.co/google/flan-t5-base[Hugging Face]. 
+* The `google/flan-t5-base` model from the link:https://huggingface.co[Hugging Face] website. 
 
-* The dataset from the `wnli` subset of the link:https://huggingface.co/datasets/nyu-mll/glue[General Language Understanding Evaluation (GLUE)]. For more information about the `wnli` `TaskCard`, see link:https://www.unitxt.ai/en/latest/catalog/catalog.cards.wnli.html[Unitxt website].
+* The dataset from the `wnli` subset of the General Language Understanding Evaluation (GLUE) found on the Hugging Face website. For more information about the `wnli` `TaskCard`, see the link:https://www.unitxt.ai[Unitxt website].
 
-* The following default parameters for the link:https://www.unitxt.ai/en/latest/catalog/catalog.tasks.classification.multi_class.relation.html[multi_class.relation template] Unitxt task:`f1_micro`, `f1_macro`, and `accuracy`.
+* The following default parameters for the `multi_class.relation` template: `f1_micro`, `f1_macro`, and `accuracy`. This template can be found on the Unitxt website: click *Catalog*, then click *Tasks* and select *Classification* from the menu.
 
 [source]
 ----
@@ -106,19 +106,19 @@ a| Specifies which model type or provider is evaluated. This field directly maps
 
 * `hf`: HuggingFace models
 * `openai-completions`: OpenAI Completions API models
-* `openai-chat-completions`: link:https://platform.openai.com/docs/guides/text-generation[Chat Completions API models]
+* `openai-chat-completions`: OpenAI Chat Completions API models
 * `local-completions` and `local-chat-completions`: OpenAI API-compatible servers
-* `textsynth`: link:https://textsynth.com/documentation.html#engines[TextSynth APIs]
+* `textsynth`: TextSynth APIs. Further information can be found in the TextSynth website documentation.
 
 | `modelArgs`
-a| A list of paired name and value arguments for the model type. Each model type or provider supports different arguments:
+a| A list of paired name and value arguments for the model type. Each model type or provider supports different arguments. Further details can be found in the models section of the link:https://github.com/EleutherAI/lm-evaluation-harness/tree/main/lm_eval/models[LM Evaluation Harness library]:
 
-* `hf` (HuggingFace): Check the link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/huggingface.py#L55[huggingface.py]
-* `local-completions` (OpenAI API-compatible server): Check the link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L13[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-* `local-chat-completions` (OpenAI API-compatible server): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L99[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-* openai-completions (OpenAI Completions API models): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L177[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-* openai-chat-completions (ChatCompletions API models): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/openai_completions.py#L209[openai_completions.py] and link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/api_models.py#L55[tapi_models.py]
-* textsynth (TextSynth APIs): Check link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/models/textsynth.py#L52[textsynth.py]
+* `hf` (HuggingFace)
+* `local-completions` (An OpenAI API-compatible server)
+* `local-chat-completions` (An OpenAI API-compatible server)
+* `openai-completions` (OpenAI Completions API models)
+* `openai-chat-completions` (ChatCompletions API models)
+* `textsynth` (TextSynth APIs)
 
 | `taskList.taskNames`
 | Specifies a list of tasks supported by `lm-evaluation-harness`.
@@ -128,13 +128,13 @@ a| Specifies the task using the Unitxt recipe format:
 
 * `card`: Use the `name` to specify a Unitxt card or `custom` for a custom card.
 
-** `name`: Specifies a Unitxt card from the link:https://www.unitxt.ai/en/latest/[Unitxt catalog]. Use the card's ID as the value. For example, the ID of link:https://www.unitxt.ai/en/latest/catalog/catalog.cards.wnli.html[Wnli card] is `cards.wnli`.
+** `name`: Specifies a Unitxt card from the Unitxt catalog. Use the card's ID as the value. For example, the ID of the Wnli card is `cards.wnli`.
 
-** `custom`: Defines and uses a custom card. The value is a JSON object that contains the custom dataset. For more information about creating a custom card, see the link:https://www.unitxt.ai/en/latest/docs/adding_dataset.html#adding-to-the-catalog[Unitxt documentation]. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, set up corresponding resources in the `pod` field.
-* `template`: Specifies a Unitxt template from the link:https://www.unitxt.ai/en/latest/[Unitxt catalog]. Use the template's ID as the value.
-* `task` (optional): Specifies a Unitxt task from the link:https://www.unitxt.ai/en/latest/[Unitxt catalog]. Use the task's ID as the value. A Unitxt card has a predefined task. Only specify a value for this if you want to run a different task.
-* `metrics` (optional):  Specifies a Unitxt task from the link:https://www.unitxt.ai/en/latest/[Unitxt catalog]. Use the metric's ID as the value. A Unitxt task has a set of pre-defined metrics. Only specify a set of metrics if you need different metrics.
-* `format` (optional): Specifies a Unitxt format from the link:https://www.unitxt.ai/en/latest/[Unitxt catalog]. Use the format's ID as the value.
+** `custom`: Defines and uses a custom card. The value is a JSON object that contains the custom dataset. For more information about creating a custom card, see the Unitxt website documentation. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, set up corresponding resources in the `pod` field.
+* `template`: Specifies a Unitxt template from the Unitxt catalog. Use the template's ID as the value.
+* `task` (optional): Specifies a Unitxt task from the Unitxt catalog. Use the task's ID as the value. A Unitxt card has a predefined task. Only specify a value for this if you want to run a different task.
+* `metrics` (optional):  Specifies a Unitxt task from the Unitxt catalog. Use the metric's ID as the value. A Unitxt task has a set of pre-defined metrics. Only specify a set of metrics if you need different metrics.
+* `format` (optional): Specifies a Unitxt format from the Unitxt catalog. Use the format's ID as the value.
 * `loaderLimit` (optional): Specifies the maximum number of instances per stream to be returned from the loader. You can use this parameter to reduce loading time in large datasets.
 * `numDemos` (optional): Number of few-shot to be used.
 * `demosPoolSize` (optional): Size of the few-shot pool.
@@ -147,7 +147,7 @@ a| Specifies the task using the Unitxt recipe format:
 | Set a limit to run the tasks instead of running the entire dataset. Accepts either an integer or a float between 0.0 and 1.0.
 
 | `genArgs`
-| Maps to the `--gen_kwargs` parameter for the `lm-evaluation-harness`. For more information, see the link:https://github.com/EleutherAI/lm-evaluation-harness/blob/main/docs/interface.md#command-line-interface[`lm-evaluation-harness` documentation].
+| Maps to the `--gen_kwargs` parameter for the `lm-evaluation-harness`. For more information, see the `lm-evaluation-harness` documentation on GitHub.
 
 | `logSamples`
 | If this flag is passed, then the model's outputs and the text fed into the model will be saved at per-document granularity.
