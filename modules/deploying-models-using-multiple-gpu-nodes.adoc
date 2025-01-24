@@ -52,7 +52,7 @@ oc new-project kserve-demo
 ----
 +
 
-. From the namespace where you would like to deploy the model, create a PVC for model storage and provide the name of your storage class. The storage class must be file storage. For example:
+. From the namespace where you would like to deploy the model, create a PVC for model storage. Provide the size of the model and the name of your storage class. The storage class must be file storage. For example:
 +
 NOTE: If you have already configured a PVC, you can skip this step.
 +
@@ -69,8 +69,8 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 40Gi
-  storageClassName: nfs
+      storage: <model size>
+  storageClassName: <storage class>
 ----
 +
 
@@ -140,7 +140,7 @@ ifndef::upstream[]
 <3> The value for `containers.image`, located in your `InferenceService`. To access this value, run the following command: `oc get configmap inferenceservice-config -n redhat-ods-operator -oyaml | grep kserve-storage-initializer:`
 endif::[]
 ifdef::upstream[]
-<3> The value for `containers.image`, located in your `InferenceService`. To access this value, run the following command: `oc get configmap inferenceservice-config -n opendatahub -oyaml | grep kserve-storage-initializer:`
+<3> The value for `containers.image`, located in your `donwload-model` container. To access this value, run the following command: `oc get configmap inferenceservice-config -n opendatahub -oyaml | grep kserve-storage-initializer:`
 endif::[]
 <4> The access key ID to your S3 bucket.
 <5> The secret access key to your S3 bucket.
