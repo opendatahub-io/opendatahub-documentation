@@ -4,9 +4,9 @@
 = Requirements for upgrading {productname-short} version 2
 
 [role="_abstract"]
-This section describes the tasks that you should complete when upgrading {productname-short} version 2.0 or 2.1 to version 2.2 or later.
+When upgrading {productname-short} version 2.0 or 2.1 to version 2.2 or later, you must complete the following tasks.
 
-*Check the components in the `DataScienceCluster` object*
+*Checking the components in the `DataScienceCluster` object*
 
 When you upgrade to version {vernum}, the upgrade process automatically uses the values from the `DataScienceCluster` object in the previous version.
 
@@ -36,7 +36,7 @@ Note that Open Data Hub Operator versions 2.2 and later use an upgraded API vers
 |`.spec.components.[component_name].managementState: Removed`
 |===
 
-*Migrate data science pipelines* 
+*Migrating data science pipelines* 
 
 Previously, data science pipelines in {productname-short} were based on KubeFlow Pipelines v1. Starting with {productname-short} 2.10.0, data science pipelines are based on KubeFlow Pipelines v2, which uses a different workflow engine. Data science pipelines 2.0 is enabled and deployed by default in {productname-short}.
 
@@ -51,17 +51,18 @@ Data science pipelines 2.0 contains an installation of Argo Workflows. {productn
 If you upgrade to {productname-short} 2.10.0 or later with data science pipelines enabled and an Argo Workflows installation that is not installed by data science pipelines exists on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable data science pipelines or remove the separate installation of Argo Workflows. The component upgrade will complete automatically.
 ====
 
-*Recreate model registries*
+*Recreating model registries*
 
 When you upgrade from {productname-short} 2.19 or earlier to {productname-short} 2.20 or later versions, existing instances of the model registry component are not updated, which causes the instance pods to use older images than the ones referenced by the operator pod.
 
 To resolve this issue, after upgrading, create a new instance of each existing model registry, using the same database configuration, and delete the old model registry instance. The new model registry instance contains all existing registered models and their metadata.
 
-*Update workflows interacting with `OdhDashboardConfig` resource*
+*Updating workflows interacting with `OdhDashboardConfig` resource*
 
 Previously, cluster administrators used the `groupsConfig` option in the `OdhDashboardConfig` resource to manage the {openshift-platform} groups (both administrators and non-administrators) that can access the {productname-short} dashboard. Starting with {productname-short} 2.17, this functionality has moved to the `Auth` resource. If you have workflows (such as GitOps workflows) that interact with `OdhDashboardConfig`, you must update them to reference the `Auth` resource instead.
 
 .User management resource update
+[cols="1,2,2"]
 |===
 | | ODH 2.16 and earlier | ODH 2.17 and later
 
