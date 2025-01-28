@@ -52,7 +52,7 @@ oc new-project kserve-demo
 ----
 +
 
-. From the namespace where you would like to deploy the model, create a PVC for model storage. Provide the size of the model and the name of your storage class. The storage class must be file storage. For example:
+. From the namespace where you would like to deploy the model, create a PVC for model storage. Create a storage class using `Filesystem volumeMode` and the name of your storage class. The storage size must be larger than the size of the model files on disk. For example:
 +
 NOTE: If you have already configured a PVC, you can skip this step.
 +
@@ -146,7 +146,7 @@ endif::[]
 <5> The secret access key to your S3 bucket.
 <6> The name of your S3 bucket.
 <7> The endpoint to your S3 bucket.
-<8> The region for your S3 bucket.
+<8> The region for your S3 bucket if using an AWS S3 bucket. If using other S3-compatible storage, such as ODF or Minio, you can remove the `AWS_DEFAULT_REGION` environment variable.
 <9> If you encounter SSL errors, change `S3_VERIFY_SSL` to `false`.
 +
 
