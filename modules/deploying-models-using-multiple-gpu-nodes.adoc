@@ -34,6 +34,7 @@ endif::[]
 * You have enabled KServe on your cluster.
 * You have only one head pod in your setup. Do not adjust the replica count using the `min_replicas` or `max_replicas` settings in the `InferenceService`. Creating additional head pods can cause them to be excluded from the Ray cluster.	
 * You have a persistent volume claim (PVC) set up and configured for ReadWriteMany (RWX) access mode. 
+* You have NFS, ODF or an equivalent RWX-compatible file system.
 
 .Procedure
 . In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the {openshift-platform} CLI as shown in the following example:
@@ -190,7 +191,7 @@ spec:
 The following configuration can be added to the `InferenceService`:
 +
 * `workerSpec.tensorParallelSize`: Determines how many GPUs are used per node. The GPU type count in both the head and worker node deployment resources is updated automatically. Ensure that the value of `workerSpec.tensorParallelSize` is at least `1`.
-* `workerSpec.pipelineParallelSize`: Determines how many nodes are involved in the deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`.
+* `workerSpec.pipelineParallelSize`: Determines how many nodes are used to balance the model in deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`. It is not recommended to modify this value in production environments.
 
 NOTE: You may need to specify additional arguments, depending on your environment and model size.
 
