@@ -57,3 +57,32 @@ When you upgrade from {productname-short} 2.19 or earlier to {productname-short}
 
 To resolve this issue, after upgrading, create a new instance of each existing model registry, using the same database configuration, and delete the old model registry instance. The new model registry instance contains all existing registered models and their metadata.
 
+*Update workflows interacting with `OdhDashboardConfig` resource*
+
+Previously, cluster administrators used the `groupsConfig` option in the `OdhDashboardConfig` resource to manage the {openshift-platform} groups (both administrators and non-administrators) that can access the {productname-short} dashboard. Starting with {productname-short} 2.17, this functionality has moved to the `Auth` resource. If you have workflows (such as GitOps workflows) that interact with `OdhDashboardConfig`, you must update them to reference the `Auth` resource instead.
+
+.User management resource update
+|===
+| | ODH 2.16 and earlier | ODH 2.17 and later
+
+|`apiVersion`
+|`opendatahub.io/v1alpha`
+|`services.platform.opendatahub.io/v1alpha1`
+
+|`kind`
+|`OdhDashboardConfig`
+|`Auth`
+
+|`name`
+|`odh-dashboard-config`
+|`auth`
+
+|Admin groups
+|`spec.groupsConfig.adminGroups`
+|`spec.adminGroups`
+
+|User groups
+|`spec.groupsConfig.allowedGroups`
+|`spec.allowedGroups`
+
+|===
