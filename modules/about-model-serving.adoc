@@ -19,11 +19,11 @@ You can serve models on one of the following model-serving platforms:
 The model-serving platform that you choose depends on your business needs:
 
 * If you want to deploy each model on its own runtime server, or want to use a serverless deployment, select the *single-model serving platform*. The single-model serving platform is recommended for production use.
-* If you want to deploy multiple models with only one runtime server, select the *multi-model serving platform*. This option is best if you are deploying more than 1,000 models and want to reduce resource consumption.
+* If you want to deploy multiple models with only one runtime server, select the *multi-model serving platform*. This option is best if you are deploying more than 1,000 small and medium models and want to reduce resource consumption.
 * If you are using the NVIDIA serving runtime and NVIDIA NIMs, select the *NVIDIA NIM-model serving platform*.
 
 == Single-model serving platform
-You can deploy each model from a dedicated model serving on the single-model serving platform. Deploying models from a dedicated model server can help you deploy, monitor, scale, and maintain models that require increased resources. The single-model serving platform is based on the link:https://github.com/kserve/kserve[KServe^] component.
+You can deploy each model from a dedicated model serving on the single-model serving platform. Deploying models from a dedicated model server can help you deploy, monitor, scale, and maintain models that require increased resources. This model serving platform is deal for serving large models. The single-model serving platform is based on the link:https://github.com/kserve/kserve[KServe^] component.
 
 The single-model serving platform is helpful for use cases such as:
 
@@ -35,7 +35,7 @@ For more information about setting up the single-model serving platform, see lin
 endif::[]
 
 == Multi-model serving platform
-You can deploy multiple models from the same model server on the multi-model serving platform. Each of the deployed models shares the server resources. Deploying multiple models from the same model server can be advantageous on OpenShift clusters that have finite compute resources or pods. The multi-model serving platform is based on the link:https://github.com/kserve/modelmesh[ModelMesh^] component. 
+You can deploy multiple models from the same model server on the multi-model serving platform. Each of the deployed models shares the server resources. Deploying multiple models from the same model server can be advantageous on OpenShift clusters that have finite compute resources or pods. This model serving platform is ideal for serving small and medium models in large quantities. The multi-model serving platform is based on the link:https://github.com/kserve/modelmesh[ModelMesh^] component. 
 
 ifndef::upstream[]
 For more information about setting up the multi-model serving platform, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/installing-the-multi-model-serving-platform_component-install[Installing the multi-model serving platform].
