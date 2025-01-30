@@ -5,13 +5,15 @@ ifdef::context[:parent-context: {context}]
 = Setting up LM-Eval
 
 [role='_abstract']
-LM-Eval is a service for large language model evaluation. It is integrated into the TrustyAI Kubernetes Operator and is underpinned by two open-source projects - link:https://github.com/EleutherAI/lm-evaluation-harness[lm-evaluation-harness] and link:https://www.unitxt.ai/en/latest/[Unitxt]. 
+LM-Eval is a service designed for evaluating large language models which has been integrated into the TrustyAI Operator. 
+The service is built on top of two open-source projects: the LM Evaluation Harness, developed by EleutherAI, which provides a comprehensive framework for evaluating language models, and Unitxt, a tool that enhances the evaluation process with additional functionalities.
+The following information explains how to create an `LMEvalJob` custom resource (CR) to initiate an evaluation job and get the results.
 
+ifdef::upstream[]
 [NOTE]
+
 --
-
-LM-Eval is only available in the latest community builds. To use LM-Eval on {productname-long}, add the following `devFlag` to your `DataScienceCluster` resource:
-
+LM-Eval is only available in the latest community builds. To use LM-Eval on {productname-long}, ensure that you use ODH 2.20 or later versions and add the following `devFlag` to your `DataScienceCluster` resource:
 [source]
 ----
     trustyai:
@@ -23,14 +25,14 @@ LM-Eval is only available in the latest community builds. To use LM-Eval on {pro
     managementState: Managed
 ----
 --
- 
-.Global settings for LM-Eval
+endif::[]
 
+
+.Global settings for LM-Eval
 
 Configurable global settings for LM-Eval services are stored in the TrustyAI operator global `ConfigMap`, named `trustyai-service-operator-config`. The global settings are located in the same namespace as the operator.
 
 You can configure the following properties for LM-Eval:
-
 
 .LM-Eval properties
 [cols="1,1,5"]
@@ -39,15 +41,15 @@ You can configure the following properties for LM-Eval:
 
 | `lmes-detect-device`
 | `true/false`
-| Detect if there are GPUs available and assign a value for `--device argument` for `lm-evaluation-harness`. If GPUs are available, the value is `cuda`. If there are no GPUs available, the value is `cpu`.
+| Detect if there are GPUs available and assign a value for `--device argument` for LM Evaluation Harness. If GPUs are available, the value is `cuda`. If there are no GPUs available, the value is `cpu`.
 
 | `lmes-pod-image`
 | `quay.io/trustyai/ta-lmes-job:latest`
-| The image for the LM-Eval job. The image contains the Python packages for `lm-evaluation-harness` and Unitxt.
+| The image for the LM-Eval job. The image contains the Python packages for LM Evaluation Harness and Unitxt.
 
 | `lmes-driver-image`
 | `quay.io/trustyai/ta-lmes-driver:latest`
-| The image for the LM-Eval driver. For detailed information about the driver, see the  `cmd/lmes_driver` directory.
+| The image for the LM-Eval driver. For detailed information about the driver, see the `cmd/lmes_driver` directory.
 
 | `lmes-image-pull-policy` 
 | `Always`
@@ -57,7 +59,6 @@ You can configure the following properties for LM-Eval:
 | 8
 | The default batch size when invoking the model inference API. Default batch size is only available for local models.
 
-
 | `lmes-max-batch-size`
 | 24
 | The maximum batch size that users can specify in an evaluation job.
@@ -65,10 +66,36 @@ You can configure the following properties for LM-Eval:
 | `lmes-pod-checking-interval`
 | 10s
 | The interval to check the job pod for an evaluation job.
+
+| `lmes-allow-online`
+| true
+| The setting that determines whether LMEval jobs can set the online mode to 'on' in order to access artifacts (models, datasets, tokenizers) from the internet.
+
+| `lmes-code-execution`
+| true
+| Setting that determines whether LMEval jobs can set the 'trust remote code' mode to 'on'.
  
 |===
 
+After updating the settings in the `ConfigMap`, restart the operator to apply the new values.
+
+
+ifndef::upstream[]
 [NOTE]
 --
-After updating the settings in the `ConfigMap`, restart the operator to apply the new values.
+The `allowOnline` setting is disabled by default at the operator level in {productname-long}. If you want to enable `allowOnline` mode, patch the TrustyAI operator `ConfigMap` with the following code: 
+
+[source]
+----
+ kubectl patch configmap trustyai-service-operator-config -n redhat-ods-applications \
+--type merge -p '{"data":{"lmes-allow-online":"true","lmes-allow-code-execution":"true"}}'
+----
+
+Then restart the TrustyAI operator with: 
+
+[source]
+----
+kubectl rollout restart deployment trustyai-service-operator-controller-manager -n redhat-ods-applications
+----
 --
+endif::[]

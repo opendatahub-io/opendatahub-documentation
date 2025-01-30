@@ -8,7 +8,7 @@ ifdef::context[:parent-context: {context}]
 
 The procedures below outline different example scenarios which you may find useful for your ML-Eval setup.
 
-== Configuring the LM-eval environment
+== Configuring the LM-Eval environment
 
 If the `LMEvalJob` needs to access a model on HuggingFace with the access token, you can set up the `HF_TOKEN` as one of the environment variables for the `lm-eval` container.
 
@@ -58,10 +58,9 @@ env:
 
 ----
 
-
 == Custom Unitxt Card
 
-You can also run evaluations using custom unitxt cards. To do this, include the custom unitxt card in JSON format within the LMEvalJob YAML.
+You can run evaluations using custom unitxt cards. To do this, include the custom unitxt card in JSON format within the `LMEvalJob` YAML.
 
 .Prerequisites
 * You have logged in to Red Hat OpenShift AI.
@@ -168,7 +167,7 @@ spec:
             },
 
 ----
-You can use other link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#module-unitxt.loaders[loaders] that use the `volumes` and `volumeMounts` parameters to mount the dataset from persistent volumes. For example, if you use link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#unitxt.loaders.LoadCSV[LoadCSV], mount the files to the container and make the dataset accessible for the evaluation process.
+You can use other Unitxt loaders (found on the Unitxt website) that use the `volumes` and `volumeMounts` parameters to mount the dataset from persistent volumes. For example, if you use the `LoadCSV` Unitxt command, mount the files to the container and make the dataset accessible for the evaluation process.
 
 
 == Using PVCs as storage
@@ -184,7 +183,6 @@ If both managed and existing PVCs are referenced in outputs, the TrustyAI operat
 * You have logged in to Red Hat OpenShift AI.
 
 * Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
-
 
 === Managed PVCs
 
@@ -210,7 +208,6 @@ spec:
 * `outputs` is the section for specifying custom storage locations
 * `pvcManaged` will create an operator-managed PVC
 * `size` (compatible with standard PVC syntax) is the only supported value
-
 
 === Existing PVCs
 
@@ -248,8 +245,6 @@ spec:
   outputs:
     pvcName: "my-pvc" 
 ----
-
-
 
 == Using an InferenceService
 
@@ -299,7 +294,6 @@ spec:
             name: <secret-name> 
             key: token 
 ----
-
 
 * Apply this CR into the same namespace as your model. You should see a pod spin up in your model namespace called `evaljob`. In the pod terminal, you can see the output via `tail -f output/stderr.log`
 
