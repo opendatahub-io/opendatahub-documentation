@@ -12,16 +12,56 @@ ifdef::upstream,self-managed[]
 * You have the `cluster-admin` role in {openshift-platform}.
 * You have installed your Intel Gaudi accelerator and confirmed that it is detected in your environment.
 * Your OpenShift environment supports EC2 DL1 instances if you are running on Amazon Web Services (AWS).
+* You have installed the OpenShift command-line interface (CLI). 
+
 endif::[]
 ifdef::cloud-service[]
 * You have logged in to OpenShift.
 * You have the `cluster-admin` role in OpenShift.
 * You have installed your Intel Gaudi accelerator and confirmed that it is detected in your environment.
 * Your OpenShift environment supports EC2 DL1 instances if you are running on Amazon Web Services (AWS).
+* You have installed the OpenShift command-line interface (CLI). 
 endif::[]
 
 .Procedure
-. Install version 1.18 of the Intel Gaudi AI Accelerator Operator, as described in link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/Intel_Gaudi_Base_Operator/index.html[GaudiAI Operator OpenShift installation].
+. Install the latest version of the Intel Gaudi AI Accelerator Operator, as described in link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html[Intel Gaudi AI Operator OpenShift installation].
+. If you are upgrading to a new version of the Intel Gaudi Accelerator Operator, you must increase the per-pod PID limit to 32768. This avoids `Resource temporarily unavailable` errors occurring due to PID exhaustion.
+.. Run the following command to label the node: 
++
+[source]
+----
+oc label node <node_name> custom-kubelet=set-pod-pid-limit-kubelet
+----
+.. Create a `custom-kubelet-pidslimit.yaml` KubeletConfig resource file: 
++
+[source]
+----
+oc create -f custom-kubelet-pidslimit.yaml
+----
+.. Populate the file with the following YAML code. Set the `PodPidsLimit` value to 32768.
++
+[source,YAML]
+----
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: custom-kubelet-pidslimit
+spec:
+  kubeletConfig:
+    PodPidsLimit: 32768
+  machineConfigPoolSelector:
+    matchLabels:
+      custom-kubelet: set-pod-pid-limit-kubelet
+----
+.. Apply the configuration: 
++
+[source]
+----
+oc apply -f custom-kubelet-pidslimit.yaml
+----
++
+This operation causes the node to reboot. For more information on node rebooting, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-nodes#nodes-nodes-rebooting[Understanding node rebooting].
+
 ifndef::upstream[]
 . Create a custom workbench image for Intel Gaudi AI accelerators, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/creating-custom-workbench-images[Creating custom workbench images].
 endif::[]
