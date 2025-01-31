@@ -6,7 +6,7 @@ ifdef::context[:parent-context: {context}]
 
 [role='_abstract']
 
-The procedures below outline different example scenarios which you may find useful for your ML-Eval setup.
+The following procedures outline example scenarios that can be useful for an ML-Eval setup.
 
 == Configuring the LM-Eval environment
 
@@ -58,7 +58,7 @@ env:
 
 ----
 
-== Custom Unitxt Card
+== Using a custom Unitxt card
 
 You can run evaluations using custom Unitxt cards. To do this, include the custom Unitxt card in JSON format within the `LMEvalJob` YAML.
 
@@ -294,7 +294,11 @@ spec:
             key: token 
 ----
 
-. Apply this CR into the same namespace as your model. You should see a pod spin up in your model namespace called `evaljob`. In the pod terminal, you can see the output via `tail -f output/stderr.log`
+. Apply this CR into the same namespace as your model. 
+
+.Verification
+
+A pod spins up in your model namespace called `evaljob`. In the pod terminal, you can see the output via `tail -f output/stderr.log`.
 
 .Notes on the code
 * `base_url` should be set to the route/service URL of your model. Make sure to include the `/v1/completions` endpoint in the URL.

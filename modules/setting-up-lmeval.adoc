@@ -74,11 +74,11 @@ You can configure the following properties for LM-Eval:
 
 | `lmes-allow-online`
 | true
-| Whether LMEval jobs can set the online mode to 'on' to access artifacts (models, datasets, tokenizers) from the internet. 
+| Whether LMEval jobs can set the online mode to `on` to access artifacts (models, datasets, tokenizers) from the internet. 
 
 | `lmes-code-execution`
 | true
-| Determines whether LMEval jobs can set the 'trust remote code' mode to 'on'.
+| Determines whether LMEval jobs can set the `trust remote code` mode to `on`.
  
 |===
 
@@ -102,11 +102,10 @@ ifndef::upstream[]
 The `allowOnline` setting is disabled by default at the operator level in {productname-long}, as using `allowOnline` gives the job permissions to automatically download artifacts from external sources.
 --
 
-
 .Enabling `allowOnline` mode
 
 To enable `allowOnline` mode, patch the TrustyAI operator `ConfigMap` with the following code: 
-+
+
 [source]
 ----
  kubectl patch configmap trustyai-service-operator-config -n redhat-ods-applications \
@@ -114,7 +113,7 @@ To enable `allowOnline` mode, patch the TrustyAI operator `ConfigMap` with the f
 ----
 
 Then restart the TrustyAI operator with: 
-+
+
 [source]
 ----
 kubectl rollout restart deployment trustyai-service-operator-controller-manager -n redhat-ods-applications
