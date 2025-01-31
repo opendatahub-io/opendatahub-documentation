@@ -26,7 +26,7 @@ The sample `LMEvalJob` object contains the following features:
 
 * The following default parameters for the `multi_class.relation` Unitxt task: `f1_micro`, `f1_macro`, and `accuracy`. This template can be found on the Unitxt website: click *Catalog*, then click *Tasks* and select *Classification* from the menu.
 
-Here is an example of an `LMEvalJob` object:
+The following is an example of an `LMEvalJob` object:
 
 [source]
 ----
@@ -69,7 +69,7 @@ oc get lmevaljobs.trustyai.opendatahub.io evaljob-sample \
   -o template --template={{.status.results}} | jq '.results'
 ----
 
-Here is an example result:
+The command returns results similar to the following example:
 
 [source]
 ----
@@ -181,10 +181,10 @@ a| Creates an operator-managed PVC to store the job results. The PVC is named `<
 | Binds an existing PVC to a job by specifying its name. The PVC must be created separately and must already exist when creating the job.
 
 | `allowOnline`
-| If this parameter is set to `true`, the LMEval job will download artifacts as needed (e.g. models, datasets or tokenizers). If set to `false`, artifacts will not be downloaded and will instead be pulled from local storage. This setting is disabled by default. If you want to enable `allowOnline` mode, follow instructions in the previous section to patch the TrustyAI operator `ConfigMap`.
+| If this parameter is set to `true`, the LMEval job downloads artifacts as needed (e.g. models, datasets or tokenizers). If set to `false`, artifacts are not downloaded and are pulled from local storage instead. This setting is disabled by default. If you want to enable `allowOnline` mode, you can patch the TrustyAI operator `ConfigMap`. 
 
 | `allowCodeExecution`
-| If this parameter is set to `true`, the LMEval job will execute the necessary code for preparing models or datasets. If set to `false` it will not execute downloaded code.
+| If this parameter is set to `true`, the LMEval job executes the necessary code for preparing models or datasets. If set to `false` it does not execute downloaded code.
 
 | `offline`
 | Mount a PVC as the local storage for models and datasets.
