@@ -25,7 +25,7 @@ endif::[]
 
 .Procedure
 . Install the latest version of the Intel Gaudi AI Accelerator Operator, as described in link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html[Intel Gaudi AI Operator OpenShift installation].
-. If you are upgrading to a new version of the Intel Gaudi Accelerator Operator, you must increase the per-pod PID limit to a value over 20000, Red Hat recommends using a PID limit of 32768. This avoids `Resource temporarily unavailable` errors occurring due to PID exhaustion.
+. If you are upgrading to a new version of the Intel Gaudi Accelerator Operator, you must increase the per-pod PID limit to a value over 20000, {org-name} recommends using a PID limit of 32768. This avoids `Resource temporarily unavailable` errors occurring due to PID exhaustion.
 .. Run the following command to label the node: 
 +
 [source]
@@ -60,7 +60,7 @@ spec:
 oc apply -f custom-kubelet-pidslimit.yaml
 ----
 +
-This operation causes the node to reboot. For more information on node rebooting, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-nodes#nodes-nodes-rebooting[Understanding node rebooting].
+This operation causes the node to reboot. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-nodes#nodes-nodes-rebooting[Understanding node rebooting].
 
 ifndef::upstream[]
 . Create a custom workbench image for Intel Gaudi AI accelerators, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/creating-custom-workbench-images[Creating custom workbench images].
