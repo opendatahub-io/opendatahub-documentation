@@ -1,0 +1,52 @@
+:_module-type: PROCEDURE
+
+[id='enabling-amd-gpus_{context}']
+= Enabling AMD GPUs
+
+[role='_abstract']
+Before you can use AMD GPUs in {productname-short}, you must install the required dependencies, deploy the AMD GPU Operator, and configure the environment.
+
+.Prerequisites
+ifdef::upstream,self-managed[]
+* You have logged in to {openshift-platform}.
+* You have the `cluster-admin` role in {openshift-platform}.
+* You have installed your AMD GPU and confirmed that it is detected in your environment.
+* Your {openshift-platform} environment supports EC2 DL1 instances if you are running on Amazon Web Services (AWS).
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to OpenShift.
+* You have the `cluster-admin` role in OpenShift.
+* You have installed your AMD GPU and confirmed that it is detected in your environment.
+* Your {openshift-platform} environment supports EC2 DL1 instances if you are running on Amazon Web Services (AWS).
+endif::[]
+
+.Procedure
+. Install the latest version of the AMD GPU Operator, as described in link:https://dcgpu.docs.amd.com/projects/gpu-operator/en/main/installation/openshift-olm.html[Install AMD GPU Operator on OpenShift].
+. After installing the AMD GPU Operator, configure the AMD drivers required by the Operator as described in the documentation: link:https://dcgpu.docs.amd.com/projects/gpu-operator/en/main/drivers/installation.html[Configure AMD drivers for the GPU Operator].
+
+[NOTE]
+====
+Alternatively, you can install the AMD GPU Operator from the {org-name} Catalog. For more information, see link:https://catalog.redhat.com/software/container-stacks/detail/6722781e65e61b6d4caccef8?rh-tabs-2b5yslu8z=rh-tab-v8le4ijlp[Install AMD GPU Operator from Red Hat Catalog].
+====
+
+//downstream - all
+ifndef::upstream[]
+. After installing the AMD GPU Operator, create an accelerator profile, as described in link:{rhoaidocshome}{default-format-url}/working_with_accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+endif::[]
+
+//upstream only
+ifdef::upstream[]
+. After installing the AMD GPU Operator, create an accelerator profile, as described in link:{odhdocshome}/working-with-accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+endif::[]
+
+.Verification
+From the *Administrator* perspective, go to the *Operators* -> *Installed Operators* page. Confirm that the following Operators appear:
+
+* AMD GPU Operator
+* Node Feature Discovery (NFD)
+* Kernel Module Management (KMM)
+
+[NOTE]
+====
+Ensure that you follow all the steps for proper driver installation and configuration. Incorrect installation or configuration may prevent the AMD GPUs from being recognized or functioning properly.
+====

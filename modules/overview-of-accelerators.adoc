@@ -11,14 +11,21 @@ If you work with large data sets, you can use accelerators to optimize the perfo
 * Training deep neural networks
 * Data cleansing and data processing
 
-{productname-short} supports the following accelerators: 
+{productname-short} supports the following accelerators:
 
 * NVIDIA graphics processing units (GPUs)
-** To use compute-heavy workloads in your models, you can enable NVIDIA graphics processing units (GPUs) in {productname-short}. 
-**   To enable GPUs on OpenShift, you must install the link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator].
+** To use compute-heavy workloads in your models, you can enable NVIDIA graphics processing units (GPUs) in {productname-short}.
+** To enable NVIDIA GPUs on OpenShift, you must install the link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator].
+* AMD graphics processing units (GPUs)
+** Use the AMD GPU Operator to enable AMD GPUs for workloads such as AI/ML training and inference.
+** To enable AMD GPUs on OpenShift, you must do the following tasks:
+*** Install the AMD GPU Operator.
+*** Follow the instructions for full deployment and driver configuration in the link:https://dcgpu.docs.amd.com/projects/gpu-operator/en/main/index.html[AMD GPU Operator documentation].
+
+** Once installed, the AMD GPU Operator allows you to use the ROCm workbench images to streamline AI/ML workflows on AMD GPUs.
 * Intel Gaudi AI accelerators
 ** Intel provides hardware accelerators intended for deep learning workloads.
-**  Before you can enable Intel Gaudi AI accelerators in {productname-short}, you must install the necessary dependencies. Also, the version of the Intel Gaudi AI Operator that you install must match the version of the corresponding workbench image in your deployment. 
+** Before you can enable Intel Gaudi AI accelerators in {productname-short}, you must install the necessary dependencies. Also, the version of the Intel Gaudi AI Operator that you install must match the version of the corresponding workbench image in your deployment.
 ** A workbench image for Intel Gaudi accelerators is not included in {productname-short} by default. Instead, you must create and configure a custom notebook to enable Intel Gaudi AI support.
 ** You can enable Intel Gaudi AI accelerators on-premises or with AWS DL1 compute nodes on an AWS instance.
 
@@ -27,5 +34,7 @@ Before you can use an accelerator in {productname-short}, your OpenShift instanc
 [role="_additional-resources"]
 .Additional resources
 * link:https://habana.ai/[Habana, an Intel Company]
-* link:https://aws.amazon.com/ec2/instance-types/dl1/[Amazon EC2 DL1 Instances]  
+* link:https://aws.amazon.com/ec2/instance-types/dl1/[Amazon EC2 DL1 Instances]
+* link:https://docs.amd.com/en/solutions/ai-machine-learning/rocm[AMD ROCm Platform Documentation]
+* link:https://github.com/ROCm/gpu-operator[AMD GPU Operator on GitHub]
 * link:https://linux.die.net/man/8/lspci[lspci(8) - Linux man page]

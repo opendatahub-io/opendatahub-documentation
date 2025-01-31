@@ -1,0 +1,66 @@
+:_module-type: PROCEDURE
+
+[id="verifying-amd-gpu-availability-on-your-cluster_{context}"]
+= Verifying AMD GPU availability on your cluster
+
+[role='_abstract']
+Before you proceed with the AMD GPU Operator installation process, you can verify the presence of an AMD GPU device on a node within your {openshift-platform} cluster. You can use commands such as `lspci` or `oc` to confirm hardware and resource availability.
+
+.Prerequisites
+* You have administrative access to the {openshift-platform} cluster.
+* You have a running {openshift-platform} cluster with a node equipped with an AMD GPU.
+* You have access to the OpenShift CLI (`oc`) and terminal access to the node.
+
+.Procedure
+. Use the OpenShift CLI to verify if GPU resources are allocatable:
+.. List all nodes in the cluster to identify the node with an AMD GPU:
++
+----
+oc get nodes
+----
+.. Note the name of the node where you expect the AMD GPU to be present.
+.. Describe the node to check its resource allocation:
++
+----
+oc describe node <node_name>
+----
+.. In the output, locate the **Capacity** and **Allocatable** sections and confirm that `amd.com/gpu` is listed. For example:
++
+----
+Capacity:
+  amd.com/gpu:  1
+Allocatable:
+  amd.com/gpu:  1
+----
+. Check for the AMD GPU device using the `lspci` command:
+.. Log in to the node:
++
+----
+oc debug node/<node_name>
+chroot /host
+----
+.. Run the `lspci` command and search for the supported AMD device in your deployment. For example:
++
+----
+lspci | grep -E "MI210|MI250|MI300"
+----
+.. Verify that the output includes one of the AMD GPU models. For example:
++
+----
+03:00.0 Display controller: Advanced Micro Devices, Inc. [AMD] Instinct MI210
+----
+. Optional: Use the `rocminfo` command if the ROCm stack is installed on the node:
++
+----
+rocminfo
+----
+.. Confirm that the ROCm tool outputs details about the AMD GPU, such as compute units, memory, and driver status.
+
+.Verification
+* The `oc describe node <node_name>` command lists `amd.com/gpu` under **Capacity** and **Allocatable**.
+* The `lspci` command output identifies an AMD GPU as a PCI device matching one of the specified models (for example, MI210, MI250, MI300).
+* Optional: The `rocminfo` tool provides detailed GPU information, confirming driver and hardware configuration.
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://github.com/ROCm/gpu-operator[AMD GPU Operator GitHub Repository]
