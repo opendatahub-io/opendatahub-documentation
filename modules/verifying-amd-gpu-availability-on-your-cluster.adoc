@@ -8,7 +8,7 @@ Before you proceed with the AMD GPU Operator installation process, you can verif
 
 .Prerequisites
 * You have administrative access to the {openshift-platform} cluster.
-* You have a running OpenShift cluster with a node equipped with an AMD GPU.
+* You have a running {openshift-platform} cluster with a node equipped with an AMD GPU.
 * You have access to the OpenShift CLI (`oc`) and terminal access to the node.
 
 .Procedure
@@ -24,7 +24,7 @@ oc get nodes
 ----
 oc describe node <node_name>
 ----
-.. In the output, locate the **Capacity** and **Allocatable** sections and confirm that `amd.com/gpu` is listed. Example output:
+.. In the output, locate the **Capacity** and **Allocatable** sections and confirm that `amd.com/gpu` is listed. For example:
 +
 ----
 Capacity:
@@ -44,7 +44,7 @@ chroot /host
 ----
 lspci | grep -E "MI210|MI250|MI300"
 ----
-.. Verify that the output includes one of the AMD GPU models. Example:
+.. Verify that the output includes one of the AMD GPU models. For example:
 +
 ----
 03:00.0 Display controller: Advanced Micro Devices, Inc. [AMD] Instinct MI210
@@ -58,7 +58,7 @@ rocminfo
 
 .Verification
 * The `oc describe node <node_name>` command lists `amd.com/gpu` under **Capacity** and **Allocatable**.
-* The `lspci` command output identifies an AMD GPU as a PCI device matching one of the specified models (e.g., MI210, MI250, MI300).
+* The `lspci` command output identifies an AMD GPU as a PCI device matching one of the specified models (for example, MI210, MI250, MI300).
 * Optional: The `rocminfo` tool provides detailed GPU information, confirming driver and hardware configuration.
 
 [role="_additional-resources"]
