@@ -8,7 +8,7 @@ ifdef::context[:parent-context: {context}]
 
 The procedures below outline different example scenarios which you may find useful for your ML-Eval setup.
 
-== Configuring the LM-eval environment
+== Configuring the LM-Eval environment
 
 If the `LMEvalJob` needs to access a model on HuggingFace with the access token, you can set up the `HF_TOKEN` as one of the environment variables for the `lm-eval` container.
 
@@ -20,8 +20,8 @@ If the `LMEvalJob` needs to access a model on HuggingFace with the access token,
 
 .Procedure
 
-To start an evaluation job for a `huggingface` model, apply the following YAML file:
-
+. To start an evaluation job for a `huggingface` model, apply the following YAML file:
++
 [source]
 ----
 apiVersion: trustyai.opendatahub.io/v1alpha1
@@ -44,8 +44,8 @@ spec:
         value: "My HuggingFace token"
 ----
 
-You can also create a secret to store the token, then refer the key from the `secretKeyRef` object using the following reference syntax:
-
+. (Optional) You can also create a secret to store the token, then refer the key from the `secretKeyRef` object using the following reference syntax:
++
 [source]
 ----
 
@@ -58,10 +58,9 @@ env:
 
 ----
 
-
 == Custom Unitxt Card
 
-You can also run evaluations using custom unitxt cards. To do this, include the custom unitxt card in JSON format within the LMEvalJob YAML.
+You can run evaluations using custom Unitxt cards. To do this, include the custom Unitxt card in JSON format within the `LMEvalJob` YAML.
 
 .Prerequisites
 * You have logged in to Red Hat OpenShift AI.
@@ -69,8 +68,8 @@ You can also run evaluations using custom unitxt cards. To do this, include the 
 * Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
 
 .Procedure
-* Pass a custom Unitxt Card in JSON format:
-
+. Pass a custom Unitxt Card in JSON format:
++
 [source]
 ----
 apiVersion: trustyai.opendatahub.io/v1alpha1
@@ -156,8 +155,8 @@ spec:
   logSamples: true
 ----
 
-* Inside the custom card specify the Hugging Face dataset loader:
-
+. Inside the custom card specify the Hugging Face dataset loader:
++
 [source]
 ----
 
@@ -168,12 +167,12 @@ spec:
             },
 
 ----
-You can use other link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#module-unitxt.loaders[loaders] that use the `volumes` and `volumeMounts` parameters to mount the dataset from persistent volumes. For example, if you use link:https://www.unitxt.ai/en/latest/unitxt.loaders.html#unitxt.loaders.LoadCSV[LoadCSV], mount the files to the container and make the dataset accessible for the evaluation process.
 
+. (Optional) You can use other Unitxt loaders (found on the Unitxt website) that contain the `volumes` and `volumeMounts` parameters to mount the dataset from persistent volumes. For example, if you use the `LoadCSV` Unitxt command, mount the files to the container and make the dataset accessible for the evaluation process.
 
 == Using PVCs as storage
 
-To use a PVC as storage for the LMEvalJob results, you can use either managed PVCS or existing PVCs. Managed PVCs are managed by the TrustyAI operator. Existing PVCs are created by the end-user before the `LMEvalJob` is created.
+To use a PVC as storage for the `LMEvalJob` results, you can use either managed PVCS or existing PVCs. Managed PVCs are managed by the TrustyAI operator. Existing PVCs are created by the end-user before the `LMEvalJob` is created.
 
 [NOTE]
 --
@@ -184,7 +183,6 @@ If both managed and existing PVCs are referenced in outputs, the TrustyAI operat
 * You have logged in to Red Hat OpenShift AI.
 
 * Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
-
 
 === Managed PVCs
 
@@ -211,14 +209,13 @@ spec:
 * `pvcManaged` will create an operator-managed PVC
 * `size` (compatible with standard PVC syntax) is the only supported value
 
-
 === Existing PVCs
 
 To use an existing PVC, pass its name as a reference. The PVC must exist when you create the `LMEvalJob`. 
 The PVC is not managed by the TrustyAI operator, so it is available after deleting the `LMEvalJob`.
 
 .Procedure
-* Create a PVC. An example is the following:
+. Create a PVC. An example is the following:
 +
 [source]
 ----
@@ -234,8 +231,7 @@ spec:
       storage: 1Gi
 ----
 
-* Reference the new PVC from the `LMEvalJob`.
-
+. Reference the new PVC from the `LMEvalJob`.
 +
 [source]
 ----
@@ -249,11 +245,9 @@ spec:
     pvcName: "my-pvc" 
 ----
 
-
-
 == Using an InferenceService
 
-To run an evaluation job on an InferenceService which is already deployed and running in your namespace, define your LMEvalJob CR, then apply this CR into the same namespace as your model.
+To run an evaluation job on an `InferenceService` which is already deployed and running in your namespace, define your LMEvalJob CR, then apply this CR into the same namespace as your model.
 
 .Prerequisites
 * You have logged in to Red Hat OpenShift AI.
@@ -264,8 +258,8 @@ To run an evaluation job on an InferenceService which is already deployed and ru
 
 .Procedure
 
-* Define your LMEvalJob CR:
-
+. Define your `LMEvalJob` CR:
++
 [source]
 ----
   apiVersion: trustyai.opendatahub.io/v1alpha1
@@ -300,8 +294,7 @@ spec:
             key: token 
 ----
 
-
-* Apply this CR into the same namespace as your model. You should see a pod spin up in your model namespace called `evaljob`. In the pod terminal, you can see the output via `tail -f output/stderr.log`
+. Apply this CR into the same namespace as your model. You should see a pod spin up in your model namespace called `evaljob`. In the pod terminal, you can see the output via `tail -f output/stderr.log`
 
 .Notes on the code
 * `base_url` should be set to the route/service URL of your model. Make sure to include the `/v1/completions` endpoint in the URL.
