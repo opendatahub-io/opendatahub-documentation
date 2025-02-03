@@ -25,7 +25,7 @@ endif::[]
 
 .Procedure
 . Install the latest version of the Intel Gaudi AI Accelerator Operator, as described in link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html[Intel Gaudi AI Operator OpenShift installation].
-. If you are upgrading to a new version of the Intel Gaudi Accelerator Operator, you must increase the per-pod PID limit to a value over 20000; {org-name} recommends using a PID limit of 32768. This avoids `Resource temporarily unavailable` errors occurring due to PID exhaustion.
+. By default, {openshift-platform} sets a per-pod PID limit of 4096. If your workload requires more processing power, such as when you use multiple Gaudi accelerators or when using vLLM with Ray, you must manually increase the per-pod PID limit to avoid `Resource temporarily unavailable` errors. These errors occur due to PID exhaustion. {org-name} recommends setting this limit to 32768, although values over 20000 are sufficient.
 .. Run the following command to label the node: 
 +
 [source]
