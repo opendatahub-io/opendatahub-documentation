@@ -32,6 +32,12 @@ endif::[]
 ----
 oc label node <node_name> custom-kubelet=set-pod-pid-limit-kubelet
 ----
+.. Optional: To prevent workload distribution on the affected node, you can mark it as unchschulable: 
++
+[source]
+----
+oc adm cordon <node_name>
+----
 .. Create a `custom-kubelet-pidslimit.yaml` KubeletConfig resource file: 
 +
 [source]
@@ -61,6 +67,12 @@ oc apply -f custom-kubelet-pidslimit.yaml
 ----
 +
 This operation causes the node to reboot. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-nodes#nodes-nodes-rebooting[Understanding node rebooting].
+.. Optional: If you previously marked the node as unschedulable, you can allow scheduling again after the node reboots:
++
+[source]
+----
+oc adm uncordon <node_name>
+----
 
 ifndef::upstream[]
 . Create a custom workbench image for Intel Gaudi AI accelerators, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/creating-custom-workbench-images[Creating custom workbench images].
