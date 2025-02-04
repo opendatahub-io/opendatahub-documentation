@@ -50,6 +50,11 @@ ifdef::disconnected[]
 . To enable GPU support on an OpenShift cluster in a disconnected or airgapped environment, follow the instructions here: link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mirror-gpu-ocp-disconnected.html[Deploy GPU Operators in a disconnected or airgapped environment^] in the NVIDIA documentation.
 endif::[]
 //the following steps apply to upstream and downstream: self-managed (connected and disconnected) and cloud service
++
+[IMPORTANT] 
+====
+After you install the Node Feature Discovery (NFD) Operator, you must create an instance of Node Feature Discovery. In addition, after you install the NVIDIA GPU Operator, you must create a Cluster Policy and populate it with default values. 
+====
 . Delete the *migration-gpu-status* ConfigMap.
 ifdef::upstream,self-managed[]
 .. In the {openshift-platform} web console, switch to the *Administrator* perspective.
@@ -79,11 +84,36 @@ endif::[]
 
 .Verification
 * The reset *migration-gpu-status* instance is present on the *Instances* tab on the `AcceleratorProfile` custom resource definition (CRD) details page.
-From the *Administrator* perspective, go to the *Operators* -> *Installed Operators* page. Confirm that the following Operators appear:
+* From the *Administrator* perspective, go to the *Operators* -> *Installed Operators* page. Confirm that the following Operators appear:
 
-* NVIDIA GPU
-* Node Feature Discovery (NFD)
-* Kernel Module Management (KMM)
+** NVIDIA GPU
+** Node Feature Discovery (NFD)
+** Kernel Module Management (KMM)
+
+* The GPU is correctly detected a few minutes after full installation of the Node Feature Discovery (NFD) and NVIDIA GPU Operators. The {openshift-platform} command line interface (CLI) displays the appropriate output for the GPU worker node. For example: 
++
+[source]
+----
+# Expected output when the GPU is detected properly
+oc describe node <node name>
+...
+Capacity:
+  cpu:                4
+  ephemeral-storage:  313981932Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             16076568Ki
+  nvidia.com/gpu:     1
+  pods:               250
+Allocatable:
+  cpu:                3920m
+  ephemeral-storage:  288292006229
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             12828440Ki
+  nvidia.com/gpu:     1
+  pods:               250 
+----
 
 //the following note applies to downstream only: self-managed (connected and disconnected) and cloud service
 ifndef::upstream[]
