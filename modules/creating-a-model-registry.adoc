@@ -56,7 +56,16 @@ endif::[]
 +
 [NOTE]
 ====
-Uploading a certificate creates the `db-credential` ConfigMap with the `ca.crt` key. To upload a certificate as a secret, [X]?
+Uploading a certificate creates the `db-credential` ConfigMap with the `ca.crt` key. 
+
+ifdef::upstream[]
+To upload a certificate as a secret, you must create a secret in {openshift-platform}, in the `odh-model-registries` namespace.
+endif::[]
+ifndef::upstream[]
+To upload a certificate as a secret, you must create a secret in {openshift-platform}, in the `rhoai-model-registries` namespace.
+endif::[]
+
+For more information about creating secrets in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-pods#nodes-pods-secrets[Providing sensitive data to pods by using secrets].
 ==== 
 ... Drag and drop the PEM file for your certificate into the *Certificate* field, or click *Upload* to select a file from your local machine's file system.
 . Click *Create*.
