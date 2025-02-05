@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
 [id="enforce-lqlabel-some_{context}"]
-= Enforcing the local-queue labelling policy in all projects
+= Enforcing the local-queue labeling policy in some projects only
 
 [role='_abstract']
-The local-queue labelling policy is enforced in all projects by default.
+The local-queue labeling policy is enforced in all projects by default.
 
 To enforce the policy in some projects only, follow these steps.
 
@@ -42,7 +42,7 @@ endif::[]
 . Click the *YAML* tab to show the binding specifications.
 . Edit the `namespaceSelector` field to delete the `{}` value, and add the `matchLabels` and `kueue-managed` values as shown in the following example:
 +
-.Example validating admission policy binding for some projects only
+.Example to enforce local-queue labeling for some projects only
 [source,bash,subs="+quotes"]
 ----
 kind: ValidatingAdmissionPolicyBinding
@@ -61,8 +61,8 @@ spec:
   policyName: kueue-validating-admission-policy
   matchResources:
     namespaceSelector: 
-        matchLabels:
-        kueue-managed: "true"
+      matchLabels:
+      kueue-managed: "true"
     objectSelector: {}
     matchPolicy: Equivalent
   validationActions:
@@ -71,14 +71,14 @@ spec:
 
 . Click *Save*.
 
-. Add the ‘kueue-managed’ label to each project for which you want to enforce this policy, by running the following command:
+. Add the `kueue-managed` label to each project for which you want to enforce this policy, by running the following command:
 +
-.Example command to add the ‘kueue-managed’ label to a project
+.Example command to add the `kueue-managed` label to a project
 [source,bash,subs="+quotes"]
 ----
 oc label -n _<project-name>_ kueue-managed=true
 ----
 
 
-/ .Verification 
+// .Verification 
 
