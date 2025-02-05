@@ -1,0 +1,171 @@
+:_module-type: PROCEDURE
+
+[id="enabling-performance-metrics-for-an-existing-nim-deployment_{context}"]
+= Enabling performance metrics for an existing NIM deployment 
+
+[role="_abstract"]
+If you have previously deployed a NIM model in an older version of {productname-short}, and then upgraded to 2.17, you must manually enable performance metrics for your existing deployment. 
+
+This means that you must manually add annotations to enable metrics collection and graph generation for your deployment.
+[NOTE]
+====
+NIM metrics and graphs are automatically available for new NIM deployments in 2.17.
+====
+
+== Enabling graph generation for an existing NIM deployment
+The following procedure describes how to enable graph generation for an existing NIM deployment.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your OpenShift cluster.
+* You have downloaded and installed the OpenShift command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You had a pre-existing existing NIM deployment before upgrading to 2.17.
+
+.Procedure
+. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI.
+. Confirm the name of the `ServingRuntime` associated with your NIM deployment.
++
+[source]
+----
+oc get servingruntime -n <namespace>
+----  
++
+Replace `<namespace>` with the namespace of the project where your NIM model is deployed. 
+. Check if there is an existing `metadata.annotations` section in the `ServingRuntime` configuration.
++
+[source]
+----
+oc get servingruntime -n  <namespace> <servingruntime-name> -o json | jq '.metadata.annotations'
+---- 
++
+Replace <servingruntime-name> with the name of the `ServingRuntime` that you found in the previous step.
+. Performing one of the following actions:
+.. If the `metadata.annotations` section is not present in the configuration, add the section and the required annotations to enable graph generation:
++
+[source]
+----
+oc patch servingruntime -n <project-namespace> <runtime-name> --type json --patch \
+ '[{"op": "add", "path": "/metadata/annotations", "value": {"runtimes.opendatahub.io/nvidia-nim": "true"}}]'
+----
++
+You see output similar to the following:
++
+[source]
+----
+servingruntime.serving.kserve.io/nim-serving-runtime patched
+----
+.. If there is an existing `metadata.annotations` section, add the required annotations to the section:
++
+[source]
+----
+oc patch servingruntime -n <project-namespace> <runtime-name> --type json --patch \
+ '[{"op": "add", "path": "/metadata/annotations/runtimes.opendatahub.io~1nvidia-nim", "value": "true"}]'
+----
++
+You see output similar to the following:
++
+[source]
+----
+servingruntime.serving.kserve.io/nim-serving-runtime patched
+----
+
+ 
+.Verification
+
+* Confirm that the annotation has been successfully added to the `ServingRuntime` of your NIM deployment.
++
+[source]
+----
+oc get servingruntime -n <namespace> <servingruntime-name> -o json | jq '.metadata.annotations'
+----
++
+You see the annotation that you added in the output:
++
+[source]
+----
+...
+"runtimes.opendatahub.io/nvidia-nim": "true"
+----
+
+== Enabling metrics collection for an existing NIM deployment
+
+To enable metrics collection for your existing NIM deployment, you must manually add the Prometheus endpoint and port annotations to the `InferenceService` of your deployment. The following procedure describes how to add the required Prometheus annotations to the `InferenceService` of your NIM deployment. 
+
+.Prerequisites
+
+* You have cluster administrator privileges for your OpenShift cluster.
+* You have downloaded and installed the OpenShift command-line interface (CLI). See Installing the OpenShift CLI.
+* You have an existing NIM deployment on {productname-short}.
+
+.Procedure
+. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI.
+. Confirm the name of the `InferenceService` associated with your NIM deployment.
++
+[source]
+----
+oc get inferenceservice -n <namespace>
+----
++
+Replace `<namespace>` with the namespace of the project where your NIM model is deployed.
+. Check if there is an existing `spec.predictor.annotations` section in the `InferenceService` configuration.
++
+[source]
+----
+oc get inferenceservice -n <namespace> <inferenceservice-name> -o json | jq '.spec.annotations'
+----
++
+Replace <inferenceservice-name> with the name of the `InferenceService` that you found in the previous step.
+. Perform one of the following actions:
+.. If the `spec.predictor.annotations` section does not exist in the configuration, add the section and required annotations:
++
+[source]
+----
+oc patch inferenceservice -n <namespace> <inference-name> --type json --patch \
+ '[{"op": "add", "path": "/spec/predictor/annotations", "value": {"prometheus.io/path": "/metrics", "prometheus.io/port": "8000"}}]'
+----
++
+You see output similar to the following:
++
+[source]
+----
+inferenceservice.serving.kserve.io/nim-serving-runtime patched
+----
+.. If there is an existing `spec.predictor.annotations` section, add the Prometheus annotations to the section:
++
+[source]
+----
+oc patch inferenceservice -n <namespace> <inference-service-name> --type json --patch \
+ '[{"op": "add", "path": "/spec/predictor/annotations/prometheus.io~1path", "value": "/metrics"},
+ {"op": "add", "path": "/spec/predictor/annotations/prometheus.io~1port", "value": "8000"}]'
+---- 
++
+You see output similar to the following:
++
+[source]
+----
+inferenceservice.serving.kserve.io/nim-serving-runtime patched
+----
+
+.Verification
+
+* Confirm that the annotations have been successfully added to the `InferenceService`.
++
+[source]
+----
+oc get inferenceservice -n <namespace> <inferenceservice-name> -o json | jq '.spec.predictor.annotations'
+----
++
+You see the annotation that you added in the output:
++
+[source]
+----
+{
+  "prometheus.io/path": "/metrics",
+  "prometheus.io/port": "8000"
+}
+----
+
+
+
+// [role="_additional-resources"]
+// .Additional resources
