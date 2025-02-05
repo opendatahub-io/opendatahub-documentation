@@ -49,7 +49,12 @@ endif::[]
 . Optional: Select the *Add CA certificate to secure database connection* to use a certificate with your database connection.
 .. Click *Use cluster-wide CA bundle* to use the `ca-bundle.crt` bundle in the `odh-trusted-ca-bundle` ConfigMap.
 .. Click *Use {productname-long} CA bundle* to use the `odh-ca-bundle.crt` bundle in the `odh-trusted-ca-bundle` ConfigMap.
+ifdef::upstream[]
+.. Click *Choose from existing certificates* to select an existing certificate. You can select the key of any ConfigMap or secret in the `odh-model-registries` namespace.
+endif::[]
+ifndef::upstream[]
 .. Click *Choose from existing certificates* to select an existing certificate. You can select the key of any ConfigMap or secret in the `rhoai-model-registries` namespace.
+endif::[]
 ... From the *Resource* list, select a ConfigMap or secret. 
 ... From the *Key* list, select a key.
 .. Click *Upload new certificate* to upload a new certificate as a ConfigMap.
@@ -59,10 +64,10 @@ endif::[]
 Uploading a certificate creates the `db-credential` ConfigMap with the `ca.crt` key. 
 
 ifdef::upstream[]
-To upload a certificate as a secret, you must create a secret in {openshift-platform}, in the `odh-model-registries` namespace.
+To upload a certificate as a secret, you must create a secret in the {openshift-platform} `odh-model-registries` namespace, and then select it as an existing certificate when you create your model registry.
 endif::[]
 ifndef::upstream[]
-To upload a certificate as a secret, you must create a secret in {openshift-platform}, in the `rhoai-model-registries` namespace.
+To upload a certificate as a secret, you must create a secret in the {openshift-platform} `rhoai-model-registries` namespace, and then select it as an existing certificate when you create your model registry.
 endif::[]
 
 For more information about creating secrets in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-pods#nodes-pods-secrets[Providing sensitive data to pods by using secrets].
