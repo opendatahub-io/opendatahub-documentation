@@ -1,30 +1,49 @@
 :_module-type: PROCEDURE
 
-ifdef::self-managed[]
 [id="enabling-performance-metrics-for-an-existing-nim-deployment_{context}"]
 = Enabling performance metrics for an existing NIM deployment 
 
 [role="_abstract"]
-If you have previously deployed a NIM model in an older version of {productname-short}, and then upgraded to 2.17, you must manually enable performance metrics for your existing deployment. 
 
-This means that you must manually add annotations to enable metrics collection and graph generation for your deployment.
+ifdef::self-managed[]
+If you have previously deployed a NIM model in {productname-short}, and then upgraded to {vernum}, you must manually enable performance metrics for your existing deployment.
+endif::[]
+
+ifdef::cloud-service,upstream[]
+If you have previously deployed a NIM model in {productname-short}, and then upgraded to the latest version, you must manually enable performance metrics for your existing deployment.
+endif::[]
+
+This includes manually adding annotations to enable metrics collection and graph generation for your deployment.
+
 ifdef::self-managed[]
 [NOTE]
 ====
-NIM metrics and graphs are automatically available for new NIM deployments in 2.17.
+NIM metrics and graphs are automatically enabled for new deployments in 2.17.
 ====
+endif::[]
+ifdef::cloud-service,upstream[]
+[NOTE]
+====
+NIM metrics and graphs are automatically enabled for new deployments in the latest version of {productname-short}.
+====
+endif::[]
 
 == Enabling graph generation for an existing NIM deployment
 The following procedure describes how to enable graph generation for an existing NIM deployment.
 
 .Prerequisites
 
-* You have cluster administrator privileges for your OpenShift cluster.
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+ifdef::upstream,self-managed[]
 * You have downloaded and installed the OpenShift command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
-* You had a pre-existing existing NIM deployment before upgrading to 2.17.
+endif::[]
+ifdef::cloud-service[]
+* You have downloaded and installed the OpenShift command-line interface (CLI). For more information, see link:https://docs.openshift.com/dedicated/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI^] (Red Hat OpenShift Dedicated) or link:https://docs.openshift.com/rosa/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI^] (Red Hat OpenShift Service on AWS).
+endif::[]
+* You have an existing NIM deployment in {productname-short}.
 
 .Procedure
-. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI.
+. In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the OpenShift CLI.
 . Confirm the name of the `ServingRuntime` associated with your NIM deployment.
 +
 [source]
@@ -33,7 +52,7 @@ oc get servingruntime -n <namespace>
 ----  
 +
 Replace `<namespace>` with the namespace of the project where your NIM model is deployed. 
-. Check if there is an existing `metadata.annotations` section in the `ServingRuntime` configuration.
+. Check for an existing `metadata.annotations` section in the `ServingRuntime` configuration.
 +
 [source]
 ----
@@ -42,11 +61,11 @@ oc get servingruntime -n  <namespace> <servingruntime-name> -o json | jq '.metad
 +
 Replace <servingruntime-name> with the name of the `ServingRuntime` that you found in the previous step.
 . Performing one of the following actions:
-.. If the `metadata.annotations` section is not present in the configuration, add the section and the required annotations to enable graph generation:
+.. If the `metadata.annotations` section is not present in the configuration, add the section with the required annotations:
 +
 [source]
 ----
-oc patch servingruntime -n <project-namespace> <runtime-name> --type json --patch \
+oc patch servingruntime -n <namespace> <servingruntime-name> --type json --patch \
  '[{"op": "add", "path": "/metadata/annotations", "value": {"runtimes.opendatahub.io/nvidia-nim": "true"}}]'
 ----
 +
@@ -74,7 +93,7 @@ servingruntime.serving.kserve.io/nim-serving-runtime patched
  
 .Verification
 
-* Confirm that the annotation has been successfully added to the `ServingRuntime` of your NIM deployment.
+* Confirm that the annotation has been successfully added to the `ServingRuntime` of your existing NIM deployment.
 +
 [source]
 ----
@@ -88,19 +107,31 @@ You see the annotation that you added in the output:
 ...
 "runtimes.opendatahub.io/nvidia-nim": "true"
 ----
++
+NOTE
+====
+For scraped metrics to be available for graph generation, you must also enable metric collection for your deployment. Please see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#enabling_metrics_collection_for_an_existing_nim_deployment[Enabling metrics collection for an existing NIM deployment]
+====
 
 == Enabling metrics collection for an existing NIM deployment
 
-To enable metrics collection for your existing NIM deployment, you must manually add the Prometheus endpoint and port annotations to the `InferenceService` of your deployment. The following procedure describes how to add the required Prometheus annotations to the `InferenceService` of your NIM deployment. 
+To enable metrics collection for your existing NIM deployment, you must manually add the Prometheus endpoint and port annotations to the `InferenceService` of your deployment. 
+
+The following procedure describes how to add the required Prometheus annotations to the `InferenceService` of your NIM deployment. 
 
 .Prerequisites
 
-* You have cluster administrator privileges for your OpenShift cluster.
-* You have downloaded and installed the OpenShift command-line interface (CLI). See Installing the OpenShift CLI.
-* You have an existing NIM deployment on {productname-short}.
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+ifdef::upstream,self-managed[]
+* You have downloaded and installed the OpenShift command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+ifdef::cloud-service[]
+* You have downloaded and installed the OpenShift command-line interface (CLI). For more information, see link:https://docs.openshift.com/dedicated/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI^] (Red Hat OpenShift Dedicated) or link:https://docs.openshift.com/rosa/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI^] (Red Hat OpenShift Service on AWS).
+endif::[]
+* You have an existing NIM deployment in {productname-short}.
 
 .Procedure
-. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI.
+. In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the OpenShift CLI.
 . Confirm the name of the `InferenceService` associated with your NIM deployment.
 +
 [source]
@@ -166,7 +197,7 @@ You see the annotation that you added in the output:
   "prometheus.io/port": "8000"
 }
 ----
-endif::[]
+
 
 
 // [role="_additional-resources"]
