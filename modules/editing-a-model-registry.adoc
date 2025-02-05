@@ -1,0 +1,77 @@
+:_module-type: PROCEDURE
+
+[id="editing-a-model-registry_{context}"]
+= Editing a model registry
+
+[role='_abstract']
+You can edit the details of existing model registries, such as the model registry name, description, and database connection details.
+
+.Prerequisites
+* You have logged in to {productname-short} as a user with {productname-short} administrator privileges. 
+ifdef::upstream[]
+* A cluster administrator has configured and enabled the model registry component in your {productname-short} deployment. For more information, see link:{odhdocshome}/working-with-model-registries/#configuring-the-model-registry-component[Configuring the model registry component].
+endif::[]
+ifndef::upstream[]
+* A cluster administrator has configured and enabled the model registry component in your {productname-short} deployment. For more information, see link:{rhoaidocshome}{default-format-url}/configuring_the_model_registry_component/configuring-the-model-registry-component_model-registry-config[Configuring the model registry component].
+endif::[]
+* The model registry component is enabled for your {productname-short} deployment, and contains at least 1 model registry.
+* You have access to the model registry that you want to edit.
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Model registry settings*.
+. Click the action menu (*&#8942;*) beside the model registry that you want to edit, and then click *Edit model registry*. 
++
+The *Edit model registry* dialog opens.
+. Optional: In the *Name* field, edit the name of the model registry.
+. Optional: In the *Description* field, edit the description of the model registry.
+. Optional: In the *Connect to external MySQL database* section, edit the information for the external database where model data for the registry is stored.
+.. In the *Host* field, enter the database's host name.
+ifdef::upstream[]
+... If the database is running in running in the `odh-model-registries` namespace, enter only the hostname for the database.
+... If the database is running in a different namespace from `odh-model-registries`, enter the database hostname details in `<host name>.<namespace>.svc.cluster.local` format.
+endif::[]
+ifndef::upstream[]
+... If the database is running in the `rhoai-model-registries` namespace, enter only the hostname for the database.
+... If the database is running in a different namespace from `rhoai-model-registries`, enter the database hostname details in `<host name>.<namespace>.svc.cluster.local` format.
+endif::[]
+.. In the *Port* field, enter the port number for the database.
+.. In the *Username* field, enter the default user name that is connected to the database.
+.. In the *Password* field, enter the password for the default user account.
+.. In the *Database* field, enter the database name.
+. Optional: Select the *Add CA certificate to secure database connection* to use a certificate with your database connection.
+.. Click *Use cluster-wide CA bundle* to use the `ca-bundle.crt` bundle in the `odh-trusted-ca-bundle` ConfigMap.
+.. Click *Use {productname-long} CA bundle* to use the `odh-ca-bundle.crt` bundle in the `odh-trusted-ca-bundle` ConfigMap.
+ifdef::upstream[]
+.. Click *Choose from existing certificates* to select an existing certificate. You can select the key of any ConfigMap or secret in the `odh-model-registries` namespace.
+endif::[]
+ifndef::upstream[]
+.. Click *Choose from existing certificates* to select an existing certificate. You can select the key of any ConfigMap or secret in the `rhoai-model-registries` namespace.
+endif::[]
+... From the *Resource* list, select a ConfigMap or secret. 
+... From the *Key* list, select a key.
+.. Click *Upload new certificate* to upload a new certificate as a ConfigMap.
++
+[NOTE]
+====
+Uploading a certificate creates the `db-credential` ConfigMap with the `ca.crt` key. 
+
+ifdef::upstream[]
+To upload a certificate as a secret, you must create a secret in the {openshift-platform} `odh-model-registries` namespace, and then select it as an existing certificate when you create your model registry.
+endif::[]
+ifndef::upstream[]
+To upload a certificate as a secret, you must create a secret in the {openshift-platform} `rhoai-model-registries` namespace, and then select it as an existing certificate when you create your model registry.
+endif::[]
+
+For more information about creating secrets in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-pods#nodes-pods-secrets[Providing sensitive data to pods by using secrets].
+==== 
+... Drag and drop the PEM file for your certificate into the *Certificate* field, or click *Upload* to select a file from your local machine's file system.
+. Click *Update*.
+
+
+.Verification
+* The model registry appears with update details on the *Model Registry Settings* page.
+
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete
