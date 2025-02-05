@@ -1,0 +1,84 @@
+:_module-type: PROCEDURE
+
+[id="enforce-lqlabel-some_{context}"]
+= Enforcing the local-queue labelling policy in all projects
+
+[role='_abstract']
+The local-queue labelling policy is enforced in all projects by default.
+
+To enforce the policy in some projects only, follow these steps.
+
+.Prerequisites
+ifdef::upstream,self-managed[]
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to OpenShift with the `cluster-admin` role.
+endif::[]
+
+
+ifdef::upstream[]
+* You have installed the required distributed workloads components as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+
+ifdef::self-managed[]
+* You have installed the required distributed workloads components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+endif::[]
+
+ifdef::cloud-service[]
+* You have installed the required distributed workloads components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+
+
+.Procedure
+
+. In the {openshift} console, open the *Administrator* perspective,
+. From the *Project* list, select *All Projects*.
+. Click *Home* -> *Search*.
+. In the *Resources* list, search for *ValidatingAdmissionPolicyBinding*.
+. Click the `kueue-validating-admission-policy-binding` entry to open the details page.
+. Click the *YAML* tab to show the binding specifications.
+. Edit the `namespaceSelector` field to delete the `{}` value, and add the `matchLabels` and `kueue-managed` values as shown in the following example:
++
+.Example validating admission policy binding for some projects only
+[source,bash,subs="+quotes"]
+----
+kind: ValidatingAdmissionPolicyBinding
+apiVersion: admissionregistration.k8s.io/v1
+metadata:
+  name: kueue-validating-admission-policy-binding
+  uid: _<Populated by the system. Read-only.>_
+  resourceVersion: _<Populated by the system. Read-only.>_
+  generation: _<Populated by the system. Read-only.>_
+  creationTimestamp: _<Populated by the system. Read-only.>_
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: kueue
+  managedFields:
+spec:
+  policyName: kueue-validating-admission-policy
+  matchResources:
+    namespaceSelector: 
+        matchLabels:
+        kueue-managed: "true"
+    objectSelector: {}
+    matchPolicy: Equivalent
+  validationActions:
+    - Deny
+----
+
+. Click *Save*.
+
+. Add the ‘kueue-managed’ label to each project for which you want to enforce this policy, by running the following command:
++
+.Example command to add the ‘kueue-managed’ label to a project
+[source,bash,subs="+quotes"]
+----
+oc label -n _<project-name>_ kueue-managed=true
+----
+
+
+/ .Verification 
+

@@ -1,0 +1,24 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="enforcing-local-queues_{context}"]
+= Enforcing local queues
+
+[role='_abstract']
+
+Efficient workload orchestration in {openshift} clusters relies on strict management of resources and queues. 
+Cluster administrators can use the Validating Admission Policy feature to enforce the mandatory labelling of RayCluster resources with Local Queue identifiers.
+This labelling ensures that workloads are properly categorized and routed based on queue management policies, which prevents resource contention and enhances operational efficiency.
+
+[NOTE]
+====
+The Validating Admission Policy feature is available in {openshift-platform} v4.17 or later.
+====
+
+include::modules/enforce-lqlabel-all.adoc[leveloffset=+1]
+include::modules/enforce-lqlabel-some.adoc[leveloffset=+1]
+include::modules/enforce-lqlabel-none.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
