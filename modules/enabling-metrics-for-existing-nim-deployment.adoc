@@ -1,5 +1,6 @@
 :_module-type: PROCEDURE
 
+ifdef::self-managed[]
 [id="enabling-performance-metrics-for-an-existing-nim-deployment_{context}"]
 = Enabling performance metrics for an existing NIM deployment 
 
@@ -7,6 +8,7 @@
 If you have previously deployed a NIM model in an older version of {productname-short}, and then upgraded to 2.17, you must manually enable performance metrics for your existing deployment. 
 
 This means that you must manually add annotations to enable metrics collection and graph generation for your deployment.
+ifdef::self-managed[]
 [NOTE]
 ====
 NIM metrics and graphs are automatically available for new NIM deployments in 2.17.
@@ -164,7 +166,7 @@ You see the annotation that you added in the output:
   "prometheus.io/port": "8000"
 }
 ----
-
+endif::[]
 
 
 // [role="_additional-resources"]
