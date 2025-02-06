@@ -8,13 +8,30 @@ ifdef::context[:parent-context: {context}]
 [role='_abstract']
 
 Efficient workload orchestration in {openshift} clusters relies on strict management of resources and queues. 
-Cluster administrators can use the Validating Admission Policy feature to enforce the mandatory labelling of RayCluster resources with Local Queue identifiers.
-This labelling ensures that workloads are properly categorized and routed based on queue management policies, which prevents resource contention and enhances operational efficiency.
+Cluster administrators can use the Validating Admission Policy feature to enforce the mandatory labeling of RayCluster resources with Local Queue identifiers.
+This labeling ensures that workloads are properly categorized and routed based on queue management policies, which prevents resource contention and enhances operational efficiency.
 
 [NOTE]
 ====
 The Validating Admission Policy feature is available in {openshift-platform} v4.17 or later.
 ====
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+The Validating Admission Policy feature is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+The Validating Admission Policy feature is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
 
 include::modules/enforce-lqlabel-all.adoc[leveloffset=+1]
 include::modules/enforce-lqlabel-some.adoc[leveloffset=+1]

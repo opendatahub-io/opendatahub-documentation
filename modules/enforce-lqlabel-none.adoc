@@ -6,7 +6,13 @@
 [role='_abstract']
 The local-queue labeling policy is enforced in all projects by default.
 
-To disable the policy for all projects, follow these steps.
+You can disable the policy for all projects in either of the following ways:
+
+* Delete the `kueue-validating-admission-policy-binding` resource.
+The resource is automatically re-created with the default values. 
+No other action is required.
+
+* Edit the existing resource as described in this procedure.
 
 .Prerequisites
 ifdef::upstream,self-managed[]
@@ -69,6 +75,8 @@ spec:
 
 . Click *Save*.
 
+////
+.Verification 
 
-// .Verification 
-
+The user will be able to create RayClusters and bypass Kueue, unless the local-queue resource has been annotated with ' kueue.x-k8s.io/default-queue: "true" ' and the user's namespace is the same as the default local-queue's namespace. This can be tested by attempting to create a RayCluster without specifying a local-queue in the local_queue field, of which case the creation should be successful.
+////
