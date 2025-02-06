@@ -1,19 +1,17 @@
 :_module-type: PROCEDURE
 
-[id="enabling-performance-metrics-for-an-existing-nim-deployment_{context}"]
-= Enabling performance metrics for an existing NIM deployment 
+[id="enabling-nim-metrics-for-an-existing-nim-deployment_{context}"]
+= Enabling NVIDIA NIM metrics for an existing NIM deployment 
 
 [role="_abstract"]
 
 ifdef::self-managed[]
-If you have previously deployed a NIM model in {productname-short}, and then upgraded to {vernum}, you must manually enable performance metrics for your existing deployment.
+If you have previously deployed a NIM model in {productname-short}, and then upgraded to {vernum}, you must manually enable NIM metrics for your existing deployment by adding annotations to enable metrics collection and graph generation.
 endif::[]
 
 ifdef::cloud-service,upstream[]
-If you have previously deployed a NIM model in {productname-short}, and then upgraded to the latest version, you must manually enable performance metrics for your existing deployment.
+If you have previously deployed a NIM model in {productname-short}, and then upgraded to the latest version, you must manually enable NIM metrics for your existing deployment by adding annotations to enable metrics collection and graph generation.
 endif::[]
-
-This includes manually adding annotations to enable metrics collection and graph generation for your deployment.
 
 ifdef::self-managed[]
 [NOTE]
@@ -44,7 +42,7 @@ endif::[]
 
 .Procedure
 . In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the OpenShift CLI.
-. Confirm the name of the `ServingRuntime` associated with your NIM deployment.
+. Confirm the name of the `ServingRuntime` associated with your NIM deployment:
 +
 [source]
 ----
@@ -52,15 +50,15 @@ oc get servingruntime -n <namespace>
 ----  
 +
 Replace `<namespace>` with the namespace of the project where your NIM model is deployed. 
-. Check for an existing `metadata.annotations` section in the `ServingRuntime` configuration.
+. Check for an existing `metadata.annotations` section in the `ServingRuntime` configuration:
 +
 [source]
 ----
 oc get servingruntime -n  <namespace> <servingruntime-name> -o json | jq '.metadata.annotations'
 ---- 
 +
-Replace <servingruntime-name> with the name of the `ServingRuntime` that you found in the previous step.
-. Performing one of the following actions:
+Replace <servingruntime-name> with the name of the `ServingRuntime` from the previous step.
+. Perform one of the following actions:
 .. If the `metadata.annotations` section is not present in the configuration, add the section with the required annotations:
 +
 [source]
@@ -93,14 +91,14 @@ servingruntime.serving.kserve.io/nim-serving-runtime patched
  
 .Verification
 
-* Confirm that the annotation has been successfully added to the `ServingRuntime` of your existing NIM deployment.
+* Confirm that the annotation has been added to the `ServingRuntime` of your existing NIM deployment.
 +
 [source]
 ----
 oc get servingruntime -n <namespace> <servingruntime-name> -o json | jq '.metadata.annotations'
 ----
 +
-You see the annotation that you added in the output:
+The annotation that you added appears in the output:
 +
 [source]
 ----
@@ -110,7 +108,7 @@ You see the annotation that you added in the output:
 +
 [NOTE]
 ====
-For scraped metrics to be available for graph generation, you must also enable metrics collection for your deployment. Please see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#enabling_metrics_collection_for_an_existing_nim_deployment[Enabling metrics collection for an existing NIM deployment],
+For metrics to be available for graph generation, you must also enable metrics collection for your deployment. Please see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#enabling_metrics_collection_for_an_existing_nim_deployment[Enabling metrics collection for an existing NIM deployment].
 ====
 
 == Enabling metrics collection for an existing NIM deployment
@@ -132,7 +130,7 @@ endif::[]
 
 .Procedure
 . In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the OpenShift CLI.
-. Confirm the name of the `InferenceService` associated with your NIM deployment.
+. Confirm the name of the `InferenceService` associated with your NIM deployment:
 +
 [source]
 ----
@@ -140,14 +138,14 @@ oc get inferenceservice -n <namespace>
 ----
 +
 Replace `<namespace>` with the namespace of the project where your NIM model is deployed.
-. Check if there is an existing `spec.predictor.annotations` section in the `InferenceService` configuration.
+. Check if there is an existing `spec.predictor.annotations` section in the `InferenceService` configuration:
 +
 [source]
 ----
-oc get inferenceservice -n <namespace> <inferenceservice-name> -o json | jq '.spec.annotations'
+oc get inferenceservice -n <namespace> <inferenceservice-name> -o json | jq '.spec.predictor.annotations'
 ----
 +
-Replace <inferenceservice-name> with the name of the `InferenceService` that you found in the previous step.
+Replace <inferenceservice-name> with the name of the `InferenceService` from the previous step.
 . Perform one of the following actions:
 .. If the `spec.predictor.annotations` section does not exist in the configuration, add the section and required annotations:
 +
@@ -157,7 +155,7 @@ oc patch inferenceservice -n <namespace> <inference-name> --type json --patch \
  '[{"op": "add", "path": "/spec/predictor/annotations", "value": {"prometheus.io/path": "/metrics", "prometheus.io/port": "8000"}}]'
 ----
 +
-You see output similar to the following:
+The annotation that you added appears in the output:
 +
 [source]
 ----
@@ -172,7 +170,7 @@ oc patch inferenceservice -n <namespace> <inference-service-name> --type json --
  {"op": "add", "path": "/spec/predictor/annotations/prometheus.io~1port", "value": "8000"}]'
 ---- 
 +
-You see output similar to the following:
+The annotations that you added appears in the output:
 +
 [source]
 ----
@@ -181,7 +179,7 @@ inferenceservice.serving.kserve.io/nim-serving-runtime patched
 
 .Verification
 
-* Confirm that the annotations have been successfully added to the `InferenceService`.
+* Confirm that the annotations have been added to the `InferenceService`.
 +
 [source]
 ----
@@ -197,7 +195,6 @@ You see the annotation that you added in the output:
   "prometheus.io/port": "8000"
 }
 ----
-
 
 
 // [role="_additional-resources"]
