@@ -23,32 +23,10 @@ The details page for the model opens.
 .. In the *Model deployment name* field, enter a new, unique name for your model deployment.
 .. From the *Model framework* list, select a different framework for your model. 
 +
-NOTE: The *Model framework* list shows only the frameworks that are supported by the model serving runtime that you specified when you configured your model server.
+NOTE: The *Model framework* list shows only the frameworks that are supported by the model serving runtime that you specified when you configured your model server. 
++
 * *If you deployed the model by using the multi-model serving platform*
-.. Specify a different location of your model by performing one of the following sets of actions:
-+
---
-* *To use an existing connection*
-... Select *Existing connection*.
-... From the *Name* list, select a connection.
-... In the *Path* field, enter the folder path that contains the model in your specified data source.
-ifdef::self-managed,cloud-service[]
-+
-IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
-endif::[]
-
-* *To use a new connection* 
-... To define a new connection that your model can access, select *Create connection*.
-... Select a *Connection type*. The *S3 compatible object storage* and *URI* options are pre-installed connection types. Additional options might be available if your {productname-short} administrator added them.
-+
-The *Connection details* form opens with fields specific to the connection type that you selected.
-... Fill in the connection detail fields.
-ifdef::self-managed,cloud-service[]
-+
-IMPORTANT: If your connection type is an S3-compatible object storage, you must provide the folder path that contains your data file. The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
-endif::[]
---
-
+.. Update the connection by specifying an existing connection, or by creating a new connection. 
 * *If you deployed the model by using the single-model serving platform* 
 .. In the *Number of model server replicas to deploy* field, specify a value.
 .. From the *Model server size* list, select a value.
@@ -59,29 +37,7 @@ endif::[]
 ..Click *Add*.
 +
 * The model server that you configured appears on the *Models* tab for the project, in the *Models and model servers* list.
-.. To specify the location of your model, perform one of the following sets of actions:
-+
---
-* *To use an existing connection*
-... Select *Existing connection*.
-... From the *Name* list, select a connection that you previously defined.
-... In the *Path* field, enter the folder path that contains the model in your specified data source.
-ifdef::self-managed,cloud-service[]
-+
-IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
-endif::[]
-
-* *To use a new connection* 
-... To define a new connection that your model can access, select *Create connection*.
-... Select a *Connection type*. The *S3 compatible object storage* and *URI* options are pre-installed connection types. Additional options might be available if your {productname-short} administrator added them.
-+
-The *Connection details* form opens with fields specific to the connection type that you selected.
-... Fill in the connection detail fields.
-ifdef::self-managed,cloud-service[]
-+
-IMPORTANT: If your connection type is an S3-compatible object storage, you must provide the folder path that contains your data file. The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
-endif::[]
---
+.. Update the connection by specifying an existing connection, or by creating a new connection. 
 .. Customize the runtime parameters in the *Configuration parameters* section:
 ... Modify the values in *Additional serving runtime arguments* to define how the deployed model behaves.
 ... Modify the values in *Additional environment variables* to define variables in the model's environment.
