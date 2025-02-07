@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
-[id="updating-the-deployment-properties-of-a-deployed-model_{context}"]
+[id="updating-the-deployment-properties-of-a-deployed-model-from-a-model-registry_{context}"]
 = Updating the deployment properties of a deployed model from a model registry
 
 [role='_abstract']
-You can update the deployment properties of a model that was deployed from a model registry. For example, you can change the model's connection and name.
+You can update the deployment properties of a model that was deployed from a model registry. For example, you can change the model deployment name, model framework, and source model location details.
 
 .Prerequisites
 * An available model registry exists in your deployment, and contains at least 1 registered and deployed model version.
@@ -16,29 +16,83 @@ You can update the deployment properties of a model that was deployed from a mod
 +
 The details page for the model opens.
 . Click the name of the model version with the deployment that you want to edit.
-. Click *Deployments*.
+. Click *Deployments*
 . Click the action menu (*&#8942;*) beside the model deployment that you want to edit.
 . Click *Edit*.
 . In the *Edit model* dialog, update the model deployment properties:
-.. From the *Project* drop-down list, select a project in which to deploy your model.
-.. Optional: In the *Model deployment name* field, enter a name for the model deployment. 
+.. In the *Model deployment name* field, enter a new, unique name for your model deployment.
+.. From the *Model framework* list, select a different framework for your model. 
 +
-Each deployment is named in the following format by default:
+NOTE: The *Model framework* list shows only the frameworks that are supported by the model serving runtime that you specified when you configured your model server.
+* *If you deployed the model by using the multi-model serving platform*
+.. Specify a different location of your model by performing one of the following sets of actions:
 +
-`<model name> <model version name> <deployment creation timestamp>`
+--
+* *To use an existing connection*
+... Select *Existing connection*.
+... From the *Name* list, select a connection.
+... In the *Path* field, enter the folder path that contains the model in your specified data source.
+ifdef::self-managed,cloud-service[]
 +
-This will be the name of the inference service that is created when the model is deployed.
-ifdef::upstream[]
-. Configure the remaining properties for deploying your model, as described in link:{odhdocshome}/serving-models/#deploying-a-model-using-the-multi-model-serving-platform_model-serving[Deploying a model by using the multi-model serving platform] or link:{odhdocshome}/serving-models/#deploying-models-using-the-single-model-serving-platform_serving-large-models[Deploying a model by using the single-model serving platform].
+IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
 endif::[]
-ifndef::upstream[]
-. Configure the remaining properties for deploying your model, as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-small-and-medium-sized-models_model-serving#deploying-a-model-using-the-multi-model-serving-platform_model-serving[Deploying a model by using the multi-model serving platform] or link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying a model by using the single-model serving platform].
+
+* *To use a new connection* 
+... To define a new connection that your model can access, select *Create connection*.
+... Select a *Connection type*. The *S3 compatible object storage* and *URI* options are pre-installed connection types. Additional options might be available if your {productname-short} administrator added them.
++
+The *Connection details* form opens with fields specific to the connection type that you selected.
+... Fill in the connection detail fields.
+ifdef::self-managed,cloud-service[]
++
+IMPORTANT: If your connection type is an S3-compatible object storage, you must provide the folder path that contains your data file. The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
 endif::[]
+--
+
+* *If you deployed the model by using the single-model serving platform* 
+.. In the *Number of model server replicas to deploy* field, specify a value.
+.. From the *Model server size* list, select a value.
+..  In the *Model route* section, select the *Make deployed models available through an external route* checkbox to make your deployed models available to external clients.
+.. In the *Token authorization* section, select the *Require token authentication* checkbox to require token authentication for your model server. To finish configuring token authentication, perform the following actions:
+... In the *Service account name* field, enter a service account name for which the token will be generated. The generated token is created and displayed in the *Token secret* field when the model server is configured.
+... To add an additional service account, click *Add a service account* and enter another service account name.
+..Click *Add*.
++
+* The model server that you configured appears on the *Models* tab for the project, in the *Models and model servers* list.
+.. To specify the location of your model, perform one of the following sets of actions:
++
+--
+* *To use an existing connection*
+... Select *Existing connection*.
+... From the *Name* list, select a connection that you previously defined.
+... In the *Path* field, enter the folder path that contains the model in your specified data source.
+ifdef::self-managed,cloud-service[]
++
+IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
+endif::[]
+
+* *To use a new connection* 
+... To define a new connection that your model can access, select *Create connection*.
+... Select a *Connection type*. The *S3 compatible object storage* and *URI* options are pre-installed connection types. Additional options might be available if your {productname-short} administrator added them.
++
+The *Connection details* form opens with fields specific to the connection type that you selected.
+... Fill in the connection detail fields.
+ifdef::self-managed,cloud-service[]
++
+IMPORTANT: If your connection type is an S3-compatible object storage, you must provide the folder path that contains your data file. The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
+endif::[]
+--
+.. Customize the runtime parameters in the *Configuration parameters* section:
+... Modify the values in *Additional serving runtime arguments* to define how the deployed model behaves.
+... Modify the values in *Additional environment variables* to define variables in the model's environment.
++
+The *Configuration parameters* section shows predefined serving runtime parameters, if any are available.
++
+NOTE: Do not modify the port or model serving runtime arguments, because they require specific values to be set. Overwriting these parameters can cause the deployment to fail.
 .. Click *Redeploy*.			 
 
 .Verification
-* The model version appears with updated details on the *Deployments* tab for the model version.
-* The model version deployment restarts ?
+* The model redeploys and appears with updated details on the *Deployments* tab for the model version.
 
 // [role="_additional-resources"]
 // .Additional resources
