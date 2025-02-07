@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
-[id='creating-a-model-registry_{context}']
-= Creating a model registry
+[id="editing-a-model-registry_{context}"]
+= Editing a model registry
 
 [role='_abstract']
-You can create a model registry to store, share, version, deploy, and track your models.
+You can edit the details of existing model registries, such as the model registry name, description, and database connection details.
 
 .Prerequisites
 * You have logged in to {productname-short} as a user with {productname-short} administrator privileges. 
@@ -14,25 +14,16 @@ endif::[]
 ifndef::upstream[]
 * A cluster administrator has configured and enabled the model registry component in your {productname-short} deployment. For more information, see link:{rhoaidocshome}{default-format-url}/configuring_the_model_registry_component/configuring-the-model-registry-component_model-registry-config[Configuring the model registry component].
 endif::[]
-* The model registry component is enabled for your {productname-short} deployment.
-* You have access to an external MySQL database which uses at least MySQL version 5.x. However, {org-name} recommends that you use MySQL version 8.x.
+* The model registry component is enabled for your {productname-short} deployment, and contains at least 1 model registry.
 
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *Model registry settings*.
-. Click *Create model registry*.
+. Click the action menu (*&#8942;*) beside the model registry that you want to edit, and then click *Edit model registry*. 
 +
-The *Create model registry* page opens.
-. In the *Name* field, enter a name for the model registry.
-. Optional: Click *Edit resource name*, and then enter a specific resource name for the model registry in the *Resource name* field. By default, the resource name will match the name of the model registry.
-+
-[IMPORTANT]
-====
-Resource names are what your resources are labeled as in OpenShift. Your resource name cannot exceed 253 characters, must consist of lowercase alphanumeric characters or '-', and must start and end with an alphanumeric character. Resource names are not editable after creation.
-
-The resource name must not match the name of any other model registry resource in your OpenShift cluster.
-====
-. Optional: In the *Description* field, enter a description for the model registry.
-. In the *Connect to external MySQL database* section, enter the information for the external database where your model data is stored.
+The *Edit model registry* dialog opens.
+. Optional: In the *Name* field, edit the name of the model registry.
+. Optional: In the *Description* field, edit the description of the model registry.
+. Optional: In the *Connect to external MySQL database* section, edit the information for the external database where model data for the registry is stored.
 .. In the *Host* field, enter the database's host name.
 ifdef::upstream[]
 ... If the database is running in the `odh-model-registries` namespace, enter only the hostname for the database.
@@ -79,22 +70,12 @@ ifdef::cloud-service[]
 For more information about creating secrets in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/nodes/working-with-pods#nodes-pods-secrets[OpenShift Dedicated: Providing sensitive data to pods by using secrets] and link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{osa-latest-version}/html/nodes/working-with-pods#nodes-pods-secrets-creating_nodes-pods-secrets[Red Hat OpenShift Service on AWS: Providing sensitive data to pods by using secrets].
 endif::[]
 ==== 
-. Click *Create*.
+. Click *Update*.
 
-[NOTE]
-====
-To find the resource name or type of a model registry, click the help icon image:images/rhoai-help-icon.png[Help icon] beside the registry name. Resource names and types are used to find your resources in OpenShift.
-====   
 
 .Verification
-* The new model registry appears on the *Model Registry Settings* page.
-* You can edit the model registry by clicking the action menu (*&#8942;*) beside it, and then clicking *Edit model registry*.
-ifdef::upstream[]
-* You can register a model with the model registry from the *Model Registry* tab. For more information about working with model registries, see link:{odhdocshome}/working-with-model-registries/#working-with-model-registries_model-registry[Working with model registries].
-endif::[]
-ifndef::upstream[]
-* You can register a model with the model registry from the *Model Registry* tab. For more information about working with model registries, see link:{rhoaidocshome}{default-format-url}/working_with_model_registries/index[Working with model registries].
-endif::[]
+* The model registry appears with updated details on the *Model Registry Settings* page.
+
 
 // [role="_additional-resources"]
 // .Additional resources
