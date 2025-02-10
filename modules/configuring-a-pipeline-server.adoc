@@ -46,6 +46,13 @@ endif::[]
 * You have an existing S3-compatible object storage bucket and you have configured write access to your S3 bucket on your storage account.
 * If you are configuring a pipeline server for production pipeline workloads, you have an existing external MySQL or MariaDB database.
 * If you are configuring a pipeline server with an external MySQL database, your database must use at least MySQL version 5.x. However, {org-name} recommends that you use MySQL version 8.x. 
++
+[NOTE]
+====
+The `mysql_native_password` authentication plugin is required for the ML Metadata component to successfully connect to your database. `mysql_native_password` is disabled by default in MySQL 8.4 and later. If your database uses MySQL 8.4 or later, you must update your MySQL deployment to enable the `mysql_native_password`` plugin. 
+
+For more information about enabling the `mysql_native_password` plugin, see link:https://dev.mysql.com/doc/refman/8.4/en/native-pluggable-authentication.html[Native Pluggable Authentication] in the MySQL documentation.
+====
 * If you are configuring a pipeline server with a MariaDB database, your database must use MariaDB version 10.3 or later. However, {org-name} recommends that you use at least MariaDB version 10.5.
 
 .Procedure

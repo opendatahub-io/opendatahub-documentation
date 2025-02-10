@@ -16,6 +16,13 @@ ifndef::upstream[]
 endif::[]
 * The model registry component is enabled for your {productname-short} deployment.
 * You have access to an external MySQL database which uses at least MySQL version 5.x. However, {org-name} recommends that you use MySQL version 8.x.
++
+[NOTE]
+====
+The `mysql_native_password` authentication plugin is required for the ML Metadata component to successfully connect to your database. `mysql_native_password` is disabled by default in MySQL 8.4 and later. If your database uses MySQL 8.4 or later, you must update your MySQL deployment to enable the `mysql_native_password`` plugin. 
+
+For more information about enabling the `mysql_native_password` plugin, see link:https://dev.mysql.com/doc/refman/8.4/en/native-pluggable-authentication.html[Native Pluggable Authentication] in the MySQL documentation.
+====
 
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *Model registry settings*.
