@@ -1,0 +1,44 @@
+:_module-type: PROCEDURE
+
+[id="editing-the-deployment-properties-of-a-model-deployed-by-using-the-multi-model-serving-platform_{context}"]
+= Editing the deployment properties of a model deployed by using the multi-model serving platform
+
+[role='_abstract']
+You can edit the deployment properties of a model version that was deployed from a model registry. For example, you can change the deployment name, model framework, and source model location details.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* An available model registry exists in your deployment, and contains at least 1 registered and deployed model version.
+* You have access to the model registry that contains the model version deployment that you want to edit.
+
+.Procedure
+. From the {productname-short} dashboard, click *Model Registry*.
+. From the *Model registry* drop-down menu, select the model registry that contains the model deployment that you want to edit.
+. In the *Model name* column, click the name of the model that contains the deployment that you want to edit.
++
+The details page for the model opens.
+. Click the name of the model version with the deployment that you want to edit.
+. Click *Deployments*
+. Click the action menu (*&#8942;*) beside the model deployment that you want to edit.
+. Click *Edit*.
+. In the *Edit model* dialog, edit the model deployment properties:
+.. In the *Model deployment name* field, enter a new, unique name for your model deployment.
+.. From the *Model framework* list, select a different framework for your model. 
++
+NOTE: The *Model framework* list shows only the frameworks that are supported by the model serving runtime that you specified when you deployed your model.
++
+.. Edit the connection by specifying an existing connection, or by creating a new connection. 
+.. Click *Redeploy*.			 
+
+.Verification
+* The model redeploys and appears with updated details on the *Deployments* tab for the model version.
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete
