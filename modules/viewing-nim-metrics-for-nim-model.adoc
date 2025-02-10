@@ -1,0 +1,68 @@
+:_module-type: PROCEDURE
+
+[id="viewing-nvidia-nim-metrics-for-a-nim-model_{context}"]
+= Viewing NVIDIA NIM metrics
+
+[role='_abstract']
+
+In {productname-short}, you can observe the following NVIDIA NIM metrics for a NIM model deployed on the *NVIDIA NIM model serving platform*:
+
+* *GPU cache usage over time (ms)*
+* *Current running, waiting, and max requests count*
+* *Tokens count*
+* *Time to first token*
+* *Time per output token*
+* *Request outcomes*
+
+You can specify a time range and a refresh interval for these metrics to help you determine, for example, the peak usage hours are and model performance at a specified time.
+
+.Prerequisites
+
+* You have enabled the *NVIDIA NIM model serving platform*.
+* You have deployed a NIM model on the *NVIDIA NIM model serving platform*.
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* The following dashboard configuration option is set to `false` as shown:
++
+[source]
+----
+disableKServeMetrics:false
+----
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/managing-odh/#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[]
+
+.Procedure
+
+. From the {productname-short} dashboard navigation menu, click *Data Science Projects*.
++
+The *Data Science Projects* page opens.
+. Click the name of the project that contains the NIM model that you want to monitor.
+
+. In the project details page, click the *Models* tab.
+
+. Click the NIM model that you want to observe.
+
+. On the *NIM Metrics* tab, set the following options:
+
+** *Time range* - Specifies how long to track the metrics. You can select one of these values: 1 hour, 24 hours, 7 days, and 30 days.
+
+** *Refresh interval* - Specifies how frequently the graphs on the metrics page are refreshed (to show the latest data). You can select one of these values: 15 seconds, 30 seconds, 1 minute, 5 minutes, 15 minutes, 30 minutes, 1 hour, 2 hours, and 1 day.
+
+. Scroll down to view data graphs for NIM metrics.
+
+.Verification
+
+The *NIM Metrics* tab shows graphs of NIM metrics for the deployed NIM model.
+
+
+.Additional resources
+* link:https://docs.nvidia.com/nim/large-language-models/latest/observability.html[NVIDIA NIM observability]
+//Viewing HTTP request metrics for a deployed model
