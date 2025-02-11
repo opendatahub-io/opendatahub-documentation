@@ -1,0 +1,38 @@
+:_module-type: PROCEDURE
+
+[id='deleting-a-deployed-model-version-from-a-model-registry_{context}']
+= Deleting a deployed model version from a model registry 
+
+[role='_abstract']
+You can delete the deployments of model versions from a model registry.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* An available model registry exists in your deployment, and contains at least 1 registered model with a deployed model version.
+* You have access to the model registry that contains the model version deployment that you want to delete.
+
+.Procedure
+. From the {productname-short} dashboard, click *Model Registry*.
+. From the *Model registry* drop-down menu, select the model registry that contains the model that you want to edit.
+. Click the name of a model to view more details.
++
+The details page for the model opens.
+. Click the name of the model version with the deployment that you want to delete.
++
+The details page for the model version opens.
+. Click *Deployments*.
+. To delete a deployment, click the action menu (*&#8942;*) beside the deployment, and then click *Delete*. 
++ 
+The *Delete deployed model?* dialog opens.
+. Enter the name of the model deployment in the text field to confirm that you intend to delete it.
+. Click *Delete deployed model*.
+
+.Verification
+
+* The model deployment no longer appears on the *Deployments* tab for the model version.
