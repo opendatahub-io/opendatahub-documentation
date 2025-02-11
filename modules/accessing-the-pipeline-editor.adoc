@@ -23,13 +23,18 @@ endif::[]
 To ensure that the runtime configuration is created automatically, you must create the pipeline server before you create the workbench.
 ====
 ifndef::upstream[]
-* You have created a workbench with a workbench image that contains the Elyra extension (Standard Data Science, TensorFlow, TrustyAI, or PyTorch), as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE].
+* You have created a workbench with a workbench image that contains the Elyra extension (Standard Data Science, TensorFlow, TrustyAI, AMD ROCm, or PyTorch), as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE].
 * You have started the workbench and opened the JupyterLab interface, as described in link:{rhoaidocshome}{default-format-url}/working_in_your_data_science_ide/accessing-your-workbench-ide_ide[Accessing your workbench IDE].
 endif::[]
 ifdef::upstream[]
-* You have created a workbench with a workbench image that contains the Elyra extension (Standard Data Science, TensorFlow, TrustyAI, or PyTorch), as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE].
+* You have created a workbench with a workbench image that contains the Elyra extension (Standard Data Science, TensorFlow, TrustyAI, AMD ROCm, or PyTorch), as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE].
 * You have started the workbench and opened the JupyterLab interface, as described in link:{odhdocshome}/working-in-your-data-science-ide/#accessing-your-workbench-ide_ide[Accessing your workbench IDE].
 endif::[]
++
+[IMPORTANT]
+====
+The Elyra pipeline editor is only available in specific workbench images. To use Elyra, the workbench must be based on a JupyterLab image. The Elyra extension is not available in Code Server or RStudio IDEs. The workbench must also be derived from the Standard Data Science image. It is not available in Minimal Python or CUDA-based workbenches. All other supported JupyterLab-based workbench images have access to the Elyra extension.
+====
 * You have access to S3-compatible storage.
 
 .Procedure
