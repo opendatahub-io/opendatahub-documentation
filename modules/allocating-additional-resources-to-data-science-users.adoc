@@ -13,7 +13,12 @@ endif::[]
 ifdef::cloud-service[]
 .Prerequisites
 * You have credentials for administering clusters in OpenShift Cluster Manager (link:https://console.redhat.com/openshift/[https://console.redhat.com/openshift/]). For more information about configuring administrative access in OpenShift Cluster Manager, see link:https://docs.redhat.com/en/documentation/openshift_cluster_manager/1-latest/html/managing_clusters/assembly-user-management-ocm[Configuring access to clusters in OpenShift Cluster Manager].
-* If you intend to increase the size of a machine pool by using accelerators, you have ensured that your OpenShift cluster supports them.
+ifndef::upstream[]
+* If you intend to increase the size of a machine pool by using accelerators, you have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
+endif::[]
+ifdef::upstream[]
+* If you intend to increase the size of a machine pool by using accelerators, you have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
+endif::[]
 * You have an AWS or GCP instance with the capacity to create larger container sizes. For compute-intensive operations, your AWS or GCP instance has enough capacity to accommodate the largest container size, `XL`.
 
 .Procedure
