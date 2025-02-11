@@ -4,9 +4,10 @@
 = Disabling the local-queue labeling policy for all projects
 
 [role='_abstract']
-The local-queue labeling policy is enforced for all projects by default.
+Disabling the local-queue labeling policy means that it is possible to create Ray clusters that do not use a local queue, but the resources of such Ray clusters are not managed by Kueue.
 
-You can disable the policy for all projects by editing the `ValidatingAdmissionPolicyBinding` resource as described in this procedure.
+The local-queue labeling policy is enforced for all projects by default.
+You can disable the local-queue labeling policy for all projects by editing the `ValidatingAdmissionPolicyBinding` resource as described in this procedure.
 
 .Prerequisites
 ifdef::upstream,self-managed[]
@@ -71,8 +72,8 @@ spec:
 
 .Verification 
 
-. Create a project.
-. In that project, try to create a Ray cluster.
+. Create a project, and complete the following steps in that project.
+. Before you configure a local queue, try to create a Ray cluster.
 +
 The Ray cluster is created, even though no local queue is configured, because the Validating Admission Policy is not enforced.
 However, the Ray cluster resources are not managed by Kueue.
