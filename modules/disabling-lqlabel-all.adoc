@@ -1,12 +1,12 @@
 :_module-type: PROCEDURE
 
-[id="enforce-lqlabel-all_{context}"]
-= Enforcing the local-queue labeling policy in all projects
+[id="disabling-lqlabel-all_{context}"]
+= Disabling the local-queue labeling policy for all projects
 
 [role='_abstract']
 The local-queue labeling policy is enforced in all projects by default.
 
-If the original `ValidatingAdmissionPolicyBinding` resource is edited, you can follow these steps to restore the default values.
+You can disable the policy for all projects by editing the `ValidatingAdmissionPolicyBinding` resource as described in this procedure.
 
 .Prerequisites
 ifdef::upstream,self-managed[]
@@ -40,9 +40,9 @@ endif::[]
 . In the *Resources* list, search for *ValidatingAdmissionPolicyBinding*.
 . Click the `kueue-validating-admission-policy-binding` entry to open the details page.
 . Click the *YAML* tab to show the binding specifications.
-. Ensure that the following fields are set to the specified values:
+. Edit the `policyName` field to change the value to `disabled`, as shown in the following example:
 +
-.Example to enforce local-queue labeling for all projects
+.Example to disable local-queue labeling for all projects
 [source,bash,subs="+quotes"]
 ----
 kind: ValidatingAdmissionPolicyBinding
@@ -58,7 +58,7 @@ metadata:
     app.kubernetes.io/name: kueue
   managedFields:
 spec:
-  policyName: kueue-validating-admission-policy
+  policyName: disabled
   matchResources:
     namespaceSelector: {}
     objectSelector: {}
@@ -67,12 +67,23 @@ spec:
     - Deny
 ----
 
-. If you made any changes, click *Save*.
+. Click *Save*.
 
-////
 .Verification 
 
-Ray clusters cannot be created without specifying a local queue.
-You must either specify the local-queue name in the 'local_queue' field in the Ray cluster configuration, or configure a default local queue in the same project.
-Otherwise, the Ray cluster creation is rejected by the policy.
-////
+. Create a project.
+. In that project, try to create a Ray cluster.
++
+The Ray cluster is created, even though no local queue is configured, because the Validating Admission Policy is not enforced.
+However, the Ray cluster resources are not managed by Kueue.
+. Create a local queue without the `default-queue` annotation.
+. Try to create a Ray cluster, and specify the local-queue name in the `local_queue` field.
++
+The Ray cluster is created, and the Ray cluster resources are managed by Kueue.
+. Try to create a Ray cluster without specifying a value in the `local_queue` field.
++
+The Ray cluster is created, but the Ray cluster resources are not managed by Kueue.
+. Edit the local queue to add the `kueue.x-k8s.io/default-queue: "true"` annotation, which configures that queue as the default local queue.
+. Try to create a Ray cluster without specifying a value in the `local_queue` field.
++
+The Ray cluster is created, and the Ray cluster resources are managed by Kueue.

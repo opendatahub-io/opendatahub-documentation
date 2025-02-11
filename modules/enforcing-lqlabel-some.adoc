@@ -1,6 +1,6 @@
 :_module-type: PROCEDURE
 
-[id="enforce-lqlabel-some_{context}"]
+[id="enforcing-lqlabel-some_{context}"]
 = Enforcing the local-queue labeling policy in some projects only
 
 [role='_abstract']
@@ -79,9 +79,20 @@ spec:
 oc label namespace _<project-name>_ kueue-managed=true
 ----
 
-////
 .Verification 
 
-On projects where the policy is enforced, it would follow the default behaviour. 
-On projects where the policy is not enforced, it would follow the scenario 2 behaviour.
-////
+. Create a project.
+. In that project, try to create a Ray cluster.
++
+
+ifndef::upstream[]
+* In projects with the `kueue-managed` label, the behavior is as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing_distributed_workloads/enforcing-local-queues#enforcing-lqlabel-all_managing-rhoai[Enforcing the local-queue labeling policy for all projects].
+* In projects without the `kueue-managed` label, the behavior is as described in link:{rhoaidocshome}{default-format-url}/managing-openshift-ai/managing_distributed_workloads/enforcing-local-queues#disabling-lqlabel-all_managing-rhoai[Disabling the local-queue labeling policy for all projects].
+endif::[]
+ifdef::upstream[]
+* In projects with the `kueue-managed` label, the behavior is as described in link:{odhdocshome}/managing-odh/#enforcing-lqlabel-all_managing-rhoai[Enforcing the local-queue labeling policy for all projects].
+* In projects without the `kueue-managed` label, the behavior is as described in link:{odhdocshome}/managing-odh/#disabling-lqlabel-all_managing-rhoai[Disabling the local-queue labeling policy for all projects].
+endif::[]
+
+
+
