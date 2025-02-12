@@ -1,0 +1,96 @@
+:_module-type: PROCEDURE
+
+[id="enforcing-lqlabel-all_{context}"]
+= Enforcing the local-queue labeling policy for all projects
+
+[role='_abstract']
+When the local-queue labeling policy is enforced, Ray clusters are created _only if_ they are configured to use a local queue, and the Ray cluster resources are then managed by Kueue.
+The local-queue labeling policy is enforced for all projects by default.
+
+If the original `ValidatingAdmissionPolicyBinding` resource is edited, you use either of the following methods to undo the edits and enforce the policy for all projects:
+
+* Delete the `kueue-validating-admission-policy-binding` resource.
+The resource is automatically re-created with the default values. 
+No other action is required.
+
+* Edit the existing resource as described in this procedure.
+
+.Prerequisites
+ifdef::upstream,self-managed[]
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to OpenShift with the `cluster-admin` role.
+endif::[]
+
+
+ifdef::upstream[]
+* You have installed the required distributed workloads components as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+
+ifdef::self-managed[]
+* You have installed the required distributed workloads components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+endif::[]
+
+ifdef::cloud-service[]
+* You have installed the required distributed workloads components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+
+
+.Procedure
+
+. In the {openshift-platform} console, open the *Administrator* perspective,
+. From the *Project* list, select *All Projects*.
+. Click *Home* -> *Search*.
+. In the *Resources* list, search for *ValidatingAdmissionPolicyBinding*.
+. Click the `kueue-validating-admission-policy-binding` entry to open the details page.
+. Click the *YAML* tab to show the binding specifications.
+. Ensure that the following fields are set to the specified values:
++
+.Example to enforce local-queue labeling for all projects
+[source,bash,subs="+quotes"]
+----
+kind: ValidatingAdmissionPolicyBinding
+apiVersion: admissionregistration.k8s.io/v1
+metadata:
+  name: kueue-validating-admission-policy-binding
+  uid: _<Populated by the system. Read-only.>_
+  resourceVersion: _<Populated by the system. Read-only.>_
+  generation: _<Populated by the system. Read-only.>_
+  creationTimestamp: _<Populated by the system. Read-only.>_
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: kueue
+  managedFields:
+spec:
+  policyName: kueue-validating-admission-policy
+  matchResources:
+    namespaceSelector: {}
+    objectSelector: {}
+    matchPolicy: Equivalent
+  validationActions:
+    - Deny
+----
+
+. If you made any changes, click *Save*.
+
+.Verification 
+
+. Create a project.
+. Complete the following steps in the new project:
+.. Before you configure a local queue, try to create a Ray cluster.
++
+The Validating Admission Policy rejects the request, and the Ray cluster is not created, because no local queue is configured.
+.. Create a local queue without the `default-queue` annotation.
+.. Try to create a Ray cluster, and specify the local-queue name in the `local_queue` field.
++
+The Validating Admission Policy approves the request, and the Ray cluster is created.
+.. Try to create a Ray cluster without specifying a value in the `local_queue` field.
++
+The Validating Admission Policy rejects the request, and the Ray cluster is not created, because a local queue is not specified and a default local queue is not configured.
+.. Edit the local queue to add the `kueue.x-k8s.io/default-queue: "true"` annotation, which configures that queue as the default local queue.
+.. Try to create a Ray cluster without specifying a value in the `local_queue` field.
++
+The Validating Admission Policy approves the request, and the Ray cluster is created even though a local queue is not specified, because the default local queue is used.

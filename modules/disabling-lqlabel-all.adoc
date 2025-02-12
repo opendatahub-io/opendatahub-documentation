@@ -1,0 +1,92 @@
+:_module-type: PROCEDURE
+
+[id="disabling-lqlabel-all_{context}"]
+= Disabling the local-queue labeling policy for all projects
+
+[role='_abstract']
+The local-queue labeling policy is enforced for all projects by default.
+If the local-queue labeling policy is disabled, it is possible to create Ray clusters that do not use a local queue.
+However, the resources of such Ray clusters are not managed by Kueue.
+
+You can disable the local-queue labeling policy for all projects by editing the `ValidatingAdmissionPolicyBinding` resource as described in this procedure.
+
+.Prerequisites
+ifdef::upstream,self-managed[]
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+endif::[]
+ifdef::cloud-service[]
+* You have logged in to OpenShift with the `cluster-admin` role.
+endif::[]
+
+
+ifdef::upstream[]
+* You have installed the required distributed workloads components as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+
+ifdef::self-managed[]
+* You have installed the required distributed workloads components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+endif::[]
+
+ifdef::cloud-service[]
+* You have installed the required distributed workloads components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+
+
+.Procedure
+
+. In the {openshift-platform} console, open the *Administrator* perspective,
+. From the *Project* list, select *All Projects*.
+. Click *Home* -> *Search*.
+. In the *Resources* list, search for *ValidatingAdmissionPolicyBinding*.
+. Click the `kueue-validating-admission-policy-binding` entry to open the details page.
+. Click the *YAML* tab to show the binding specifications.
+. Edit the `policyName` field to change the value to `disabled`, as shown in the following example:
++
+.Example to disable local-queue labeling for all projects
+[source,bash,subs="+quotes"]
+----
+kind: ValidatingAdmissionPolicyBinding
+apiVersion: admissionregistration.k8s.io/v1
+metadata:
+  name: kueue-validating-admission-policy-binding
+  uid: _<Populated by the system. Read-only.>_
+  resourceVersion: _<Populated by the system. Read-only.>_
+  generation: _<Populated by the system. Read-only.>_
+  creationTimestamp: _<Populated by the system. Read-only.>_
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: kueue
+  managedFields:
+spec:
+  policyName: disabled
+  matchResources:
+    namespaceSelector: {}
+    objectSelector: {}
+    matchPolicy: Equivalent
+  validationActions:
+    - Deny
+----
+
+. Click *Save*.
+
+.Verification 
+
+. Create a project.
+. Complete the following steps in the new project:
+.. Before you configure a local queue, try to create a Ray cluster.
++
+The Ray cluster is created, even though no local queue is configured, because the Validating Admission Policy is not enforced.
+However, the Ray cluster resources are not managed by Kueue.
+.. Create a local queue without the `default-queue` annotation.
+.. Try to create a Ray cluster, and specify the local-queue name in the `local_queue` field.
++
+The Ray cluster is created, and the Ray cluster resources are managed by Kueue.
+.. Try to create a Ray cluster without specifying a value in the `local_queue` field.
++
+The Ray cluster is created, but the Ray cluster resources are not managed by Kueue.
+.. Edit the local queue to add the `kueue.x-k8s.io/default-queue: "true"` annotation, which configures that queue as the default local queue.
+.. Try to create a Ray cluster without specifying a value in the `local_queue` field.
++
+The Ray cluster is created, and the Ray cluster resources are managed by Kueue.
