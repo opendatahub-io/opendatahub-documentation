@@ -1,0 +1,33 @@
+:_module-type: PROCEDURE
+
+[id="configuring-custom-namespaces"]
+= Configuring custom namespaces
+
+[role='_abstract']
+By default, {productname-short} uses predefined namespaces, but you can define a custom namespace for the operator and `DSCI.applicationNamespace` as needed. Namespaces created by {productname-short} typically include `openshift` or `redhat` in their name. These system namespaces should not be renamed, as they are required for {productname-short} to function properly.
+
+.Prerequisites
+* You have access to a {productname-short} cluster with cluster administrator privileges.
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
+.Procedure
+. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+. Enter the following command to create the custom namespace. 
++
+[source]
+----
+oc create namespace <custom_namespace>
+----
+. If you are creating a namespace for a `DSCI.applicationNamespace`, enter the following command to add the correct label:
++
+[source]
+----
+oc label namespace <application_namespace> opendatahub.io/application-namespace=true
+----
+
+//.Additional information
