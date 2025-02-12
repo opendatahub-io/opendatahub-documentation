@@ -4,9 +4,10 @@
 = Disabling the local-queue labeling policy for all projects
 
 [role='_abstract']
-Disabling the local-queue labeling policy means that it is possible to create Ray clusters that do not use a local queue, but the resources of such Ray clusters are not managed by Kueue.
-
 The local-queue labeling policy is enforced for all projects by default.
+If the local-queue labeling policy is disabled, it is possible to create Ray clusters that do not use a local queue.
+However, the resources of such Ray clusters are not managed by Kueue.
+
 You can disable the local-queue labeling policy for all projects by editing the `ValidatingAdmissionPolicyBinding` resource as described in this procedure.
 
 .Prerequisites
@@ -35,7 +36,7 @@ endif::[]
 
 .Procedure
 
-. In the {openshift} console, open the *Administrator* perspective,
+. In the {openshift-platform} console, open the *Administrator* perspective,
 . From the *Project* list, select *All Projects*.
 . Click *Home* -> *Search*.
 . In the *Resources* list, search for *ValidatingAdmissionPolicyBinding*.
@@ -72,19 +73,20 @@ spec:
 
 .Verification 
 
-. Create a project, and complete the following steps in that project.
-. Before you configure a local queue, try to create a Ray cluster.
+. Create a project.
+. Complete the following steps in the new project:
+.. Before you configure a local queue, try to create a Ray cluster.
 +
 The Ray cluster is created, even though no local queue is configured, because the Validating Admission Policy is not enforced.
 However, the Ray cluster resources are not managed by Kueue.
-. Create a local queue without the `default-queue` annotation.
-. Try to create a Ray cluster, and specify the local-queue name in the `local_queue` field.
+.. Create a local queue without the `default-queue` annotation.
+.. Try to create a Ray cluster, and specify the local-queue name in the `local_queue` field.
 +
 The Ray cluster is created, and the Ray cluster resources are managed by Kueue.
-. Try to create a Ray cluster without specifying a value in the `local_queue` field.
+.. Try to create a Ray cluster without specifying a value in the `local_queue` field.
 +
 The Ray cluster is created, but the Ray cluster resources are not managed by Kueue.
-. Edit the local queue to add the `kueue.x-k8s.io/default-queue: "true"` annotation, which configures that queue as the default local queue.
-. Try to create a Ray cluster without specifying a value in the `local_queue` field.
+.. Edit the local queue to add the `kueue.x-k8s.io/default-queue: "true"` annotation, which configures that queue as the default local queue.
+.. Try to create a Ray cluster without specifying a value in the `local_queue` field.
 +
 The Ray cluster is created, and the Ray cluster resources are managed by Kueue.

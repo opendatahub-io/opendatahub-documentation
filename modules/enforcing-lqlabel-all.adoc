@@ -41,7 +41,7 @@ endif::[]
 
 .Procedure
 
-. In the {openshift} console, open the *Administrator* perspective,
+. In the {openshift-platform} console, open the *Administrator* perspective,
 . From the *Project* list, select *All Projects*.
 . Click *Home* -> *Search*.
 . In the *Resources* list, search for *ValidatingAdmissionPolicyBinding*.
@@ -78,18 +78,19 @@ spec:
 
 .Verification 
 
-. Create a project, and complete the following steps in that project.
-. Before you configure a local queue, try to create a Ray cluster.
+. Create a project.
+. Complete the following steps in the new project:
+.. Before you configure a local queue, try to create a Ray cluster.
 +
 The Validating Admission Policy rejects the request, and the Ray cluster is not created, because no local queue is configured.
-. Create a local queue without the `default-queue` annotation.
-. Try to create a Ray cluster, and specify the local-queue name in the `local_queue` field.
+.. Create a local queue without the `default-queue` annotation.
+.. Try to create a Ray cluster, and specify the local-queue name in the `local_queue` field.
 +
 The Validating Admission Policy approves the request, and the Ray cluster is created.
-. Try to create a Ray cluster without specifying a value in the `local_queue` field.
+.. Try to create a Ray cluster without specifying a value in the `local_queue` field.
 +
 The Validating Admission Policy rejects the request, and the Ray cluster is not created, because a local queue is not specified and a default local queue is not configured.
-. Edit the local queue to add the `kueue.x-k8s.io/default-queue: "true"` annotation, which configures that queue as the default local queue.
-. Try to create a Ray cluster without specifying a value in the `local_queue` field.
+.. Edit the local queue to add the `kueue.x-k8s.io/default-queue: "true"` annotation, which configures that queue as the default local queue.
+.. Try to create a Ray cluster without specifying a value in the `local_queue` field.
 +
 The Validating Admission Policy approves the request, and the Ray cluster is created even though a local queue is not specified, because the default local queue is used.
