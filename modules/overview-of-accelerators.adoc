@@ -28,8 +28,13 @@ If you work with large data sets, you can use accelerators to optimize the perfo
 ** Before you can enable Intel Gaudi AI accelerators in {productname-short}, you must install the necessary dependencies. Also, the version of the Intel Gaudi AI Operator that you install must match the version of the corresponding workbench image in your deployment.
 ** A workbench image for Intel Gaudi accelerators is not included in {productname-short} by default. Instead, you must create and configure a custom notebook to enable Intel Gaudi AI support.
 ** You can enable Intel Gaudi AI accelerators on-premises or with AWS DL1 compute nodes on an AWS instance.
-
-Before you can use an accelerator in {productname-short}, your OpenShift instance must contain an associated accelerator profile. For accelerators that are new to your deployment, you must configure an accelerator profile for the accelerator in context. You can create an accelerator profile from the *Settings* -> *Accelerator profiles* page on the {productname-short} dashboard. If your deployment contains existing accelerators that had associated accelerator profiles already configured, an accelerator profile is automatically created after you upgrade to the latest version of {productname-short}.
+ifndef::upstream[]
+* Before you can use an accelerator in {productname-short}, you must enable GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
+endif::[]
+ifdef::upstream[]
+* Before you can use an accelerator in {productname-short}, you must enable GPU support in {productname-short}. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
+endif::[]
+In addition, your OpenShift instance must contain an associated accelerator profile. For accelerators that are new to your deployment, you must configure an accelerator profile for the accelerator in context. You can create an accelerator profile from the *Settings* -> *Accelerator profiles* page on the {productname-short} dashboard. If your deployment contains existing accelerators that had associated accelerator profiles already configured, an accelerator profile is automatically created after you upgrade to the latest version of {productname-short}.
 
 [role="_additional-resources"]
 .Additional resources
