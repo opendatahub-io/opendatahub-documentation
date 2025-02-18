@@ -1,0 +1,434 @@
+:_module-type: PROCEDURE
+
+[id='api-workbench-creating_{context}']
+= Creating a workbench by using the `Notebook` CRD
+
+[role="_abstract"]
+
+In {productname-short}, you can create a workbench object by using the `Notebook` Custom Resource Definition (CRD). 
+
+In the following procedure, you configure a `Notebook` CRD and then use it to create the `Notebook` Custom Resource (CR) that defines the workbench.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You have created a data science project. In the example in this procedure, the project is named `my-data-science-project`.
+
+//will probably need to fix these links
+ifdef::upstream[]
+* You know the URL for the notebook image that you want to use in the workbench. The example in this procedure uses the custom image that you created in link:{odhdocshome}/api-workbench/#api-custom-image-creating_api-workbench[Creating a custom image by using the `ImageStream` CRD]. 
+endif::[]
+ifndef::upstream[]
+* You know the URL for the image that you want to use in the workbench. The example in this procedure uses the custom image that you created in link:{rhoaidocshome}{default-format-url}/api_workbench/api-custom-image-creating_api-workbench[Creating a custom image by using the `ImageStream` CRD]. 
+endif::[]
+
+.Procedure
+
+. In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in as shown in the following example:
++
+[source,subs="+quotes"]
+----
+oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+. Define the `Notebook` CRD.
+
+.. Create a YAML manifest file named `notebook.yaml`.
+.. Copy the following configuration and paste it in the `notebook.yaml` file:
++
+.Example `Notebook`
+[source,yaml]
+----
+apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  annotations:
+    notebooks.opendatahub.io/inject-oauth: 'true' # <1>
+    opendatahub.io/image-display-name: My Custom Notebook # <2>
+    notebooks.opendatahub.io/oauth-logout-url: 'https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com/projects/my-data-science-project?notebookLogout=my-workbench'
+    opendatahub.io/accelerator-name: ''
+    openshift.io/description: '' # <3>
+    openshift.io/display-name: my-workbench # <4>
+    notebooks.opendatahub.io/last-image-selection: 'my-custom-notebook:1.0' 
+    notebooks.kubeflow.org/last_activity_check_timestamp: '2024-07-30T20:43:25Z'
+    notebooks.opendatahub.io/last-size-selection: Small
+    opendatahub.io/username: 'kube:admin'
+    notebooks.kubeflow.org/last-activity: '2024-07-30T20:27:25Z'
+  name: my-workbench # <5>
+  namespace: my-data-science-project # <6>
+spec:
+  template:
+    spec:
+      affinity: {}
+      containers:
+        - resources: # <7>
+            limits:
+              cpu: '2'
+              memory: 8Gi
+            requests:
+              cpu: '1'
+              memory: 8Gi
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /notebook/my-data-science-project/my-workbench/api
+              port: notebook-port
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: my-workbench
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /notebook/my-data-science-project/my-workbench/api
+              port: notebook-port
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          env: # <8>
+            - name: NOTEBOOK_ARGS
+              value: |-
+                --ServerApp.port=8888
+                --ServerApp.token=''
+                --ServerApp.password=''
+                --ServerApp.base_url=/notebook/my-data-science-project/my-workbench
+                --ServerApp.quit_button=False
+                --ServerApp.tornado_settings={"user":"kube-3aadmin","hub_host":"https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com", "hub_prefix":"/projects/my-data-science-project"}
+            - name: JUPYTER_IMAGE
+              value: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0'
+            - name: PIP_CERT
+              value: /etc/pki/tls/custom-certs/ca-bundle.crt
+            - name: REQUESTS_CA_BUNDLE
+              value: /etc/pki/tls/custom-certs/ca-bundle.crt
+            - name: SSL_CERT_FILE
+              value: /etc/pki/tls/custom-certs/ca-bundle.crt
+            - name: PIPELINES_SSL_SA_CERTS
+              value: /etc/pki/tls/custom-certs/ca-bundle.crt
+            - name: GIT_SSL_CAINFO
+              value: /etc/pki/tls/custom-certs/ca-bundle.crt
+          ports:
+            - containerPort: 8888
+              name: notebook-port
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /opt/app-root/src
+              name: my-workbench
+            - mountPath: /dev/shm
+              name: shm
+            - mountPath: /etc/pki/tls/custom-certs/ca-bundle.crt
+              name: trusted-ca
+              readOnly: true
+              subPath: ca-bundle.crt
+          image: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0' # <9>
+          workingDir: /opt/app-root/src
+        - resources: # <10>
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /oauth/healthz
+              port: oauth-proxy
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: oauth-proxy
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /oauth/healthz
+              port: oauth-proxy
+              scheme: HTTPS
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - containerPort: 8443
+              name: oauth-proxy
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /etc/oauth/config
+              name: oauth-config
+            - mountPath: /etc/tls/private
+              name: tls-certificates
+          image: 'registry.redhat.io/openshift4/ose-oauth-proxy@sha256:4bef31eb993feb6f10....401fee97fa4f4542b6b7c9bc46'
+          args:
+            - '--provider=openshift'
+            - '--https-address=:8443'
+            - '--http-address='
+            - '--openshift-service-account=my-workbench'
+            - '--cookie-secret-file=/etc/oauth/config/cookie_secret'
+            - '--cookie-expire=24h0m0s'
+            - '--tls-cert=/etc/tls/private/tls.crt'
+            - '--tls-key=/etc/tls/private/tls.key'
+            - '--upstream=http://localhost:8888'
+            - '--upstream-ca=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
+            - '--email-domain=*'
+            - '--skip-provider-button'
+            - '--openshift-sar={"verb":"get","resource":"notebooks","resourceAPIGroup":"kubeflow.org","resourceName":"my-workbench","namespace":"$(NAMESPACE)"}'
+            - '--logout-url=https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com/projects/my-data-science-project?notebookLogout=my-workbench'
+      enableServiceLinks: false
+      serviceAccountName: my-workbench
+      volumes:
+        - name: my-workbench
+          persistentVolumeClaim:
+            claimName: my-workbench
+        - emptyDir:
+            medium: Memory
+          name: shm
+        - configMap:
+            items:
+              - key: ca-bundle.crt
+                path: ca-bundle.crt
+            name: workbench-trusted-ca-bundle
+            optional: true
+          name: trusted-ca
+        - name: oauth-config
+          secret:
+            defaultMode: 420
+            secretName: my-workbench-oauth-config
+        - name: tls-certificates
+          secret:
+            defaultMode: 420
+            secretName: my-workbench-tls
+----
++
+The example YAML file includes the following information:
++
+<1> The `inject-oauth` annotation generates other OAUTH-based configurations, such as, the `oauth-proxy`, automatically. The default is `true`.
+<2> The `Notebook` image name is visible in the {productname-short} dashboard. In this example, the image name is `My custom notebook`. Optionally, you can name the image according to your use case.
+<3> An optional description of the workbench.
+<4> The workbench name is visible in the {productname-short} dashboard. In this example, the display name is `my-workbench`.
+<5> The name for the workbench. In this example, the workbench name is `my-workbench`.
+<6> The data science project for the workbench. In this example, the data science project name is `my-data-science-project`.
+<7> The deployment size for the container. You can set values for the CPU and memory limits and requests.
+<8> Environment variables for configuring values, for example, for Jupyter Notebook arguments and SSL/TLS certificates.
+<9> The `Notebook` image. In this example, `image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0` is the `Notebook` image. You can select the image version based on the packages included in the image. 
+<10> The `inject-oauth` annotation configures the `oauth-proxy` container section of the `Notebook`.
+
+. Edit the `notebooks.opendatahub.io/oauth-logout-url` field, annotated as *(1)* in the following example. Replace `my-data-science-project` with the name of the data science project that you created.
++ 
+.Example `Notebook`
+[source,yaml]
+----
+apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  annotations:
+    ...
+    notebooks.opendatahub.io/oauth-logout-url: 'https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com/projects/my-data-science-project?notebookLogout=my-workbench' # <1>
+    ...
+----
+
+. Edit the `--logout-url=` field, annotated as *(1)* in the following example. Replace `my-data-science-project` with the name of the data science project that you created.
++ 
+.Example `Notebook`
+[source,yaml]
+----
+apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  annotations:
+  ...
+spec:
+  template:
+    spec:
+      affinity: {}
+      containers:
+      ...
+      - resources:
+      ...
+       args:
+       - '--logout-url=https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com/projects/my-data-science-project?notebookLogout=my-workbench' # <1>
+       ...
+----
+
+. Edit the `value` field of the `JUPYTER_IMAGE` environment variable, annotated as *(1)* in the following example. Replace the image URL with the URL of the custom image that you created.
++ 
+.Example `Notebook`
+[source,yaml]
+----
+apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  annotations:
+  ...
+spec:
+  template:
+    spec:
+      affinity: {}
+      containers:
+      ...
+      - resources:
+      ...
+      env:
+      ...
+      - name: JUPYTER_IMAGE
+        value: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0' # <1>
+
+----
+
+. Edit the `image` field, annotated as *(1)* in the following example. Replace the image URL with the URL of the custom image that you created.
++ 
+.Example `Notebook`
+[source,yaml]
+----
+apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  annotations:
+  ...
+spec:
+  template:
+    spec:
+      affinity: {}
+      containers:
+      ...
+      - resources:
+      ...
+      env:
+      ...
+      ports:
+      ..
+      imagePullPolicy: Always
+      volumeMounts:
+      ...
+      image: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0' # <1>
+      workingDir: /opt/app-root/src
+      ...
+----
+
+. To create the `Notebook` CR, run the following command where the `Notebook` CRD YAML manifest filename is `notebook.yaml`.
++
+[source,terminal]
+----
+oc create -f notebook.yaml
+----
+
+.Verification
+
+* To verify that the workbench was successfully created, run the following command, replacing `my-data-science-project` with the name of the project where you created the `Notebook` CR.
++
+[source,terminal]
+----
+oc describe notebook -n my-data-science-project
+----
++
+You should see output similar to the following example:
++
+.Example output
+[source,yaml]
+----
+Name:         my-workbench
+Namespace:    my-data-science-project
+Labels:       <none>
+Annotations:  notebooks.kubeflow.org/last-activity: 2024-07-30T20:27:25Z
+              notebooks.kubeflow.org/last_activity_check_timestamp: 2024-07-30T20:43:25Z
+              notebooks.opendatahub.io/inject-oauth: true
+              notebooks.opendatahub.io/last-image-selection: my-custom-notebook:1.0
+              notebooks.opendatahub.io/last-size-selection: Small
+              notebooks.opendatahub.io/oauth-logout-url:
+                https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com/projects/my-data-science-project?notebookLogout=my-workbench
+              opendatahub.io/accelerator-name:
+              opendatahub.io/image-display-name: My Custom Notebook
+              opendatahub.io/username: kube:admin
+              openshift.io/description:
+              openshift.io/display-name: my-workbench
+API Version:  kubeflow.org/v1
+Kind:         Notebook
+Metadata:
+  Creation Timestamp:  2025-03-06T13:27:25Z
+  Generation:          1
+  Resource Version:    42316914
+  UID:                 89f4....9e9-7c48-4f53-9397-05c....d21a
+Spec:
+  Template:
+    Spec:
+      Affinity:
+      Containers:
+        Env:
+          Name:   NOTEBOOK_ARGS
+          Value:  --ServerApp.port=8888
+--ServerApp.token=''
+--ServerApp.password=''
+--ServerApp.base_url=/notebook/my-data-science-project/my-workbench
+--ServerApp.quit_button=False
+--ServerApp.tornado_settings={"user":"kube-3aadmin","hub_host":"https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com", "hub_prefix":"/projects/my-data-science-project"}
+          Name:             JUPYTER_IMAGE
+          Value:            image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0
+          Name:             PIP_CERT
+          Value:            /etc/pki/tls/custom-certs/ca-bundle.crt
+          Name:             REQUESTS_CA_BUNDLE
+          Value:            /etc/pki/tls/custom-certs/ca-bundle.crt
+          Name:             SSL_CERT_FILE
+          Value:            /etc/pki/tls/custom-certs/ca-bundle.crt
+          Name:             PIPELINES_SSL_SA_CERTS
+          Value:            /etc/pki/tls/custom-certs/ca-bundle.crt
+          Name:             GIT_SSL_CAINFO
+          Value:            /etc/pki/tls/custom-certs/ca-bundle.crt
+        Image:              image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0
+        Image Pull Policy:  Always
+        Liveness Probe:
+          Failure Threshold:  3
+          Http Get:
+            Path:                 /notebook/my-data-science-project/my-workbench/api
+            Port:                 notebook-port
+            Scheme:               HTTP
+          Initial Delay Seconds:  10
+          Period Seconds:         5
+          Success Threshold:      1
+          Timeout Seconds:        1
+        Name:                     my-workbench
+        Ports:
+          Container Port:  8888
+          Name:            notebook-port
+          Protocol:        TCP
+        Readiness Probe:
+          Failure Threshold:  3
+          Http Get:
+            Path:                 /notebook/my-data-science-project/my-workbench/api
+            Port:                 notebook-port
+            Scheme:               HTTP
+          Initial Delay Seconds:  10
+          Period Seconds:         5
+          Success Threshold:      1
+          Timeout Seconds:        1
+        Resources:
+          Limits:
+            Cpu:     2
+            Memory:  8Gi
+          Requests:
+            Cpu:     1
+            Memory:  8Gi
+        Volume Mounts:
+          Mount Path:  /opt/app-root/src
+          Name:        my-workbench
+          Mount Path:  /dev/shm
+          Name:        shm
+          Mount Path:  /etc/pki/tls/custom-certs/ca-bundle.crt
+          Name:        trusted-ca
+          Read Only:   true
+          Sub Path:    ca-bundle.crt
+        Working Dir:   /opt/app-root/src
+        Args:
+          --provider=openshift
+----
