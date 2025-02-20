@@ -4,7 +4,13 @@
 = Configuring the model registry component
 
 [role='_abstract']
-To configure the model registry feature for your data scientists to use in {productname-short}, you must install the following Operators in OpenShift, and then enable the `modelregistry` component in {productname-short}.
+ifdef::upstream,self-managed[]
+To configure the model registry feature for your data scientists to use in {productname-short}, you must install the following Operators in {openshift-platform}, and then enable the `modelregistry` component in {productname-short}.
+endif::[]
+
+ifdef::cloud-service[]
+To configure the model registry feature for your data scientists to use in {productname-short}, you must install the following Operators in {openshift-platform}, install {productname-long} as an add-on to your {openshift-platform} cluster, and then enable the `modelregistry` component in {productname-short}.
+endif::[]
 
 * {org-name} Authorino Operator (Technical Preview)
 * {org-name} OpenShift Serverless Operator
@@ -12,7 +18,7 @@ To configure the model registry feature for your data scientists to use in {prod
 ifdef::upstream[]
 * Open Data Hub Operator version 2
 endif::[]
-ifndef::upstream[]
+ifdef::self-managed[]
 * {productname-long} Operator version 2.14+
 endif::[]
 
@@ -21,39 +27,59 @@ ifdef::upstream[]
 ====
 You should install the {productname-long} Operator only after the other listed Operators are installed and in a running state.
 
-For more information about installing Operators in OpenShift, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
+For more information about installing Operators in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
 
 For information about installing the Open Data Hub Operator, see link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing Open Data Hub Operator version 2].
 ====
 endif::[]
 
 ifndef::upstream[]
+ifdef::self-managed[]
 [IMPORTANT]
 ====
 You should install the {productname-long} Operator only after the other listed Operators are installed and in a running state.
 
-For more information about installing Operators in OpenShift, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
+For more information about installing Operators in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
 
-For more information about installing the {productname-long} Operator, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#installing-the-openshift-data-science-operator_operator-install[Installing the {productname-long} Operator]
+For more information about installing the {productname-long} Operator, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/configuring-custom-namespaces#installing-the-openshift-data-science-operator_operator-install[Installing the {productname-long} Operator].
 ====
 endif::[]
 
+ifdef::cloud-service[]
+[IMPORTANT]
+====
+You should install the {productname-long} Add-on only after the listed Operators are installed and in a running state.
 
+For more information about installing Operators in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
+
+For more information about installing the {productname-long} Add-on, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_cloud_service/installing-and-deploying-openshift-ai_install#installing-openshift-ai-managed_install[Installing {productname-short} on your OpenShift cluster].
+====
+endif::[]
+endif::[]
+
+ifdef::upstream,self-managed[]
 After you install the Operators, you can use the following steps to enable the `modelregistry` component.
+endif::[]
+
+ifdef::cloud-service[]
+After you install the Operators and the {productname-long} Add-on, you can use the following steps to enable the `modelregistry` component.
+endif::[]
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have access to the data science cluster.
-* You have installed {productname-long}.
 ifdef::cloud-service[]
-* You have installed the {org-name} Authorino, {org-name} OpenShift Serverless, {org-name} OpenShift Service Mesh, and {org-name} OpenShift AI Operators.
+* You have installed {productname-long} as an add-on to your {openshift-platform} cluster. 
+* You have installed the {org-name} Authorino, {org-name} OpenShift Serverless, {org-name} OpenShift Service Mesh, and {productname-long} Operators.
 * You have sufficient resources. For more information about the minimum resources required to use {productname-short}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install[Installing and deploying {productname-short}].
 endif::[]
 ifdef::self-managed[]
-* You have installed the {org-name} Authorino, {org-name} OpenShift Serverless, {org-name} OpenShift Service Mesh, and {org-name} OpenShift AI Operators.
+* You have installed the {productname-long} Operator on your {openshift-platform} cluster. 
+* You have installed the {org-name} Authorino, {org-name} OpenShift Serverless, {org-name} OpenShift Service Mesh, and {productname-long} Operators.
 * You have sufficient resources. For more information about the minimum resources required to use {productname-short}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install[Installing and deploying {productname-short}] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/deploying-openshift-ai-in-a-disconnected-environment_install[Deploying {productname-short} in a disconnected environment]).
 endif::[]
 ifdef::upstream[]
+* You have installed the {productname-long} Operator on your {openshift-platform} cluster. 
 * You have installed the {org-name} Authorino, {org-name} OpenShift Serverless, {org-name} OpenShift Service Mesh, and Open Data Hub Operators.
 * You have sufficient resources. For more information about the minimum resources required to use {productname-short}, see link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing the {productname-short} Operator version 2].
 endif::[]
