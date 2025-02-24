@@ -30,6 +30,26 @@ You can serve models with Intel Gaudi accelerators by using the *vLLM ServingRun
 
 For information about recommended vLLM parameters, environment variables, supported configurations and more, see link:https://github.com/HabanaAI/vllm-fork/blob/habana_main/README_GAUDI.md[vLLM with Intel® Gaudi® AI Accelerators^].
 endif::[]
+[NOTE]
+====
+Warm-up is a model initialization and performance optimization step that is useful for reducing cold-start delays and first-inference latency. Depending on the model size, warm-up can lead to longer model loading times. 
+
+While highly recommended in production environments to avoid performance limitations, you can choose to skip warm-up for non-production environments to reduce model loading times and accelerate model development and testing cycles.
+ifndef::upstream[]
+To skip warm-up, follow the steps described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#customizing-parameters-serving-runtime_serving-large-models[Customizing the parameters of a deployed model-serving runtime] to set the `VLLM_SKIP_WARMUP` environment variable to `true` in the *Configuration parameters* section of your model deployment.
+[source]
+----
+`VLLM_SKIP_WARMUP="true"`
+----
+endif::[]
+ifdef::upstream[]
+To skip warm-up, follow the steps described in link:{odhdocshome}/serving-models/#deploying-models-using-the-single-model-serving-platform_serving-large-models[Customizing the parameters of a deployed model-serving runtime] in set the following vLLM environment variable in the *Configuration parameters* section of your mo:
+[source]
+----
+`VLLM_SKIP_WARMUP="true"`
+----
+endif::[]
+====
 
 == AMD GPUs
 
