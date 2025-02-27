@@ -35,50 +35,69 @@ export IMG=my_training_image
 .. Use the `FROM` instruction to specify the location of a suitable base training image.
 +
 The Python version in the training image must be the same as the Python version in the workbench.
-
-* To create a CUDA-compatible Ray cluster image, specify the location of a CUDA-compatible Ray base image, as shown in the following examples:
 +
-.CUDA-compatible Ray base image with Python 3.9
+* To create a CUDA-compatible Ray cluster image, specify the location of a CUDA-compatible Ray base image:
++
+.CUDA-compatible Ray base image syntax
+[source,subs="+quotes"]
+----
+FROM quay.io/modh/ray:__<ray-version>__-py__<python-version>__-cu__<cuda-version>__
+----
++
+Examples:
++
 [source,bash]
 ----
 FROM quay.io/modh/ray:2.35.0-py39-cu121
-----
-+
-.CUDA-compatible Ray base image with Python 3.11
-[source,bash]
-----
 FROM quay.io/modh/ray:2.35.0-py311-cu121
 ----
-* To create a ROCm-compatible Ray cluster image, specify the location of a ROCm-compatible Ray base image, as shown in the following examples:
+
+* To create a ROCm-compatible Ray cluster image, specify the location of a ROCm-compatible Ray base image:
 +
-.ROCm-compatible Ray base image with Python 3.9
+.ROCm-compatible Ray base image syntax
+[source,subs="+quotes"]
+----
+FROM quay.io/modh/ray:__<ray-version>__-py__<python-version>__-rocm__<rocm-version>__
+----
++
+Examples:
++
 [source,bash]
 ----
-FROM quay.io/modh/ray:2.35.0-py39-rocm61
-----
-+
-.ROCm-compatible Ray base image with Python 3.11
-[source,bash]
-----
-FROM quay.io/modh/ray:2.35.0-py311-rocm61
+FROM quay.io/modh/ray:2.35.0-py39-rocm62
+FROM quay.io/modh/ray:2.35.0-py311-rocm62
 ----
 
-* To create a CUDA-compatible KFTO cluster image, specify the Developer Preview CUDA-compatible KFTO base image location:
+* To create a CUDA-compatible KFTO cluster image, specify the location of a CUDA-compatible KFTO base image:
 +
-.CUDA-compatible KFTO base image with Python 3.11
+.CUDA-compatible KFTO base image syntax
+[source,subs="+quotes"]
+----
+FROM quay.io/modh/training:py__<python-version>__-cuda__<cuda-version>__-torch__<pytorch-version>__
+----
++
+Example:
++
 [source,bash]
 ----
 FROM quay.io/modh/training:py311-cuda121-torch241
 ----
 
-* To create a ROCm-compatible KFTO cluster image, specify the ROCm-compatible KFTO base image location:
+* To create a ROCm-compatible KFTO cluster image, specify the location of a ROCm-compatible KFTO base image:
 +
-.ROCm-compatible KFTO base image with Python 3.11
+.ROCm-compatible KFTO base image syntax
+[source,subs="+quotes"]
+----
+FROM quay.io/modh/training:py__<python-version>__-rocm__<rocm-version>__-torch__<pytorch-version>__
+----
++
+Examples:
++
 [source,bash]
 ----
 FROM quay.io/modh/training:py311-rocm61-torch241
+FROM quay.io/modh/training:py311-rocm62-torch241
 ----
-
 
 
 .. Use the `RUN` instruction to install additional packages.
