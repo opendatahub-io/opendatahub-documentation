@@ -8,9 +8,47 @@ You can create a custom training image by adding packages to a base training ima
 .Prerequisites
 
 * You can access the training image that you have chosen to use as the base for your custom image. 
++
+Select the image based on the _image type_ (for example, Ray or KFTO), the _accelerator framework_ (for example, CUDA for NVIDIA GPUs, or ROCm for AMD GPUs), and the _Python version_ (for example, 3.9 or 3.11).
++
+*Note:* The Python version in the training image must be the same as the Python version in the {productname-short} workbench where you plan to use the image.
++
+The following table shows some example base training images:
++
+.Example base training images
+[cols="7%,15%,10%,33%,35%"]
+|===
+| Image type | Accelerator framework | Python version | Example base training image | Preinstalled packages
+
+| Ray
+| CUDA
+| 3.9
+| `ray:2.35.0-py39-cu121`
+| Ray 2.35.0, Python 3.9, CUDA 12.1
+
+| Ray
+| ROCm
+| 3.11
+| `ray:2.35.0-py311-rocm62`
+| Ray 2.35.0, Python 3.11, ROCm 6.2
+
+| KFTO
+| CUDA
+| 3.11
+| `training:py311-cuda121-torch241`
+| Python 3.11, CUDA 12.1, PyTorch 2.4.1
+
+| KFTO
+| ROCm
+| 3.11
+| `training:py311-rocm62-torch241`
+| Python 3.11, ROCm 6.2, PyTorch 2.4.1
+
+|===
+
 ifndef::upstream[]
 +
-See link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations] for a list of the {productname-short} base training images and their preinstalled packages.
+For a complete list of the {productname-short} base training images and their preinstalled packages, see link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations].
 endif::[]
 
 * You have Podman installed in your local environment, and you can access a container registry.
@@ -22,8 +60,8 @@ For more information about Podman and container registries, see link:https://doc
 
 . In a terminal window, create a directory for your work, and change to that directory. 
 
-. Set the `IMG` environment variable to the name of your image.
-In the example commands in this section, `my_training_image` is the name of the image.
+. Set the `IMG` environment variable to the name of your custom image.
+In the example commands in this section, `my_training_image` is the name of the custom image.
 +
 [source,subs="+quotes"]
 ----
@@ -34,14 +72,11 @@ export IMG=my_training_image
 
 .. Use the `FROM` instruction to specify the location of a suitable base training image.
 +
-The Python version in the training image must be the same as the Python version in the workbench.
+In the following command, replace `_<base-training-image>_` with the name of your chosen base training image:
 +
-* To create a CUDA-compatible Ray cluster image, specify the location of a CUDA-compatible Ray base image:
-+
-.CUDA-compatible Ray base image syntax
 [source,subs="+quotes"]
 ----
-FROM quay.io/modh/ray:__<ray-version>__-py__<python-version>__-cu__<cuda-version>__
+FROM quay.io/modh/__<base-training-image>__
 ----
 +
 Examples:
@@ -49,56 +84,12 @@ Examples:
 [source,bash]
 ----
 FROM quay.io/modh/ray:2.35.0-py39-cu121
-FROM quay.io/modh/ray:2.35.0-py311-cu121
 ----
-
-* To create a ROCm-compatible Ray cluster image, specify the location of a ROCm-compatible Ray base image:
-+
-.ROCm-compatible Ray base image syntax
-[source,subs="+quotes"]
-----
-FROM quay.io/modh/ray:__<ray-version>__-py__<python-version>__-rocm__<rocm-version>__
-----
-+
-Examples:
 +
 [source,bash]
 ----
-FROM quay.io/modh/ray:2.35.0-py39-rocm62
-FROM quay.io/modh/ray:2.35.0-py311-rocm62
-----
-
-* To create a CUDA-compatible KFTO cluster image, specify the location of a CUDA-compatible KFTO base image:
-+
-.CUDA-compatible KFTO base image syntax
-[source,subs="+quotes"]
-----
-FROM quay.io/modh/training:py__<python-version>__-cuda__<cuda-version>__-torch__<pytorch-version>__
-----
-+
-Example:
-+
-[source,bash]
-----
-FROM quay.io/modh/training:py311-cuda121-torch241
-----
-
-* To create a ROCm-compatible KFTO cluster image, specify the location of a ROCm-compatible KFTO base image:
-+
-.ROCm-compatible KFTO base image syntax
-[source,subs="+quotes"]
-----
-FROM quay.io/modh/training:py__<python-version>__-rocm__<rocm-version>__-torch__<pytorch-version>__
-----
-+
-Examples:
-+
-[source,bash]
-----
-FROM quay.io/modh/training:py311-rocm61-torch241
 FROM quay.io/modh/training:py311-rocm62-torch241
 ----
-
 
 .. Use the `RUN` instruction to install additional packages.
 You can also add comments to the Dockerfile by prefixing each comment line with a number sign (`#`).
@@ -113,11 +104,11 @@ RUN python3 -m pip install torch==2.4.0
 
 
 . Build the image file. 
-Use the `-t` option with the `podman build` command to create an image tag that specifies the image name and version, to make it easier to reference and manage the image: 
+Use the `-t` option with the `podman build` command to create an image tag that specifies the custom image name and version, to make it easier to reference and manage the image: 
 +
 [source,subs="+quotes"]
 ----
-podman build -t _<image-name>_:_<version>_ -f Dockerfile
+podman build -t _<custom-image-name>_:_<version>_ -f Dockerfile
 ----
 +
 Example:
