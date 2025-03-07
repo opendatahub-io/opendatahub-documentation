@@ -219,28 +219,111 @@ $ oc create -f notebook.yaml # <1>
 ----
 <1> Specify the YAML manifest file name for the `Notebook` CRD. In this example, the name of the file is `notebook.yaml`.
 
-
-
 .Verification
 
 * To verify whether the Workbench has successfully created, run the following command:
 +
 [source,terminal]
 ----
-$ oc get notebook
+$ oc describe notebook -n my-data-science-project # <1>
 ----
+1. The `Notebook` CR is created in the `my-data-science-project` namespace.
 +
-//TODO: Ask QE for a sample output.
-
 .Example output 
 +
-[source,terminal]
+[source,yaml]
 ----
-
+Name:         my-workbench
+Namespace:    my-data-science-project
+Labels:       <none>
+Annotations:  notebooks.kubeflow.org/last-activity: 2024-07-30T20:27:25Z
+              notebooks.kubeflow.org/last_activity_check_timestamp: 2024-07-30T20:43:25Z
+              notebooks.opendatahub.io/inject-oauth: true
+              notebooks.opendatahub.io/last-image-selection: s2i-minimal-notebook:2024.1
+              notebooks.opendatahub.io/last-size-selection: Small
+              notebooks.opendatahub.io/oauth-logout-url:
+                https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com/projects/my-data-science-project?notebookLogout=my-workbench
+              opendatahub.io/accelerator-name:
+              opendatahub.io/image-display-name: Minimal Python
+              opendatahub.io/username: kube:admin
+              openshift.io/description:
+              openshift.io/display-name: my-workbench
+API Version:  kubeflow.org/v1
+Kind:         Notebook
+Metadata:
+  Creation Timestamp:  2025-03-06T13:27:25Z
+  Generation:          1
+  Resource Version:    42316914
+  UID:                 89f4....9e9-7c48-4f53-9397-05c....d21a
+Spec:
+  Template:
+    Spec:
+      Affinity:
+      Containers:
+        Env:
+          Name:   NOTEBOOK_ARGS
+          Value:  --ServerApp.port=8888
+--ServerApp.token=''
+--ServerApp.password=''
+--ServerApp.base_url=/notebook/my-data-science-project/my-workbench
+--ServerApp.quit_button=False
+--ServerApp.tornado_settings={"user":"kube-3aadmin","hub_host":"https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com", "hub_prefix":"/projects/my-data-science-project"}
+          Name:             JUPYTER_IMAGE
+          Value:            image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/s2i-minimal-notebook:2024.1
+          Name:             PIP_CERT
+          Value:            /etc/pki/tls/custom-certs/ca-bundle.crt
+          Name:             REQUESTS_CA_BUNDLE
+          Value:            /etc/pki/tls/custom-certs/ca-bundle.crt
+          Name:             SSL_CERT_FILE
+          Value:            /etc/pki/tls/custom-certs/ca-bundle.crt
+          Name:             PIPELINES_SSL_SA_CERTS
+          Value:            /etc/pki/tls/custom-certs/ca-bundle.crt
+          Name:             GIT_SSL_CAINFO
+          Value:            /etc/pki/tls/custom-certs/ca-bundle.crt
+        Image:              image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/s2i-minimal-notebook:2024.1
+        Image Pull Policy:  Always
+        Liveness Probe:
+          Failure Threshold:  3
+          Http Get:
+            Path:                 /notebook/my-data-science-project/my-workbench/api
+            Port:                 notebook-port
+            Scheme:               HTTP
+          Initial Delay Seconds:  10
+          Period Seconds:         5
+          Success Threshold:      1
+          Timeout Seconds:        1
+        Name:                     my-workbench
+        Ports:
+          Container Port:  8888
+          Name:            notebook-port
+          Protocol:        TCP
+        Readiness Probe:
+          Failure Threshold:  3
+          Http Get:
+            Path:                 /notebook/my-data-science-project/my-workbench/api
+            Port:                 notebook-port
+            Scheme:               HTTP
+          Initial Delay Seconds:  10
+          Period Seconds:         5
+          Success Threshold:      1
+          Timeout Seconds:        1
+        Resources:
+          Limits:
+            Cpu:     2
+            Memory:  8Gi
+          Requests:
+            Cpu:     1
+            Memory:  8Gi
+        Volume Mounts:
+          Mount Path:  /opt/app-root/src
+          Name:        my-workbench
+          Mount Path:  /dev/shm
+          Name:        shm
+          Mount Path:  /etc/pki/tls/custom-certs/ca-bundle.crt
+          Name:        trusted-ca
+          Read Only:   true
+          Sub Path:    ca-bundle.crt
+        Working Dir:   /opt/app-root/src
+        Args:
+          --provider=openshift
 ----
-
-// [role="_additional-resources"]
-// .Additional resources
-// * TODO or delete
-
-
