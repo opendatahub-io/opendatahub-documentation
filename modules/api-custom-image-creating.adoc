@@ -1,0 +1,77 @@
+:_module-type: PROCEDURE
+
+[id='api-custom-image-creating_{context}']
+= Creating a custom image by using the `ImageStream` CRD
+
+[role="_abstract"]
+
+You can create custom Notebook images based on your specific use case, apart from the Notebook images that are included in {productname-short}. You can then use those custom images to create new Workbench instances. 
+
+A Notebook image is configured with an `ImageStream` Custom Resource Definition (CRD) by using annotations and labels.
+
+In this procedure, you configure an `ImageStream` CRD and then create the `ImageStream` Custom Resource (CR). This `ImageStream` CR then becomes available in the {productname-short} Dashboard for you to select while creating a Workbench.
+
+.Prerequisites
+
+* You have access to a {productname-short} cluster with cluster administrator privileges.
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
+
+.Procedure
+
+. To define the `ImageStream` CRD, create a YAML manifest file called `notebook-image-stream.yaml` and copy and paste the following configuration in the manifest file.
++
+.Example `ImageStream`
+[source,yaml]
+----
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: A custom Jupyter Notebook image # <1>
+    opendatahub.io/notebook-image-name: My Custom Notebook # <2>
+  name: my-custom-notebook
+  namespace: redhat-ods-applications
+  labels: # <3>
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: '1.0' # <4>
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[{"name":"PyTorch","version":"2.2"}]' # <5>
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"v3.11"}]' # <6>
+        opendatahub.io/workbench-image-recommended: 'true' # <7>
+      from:
+        kind: DockerImage
+        name: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-workbench:latest'
+      importPolicy: # <8>
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+----
+<1> Specify a description of the Notebook image.
+<2> Specify an image name. This name will be displayed in the drop down menu when creating a Workbench.
+<3> Specify the Notebook image labels. These labels are needed for the Notebook image to appear in the {productname-short} Dashboard. The `app.kubernetes.io/created-by: byon` label is used to identify where an image object originated from. Ensure the `disableBYONImageStream` field is set to `false` with the `app.kubernetes.io/created-by: byon` label.
+<4> Specify a version for the Notebook image. You can configure multiple image versions for the same Notebook image. You can select the version of the image to use.
+<5> Specify an annotation for the `opendatahub.io/notebook-python-dependencies` field. The `opendatahub.io/notebook-python-dependencies` annotation gives you information about the Python packages and their versions that are pre-installed in the Notebook image.
+<6> Specify an annotation for the `opendatahub.io/notebook-software` field. Use this field to specify information such as the Python version, Jupyter version, or CUDA version.
+<7> Specify whether the `ImageStream` version is the default version of the image to be used. Set to `'true'` if the `ImageStream` version is the default, else, set to `'false'`. You need to specify the `opendatahub.io/workbench-image-recommended` annotation field because there are multiple versions of the image with different configurations.
+<8> Specify an image registry URL to store the image stream. Store the Notebook image stream in an image registry outside of the {productname-short} cluster.
+
+. To create the `ImageStream` CR, run the following command:
++
+[source,terminal]
+----
+$ oc create -f notebook-image-stream.yaml # <1>
+----
+<1> Specify the YAML manifest file name for the `ImageStream` CRD. In this example, the name of the file is `notebook-image-stream.yaml`.
+
+[NOTE]
+====
+For the Notebook image to be seen in the {productname-short} Dashboard, ensure you have annotated the image by using the `spec.tags` section of the `ImageStream` CRD.
+====
