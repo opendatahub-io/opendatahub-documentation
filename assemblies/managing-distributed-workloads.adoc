@@ -10,6 +10,23 @@ ifdef::context[:parent-context: {context}]
 In {productname-short}, cluster administrators create Kueue resources to configure quota management for distributed workloads.
 Cluster administrators can optionally configure the CodeFlare Operator if they want to change its default behavior.
 
+ifdef::self-managed[]
+[NOTE]
+====
+The minimum version of {openshift-platform} that is compatible with Kueue 0.10.1 is 4.15. 
+If you deploy {productname-long} 2.18 on {openshift-platform} 4.14 or earlier, you must disable the API Priority and Fairness configuration for the Visibility API, as described in the link:https://kubernetes.io/docs/concepts/cluster-administration/flow-control/#enabling-disabling-api-priority-and-fairness[Enabling/Disabling API Priority and Fairness] section in the Kueue _Cluster Administration_ guide.
+This modification is required because the `PriorityLevelConfiguration` API is incompatible with older {openshift-platform} versions.
+====
+endif::[]
+
+ifdef::cloud-service[]
+[NOTE]
+====
+You must disable the API Priority and Fairness configuration for the Visibility API, as described in the link:https://kubernetes.io/docs/concepts/cluster-administration/flow-control/#enabling-disabling-api-priority-and-fairness[Enabling/Disabling API Priority and Fairness] section in the Kueue _Cluster Administration_ guide.
+====
+endif::[]
+
+
 include::modules/overview-of-kueue-resources.adoc[leveloffset=+1]
 include::modules/ref-example-kueue-resource-configurations.adoc[leveloffset=+1]
 include::modules/configuring-quota-management-for-distributed-workloads.adoc[leveloffset=+1]
