@@ -1,0 +1,59 @@
+:_module-type: PROCEDURE
+
+[id="Deploying-a-grafana-metrics-dashboard_{context}"]
+= Deploying a Grafana metrics dashboard
+
+[role='_abstract']
+
+You can deploy a Grafana metrics dashboard for User Workload Monitoring (UWM) to monitor performance and resource usage metrics for models deployed on the single-model serving platform. 
+
+You can create a Kustomize overlay, similar to link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app[this example]. Use the overlay to deploy preconfigured metrics dashboards for models deployed with OpenVino Model Server (OVMS) and vLLM.
+
+.Prerequisites
+
+* You have cluster admin privileges for your OpenShift cluster.
+ifdef::upstream[]
+* A cluster admin has enabled user workload monitoring (UWM) for user-defined projects on your OpenShift cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/enabling-monitoring-for-user-defined-projects[Enabling monitoring for user-defined projects] and link:{odhdocshome}/serving-models/#configuring-monitoring-for-the-single-model-serving-platform_serving-large-models[Configuring monitoring for the single-model serving platform].
+endif::[]
+ifdef::self-managed[]
+* A cluster admin has enabled user workload monitoring (UWM) for user-defined projects on your OpenShift cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-user-workload-monitoring#enabling-monitoring-for-user-defined-projects-uwm_preparing-to-configure-the-monitoring-stack-uwm[Enabling monitoring for user-defined projects] and link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#configuring-monitoring-for-the-single-model-serving-platform_serving-large-models[Configuring monitoring for the single-model serving platform].
+endif::[]
+ifdef::self-managed[]
+* You have installed the OpenShift command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[] 
+ifdef::cloud-service[]
+* You have installed the OpenShift command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
+endif::[]
+* You have created an overlay to deploy a Grafana instance, similar to link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app[this example].
++
+[NOTE]
+====
+To view GPU metrics, you must enable the NVIDIA GPU monitoring dashboard as described in link:https://docs.nvidia.com/datacenter/cloud-native/openshift/24.9.2/enable-gpu-monitoring-dashboard.html[Enabling the GPU monitoring dashboard]. The GPU monitoring dashboard provides a comprehensive view of GPU utilization, memory usage, and other metrics for your GPU nodes.
+====
+
+.Procedure
+
+. In a terminal window, log in to the OpenShift CLI as a cluster administrator.
+. Install the Grafana operator and instance for User Workload Monitoring (UWM) on your OpenShift cluster with the overlay that you created:
++
+[source]
+----
+oc apply -k overlays/rhoai-uwm-user-grafana-app
+----
+. Retrieve the URL of the Grafana instance:
++
+[source]
+----
+oc get route -n <namespace> grafana-route -o jsonpath='{.spec.host}'
+----
++
+You see output similar to the following example. Use the URL to access the Grafana instance:
++
+[source]
+----
+grafana-<namespace>.apps.example-openshift.com
+----
+
+.Verification
+
+* You can access the preconfigured dashboards available for KServe, vLLM and OVMS on the Grafana instance.
