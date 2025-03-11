@@ -1,0 +1,19 @@
+:_module-type: CONCEPT
+[id='about-gpu-time-slicing_{context}']
+= About GPU time slicing
+
+[role='_abstract']
+GPU time slicing enables multiple workloads to share a single physical GPU by dividing processing time in short, alternating time slots. This method improves resource utilization, reduces idle GPU time, and allows multiple users to run AI/ML workloads concurrently in {productname-short}. The NVIDIA GPU Operator manages this scheduling based on a `time-slicing-config` ConfigMap that defines the number of GPU slices for each physical GPU.
+
+Time-slicing differs from Multi-Instance GPU (MIG) partitioning. While MIG provides memory and fault isolation, time-slicing shares the same GPU memory across workloads without strict isolation. Time-slicing is ideal for lightweight inference tasks, data preprocessing, and other scenarios where full GPU isolation is unnecessary.
+
+Consider the following points when using GPU time slicing:
+
+* **Memory sharing**: All workloads share GPU memory. High memory usage by one workload can impact others.
+* **Performance trade-offs**: While time slicing allows multiple workloads to share a GPU, it does not provide strict resource isolation like MIG.
+* **GPU compatibility**: Time slicing is supported on specific NVIDIA GPUs.
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-sharing.html[NVIDIA GPU Sharing Documentation]
+* link:https://github.com/stratus-ss/openshift-ai/blob/main/docs/rendered/OpenShift_AI_CLI.md#nvidia---configuring-time-slicing[OpenShift AI CLI - Configuring Time Slicing]

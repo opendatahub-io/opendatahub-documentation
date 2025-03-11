@@ -1,0 +1,111 @@
+:_module-type: PROCEDURE
+
+[id='enabling-gpu-time-slicing_{context}']
+= Enabling GPU time slicing
+
+[role='_abstract']
+To enable GPU time slicing in {productname-short}, you must configure the NVIDIA GPU Operator to allow multiple workloads to share a single GPU. 
+
+.Prerequisites
+* You have logged in to {openshift-platform}.
+* You have the `cluster-admin` role in {openshift-platform}.
+* You have installed and configured the NVIDIA GPU Operator.
+* The relevant nodes in your deployment contain NVIDIA GPUs.
+* The GPU in your deployment supports time slicing.
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
+.Procedure
+. Create a config map named `time-slicing-config` in the namespace that is used by the GPU operator. For NVIDIA GPUs, this is the `nvidia-gpu-operator` namespace.
+.. Log in to the {openshift-platform} web console as a cluster administrator.
+.. In the *Administrator* perspective, navigate to *Workloads* → *ConfigMaps*.
+.. On the *ConfigMap* details page, click the *Create Config Map* button. 
+.. On the *Create Config Map* page, for *Configure via*, select *YAML view*.
+.. In the *Data* field, enter the YAML code for the relevant GPU. Here is an example of a `time-slicing-config` config map for an NVIDIA T4 GPU: 
++
+[NOTE]
+====
+  * You can change the number of replicas to control the number of GPU slices available for each physical GPU.
+  * Increasing replicas might increase the risk of Out of Memory (OOM) errors if workloads exceed available GPU memory.
+====
++
+[source,yaml]
+--
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: time-slicing-config
+data:
+  tesla-t4: |-
+    version: v1
+    flags:
+      migStrategy: none
+    sharing:
+      timeSlicing:
+        renameByDefault: false
+        failRequestsGreaterThanOne: false
+        resources:
+          - name: nvidia.com/gpu
+            replicas: 4
+--
+.. Click *Create*.
+. Update the `gpu-cluster-policy` cluster policy to reference the `time-slicing-config` config map:
+.. In the *Administrator* perspective, navigate to *Operators* → *Installed Operators*.
+.. Search for the *NVIDIA GPU Operator*, and then click the Operator name to open the Operator details page.
+.. Click the *ClusterPolicy* tab.
+.. Select the `gpu-cluster-policy` resource from the list to open the *ClusterPolicy* details page.
+.. Click the *YAML* tab and update the `spec.devicePlugin` section to reference the `time-slicing-config` config map. Here is an example of a `gpu-cluster-policy` cluster policy for an NVIDIA T4 GPU: 
++
+[source,yaml]
+--
+apiVersion: nvidia.com/v1
+kind: ClusterPolicy
+metadata:
+  name: gpu-cluster-policy
+spec:
+    devicePlugin:
+      config:
+        default: tesla-t4
+        name: time-slicing-config
+--
+.. Click *Save*.
+. Label the relevant machine set to apply time slicing:
+.. In the *Administrator* perspective, navigate to *Compute* → *Machine Sets*.
+.. Select the machine set for GPU time slicing from the list.
+.. On the *MachineSet* details page, click the *YAML* tab and update the `spec.template.spec.metadata.labels` section to label the relevant machine set. Here is an example of a machine set with the appropriate machine label for an NVIDIA T4 GPU: 
++
+[source,yaml]
+--
+  spec:
+    template:
+      spec:
+        metadata:
+          labels:
+            nvidia.com/device-plugin.config: tesla-t4
+--
+.. Click *Save*.
+
+.Verification
+. Log in to the OpenShift CLI.
+. Verify that you have applied the config map correctly:
++
+[source,sh]
+----
+oc get configmap time-slicing-config -n nvidia-gpu-operator -o yaml
+----
+. Check that the cluster policy includes the time-slicing configuration:
++
+[source,sh]
+----
+oc get clusterpolicy gpu-cluster-policy -o yaml
+----
+. Ensure that the label is applied to nodes:
++
+[source,sh]
+----
+oc get nodes --show-labels | grep nvidia.com/device-plugin.config
+----
+
+[NOTE]
+====
+If workloads do not appear to be sharing the GPU, verify that the NVIDIA device plugin is running and that the correct labels are applied.
+====
