@@ -7,7 +7,7 @@
 
 You can create custom Notebook images based on your specific use case, apart from the Notebook images that are included in {productname-short}. You can then use those custom images to create new Workbench instances. 
 
-A Notebook image is configured with an `ImageStream` Custom Resource Definition (CRD) by using annotations and labels.
+You can customize a Notebook image by using the `ImageStream` Custom Resource Definition (CRD).
 
 In this procedure, you configure an `ImageStream` CRD and then create the `ImageStream` Custom Resource (CR). This `ImageStream` CR then becomes available in the {productname-short} Dashboard for you to select while creating a Workbench.
 
@@ -75,3 +75,40 @@ $ oc create -f notebook-image-stream.yaml # <1>
 ====
 For the Notebook image to be seen in the {productname-short} Dashboard, ensure you have annotated the image by using the `spec.tags` section of the `ImageStream` CRD.
 ====
+
+.Verification
+
+* To verify whether the `ImageStream` has successfully created, run the following command:
++
+[source,terminal]
+----
+$ oc describe imagestream my-custom-notebook -n redhat-ods-applications # <1>
+----
+1. In this example, the name of the `ImageStream` is `my-custom-notebook`.
++
+.Example output 
++
+[source,yaml]
+----
+Name:                   my-custom-notebook
+Namespace:              redhat-ods-applications
+Created:                6 minutes ago
+Labels:                 app.kubernetes.io/created-by=byon
+                        opendatahub.io/dashboard=true
+                        opendatahub.io/notebook-image=true
+Annotations:            kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"image.openshift.io/v1","kind":"ImageStream","metadata":{"annotations":{"opendatahub.io/notebook-image-desc":"A custom Jupyter Notebook image","opendatahub.io/notebook-image-name":"My Custom Notebook"},"labels":{"app.kubernetes.io/created-by":"byon","opendatahub.io/dashboard":"true","opendatahub.io/notebook-image":"true"},"name":"my-custom-notebook","namespace":"redhat-ods-applications"},"spec":{"lookupPolicy":{"local":true},"tags":[{"annotations":{"opendatahub.io/notebook-python-dependencies":"[{\"name\":\"PyTorch\",\"version\":\"2.2\"}]","opendatahub.io/notebook-software":"[{\"name\":\"Python\",\"version\":\"v3.11\"}]","opendatahub.io/workbench-image-recommended":"true"},"from":{"kind":"DockerImage","name":"quay.io/modh/rocm-notebooks@sha256:199367d2946fc8....8279b10150020af22db"},"importPolicy":{"importMode":"Legacy"},"name":"1.0","referencePolicy":{"type":"Source"}}]}}
+
+                        opendatahub.io/notebook-image-desc=A custom Jupyter Notebook image
+                        opendatahub.io/notebook-image-name=My Custom Notebook
+                        openshift.io/image.dockerRepositoryCheck=2025-03-10T11:02:44Z
+Image Repository:       image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook
+Image Lookup:           local=true
+Unique Images:          1
+Tags:                   1
+
+1.0
+  tagged from quay.io/modh/rocm-notebooks@sha256:199367d2946..b411433ffbb5f0988279b10150020af22db
+
+  * quay.io/modh/rocm-notebooks@sha256:199367d2946fc8427....1433ffbb5f0988279b10150020af22db
+      6 minutes ago
+----

@@ -12,7 +12,7 @@ In {productname-short}, a Workbench object is created using the `Notebook` Custo
 * Secret
 * Persistent Volume Claim (PVC)
 
-In this procedure, you configure a `Notebook` CRD and then create the `Notebook` Custom Resource (CR).
+In this procedure, you configure a `Notebook` CRD and then create the `Notebook` Custom Resource (CR). Ensure that you use a valid `Image` URL in the configuration.
 
 
 .Prerequisites
@@ -158,7 +158,7 @@ spec:
               name: oauth-config
             - mountPath: /etc/tls/private
               name: tls-certificates
-          image: 'registry.redhat.io/openshift4/ose-oauth-proxy@sha256:4bef31eb993feb6f1096b51b4876c65a6fb1f4401fee97fa4f4542b6b7c9bc46'
+          image: 'registry.redhat.io/openshift4/ose-oauth-proxy@sha256:4bef31eb993feb6f10....401fee97fa4f4542b6b7c9bc46'
           args:
             - '--provider=openshift'
             - '--https-address=:8443'
