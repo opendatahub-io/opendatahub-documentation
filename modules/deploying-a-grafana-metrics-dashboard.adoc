@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
 [id="Deploying-a-grafana-metrics-dashboard_{context}"]
-= Deploying a grafana metrics dashboard
+= Deploying a Grafana metrics dashboard
 
 [role='_abstract']
 
@@ -28,33 +28,32 @@ endif::[]
 +
 [NOTE]
 ====
-To view GPU metrics, you must enable the NVIDIA GPU monitoring dashboard as described in link:https://docs.nvidia.com/datacenter/cloud-native/openshift/24.9.2/enable-gpu-monitoring-dashboard.html[Enabling the GPU monitoring dashboard]. The GPU Monitoring Dashboard provides a comprehensive view of GPU utilization, memory usage, and other metrics for your GPU nodes.
+To view GPU metrics, you must enable the NVIDIA GPU monitoring dashboard as described in link:https://docs.nvidia.com/datacenter/cloud-native/openshift/24.9.2/enable-gpu-monitoring-dashboard.html[Enabling the GPU monitoring dashboard]. The GPU monitoring dashboard provides a comprehensive view of GPU utilization, memory usage, and other metrics for your GPU nodes.
 ====
 
 .Procedure
 
-. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI.
-. Install the grafana operator and instance for User Workload Monitoring (UWM)  on your OpenShift cluster with the overlay that you created:
+. In a terminal window, log in to the OpenShift CLI as a cluster administrator.
+. Install the Grafana operator and instance for User Workload Monitoring (UWM) on your OpenShift cluster with the overlay that you created:
 +
 [source]
 ----
 oc apply -k overlays/rhoai-uwm-user-grafana-app
 ----
-. Retrieve the URL of the grafana instance:
+. Retrieve the URL of the Grafana instance:
 +
 [source]
 ----
 oc get route -n <namespace> grafana-route -o jsonpath='{.spec.host}'
 ----
 +
-You see output similar to the following example:
+You see output similar to the following example. Use the URL to access the Grafana instance:
 +
 [source]
 ----
 grafana-<namespace>.apps.example-openshift.com
 ----
-. Use the URL from the previous step to access the Grafana instance.
 
 .Verification
 
-* You can now access and view metrics on the preconfigured dashboards available for KServe, vLLM and OVMS.
+* You can access and view metrics on the preconfigured dashboards available for KServe, vLLM and OVMS.
