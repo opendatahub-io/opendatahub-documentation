@@ -1,0 +1,127 @@
+:_module-type: PROCEDURE
+
+[id='guardrails-orchestrator-deployment_{context}']
+
+= Deploying the TrustyAI GuardrailsOrchestrator service
+
+[role='_abstract']
+The TrustyAI Guardrails Orchestrator service is a tool to invoke detections on text generation inputs and outputs and standalone detections.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have downloaded and installed the {openshift-platform} command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You are familiar with link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-the-monitoring-stack#creating-user-defined-workload-monitoring-configmap_configuring-the-monitoring-stack[creating a config map] for monitoring a user-defined workflow. You perform similar steps in this procedure.
+* You have KServe set to `RawDeployment`. See link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2-latest/html/serving_models/serving-large-models_serving-large-models#deploying-models-on-single-node-openshift-using-kserve-raw-deployment-mode_serving-large-models[Deploying models on single-node OpenShift using KServe Raw Deployment mode^].
+* You have the TrustyAI component in your {productname-short} DataScienceCluster set to `Managed`.
+* You have a LLM for chat generation deployed in your namespace.  
+* You have a LLM for text classification deployed in your namespace. 
+
+
+.Procedure
+. Define a `ConfigMap` object in a YAML file to specify the `chat_generation` and `detectors` services. For example, create a file named `orchestrator_cm.yaml` with the following content:
++
+.Example `orchestrator_cm.yaml`
+[source,yaml]
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fms-orchestr8-config-nlp
+data:
+  config.yaml: |
+    chat_generation: <1>
+      service:
+        hostname: <CHAT_GENERATION_HOSTNAME>
+        port: 8080
+    detectors:       <2>
+      <DETECTOR_NAME>:
+        type: text_contents
+        service:
+          hostname: <DETECTOR_HOSTNAME>
+          port: 8000
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.5
+---
+<1> A service for chat generation referring to a deployed LLM in your namespace where you are adding guardrails.
+<2> A list of services responsible for running detection of a certain class of content on text spans. Each of these services refer to a deployed LLM for text classification in your namespace.
+
+. Deploy the `orchestrator_cm.yaml` config map:
++
+[source,terminal]
+---
+$ oc apply -f orchestrator_cm.yaml -n <TEST_NAMESPACE>
+---
+
+. Specify the previously created `ConfigMap` object created in the `GuardrailsOrchestrator` custom resource (CR). For example, create a file named `orchestrator_cr.yaml` with the following content:
++
+.Example `orchestrator_cr.yaml` CR
+[source,yaml]
+---
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: gorch-sample
+spec:
+  orchestratorConfig: "fms-orchestr8-config-nlp"
+  replicas: 1
+---
+
+. Deploy the orchestrator CR, which creates a service account, deployment, service, and route object in your namespace.
++
+[source,terminal]
+---
+oc apply -f orchestrator_cr.yaml -n <TEST_NAMESPACE>
+---
+
+.Verification
+. Confirm that the orchestrator and LLM pods are running:
++
+[source,terminal]
+---
+$ oc get pods -n <TEST_NAMESPACE>
+---
++
+.Example response
+[source,terminal]
+---
+NAME                                       READY   STATUS    RESTARTS   AGE
+gorch-test-55bf5f84d9-dd4vm                3/3     Running   0          3h53m
+ibm-container-deployment-bd4d9d898-52r5j   1/1     Running   0          3h53m
+ibm-hap-predictor-5d54c877d5-rbdms         1/1     Running   0          3h53m
+llm-container-deployment-bd4d9d898-52r5j   1/1     Running   0          3h53m
+llm-predictor-5d54c877d5-rbdms             1/1     Running   0          57m
+---
+
+. Check the health of your detector and generator services by querying the `/health` endpoint of the orchestrator route. If a `200 OK` response is returned, the services are healthy:
++
+[source,terminal]
+---
+$ GORCH_ROUTE_HEALTH=$(oc get routes gorch-test-health -o jsonpath='{.spec.host}')
+---
++
+[source,terminal]
+---
+$ curl -v https://$GORCH_ROUTE_HEALTH/health
+---
++
+.Example response
+[source,terminal]
+---
+*   Trying ::1:8034...
+* connect to ::1 port 8034 failed: Connection refused
+*   Trying 127.0.0.1:8034...
+* Connected to localhost (127.0.0.1) port 8034 (#0)
+> GET /health HTTP/1.1
+> Host: localhost:8034
+> User-Agent: curl/7.76.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< content-type: application/json
+< content-length: 36
+< date: Fri, 31 Jan 2025 14:04:25 GMT
+<
+* Connection #0 to host localhost left intact
+{"fms-guardrails-orchestr8":"0.1.0"}
+---

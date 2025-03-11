@@ -1,0 +1,40 @@
+:_module-type: PROCEDURE
+
+[id='guardrails-orchestrator-optional-config-OTEL_{context}']
+
+= Configuring the OpenTelemetry Exporter for metrics and tracing
+
+[role='_abstract']
+Enable traces and metrics that are provided for the observability of the `GuardrailsOrchestrator` service with the OpenTelemetry Operator.
+
+.Prerequisites
+* You have installed the {productname-long} distributed tracing platform from the OperatorHub and created a Jaeger instance using the default settings.
+* You have installed the {org-name} build of OpenTelemetry from the OperatorHub and created an OpenTelemetry instance.
+
+.Procedure
+. Define a `GuardrailsOrchestrator` custom resource object to specify the `otelExporter` configurations in a YAML file named `orchestrator_otel_cr.yaml` which specifies :
+
+.Example of a `orchestrator_otel_cr.yaml` object that has OpenTelemetry configured:
++
+[source,yaml]
+---
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: gorch-test
+spec:
+  orchestratorConfig: "fms-orchestr8-config-nlp"    <1>
+  vllmGatewayConfig: "fms-orchestr8-config-gateway" <1>
+  replicas: 1
+  otelExporter:
+    protocol: "http"
+    otlpEndpoint: "localhost:4318"
+    otlpExport: "metrics"
+---
+<1> These speficications are the same as Step 7 from "Configuring the regex detector and vLLM gateway". This example CR adds `otelExporter` configurations. 
+
+. Deploy the orchestrator custom resource. 
+[source,terminal]
+---
+$ oc apply -f orchestrator_otel_cr.yaml
+---
