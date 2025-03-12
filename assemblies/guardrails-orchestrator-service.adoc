@@ -1,0 +1,26 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+[id="guardrails_orchestrator_service_{context}"]
+= Guardrails orchestrator service
+
+[role='_abstract']
+
+The TrustyAI Guardrails Orchestrator service is a tool to detect potentially toxic or harmful content in large language model (LLM) generated outputs and/or inputs.
+
+It is underpinned by the open-source project FMS-Guardrails Orchestrator from IBM and is deployable via a Custom Resource Definition (CRD) managed by the TrustyAI Operator.
+
+The following sections show you how to set up Guardrails Orchestrator and create a custom resource (CR), deploy a Guardrails Orchestrator instance, and provides a demonstration of generating an analysis of your LLM using this service.
+
+
+include::modules/setting-up-gorchguardrails-orchestrator.adoc[leveloffset=+1]
+
+include::modules/guardrails-orchestrator-parameters.adoc[leveloffset=+1]
+
+include::modules/guardrails-orchestrator-optional-config-otel.adoc[leveloffset=+1]
+
+include::modules/guardrails-orchestrator-demo.adoc
+//Update to the names of the other modules to be included
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
