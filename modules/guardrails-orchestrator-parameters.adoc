@@ -1,0 +1,23 @@
+
+:_module-type: REFERENCE
+
+[id='guardrails-orchestrator-parameters_{context}']
+= GuardrailsOrchestrator parameters
+
+[role='_abstract']
+You can modify the following parameters for the `GuardrailsOrchestrator` object:
+
+[cols="1,2a", options="header"]
+|===
+|Parameter |Description
+|`replicas`| The number of orchestrator pods to spin up
+|`orchestratorConfig`| The name of the `ConfigMap` object that contains generator, detector, and chunker arguments.
+|`otelExporter **(optional)**`| A list of paired name and value arguments for configuring OpenTelemetry traces and/or metrics: 
+
+* `protocol` - Sets the protocol for all the OpenTelemetry protocol (OTLP) endpoints. Valid values are `grpc` or `http`
+* `tracesProtocol` - Sets the protocol for traces. Acceptable values are `grpc` or `http`
+* `metricsProtocol` - Sets the protocol for metrics. Acceptable values are either `grpc` or `http`
+* `otlpEndpoint` - Sets the OTLP endpoint. Default values are `gRPC localhost:4317` and `HTTP localhost:4318`
+* `metricsEndpoint` - Sets the OTLP endpoint for metrics
+* `tracesEndpoint` -  Sets the OTLP endpoint for traces
+|===
