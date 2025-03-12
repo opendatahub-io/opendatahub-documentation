@@ -35,13 +35,13 @@ To view GPU metrics, you must enable the NVIDIA GPU monitoring dashboard as desc
 
 . In a terminal window, log in to the OpenShift CLI as a cluster administrator.
 . If you have not already created the overlay to install the Grafana operator and metrics dashboards, refer to the link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app[RHOAI UWM repository] to create it.
-. Install the Grafana instance and metrics dashboards on your OpenShift cluster with the overlay that you created. Replace `<overlay-name>` with your overlay.
+. Install the Grafana instance and metrics dashboards on your OpenShift cluster with the overlay that you created. Replace `<overlay-name>` with the name of your overlay.
 +
 [source]
 ----
 oc apply -k overlays/<overlay-name>
 ----
-. Retrieve the URL of the Grafana instance. Replace `<namespace>` with the namespace where you have created the Grafana insatnce.
+. Retrieve the URL of the Grafana instance. Replace `<namespace>` with the namespace that contains the Grafana instance.
 +
 [source]
 ----
