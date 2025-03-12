@@ -1,0 +1,29 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+[id="guardrails_orchestrator_service_{context}"]
+= Guardrails Orchestrator service
+
+[role='_abstract']
+
+The TrustyAI Guardrails Orchestrator service is a tool to invoke detections on text generation inputs and outputs, as well as standalone detections.
+
+It is underpinned by the open-source project link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[FMS-Guardrails Orchestrator] from IBM. You can deploy the Guardrails Orchestrator service through a Custom Resource Definition (CRD) that is managed by the TrustyAI Operator.
+
+The following sections describe how to:
+* Set up the Guardrails Orchestrator service 
+* Create a custom resource (CR)
+* Deploy a Guardrails Orchestrator instance
+* Monitor user-inputs to your LLM using this service
+
+
+include::modules/guardrails-orchestrator-parameters.adoc[leveloffset=+1]
+
+include::modules/guardrails-orchestrator-deployment.adoc.adoc[leveloffset=+1]
+
+include::modules/guardrails-orchestrator-optional-config-otel.adoc[leveloffset=+1]
+
+//to be included in a post 2.18 release: modules/guardrails-orchestrator-optional-config-regex-vllm.adoc
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
