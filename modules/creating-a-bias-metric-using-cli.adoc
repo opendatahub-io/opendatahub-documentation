@@ -53,7 +53,7 @@ curl -H "Authorization: Bearer $TOKEN" --location $TRUSTY_ROUTE/q/openapi
 *Syntax*:
 +
 ----
-curl -sk -H "Authorization: Bearer $TOKEN" -X POST --location $TRUSTY_ROUTE/metrics/spd/request \
+curl -sk -H "Authorization: Bearer $TOKEN" -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/request  \
  --header 'Content-Type: application/json' \
  --data <payload>
 ----
@@ -71,7 +71,7 @@ curl -sk -H "Authorization: Bearer $TOKEN" -X POST --location $TRUSTY_ROUTE/metr
 For example:
 
 ----
-curl -sk -H "Authorization: Bearer $TOKEN" -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/ \
+curl -sk -H "Authorization: Bearer $TOKEN" -X POST --location $TRUSTY_ROUTE /metrics/group/fairness/spd/request \
      --header 'Content-Type: application/json' \
      --data "{
                  \"modelId\": \"demo-loan-nn-onnx-alpha\",
