@@ -52,13 +52,10 @@ jq 'select((.objectRef.apiGroup == "dscinitialization.opendatahub.io"
 .Verification
 * The commands return relevant log entries. 
 
+ifdef::self-managed[]
 [TIP]
 ====
-To configure the log retention time, see the following resources:
-
-* {openshift-platform} {ocp-minimum-version} to 4.16: link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/logging/log-storage-3#cluster-logging-elasticsearch-retention_logging-config-es-store[Configuring log retention time in Elasticsearch] or link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/logging/log-storage-3#logging-loki-retention_cluster-logging-loki[Enabling stream-based retention with Loki]
-
-* {openshift-platform} 4.17: link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/logging/logging-6-1#logging-loki-retention_log6x-loki-6.1[Enabling stream-based retention with Loki]
+To configure the log retention time, see the link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/logging/index[Logging] section in the {openshift-platform} documentation.
 ====
 
 [role="_additional-resources"]
@@ -66,3 +63,12 @@ To configure the log retention time, see the following resources:
 * link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-view#audit-log-view[Viewing audit logs]
 
 * link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-policy-config#configuring-audit-policy_audit-log-policy-config[About audit log policy profiles]
+endif::[]
+
+ifdef::cloud-service[]
+[TIP]
+====
+To configure the log retention time, see the link:https://docs.redhat.com/en/documentation/openshift_dedicated/4/pdf/logging/index[Logging] section in the {openshift-platform} documentation.
+====
+
+endif::[]
