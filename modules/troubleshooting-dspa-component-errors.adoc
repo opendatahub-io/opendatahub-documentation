@@ -4,7 +4,7 @@
 = Troubleshooting DSPA component errors
 
 [role='_abstract']
-This table displays common errors found in DataSciencePipelinesApplication (DSPA) components, along with their statuses, messages, and proposed solutions. The **Ready** condition type accumulates errors from various DSPA components, providing a status view of the DSPA deployment.
+This table displays common errors found in DataSciencePipelinesApplication (DSPA) components, along with the associated status, message, and proposed solution. The **Ready** condition type accumulates errors from various DSPA components, providing a status view of the DSPA deployment.
 
 [cols="30%,10%,60%", options="header",]
 |===
@@ -18,7 +18,7 @@ Ready
 False
 |Error message: `Could not connect to Object Store: tls: failed to verify certificate: x509: certificate signed by unknown authority`
 
-Solution: This issue occurs in clusters that use self-signed certificates with {productname-short} version 2.9 or later. The data science pipelines manager cannot connect to the object storage as it does not trust the object storage SSL certificate. Therefore, the pipeline server cannot be created. Contact your IT operations administrator to add the relevant Certificate Authority bundle. 
+Solution: This issue occurs in clusters that use self-signed certificates with {productname-short} version 2.9 or later. The data science pipelines manager cannot connect to the object storage because it does not trust the object storage SSL certificate. Therefore, the pipeline server cannot be created. Contact your IT operations administrator to add the relevant Certificate Authority bundle. 
 
 ifdef::upstream[]
 For more information, see link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
@@ -46,7 +46,7 @@ Deployment for component "ds-pipeline-scheduledworkflow-pipelines-definition" is
 
 Solution: In clusters running {productname-short} 2.8.x, the data science pipelines manager might fail to connect to the object storage, and the pipeline server might not be created. 
 
-Ensure that your object store credentials and connection information are accurate, and verify that the object store is accessible from within the data science project's associated OpenShift namespace. One common issue is that the object storage SSL certificate is not trusted, particularly if self-signed certificates are used.
+Ensure that your object store credentials and connection information are accurate, and verify that the object store is accessible from within the data science project's associated {openshift-platform} namespace. One common issue is that the object storage SSL certificate is not trusted, particularly if self-signed certificates are used.
 
 Verify and update your object storage credentials, then retry the operation.
 
@@ -56,7 +56,7 @@ Ready
 |False
 
 False
-|Errors message: `Wrong credentials for Object Storage: Could not connect to (minio-my-project.apps.my-cluster.com), Error: The request signature we calculated does not match the signature you provided. Check your key and signing method.`
+|Error message: `Wrong credentials for Object Storage: Could not connect to (minio-my-project.apps.my-cluster.com), Error: The request signature we calculated does not match the signature you provided. Check your key and signing method.`
 
 Solution: Provide the correct credentials for your object storage and retry the operation.
 
@@ -103,7 +103,7 @@ False
 
 Solution: This issue might occur when using an external database, such as Amazon RDS. Initially, the pipeline server is created successfully. However, after some time, the {productname-short} dashboard displays an "Error displaying pipelines" message, and the DSPA conditions indicate that the host is blocked due to multiple connection errors.
 
-For more information on how resolve this issue for an external Amazon RDS database, see link:https://repost.aws/knowledge-center/rds-blocked-host-error[Resolving "Host is blocked because of many connection errors" error in Amazon RDS for MySQL].
+For more information on how resolve this issue for an external Amazon RDS database, see link:https://repost.aws/knowledge-center/rds-blocked-host-error[Resolving "Host is blocked because of many connection errors" error in Amazon RDS for MySQL]. Note: Clicking this link opens an external website.
 
 |`APIServerReady`
 
@@ -113,7 +113,7 @@ Ready
 False
 |Error message: `Route creation failed due to lengthy project name: Route.route.openshift.io is invalid: spec.host exceeds 63 characters.`
 
-Solution: Ensure that the project name in OpenShift is less than 40 characters.
+Solution: Ensure that the project name in {openshift-platform} is less than 40 characters.
 
 |`APIServerReady`
 
@@ -143,7 +143,7 @@ Ready
 False
 |Error message: `FailingToDeploy: Component's replica failed to create. Message: serviceaccount "ds-pipeline-scheduledworkflow-sample" not found.`
 
-Solution: If the failure persists for more than 25 seconds during DSPA startup, recreate the missing service account
+Solution: If the failure persists for more than 25 seconds during DSPA startup, recreate the missing service account.
 
 |`MLMDProxyReady`
 
@@ -170,7 +170,7 @@ Condition type: `ComponentDeploymentNotFound`
 |False
 |Error message: `Deployment for component <component> is missing - prerequisite component might not yet be available.`
 
-Solution: The deployment for the component does not exist. Typically, this is due to missing deployments or issues that occurred during creation.
+Solution: The deployment for the component does not exist. Typically, this issue occurs due to missing deployments or issues that occurred during creation.
 
 |Condition: Deployment Scaled Down
 
@@ -226,5 +226,5 @@ Condition type: `MinimumReplicasAvailable`
 |True
 |Error message: `Component <component> is minimally available.`
 
-Solution: The component is available, but only with the minimum number of replicas running.
+Solution: The component is available, but with only the minimum number of replicas running.
 |===
