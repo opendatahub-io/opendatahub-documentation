@@ -1,0 +1,39 @@
+:_module-type: PROCEDURE
+
+[id='viewing-installed-components_{context}']
+= Viewing installed {productname-short} components
+
+[role='_abstract']
+In the {productname-long} dashboard, you can view a list of the installed {productname-short} components, their corresponding upstream component, and the upstream version of the component that is installed on {productname-short}.
+
+.Prerequisites
+
+* {productname-short} is installed in your OpenShift cluster.
+
+.Procedure
+. Log in to the {productname-short} dashboard.
+. In the top navigation bar, click the help icon image:images/rhoai-help-icon.png[Help icon] and then select *About*.
+
+.Verification
+
+The *About* page shows a list of the installed {productname-short} components along with their correspondinng upstream components and upstream component versions.
+
+
+.Additional resources
+ifdef::upstream[]
+* link:{odhdocshome}/installing-open-data-hub/#installing-odh-components_installv2[Installing Open Data Hub components].
+endif::[]
+
+ifndef::upstream[]
+ifdef::self-managed[]
+ifndef::disconnected[]
+* link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/installing-and-managing-openshift-ai-components_component-install[Installing OpenShift AI components].
+endif::[]
+ifdef::disconnected[]
+* link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/installing-and-managing-openshift-ai-components_component-install[Installing OpenShift AI components].
+endif::[]
+endif::[]
+ifdef::cloud-service[]
+* link:link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_cloud_service/installing-and-managing-openshift-ai-components_component-install[Installing OpenShift AI components].
+endif::[]
+endif::[]
