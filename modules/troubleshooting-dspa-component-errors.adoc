@@ -4,11 +4,11 @@
 = Troubleshooting DSPA component errors
 
 [role='_abstract']
-This table displays common errors found in DataSciencePipelinesApplication (DSPA) components, along with their statuses, messages, and proposed solutions. The **Ready** condition type accumulates errors from various DSPA components, providing a status view of the DSPA deployment.
+This table displays common errors found in DataSciencePipelinesApplication (DSPA) components, along with the associated status, message, and proposed solution. The **Ready** condition type accumulates errors from various DSPA components, providing a status view of the DSPA deployment.
 
-[cols="10%,10%,20%,60%", options="header",]
+[cols="30%,10%,60%", options="header",]
 |===
-|Type |Status |Error message |Solution
+|Type |Status |Error message and solution
 
 |`ObjectStorageAvailable`
 
@@ -16,8 +16,9 @@ Ready
 |False
 
 False
-|`Could not connect to Object Store: tls: failed to verify certificate: x509: certificate signed by unknown authority`
-|This issue occurs in clusters that use self-signed certificates with {productname-short} version 2.9 or later. The data science pipelines manager cannot connect to the object storage as it does not trust the object storage SSL certificate. Therefore, the pipeline server cannot be created. Contact your IT operations administrator to add the relevant Certificate Authority bundle. 
+|Error message: `Could not connect to Object Store: tls: failed to verify certificate: x509: certificate signed by unknown authority`
+
+Solution: This issue occurs in clusters that use self-signed certificates with {productname-short} version 2.9 or later. The data science pipelines manager cannot connect to the object storage because it does not trust the object storage SSL certificate. Therefore, the pipeline server cannot be created. Contact your IT operations administrator to add the relevant Certificate Authority bundle. 
 
 ifdef::upstream[]
 For more information, see link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
@@ -38,13 +39,14 @@ Ready
 |False
 
 False
-|`Could not connect to Object Store
+|Error message: `Could not connect to Object Store
 Deployment for component "ds-pipeline-pipelines-definition" is missing - prerequisite component might not yet be available.
 Deployment for component "ds-pipeline-persistenceagent-pipelines-definition" is missing - prerequisite component might not yet be available.
 Deployment for component "ds-pipeline-scheduledworkflow-pipelines-definition" is missing - prerequisite component might not yet be available.`
-|In clusters running {productname-short} 2.8.x, the data science pipelines manager might fail to connect to the object storage, and the pipeline server might not be created. 
 
-Ensure that your object store credentials and connection information are accurate, and verify that the object store is accessible from within the data science project's associated OpenShift namespace. One common issue is that the object storage SSL certificate is not trusted, particularly if self-signed certificates are used.
+Solution: In clusters running {productname-short} 2.8.x, the data science pipelines manager might fail to connect to the object storage, and the pipeline server might not be created. 
+
+Ensure that your object store credentials and connection information are accurate, and verify that the object store is accessible from within the data science project's associated {openshift-platform} namespace. One common issue is that the object storage SSL certificate is not trusted, particularly if self-signed certificates are used.
 
 Verify and update your object storage credentials, then retry the operation.
 
@@ -54,8 +56,9 @@ Ready
 |False
 
 False
-|`Wrong credentials for Object Storage: Could not connect to (minio-my-project.apps.my-cluster.com), Error: The request signature we calculated does not match the signature you provided. Check your key and signing method.`
-|Provide the correct credentials for your object storage and retry the operation.
+|Error message: `Wrong credentials for Object Storage: Could not connect to (minio-my-project.apps.my-cluster.com), Error: The request signature we calculated does not match the signature you provided. Check your key and signing method.`
+
+Solution: Provide the correct credentials for your object storage and retry the operation.
 
 |`DatabaseAvailable`
 
@@ -63,8 +66,9 @@ Ready
 |False
 
 False
-|`FailingToDeploy: Dial tcp XXX.XX.XXX.XXX:3306 : i/o timeout`
-|If the issue persists beyond startup, check for network issues or misconfigurations in the database connection settings.
+|Error message: `FailingToDeploy: Dial tcp XXX.XX.XXX.XXX:3306 : i/o timeout`
+
+Solution: If the issue persists beyond startup, check for network issues or misconfigurations in the database connection settings.
 
 |`DatabaseAvailable`
 
@@ -72,8 +76,9 @@ Ready
 |False
 
 False
-|`Unable to connect to external database: tls: failed to verify certificate: x509: certificate signed by unknown authority`
-|This issue can occur when you use any external database, such as Amazon RDS. The data science pipelines manager cannot connect to the database because it does not trust the database SSL certificate, preventing the creation of the pipeline server.  Contact your IT operations administrator to add the relevant certificates.
+|Error message: `Unable to connect to external database: tls: failed to verify certificate: x509: certificate signed by unknown authority`
+
+Solution: This issue can occur when you use any external database, such as Amazon RDS. The data science pipelines manager cannot connect to the database because it does not trust the database SSL certificate, preventing the creation of the pipeline server.  Contact your IT operations administrator to add the relevant certificates.
 
 ifdef::upstream[]
 For more information, see link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
@@ -94,19 +99,11 @@ Ready
 |False
 
 False
-|`Error 1129: Host 'A.B.C.D' is blocked because of many connection errors.`
-| This issue might occur when using an external database, such as Amazon RDS. Initially, the pipeline server is created successfully. However, after some time, the {productname-short} dashboard displays an "Error displaying pipelines" message, and the DSPA conditions indicate that the host is blocked due to multiple connection errors.
+|Error message: `Error 1129: Host 'A.B.C.D' is blocked because of many connection errors.`
 
-For more information on how resolve this issue for an external Amazon RDS database, see link:https://repost.aws/knowledge-center/rds-blocked-host-error[Resolving "Host is blocked because of many connection errors" error in Amazon RDS for MySQL].
+Solution: This issue might occur when using an external database, such as Amazon RDS. Initially, the pipeline server is created successfully. However, after some time, the {productname-short} dashboard displays an "Error displaying pipelines" message, and the DSPA conditions indicate that the host is blocked due to multiple connection errors.
 
-|`APIServerReady`
-
-Ready
-|False
-
-False
-|`Route creation failed due to lengthy project name: Route.route.openshift.io is invalid: spec.host exceeds 63 characters.`
-|Ensure that the project name in OpenShift is less than 40 characters.
+For more information on how resolve this issue for an external Amazon RDS database, see link:https://repost.aws/knowledge-center/rds-blocked-host-error[Resolving "Host is blocked because of many connection errors" error in Amazon RDS for MySQL]. Note: Clicking this link opens an external website.
 
 |`APIServerReady`
 
@@ -114,8 +111,19 @@ Ready
 |False
 
 False
-|`FailingToDeploy: Component replica failed to create. Message: serviceaccount "ds-pipeline-sample" not found.`
-|If the failure persists for more than 25 seconds during DSPA startup, recreate the missing service account.
+|Error message: `Route creation failed due to lengthy project name: Route.route.openshift.io is invalid: spec.host exceeds 63 characters.`
+
+Solution: Ensure that the project name in {openshift-platform} is less than 40 characters.
+
+|`APIServerReady`
+
+Ready
+|False
+
+False
+|Error message: `FailingToDeploy: Component replica failed to create. Message: serviceaccount "ds-pipeline-sample" not found.`
+
+Solution: If the failure persists for more than 25 seconds during DSPA startup, recreate the missing service account.
 
 |`PersistenceAgentReady`
 
@@ -123,8 +131,9 @@ Ready
 |False
 
 False
-|`FailingToDeploy: Component's replica failed to create. Message: serviceaccount "ds-pipeline-persistenceagent-sample" not found.`
-|If the failure persists for more than 25 seconds during DSPA startup, recreate the missing service account.
+|Error message: `FailingToDeploy: Component's replica failed to create. Message: serviceaccount "ds-pipeline-persistenceagent-sample" not found.`
+
+Solution: If the failure persists for more than 25 seconds during DSPA startup, recreate the missing service account.
 
 |`ScheduledWorkflowReady`
 
@@ -132,8 +141,9 @@ Ready
 |False
 
 False
-|`FailingToDeploy: Component's replica failed to create. Message: serviceaccount "ds-pipeline-scheduledworkflow-sample" not found.`
-|If the failure persists for more than 25 seconds during DSPA startup, recreate the missing service account
+|Error message: `FailingToDeploy: Component's replica failed to create. Message: serviceaccount "ds-pipeline-scheduledworkflow-sample" not found.`
+
+Solution: If the failure persists for more than 25 seconds during DSPA startup, recreate the missing service account.
 
 |`MLMDProxyReady`
 
@@ -141,8 +151,9 @@ Ready
 |False
 
 False
-|`Deploying: Component [ds-pipeline-scheduledworkflow-sample] is still deploying.`
-|Wait for DSPA startup to complete. If deployment fails after 25 seconds, check the logs for further information.
+|Error message: `Deploying: Component [ds-pipeline-scheduledworkflow-sample] is still deploying.`
+
+Solution: Wait for DSPA startup to complete. If deployment fails after 25 seconds, check the logs for further information.
 
 |===
 
@@ -150,54 +161,70 @@ False
 
 The following table lists errors that might occur across multiple DSPA components:
 
-[cols="10%,10%,20%,30%,30%", options="header",]
+[cols="32%,8%,60%", options="header",]
 |===
-|Deployment condition |Condition type |Status |Error message |Solution
-|Component Deployment Not Found
-|`ComponentDeploymentNotFound`
-|False
-|`Deployment for component <component> is missing - prerequisite component might not yet be available.`
-|The deployment for the component does not exist. Typically, this is due to missing deployments or issues that occurred during creation.
+|Deployment condition and condition type |Status |Error message and solution
+|Condition: Component Deployment Not Found
 
-|Deployment Scaled Down
-|`MinimumReplicasAvailable`
+Condition type: `ComponentDeploymentNotFound`
 |False
-|`Deployment for component <component> is scaled down.`
-|The component is unavailable as the deployment replica count is set to zero.
+|Error message: `Deployment for component <component> is missing - prerequisite component might not yet be available.`
 
-|Component Failing to Progress
-|`FailingToDeploy`
+Solution: The deployment for the component does not exist. Typically, this issue occurs due to missing deployments or issues that occurred during creation.
+
+|Condition: Deployment Scaled Down
+
+Condition type: `MinimumReplicasAvailable`
 |False
-|`Component <component> has failed to progress. Reason: <progressingCond.Reason>. Message: <progressingCond.Message>`
-|The deployment has stalled due to `ProgressDeadlineExceeded` or `ReplicaSetCreateError` issues, or similar.
+|Error message: `Deployment for component <component> is scaled down.`
 
-|Replica Creation Failure
-|`FailingToDeploy`
+Solution: The component is unavailable as the deployment replica count is set to zero.
+
+|Condition: Component Failing to Progress
+
+Condition type: `FailingToDeploy`
 |False
-|`Component's replica <component> has failed to create. Reason: <replicaFailureCond.Reason>. Message: <replicaFailureCond.Message>`
-|Replica creation has failed, typically due to an error in the replica set or with the service accounts.
+|Error message: `Component <component> has failed to progress. Reason: <progressingCond.Reason>. Message: <progressingCond.Message>`
 
-|Pod-Level Failures
-|`FailingToDeploy`
+Solution: The deployment has stalled due to `ProgressDeadlineExceeded` or `ReplicaSetCreateError` issues, or similar.
+
+|Condition: Replica Creation Failure
+
+Condition type: `FailingToDeploy`
 |False
-|`Concatenated failure messages for each pod.`
-|Deployment pods are in a failed state. Check the pod logs for further information.
+|Error message: `Component's replica <component> has failed to create. Reason: <replicaFailureCond.Reason>. Message: <replicaFailureCond.Message>`
 
-|Pod in CrashLoopBackOff
-|`FailingToDeploy`
+Solution: Replica creation has failed, typically due to an error in the replica set or with the service accounts.
+
+|Condition: Pod-Level Failures
+
+Condition type: `FailingToDeploy`
 |False
-|`Component <component> is in CrashLoopBackOff. Message from pod: <crashLoopBackOffMessage>`
-|Pod containers are failing repeatedly, often due to incorrect environment variables or missing service accounts.
+|Error message: `Concatenated failure messages for each pod.`
 
-|Component Deploying (No Errors)
-|`Deploying`
+Solution: Deployment pods are in a failed state. Check the pod logs for further information.
+
+|Condition: Pod in CrashLoopBackOff
+
+Condition type: `FailingToDeploy`
 |False
-|`Component <component> is deploying.`
-|The component deployment process is ongoing with no errors detected.
+|Error message: `Component <component> is in CrashLoopBackOff. Message from pod: <crashLoopBackOffMessage>`
 
-|Component Minimally Available
-|`MinimumReplicasAvailable`
+Solution: Pod containers are failing repeatedly, often due to incorrect environment variables or missing service accounts.
+
+|Condition: Component Deploying (No Errors)
+
+Condition: type: `Deploying`
+|False
+|Error message: `Component <component> is deploying.`
+
+Solution: The component deployment process is ongoing with no errors detected.
+
+|Condition: Component Minimally Available
+
+Condition type: `MinimumReplicasAvailable`
 |True
-|`Component <component> is minimally available.`
-|The component is available, but only with the minimum number of replicas running.
+|Error message: `Component <component> is minimally available.`
+
+Solution: The component is available, but with only the minimum number of replicas running.
 |===
