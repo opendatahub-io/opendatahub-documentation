@@ -1,20 +1,21 @@
 :_module-type: PROCEDURE
 
-[id='guardrails-orchestrator-deployment_{context}']
+[id='deploying-the-guardrails-orchestrator-service_{context}']
 
-= Deploying the TrustyAI GuardrailsOrchestrator service
+= Deploying the Guardrails Orchestrator service
 
 [role='_abstract']
-The TrustyAI Guardrails Orchestrator service is a tool to invoke detections on text generation inputs and outputs and standalone detections.
+You can deploy a Guardrails Orchestrator instance in your namespace to monitor elements, such as user inputs to your Large Language Model (LLM).
+
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
-* You have downloaded and installed the {openshift-platform} command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
-* You are familiar with link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-core-platform-monitoring#preparing-to-configure-the-monitoring-stack[creating a config map] for monitoring a user-defined workflow. You perform similar steps in this procedure.
+* You have downloaded and installed the {openshift-platform} command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
+* You are familiar with how to create a `configMap` for monitoring a user-defined workflow. You perform similar steps in this procedure. See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html-single/nodes/index#nodes-pods-configmap-overview_configmaps[Understanding config maps].
 * You have KServe set to `RawDeployment`. See link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2-latest/html/serving_models/serving-large-models_serving-large-models#deploying-models-on-single-node-openshift-using-kserve-raw-deployment-mode_serving-large-models[Deploying models on single-node OpenShift using KServe Raw Deployment mode^].
-* You have the TrustyAI component in your {productname-short} DataScienceCluster set to `Managed`.
-* You have a LLM for chat generation deployed in your namespace.  
-* You have a LLM for text classification deployed in your namespace. 
+* You have the TrustyAI component in your {productname-short} `DataScienceCluster` set to `Managed`.
+* You have an LLM for chat generation deployed in your namespace.  
+* You have an LLM for text classification deployed in your namespace. 
 
 
 .Procedure
@@ -66,7 +67,7 @@ spec:
   replicas: 1
 ---
 
-. Deploy the orchestrator CR, which creates a service account, deployment, service, and route object in your namespace.
+. Deploy the orchestrator CR, which creates a service account, deployment, service, and route object in your namespace:
 +
 [source,terminal]
 ---
@@ -92,7 +93,7 @@ llm-container-deployment-bd4d9d898-52r5j   1/1     Running   0          3h53m
 llm-predictor-5d54c877d5-rbdms             1/1     Running   0          57m
 ---
 
-. Check the health of your detector and generator services by querying the `/health` endpoint of the orchestrator route. If a `200 OK` response is returned, the services are healthy:
+. Query the `/health` endpoint of the orchestrator route to check the current status of the detector and generator services. If a `200 OK` response is returned, the services are functioning normally:
 +
 [source,terminal]
 ---

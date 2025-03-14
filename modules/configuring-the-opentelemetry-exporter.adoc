@@ -1,18 +1,18 @@
 :_module-type: PROCEDURE
 
-[id='guardrails-orchestrator-optional-config-OTEL_{context}']
+[id='configuring-the-opentelemetry-exporter_{context}']
 
-= Configuring the OpenTelemetry Exporter for metrics and tracing
+= Configuring the OpenTelemetry exporter
 
 [role='_abstract']
-Enable traces and metrics that are provided for the observability of the `GuardrailsOrchestrator` service with the OpenTelemetry Operator.
+Enable traces and metrics that are provided for the observability of the `GuardrailsOrchestrator` service with the OpenTelemetry exporter.
 
 .Prerequisites
 * You have installed the {productname-long} distributed tracing platform from the OperatorHub and created a Jaeger instance using the default settings.
 * You have installed the {org-name} build of OpenTelemetry from the OperatorHub and created an OpenTelemetry instance.
 
 .Procedure
-. Define a `GuardrailsOrchestrator` custom resource object to specify the `otelExporter` configurations in a YAML file named `orchestrator_otel_cr.yaml` which specifies :
+. Define a `GuardrailsOrchestrator` custom resource object to specify the `otelExporter` configurations in a YAML file named `orchestrator_otel_cr.yaml`:
 
 .Example of a `orchestrator_otel_cr.yaml` object that has OpenTelemetry configured:
 +
