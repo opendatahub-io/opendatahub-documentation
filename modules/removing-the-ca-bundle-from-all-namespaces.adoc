@@ -1,14 +1,14 @@
 :_module-type: PROCEDURE
 
-[id="removing-a-ca-bundle_{context}"]
-= Removing a CA bundle
+[id="removing-the-ca-bundle-from-all-namespaces_{context}"]
+= Removing the CA bundle from all namespaces
 
 [role='_abstract']
-You can remove a Certificate Authority (CA) bundle from all non-reserved namespaces in {productname-short}. This process changes the default configuration and disables the creation of the `odh-trusted-ca-bundle` configuration file (ConfigMap), as described in _Understanding certificates in {productname-short}_.
+You can remove a Certificate Authority (CA) bundle from all non-reserved namespaces in {productname-short}. This process changes the default configuration and disables the creation of the `odh-trusted-ca-bundle` configuration file (ConfigMap), as described in link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short].
 
 NOTE: The `odh-trusted-ca-bundle` ConfigMaps are only deleted from namespaces when you set the `managementState` of `trustedCABundle` to `Removed`; deleting the DSC Initialization does not delete the ConfigMaps. 
 
-To remove a CA bundle from a single namespace only, see _Removing a CA bundle from a namespace_.
+To remove a CA bundle from a single namespace only, see link:{odhdocshome}/installing-open-data-hub/#removing-the-ca-bundle-from-a-single-namespace_certs[Removing the CA bundle from a single namespace].
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.

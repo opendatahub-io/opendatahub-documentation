@@ -12,28 +12,72 @@ include::../_artifacts/document-attributes-global.adoc[]
 endif::preview[]
 
 [role='_abstract']
+When you install {productname-long}, OpenShift automatically applies a default Certificate Authority (CA) bundle to manage authentication for most {productname-short} components, such as workbenches and model servers. These certificates are trusted self-signed certificates that help secure communication. However, some components (such as the data science pipeline server and object storage solutions) often require you, as the cluster administrator, to configure additional self-signed certificates. If an {productname-short} component uses a self-signed certificate that is not part of the existing cluster-wide CA bundle, you have the following options for including the certificate:
 
-Certificates are used by various components in {openshift-platform} to validate access to the cluster. For clusters that rely on self-signed certificates, you can add those self-signed certificates to a cluster-wide Certificate Authority (CA) bundle and use the CA bundle in {productname-long}. You can also use self-signed certificates in a custom CA bundle that is separate from the cluster-wide bundle. Administrators can add a CA bundle, remove a CA bundle from all namespaces, remove a CA bundle from individual namespaces, or manually manage certificate changes instead of the system.
+* Add it to the OpenShift cluster-wide CA bundle.
+
+* Add it to a custom CA bundle, separate from the cluster-wide CA bundle. 
+
+As a cluster administrator, you can also change how to manage authentication for {productname-short} as follows:
+
+* Manually manage certificate changes, instead of relying on the {productname-short} Operator to handle them automatically.
+
+* Remove the cluster-wide CA bundle, either from all namespaces or specific ones. If you prefer to implement a different authentication approach (other than using CA bundles), you can override the default {productname-short} behavior, as described in link:{odhdocshome}installing-open-data-hub/#removing-the-ca-bundle-from-all-namespaces_certs[Removing the CA bundle from all namespaces] and link:{odhdocshome}/installing-open-data-hub/#removing-the-ca-bundle-from-a-single-namespace_certs[Removing the CA bundle from a single namespace].
 
 include::modules/understanding-certificates.adoc[leveloffset=+1]
 
-include::modules/adding-a-ca-bundle.adoc[leveloffset=+1]
+== Adding certificates
 
-include::modules/removing-a-ca-bundle.adoc[leveloffset=+1]
+If you must use a self-signed certificate that is not part of the existing cluster-wide CA bundle, you have two options for configuring the certificate:
 
-include::modules/removing-a-ca-bundle-from-a-namespace.adoc[leveloffset=+1]
+* Add it to the cluster-wide CA bundle. 
++
+This option is useful when the certificate is needed for secure communication across multiple services or when it's required by security policies to be trusted cluster-wide. This option ensures that all services and components in the cluster trust the certificate automatically. It simplifies management because the certificate is trusted across the entire cluster, avoiding the need to configure the certificate separately for each service. 
 
-include::modules/managing-certificates.adoc[leveloffset=+1]
+* Add it to a custom CA bundle that is separate from the OpenShift cluster-wide bundle. 
++ 
+Consider this option for the following scenarios:
 
-include::modules/accessing-s3-compatible-object-storage-with-self-signed-certificates.adoc[leveloffset=+1]
+** Limit Scope: Only specific services need the certificate, not the whole cluster.
+** Isolation: Keeps custom certificates separate, preventing changes to the global configuration.
+** Avoid Global Impact: Does not affect services that do not need the certificate.
+** Easier Management: Makes it simpler to manage certificates for specific services.
+
+
+include::modules/adding-certificates-to-a-cluster-ca-bundle.adoc[leveloffset=+1]
+
+//changed from adding-a-ca-bundle.adoc
+include::modules/adding-certificates-to-a-custom-ca-bundle.adoc[leveloffset=+1]
 
 == Using self-signed certificates with {productname-short} components
 
 Some {productname-short} components have additional options or required configuration for self-signed certificates.
 
+include::modules/accessing-s3-compatible-object-storage-with-self-signed-certificates.adoc[leveloffset=+2]
+
 include::modules/using-certificates-with-data-science-pipelines.adoc[leveloffset=+2]
 
 include::modules/using-certificates-with-workbenches.adoc[leveloffset=+2]
+
+include::modules/using-the-cluster-CA-bundle-for-single-model-serving.adoc[leveloffset=+2]
+
+include::modules/managing-certificates.adoc[leveloffset=+1]
+
+== Removing the CA bundle
+
+If you prefer implementing a different authentication approach (other than CA bundles) for your {productname-short} installation, you can override the default behavior by removing the CA bundle.
+
+You have two options for removing the CA bundle:
+
+* Remove the CA bundle from all non-reserved projects in {productname-short}.
+
+* Remove the CA bundle from a specific project
+
+
+include::modules/removing-the-ca-bundle-from-all-namespaces.adoc[leveloffset=+2]
+
+include::modules/removing-the-ca-bundle-from-a-single-namespace.adoc[leveloffset=+2]
+
 
 ifdef::parent-context[:context: {parent-context}]
 ifndef::parent-context[:!context:]
