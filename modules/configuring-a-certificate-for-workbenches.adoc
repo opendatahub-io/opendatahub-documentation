@@ -1,0 +1,28 @@
+:_module-type: PROCEDURE
+
+[id='configuring-a-certificate-for-workbenches_{context}']
+= Configuring a certificate for workbenches
+
+[IMPORTANT]
+====
+By default, self-signed certificates apply to workbenches that you create after configuring cluster-wide certificates. To apply cluster-wide certificates to an existing workbench, stop and then restart the workbench.
+====
+
+Self-signed certificates are stored in `/etc/pki/tls/custom-certs/ca-bundle.crt`. Workbenches use a preset environment variable that many popular HTTP client packages point to for certificates. For packages that are not included by default, you can provide this certificate path. For example, for the `kfp` package to connect to the data science pipeline server:
+
+[source]
+----
+from kfp.client import Client
+
+with open(sa_token_file_path, 'r') as token_file:
+    bearer_token = token_file.read()
+    
+    client = Client(
+        host='https://<GO_TO_ROUTER_OF_DS_PROJECT>/',
+        existing_token=bearer_token,
+        ssl_ca_cert='/etc/pki/tls/custom-certs/ca-bundle.crt'
+    )
+    print(client.list_experiments())
+----
+
+ 

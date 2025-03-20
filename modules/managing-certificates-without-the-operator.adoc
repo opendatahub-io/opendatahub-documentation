@@ -1,11 +1,12 @@
 :_module-type: PROCEDURE
 
-[id="managing-certificates_{context}"]
-= Managing certificates
+[id="managing-certificates-without-the-operator_{context}"]
+= Managing certificates without the {productname-long} Operator
 
 [role='_abstract']
-After installing {productname-short}, the {productname-long} Operator creates the `odh-trusted-ca-bundle` configuration file (ConfigMap) that contains the trusted CA bundle and adds it to all new and existing non-reserved namespaces in the cluster. 
-By default, the {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap and automatically updates it if any changes are made to the CA bundle. You can choose to manage the `odh-trusted-ca-bundle` ConfigMap instead of allowing the {productname-long} Operator to manage it.
+By default, the {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap, which contains the trusted CA bundle and is applied to all non-reserved namespaces in the cluster. The Operator automatically updates this ConfigMap whenever changes are made to the CA bundle.
+
+If your organization prefers to manage trusted CA bundles independently, for example, by using Ansible automation, you can disable this default behavior to prevent automatic updates by the {productname-long} Operator.
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -26,10 +27,11 @@ spec:
 
 . Click *Save*.
 +
-Note that changing the `managementState` from `Managed` to `Unmanaged` does not remove the `odh-trusted-ca-bundle` ConfigMap, but the ConfigMap is not updated if you make changes to the `customCABundle` field.
+Changing the `managementState` from `Managed` to `Unmanaged` prevents automatic updates when the `customCABundle` field is modified, but does not remove the `odh-trusted-ca-bundle` ConfigMap.
 
 .Verification
-. In the `spec` section, set or change the value of the `customCABundle` field for `trustedCABundle`, for example:
+
+. In the `spec` section, set the value of the `customCABundle` field for `trustedCABundle`, for example:
 +
 [source]
 ----

@@ -1,0 +1,44 @@
+:_module-type: PROCEDURE
+
+[id="removing-the-ca-bundle-from-a-single-namespace_{context}"]
+= Removing the CA bundle from a single namespace
+
+[role='_abstract']
+You can remove a custom Certificate Authority (CA) bundle from individual namespaces in {productname-short}. This process disables the creation of the `odh-trusted-ca-bundle` configuration file (ConfigMap) for the specified namespace only.
+
+ifdef::upstream[]
+To remove a certificate bundle from all namespaces, see
+link:{odhdocshome}installing-open-data-hub/#removing-the-ca-bundle-from-all-namespaces_certs[Removing the CA bundle from all namespaces]. 
+endif::[]
+
+ifdef::self-managed[]
+To remove a CA bundle from all namespaces,link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#removing-the-ca-bundle-from-all-namespaces_certs[Removing the CA bundle from all namespaces] ({productname-short} Self-Managed) or link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs#removing-the-ca-bundle-from-all-namespaces_certs[Removing the CA bundle from all namespaces] ({productname-short} Self-Managed in a disconnected environment).
+endif::[]
+
+ifdef::cloud-service[]
+To remove a CA bundle from all namespaces, link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#removing-the-ca-bundle-from-all-namespaces_certs[Removing the CA bundle from all namespaces].
+endif::[]
+
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
+.Procedure
+* Run the following command to remove a CA bundle from a namespace. In the following command, _example-namespace_ is the non-reserved namespace.
++
+[source]
+----
+oc annotate ns example-namespace security.opendatahub.io/inject-trusted-ca-bundle=false
+----
+
+.Verification
+* Run the following command to verify that the CA bundle has been removed from the namespace. In the following command, _example-namespace_ is the non-reserved namespace.
++
+[source]
+----
+oc get configmap odh-trusted-ca-bundle -n example-namespace
+----
++
+The command should return `configmaps "odh-trusted-ca-bundle" not found`.
+

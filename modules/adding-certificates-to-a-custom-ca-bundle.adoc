@@ -1,0 +1,82 @@
+:_module-type: PROCEDURE
+
+[id="adding-certificates-to-a-custom-ca-bundle_{context}"]
+= Adding certificates to a custom CA bundle
+
+[role='_abstract']
+You can add self-signed certificates to a custom CA bundle that is separate from the OpenShift cluster-wide bundle. 
+
+This method is ideal for scenarios where components need access to external resources that require a self-signed certificate. For example, you may need to add self-signed certificates to grant data science pipelines access S3-compatible object storage.
+
+.Prerequisites
+
+* You have created a self-signed certificate and saved the certificate to a file. For example, you have created a certificate using OpenSSL and saved it to a file named `example-ca.crt`.
+* You have cluster administrator access for the OpenShift cluster where {productname-long} is installed.
+* You have installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
+//remove references to the upgrade doc? TBD
+ifdef::upstream[]
+* You are working in a new installation of {productname-long}. If you upgraded {productname-long}, see link:{odhdocshome}/upgrading-open-data-hub/#adding-a-ca-bundle-after-upgrading_certs[Adding a CA bundle after upgrading].
+endif::[]
+
+ifdef::self-managed[]
+
+ifdef::disconnected[] 
+* You are working in a new installation of {productname-long}. If you upgraded {productname-long}, see link:{rhoaidocshome}{default-format-url}/upgrading_{url-productname-short}_in_a_disconnected_environment/adding-a-ca-bundle-after-upgrading_upgrade[Adding a CA bundle after upgrading].
+endif::[]
+ifndef::disconnected[]
+* You are working in a new installation of {productname-long}. If you upgraded {productname-long}, see link:{rhoaidocshome}{default-format-url}/upgrading_{url-productname-short}/adding-a-ca-bundle-after-upgrading_upgrade[Adding a CA bundle after upgrading].
+endif::[]
+
+endif::[]
+
+ifdef::cloud-service[]
+* You are working in a new installation of {productname-long}. If you upgraded {productname-long}, see link:{rhoaidocshome}{default-format-url}/upgrading_{url-productname-short}/adding-a-ca-bundle-after-upgrading_upgrade[Adding a CA bundle after upgrading].
+endif::[]
+
+.Procedure
+. Log in to {openshift-platform}.
+. Click *Operators* → *Installed Operators* and then click the {productname-long} Operator.
+. Click the *DSC Initialization* tab.
+. Click the *default-dsci* object.
+. Click the *YAML* tab.
+. In the `spec.trustedCABundle` section, add the custom certificate to the `customCABundle` field, as shown in the following example:
++
+[source]
+----
+spec:
+  trustedCABundle:
+    managementState: Managed
+    customCABundle: |
+      -----BEGIN CERTIFICATE-----
+      examplebundle123
+      -----END CERTIFICATE-----
+----
+. Click *Save*.
+
+The {productname-long} Operator automatically updates the ConfigMap to reflect any changes made to the `customCABundle` field. It adds the `odh-ca-bundle.crt` file containing the certificates to the `odh-trusted-ca-bundle` ConfigMap, as shown in the following example:
+
+[source]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/part-of: opendatahub-operator
+    config.openshift.io/inject-trusted-cabundle: 'true'
+  name: odh-trusted-ca-bundle
+data:
+  ca-bundle.crt: |
+    <BUNDLE OF CLUSTER-WIDE CERTIFICATES>
+  odh-ca-bundle.crt: |
+    <BUNDLE OF CUSTOM CERTIFICATES>
+----
+
+.Verification
+
+Run the following command to verify that a non-reserved namespace contains the `odh-trusted-ca-bundle` ConfigMap and that the ConfigMap contains your `customCABundle` value. In the following command, _example-namespace_ is the non-reserved namespace and _examplebundle123_ is the `customCABundle` value. 
+
+[source]
+----
+oc get configmap odh-trusted-ca-bundle -n example-namespace -o yaml | grep examplebundle123
+----

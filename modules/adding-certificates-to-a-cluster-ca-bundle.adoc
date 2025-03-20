@@ -1,0 +1,90 @@
+:_module-type: PROCEDURE
+
+[id="adding-certificates-to-a-cluster-ca-bundle_{context}"]
+= Adding certificates to a cluster-wide CA bundle
+
+[role='_abstract']
+You can add a self-signed certificate to a cluster-wide Certificate Authority (CA) bundle (`ca-bundle.crt`).  
+
+When the cluster-wide CA bundle is updated, the Cluster Network Operator (CNO) automatically detects the change and injects the updated bundle into the `odh-trusted-ca-bundle` ConfigMap, making the certificate available to {productname-short} components.
+
+*Note:* By default, the management state for the Trusted CA bundle is `Managed` (that is, the `spec.trustedCABundle.managementState` field in the {productname-long} Operator's DSCI object is set to `Managed`). If you change this setting to `Unmanaged`, you must manually update the `odh-trusted-ca-bundle` ConfigMap to include the updated cluster-wide CA bundle.
+
+ifdef::upstream[]
+Alternatively, you can add certificates to a custom CA bundle, as described in link:{odhdocshome}/installing-open-data-hub/#adding-certificates-to-a-custom-ca-bundle_certs[Adding certificates to a custom CA bundle].
+endif::[]
+
+ifdef::self-managed[]
+ifndef::disconnected[]
+Alternatively, you can add certificates to a custom CA bundle, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/working-with-certificates_certs#adding-certificates-to-a-custom-ca-bundle_certs[Adding certificates to a custom CA bundle].
+endif::[]
+ifdef::disconnected[]
+Alternatively, you can add certificates to a custom CA bundle, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/working-with-certificates_certs#adding-certificates-to-a-custom-ca-bundle_certs[Adding certificates to a custom CA bundle].
+endif::[]
+endif::[]
+ifdef::cloud-service[]
+Alternatively, you can add certificates to a custom CA bundle, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_cloud_service/working-with-certificates_certs#adding-certificates-to-a-custom-ca-bundle_certs[Adding certificates to a custom CA bundle].
+endif::[]
+
+.Prerequisites
+
+* You have created a self-signed certificate and saved the certificate to a file. For example, you have created a certificate using OpenSSL and saved it to a file named `example-ca.crt`.
+* You have cluster administrator access for the OpenShift cluster where {productname-long} is installed.
+* You have installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
+//remove reference to upgrading doc?
+ifdef::upstream[]
+* You are working in a new installation of {productname-long}. If you upgraded {productname-long}, see link:{odhdocshome}/upgrading-open-data-hub/#adding-a-ca-bundle-after-upgrading_certs[Adding a CA bundle after upgrading].
+endif::[]
+
+ifdef::self-managed[]
+
+ifdef::disconnected[] 
+* You are working in a new installation of {productname-long}. If you upgraded {productname-long}, see link:{rhoaidocshome}{default-format-url}/upgrading_{url-productname-short}_in_a_disconnected_environment/adding-a-ca-bundle-after-upgrading_upgrade[Adding a CA bundle after upgrading].
+endif::[]
+ifndef::disconnected[]
+* You are working in a new installation of {productname-long}. If you upgraded {productname-long}, see link:{rhoaidocshome}{default-format-url}/upgrading_{url-productname-short}/adding-a-ca-bundle-after-upgrading_upgrade[Adding a CA bundle after upgrading].
+endif::[]
+
+endif::[]
+
+ifdef::cloud-service[]
+* You are working in a new installation of {productname-long}. If you upgraded {productname-long}, see link:{rhoaidocshome}{default-format-url}/upgrading_{url-productname-short}/adding-a-ca-bundle-after-upgrading_upgrade[Adding a CA bundle after upgrading].
+endif::[]
+
+.Procedure
+
+. Create a ConfigMap that includes the root CA certificate used to sign the certificate, where `</path/to/example-ca.crt>` is the path to the CA certificate bundle on your local file system:
++
+[source]
+----				
+oc create configmap custom-ca \
+ 	--from-file=ca-bundle.crt=</path/to/example-ca.crt> \
+ 	-n openshift-config
+----
+
+
+. Update the cluster-wide proxy configuration with the newly-created ConfigMap: 		
++
+[source]
+----				
+oc patch proxy/cluster \
+    	 --type=merge \
+   	 --patch='{"spec":{"trustedCA":{"name":"custom-ca"}}}'
+----
+
+.Verification
+
+Run the following command to verify that all non-reserved namespaces contain the `odh-trusted-ca-bundle` ConfigMap: 
+
+[source]
+----
+oc get configmaps --all-namespaces -l app.kubernetes.io/part-of=opendatahub-operator | grep odh-trusted-ca-bundle
+----
+
+.Additional resources
+
+* https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/configuring-certificates[Configuring certificates] in the _Red Hat OpenShift Container Platform Security and compliance_ guide
+* https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/4/html-single/operators/index#olm-inject-custom-ca_olm-configuring-proxy-support[Injecting a custom CA Bundle] section in the _Red Hat OpenShift Service on AWS  Operators_ guide
+* https://docs.redhat.com/en/documentation/openshift_dedicated/4/html/operators/administrator-tasks#olm-inject-custom-ca_olm-configuring-proxy-support[Injecting a custom CA Bundle] in the _Red Hat OpenShift Dedicated Operators_ guide
+
