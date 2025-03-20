@@ -54,7 +54,7 @@ endif::[]
 
 .Procedure
 
-. Create a ConfigMap that includes the root CA certificate used to sign the certificate: 	
+. Create a ConfigMap that includes the root CA certificate used to sign the certificate, where `</path/to/example-ca.crt>` is the path to the CA certificate bundle on your local file system:
 +
 [source]
 ----				
@@ -62,8 +62,7 @@ oc create configmap custom-ca \
  	--from-file=ca-bundle.crt=</path/to/example-ca.crt> \
  	-n openshift-config
 ----
-+
-`</path/to/example-ca.crt>` is the path to the CA certificate bundle on your local file system. 
+
 
 . Update the cluster-wide proxy configuration with the newly-created ConfigMap: 		
 +
