@@ -6,7 +6,7 @@
 [role='_abstract']
 By default, the {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap, which contains the trusted CA bundle and is applied to all non-reserved namespaces in the cluster. The Operator automatically updates this ConfigMap whenever changes are made to the CA bundle.
 
-If your organization prefers to manage trusted CA bundles independently (for example, by using Ansible automation), you can disable this default behavior to prevent automatic updates by the {productname-long} Operator.
+If your organization prefers to manage trusted CA bundles independently, for example, by using Ansible automation, you can disable this default behavior to prevent automatic updates by the {productname-long} Operator.
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -27,7 +27,7 @@ spec:
 
 . Click *Save*.
 +
-Note that changing the `managementState` from `Managed` to `Unmanaged` does not remove the `odh-trusted-ca-bundle` ConfigMap, but it prevents automatic updates when the `customCABundle` field is modified.
+Changing the `managementState` from `Managed` to `Unmanaged` prevents automatic updates when the `customCABundle` field is modified, but does not remove the `odh-trusted-ca-bundle` ConfigMap.
 
 .Verification
 

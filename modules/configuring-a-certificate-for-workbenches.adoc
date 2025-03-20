@@ -5,10 +5,10 @@
 
 [IMPORTANT]
 ====
-Self-signed certificates apply by default to workbenches that you create after configuring cluster-wide certificates. To apply cluster-wide certificates to an existing workbench, stop and then restart the workbench.
+By default, self-signed certificates apply to workbenches that you create after configuring cluster-wide certificates. To apply cluster-wide certificates to an existing workbench, stop and then restart the workbench.
 ====
 
-Self-signed certificates are stored in `/etc/pki/tls/custom-certs/ca-bundle.crt`. Workbenches are preset with an environment variable that points packages to this path, and that covers many popular HTTP client packages. For packages that are not included by default, you can provide this certificate path. For example, for the `kfp` package to connect to the data science pipeline server:
+Self-signed certificates are stored in `/etc/pki/tls/custom-certs/ca-bundle.crt`. Workbenches use a preset environment variable that many popular HTTP client packages point to for certificates. For packages that are not included by default, you can provide this certificate path. For example, for the `kfp` package to connect to the data science pipeline server:
 
 [source]
 ----

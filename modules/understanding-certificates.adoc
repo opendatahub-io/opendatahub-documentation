@@ -4,7 +4,7 @@
 = Understanding how {productname-short} handles certificates
 
 [role='_abstract']
-After installing {productname-short}, the {productname-long} Operator automatically creates an empty `odh-trusted-ca-bundle` configuration file (ConfigMap). The Cluster Network Operator (CNO) injects the cluster-wide CA bundle into the `odh-trusted-ca-bundle` configMap with the label "config.openshift.io/inject-trusted-cabundle". 
+After installing {productname-short}, the {productname-long} Operator automatically creates an empty `odh-trusted-ca-bundle` configuration file (ConfigMap). The Cluster Network Operator (CNO) injects the cluster-wide CA bundle into the `odh-trusted-ca-bundle` configMap with the label `"config.openshift.io/inject-trusted-cabundle"`. 
 
 [source]
 ----
@@ -37,12 +37,12 @@ The management of CA bundles is configured through the Data Science Cluster Init
 
 * `Managed`: (Default) The {productname-long} Operator manages the `odh-trusted-ca-bundle` ConfigMap and adds it to all non-reserved existing and new namespaces. It does not add the ConfigMap to any reserved or system namespaces, such as `default`, `openshift-\*` or `kube-*`. The {productname-long} Operator automatically updates the ConfigMap to reflect any changes made to the `customCABundle` field.
 
-* `Unmanaged`: The {productname-long} Operator does not manage the `odh-trusted-ca-bundle` ConfigMap, allowing for an administrator to manage it instead. Changing the `managementState` from `Managed` to `Unmanaged` does not remove the `odh-trusted-ca-bundle` ConfigMap. However, the ConfigMap is no longer automatically updated if changes are made to the `customCABundle` field.
+* `Unmanaged`: The {productname-long} administrator manually manages the `odh-trusted-ca-bundle` ConfigMap, instead of allowing the Operator to manage it. Changing the `managementState` from `Managed` to `Unmanaged` does not remove the `odh-trusted-ca-bundle` ConfigMap. However, the ConfigMap is no longer automatically updated if changes are made to the `customCABundle` field.
 +
-The `UnManaged` setting is useful if your organization implements a different method for managing trusted CA bundles, such as, through Ansible automation, and does not want the {productname-long} Operator to handle certificates automatically. This setting provides greater control, preventing the Operator from overwriting custom configurations.
+The `Unmanaged` setting is useful if your organization implements a different method for managing trusted CA bundles, such as Ansible automation, and does not want the {productname-long} Operator to handle certificates automatically. This setting provides greater control, preventing the Operator from overwriting custom configurations.
 
 ifdef::self-managed[]
-* `Removed`: The {productname-long} Operator removes the `odh-trusted-ca-bundle` ConfigMap (if present) and disables the creation of the ConfigMap in new namespaces. Changing this field from `Managed` to `Removed` also deletes the ConfigMap from existing namespaces. This is the default value after upgrading {productname-long} from 2.7 or earlier versions to {vernum}.
+* `Removed`: The {productname-long} Operator removes the `odh-trusted-ca-bundle` ConfigMap, if present, and prevents ConfigMaps from being created in new namespaces. Changing this field from `Managed` to `Removed` also deletes the ConfigMap from existing namespaces. This is the default value after upgrading {productname-long} from 2.7 or earlier versions to {vernum}.
 +
-The `Removed` setting is primarily a security measure. For example, your organization might want to restrict cluster administrators from creating trusted CA bundles to prevent OpenShift pods from communicating externally. This setting reduces complexity and mitigates security risks, such as unauthorized certificate changes. In high-security environments, removing the CA bundle ensures that only approved CAs are trusted, reducing the risk of "man-in-the-middle" attacks.
+The `Removed` setting reduces complexity and mitigates security risks, such as unauthorized certificate changes. In high-security environments, removing the CA bundle ensures that only approved CAs are trusted, reducing the risk of cyberattacks. For example, your organization might want to restrict cluster administrators from creating trusted CA bundles to prevent OpenShift pods from communicating externally.
 endif::[]
