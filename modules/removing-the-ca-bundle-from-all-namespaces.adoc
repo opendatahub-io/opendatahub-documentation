@@ -4,11 +4,33 @@
 = Removing the CA bundle from all namespaces
 
 [role='_abstract']
-You can remove a Certificate Authority (CA) bundle from all non-reserved namespaces in {productname-short}. This process changes the default configuration and disables the creation of the `odh-trusted-ca-bundle` configuration file (ConfigMap), as described in link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short].
+
+ifdef::upstream[]
+You can remove a Certificate Authority (CA) bundle from all non-reserved namespaces in {productname-short}. This process changes the default configuration and disables the creation of the `odh-trusted-ca-bundle` configuration file (ConfigMap), as described in link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding certificates in {productname-short}].
+endif::[]
+
+ifdef::self-managed[]
+You can remove a Certificate Authority (CA) bundle from all non-reserved namespaces in {productname-short}. This process changes the default configuration and disables the creation of the `odh-trusted-ca-bundle` configuration file (ConfigMap), as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates] ({productname-short} Self-Managed) or link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs[Working with certificates] ({productname-short} Self-Managed in a disconnected environment).
+endif::[]
+
+ifdef::cloud-service[]
+You can remove a Certificate Authority (CA) bundle from all non-reserved namespaces in {productname-short}. This process changes the default configuration and disables the creation of the `odh-trusted-ca-bundle` configuration file (ConfigMap), as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
+endif::[]
 
 NOTE: The `odh-trusted-ca-bundle` ConfigMaps are only deleted from namespaces when you set the `managementState` of `trustedCABundle` to `Removed`; deleting the DSC Initialization does not delete the ConfigMaps. 
 
+ifdef::upstream[]
 To remove a CA bundle from a single namespace only, see link:{odhdocshome}/installing-open-data-hub/#removing-the-ca-bundle-from-a-single-namespace_certs[Removing the CA bundle from a single namespace].
+endif::[]
+
+ifdef::self-managed[]
+To remove a CA bundle from a single namespace only, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#removing-a-ca-bundle-from-a-namespace_certs[Removing the CA bundle from a single namespace] ({productname-short} Self-Managed) or link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs#removing-a-ca-bundle-from-a-namespace_certs[Removing the CA bundle from a single namespace] ({productname-short} Self-Managed in a disconnected environment).
+endif::[]
+
+ifdef::cloud-service[]
+To remove a CA bundle from a single namespace only, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#removing-a-ca-bundle-from-a-namespace_certs[Removing the CA bundle from a single namespace].
+endif::[]
+
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -35,7 +57,7 @@ spec:
 +
 [source]
 ----
-$ oc get configmaps --all-namespaces | grep odh-trusted-ca-bundle
+oc get configmaps --all-namespaces | grep odh-trusted-ca-bundle
 ----
 +
 The command should not return any ConfigMaps.

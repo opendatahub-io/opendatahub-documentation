@@ -1,13 +1,24 @@
 :_module-type: PROCEDURE
 
 [id="removing-the-ca-bundle-from-a-single-namespace_{context}"]
-= Removing the CA bundle from a single namesapce
+= Removing the CA bundle from a single namespace
 
 [role='_abstract']
 You can remove a custom Certificate Authority (CA) bundle from individual namespaces in {productname-short}. This process disables the creation of the `odh-trusted-ca-bundle` configuration file (ConfigMap) for the specified namespace only.
 
+ifdef::upstream[]
 To remove a certificate bundle from all namespaces, see
-link:{odhdocshome}installing-open-data-hub/#removing-the-ca-bundle-from-all-namespaces_certs[Removing the CA bundle from all namespaces].
+link:{odhdocshome}installing-open-data-hub/#removing-the-ca-bundle-from-all-namespaces_certs[Removing the CA bundle from all namespaces]. 
+endif::[]
+
+ifdef::self-managed[]
+To remove a CA bundle from all namespaces,link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#removing-the-ca-bundle-from-all-namespaces_certs[Removing the CA bundle from all namespaces] ({productname-short} Self-Managed) or link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/working-with-certificates_certs#removing-the-ca-bundle-from-all-namespaces_certs[Removing the CA bundle from all namespaces] ({productname-short} Self-Managed in a disconnected environment).
+endif::[]
+
+ifdef::cloud-service[]
+To remove a CA bundle from all namespaces, link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs#removing-the-ca-bundle-from-all-namespaces_certs[Removing the CA bundle from all namespaces].
+endif::[]
+
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -18,7 +29,7 @@ link:{odhdocshome}installing-open-data-hub/#removing-the-ca-bundle-from-all-name
 +
 [source]
 ----
-$ oc annotate ns example-namespace security.opendatahub.io/inject-trusted-ca-bundle=false
+oc annotate ns example-namespace security.opendatahub.io/inject-trusted-ca-bundle=false
 ----
 
 .Verification
@@ -26,10 +37,8 @@ $ oc annotate ns example-namespace security.opendatahub.io/inject-trusted-ca-bun
 +
 [source]
 ----
-$ oc get configmap odh-trusted-ca-bundle -n example-namespace
+oc get configmap odh-trusted-ca-bundle -n example-namespace
 ----
 +
 The command should return `configmaps "odh-trusted-ca-bundle" not found`.
 
-//[role='_additional-resources']
-//.Additional resources

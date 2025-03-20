@@ -1,0 +1,85 @@
+:_module-type: PROCEDURE
+
+[id='configuring-a-certificate-for-pipelines_{context}']
+= Configuring a certificate for data science pipelines 
+
+By default, {productname-short} includes OpenShift cluster-wide certificates in the `odh-trusted-ca-bundle` ConfigMap. These cluster-wide certificates cover most components, such as workbenches and model servers. However, the pipeline server might require additional Certificate Authority (CA) configuration, especially when interacting with external systems that use self-signed or custom certificates.
+
+You have the following options for adding the certificate for data science pipelines:
+
+//need to complete these links
+ifdef::upstream[]
+* Add them to the cluster-wide CA bundle, as described in link:{odhdocshome}/installing-open-data-hub/[Adding certificates to a cluster-wide CA bundle].
+* Add them to a custom bundle as described in link:{odhdocshome}/installing-open-data-hub/[Adding certificates to a custom CA bundle].
+endif::[]
+
+ifdef::cloud-service[]
+* Add them to the cluster-wide CA bundle, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/[Adding certificates to a cluster-wide CA bundle].
+* Add them to a custom bundle as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/[Adding certificates to a custom CA bundle]. 
+endif::[]
+
+ifdef::self-managed[]
+ifndef::disconnected[]
+* Add them to the cluster-wide CA bundle, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/[Adding certificates to a cluster-wide CA bundle].
+* Add them to a custom bundle as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/[Adding certificates to a custom CA bundle].
+endif::[]
+ifdef::disconnected[]
+* Add them to the cluster-wide CA bundle, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/[Adding certificates to a cluster-wide CA bundle].
+* Add them to a custom bundle as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/[Adding certificates to a custom CA bundle]. 
+endif::[]
+endif::[]
+
+* Provide a CA bundle just for data science pipelines, as described in the following procedure.
+
+.Prerequisites
+
+* You have cluster administrator access for the OpenShift cluster where {productname-long} is installed.
+* You have installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You have created a self-signed certificate for RHOAI (for example, by using OpenSSL).
+* You have configured a data science pipeline server.
+
+
+.Procedure
+. Log in to the OpenShift console.
+. From *Workloads* -> *ConfigMaps*, create a ConfigMap with the required bundle in the same data science project as the target data science pipeline:
++
+[source]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: custom-ca-bundle
+data:
+    ca-bundle.crt: |
+    # contents of ca-bundle.crt
+----
+. Add the following snippet to the `.spec.apiserver.caBundle` field of the underlying Data Science Pipelines Application (DSPA):
++
+[source]
+----
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1
+kind: DataSciencePipelinesApplication
+metadata:
+    name: data-science-dspa
+spec:
+    ...
+    apiServer:
+    ...
+    cABundle:
+        configMapName: custom-ca-bundle
+        configMapKey: ca-bundle.crt
+----
+
+. Save the ConfigMap. The pipeline server pod automatically redeploys with the updated bundle.
+
+.Verification
+
+Confirm that your CA bundle was successfully mounted:
+
+. Log in to the OpenShift console.
+. Go to the data science project that has the target data science pipeline.
+. Click the *Pods* tab.
+. Click the pipeline server pod with the `ds-pipeline-dspa-<hash>` prefix.
+. Click *Terminal*.
+. Enter `cat /dsp-custom-certs/dsp-ca.crt`.
+. Verify that your CA bundle is present within this file.
