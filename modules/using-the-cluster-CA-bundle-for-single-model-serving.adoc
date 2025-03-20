@@ -27,7 +27,7 @@ endif::[]
 . Log in to the OpenShift console. 
 . From the list of projects, open the `openshift-ingress` project.
 . Click *YAML*.
-. Search for certs to find a reference to a Secret whose name includes "certs". For example, `rhods-internal-primary-cert-bundle-secret`. The content of the Secret (data) should contain two items that are used for all OpenShift Routes: `tls.cert` (the certificate) and `tls.key` (the key).
+. Search for "cert" to find a secret with a name that includes "cert". For example, `rhods-internal-primary-cert-bundle-secret`. The contents of the secret should contain two items that are used for all OpenShift Routes: `tls.cert` (the certificate) and `tls.key` (the key).
 . Copy the reference to the Secret.
 . From the list of projects, open the `istio-system` project.
 . Create a new YAML file and paste the reference to the Secret that you copied from the `openshift-ingress` YAML file.
