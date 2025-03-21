@@ -73,14 +73,14 @@ The example YAML file includes the following information:
 <2> The image name that is displayed in the drop down menu when a user creates a workbench in the {productname-short} dashboard.
 <3> The `redhat-ods-applications` namespace is the default namespace in which the `ImageStream` CR is created.
 <4> The labels that are required if you want the image to appear in the {productname-short} dashboard. The `app.kubernetes.io/created-by: byon` label identifies the origination of the image object.
-<5> The annotations that are required if you to make the image available in the {productname-short} dashboard. 
+<5> Annotations that are required if you want to make the image available in the {productname-short} dashboard. 
 <6> The version for the image. You can configure multiple versions for the same image. For this example, the version is 1.0.
-<7> An annotation for the `opendatahub.io/notebook-python-dependencies` field gives the user information about the Python packages and versions that are pre-installed in the  image.
-<8> The `opendatahub.io/notebook-software` field that specifies information such as the Python version, Jupyter version, or CUDA version.
-<9> The `opendatahub.io/workbench-image-recommended` field specifies whether the `ImageStream` version is the default version of the image. Set this field to `'true'` if the `ImageStream` version is the default. Otherwise, set it to `'false'`. You must specify the `opendatahub.io/workbench-image-recommended` annotation field if there are multiple versions of the image with different configurations. If you have only one version of the image, set the field to `'true'`.
+<7> An annotation that gives the user information about the Python packages and versions that are pre-installed in the image.
+<8> An annotation that specifies information such as the Python version, Jupyter version, or CUDA version.
+<9> An annotation that specifies whether the `ImageStream` version is the default version of the image. Set this field to `'true'` if the `ImageStream` version is the default. Otherwise, set it to `'false'`. You must specify the `opendatahub.io/workbench-image-recommended` annotation field if there are multiple versions of the image with different configurations. If you have only one version of the image, set the field to `'true'`.
 <10> The image registry URL to store the image stream. Store the image stream in an image registry outside of the cluster where {productname-short} is installed.
 
-. To create the `ImageStream` CR, run the following command where the `ImageStream` CRD YAML manifest file name is `notebook-image-stream.yaml`:
+. To create the `ImageStream` CR, run the following command, where the `ImageStream` CRD YAML manifest file name is `notebook-image-stream.yaml`:
 +
 [source,terminal]
 ----
@@ -89,7 +89,7 @@ oc create -f notebook-image-stream.yaml
 
 .Verification
 
-. To verify that the `ImageStream` was successfully created, run the following command where the name of the `ImageStream` is `my-custom-notebook`:
+. To verify that the `ImageStream` was successfully created, run the following command, where the name of the `ImageStream` is `my-custom-notebook`:
 +
 [source,terminal]
 ----

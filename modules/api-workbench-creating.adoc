@@ -214,13 +214,13 @@ spec:
 +
 The example YAML file includes the following information:
 +
-<1> The `inject-oauth` annotation generates other OAUTH-based configurations, such as, the `oauth-proxy`, automatically. The default is `true`.
+<1> The `inject-oauth` annotation generates other OAUTH-based configurations, such as, the `oauth-proxy`, automatically. The default value is `true`.
 <2> The `Notebook` image name is visible in the {productname-short} dashboard. In this example, the image name is `My custom notebook`. Optionally, you can name the image according to your use case.
 <3> An optional description of the workbench.
-<4> The workbench name is visible in the {productname-short} dashboard. In this example, the display name is `my-workbench`.
+<4> The workbench name that is displayed in the {productname-short} dashboard. In this example, the display name is `my-workbench`.
 <5> The name for the workbench. In this example, the workbench name is `my-workbench`.
 <6> The data science project for the workbench. In this example, the data science project name is `my-data-science-project`.
-<7> The deployment size for the container. You can set values for the CPU and memory limits and requests.
+<7> The deployment size for the container. You can set `limits` and `requests` values for CPU and memory.
 <8> Environment variables for configuring values, for example, for Jupyter Notebook arguments and SSL/TLS certificates.
 <9> The `Notebook` image. In this example, `image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0` is the `Notebook` image. You can select the image version based on the packages included in the image. 
 <10> The `inject-oauth` annotation configures the `oauth-proxy` container section of the `Notebook`.
@@ -317,7 +317,7 @@ spec:
       ...
 ----
 
-. To create the `Notebook` CR, run the following command where the `Notebook` CRD YAML manifest filename is `notebook.yaml`.
+. To create the `Notebook` CR, run the following command, where the `Notebook` CRD YAML manifest filename is `notebook.yaml`.
 +
 [source,terminal]
 ----
