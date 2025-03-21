@@ -13,7 +13,7 @@ After the `LMEvalJob` is created, the LM-Eval service runs the evaluation job.  
 
 [NOTE]
 --
-Other TrustyAI features (such as bias and drift metrics) do not support non-tabular models (including LLMs). Deploying the `TrustyAIService` custom resource (CR) in a namespace that contains non-tabular models (such as the namespace where an evaluation job is being executed) can cause errors within the TrustyAI service.
+Other TrustyAI features (such as bias and drift metrics) cannot be used with non-tabular models (including LLMs). Deploying the `TrustyAIService` custom resource (CR) in a namespace that contains non-tabular models (such as the namespace where an evaluation job is being executed) can cause errors within the TrustyAI service.
 --
  
 .Sample LMEvalJob object 
@@ -104,7 +104,7 @@ The following table lists each property in the `LMEvalJob` and its usage:
 
 | `model`
 
-a| Specifies which model type or provider is evaluated. This field directly maps to the `--model` argument of the `lm-evaluation-harness`. Supported model types and providers include:
+a| Specifies which model type or provider is evaluated. This field directly maps to the `--model` argument of the `lm-evaluation-harness`. The model types and providers that you can use include:
 
 * `hf`: HuggingFace models
 * `openai-completions`: OpenAI Completions API models
