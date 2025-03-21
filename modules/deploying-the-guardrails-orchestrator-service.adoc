@@ -23,7 +23,7 @@ You can deploy a Guardrails Orchestrator instance in your namespace to monitor e
 +
 .Example `orchestrator_cm.yaml`
 [source,yaml]
----
+----
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -42,22 +42,22 @@ data:
           port: 8000
         chunker_id: whole_doc_chunker
         default_threshold: 0.5
----
+----
 <1> A service for chat generation referring to a deployed LLM in your namespace where you are adding guardrails.
 <2> A list of services responsible for running detection of a certain class of content on text spans. Each of these services refer to a deployed LLM for text classification in your namespace.
 
 . Deploy the `orchestrator_cm.yaml` config map:
 +
 [source,terminal]
----
+----
 $ oc apply -f orchestrator_cm.yaml -n <TEST_NAMESPACE>
----
+----
 
 . Specify the previously created `ConfigMap` object created in the `GuardrailsOrchestrator` custom resource (CR). For example, create a file named `orchestrator_cr.yaml` with the following content:
 +
 .Example `orchestrator_cr.yaml` CR
 [source,yaml]
----
+----
 apiVersion: trustyai.opendatahub.io/v1alpha1
 kind: GuardrailsOrchestrator
 metadata:
@@ -65,49 +65,49 @@ metadata:
 spec:
   orchestratorConfig: "fms-orchestr8-config-nlp"
   replicas: 1
----
+----
 
 . Deploy the orchestrator CR, which creates a service account, deployment, service, and route object in your namespace:
 +
 [source,terminal]
----
+----
 oc apply -f orchestrator_cr.yaml -n <TEST_NAMESPACE>
----
+----
 
 .Verification
 . Confirm that the orchestrator and LLM pods are running:
 +
 [source,terminal]
----
+----
 $ oc get pods -n <TEST_NAMESPACE>
----
+----
 +
 .Example response
 [source,terminal]
----
+----
 NAME                                       READY   STATUS    RESTARTS   AGE
 gorch-test-55bf5f84d9-dd4vm                3/3     Running   0          3h53m
 ibm-container-deployment-bd4d9d898-52r5j   1/1     Running   0          3h53m
 ibm-hap-predictor-5d54c877d5-rbdms         1/1     Running   0          3h53m
 llm-container-deployment-bd4d9d898-52r5j   1/1     Running   0          3h53m
 llm-predictor-5d54c877d5-rbdms             1/1     Running   0          57m
----
+----
 
 . Query the `/health` endpoint of the orchestrator route to check the current status of the detector and generator services. If a `200 OK` response is returned, the services are functioning normally:
 +
 [source,terminal]
----
+----
 $ GORCH_ROUTE_HEALTH=$(oc get routes gorch-test-health -o jsonpath='{.spec.host}')
----
+----
 +
 [source,terminal]
----
+----
 $ curl -v https://$GORCH_ROUTE_HEALTH/health
----
+----
 +
 .Example response
 [source,terminal]
----
+----
 *   Trying ::1:8034...
 * connect to ::1 port 8034 failed: Connection refused
 *   Trying 127.0.0.1:8034...
@@ -125,4 +125,4 @@ $ curl -v https://$GORCH_ROUTE_HEALTH/health
 <
 * Connection #0 to host localhost left intact
 {"fms-guardrails-orchestr8":"0.1.0"}
----
+----
