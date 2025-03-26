@@ -3,18 +3,15 @@
 [id='about-kserve-deployment-modes_{context}']
 = About KServe deployment modes
 
-By default, you can deploy models on the single-model serving platform with KServe by using link:https://docs.redhat.com/en/documentation/red_hat_openshift_serverless/{os-latest-version}/html/about_openshift_serverless/index[{org-name} OpenShift Serverless^], which is a cloud-native development model that allows for serverless deployments of models. OpenShift Serverless is based on the open source link:https://knative.dev/docs/[Knative^] project. In addition, serverless mode is dependent on the {org-name} OpenShift Serverless Operator. 
+You can deploy models in either **Advanced** or **Standard** deployment mode.
 
-Alternatively, you can use raw deployment mode, which is not dependent on the {org-name} OpenShift Serverless Operator. With raw deployment mode, you can deploy models with Kubernetes resources, such as `Deployment`, `Service`, `Ingress`, and `Horizontal Pod Autoscaler`.
+Advanced deployment mode uses KNative Serverless. By default, KServe integrates with {org-name} OpenShift Serverless and Red Hat OpenShift Service Mesh to deploy models on the single-model serving platform. {org-name} Serverless is based on the open source link:https://knative.dev/docs/[Knative^] project and requires the {org-name} OpenShift Serverless Operator.
 
-[IMPORTANT]
-====
-Deploying a machine learning model using KServe raw deployment mode is a Limited Availability feature. Limited Availability means that you can install and receive support for the feature only with specific approval from the {org-name} AI Business Unit. Without such approval, the feature is unsupported. In addition, this feature is only supported on Self-Managed deployments of single node OpenShift.
-====
+Alternatively, you can use Standard deployment mode, which uses the KNative RawDeployment mode and does not require the {org-name} OpenShift Serverless Operator. 
 
 There are both advantages and disadvantages to using each of these deployment modes:
 
-== Serverless mode
+== Advanced mode
 
 Advantages:
 
@@ -28,20 +25,20 @@ Advantages:
 
 Disadvantages:
 
-* Has customization limitations: 
-** Serverless is limited to Knative, such as when mounting multiple volumes.
-
-* Dependency on Knative for scaling: 
+* Has customization limitations:
+** Serverless is backed by Knative and implicitly inherits the same design choices, such as when mounting multiple volumes.
+* Dependency on Knative for scaling:
 ** Introduces additional complexity in setup and management compared to traditional scaling methods.
+* Cluster scoped component:
+** If the cluster already has Serverless configured, you must manually configure the cluster to make it work with {productname-short}.
 
-== Raw deployment mode
+== Standard mode
 
 Advantages:
 
-* Enables deployment with Kubernetes resources, such as `Deployment`, `Service`, `Ingress`, and `Horizontal Pod Autoscaler`: 
-** Provides full control over Kubernetes resources, allowing for detailed customization and configuration of deployment settings.
+* Enables deployment with Kubernetes resources, such as `Deployment`, `Service`, `Ingress`, and `Horizontal Pod Autoscaler`, without additional dependencies like {org-name} Serverless and {org-name} Service Mesh.
 
-* Unlocks Knative limitations, such as being unable to mount multiple volumes: 
+* Enables all traditional Deployment/Pod configuration not available via Knative, such as being unable to mount multiple volumes:
 ** Beneficial for applications requiring complex configurations or multiple storage mounts.
 
 Disadvantages:
@@ -49,5 +46,3 @@ Disadvantages:
 * Does not support automatic scaling:
 ** Does not support automatic scaling down to zero resources when idle.
 ** Might result in higher costs during periods of low traffic.
-
-* Requires manual management of scaling.

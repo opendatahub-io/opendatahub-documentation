@@ -26,18 +26,27 @@ endif::[]
 * You have enabled the single-model serving platform.
 ifdef::self-managed[]
 ifndef::disconnected[]
-* To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
 endif::[]
 ifdef::disconnected[]
-* To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
 endif::[]
 endif::[]
 ifdef::cloud-service[]
-* To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
 endif::[]
 ifdef::upstream[]
-* To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider.
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider.
 endif::[]
+// links pls
+ifdef::upstream[]
+* * (Standard deployments only) You have set up your cluster as described in link:{odhdocshome}/serving-models/working-with-accelerator-profiles_accelerators#working-with-accelerator-profiles_accelerators[Preparing your cluster for standard mode deployment^]
+endif::[]
+ifndef::upstream[]
+* (Standard deployments only) You have set up your cluster as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-single-node-openshift-using-kserve-raw-deployment-mode_serving-large-models[Preparing your cluster for standard mode deployment^].
+endif::[]
+
+
 * You have created a data science project.
 * You have access to S3-compatible object storage.
 * For the model that you want to deploy, you know the associated folder path in your S3-compatible object storage bucket.
@@ -99,6 +108,13 @@ The *Deploy model* dialog opens.
 . In the *Model deployment name* field, enter a unique name for the model that you are deploying.
 . In the *Serving runtime* field, select an enabled runtime.
 . From the *Model framework (name - version)* list, select a value.
+ifndef::upstream[]
+. From the **Deployment mode** list, select standard or advanced. For more information about deployment modes, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#about-kserve-deployment-modes_serving-large-models[About KServe deployment modes].
+endif::[]
+ifdef::upstream[]
+. From the **Deployment mode** list, select standard or advanced. For more information about deployment modes, see link:{odhdocshome}/serving-models/#about-kserve-deployment-modes_serving-large-models[About KServe deployment modes].
+endif::[]
+. From the **Deployment mode** list, select standard or advanced. For more information about deployment modes, see link:[About KServe deployment modes].
 . In the *Number of model server replicas to deploy* field, specify a value.
 . From the *Model server size* list, select a value.
 . The following options are only available if you have enabled accelerator support on your cluster and created an accelerator profile:
