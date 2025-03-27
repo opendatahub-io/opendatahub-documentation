@@ -8,7 +8,7 @@ Upload training data to use with TrustyAI for bias monitoring or data drift dete
 
 .Prerequisites
 
-* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project that contains the deployed models.
+* Your cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project that contains the deployed models.
 
 * You have training data to upload.
 
@@ -37,22 +37,22 @@ curl -sk $TRUSTY_ROUTE/data/upload  \
   -d @data/training_data.json
 ----
 
-. The message `1000 datapoints successfully added to gaussian-credit-model data` appears if the upload was successful.
+. The following message appears if the upload was successful: `1000 datapoints successfully added to gaussian-credit-model data`.
 
 .Verification
 
-. Verify that TrustyAI has received the data via the `/info` endpoint by inputting this query:
+* Verify that TrustyAI has received the data via the `/info` endpoint by inputting this query:
 +
 ----
 curl -H 'Authorization: Bearer ${TOKEN}' \
     $TRUSTY_ROUTE/info | jq ".[0].data"
 ----
 
-. The output returns a json file containing information for the model:
+The output returns a json file containing the following information for the model:
 
-.. The names, data types, and positions of fields in the input and output.
+* The names, data types, and positions of fields in the input and output.
 
-.. The observed values that these fields take (usually `null`, because there are too many unique feature values to enumerate).
+* The observed values that these fields take. This value is usually `null` because there are too many unique feature values to enumerate.
 
-.. The total number of input-output pairs observed (it should be `1000`).
+* The total number of input-output pairs observed. It should be `1000`.
 
