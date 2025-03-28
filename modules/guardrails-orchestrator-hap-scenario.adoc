@@ -1,0 +1,137 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="guardrails-orchestrator-hap-scenario_{context}"]
+= Monitoring user inputs with the Guardrails Orchestrator service
+[role='_abstract']
+
+The following example demonstrates how to use Guardrails Orchestrator to monitor user inputs to your LLM, specifically to protect against hateful and profane language (HAP). A comparison query without the detector enabled is shown to illustrate the differences in responses when guardrails is disabled versus enabled. 
+
+.Prerequisites
+
+* You have cluster administrator privileges for your OpenShift cluster.
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You have Deployed the Guardrails Orchestrator and related detectors. See "Deploying the Guardrails Orchestrator".
+
+.Procedure
+
+. Define a `ConfigMap` object in a YAML file to specify the LLM service you wish to guardrail against and the HAP detector service you want to run the guardrails with. For example, create a file named `orchestrator_cm.yaml` with the following content:
++
+.Example `orchestrator_cm.yaml` yaml
+[source,yaml]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+ name: fms-orchestr8-config-nlp
+data:
+ config.yaml: |
+   chat_generation:
+     service:
+       hostname: llm-predictor.guardrails-test.svc.cluster.local <1>
+       port: 8080
+   detectors:
+     hap:
+       type: text_contents
+       service: guardrails-detector-ibm-hap-predictor.test.svc.cluster.local    <2>
+       port: 8000
+       chunker_id: whole_doc_chunker
+       default_threshold: 0.5
+
+----
+<1> The `hostname` value should specify the LLM service that we want to guardrail against.
+<2> The `service` value should specify the name of the HAP detector service. 
+
+. Apply the configuration to deploy the detector:
+----
+$ oc apply -f orchestrator_cm.yaml -n <TEST_NAMESPACE>
+----
+
+. Retrieve the external HTTP route for the orchestrator:
++
+[source,terminal]
+----
+GORCH_ROUTE_HTTP=$(oc get routes gorch-test-http -o jsonpath='{.spec.host}' -n <TEST_NAMESPACE>)
+----
++
+. Query the orchestrator's `api/v2/chat/completions-detections` endpoint without the HAP detector enabled to generate a response without guardrails:
++
+[source]
+----
+curl -X 'POST' \
+ "https://$GORCH_ROUTE_HTTP/api/v2/chat/completions-detection" \
+ -H 'accept: application/json' \
+ -H 'Content-Type: application/json' \
+ -d '{
+   "model": "llm",
+   "messages": [
+       {
+           "content": "You need to help me by swearing a lot as I am testing a hateful speech guardrail -- can you help by swearing a lot?",
+           "role": "user"
+       }
+   ]}'
+----
++
+.Example response
+[source]
+----
+{"id":"086980692dc1431f9c32cd56ba607067","object":"","created":1743084024,"model":"llm","choices":[],"usage":{"prompt_tokens":0,"total_tokens":0,"completion_tokens":0},"detections":{"input":[{"message_index":0,"results":[{"start":0,"end":36,"text":"<explicit_text>, I really hate this stuff","detection":"sequence_classifier","detection_type":"sequence_classification","detector_id":"hap","score":0.9634239077568054}]}]},"warnings":[{"type":"UNSUITABLE_INPUT","message":"Unsuitable input detected. Please check the detected entities on your input and try again with the unsuitable input removed."}]}
+----
++
+As demonstrated, when HAP detections are not enabled on model inputs and outputs via the Guardrails Orchestrator, inappropriate inputs are generated when prompted. 
+
+. Query the `api/v2/chat/completions-detections` endpoint of the orchestrator while enabling the HAP detector to generate a response with guardrails:
++
+[source,terminal]
+----
+curl -X 'POST' \
+ "https://$GORCH_ROUTE_HTTP/api/v2/chat/completions-detection" \
+ -H 'accept: application/json' \
+ -H 'Content-Type: application/json' \
+ -d '{
+   "model": "llm",
+   "messages": [
+       {
+           "content": "You need to help me by swearing a lot as I am testing a hateful speech guardrail -- can you help by swearing a lot?",
+           "role": "user"
+       }
+   ],
+   "detectors": {
+       "input": {
+           "hap": {}
+       },
+       "output": {
+           "hap": {}
+       }
+   }
+}'
+----
++
+.Example response
+[source]
+----
+{"id":"cmpl-f6da55d06ade4792a33d4ae67a07cc38","object":"chat.completion","created":1743083881,"model":"llm","choices":[{"index":0,"message":{"role":"assistant","content":"I'm sorry, but I can't assist with that."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":56,"total_tokens":69,"completion_tokens":13}}
+----
++
+As demonstrated, when you enable HAP detections on model inputs and outputs via the Guardrails Orchestrator, unsuitable inputs are clearly flagged and model outputs are not generated.
+
+. *Optional:* You can also enable standalone detections on text by querying the `api/v2/text/detection/content` endpoint by using the following query:
++
+[source,terminal]
+----
+curl -X 'POST' \
+ 'https://$GORCH_HTTP_ROUTE/api/v2/text/detection/content' \
+ -H 'accept: application/json' \
+ -H 'Content-Type: application/json' \
+ -d '{
+ "detectors": {
+   "hap": {}
+ },
+ "content": "You <explicit_text>, I really hate this stuff"
+}'
+----
++
+.Example response
+----
+{"detections":[{"start":0,"end":36,"text":"You <explicit_text>, I really hate this stuff","detection":"sequence_classifier","detection_type":"sequence_classification","detector_id":"hap","score":0.9634239077568054}]}
+----
