@@ -1,0 +1,32 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="guardrails-orchestrator-standalone-detection-scenario_{context}"]
+= Performing standalone detections of behavior
+[role='_abstract']
+
+With the HAP detector enabled, you can also perform standalone detections of this type of behavior. Standalone detection relies on text data rather than user input to the model.
+
+.Prerequisites
+* You have completed Steps 1-3 of the "Monitoring user inputs with the Guardrails Orchestrator service" example. 
+
+. Query to detect instances of HAP:
++
+[source,terminal]
+----
+curl -X 'POST' \
+ 'https://$GORCH_HTTP_ROUTE/api/v2/text/detection/content' \
+ -H 'accept: application/json' \
+ -H 'Content-Type: application/json' \
+ -d '{
+ "detectors": {
+   "hap": {}
+ },
+ "content": "You <explicit_text>, I really hate this stuff"
+}'
+----
++
+.Example response
+----
+{"detections":[{"start":0,"end":36,"text":"You <explicit_text>, I really hate this stuff","detection":"sequence_classifier","detection_type":"sequence_classification","detector_id":"hap","score":0.9634239077568054}]}
+----
