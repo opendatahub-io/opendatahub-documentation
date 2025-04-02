@@ -4,7 +4,18 @@
 = Dashboard configuration options
 
 [role='_abstract']
-The {productname-short} dashboard includes a set of core features enabled by default that are designed to work for most scenarios. Administrators can configure the {productname-short} dashboard from the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+The {productname-short} dashboard includes a set of core features enabled by default that are designed to work for most scenarios. 
+Administrators can configure the {productname-short} dashboard from the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+Features denoted with `(Technology Preview)` in this table are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete. 
+{org-name} does not recommend using Technology Preview features in production. 
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. 
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
 
 .Dashboard feature configuration options
 [cols="32%,10%,58%","header"]
@@ -12,6 +23,8 @@ The {productname-short} dashboard includes a set of core features enabled by def
 | Feature | Default | Description
 | `dashboardConfig:
 disableAcceleratorProfiles` | `false`| Shows the *Settings → Accelerator profiles* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
+
+Note that this option is superseded by the `disableHardwareProfiles` option.
 | `dashboardConfig:
 disableBYONImageStream` | `false` | Shows the *Settings → Notebook images* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
 | `dashboardConfig:
@@ -20,6 +33,14 @@ disableClusterManager` | `false` | Shows the *Settings → Cluster settings* opt
 disableCustomServingRuntimes` | `false` | Shows the *Settings → Serving runtimes* option in the dashboard navigation menu. To hide this menu option, set the value to `true`. 
 | `dashboardConfig:
 disableDistributedWorkloads` | `false` | Shows the *Distributed workloads* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
+| `dashboardConfig:
+disableHardwareProfiles` (Technology Preview) | `true` | Hides the *Settings → Hardware profiles* option in the dashboard navigation menu, and shows the *Settings → Accelerator profiles* option if that option is enabled. 
+
+To show the *Settings → Hardware profiles* option in the dashboard navigation men, set the `disableHardwareProfiles` value to `false`.
+
+If both options are enabled, the `disableHardwareProfiles` option overrides the `disableAcceleratorProfiles` option.
+
+Hardware profiles is a Technology Preview feature in this {productname-short} release.
 | `dashboardConfig:
 disableHome` | `false` | Shows the *Home* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
 | `dashboardConfig:
