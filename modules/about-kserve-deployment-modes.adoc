@@ -5,9 +5,9 @@
 
 You can deploy models in either **Advanced** or **Standard** deployment mode.
 
-Advanced deployment mode uses KNative Serverless. By default, KServe integrates with {org-name} OpenShift Serverless and Red Hat OpenShift Service Mesh to deploy models on the single-model serving platform. {org-name} Serverless is based on the open source link:https://knative.dev/docs/[Knative^] project and requires the {org-name} OpenShift Serverless Operator.
+Advanced deployment mode uses Knative Serverless. By default, KServe integrates with {org-name} OpenShift Serverless and Red Hat OpenShift Service Mesh to deploy models on the single-model serving platform. {org-name} Serverless is based on the open source link:https://knative.dev/docs/[Knative^] project and requires the {org-name} OpenShift Serverless Operator.
 
-Alternatively, you can use Standard deployment mode, which uses the KNative RawDeployment mode and does not require the {org-name} OpenShift Serverless Operator. 
+Alternatively, you can use Standard deployment mode, which uses the Knative RawDeployment mode and does not require the {org-name} OpenShift Serverless Operator. 
 
 There are both advantages and disadvantages to using each of these deployment modes:
 
@@ -38,7 +38,7 @@ Advantages:
 
 * Enables deployment with Kubernetes resources, such as `Deployment`, `Service`, `Ingress`, and `Horizontal Pod Autoscaler`, without additional dependencies like {org-name} Serverless and {org-name} Service Mesh.
 
-* Enables all traditional Deployment/Pod configuration not available via Knative, such as being unable to mount multiple volumes:
+* Enables traditional Deployment/Pod configurations not available using Knative, such as being unable to mount multiple volumes:
 ** Beneficial for applications requiring complex configurations or multiple storage mounts.
 
 Disadvantages:
