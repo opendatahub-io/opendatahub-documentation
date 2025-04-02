@@ -87,3 +87,20 @@ Previously, cluster administrators used the `groupsConfig` option in the `OdhDas
 |`spec.allowedGroups`
 
 |===
+
+*Check the status of certificate management*
+
+You can use self-signed certificates in {productname-short}.
+
+ifdef::upstream[]
+After you upgrade, check the management status for Certificate Authority (CA) bundles as described in link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding how {productname-short} handles certificates].
+endif::[]
+
+ifndef::upstream[]
+ifdef::disconnected[]
+After you upgrade, check the management status for Certificate Authority (CA) bundles as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
+endif::[]
+ifndef::disconnected[]
+After you upgrade, check the management status for Certificate Authority (CA) bundles as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/working-with-certificates_certs[Working with certificates].
+endif::[]
+endif::[]
