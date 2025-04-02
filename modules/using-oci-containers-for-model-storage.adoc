@@ -5,7 +5,9 @@
 
 [role='_abstract']
 
-As an alternative to storing a model in an S3 bucket or URI, you can upload models to Open Container Initiative (OCI) containers. Using OCI containers for model storage can help you:
+As an alternative to storing a model in an S3 bucket or URI, you can upload models to Open Container Initiative (OCI) containers. Deploying models from OCI containers is also known as modelcars in KServe.
+
+Using OCI containers for model storage can help you:
 
 * Reduce startup times by avoiding downloading the same model multiple times.
 * Reduce disk space usage by reducing the number of models downloaded locally.
@@ -13,22 +15,20 @@ As an alternative to storing a model in an S3 bucket or URI, you can upload mode
 
 Using OCI containers for model storage involves the following tasks:
 
-* Storing a model in an OCI image
-* Deploying a model from an OCI image
-
+* Storing a model in an OCI image.
+* Deploying a model from an OCI image by using either the user interface or the command line interface. To deploy a model by using:
 ifndef::upstream[]
-[IMPORTANT]
-====
-ifdef::self-managed[]
-Using OCI containers for model storage is currently available in {productname-long} {vernum} as a Technology Preview feature.
+** The user interface, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+** The command line interface, see link:{rhoaidocshome}{default-format-url}serving_models/serving-large-models_serving-large-models#deploying-model-stored-in-oci-image_serving-large-models[Deploying a model stored in an OCI image by using the CLI].
 endif::[]
-ifdef::cloud-service[]
-Using OCI containers for model storage is currently available in {productname-long} as a Technology Preview feature.
+ifdef::upstream[]
+** The user interface, see link:{odhdocshome}/serving-models/#deploying-models-using-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+** The command line interface, see link:{odhdocshome}/serving-models/#deploying-model-stored-in-oci-image_serving-large-models[Deploying a model stored in an OCI image by using the CLI].
 endif::[]
-Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
-{org-name} does not recommend using them in production.
-These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
 
-For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
-====
+
+ifdef::upstream[]
+[role='_additional-resources']
+.Additional resources
+* link:https://kserve.github.io/website/latest/modelserving/storage/oci/[Serving models with OCI images]
 endif::[]

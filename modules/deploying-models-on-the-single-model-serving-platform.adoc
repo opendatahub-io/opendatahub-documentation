@@ -40,7 +40,7 @@ ifdef::upstream[]
 endif::[]
 * You have created a data science project.
 * You have access to S3-compatible object storage.
-* For the model that you want to deploy, you know the associated folder path in your S3-compatible object storage bucket.
+* For the model that you want to deploy, you know the associated URI in your S3-compatible object storage bucket or Open Container Initiative (OCI) container.
 * To use the Caikit-TGIS runtime, you have converted your model to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
 ifndef::upstream[]
 * If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. If you use NVIDIA GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]. If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#amd-gpu-integration_managing-rhoai[AMD GPU integration^].
@@ -115,16 +115,17 @@ The *Deploy model* dialog opens.
 * *To use an existing connection*
 .. Select *Existing connection*.
 .. From the *Name* list, select a connection that you previously defined.
-.. In the *Path* field, enter the folder path that contains the model in your specified data source.
+... *For S3-compatible object storage*: In the *Path* field, enter the folder path that contains the model in your specified data source.
 ifdef::self-managed,cloud-service[]
 +
 IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
 endif::[]
+... *For Open Container Image connections*: In the *OCI storage location* field, enter the model URI where the model is located.
 
 * *To use a new connection* 
 ... To define a new connection that your model can access, select *New connection*.
 +
-. In the *Add connection* modal, select a *Connection type*. The *S3 compatible object storage* and *URI* options are pre-installed connection types. Additional options might be available if your {productname-short} administrator added them.
+. In the *Add connection* modal, select a *Connection type*. The *OCI-compliant registry*, *S3 compatible object storage*, and *URI* options are pre-installed connection types. Additional options might be available if your {productname-short} administrator added them.
 +
 The *Add connection* form opens with fields specific to the connection type that you selected.
 ... Fill in the connection detail fields.
