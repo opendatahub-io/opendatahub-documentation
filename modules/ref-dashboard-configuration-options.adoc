@@ -54,8 +54,15 @@ disableKServeAuth` | `false` | Enables the ability to use authentication with KS
 | `dashboardConfig:
 disableKServeMetrics` | `false` | Enables the ability to view KServe metrics. To disable this ability, set the value to `true`.
 | `dashboardConfig:
-disableKServeRaw` | `false` | Shows the *Deployment mode* list in the *Deploy model* dialog when using the single model-serving platform, and shows the *Default deployment mode* list in the *Single-model serving platform* section on the *Settings → Cluster settings* page. 
-To hide these deployment-mode lists, set the value to `true`.
+disableKServeRaw` | `false` | On the *Settings → Cluster settings* page, in the *Single-model serving platform* section, shows the *Default deployment mode* list. 
+
+On the *Deploy model* dialog when using the single-model serving platform: 
+
+&nbsp; &nbsp; &nbsp; - If {org-name} OpenShift Serverless is installed, shows the *Deployment mode* list.
+
+&nbsp; &nbsp; &nbsp; - If {org-name} OpenShift Serverless is not installed, hides the *Deployment mode* list, and sets the default deployment mode to *Standard*.
+
+To hide these deployment-mode lists and unset the default deployment mode when using the single-model serving platform, set the value to `true`.
 | `dashboardConfig:
 disableModelMesh` | `false` | Enables the ability to select ModelMesh as a model-serving platform. To disable this ability, set the value to `true`.
 | `dashboardConfig:
