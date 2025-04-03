@@ -3,11 +3,11 @@
 [id="enabling-speculative-decoding-and-multi-modal-inferencing_{context}"]
 = Enabling speculative decoding and multi-modal inferencing 
 
-You can configure the *vLLM ServingRuntime for KServe* runtime to use speculative decoding, a parallel processing technique to optimize inferencing time for large language models (LLMs).
+You can configure the *vLLM NVIDIA GPU ServingRuntime for KServe* runtime to use speculative decoding, a parallel processing technique to optimize inferencing time for large language models (LLMs).
 
 You can also configure the runtime to support inferencing for vision-language models (VLMs). VLMs are a subset of multi-modal models that integrate both visual and textual data.
 
-The following procedure describes customizing the *vLLM ServingRuntime for KServe* runtime for speculative decoding and multi-modal inferencing.
+The following procedure describes customizing the *vLLM NVIDIA GPU ServingRuntime for KServe* runtime for speculative decoding and multi-modal inferencing.
 
 [role='_abstract']
 
@@ -19,8 +19,8 @@ The following procedure describes customizing the *vLLM ServingRuntime for KServ
 
 .Procedure
 
-. Follow the steps to deploy a model as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Depyoing models on the single-model serving platform].
-. In the *Serving runtime* field, select the *vLLM ServingRuntime for KServe* runtime.
+. Follow the steps to deploy a model as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+. In the *Serving runtime* field, select the *vLLM NVIDIA GPU ServingRuntime for KServe* runtime.
 . To configure the vLLM model-serving runtime for speculative decoding by matching n-grams in the prompt, add the following arguments under *Additional serving runtime arguments* in the *Configuration parameters* section:
 +
 [source]
