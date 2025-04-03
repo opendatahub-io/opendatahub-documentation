@@ -1,11 +1,11 @@
 :_module-type: PROCEDURE
 
 [id="deploying-models-on-single-node-openshift-using-kserve-raw-deployment-mode_{context}"]
-= Preparing your cluster for standard mode deployment
+= Deploying models on single node {openshift-platform} using KServe raw deployment mode
 
 [role='_abstract']
 
-You can deploy a machine learning model by using standard deployment mode, which is based on KServe RawDeployment mode on {openshift-platform}. Standard mode offers several advantages over advanced, such as the ability to mount multiple volumes. 
+You can deploy a machine learning model on single node {openshift-platform} by using standard deployment mode, which is based on KServe RawDeployment mode. Standard mode offers several advantages over advanced, such as the ability to mount multiple volumes. 
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -14,7 +14,7 @@ You can deploy a machine learning model by using standard deployment mode, which
 * You have installed the {productname-long} (RHOAI) Operator.
 * You have installed the OpenShift command-line interface (CLI). For more information about installing the OpenShift command-line interface (CLI), see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#cli-getting-started[Getting started with the OpenShift CLI].
 * You have installed KServe.
-//* You have enabled the single-model serving platform.
+* You have enabled the single-model serving platform in Standard deployment mode.
 * You have access to S3-compatible object storage.
 * For the model that you want to deploy, you know the associated folder path in your S3-compatible object storage bucket.
 * To use the Caikit-TGIS runtime, you have converted your model to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
@@ -107,6 +107,163 @@ If you are deploying a machine learning model in a disconnected deployment, add 
 ----
 $ oc apply -f secret.yaml -n <namespace>
 ----
+. Create a service account: 
+.. Create a YAML file to contain your service account and add the following YAML code:
++
+[source]
+----
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: models-bucket-sa
+secrets:
+- name: s3creds
+----
+For information about service accounts, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/understanding-and-creating-service-accounts[Understanding and creating service accounts].
+.. Save the file with the file name *serviceAccount.yaml*.
+.. Apply the *serviceAccount.yaml* file:
++
+[source]
+----
+$ oc apply -f serviceAccount.yaml -n <namespace>
+----
 
-// . Verification
-// How do they verify that everything is set up correctly?
+. Create a YAML file for the serving runtime to define the container image that will serve your model predictions. Here is an example using the OpenVino Model Server:
++
+[source]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  name: ovms-runtime
+spec:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8888"
+  containers:
+    - args:
+        - --model_name={{.Name}}
+        - --port=8001
+        - --rest_port=8888
+        - --model_path=/mnt/models
+        - --file_system_poll_wait_seconds=0
+        - --grpc_bind_address=0.0.0.0
+        - --rest_bind_address=0.0.0.0
+        - --target_device=AUTO
+        - --metrics_enable
+      image: quay.io/modh/openvino_model_server@sha256:6c7795279f9075bebfcd9aecbb4a4ce4177eec41fb3f3e1f1079ce6309b7ae45
+      name: kserve-container
+      ports:
+        - containerPort: 8888
+          protocol: TCP
+  multiModel: false
+  protocolVersions:
+    - v2
+    - grpc-v2
+  supportedModelFormats:
+    - autoSelect: true
+      name: openvino_ir
+      version: opset13
+    - name: onnx
+      version: "1"
+    - autoSelect: true
+      name: tensorflow
+      version: "1"
+    - autoSelect: true
+      name: tensorflow
+      version: "2"
+    - autoSelect: true
+      name: paddle
+      version: "2"
+    - autoSelect: true
+      name: pytorch
+      version: "2"
+----
+
+.. If you are using the OpenVINO Model Server example above, ensure that you insert the correct values required for any placeholders in the YAML code.
+.. Save the file with an appropriate file name.
+.. Apply the file containing your serving run time:
++
+[source]
+----
+$ oc apply -f <serving run time file name> -n <namespace>
+----
+
+. Create an InferenceService custom resource (CR). Create a YAML file to contain the InferenceService CR. Using the OpenVINO Model Server example used previously, here is the corresponding YAML code:
+
++
+[source]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  annotations:
+    serving.knative.openshift.io/enablePassthrough: "true"
+    sidecar.istio.io/inject: "true"
+    sidecar.istio.io/rewriteAppHTTPProbers: "true"
+    serving.kserve.io/deploymentMode: RawDeployment
+  name: <InferenceService-Name>
+spec:
+  predictor:
+    scaleMetric:
+    minReplicas: 1
+    scaleTarget:
+    canaryTrafficPercent:
+    serviceAccountName: <serviceAccountName>
+    model:
+      env: []
+      volumeMounts: []
+      modelFormat:
+        name: onnx
+      runtime: ovms-runtime
+      storageUri: s3://<bucket_name>/<model_directory_path>
+      resources:
+        requests:
+          memory: 5Gi
+    volumes: []
+----
+
+.. In your YAML code, ensure the following values are set correctly:
+
+* `serving.kserve.io/deploymentMode` must contain the value `RawDeployment`.
+* `modelFormat` must contain the value for your model format, such as `onnx`.
+* `storageUri` must contain the value for your model s3 storage directory, for example `s3://<bucket_name>/<model_directory_path>`.
+* `runtime` must contain the value for the name of your serving runtime, for example, `ovms-runtime`.
+
+.. Save the file with an appropriate file name.
+.. Apply the file containing your InferenceService CR:
++
+[source]
+----
+$ oc apply -f <InferenceService CR file name> -n <namespace>
+----
+
+. Verify that all pods are running in your cluster:
+
++
+[source]
+----
+$ oc get pods -n <namespace>
+----
+Example output:
+
++
+[source]
+----
+NAME READY STATUS RESTARTS AGE 
+<isvc_name>-predictor-xxxxx-2mr5l 1/1 Running 2 165m
+console-698d866b78-m87pm 1/1 Running 2 165m
+----
+
+. After you verify that all pods are running, forward the service port to your local machine:
+
++
+[source]
+----
+$ oc -n <namespace> port-forward pod/<pod-name> <local_port>:<remote_port>
+----
+Ensure that you replace `<namespace>`, `<pod-name>`, `<local_port>`, `<remote_port>` (this is the model server port, for example, `8888`) with values appropriate to your deployment.
+
+
+.Verification
+* Use your preferred client library or tool to send requests to the `localhost` inference URL.
