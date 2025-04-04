@@ -62,7 +62,16 @@ $ pip install kfp
 .. Install any other dependencies that are required for your pipeline.
 .. Build your data science pipeline in Python code.
 +
-For example, if you use NVIDIA GPUs, create a file named `compile_example.py` with the following content:
+For example, create a file named `compile_example.py` with the following content.
+
+ifdef::upstream[]
++
+[NOTE]
+--
+If you copy and paste the following code example, remember to remove the _callouts_, which are not part of the code.
+The callouts (parenthetical numbers, highlighted in bold font in this document) map the relevant line of code to an explanatory note in the text immediately after the code example. 
+--
+endif::[]
 +
 [source,Python]
 ----
@@ -79,7 +88,6 @@ def ray_fn():
    import ray <1>
    from codeflare_sdk import Cluster, ClusterConfiguration, generate_cert <2>
 
-   # If you do not use NVIDIA GPUs, substitute “nvidia.com/gpu” with the correct value for your accelerator
    cluster = Cluster( <3>
        ClusterConfiguration(
            namespace="my_project", <4>
@@ -149,7 +157,8 @@ if __name__ == '__main__': <14>
 <3> Specifies the Ray cluster configuration: replace these example values with the values for your Ray cluster.
 <4> Optional: Specifies the project where the Ray cluster is created. Replace the example value with the name of your project. If you omit this line, the Ray cluster is created in the current project.
 <5> Optional: Specifies the requested accelerators for the Ray cluster (in this example, 1 NVIDIA GPU).
-If no accelerators are required, set the value to 0 or omit the line. 
+If you do not use NVIDIA GPUs, replace `nvidia.com/gpu` with the correct value for your accelerator; for example, specify `amd.com/gpu` for AMD GPUs.
+If no accelerators are required, set the value to 0 or omit the line.
 Note: To specify the requested accelerators for the Ray cluster, use the `worker_extended_resource_requests` parameter instead of the deprecated `num_gpus` parameter.
 For more details, see the link:https://github.com/project-codeflare/codeflare-sdk/blob/v0.18.0/src/codeflare_sdk/cluster/config.py#L43-L73[CodeFlare SDK documentation].
 <6> Specifies the location of the Ray cluster image. 
