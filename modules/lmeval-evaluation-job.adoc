@@ -22,7 +22,7 @@ The sample `LMEvalJob` object contains the following features:
 
 * The `google/flan-t5-base` model from Hugging Face. 
 
-* The dataset from the `wnli` card, a subset of the GLUE (General Language Understanding Evaluation) benchmark evaluation framework from Hugging Face. For more information about the `wnli` Unitxt card, see the Unitxt website.
+* The dataset from the `wnli` card, a subset of the GLUE (General Language Understanding Evaluation) benchmark evaluation framework from Hugging Face. For more information about the `wnli` Unitxt card, see the link:https://www.unitxt.ai/[Unitxt website].
 
 * The following default parameters for the `multi_class.relation` Unitxt task: `f1_micro`, `f1_macro`, and `accuracy`. This template can be found on the Unitxt website: click *Catalog*, then click *Tasks* and select *Classification* from the menu.
 
@@ -91,103 +91,4 @@ The command returns results similar to the following example:
 * The `f1_micro`, `f1_macro`, and `accuracy` scores are 0.56, 0.36, and 0.56. 
 * The full results are stored in the `.status.results` of the `LMEvalJob` object as a JSON document. 
 * The command above only retrieves the results field of the JSON document.
-
-
-.LMEvalJob properties
-
-The following table lists each property in the `LMEvalJob` and its usage:
-
-.LM-Eval properties
-[cols="2,5"]
-|===
-| Parameter | Description
-
-| `model`
-
-a| Specifies which model type or provider is evaluated. This field directly maps to the `--model` argument of the `lm-evaluation-harness`. The model types and providers that you can use include:
-
-* `hf`: HuggingFace models
-* `openai-completions`: OpenAI Completions API models
-* `openai-chat-completions`: OpenAI Chat Completions API models
-* `local-completions` and `local-chat-completions`: OpenAI API-compatible servers
-* `textsynth`: TextSynth APIs
-
-| `modelArgs`
-a| A list of paired name and value arguments for the model type. Each model type or provider supports different arguments. You can find further details in the models section of the LM Evaluation Harness library on GitHub.
-
-* `hf` (HuggingFace)
-* `local-completions` (An OpenAI API-compatible server)
-* `local-chat-completions` (An OpenAI API-compatible server)
-* `openai-completions` (OpenAI Completions API models)
-* `openai-chat-completions` (ChatCompletions API models)
-* `textsynth` (TextSynth APIs)
-
-| `taskList.taskNames`
-| Specifies a list of tasks supported by `lm-evaluation-harness`.
-
-| `taskList.taskRecipes`
-a| Specifies the task using the Unitxt recipe format:
-
-* `card`: Use the `name` to specify a Unitxt card or `custom` for a custom card.
-
-
-** `name`: Specifies a Unitxt card from the Unitxt catalog. Use the card ID as the value. For example, the ID of the Wnli card is `cards.wnli`.
-** `custom`: Defines and uses a custom card. The value is a JSON object that contains the custom dataset. For more information about creating a custom card, see the Unitxt documentation on their website. If the dataset used by the custom card requires an API key from an environment variable or a persistent volume, configure the necessary resources in the `pod` field.
-* `template`: Specifies a Unitxt template from the Unitxt catalog. Use the template ID as the value.
-* `task` (optional): Specifies a Unitxt task from the Unitxt catalog. Use the task ID as the value. A Unitxt card has a predefined task. Only specify a value for this if you want to run a different task.
-* `metrics` (optional):  Specifies a Unitxt task from the Unitxt catalog. Use the metric ID as the value. A Unitxt task has a set of pre-defined metrics. Only specify a set of metrics if you need different metrics.
-* `format` (optional): Specifies a Unitxt format from the Unitxt catalog. Use the format ID as the value.
-* `loaderLimit` (optional): Specifies the maximum number of instances per stream to be returned from the loader. You can use this parameter to reduce loading time in large datasets.
-* `numDemos` (optional): Number of few-shot to be used.
-* `demosPoolSize` (optional): Size of the few-shot pool.
-
-| `numFewShot`
-| Sets the number of few-shot examples to place in context. If you are using a task from Unitxt, do not use this field. Use `numDemos` under the `taskRecipes` instead.
-
-| `limit`
-| Set a limit to run the tasks instead of running the entire dataset. Accepts either an integer or a float between 0.0 and 1.0.
-
-| `genArgs`
-| Maps to the `--gen_kwargs` parameter for the `lm-evaluation-harness`. For more information, see the LM Evaluation Harness documentation on GitHub.
-
-| `logSamples`
-| If this flag is passed, then the model outputs and the text fed into the model will be saved at per-document granularity.
-
-| `batchSize`
-| Specifies the batch size for the evaluation in integer format. The `auto:N` batch size is not used for API models, but numeric batch sizes are used for APIs. 
-
-| `pod`
-a| Specifies extra information for the `lm-eval` job pod:
-
-* `container`: Specifies additional container settings for the `lm-eval` container.
-
-** `env`: Specifies environment variables. This parameter uses the `EnvVar` data structure of Kubernetes.
-
-** `volumeMounts`: Mounts the volumes into the `lm-eval` container.
-
-** `resources`: Specifies the resources for the `lm-eval` container.
-* `volumes`: Specifies the volume information for the `lm-eval` and other containers. This parameter uses the `Volume` data structure of Kubernetes.
-* `sideCars`: A list of containers that run along with the `lm-eval` container. It uses the `Container` data structure of Kubernetes.
-
-| `outputs`
-| This parameter defines a custom output location to store the the evaluation results. Only Persistent Volume Claims (PVC) are supported.
-
-| `outputs.pvcManaged`
-a| Creates an operator-managed PVC to store the job results. The PVC is named `<job-name>-pvc` and is owned by the `LMEvalJob`. After the job finishes, the PVC is still be available, but it is deleted with the `LMEvalJob`. Supports the following fields: 
-
-* `size`: The PVC size, compatible with standard PVC syntax (for example, 5Gi)
-
-| `outputs.pvcName`
-| Binds an existing PVC to a job by specifying its name. The PVC must be created separately and must already exist when creating the job.
-
-| `allowOnline`
-| If this parameter is set to `true`, the LMEval job downloads artifacts as needed (for example, models, datasets or tokenizers). If set to `false`, artifacts are not downloaded and are pulled from local storage instead. This setting is disabled by default. If you want to enable `allowOnline` mode, you can patch the TrustyAI operator `ConfigMap`. 
-
-| `allowCodeExecution`
-| If this parameter is set to `true`, the LMEval job executes the necessary code for preparing models or datasets. If set to `false` it does not execute downloaded code.
-
-| `offline`
-| Mount a PVC as the local storage for models and datasets.
-
-|===
 
