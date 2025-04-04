@@ -3,12 +3,15 @@
 [id="deploying-models-on-single-node-openshift-using-kserve-raw-deployment-mode_{context}"]
 = Deploying models on single node {openshift-platform} using KServe raw deployment mode
 
+// [Em] - This topic has been removed with the GA of KServe raw in the dashboard. See https://issues.redhat.com/browse/RHOAIENG-20955  
+
 [role='_abstract']
-You can deploy a machine learning model by using KServe raw deployment mode on single node {openshift-platform}. Raw deployment mode offers several advantages over Knative, such as the ability to mount multiple volumes.
+
+You can deploy a machine learning model on single node {openshift-platform} by using standard deployment mode, which is based on KServe RawDeployment mode. Standard mode offers several advantages over advanced, such as the ability to mount multiple volumes.
 
 [IMPORTANT]
 ====
-Deploying a machine learning model using KServe raw deployment mode on single node OpenShift is a Limited Availability feature. Limited Availability means that you can install and receive support for the feature only with specific approval from the {org-name} AI Business Unit. Without such approval, the feature is unsupported.
+Deploying a machine learning model using KServe standard deployment mode on single node OpenShift is a Limited Availability feature. Limited Availability means that you can install and receive support for the feature only with specific approval from the {org-name} AI Business Unit. Without such approval, the feature is unsupported.
 ====
 
 .Prerequisites
@@ -18,7 +21,7 @@ Deploying a machine learning model using KServe raw deployment mode on single no
 * You have installed the {productname-long} (RHOAI) Operator.
 * You have installed the OpenShift command-line interface (CLI). For more information about installing the OpenShift command-line interface (CLI), see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#cli-getting-started[Getting started with the OpenShift CLI].
 * You have installed KServe.
-//* You have enabled the single-model serving platform.
+* You have enabled the single-model serving platform in standard deployment mode.
 * You have access to S3-compatible object storage.
 * For the model that you want to deploy, you know the associated folder path in your S3-compatible object storage bucket.
 * To use the Caikit-TGIS runtime, you have converted your model to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
@@ -74,11 +77,18 @@ For information about creating projects, see link:https://docs.redhat.com/en/doc
 ----
   kserve:
     defaultDeploymentMode: RawDeployment
+    RawDeploymentServiceConfig: Headed
     managementState: Managed
     serving:
       managementState: Removed
       name: knative-serving
 ----
++
+[NOTE]
+====
+The configuration shown uses `Headed` configuration for handling load balancing requests, which does not require a dedicated load balancer. For environments that have a dedicated load balancer to handle requests from outside the cluster, set `RawDeploymentServiceConfig` to `Headless`.
+====
++
 .. Click *Create*.
 +
 . Create a secret file: 
@@ -111,7 +121,6 @@ If you are deploying a machine learning model in a disconnected deployment, add 
 ----
 $ oc apply -f secret.yaml -n <namespace>
 ----
-
 . Create a service account: 
 .. Create a YAML file to contain your service account and add the following YAML code:
 +
@@ -272,6 +281,3 @@ Ensure that you replace `<namespace>`, `<pod-name>`, `<local_port>`, `<remote_po
 
 .Verification
 * Use your preferred client library or tool to send requests to the `localhost` inference URL.
-
-// [role="_additional-resources"]
-// .Additional resources
