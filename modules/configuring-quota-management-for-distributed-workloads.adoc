@@ -50,25 +50,26 @@ endif::[]
 
 ifndef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
-If you use NVIDIA GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]. If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#amd-gpu-integration_managing-rhoai[AMD GPU integration^].
+If you use NVIDIA GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]. 
+If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#amd-gpu-integration_managing-rhoai[AMD GPU integration^].
 +
 ifdef::self-managed[]
 [NOTE]
 ====
-In {productname-short} {vernum}, {org-name} supports only NVIDIA and AMD GPU accelerators for distributed workloads.
+In {productname-short} {vernum}, {org-name} supports only NVIDIA GPU accelerators and AMD GPU accelerators for distributed workloads.
 ====
 endif::[]
 ifdef::cloud-service[]
 [NOTE]
 ====
-In {productname-short}, {org-name} supports only NVIDIA and AMD GPU accelerators for distributed workloads.
+In {productname-short}, {org-name} supports only NVIDIA GPU accelerators and AMD GPU accelerators for distributed workloads.
 ====
 endif::[]
 endif::[]
 ifdef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support.
-This process includes installing the Node Feature Discovery Operator and the NVIDIA GPU and AMD GPU Operators.
-For more information, see https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
+This process includes installing the Node Feature Discovery Operator and the relevant GPU Operator.
+For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] for NVIDIA GPUs and link:https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/openshift-olm.html[AMD GPU Operator on {org-name} OpenShift Container Platform^] for AMD GPUs.
 endif::[]
 
 .Procedure
@@ -111,7 +112,7 @@ metadata:
 spec:
   namespaceSelector: {}  # match all.
   resourceGroups:
-  - coveredResources: ["cpu", "memory", "nvidia.com/gpu"] # If you use AMD GPUs, substitute "nvidia.com/gpu" with "amd.com/gpu"
+  - coveredResources: ["cpu", "memory", "nvidia.com/gpu"] 
     flavors:
     - name: "default-flavor"
       resources:
@@ -119,11 +120,12 @@ spec:
         nominalQuota: 9
       - name: "memory"
         nominalQuota: 36Gi
-      - name: "nvidia.com/gpu" # If you use AMD GPUs, substitute "nvidia.com/gpu" with "amd.com/gpu"
+      - name: "nvidia.com/gpu" 
         nominalQuota: 5
 ----
 +
 .. Replace the example quota values (9 CPUs, 36 GiB memory, and 5 NVIDIA GPUs) with the appropriate values for your cluster queue.
+If you use AMD GPUs, replace `nvidia.com/gpu` with `amd.com/gpu` in the example code.
 The cluster queue will start a distributed workload only if the total required resources are within these quota limits.
 +
 You must specify a quota for each resource that the user can request, even if the requested value is 0, by updating the `spec.resourceGroups` section as follows:
