@@ -1,0 +1,123 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="guardrails-orchestrator-configuring-regex_{context}"]
+= Configuring the regex detector
+[role='_abstract']
+
+The following example demonstrates how to enable the regex detector with the `GuardrailsOrchestrator` service.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You are familiar with link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-the-monitoring-stack#creating-user-defined-workload-monitoring-configmap_configuring-the-monitoring-stack[creating a config map] for monitoring a user-defined workflow. You will perform similar steps in this procedure.
+* You have set the TrustyAI component in the DSC of your OpenDataHub or RHOAI instance set to `Managed`.
+
+.Procedure
+
+. Define a `ConfigMap` object in a YAML file called  to specify the `regexDetectorImage`. For example, create a YAML file called `regex_image_cm.yaml` with the following content:
++
+.Example `regex_image_cm.yaml`
+[source,yaml]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gorch-sample-config
+data:
+  regexDetectorImage: 'https://quay.io/repository/trustyai/regex-detector/manifest/sha256:efab6cd8b637b9c35d311aaf639dfedee7d28de3ee07b412ab473deadecd3606' <1>
+---
+<1> The regex detector is a sidecar image that provides regex-based detections.
+
+. Deploy the `regex_images_cm.yaml` config map:
++
+[source,terminal]
+---
+$ oc apply -f regex_images_cm.yaml -n <TEST_NAMESPACE>
+---
+
+. Define another `ConfigMap` object to specify the `chat_generatrion`, `chunker_id`, and `detectors` services. For example, create a YAML file called `orchestrator_cm.yaml` with the following contents:
++
+.Example `orchestrator_cm.yaml`
+[source,yaml]
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fms-orchestr8-config-nlp
+data:
+  config.yaml: |
+    chat_generation:
+      service:
+        hostname: llm-predictor.guardrails-test.svc.cluster.local
+        port: 8032
+    detectors:  <1>
+      regex:
+        type: text_contents
+        service:
+            hostname: "127.0.0.1"
+            port: 8080
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.5
+---
+<1> A list of pre-configured regexes for common detection actions.
+
+. Deploy the `orchestrator_cm.yaml` config map:
++
+[source,terminal]
+---
+$ oc apply -f orchestrator_cm.yaml -n <TEST_NAMESPACE>
+---
+
+. Specify the `ConfigMap` objects you created in the `GuardrailsOrchestrator` custom resource(CR). For example,  create a YAML file named `orchestrator_cr.yaml` with the following contents:
++
+.Example `orchestrator_cr.yaml` CR
+[source,yaml]
+---
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: gorch-sample
+spec:
+  orchestratorConfig: "fms-orchestr8-config-nlp"
+  vllmGatewayConfig: "fms-orchestr8-config-gateway"
+  replicas: 1
+---
+
+. Deploy the orchestrator custom resource. This creates a service account, deployment, service, and route object in your namespace.
++
+[source,terminal]
+---
+oc apply -f orchestrator_cr.yaml -n <TEST_NAMESPACE>
+---
+
+.Verification
+. Check the readiness of the orchestrator pod:
++
+[source,terminal]
+---
+$ oc get pods -n <TEST_NAMESPACE>S
+---
+
+.Expected output
+[source,terminal]
+---
+NAME                                       READY   STATUS    RESTARTS   AGE
+gorch-test-55bf5f84d9-dd4vm                3/3     Running   0          3h53m
+llm-container-deployment-bd4d9d898-52r5j   1/1     Running   0          3h53m
+llm-predictor-5d54c877d5-rbdms             1/1     Running   0          57m
+---
+
+. Check the health of your detector and generator services by running the following command:
++
+[source,terminal]
+---
+export POD_NAME=gorch-test-55bf5f84d9-dd4vm <1> 
+export CONTAINER_NAME=gorch-test
+---
+<1> Replace this with the name of your guardrails orchestrator pod.
++
+[source,terminal]
+---
+$ oc exec -it -n <TEST_NAMESPACE> <POD_NAM>E -c <CONTAINER_NAME> -- /bin/bash
+---
