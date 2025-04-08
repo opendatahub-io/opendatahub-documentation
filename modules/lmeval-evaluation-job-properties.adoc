@@ -71,7 +71,7 @@ a| Specifies the task using the Unitxt recipe format:
 | Maps to the `--gen_kwargs` parameter for the `lm-evaluation-harness`. For more information, see the LM Evaluation Harness documentation on GitHub.
 
 | `logSamples`
-| If this flag is passed, then the model outputs and the text fed into the model will be saved at per-document granularity.
+| If this flag is passed, then the model outputs and the text fed into the model will be saved at per-prompt level.
 
 | `batchSize`
 | Specifies the batch size for the evaluation in integer format. The `auto:N` batch size is not used for API models, but numeric batch sizes are used for APIs. 
@@ -87,15 +87,15 @@ a| Specifies extra information for the `lm-eval` job pod:
 
 ** `resources`: Specifies the resources for the `lm-eval` container.
 * `volumes`: Specifies the volume information for the `lm-eval` and other containers. This parameter uses the `Volume` data structure of Kubernetes.
-* `sideCars`: A list of containers that run along with the `lm-eval` container. It uses the `Container` data structure of Kubernetes.
+* `sideCars`: A list of containers that run along with the `lm-eval` container. This parameter uses the `Container` data structure of Kubernetes.
 
 | `outputs`
 | This parameter defines a custom output location to store the the evaluation results. Only Persistent Volume Claims (PVC) are supported.
 
 | `outputs.pvcManaged`
-a| Creates an operator-managed PVC to store the job results. The PVC is named `<job-name>-pvc` and is owned by the `LMEvalJob`. After the job finishes, the PVC is still be available, but it is deleted with the `LMEvalJob`. Supports the following fields: 
+a| Creates an operator-managed PVC to store the job results. The PVC is named `<job-name>-pvc` and is owned by the `LMEvalJob`. After the job finishes, the PVC is still available, but it is deleted with the `LMEvalJob`. Supports the following fields: 
 
-* `size`: The PVC size, compatible with standard PVC syntax (for example, 5Gi)
+* `size`: The PVC size, compatible with standard PVC syntax (for example, 5Gi).
 
 | `outputs.pvcName`
 | Binds an existing PVC to a job by specifying its name. The PVC must be created separately and must already exist when creating the job.
@@ -104,7 +104,7 @@ a| Creates an operator-managed PVC to store the job results. The PVC is named `<
 | If this parameter is set to `true`, the LMEval job downloads artifacts as needed (for example, models, datasets or tokenizers). If set to `false`, artifacts are not downloaded and are pulled from local storage instead. This setting is disabled by default. If you want to enable `allowOnline` mode, you can patch the TrustyAI operator `ConfigMap`. 
 
 | `allowCodeExecution`
-| If this parameter is set to `true`, the LMEval job executes the necessary code for preparing models or datasets. If set to `false` it does not execute downloaded code. The default setting for this parameter is `false`.
+| If this parameter is set to `true`, the LMEval job runs the necessary code for preparing models or datasets. If set to `false` it does not run downloaded code. The default setting for this parameter is `false`.
 
 | `offline`
 | Mount a PVC as the local storage for models and datasets.
@@ -123,11 +123,11 @@ You can choose to set up custom Unitxt cards, templates, or system prompts. Use 
 | Parameter | Description
 
 | `taskList.custom`
-a| Defines one or more custom resources that is referenced in a task recipe. Custom cards, custom templates, and custom system prompts are currently supported:
+a| Defines one or more custom resources that is referenced in a task recipe. The following custom cards, templates, and system prompts are supported:
 
 * `cards`: Defines custom cards to use, each with a `name` and `value` field:
 ** `name`: The name of this custom card that is referenced in the `card.ref` field of a task recipe.
-** `value`: A JSON string for a custom Unitxt card which contains the custom dataset. To compose a custom card, store it as a JSON file, and use the JSON content as the value. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, you have to set up corresponding resources under the `pod` field in the `LMEvalJob`` properties table.
+** `value`: A JSON string for a custom Unitxt card that contains the custom dataset. To compose a custom card, store it as a JSON file, and use the JSON content as the value. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, set up corresponding resources under the `pod` field in the `LMEvalJob`` properties table.
 * `templates`:  Define custom templates to use, each with a `name` and `value` field:
 ** `name`: The name of this custom template that is referenced in the `template.ref` field of a  task recipe.
 ** `value`: A JSON string for a custom Unitxt template. Store `value` as a JSON file and use the JSON content as the value of this field.
