@@ -20,11 +20,12 @@ endif::[]
 .Dashboard feature configuration options
 [cols="32%,10%,58%","header"]
 |===
-| Feature | Default | Description
+| Feature configuration option | Default value | Description
 | `dashboardConfig:
 disableAcceleratorProfiles` | `false`| Shows the *Settings → Accelerator profiles* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
 
-Note that this option is superseded by the `disableHardwareProfiles` option.
+*Note:* The `disableAcceleratorProfiles` option is superseded by the `disableHardwareProfiles` option.
+If both options are set to `false`, the `disableHardwareProfiles` option overrides the `disableAcceleratorProfiles` option.
 | `dashboardConfig:
 disableAdminConnectionTypes` | `false` | Shows the *Settings → Connection types* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
 | `dashboardConfig:
@@ -36,11 +37,11 @@ disableCustomServingRuntimes` | `false` | Shows the *Settings → Serving runtim
 | `dashboardConfig:
 disableDistributedWorkloads` | `false` | Shows the *Distributed workloads* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
 | `dashboardConfig:
-disableHardwareProfiles` (Technology Preview) | `true` | Hides the *Settings → Hardware profiles* option in the dashboard navigation menu, and shows the *Settings → Accelerator profiles* option if that option is enabled. 
+disableHardwareProfiles` (Technology Preview) | `true` | Hides the *Settings → Hardware profiles* option in the dashboard navigation menu, and shows the *Settings → Accelerator profiles* option if the `disableAcceleratorProfiles` value is set to `false`. 
 
 To show the *Settings → Hardware profiles* option in the dashboard navigation men, set the `disableHardwareProfiles` value to `false`.
 
-If both options are enabled, the `disableHardwareProfiles` option overrides the `disableAcceleratorProfiles` option.
+If both options are set to `false`, the `disableHardwareProfiles` option overrides the `disableAcceleratorProfiles` option.
 
 Hardware profiles is a Technology Preview feature in this {productname-short} release.
 | `dashboardConfig:
