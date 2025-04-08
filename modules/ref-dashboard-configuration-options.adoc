@@ -4,14 +4,30 @@
 = Dashboard configuration options
 
 [role='_abstract']
-The {productname-short} dashboard includes a set of core features enabled by default that are designed to work for most scenarios. Administrators can configure the {productname-short} dashboard from the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+The {productname-short} dashboard includes a set of core features enabled by default that are designed to work for most scenarios. 
+Administrators can configure the {productname-short} dashboard from the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+Features denoted with `(Technology Preview)` in this table are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete. 
+{org-name} does not recommend using Technology Preview features in production. 
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process. 
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
 
 .Dashboard feature configuration options
 [cols="32%,10%,58%","header"]
 |===
-| Feature | Default | Description
+| Feature configuration option | Default value | Description
 | `dashboardConfig:
 disableAcceleratorProfiles` | `false`| Shows the *Settings → Accelerator profiles* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
+
+*Note:* The `disableAcceleratorProfiles` option is superseded by the `disableHardwareProfiles` option.
+If both options are set to `false`, the `disableHardwareProfiles` option overrides the `disableAcceleratorProfiles` option.
+| `dashboardConfig:
+disableAdminConnectionTypes` | `false` | Shows the *Settings → Connection types* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
 | `dashboardConfig:
 disableBYONImageStream` | `false` | Shows the *Settings → Notebook images* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
 | `dashboardConfig:
@@ -20,6 +36,14 @@ disableClusterManager` | `false` | Shows the *Settings → Cluster settings* opt
 disableCustomServingRuntimes` | `false` | Shows the *Settings → Serving runtimes* option in the dashboard navigation menu. To hide this menu option, set the value to `true`. 
 | `dashboardConfig:
 disableDistributedWorkloads` | `false` | Shows the *Distributed workloads* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
+| `dashboardConfig:
+disableHardwareProfiles` (Technology Preview) | `true` | Hides the *Settings → Hardware profiles* option in the dashboard navigation menu, and shows the *Settings → Accelerator profiles* option if the `disableAcceleratorProfiles` value is set to `false`. 
+
+To show the *Settings → Hardware profiles* option in the dashboard navigation men, set the `disableHardwareProfiles` value to `false`.
+
+If both options are set to `false`, the `disableHardwareProfiles` option overrides the `disableAcceleratorProfiles` option.
+
+Hardware profiles is a Technology Preview feature in this {productname-short} release.
 | `dashboardConfig:
 disableHome` | `false` | Shows the *Home* option in the dashboard navigation menu. To hide this menu option, set the value to `true`.
 | `dashboardConfig:
@@ -32,6 +56,16 @@ disableKServe` | `false` | Enables the ability to select KServe as a model-servi
 disableKServeAuth` | `false` | Enables the ability to use authentication with KServe. To disable this ability, set the value to `true`.
 | `dashboardConfig:
 disableKServeMetrics` | `false` | Enables the ability to view KServe metrics. To disable this ability, set the value to `true`.
+| `dashboardConfig:
+disableKServeRaw` | `false` | On the *Settings → Cluster settings* page, in the *Single-model serving platform* section, shows the *Default deployment mode* list. 
+
+On the *Deploy model* dialog when using the single-model serving platform: 
+
+&nbsp; &nbsp; &nbsp; - If the {org-name} OpenShift Serverless Operator and {org-name} OpenShift Service Mesh Operator are installed, shows the *Deployment mode* list.
+
+&nbsp; &nbsp; &nbsp; - If the {org-name} OpenShift Serverless Operator and {org-name} OpenShift Service Mesh Operator are not installed, hides the *Deployment mode* list, and sets the deployment mode to *Standard*.
+
+To hide these deployment-mode lists and set the deployment mode to *Advanced* when using the single-model serving platform, set the `disableKServeRaw` value to `true`.
 | `dashboardConfig:
 disableModelMesh` | `false` | Enables the ability to select ModelMesh as a model-serving platform. To disable this ability, set the value to `true`.
 | `dashboardConfig:
@@ -72,7 +106,9 @@ disableUserManagement` | `false` | Shows the *Settings → User management* opti
 enablement` | `true` | Enables {productname-short} administrators to add applications to the {productname-short} dashboard *Applications → Enabled* page. To disable this ability, set the value to `false`.
 | `notebookController:
 enabled` | `true` | Controls the Notebook Controller options, such as whether it is enabled in the dashboard and which parts are visible.
-| `notebookSizes` | | Allows you to customize names and resources for notebooks. The Kubernetes-style sizes are shown in the drop-down menu that appears when launching a workbench with the Notebook Controller. Note: These sizes must follow conventions. For example, requests must be smaller than limits.
+| `notebookSizes` | | Allows you to customize names and resources for notebooks. The Kubernetes-style sizes are shown in the drop-down menu that appears when launching a workbench with the Notebook Controller. 
+
+*Note:* These sizes must follow conventions. For example, requests must be smaller than limits.
 | `modelServerSizes` | | Allows you to customize names and resources for model servers.
 | `groupsConfig` | | Read-only. To configure access to the {productname-short} dashboard, use the `spec.adminGroups` and `spec.allowedGroups` options in the {openshift-platform} `Auth` resource in the `services.platform.opendatahub.io` API group.
 | `templateOrder` | | Specifies the order of custom Serving Runtime templates. When the user creates a new template, it is added to this list.
