@@ -12,7 +12,7 @@ The `LMEvalJob` object contains the following features:
 * The dataset from the `wnli` card, from the GLUE (General Language Understanding Evaluation) benchmark evaluation framework.
 * The `multi_class.relation` Unitxt task default parameters.
 
-The following table lists each property in the `LMEvalJob` and its usage.
+The following table lists each property in the `LMEvalJob` and its usage:
 
 .LM-EvalJob properties
 [cols="2,5"]
@@ -32,12 +32,12 @@ a| Specifies which model type or provider is evaluated. This field directly maps
 | `modelArgs`
 a| A list of paired name and value arguments for the model type. Each model type or provider supports different arguments. You can find further details in the models section of the LM Evaluation Harness library on GitHub.
 
-* `hf` (HuggingFace)
-* `local-completions` (An OpenAI API-compatible server)
-* `local-chat-completions` (An OpenAI API-compatible server)
-* `openai-completions` (OpenAI Completions API models)
-* `openai-chat-completions` (ChatCompletions API models)
-* `textsynth` (TextSynth APIs)
+* `hf`: HuggingFace
+* `local-completions`: An OpenAI API-compatible server
+* `local-chat-completions`: An OpenAI API-compatible server
+* `openai-completions`: OpenAI Completions API models
+* `openai-chat-completions`: ChatCompletions API models
+* `textsynth`: TextSynth APIs
 
 | `taskList.taskNames`
 | Specifies a list of tasks supported by `lm-evaluation-harness`.
@@ -104,7 +104,7 @@ a| Creates an operator-managed PVC to store the job results. The PVC is named `<
 | If this parameter is set to `true`, the LMEval job downloads artifacts as needed (for example, models, datasets or tokenizers). If set to `false`, artifacts are not downloaded and are pulled from local storage instead. This setting is disabled by default. If you want to enable `allowOnline` mode, you can patch the TrustyAI operator `ConfigMap`. 
 
 | `allowCodeExecution`
-| If this parameter is set to `true`, the LMEval job executes the necessary code for preparing models or datasets. If set to `false` it does not execute downloaded code.
+| If this parameter is set to `true`, the LMEval job executes the necessary code for preparing models or datasets. If set to `false` it does not execute downloaded code. The default setting for this parameter is `false`.
 
 | `offline`
 | Mount a PVC as the local storage for models and datasets.
@@ -115,7 +115,7 @@ a| Creates an operator-managed PVC to store the job results. The PVC is named `<
 
 == Properties for setting up custom Unitxt cards, templates, or system prompts
 
-You can set up custom Unitxt cards, templates, or system prompts. In addition to the table above, refer to the following table for the custom parameters. 
+You can choose to set up custom Unitxt cards, templates, or system prompts. Use the parameters set out in the Custom Unitxt parameters table in addition to the preceding table parameters to set customized Unitxt items:
 
 .Custom Unitxt parameters
 [cols="2,5"]
@@ -123,15 +123,15 @@ You can set up custom Unitxt cards, templates, or system prompts. In addition to
 | Parameter | Description
 
 | `taskList.custom`
-a| Defines one or more custom resources that will be referenced in a task recipe. Custom cards, custom templates, and custom system prompts are currently supported:
+a| Defines one or more custom resources that is referenced in a task recipe. Custom cards, custom templates, and custom system prompts are currently supported:
 
 * `cards`: Defines custom cards to use, each with a `name` and `value` field:
-** `name`: The name of this custom card that will be referenced in the `card.ref` field of a task recipe.
+** `name`: The name of this custom card that is referenced in the `card.ref` field of a task recipe.
 ** `value`: A JSON string for a custom Unitxt card which contains the custom dataset. To compose a custom card, store it as a JSON file, and use the JSON content as the value. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, you have to set up corresponding resources under the `pod` field in the `LMEvalJob`` properties table.
 * `templates`:  Define custom templates to use, each with a `name` and `value` field:
-** `name`: The name ofs this custom template that will be referenced in the `template.ref` field of a  task recipe.
-** `value`: A JSON string for a custom Unitxt template. Store it as a JSON file and use the JSON content as the value of this field.
+** `name`: The name of this custom template that is referenced in the `template.ref` field of a  task recipe.
+** `value`: A JSON string for a custom Unitxt template. Store `value` as a JSON file and use the JSON content as the value of this field.
 * `systemPrompts`: Defines custom system prompts to use, each with a `name` and `value` field:
-** `name`: The name of this custom system prompt that will be referenced in the `systemPrompt.ref` field of a task recipe.
-** `value`: A string for a custom Unitxt system prompt.You can see an overview of the different components that make up a prompt format, including the system prompt, on the Unitxt website.
+** `name`: The name of this custom system prompt that is referenced in the `systemPrompt.ref` field of a task recipe.
+** `value`: A string for a custom Unitxt system prompt. You can see an overview of the different components that make up a prompt format, including the system prompt, on the Unitxt website.
 |===
