@@ -1,0 +1,137 @@
+:_module-type: REFERENCE
+
+ifdef::context[:parent-context: {context}]
+[id="lmeval-evaluation-job-properties_{context}"]
+= LM-Eval evaluation job properties
+
+[role='_abstract']
+
+The `LMEvalJob` object contains the following features: 
+
+* The `google/flan-t5-base` model.
+* The dataset from the `wnli` card, from the GLUE (General Language Understanding Evaluation) benchmark evaluation framework.
+* The `multi_class.relation` Unitxt task default parameters.
+
+The following table lists each property in the `LMEvalJob` and its usage:
+
+.LM-EvalJob properties
+[cols="2,5"]
+|===
+| Parameter | Description
+
+| `model`
+
+a| Specifies which model type or provider is evaluated. This field directly maps to the `--model` argument of the `lm-evaluation-harness`. The model types and providers that you can use include:
+
+* `hf`: HuggingFace models
+* `openai-completions`: OpenAI Completions API models
+* `openai-chat-completions`: OpenAI Chat Completions API models
+* `local-completions` and `local-chat-completions`: OpenAI API-compatible servers
+* `textsynth`: TextSynth APIs
+
+| `modelArgs`
+a| A list of paired name and value arguments for the model type. Each model type or provider supports different arguments. You can find further details in the models section of the LM Evaluation Harness library on GitHub.
+
+* `hf`: HuggingFace
+* `local-completions`: An OpenAI API-compatible server
+* `local-chat-completions`: An OpenAI API-compatible server
+* `openai-completions`: OpenAI Completions API models
+* `openai-chat-completions`: ChatCompletions API models
+* `textsynth`: TextSynth APIs
+
+| `taskList.taskNames`
+| Specifies a list of tasks supported by `lm-evaluation-harness`.
+
+| `taskList.taskRecipes`
+a| Specifies the task using the Unitxt recipe format:
+
+* `card`: Use the `name` to specify a Unitxt card or `ref` to refer to a custom card:
+** `name`: Specifies a Unitxt card from the catalog section of the Unitxt. Use the card ID as the value. For example, the ID of the Wnli card is `cards.wnli`.
+** `ref`: Specifies the reference name of a custom card as defined in the `custom` section. If the dataset used by the custom card requires an API key from an environment variable or a persistent volume, configure the necessary resources in the `pod` field.
+* `template`: Specifies a Unitxt template from the Unitxt catalog. Use `name` to specify a Unitxt catalog template or `ref` to refer to a custom template:
+** `name`: Specifies a Unitxt template from the catalog of cards on the Unitxt website. Use the template's ID as the value.
+** `ref`: Specifies the reference name of a custom template as defined in the `custom` section.
+* `systemPrompt`: Use `name` to specify a Unitxt catalog system prompt or `ref` to refer to a custom prompt:
+** `name`: Specifies a Unitxt system prompt from the catalog on the Unitxt website. Use the system prompt's ID as the value.
+** `ref`: Specifies the reference name of a custom system prompt as defined in the `custom` section.
+* `task` (optional): Specifies a Unitxt task from the Unitxt catalog. Use the task ID as the value. A Unitxt card has a predefined task. Only specify a value for this if you want to run a different task.
+* `metrics` (optional):  Specifies a Unitxt task from the Unitxt catalog. Use the metric ID as the value. A Unitxt task has a set of pre-defined metrics. Only specify a set of metrics if you need different metrics.
+* `format` (optional): Specifies a Unitxt format from the Unitxt catalog. Use the format ID as the value.
+* `loaderLimit` (optional): Specifies the maximum number of instances per stream to be returned from the loader. You can use this parameter to reduce loading time in large datasets.
+* `numDemos` (optional): Number of few-shot to be used.
+* `demosPoolSize` (optional): Size of the few-shot pool.
+
+| `numFewShot`
+| Sets the number of few-shot examples to place in context. If you are using a task from Unitxt, do not use this field. Use `numDemos` under the `taskRecipes` instead.
+
+| `limit`
+| Set a limit to run the tasks instead of running the entire dataset. Accepts either an integer or a float between `0.0` and `1.0`.
+
+| `genArgs`
+| Maps to the `--gen_kwargs` parameter for the `lm-evaluation-harness`. For more information, see the LM Evaluation Harness documentation on GitHub.
+
+| `logSamples`
+| If this flag is passed, then the model outputs and the text fed into the model are saved at per-prompt level.
+
+| `batchSize`
+| Specifies the batch size for the evaluation in integer format. The `auto:N` batch size is not used for API models, but numeric batch sizes are used for APIs. 
+
+| `pod`
+a| Specifies extra information for the `lm-eval` job pod:
+
+* `container`: Specifies additional container settings for the `lm-eval` container.
+
+** `env`: Specifies environment variables. This parameter uses the `EnvVar` data structure of Kubernetes.
+
+** `volumeMounts`: Mounts the volumes into the `lm-eval` container.
+
+** `resources`: Specifies the resources for the `lm-eval` container.
+* `volumes`: Specifies the volume information for the `lm-eval` and other containers. This parameter uses the `Volume` data structure of Kubernetes.
+* `sideCars`: A list of containers that run along with the `lm-eval` container. This parameter uses the `Container` data structure of Kubernetes.
+
+| `outputs`
+| This parameter defines a custom output location to store the the evaluation results. Only Persistent Volume Claims (PVC) are supported.
+
+| `outputs.pvcManaged`
+a| Creates an operator-managed PVC to store the job results. The PVC is named `<job-name>-pvc` and is owned by the `LMEvalJob`. After the job finishes, the PVC is still available, but it is deleted with the `LMEvalJob`. Supports the following fields: 
+
+* `size`: The PVC size, compatible with standard PVC syntax (for example, 5Gi).
+
+| `outputs.pvcName`
+| Binds an existing PVC to a job by specifying its name. The PVC must be created separately and must already exist when creating the job.
+
+| `allowOnline`
+| If this parameter is set to `true`, the LMEval job downloads artifacts as needed (for example, models, datasets or tokenizers). If set to `false`, artifacts are not downloaded and are pulled from local storage instead. This setting is disabled by default. If you want to enable `allowOnline` mode, you can patch the TrustyAI operator `ConfigMap`. 
+
+| `allowCodeExecution`
+| If this parameter is set to `true`, the LMEval job runs the necessary code for preparing models or datasets. If set to `false` it does not run downloaded code. The default setting for this parameter is `false`.
+
+| `offline`
+| Mount a PVC as the local storage for models and datasets.
+
+|===
+
+
+
+== Properties for setting up custom Unitxt cards, templates, or system prompts
+
+You can choose to set up custom Unitxt cards, templates, or system prompts. Use the parameters set out in the Custom Unitxt parameters table in addition to the preceding table parameters to set customized Unitxt items:
+
+.Custom Unitxt parameters
+[cols="2,5"]
+|===
+| Parameter | Description
+
+| `taskList.custom`
+a| Defines one or more custom resources that is referenced in a task recipe. The following custom cards, templates, and system prompts are supported:
+
+* `cards`: Defines custom cards to use, each with a `name` and `value` field:
+** `name`: The name of this custom card that is referenced in the `card.ref` field of a task recipe.
+** `value`: A JSON string for a custom Unitxt card that contains the custom dataset. To compose a custom card, store it as a JSON file, and use the JSON content as the value. If the dataset used by the custom card needs an API key from an environment variable or a persistent volume, set up corresponding resources under the `pod` field in the `LMEvalJob`` properties table.
+* `templates`:  Define custom templates to use, each with a `name` and `value` field:
+** `name`: The name of this custom template that is referenced in the `template.ref` field of a  task recipe.
+** `value`: A JSON string for a custom Unitxt template. Store `value` as a JSON file and use the JSON content as the value of this field.
+* `systemPrompts`: Defines custom system prompts to use, each with a `name` and `value` field:
+** `name`: The name of this custom system prompt that is referenced in the `systemPrompt.ref` field of a task recipe.
+** `value`: A string for a custom Unitxt system prompt. You can see an overview of the different components that make up a prompt format, including the system prompt, on the Unitxt website.
+|===
