@@ -4,15 +4,17 @@
 = Deploying models on the single-model serving platform
 
 [role='_abstract']
-When you have enabled the single-model serving platform, you can enable a preinstalled or custom model-serving runtime and start to deploy models on the platform.
+
+When you have enabled the single-model serving platform, you can enable a preinstalled or custom model-serving runtime and deploy models on the platform.
 
 ifdef::upstream[]
-NOTE: link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own, custom runtime to support a TGI model. For more information, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+You can use preinstalled model-serving runtimes to start serving models without modifying or defining the runtime yourself. For help adding a custom runtime, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
 
 ifndef::upstream[]
-NOTE: link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^] is based on an early fork of link:https://github.com/huggingface/text-generation-inference[Hugging Face TGI^]. Red Hat will continue to develop the standalone TGIS runtime to support TGI models. If a model does not work in the current version of {productname-short}, support might be added in a future version. In the meantime, you can also add your own, custom runtime to support a TGI model. For more information, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
+You can use preinstalled model-serving runtimes to start serving models without modifying or defining the runtime yourself. For help adding a custom runtime, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
+
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -26,18 +28,19 @@ endif::[]
 * You have enabled the single-model serving platform.
 ifdef::self-managed[]
 ifndef::disconnected[]
-* To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
 endif::[]
 ifdef::disconnected[]
-* To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
 endif::[]
 endif::[]
 ifdef::cloud-service[]
-* To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
 endif::[]
 ifdef::upstream[]
-* To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider.
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider.
 endif::[]
+
 * You have created a data science project.
 * You have access to S3-compatible object storage.
 * For the model that you want to deploy, you know the associated URI in your S3-compatible object storage bucket or Open Container Initiative (OCI) container.
@@ -99,6 +102,12 @@ The *Deploy model* dialog opens.
 . In the *Model deployment name* field, enter a unique name for the model that you are deploying.
 . In the *Serving runtime* field, select an enabled runtime.
 . From the *Model framework (name - version)* list, select a value.
+ifndef::upstream[]
+. From the **Deployment mode** list, select standard or advanced. For more information about deployment modes, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#about-kserve-deployment-modes_serving-large-models[About KServe deployment modes].
+endif::[]
+ifdef::upstream[]
+. From the **Deployment mode** list, select standard or advanced. For more information about deployment modes, see link:{odhdocshome}/serving-models/#about-kserve-deployment-modes_serving-large-models[About KServe deployment modes].
+endif::[]
 . In the *Number of model server replicas to deploy* field, specify a value.
 . From the *Model server size* list, select a value.
 . The following options are only available if you have enabled accelerator support on your cluster and created an accelerator profile:
