@@ -310,3 +310,151 @@ A pod spins up in your model namespace called `evaljob`. In the pod terminal, yo
 oc get secrets -o custom-columns=SECRET:.metadata.name --no-headers | grep user-one-token
 ----
 * `secretKeyRef.key` is set to `token`
+
+
+== Setting up LMEval S3 Support
+
+Learn how to set up S3 support for your LM-Eval service.
+
+.Prerequisites
+* You have logged in to Red Hat OpenShift AI.
+
+* Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
+
+* You have a namespace that contains an S3-compatible storage service and bucket.
+
+* You have created an LMEval Job that references the S3 bucket containing your model and dataset. 
+
+* An S3 bucket that contains the model files and the dataset(s) to be evaluated.
+
+
+.Procedure
+
+. Create a Kubernetes Secret containing your S3 connection details:
++
+[source]
+----
+
+apiVersion: v1
+kind: Secret
+metadata:
+    name: "s3-secret"
+    namespace: test
+    labels:
+        opendatahub.io/dashboard: "true"
+        opendatahub.io/managed: "true"
+    annotations:
+        opendatahub.io/connection-type: s3
+        openshift.io/display-name: "S3 Data Connection - LMEval"
+data:
+    AWS_ACCESS_KEY_ID: BASE64_ENCODED_ACCESS_KEY  # Replace with your key
+    AWS_SECRET_ACCESS_KEY: BASE64_ENCODED_SECRET_KEY  # Replace with your key
+    AWS_S3_BUCKET: BASE64_ENCODED_BUCKET_NAME  # Replace with your bucket name
+    AWS_S3_ENDPOINT: BASE64_ENCODED_ENDPOINT  # Replace with your endpoint URL (e.g., https://s3.amazonaws.com)
+    AWS_DEFAULT_REGION: BASE64_ENCODED_REGION  # Replace with your region
+type: Opaque
+----
+
+[NOTE]
+--
+All values must be `base64` encoded. For example: `echo -n "my-bucket" | base64`
+--
+
+. Deploy the `LMEvalJob` CR which references the S3 bucket containing your model and dataset. 
+
++
+[source]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+    name: evaljob-sample
+spec:
+    allowOnline: false
+    model: hf  # Model type (HuggingFace in this example)
+    modelArgs:
+        - name: pretrained
+          value: /opt/app-root/src/hf_home/flan  # Path where model is mounted in container
+    taskList:
+        taskNames:
+            - arc_easy  # The evaluation task to run
+    logSamples: true
+    offline:
+        storage:
+            s3:
+                accessKeyId:
+                    name: s3-secret
+                    key: AWS_ACCESS_KEY_ID
+                secretAccessKey:
+                    name: s3-secret
+                    key: AWS_SECRET_ACCESS_KEY
+                bucket:
+                    name: s3-secret
+                    key: AWS_S3_BUCKET
+                endpoint:
+                    name: s3-secret
+                    key: AWS_S3_ENDPOINT
+                region:
+                    name: s3-secret
+                    key: AWS_DEFAULT_REGION
+                path: ""  # Optional subfolder within bucket
+                verifySSL: false
+----
+
+[IMPORTANT]
+--
+ The `LMEval job` will copy all the files from the specified bucket/path. If your bucket contains many files and you only want to use a subset, set the `path` field to the specific sub-folder containing just the needed files, for example `path: "my-models/"`, instead of leaving it empty.
+--
+
+. Set up a secure connection with an SSL.
+.. Create a ConfigMap with your CA certificate:
++
+[source]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: s3-ca-cert
+  namespace: test
+  annotations:
+    service.beta.openshift.io/inject-cabundle: "true"  # For injection
+data: {}  # OpenShift will inject the service CA bundle
+# Or add your custom CA:
+# data:
+#   ca.crt: |-
+#     -----BEGIN CERTIFICATE-----
+#     ...your CA certificate content...
+#     -----END CERTIFICATE-----
+----
+
+.. Update the `LMEvalJob` to use SSL verification:
++
+[source]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+    name: evaljob-sample
+spec:
+    # ... same as above ...
+    offline:
+        storage:
+            s3:
+                # ... same as above ...
+                verifySSL: true  # Enable SSL verification
+                caBundle:
+                    name: s3-ca-cert  # ConfigMap name containing your CA
+                    key: service-ca.crt  # Key in ConfigMap containing the certificate
+----
+
+.Notes on the code:
+
+* After deploying the LMEvalJob, check its status with: `kubectl get lmevaljob -n test`
+* View logs with: `kubectl logs -n test job/<job-name>`
+* The job will automatically download required models and datasets from your S3 bucket
+* Results will be displayed in the logs once evaluation completes
+
+
+
+ 
+
