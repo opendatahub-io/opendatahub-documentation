@@ -314,7 +314,7 @@ oc get secrets -o custom-columns=SECRET:.metadata.name --no-headers | grep user-
 
 == Setting up LMEval S3 Support
 
-Learn how to set up S3 support for your LM-Eval service.
+Learn how to set up S3 support for your LM-Eval service. 
 
 .Prerequisites
 * You have logged in to Red Hat OpenShift AI.
@@ -360,7 +360,7 @@ type: Opaque
 All values must be `base64` encoded. For example: `echo -n "my-bucket" | base64`
 --
 
-. Deploy the `LMEvalJob` CR which references the S3 bucket containing your model and dataset. 
+. Deploy the `LMEvalJob` CR that references the S3 bucket containing your model and dataset:
 
 +
 [source]
@@ -447,12 +447,18 @@ spec:
                     key: service-ca.crt  # Key in ConfigMap containing the certificate
 ----
 
-.Notes on the code:
+.Verification
+. After deploying the LMEvalJob, check its status with `kubectl logs -n test job/evaljob-sample -n test`
+. View the logs with `kubectl logs -n test job/<job-name>` to make sure it has functioned correctly. 
 
-* After deploying the LMEvalJob, check its status with: `kubectl get lmevaljob -n test`
-* View logs with: `kubectl logs -n test job/<job-name>`
-* The job will automatically download required models and datasets from your S3 bucket
-* Results will be displayed in the logs once evaluation completes
+[NOTE]
+--
+The 'LMEvaljob` will automatically download required models and datasets from your S3 bucket. The results will be displayed in the logs once evaluation complete.
+--
+
+
+
+
 
 
 
