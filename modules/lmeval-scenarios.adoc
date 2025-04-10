@@ -14,9 +14,9 @@ If the `LMEvalJob` needs to access a model on HuggingFace with the access token,
 
 
 .Prerequisites
-* You have logged in to Red Hat OpenShift AI.
+* You have logged in to {productname-long}.
 
-* Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
+* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
 
 .Procedure
 
@@ -63,9 +63,9 @@ env:
 You can run evaluations using custom Unitxt cards. To do this, include the custom Unitxt card in JSON format within the `LMEvalJob` YAML.
 
 .Prerequisites
-* You have logged in to Red Hat OpenShift AI.
+* You have logged in to {productname-long}.
 
-* Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
+* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
 
 .Procedure
 . Pass a custom Unitxt Card in JSON format:
@@ -180,9 +180,9 @@ If both managed and existing PVCs are referenced in outputs, the TrustyAI operat
 --
 
 .Prerequisites
-* You have logged in to Red Hat OpenShift AI.
+* You have logged in to {productname-long}.
 
-* Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
+* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
 
 === Managed PVCs
 
@@ -247,12 +247,12 @@ spec:
 
 == Using an InferenceService
 
-To run an evaluation job on an `InferenceService` which is already deployed and running in your namespace, define your LMEvalJob CR, then apply this CR into the same namespace as your model.
+To run an evaluation job on an `InferenceService` which is already deployed and running in your namespace, define your `LMEvalJob` CR, then apply this CR into the same namespace as your model.
 
 .Prerequisites
-* You have logged in to Red Hat OpenShift AI.
+* You have logged in to {productname-long}.
 
-* Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
+* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
 
 * You have a namespace that contains an InferenceService with a vLLM model. This example assumes that the vLLM model is already deployed in your cluster.
 
@@ -317,13 +317,13 @@ oc get secrets -o custom-columns=SECRET:.metadata.name --no-headers | grep user-
 Learn how to set up S3 support for your LM-Eval service. 
 
 .Prerequisites
-* You have logged in to Red Hat OpenShift AI.
+* You have logged in to {productname-long}.
 
-* Your OpenShift cluster administrator has installed OpenShift AI and enabled the TrustyAI service for the data science project where the models are deployed.
+* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
 
 * You have a namespace that contains an S3-compatible storage service and bucket.
 
-* You have created an LMEval Job that references the S3 bucket containing your model and dataset. 
+* You have created an `LMEvalJob` that references the S3 bucket containing your model and dataset. 
 
 * An S3 bucket that contains the model files and the dataset(s) to be evaluated.
 
@@ -350,7 +350,7 @@ data:
     AWS_ACCESS_KEY_ID: BASE64_ENCODED_ACCESS_KEY  # Replace with your key
     AWS_SECRET_ACCESS_KEY: BASE64_ENCODED_SECRET_KEY  # Replace with your key
     AWS_S3_BUCKET: BASE64_ENCODED_BUCKET_NAME  # Replace with your bucket name
-    AWS_S3_ENDPOINT: BASE64_ENCODED_ENDPOINT  # Replace with your endpoint URL (e.g., https://s3.amazonaws.com)
+    AWS_S3_ENDPOINT: BASE64_ENCODED_ENDPOINT  # Replace with your endpoint URL (for example,  https://s3.amazonaws.com)
     AWS_DEFAULT_REGION: BASE64_ENCODED_REGION  # Replace with your region
 type: Opaque
 ----
@@ -403,11 +403,11 @@ spec:
 
 [IMPORTANT]
 --
- The `LMEval job` will copy all the files from the specified bucket/path. If your bucket contains many files and you only want to use a subset, set the `path` field to the specific sub-folder containing just the needed files, for example `path: "my-models/"`, instead of leaving it empty.
+ The `LMEvalJob` will copy all the files from the specified bucket/path. If your bucket contains many files and you only want to use a subset, set the `path` field to the specific sub-folder containing the files the you require. For example use `path: "my-models/"`.
 --
 
 . Set up a secure connection with an SSL.
-.. Create a ConfigMap with your CA certificate:
+.. Create a ConfigMap object with your CA certificate:
 +
 [source]
 ----
@@ -448,12 +448,12 @@ spec:
 ----
 
 .Verification
-. After deploying the LMEvalJob, check its status with `kubectl logs -n test job/evaljob-sample -n test`
-. View the logs with `kubectl logs -n test job/<job-name>` to make sure it has functioned correctly. 
+. After deploying the `LMEvalJob`, open the `kubectl` command-line and enter this command to check its status: `kubectl logs -n test job/evaljob-sample -n test`
+. View the logs with the `kubectl` command `kubectl logs -n test job/<job-name>` to make sure it has functioned correctly. 
 
 [NOTE]
 --
-The 'LMEvaljob` will automatically download required models and datasets from your S3 bucket. The results will be displayed in the logs once evaluation complete.
+The `LMEvalJob` will automatically download required models and datasets from your S3 bucket. The results will be displayed in the logs once evaluation completes.
 --
 
 
