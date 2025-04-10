@@ -4,7 +4,7 @@
 = Configuring a cluster for RDMA
 
 [role='_abstract']
-NVIDIA GPUDirect Remote Direct Memory Access (RDMA) provides direct communication between NVIDIA GPUs.
+GPUDirect RDMA from NVIDIA uses Remote Direct Memory Access (RDMA) to provide direct communication between NVIDIA GPUs.
 To configure a cluster for RDMA, a cluster administrator must install and configure several Operators.
 
 .Prerequisites
@@ -95,6 +95,8 @@ spec:
           overwrite: true
           path: /etc/crio/crio.conf.d/10-custom
 ----
+.. Edit the `default_ulimits` entry to specify an appropriate value for your configuration.
+For more information about default limits, see the link:https://access.redhat.com/solutions/6243491[Set default ulimits on CRIO Using machine config] Knowledgebase solution.
 .. Click **Create**.
 .. Restart the worker nodes to apply the machine configuration.
 
@@ -103,9 +105,38 @@ This configuration enables non-root users to run the training job with RDMA in t
 
 
 .Verification
-. In the OpenShift Console, click **Workloads -> Pods**.
-. Select your project from the *Project* list.
-. Verify that a pod is running for each of the newly installed Operators.
+. Verify that the Operators are installed correctly, as follows:
+.. In the OpenShift Console, click **Workloads -> Pods**.
+.. Select your project from the *Project* list.
+.. Verify that a pod is running for each of the newly installed Operators.
+. Verify that NCCL is configured correctly, as follows:
+.. Edit the `PyTorchJob` resource to set the `*NCCL_DEBUG*` environment variable to `INFO`, as shown in the following example:
++
+.Setting the NCCL debug level to INFO
+[source,subs="+quotes"]
+----
+        spec:
+          containers:
+          - command:
+            - /bin/bash
+            - -c
+            - "your container command"
+            env:
+            - name: NCCL_SOCKET_IFNAME
+              value: "net1"
+            - name: NCCL_IB_HCA
+              value: "mlx5_1"
+            - name: NCCL_DEBUG
+              value: "INFO"
+----
+.. Run the PyTorch job.
+.. Check that the pod logs include an entry similar to the following text:
++
+.Example pod log entry
+[source,subs="+quotes"]
+----
+NCCL INFO NET/IB : Using [0]mlx5_1:1/RoCE [RO]
+----
 
 
 ifdef::self-managed[]
