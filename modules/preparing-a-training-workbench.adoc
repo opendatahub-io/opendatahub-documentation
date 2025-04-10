@@ -1,0 +1,103 @@
+:_module-type: PROCEDURE
+
+[id="preparing-a-training-workbench_{context}"]
+= Preparing a training workbench
+
+[role='_abstract']
+Prepare a workbench with the appropriate resources to run a training job with the Kubeflow Training Operator (KFTO) and Kubeflow Training Operator Python Software Development Kit (KFTO SDK).
+
+.Prerequisites
+
+* You can access an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training job.
+
+
+* Your cluster administrator has configured the cluster as follows:
+
+ifdef::upstream[]
+** Installed {productname-long} with the required distributed training components, as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+ifdef::self-managed[]
+** Installed {productname-long} with the required distributed training components, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+endif::[]
+ifdef::cloud-service[]
+** Installed {productname-long} with the required distributed training components, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+ifdef::upstream[]
+** Configured the distributed training resources, as described in link:{odhdocshome}/managing-odh/#managing_distributed_workloads[Managing distributed workloads].
+endif::[]
+ifndef::upstream[]
+** Configured the distributed training resources, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai[Managing distributed workloads].
+endif::[]
+
+ifdef::upstream[]
+** Configured supported accelerators, as described in link:{odhdocshome}/working-with-accelerators[Working with accelerators].
+endif::[]
+ifndef::upstream[]
+** Configured supported accelerators, as described in link:{rhoaidocshome}{default-format-url}/working_with_accelerators/[Working with accelerators].
+endif::[]
+
+** Configured a dynamic storage provisioner that supports Read Write Execute (RWX) Persistent Volume Claim (PVC) provisioning, such as link:https://www.redhat.com/fr/technologies/cloud-computing/openshift-data-foundation[{org-name} OpenShift Data Foundation].
+
+.Procedure
+. Log in to the {productname-long} web console.
+
+. Create a project, as follows:
+.. In the left navigation pane, click *Data science projects*, and click *Create project*.
+.. Enter a project name, and optionally a description, and click *Create*.
+The project details page opens, with the *Overview* tab selected by default.
+
+. Create a workbench, as follows:
+.. On the project details page, click the *Workbench* tab, and click *Create workbench*.
+.. In the *Name* field, enter `My finetuning workbench`.
+.. In the *Notebook image* section, from the *Image selection* list, select *PyTorch*.
+.. In the *Deployment size* section, from the *Container size* list, select *Medium*.
+.. In the *Cluster storage* section, click either *Attach existing storage* or *Create storage* to specify the storage details to share between the workbench and the finetuning runs:
++
+Ensure that the specified storage meets the following criteria:
+* Uses a storage class with RWX capability.
+* Has an appropriate size for the size of the model that you want to finetune.
+
+.. Review the storage configuration and click *Create workbench*. 
+
+.. On the *Workbenches* tab, wait for the status to change from *Starting* to *Running*.
+
+. On the *Workbenches* tab, click the *Open* link beside the workbench status. 
+The IDE opens in a new window. 
+
+. Click *File -> New -> Notebook*.
+
+. Add the following code to a cell in the new notebook:
++
+.Code to install dependencies
+[source,bash]
+----
+# Install the YAML magic
+!pip install yamlmagic
+%load_ext yamlmagic
+
+!pip install git+https://github.com/kubeflow/trainer.git@release-1.9#subdirectory=sdk/python
+----
+
+. Select the cell, and click *Run > Run selected cell*.
++
+The additional packages that are needed to run the finetuning job are installed.
+
+. Click *File > Save Notebook As*, enter `my_training_notebook.ipynb`, and click *Save*.
+ 
+
+
+
+// .Verification
+
+
+
+
+[role='_additional-resources']
+.Additional resources
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/networking/multiple-networks#attaching-pod[Attaching a pod to an additional network] in the OpenShift documentation
+* link:https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html[NCCL environment variables] in the NVIDIA documentation
+* link:https://docs.nvidia.com/networking/display/cokan10/network+operator#src-39285883_NetworkOperator-DeploymentExamplesDeploymentExamples[NVIDIA Network Operator deployment examples] in the NVIDIA documentation
+* link:https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/troubleshooting.html[NCCL Troubleshooting] in the NVIDIA documentation
+
