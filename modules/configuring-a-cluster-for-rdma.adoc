@@ -1,0 +1,118 @@
+:_module-type: PROCEDURE
+
+[id="configuring-a-cluster-for-rdma_{context}"]
+= Configuring a cluster for RDMA
+
+[role='_abstract']
+NVIDIA GPUDirect Remote Direct Memory Access (RDMA) provides direct communication between NVIDIA GPUs.
+To configure a cluster for RDMA, a cluster administrator must install and configure several Operators.
+
+.Prerequisites
+
+* You can access an OpenShift cluster as a cluster administrator.
+
+* Your cluster has multiple worker nodes with supported NVIDIA GPUs, and can access a compatible NVIDIA accelerated networking platform.
+
+
+ifdef::upstream[]
+* You have installed {productname-long} with the required distributed training components as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+ifdef::self-managed[]
+* You have installed {productname-long} with the required distributed training components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+endif::[]
+
+ifdef::cloud-service[]
+* You have installed {productname-long} with the required distributed training components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+
+ifndef::upstream[]
+* You have configured the distributed training resources as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai[Managing distributed workloads].
+endif::[]
+ifdef::upstream[]
+* You have configured the distributed training resources as described in link:{odhdocshome}/managing-odh/#managing_distributed_workloads[Managing distributed workloads].
+endif::[]
+
+
+
+.Procedure
+. Log in to the OpenShift Console as a cluster administrator.
+
+ifndef::upstream[]
+. Enable NVIDIA GPU support in {productname-short}.
++
+This process includes installing the Node Feature Discovery Operator and the NVIDIA GPU Operator.
+For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]. 
+endif::[]
+ifdef::upstream[]
+. Enable NVIDIA GPU support in {productname-short}.
++
+This process includes installing the Node Feature Discovery Operator and the NVIDIA GPU Operator.
+For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
+endif::[]
+
+. To simplify the management of NVIDIA networking resources, install and configure the NVIDIA Network Operator, as follows:
+
+.. Install the NVIDIA Network Operator, as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster] in the OpenShift documentation.
+
+.. Configure the NVIDIA Network Operator, as described in the deployment examples in the link:https://docs.nvidia.com/networking/display/cokan10/network+operator[Network Operator Application Notes] in the NVIDIA documentation.
+
+
+. [Optional] To use Single Root I/O Virtualization (SR-IOV) deployment modes, complete the following steps:
+.. Install the SR-IOV Network Operator, as described in the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/networking/networking-operators#installing-sriov-operator[Installing the SR-IOV Network Operator] section in the OpenShift documentation.
+
+.. Configure the SR-IOV Network Operator, as described in the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/networking/networking-operators#configuring-sriov-operator[Configuring the SR-IOV Network Operator] section in the OpenShift documentation.
+
+. Use the Machine Configuration Operator to increase the limit of pinned memory for non-root users in the container engine (CRI-O) configuration, as follows:
+
+.. In the OpenShift Console, in the **Administrator** perspective, click **Compute -> MachineConfigs**. 
+.. Click **Create MachineConfig**.
+.. Replace the placeholder text with the following content:
++
+.Example machine configuration
+[source,subs="+quotes"]
+----
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 02-worker-container-runtime
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    storage:
+      files:
+        - contents:
+            inline: |
+              [crio.runtime]
+              default_ulimits = [
+                "memlock=-1:-1"
+              ]
+          mode: 420
+          overwrite: true
+          path: /etc/crio/crio.conf.d/10-custom
+----
+.. Click **Create**.
+.. Restart the worker nodes to apply the machine configuration.
+
++
+This configuration enables non-root users to run the training job with RDMA in the most restrictive OpenShift default security context.
+
+
+.Verification
+. In the OpenShift Console, click **Workloads -> Pods**.
+. Select your project from the *Project* list.
+. Verify that a pod is running for each of the newly installed Operators.
+
+
+ifdef::self-managed[]
+[role='_additional-resources']
+.Additional resources
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/machine_configuration[Machine configuration] in the OpenShift documentation
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/authentication_and_authorization/managing-pod-security-policies[Managing security context constraints] in the OpenShift documentation
+endif::[]
+
