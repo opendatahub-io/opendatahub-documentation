@@ -87,7 +87,7 @@ After updating the settings in the `ConfigMap`, restart the operator to apply th
 
 // Notes on the 'allow online' setting and patches 
 
-// upstream - allowOnline setting is enabled; end-user can disable if they wish
+// upstream - allowOnline setting is enabled; end-user can disable if they wish.
 ifdef::upstream[]
 [IMPORTANT]
 --
@@ -95,28 +95,34 @@ The `allowOnline` setting is enabled by default in {productname-long}. Using `al
 --
 endif::[]
 
-// downstream - allowOnlie is disabled; end-user needs include a patch in the ConfigMap in order to enable it.
+// downstream - allowOnline is disabled; end-user needs include a patch in the ConfigMap in order to enable it.
+
 ifndef::upstream[]
 [IMPORTANT]
 --
-The `allowOnline` setting is disabled by default at the operator level in {productname-long}, as using `allowOnline` gives the job permissions to automatically download artifacts from external sources.
+The `allowOnline` and `allowCodeExecution` settings are *disabled* by default at the operator level in {productname-long}. This disallows job permissions to automatically download artifacts from external sources. 
 --
 
-.Enabling `allowOnline` mode
+.Enabling allowOnline and allowCodeExecution modes
 
-To enable `allowOnline` mode, patch the TrustyAI operator `ConfigMap` with the following code: 
+You can set your `LMEvalJob` to access online content by updating and patching the TrustyAI operator `ConfigMap`. 
 
+. In the `ConfigMap`, change the `opendatahub.io/managed` setting to `'false'`. 
+
+. Patch the TrustyAI operator `ConfigMap` with the following `kubectl` code: 
++
 [source]
 ----
  kubectl patch configmap trustyai-service-operator-config -n redhat-ods-applications \
 --type merge -p '{"data":{"lmes-allow-online":"true","lmes-allow-code-execution":"true"}}'
 ----
-
-Then restart the TrustyAI operator with: 
-
++
+. Restart the TrustyAI operator with the following `kubectl` command: 
++
 [source]
 ----
 kubectl rollout restart deployment trustyai-service-operator-controller-manager -n redhat-ods-applications
 ----
+
 endif::[]
 
