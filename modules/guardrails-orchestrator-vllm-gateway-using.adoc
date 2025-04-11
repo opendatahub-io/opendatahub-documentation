@@ -1,0 +1,45 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="guardrails-orchestrator-vllm-gateway-using_{context}"]
+= Querying using the guardrails gateway
+[role='_abstract']
+
+The Guardrails Orchestrator vLLM gateway provides the OpenAI `v1/chat/completions` API, which lets you hot swap between models without guardrails and models with guardrails. 
+
+.Prerequisites
+* You have configured the regex detector and vLLM gateway.
+
+.Procedure
+. Set up the endpoint for the detectors:
++
+[source,terminal]
+----
+GUARDRAILS_GATEWAY=https://$(oc get routes guardrails-gateway -o jsonpath='{.spec.host}')
+----
++
+Based on the example configurations provided in "Configuring the regex detector and vLLM gateway", the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
+
+
+. Query the model with guardrails `pii` endpoint:
++
+----
+curl -v $GUARDRAILS_GATEWAY/pii/v1/chat/completions \
+-H "Content-Type: application/json" \
+-d '{
+    "model": $MODEL,
+    "messages": [
+        {
+            "role": "user",
+            "content": "btw here is my social 123456789"
+        }
+    ]
+}'
+----
+
+.Example response
+----
+Warning: Unsuitable input detected. Please check the detected entities on your input and try again with the unsuitable input removed.
+Input Detections:
+   0) The regex detector flagged the following text: "123-45-6789"
+----

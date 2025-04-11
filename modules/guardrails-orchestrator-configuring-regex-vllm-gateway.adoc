@@ -1,0 +1,141 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="guardrails-orchestrator-configuring-regex-vllm_gateway_{context}"]
+= Configuring the regex detector and vLLM gateway
+[role='_abstract']
+
+The following example demonstrates how to enable the regex detector and vLLM gateway sidecar images with the `GuardrailsOrchestrator` service. The regex detector and vLLM gateway must be configured together but they can be used separately. 
+
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have downloaded and installed the {openshift-platform} command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
+* You are familiar with how to create a `ConfigMap` for monitoring a user-defined workflow. You perform similar steps in this procedure. See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html-single/nodes/index#nodes-pods-configmap-overview_configmaps[Understanding config maps].
+* You have configured KServe to use `RawDeployment` mode. See link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.18/html/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on single-node OpenShift using KServe Raw Deployment mode^].
+* You have the TrustyAI component in your {productname-short} `DataScienceCluster` set to `Managed`.
+* You have either an LLM for chat generation, text classification, or both deployed in your namespace.  
+
+.Procedure
+
+. Define a `ConfigMap` object in a YAML file to specify the `regexDetectorImage`. For example, create a YAML file called `regex_image_cm.yaml` with the following content:
++
+.Example `regex_vllm_images_cm.yaml`
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gorch-regex-vllm-image-config
+data:
+  regexDetectorImage: 'quay.io/repository/trustyai/regex-detector@sha256:efab6cd8b637b9c35d311aaf639dfedee7d28de3ee07b412ab473deadecd3606'            <1>
+  vllmGatewayImage: 'quay.io/repository/trustyai/vllm-orchestrator-gateway@sha256:c511b386d61a728acdfe8a1ac7a16b3774d072dd053718e5b9c5fab0f025ac3b' <2>
+----
+<1> The regex detector is a sidecar image that provides regex-based detections.
+<2> The vLLM gateway is a sidecar image that emulates the vLLM chat completions API and saves preset detector configurations.
+
+. Deploy the `regex_vllm_images_cm.yaml` config map:
++
+[source,terminal]
+----
+$ oc apply -f regex_vllm_images_cm.yaml -n <TEST_NAMESPACE>
+----
+
+. Define another vLLM gateway `ConfigMap` object to specify the `detectors` and `routes`. For example, create a YAML file called `detectors_cm.yaml` with the following contents:
++
+.Example `detectors_cm.yaml`
+[source,yaml]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fms-orchestr8-config-gateway
+  labels:
+    app: fmstack-nlp
+data:
+  config.yaml: |
+    orchestrator:   <1>
+      host: "localhost"
+      port: 8032
+    detectors:      <2>
+      - name: regex
+        input: true <3>
+        output: true
+        detector_params:
+          regex:
+            - email
+            - ssn
+    routes:         <4>
+      - name: pii
+        detectors:
+          - regex
+      - name: passthrough
+        detectors:
+----
+<1> The orchestrator service.
+<2> A list of pre-configured regular expressions for common detection actions. These regular expressions detect personal identifying information, `email` and `ssn`.
+<3> The detector will be used for both input and output. 
+<4> The resulting endpoints for the  detectors. For example, `pii` is served at `$GUARDRAILS_GATEWAY_URL/pii/v1/chat/completions` and uses the `regex` detector. The `passthrough` preset does not use any detectors.
+
+. Deploy the vLLM gateway `detectors_cm.yaml` config map:
++
+[source,terminal]
+----
+$ oc apply -f detectors_cm.yaml -n <TEST_NAMESPACE>
+----
+
+. Specify the `ConfigMap` objects you created in the `GuardrailsOrchestrator` custom resource(CR). For example,  create a YAML file named `orchestrator_cr.yaml` with the following contents:
++
+.Example `orchestrator_cr.yaml` CR
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: gorch-sample
+spec:
+  orchestratorConfig: "fms-orchestr8-config-nlp"     <1>
+  "gorch-regex-vllm-image-config"<2>
+  "fms-orchestr8-config-gateway" <3>
+  replicas: 1
+----
+<1> The `ConfigMap` that was created in Step 1 of "Deploying the Guardrails Orchestrator". 
+<2> The `ConfigMap` that was created in Step 1 of this procedure, "Configuring the regex detector and vLLM gateway", making sure that `chat_generation.service.hostname` and `detectors.hap.service.hostname` are set.
+<3> The `ConfigMap` that was created in Step 3 of this procedure, "Configuring the regex detector and vLLM gateway".
+
+
+. Deploy the orchestrator custom resource. This creates a service account, deployment, service, and route object in your namespace.
++
+[source,terminal]
+----
+oc apply -f orchestrator_cr.yaml -n <TEST_NAMESPACE>
+----
+
+.Verification
+. Check the health of the orchestrator pod by interacting with the `/info` endpoint of the orchestrator:
++
+[source,terminal]
+----
+GORCH_ROUTE=$(oc get routes guardrails-orchestrator-health -o jsonpath='{.spec.host}')
+curl -s https://$GORCH_ROUTE/info | jq
+----
++
+.Example response
+[source,terminal]
+----
+{
+  "services": {
+    "chat_generation": {
+      "status": "HEALTHY"
+    },
+    "regex_language": {
+      "status": "HEALTHY"
+    },
+    "regex": {
+      "status": "HEALTHY"
+    }
+  }
+}
+----
++
+In this example namespace, the Guardrails Orchestrator would coordinate requests between two regex detectors, `regex_language` and `regex`, over a single `chat_generation` LLM.
