@@ -78,7 +78,7 @@ spec:
 
 . Configure the job to use NVIDIA Collective Communications Library (NCCL) interfaces, as follows:
 
-.. Edit the `PyTorchJob` resource YAML code to add the following text:
+.. Edit the `PyTorchJob` resource YAML code to add the following environment variables:
 +
 .Example environment variables
 [source,subs="+quotes"]
@@ -95,9 +95,7 @@ spec:
             - name: NCCL_IB_HCA
               value: "mlx5_1"
 ----
-.. Replace the example container command and example environment-variable values with the appropriate values for your configuration:
-
-... Replace `"your container command"` with the command to be run by your training job.
+.. Replace the example environment-variable values with the appropriate values for your configuration:
 
 ... Set the `*NCCL_SOCKET_IFNAME*` environment variable to specify the IP interface to use for communication.
 
@@ -174,25 +172,7 @@ In this example `NicClusterPolicy` resource, the `resourceName` value is `rdma_s
 .. Replace the specified value `1` with the number that you require.
 Ensure that the specified amount is available on your OpenShift cluster.
 
-. Specify the details of the nodes that will run the training job, as follows:
-
-.. Copy all of the code that you added for the `Master` node:
-+
-.Example code for the Master node
-[source,subs="+quotes"]
-----
-    Master:
-      replicas: 1
-    ...
-    - key: nvidia.com/gpu
-         operator: Exists
-----
-
-.. Paste the copied code at the end of the YAML file.
-
-.. Edit the pasted text to replace `Master` with `Worker`.
-
-.. Edit the Worker `replicas` value to specify how many nodes should be used to run the training job.
+. Repeat the above steps to make the same edits in the `Worker` section of the PyTorchJob YAML code.
 
 . Click *Create*.
 
@@ -236,8 +216,6 @@ spec:
               requests:
                 nvidia.com/gpu: "1"
                 rdma/rdma_shared_device_eth: "1"
-          - key: nvidia.com/gpu
-            operator: Exists
     Worker:
       replicas: 3
       restartPolicy: OnFailure
@@ -265,8 +243,6 @@ spec:
               requests:
                 nvidia.com/gpu: "1"
                 rdma/rdma_shared_device_eth: "1"
-          - key: nvidia.com/gpu
-            operator: Exists
 ----
 
  

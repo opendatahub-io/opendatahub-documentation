@@ -51,6 +51,11 @@ ifdef::upstream[]
 This process includes installing the Node Feature Discovery Operator and the NVIDIA GPU Operator.
 For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
 endif::[]
++
+[NOTE]
+====
+After the NVIDIA GPU Operator is installed, ensure that `rdma` is set to `enabled` in your `ClusterPolicy` custom resource instance.
+====
 
 . To simplify the management of NVIDIA networking resources, install and configure the NVIDIA Network Operator, as follows:
 
@@ -109,7 +114,7 @@ This configuration enables non-root users to run the training job with RDMA in t
 .. In the OpenShift Console, click **Workloads -> Pods**.
 .. Select your project from the *Project* list.
 .. Verify that a pod is running for each of the newly installed Operators.
-. Verify that NCCL is configured correctly, as follows:
+. Verify that RoCE is being used, as follows:
 .. Edit the `PyTorchJob` resource to set the `*NCCL_DEBUG*` environment variable to `INFO`, as shown in the following example:
 +
 .Setting the NCCL debug level to INFO
