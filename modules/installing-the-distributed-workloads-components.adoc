@@ -41,15 +41,19 @@ If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_opens
 ifdef::self-managed[]
 [NOTE]
 ====
-{org-name} supports the use of accelerators within the same cluster only. 
-{org-name} does not support remote direct memory access (RDMA) between accelerators, or the use of accelerators across a network, for example, by using technology such as NVIDIA GPUDirect or NVLink.
+In {productname-short}, {org-name} supports the use of accelerators within the same cluster only. 
+
+Starting from {productname-long} 2.19, NVIDIA GPUs can communicate directly with each other by using NVIDIA GPUDirect RDMA across either Ethernet or InfiniBand networks.
+In this {productname-short} release, {org-name} does not support remote direct memory access (RDMA) or use across a network for other accelerator types.
 ====
 endif::[]
 ifdef::cloud-service[]
 [NOTE]
 ====
-{org-name} supports the use of accelerators within the same cluster only. 
-{org-name} does not support remote direct memory access (RDMA) between accelerators, or the use of accelerators across a network, for example, by using technology such as NVIDIA GPUDirect or NVLink.
+In {productname-short}, {org-name} supports the use of accelerators within the same cluster only. 
+
+NVIDIA GPUs can communicate directly with each other by using NVIDIA GPUDirect RDMA across either Ethernet or InfiniBand networks.
+In this {productname-short} release, {org-name} does not support remote direct memory access (RDMA) or use across a network for other accelerator types.
 ====
 endif::[]
 endif::[]
@@ -145,7 +149,7 @@ In the `spec.components` section, set the `managementState` field correctly for 
 +
 
 .Components required for distributed workloads
-[cols="38,18,18,26"]
+[cols="44,15,15,26"]
 |===
 |Component | Pipelines only | Notebooks only | Pipelines and notebooks
 
@@ -190,7 +194,7 @@ After a short time, the components with a `Managed` state are ready.
 
 
 .Verification
-Check the status of the *codeflare-operator-manager*, *kuberay-operator*, and *kueue-controller-manager* pods, as follows:
+Check the status of the *codeflare-operator-manager*, *kubeflow-training-operator*, *kuberay-operator*, and *kueue-controller-manager* pods, as follows:
 
 ifdef::cloud-service[]
 . In the OpenShift console, from the *Project* list, select *redhat-ods-applications*.
@@ -203,13 +207,13 @@ ifdef::upstream[]
 endif::[]
 
 . Click *Workloads* -> *Deployments*.
-. Search for the *codeflare-operator-manager*, *kuberay-operator*, and *kueue-controller-manager* deployments.
+. Search for the *codeflare-operator-manager*, *kubeflow-training-operator*, *kuberay-operator*, and *kueue-controller-manager* deployments.
 In each case, check the status as follows:
 .. Click the deployment name to open the deployment details page.
 .. Click the *Pods* tab.
 .. Check the pod status.
 +
-When the status of the *codeflare-operator-manager-_<pod-id>_*, *kuberay-operator-_<pod-id>_*, and *kueue-controller-manager-_<pod-id>_* pods is *Running*, the pods are ready to use.
+When the status of the *codeflare-operator-manager-_<pod-id>_*, *kubeflow-training-operator-_<pod-id>_*, *kuberay-operator-_<pod-id>_*, and *kueue-controller-manager-_<pod-id>_* pods is *Running*, the pods are ready to use.
 .. To see more information about each pod, click the pod name to open the pod details page, and then click the *Logs* tab.
 
 .Next Step
