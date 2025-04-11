@@ -45,6 +45,11 @@ endif::[]
 ifndef::upstream[]
 * If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. If you use NVIDIA GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]. If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#amd-gpu-integration_managing-rhoai[AMD GPU integration^].
 * To use the vLLM runtime, you have enabled GPU support in {productname-short} and have installed and configured the Node Feature Discovery operator on your cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]
++
+[NOTE]
+====
+For IBM Z and IBM Power, the vLLM runtime is supported only on CPU. For more information, see the link:https://access.redhat.com/solutions/7109527[Red{nbsp}Hat {openshift-platform} Multi Architecture Component Availability Matrix].
+====
 endif::[]
 ifdef::upstream[]
 * To use the *vLLM ServingRuntime for KServe* runtime or use graphics processing units (GPUs) with your model server, you have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
