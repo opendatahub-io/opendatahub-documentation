@@ -4,14 +4,14 @@
 = Configuring the training job
 
 [role='_abstract']
-Before you can use a training job to finetune a model, you must configure the training job. 
-The example training job in this section is based on the IBM and Hugging Face tuning example provided in link:https://github.com/foundation-model-stack/fms-hf-tuning/tree/main/examples/prompt_tuning_twitter_complaints[GitHub]. 
+Before you can use a training job to fine-tune a model, you must configure the training job.
+You must set the training parameters, define the training function, and configure the Kubeflow Training Operator (KFTO) SDK.
 
 
 .Prerequisites
 
 ifndef::upstream[]
-* You have prepared a training workbench as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/finetuning-a-model-by-using-kubeflow-training__distributed-workloads#preparing-a-training-workbench_distributed-workloads[Preparing a training workbench].
+* You have prepared a training workbench as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training__distributed-workloads#preparing-a-training-workbench_distributed-workloads[Preparing a training workbench].
 endif::[]
 ifdef::upstream[]
 * You have prepared a training workbench as described in link:{odhdocshome}/working-with-distributed-workloads/#preparing-a-training-workbench_distributed-workloads[Preparing a training workbench].
@@ -19,15 +19,16 @@ endif::[]
 
 
 .Procedure
-. Open the training notebook, as follows:
+. Open the training notebook that you prepared, as follows:
 .. Log in to the {productname-long} web console.
 .. Click *Data science projects* and click your project.
 .. Click the *Workbenches* tab. 
 If your training workbench is not already running, start the workbench.
 .. Click the *Open* link to open the IDE in a new window. 
-.. In the IDE, open the `my_training_notebook.ipynb` notebook.
+.. In the IDE, open the training notebook.
 
-. Create a cell with the following content to declare the training parameters:
+. Set the training parameters as follows:
+.. Create a cell with the following content:
 +
 [source,subs="+quotes"]
 ----
@@ -116,212 +117,162 @@ report_to:
 output_dir: /mnt/shared/Meta-Llama-3.1-8B-Instruct
 ----
 
+.. Edit the parameters to suit your model, dataset, and resources.
+.. Run the cell to set the training parameters.
 
-.. Edit the metadata of the training-job configuration as shown in the following table.
+. Create the training function as follows:
+.. Create a cell with the following content:
 +
-.Training-job configuration metadata
-[cols="16,84"]
-|===
-|Parameter | Value
+[source,subs="+quotes"]
+----
+def main(parameters):
+    import random
 
-|`name`
-|Name of the training-job configuration
+    from datasets import load_dataset
+    from transformers import (
+        AutoTokenizer,
+        set_seed,
+    )
 
-|`namespace`
-|Name of your project
-|===
+    from trl import (
+        ModelConfig,
+        ScriptArguments,
+        SFTConfig,
+        SFTTrainer,
+        TrlParser,
+        get_peft_config,
+        get_quantization_config,
+        get_kbit_device_map,
+    )
 
-.. Edit the parameters of the training-job configuration as shown in the following table.
+    parser = TrlParser((ScriptArguments, SFTConfig, ModelConfig))
+    script_args, training_args, model_args = parser.parse_dict(parameters)
+
+    # Set seed for reproducibility
+    set_seed(training_args.seed)
+
+    # Model and tokenizer
+    quantization_config = get_quantization_config(model_args)
+    model_kwargs = dict(
+        revision=model_args.model_revision,
+        trust_remote_code=model_args.trust_remote_code,
+        attn_implementation=model_args.attn_implementation,
+        torch_dtype=model_args.torch_dtype,
+        use_cache=False if training_args.gradient_checkpointing or
+                           training_args.fsdp_config.get("activation_checkpointing",
+                                                         False) else True,
+        device_map=get_kbit_device_map() if quantization_config is not None else None,
+        quantization_config=quantization_config,
+    )
+    training_args.model_init_kwargs = model_kwargs
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_args.model_name_or_path, trust_remote_code=model_args.trust_remote_code, use_fast=True
+    )
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    # You can override the template here according to your use case
+    # tokenizer.chat_template = ...
+
+    # Datasets
+    train_dataset = load_dataset(
+        path=script_args.dataset_name,
+        name=script_args.dataset_config,
+        split=script_args.dataset_train_split,
+    )
+    test_dataset = None
+    if training_args.eval_strategy != "no":
+        test_dataset = load_dataset(
+            path=script_args.dataset_name,
+            name=script_args.dataset_config,
+            split=script_args.dataset_test_split,
+        )
+
+    # Templatize datasets
+    def template_dataset(sample):
+        # return{"text": tokenizer.apply_chat_template(examples["messages"], tokenize=False)}
+        messages = [
+            {"role": "user", "content": sample['question']},
+            {"role": "assistant", "content": sample['answer']},
+        ]
+        return {"text": tokenizer.apply_chat_template(messages, tokenize=False)}
+
+    train_dataset = train_dataset.map(template_dataset, remove_columns=["question", "answer"])
+    if training_args.eval_strategy != "no":
+        # test_dataset = test_dataset.map(template_dataset, remove_columns=["messages"])
+        test_dataset = test_dataset.map(template_dataset, remove_columns=["question", "answer"])
+
+    # Check random samples
+    with training_args.main_process_first(
+        desc="Log few samples from the training set"
+    ):
+        for index in random.sample(range(len(train_dataset)), 2):
+            print(train_dataset[index]["text"])
+
+    # Training
+    trainer = SFTTrainer(
+        model=model_args.model_name_or_path,
+        args=training_args,
+        train_dataset=train_dataset,
+        eval_dataset=test_dataset,
+        peft_config=get_peft_config(model_args),
+        tokenizer=tokenizer,
+    )
+
+    if trainer.accelerator.is_main_process and hasattr(trainer.model, "print_trainable_parameters"):
+        trainer.model.print_trainable_parameters()
+
+    checkpoint = None
+    if training_args.resume_from_checkpoint is not None:
+        checkpoint = training_args.resume_from_checkpoint
+
+    trainer.train(resume_from_checkpoint=checkpoint)
+
+    trainer.save_model(training_args.output_dir)
+
+    with training_args.main_process_first(desc="Training completed"):
+        print(f"Training completed, model checkpoint written to {training_args.output_dir}")
+----
+
+.. Edit the `tokenizer.chat_template` parameter to specify the appropriate value for your model and dataset.
+.. Run the cell to create the training function.
+
+. Configure the KFTO SDK client authentication as follows:
+.. Create a cell with the following content:
 +
-.Training-job configuration parameters
-[cols="30,70"]
-|===
-|Parameter | Value
+[source,subs="+quotes"]
+----
+from kubernetes import client
+from kubeflow.training import TrainingClient
+from kubeflow.training.models import V1Volume, V1VolumeMount, V1PersistentVolumeClaimVolumeSource
 
-|`model_name_or_path`
-|Name of the pre-trained model or the path to the model in the training-job container; in this example, the model name is taken from the Hugging Face web page
+api_server = "<API_SERVER>"
+token = "<TOKEN>"
 
-|`training_data_path`
-|Path to the training data that you set in the `training_data.yaml` ConfigMap
+configuration = client.Configuration()
+configuration.host = api_server
+configuration.api_key = {"authorization": f"Bearer {token}"}
+# Un-comment if your cluster API server uses a self-signed certificate or an un-trusted CA
+#configuration.verify_ssl = False
+api_client = client.ApiClient(configuration)
+client = TrainingClient(client_configuration=api_client.configuration)
+----
 
-|`output_dir`
-|Output directory for the model
-
-|`save_model_dir`
-|Directory where the tuned model is saved
-
-|`num_train_epochs`
-|Number of epochs for training; in this example, the training job is set to run 10 times
-
-|`per_device_train_batch_size`
-|Batch size, the number of data set examples to process together; in this example, the training job processes 4 examples at a time
-
-|`per_device_eval_batch_size`
-|Batch size, the number of data set examples to process together per GPU or TPU core or CPU; in this example, the training job processes 4 examples at a time
-
-|`gradient_accumulation_steps`
-|Number of gradient accumulation steps
-
-|`save_strategy`
-|How often model checkpoints can be saved; the default value is `"epoch"` (save model checkpoint every epoch), other possible values are `"steps"` (save model checkpoint for every training step) and `"no"` (do not save model checkpoints)
-
-|`save_total_limit`
-|Number of model checkpoints to save; omit if `save_strategy` is set to `"no"` (no model checkpoints saved)
-
-|`learning_rate`
-|Learning rate for the training
-
-|`weight_decay`
-|Weight decay to apply
-
-|`lr_scheduler_type`
-|Optional: Scheduler type to use; the default value is `"linear"`, other possible values are `"cosine"`, `"cosine_with_restarts"`, `"polynomial"`, `"constant"`, and `"constant_with_warmup"`
-
-|`include_tokens_per_second`
-|Optional: Whether or not to compute the number of tokens per second per device for training speed metrics
-
-|`response_template`
-|Template formatting for the response
-
-|`dataset_text_field`
-|Dataset field for training output, as set in the `training_data.yaml` config map
-
-|`padding_free`
-|Whether to use a technique to process multiple examples in a single batch without adding padding tokens that waste compute resources; if used, this parameter must be set to `["huggingface"]`
-
-|`multipack`
-|Whether to use a technique for multi-GPU training to balance the number of tokens processed in each device, to minimize waiting time; you can experiment with different values to find the optimum value for your training job
-
-|`use_flash_attn`
-|Whether to use flash attention
-
-|`peft_method`
-|Tuning method: for full fine-tuning, omit this parameter; for LoRA and QLoRA, set to `"lora"`; for prompt tuning, set to `"pt"`
-
-|`lora_r`
-|LoRA: Rank of the low-rank decomposition
-
-|`lora_alpha`
-|LoRA: Scale the low-rank matrices to control their influence on the model's adaptations
-
-|`lora_dropout`
-|LoRA: Dropout rate applied to the LoRA layers, a regularization technique to prevent overfitting
-
-|`bias`
-|LoRA: Whether to adapt bias terms in the model; setting the bias to `"none"` indicates that no bias terms will be adapted
-
-|`target_modules`
-|LoRA: Names of the modules to apply LoRA to; to include all linear layers, set to "all_linear"; optional parameter for some models
-
-|`auto_gptq`
-|QLoRA: Sets 4-bit GPTQ-LoRA with AutoGPTQ; when used, this parameter must be set to `["triton_v2"]` 
-
-|`torch_dtype`
-|QLoRA: Tensor datatype; when used, this parameter must be set to `float16`
-
-|`fp16`
-|QLoRA: Whether to use half-precision floating-point format; when used, this parameter must be set to `true` 
-
-|`fused_lora`
-|QLoRA: Whether to use fused LoRA for more efficient LoRA training; if used, this parameter must be set to `["auto_gptq", true]`
-
-|`fast_kernels`
-|QLoRA: Whether to use fast cross-entropy, rope, rms loss kernels; if used, this parameter must be set to `[true, true, true]`
-
-|===
-
-.. Save your changes in the `config_trainingjob.yaml` file.
-.. Apply the configuration to create the `training-config` object:
+.. Edit the `api_server` and `token` parameters to enter the values to authenticate to your OpenShift cluster.
 +
-[source]
-----
-$ oc apply -f config_trainingjob.yaml
-----
+ifndef::upstream[]
+For information on how to find the server and token details, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+endif::[]
+ifdef::upstream[]
+For information on how to find the server and token details, see link:{odhdocshome}/working-with-distributed-workloads/#using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+endif::[]
+ 
+.. Run the cell to configure the KFTO SDK client authentication.
 
-. Create the training data.
-+
-[NOTE]
-====
-The training data in this simple example is for demonstration purposes only, and is not suitable for production use.
-The usual method for providing training data is to use persistent volumes. 
-====
-.. Create a YAML file named `training_data.yaml`.
-.. Add the following `ConfigMap` object definition:
-+
-[source]
-----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: twitter-complaints
-  namespace: kfto
-data:
-  twitter_complaints.json: |
-    [
-        {"Tweet text":"@HMRCcustomers No this is my first job","ID":0,"Label":2,"text_label":"no complaint","output":"### Text: @HMRCcustomers No this is my first job\n\n### Label: no complaint"},
-        {"Tweet text":"@KristaMariePark Thank you for your interest! If you decide to cancel, you can call Customer Care at 1-800-NYTIMES.","ID":1,"Label":2,"text_label":"no complaint","output":"### Text: @KristaMariePark Thank you for your interest! If you decide to cancel, you can call Customer Care at 1-800-NYTIMES.\n\n### Label: no complaint"},
-        {"Tweet text":"@EE On Rosneath Arial having good upload and download speeds but terrible latency 200ms. Why is this.","ID":3,"Label":1,"text_label":"complaint","output":"### Text: @EE On Rosneath Arial having good upload and download speeds but terrible latency 200ms. Why is this.\n\n### Label: complaint"},
-        {"Tweet text":"Couples wallpaper, so cute. :) #BrothersAtHome","ID":4,"Label":2,"text_label":"no complaint","output":"### Text: Couples wallpaper, so cute. :) #BrothersAtHome\n\n### Label: no complaint"},
-        {"Tweet text":"@mckelldogs This might just be me, but-- eyedrops? Artificial tears are so useful when you're sleep-deprived and sp… https:\/\/t.co\/WRtNsokblG","ID":5,"Label":2,"text_label":"no complaint","output":"### Text: @mckelldogs This might just be me, but-- eyedrops? Artificial tears are so useful when you're sleep-deprived and sp… https:\/\/t.co\/WRtNsokblG\n\n### Label: no complaint"},
-        {"Tweet text":"@Yelp can we get the exact calculations for a business rating (for example if its 4 stars but actually 4.2) or do we use a 3rd party site?","ID":6,"Label":2,"text_label":"no complaint","output":"### Text: @Yelp can we get the exact calculations for a business rating (for example if its 4 stars but actually 4.2) or do we use a 3rd party site?\n\n### Label: no complaint"},
-        {"Tweet text":"@nationalgridus I have no water and the bill is current and paid. Can you do something about this?","ID":7,"Label":1,"text_label":"complaint","output":"### Text: @nationalgridus I have no water and the bill is current and paid. Can you do something about this?\n\n### Label: complaint"},
-        {"Tweet text":"@JenniferTilly Merry Christmas to as well. You get more stunning every year ��","ID":9,"Label":2,"text_label":"no complaint","output":"### Text: @JenniferTilly Merry Christmas to as well. You get more stunning every year ��\n\n### Label: no complaint"}
-    ]
-
-----
-.. Replace the example namespace value `kfto` with the name of your project.
-.. Replace the example training data with your training data.
-.. Save your changes in the `training_data.yaml` file.
-.. Apply the configuration to create the training data:
-+
-[source]
-----
-$ oc apply -f training_data.yaml
-----
-
-. Create a persistent volume claim (PVC), as follows:
-.. Create a YAML file named `trainedmodelpvc.yaml`.
-.. Add the following `PersistentVolumeClaim` object definition:
-+
-[source]
-----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: trained-model
-  namespace: kfto
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 50Gi
-
-----
-.. Replace the example namespace value `kfto` with the name of your project, and update the other parameters to suit your environment.
-To calculate the `storage` value, multiply the model size by the number of epochs, and add a little extra as a buffer.
-.. Save your changes in the `trainedmodelpvc.yaml` file.
-.. Apply the configuration to create a Persistent Volume Claim (PVC) for the training job:
-+
-[source]
-----
-$ oc apply -f trainedmodelpvc.yaml
-----
-
-
-
-
-
+////
 .Verification
-ifdef::upstream,self-managed[]
-. In the {openshift-platform} console, select your project from the *Project* list. 
-endif::[]
-ifdef::cloud-service[]
-. In the OpenShift console, select your project from the *Project* list.
-endif::[]
-. Click *ConfigMaps* and verify that the `training-config` and `twitter-complaints` ConfigMaps are listed. 
-. Click *Search*. From the *Resources* list, select *PersistentVolumeClaim* and verify that the `trained-model` PVC is listed.
 
+////
 
 ////
 [role='_additional-resources']
