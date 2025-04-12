@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
-[id="configuring-the-training-job_{context}"]
-= Configuring the training job
+[id="configuring-the-fine-tuning-job_{context}"]
+= Configuring the fine-tuning job
 
 [role='_abstract']
 Before you can use a training job to fine-tune a model, you must configure the training job.
@@ -10,22 +10,48 @@ You must set the training parameters, define the training function, and configur
 
 .Prerequisites
 
+* You can access an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training or tuning job.
+
 ifndef::upstream[]
-* You have prepared a training workbench as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training__distributed-workloads#preparing-a-training-workbench_distributed-workloads[Preparing a training workbench].
+* You can access a workbench that is suitable for distributed training, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/preparing-the-distributed-training-environment_distributed-workloads#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
 endif::[]
 ifdef::upstream[]
-* You have prepared a training workbench as described in link:{odhdocshome}/working-with-distributed-workloads/#preparing-a-training-workbench_distributed-workloads[Preparing a training workbench].
+* You can access a workbench that is suitable for distributed training, as described in link:{odhdocshome}/working-with-distributed-workloads/#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
 endif::[]
+
+
+* You have Admin access for the data science project.
+** If you created the project, you automatically have Admin access. 
+** If you did not create the project, your cluster administrator must give you Admin access.
 
 
 .Procedure
-. Open the training notebook that you prepared, as follows:
+. Open the workbench, as follows:
 .. Log in to the {productname-long} web console.
 .. Click *Data science projects* and click your project.
 .. Click the *Workbenches* tab. 
-If your training workbench is not already running, start the workbench.
+If your workbench is not already running, start the workbench.
 .. Click the *Open* link to open the IDE in a new window. 
-.. In the IDE, open the training notebook.
+
+. Click *File -> New -> Notebook*.
+
+. Install any additional packages that are needed to run the training or tuning job.
+
+.. In a cell in the notebook, add the code to install the additional packages, as follows:
++
+.Code to install dependencies
+[source,bash]
+----
+# Install the yamlmagic package
+!pip install yamlmagic
+%load_ext yamlmagic
+
+!pip install git+https://github.com/kubeflow/trainer.git@release-1.9#subdirectory=sdk/python
+----
+
+.. Select the cell, and click *Run > Run selected cell*.
++
+The additional packages are installed.
 
 . Set the training parameters as follows:
 .. Create a cell with the following content:
@@ -116,10 +142,8 @@ report_to:
 
 output_dir: /mnt/shared/Meta-Llama-3.1-8B-Instruct
 ----
-
 .. Edit the parameters to suit your model, dataset, and resources.
 .. Run the cell to set the training parameters.
-
 . Create the training function as follows:
 .. Create a cell with the following content:
 +
@@ -268,6 +292,10 @@ For information on how to find the server and token details, see link:{odhdocsho
 endif::[]
  
 .. Run the cell to configure the KFTO SDK client authentication.
+
+
+. Click *File > Save Notebook As*, enter an appropriate file name, and click *Save*.
+
 
 ////
 .Verification

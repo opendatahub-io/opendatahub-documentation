@@ -1,0 +1,27 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="preparing-the-distributed-training-environment_{context}"]
+= Preparing the distributed training environment
+
+[role='_abstract']
+
+Before you run a distributed training or tuning job, prepare your training environment as follows:
+
+* Create a workbench with the appropriate workbench image.
+Review the list of packages in each workbench image to find the most suitable image for your distributed training workload.
+* Ensure that you have the credentials to authenticate to the OpenShift cluster.
+* Select a suitable training image.
+Choose from the list of base training images provided with {productname-long}, or create a custom training image.
+
+
+For information about the workbench images and training images provided with {productname-long}, and the packages that they contain, see the link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations] Knowledgebase article.
+
+
+include::modules/creating-a-workbench-for-distributed-training.adoc[leveloffset=+1]
+include::modules/using-the-cluster-server-and-token-to-authenticate.adoc[leveloffset=+1]
+include::./managing-custom-training-images.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
