@@ -6,9 +6,19 @@
 [role='_abstract']
 When you run a training job to tune a model, you must specify the resources needed, and provide any authorization credentials required. 
 
+[NOTE]
+====
+The code in this procedure specifies how to run the example fine-tuning job. 
+If you have the specified resources, you can run the example code without editing it.
+
+Alternatively, you can modify the example code to specify the appropriate details for your fine-tuning job.
+====
+
 .Prerequisites
 
 * You can access an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training or tuning job.
++
+The example fine-tuning job requires 8 worker nodes, where each worker node has 64 GiB memory, 4 CPUs, and 1 NVIDIA GPU.
 
 ifndef::upstream[]
 * You can access a workbench that is suitable for distributed training, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/preparing-the-distributed-training-environment_distributed-workloads#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
@@ -25,11 +35,15 @@ endif::[]
 * You have access to data that you can use to train the model.
 
 ifndef::upstream[]
-* You have configured the training job as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads#configuring-the-fine-tuning-job_distributed-workloads[Configuring the fine-tuning job].
+* You configured the fine-tuning job as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads#configuring-the-fine-tuning-job_distributed-workloads[Configuring the fine-tuning job].
 endif::[]
 ifdef::upstream[]
-* You have configured the training job as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-the-training-job_distributed-workloads[Configuring the training job].
+* You configured the fine-tuning job as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-the-fine-tuning-job_distributed-workloads[Configuring the fine-tuning job].
 endif::[]
+
+* You can access a dynamic storage provisioner that supports ReadWriteMany (RWX) Persistent Volume Claim (PVC) provisioning, such as link:https://www.redhat.com/fr/technologies/cloud-computing/openshift-data-foundation[{org-name} OpenShift Data Foundation].
+
+* A `PersistentVolumeClaim` resource named `shared` with RWX access mode is attached to your workbench.
 
 
 .Procedure
@@ -40,7 +54,7 @@ endif::[]
 If your workbench is not already running, start the workbench.
 .. Click the *Open* link to open the IDE in a new window. 
 
-. Click *File -> Open*, and open the notebook that you used to configure the training job.
+. Click *File -> Open*, and open the notebook that you used to configure the fine-tuning job.
 
 . Create a cell with the following content:
 +
@@ -82,7 +96,7 @@ client.create_job(
 )
 ----
 
-. Edit the content to specify the appropriate values for your model and dataset.
+. [Optional] Edit the content to specify the appropriate values for your model and dataset.
 
 .. Edit the `num_workers` value to specify the number of worker nodes.
 .. Update the `resources_per_worker` values according to the job requirements and the resources available.
@@ -90,10 +104,13 @@ client.create_job(
 
 * In the `resources_per_worker` entry, change `nvidia.com/gpu` to `amd.com/gpu`
 * Change the base_image value to `quay.io/modh/training:py311-rocm62-torch241`
+* Remove the `CUDA` and `NCCL` entries.
 
-.. If you are fine-tuning a gated model from HuggingFace Hub, edit the `HF_TOKEN` value to specify your HuggingFace token.
+.. Edit the `HF_TOKEN` value to specify your HuggingFace token.
++
+If you are not fine-tuning a gated model from HuggingFace Hub, remove the `HF_HOME` and `HF_TOKEN` entries.
 
-.. Update the PVC details to specify the storage attached to the workbench.
+.. If your PVC has a different name or mount path, update the PVC details to specify the RWX storage attached to your workbench.
 
 
 . Run the cell to run the job.

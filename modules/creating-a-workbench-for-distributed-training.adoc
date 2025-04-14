@@ -37,14 +37,13 @@ ifndef::upstream[]
 ** Configured supported accelerators, as described in link:{rhoaidocshome}{default-format-url}/working_with_accelerators/[Working with accelerators].
 endif::[]
 
-** Configured a dynamic storage provisioner that supports Read Write Execute (RWX) Persistent Volume Claim (PVC) provisioning, such as link:https://www.redhat.com/fr/technologies/cloud-computing/openshift-data-foundation[{org-name} OpenShift Data Foundation].
-
 .Procedure
 . Log in to the {productname-long} web console.
 
 . If you want to add the workbench to an existing project, open the project and proceed to the next step. 
 +
 If you want to add the workbench to a new project, create the project as follows:
+
 .. In the left navigation pane, click *Data science projects*, and click *Create project*.
 .. Enter a project name, and optionally a description, and click *Create*.
 The project details page opens, with the *Overview* tab selected by default.
@@ -52,30 +51,31 @@ The project details page opens, with the *Overview* tab selected by default.
 . Create a workbench as follows:
 .. On the project details page, click the *Workbench* tab, and click *Create workbench*.
 .. Enter a workbench name, and optionally a description.
-.. In the *Notebook image* section, from the *Image selection* list, select the appropriate image for your training job.
+.. In the *Notebook image* section, from the *Image selection* list, select the appropriate image for your training or tuning job.
 +
 ifndef::upstream[]
-For example, to run the fine-tuning job described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], select *PyTorch*.
+For example, to run the example fine-tuning job described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], select *PyTorch*.
 endif::[]
 ifdef::upstream[]
-For example, to run the fine-tuning job described in link:{odhdocshome}/working-with-distributed-workloads/#fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], select *PyTorch*.
+For example, to run the example fine-tuning job described in link:{odhdocshome}/working-with-distributed-workloads/#fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], select *PyTorch*.
 endif::[]
 
-.. In the *Deployment size* section, from the *Container size* list, select the appropriate image for your training job.
+.. In the *Deployment size* section, from the *Container size* list, select the appropriate size for the size of the model that you want to train or tune.
 +
 ifndef::upstream[]
-For example, to run the fine-tuning job described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], select *Medium*.
+For example, to run the example fine-tuning job described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], select *Medium*.
 endif::[]
 ifdef::upstream[]
-For example, to run the fine-tuning job described in link:{odhdocshome}/working-with-distributed-workloads/#fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], select *Medium*.
+For example, to run the example fine-tuning job described in link:{odhdocshome}/working-with-distributed-workloads/#fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], select *Medium*.
 endif::[]
 .. In the *Cluster storage* section, click either *Attach existing storage* or *Create storage* to specify the storage details so that you can share data between the workbench and the training or tuning runs.
 +
-Ensure that the specified storage meets the following criteria:
-
-* Uses a storage class with RWX capability.
-* Has an appropriate size for the size of the model that you want to train or tune.
-
+ifndef::upstream[]
+For example, to run the example fine-tuning job described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], specify a storage class with RWX capability.
+endif::[]
+ifdef::upstream[]
+For example, to run the example fine-tuning job described in link:{odhdocshome}/working-with-distributed-workloads/#fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], specify a storage class with RWX capability.
+endif::[]
 .. Review the storage configuration and click *Create workbench*. 
 
 

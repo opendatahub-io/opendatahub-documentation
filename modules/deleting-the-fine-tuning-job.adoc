@@ -6,10 +6,18 @@
 [role='_abstract']
 When you no longer need the fine-tuning job, delete the job to release the resources.
 
+[NOTE]
+====
+The code in this procedure specifies how to delete the example fine-tuning job. 
+If you created the example fine-tuning job named `sft`, you can run the example code without editing it.
+
+Alternatively, you can modify this example code to specify the name of your fine-tuning job.
+====
+
 .Prerequisites
 
 ifndef::upstream[]
-* You created a fine-tuning job as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/tuning-a-model-by-using-the-training-operator_distributed-workloads#running-the-fine-tuning-job_distributed-workloads[Running the fine-tuning job].
+* You created a fine-tuning job as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads#running-the-fine-tuning-job_distributed-workloads[Running the fine-tuning job].
 endif::[]
 ifdef::upstream[]
 * You created a fine-tuning job as described in link:{odhdocshome}/working-with-distributed-workloads/#running-the-fine-tuning-job_distributed-workloads[Running the fine-tuning job].
@@ -23,7 +31,7 @@ endif::[]
 If your workbench is not already running, start the workbench.
 .. Click the *Open* link to open the IDE in a new window. 
 
-. Click *File -> Open*, and open the notebook that you used to configure and run the training job.
+. Click *File -> Open*, and open the notebook that you used to configure and run the example fine-tuning job.
 
 . Create a cell with the following content:
 +
@@ -32,11 +40,15 @@ If your workbench is not already running, start the workbench.
 client.delete_job(name="sft")
 ----
 
+. [Optional] If you want to delete a different job, edit the content to replace `sft` with the name of your job.
+
 . Run the cell to delete the job.
 
 
 .Verification
-. The job is deleted.
+. In the OpenShift Console, in the *Administrator* perspective, click *Workloads -> Jobs*.
+. From the *Project* list, select your project.
+. Verify that the specified job is not listed.
 
 ////
 [role='_additional-resources']

@@ -7,10 +7,19 @@
 Before you can use a training job to fine-tune a model, you must configure the training job.
 You must set the training parameters, define the training function, and configure the Kubeflow Training Operator (KFTO) SDK.
 
+[NOTE]
+====
+The code in this procedure specifies how to configure an example fine-tuning job. 
+If you have the specified resources, you can run the example code without editing it.
+
+Alternatively, you can modify the example code to specify the appropriate configuration for your fine-tuning job.
+====
 
 .Prerequisites
 
 * You can access an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training or tuning job.
++
+The example fine-tuning job requires 8 worker nodes, where each worker node has 64 GiB memory, 4 CPUs, and 1 NVIDIA GPU.
 
 ifndef::upstream[]
 * You can access a workbench that is suitable for distributed training, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/preparing-the-distributed-training-environment_distributed-workloads#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
@@ -19,6 +28,7 @@ ifdef::upstream[]
 * You can access a workbench that is suitable for distributed training, as described in link:{odhdocshome}/working-with-distributed-workloads/#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
 endif::[]
 
+* You can access a dynamic storage provisioner that supports ReadWriteMany (RWX) Persistent Volume Claim (PVC) provisioning, such as link:https://www.redhat.com/fr/technologies/cloud-computing/openshift-data-foundation[{org-name} OpenShift Data Foundation].
 
 * You have Admin access for the data science project.
 ** If you created the project, you automatically have Admin access. 
@@ -30,7 +40,8 @@ endif::[]
 .. Log in to the {productname-long} web console.
 .. Click *Data science projects* and click your project.
 .. Click the *Workbenches* tab. 
-If your workbench is not already running, start the workbench.
+.. Ensure that the workbench uses a storage class with RWX capability.
+.. If your workbench is not already running, start the workbench.
 .. Click the *Open* link to open the IDE in a new window. 
 
 . Click *File -> New -> Notebook*.
@@ -142,8 +153,11 @@ report_to:
 
 output_dir: /mnt/shared/Meta-Llama-3.1-8B-Instruct
 ----
-.. Edit the parameters to suit your model, dataset, and resources.
+.. [Optional] If you specify a different model or dataset, edit the parameters to suit your model, dataset, and resources.
+If necessary, update the previous cell to specify the dependencies for your training or tuning job.
+
 .. Run the cell to set the training parameters.
+
 . Create the training function as follows:
 .. Create a cell with the following content:
 +
@@ -258,7 +272,7 @@ def main(parameters):
         print(f"Training completed, model checkpoint written to {training_args.output_dir}")
 ----
 
-.. Edit the `tokenizer.chat_template` parameter to specify the appropriate value for your model and dataset.
+.. [Optional] If you specify a different model or dataset, edit the `tokenizer.chat_template` parameter to specify the appropriate value for your model and dataset.
 .. Run the cell to create the training function.
 
 . Configure the KFTO SDK client authentication as follows:
@@ -297,10 +311,10 @@ endif::[]
 . Click *File > Save Notebook As*, enter an appropriate file name, and click *Save*.
 
 
-////
-.Verification
 
-////
+.Verification
+. All cells run successfully.
+
 
 ////
 [role='_additional-resources']
