@@ -1,0 +1,48 @@
+:_module-type: PROCEDURE
+
+[id="deleting-the-fine-tuning-job_{context}"]
+= Deleting the fine-tuning job
+
+[role='_abstract']
+When you no longer need the fine-tuning job, delete the job to release the resources.
+
+.Prerequisites
+
+ifndef::upstream[]
+* You created a fine-tuning job as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/tuning-a-model-by-using-the-training-operator_distributed-workloads#running-the-fine-tuning-job_distributed-workloads[Running the fine-tuning job].
+endif::[]
+ifdef::upstream[]
+* You created a fine-tuning job as described in link:{odhdocshome}/working-with-distributed-workloads/#running-the-fine-tuning-job_distributed-workloads[Running the fine-tuning job].
+endif::[]
+
+.Procedure
+. Open the workbench, as follows:
+.. Log in to the {productname-long} web console.
+.. Click *Data science projects* and click your project.
+.. Click the *Workbenches* tab. 
+If your workbench is not already running, start the workbench.
+.. Click the *Open* link to open the IDE in a new window. 
+
+. Click *File -> Open*, and open the notebook that you used to configure and run the training job.
+
+. Create a cell with the following content:
++
+[source,subs="+quotes"]
+----
+client.delete_job(name="sft")
+----
+
+. Run the cell to delete the job.
+
+
+.Verification
+. The job is deleted.
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////
