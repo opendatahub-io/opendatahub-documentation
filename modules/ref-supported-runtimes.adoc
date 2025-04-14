@@ -31,7 +31,9 @@ endif::[]
 
 | vLLM ServingRuntime with Gaudi accelerators support for KServe | A high-throughput and memory-efficient inference and serving runtime that supports Intel Gaudi accelerators| link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
 
-| vLLM ROCm ServingRuntime for KServe | A high-throughput and memory-efficient inference and serving runtime that supports AMD GPU accelerators| link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
+| vLLM AMD GPU ServingRuntime for KServe | A high-throughput and memory-efficient inference and serving runtime that supports AMD GPU accelerators| link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
+
+| vLLM CPU ServingRuntime for KServe | A high-throughput and memory-efficient inference and serving runtime that supports IBM Power (ppc64le) and IBM Z (s390x).| link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
 
 |===
 
@@ -66,13 +68,19 @@ endif::[]
 
 | Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe | gRPC | None | No | Yes | Raw and serverless
 
-| vLLM ServingRuntime for KServe | REST | None | No | Yes | Raw and serverless 
+| vLLM ServingRuntime for KServe[1] | REST | None | No | Yes | Raw and serverless
 
 | vLLM ServingRuntime with Gaudi accelerators support for KServe | REST | None | No | Yes | Raw and serverless
 
-| vLLM ROCm ServingRuntime for KServe | REST | None | No | Yes | Raw and serverless
+| vLLM NVIDIA GPU ServingRuntime for KServe | REST | None | No | Yes | Raw and serverless 
+
+| vLLM AMD GPU ServingRuntime for KServe | REST | None | No | Yes | Raw and serverless
+
+| vLLM CPU ServingRuntime for KServe | REST | None | No | Yes | Raw 
 
 |===
+
+footnote:[vLLM ServingRuntime for KServe] If you are using IBM Z and IBM Power architecture, you can only deploy models in standard deployment mode.
 
 [role="_additional-resources"]
 .Additional resources
