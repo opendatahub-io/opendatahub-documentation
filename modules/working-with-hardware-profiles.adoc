@@ -1,0 +1,32 @@
+:_module-type: CONCEPT
+
+[id='working-with-hardware-profiles_{context}']
+= Working with hardware profiles
+
+[role='_abstract']
+ifndef::upsream[]
+[IMPORTANT]
+====
+*Hardware profiles are currently available in {productname-long} as a Technology Preview feature only. Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete. {org-name} does not recommend using them in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview[Technology Preview Features Support Scope]
+
+By default, this feature is hidden from appearing in the dashboard navigation menu. To show the *Settings → Hardware profiles* option in the dashboard navigation menu, and other user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. For more information, see link:{rhoaidocshome}/html/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+====
+endif::[]
+
+In {productname-long}, you can schedule user workloads on worker nodes that have specific hardware configurations, such as hardware accelerators, CPU-only nodes, or specialized memory allocations. With hardware profiles, you can define these hardware resources explicitly, enabling precise targeting of workloads to specific nodes and improving resource management efficiency.
+
+You can use hardware profiles to create profiles with hardware identifiers, explicit resource allocation limits (CPU, memory, and accelerators), tolerations, and node selectors. These capabilities are particularly beneficial in environments with heterogeneous hardware, including multiple GPU types, CPU-only configurations, memory-intensive workloads, or even single-node deployments. This targeted scheduling significantly enhances resource utilization, reduces overhead, and optimizes costs, especially in complex environments, such as clusters with diverse hardware.
+
+To get started, contact your cluster administrator to identify hardware resources available in your cluster. 
+
+To configure specific hardware configurations for your data scientists to use in {productname-short}, you must create an associated hardware profile. A hardware profile is a custom resource definition (CRD) on OpenShift that has an HardwareProfile resource, and defines the hardware specification. You can create and manage hardware profiles by selecting *Settings* -> *Hardware profiles* on the {productname-short} dashboard.
+
+After you create and enable a hardware profile, users can select the hardware profile in the user interface when deploying workbenches, model-serving workloads, and pipelines, where applicable.
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#toleration-v1-core[Toleration v1 core]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/controlling-pod-placement-onto-nodes-scheduling#nodes-scheduler-taints-tolerations-about_nodes-scheduler-taints-tolerations[Understanding taints and tolerations]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/understanding-operators#crd-managing-resources-from-crds[Managing resources from custom resource definitions]

@@ -44,10 +44,12 @@ The *Deploy model* dialog opens.
 .. In the *NVIDIA NIM storage size* field, specify the size of the cluster storage instance that will be created to store the NVIDIA NIM model.
 .. In the *Number of model server replicas to deploy* field, specify a value.
 .. From the *Model server size* list, select a value.
-.. From the *Accelerator* list, select an accelerator.
-+
-The *Number of accelerators* field appears.
-.. In the *Number of accelerators* field, specify the number of accelerators to use. The default value is 1.
+. From the *Hardware profile* list, select a hardware profile.
+. Optional: Click *Customize resource requests and limit* and update the following values:
+.. In the *CPUs requests* field, specify the number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
+.. In the *CPU limits* field, specify the maximum number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
+.. In the *Memory requests* field, specify the requested memory for the model server in gibibytes (Gi).
+.. In the *Memory limits* field, specify the maximum memory limit for the model server in gibibytes (Gi).
 . Optional: In the *Model route* section, select the *Make deployed models available through an external route* checkbox to make your deployed models available to external clients.
 . To require token authentication for inference requests to the deployed model, perform the following actions:
 .. Select *Require token authentication*.
