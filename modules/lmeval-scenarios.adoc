@@ -334,7 +334,6 @@ Learn how to set up S3 support for your LM-Eval service.
 +
 [source]
 ----
-
 apiVersion: v1
 kind: Secret
 metadata:
@@ -354,14 +353,13 @@ data:
     AWS_DEFAULT_REGION: BASE64_ENCODED_REGION  # Replace with your region
 type: Opaque
 ----
-
++
 [NOTE]
 --
 All values must be `base64` encoded. For example: `echo -n "my-bucket" | base64`
 --
-
++
 . Deploy the `LMEvalJob` CR that references the S3 bucket containing your model and dataset:
-
 +
 [source]
 ----
@@ -400,12 +398,12 @@ spec:
                 path: ""  # Optional subfolder within bucket
                 verifySSL: false
 ----
-
++
 [IMPORTANT]
 --
  The `LMEvalJob` will copy all the files from the specified bucket/path. If your bucket contains many files and you only want to use a subset, set the `path` field to the specific sub-folder containing the files the you require. For example use `path: "my-models/"`.
 --
-
++
 . Set up a secure connection with an SSL.
 .. Create a ConfigMap object with your CA certificate:
 +
@@ -426,7 +424,7 @@ data: {}  # OpenShift will inject the service CA bundle
 #     ...your CA certificate content...
 #     -----END CERTIFICATE-----
 ----
-
++
 .. Update the `LMEvalJob` to use SSL verification:
 +
 [source]
