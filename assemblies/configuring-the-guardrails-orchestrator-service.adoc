@@ -4,25 +4,6 @@ ifdef::context[:parent-context: {context}]
 [id="configuring-the-guardrails-orchestrator-service_{context}"]
 = Configuring the Guardrails Orchestrator service
 
-[role='_abstract']
-//The following TP note is to be removed in 2.19 when G-Orch is scheduled to be GA  
-ifndef::upstream[]
-[IMPORTANT]
-====
-ifdef::self-managed[]
-The Guardrails Orchestrator service is currently available in {productname-long} {vernum} as a Technology Preview feature.
-endif::[]
-ifdef::cloud-service[]
-The Guardrails Orchestrator service is currently available in {productname-long} as a Technology Preview feature.
-endif::[]
-Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
-{org-name} does not recommend using them in production.
-These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
-
-For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
-====
-endif::[]
-
 The TrustyAI Guardrails Orchestrator service is a tool to invoke detections on text generation inputs and outputs, as well as standalone detections.
 
 It is underpinned by the open-source project link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[FMS-Guardrails Orchestrator] from IBM. You can deploy the Guardrails Orchestrator service through a Custom Resource Definition (CRD) that is managed by the TrustyAI Operator.
@@ -31,12 +12,16 @@ The following sections describe how to do the following tasks:
 
 * Deploy a Guardrails Orchestrator instance
 * Monitor user-inputs to your LLM
+* *Optional* Configure and use the regex detector and vLLM guardrails gateway
 * *Optional* Enable the OpenTelemetry exporter for observing metrics and tracing
 
 
 include::modules/deploying-the-guardrails-orchestrator-service.adoc[leveloffset=+1]
 include::modules/guardrails-orchestrator-parameters.adoc[leveloffset=+1]
 include::modules/guardrails-orchestrator-hap-scenario.adoc[leveloffset=+1]
+include::modules/guardrails-orchestrator-configuring-regex-vllm-gateway.adoc[leveloffset=+1]
+include::modules/guardrails-orchestrator-regex-using.adoc[leveloffset=+2]
+include::modules/guardrails-orchestrator-vllm-gateway-using.adoc[leveloffset=+2]
 include::modules/configuring-the-opentelemetry-exporter.adoc[leveloffset=+1]
 
 ifdef::parent-context[:context: {parent-context}]

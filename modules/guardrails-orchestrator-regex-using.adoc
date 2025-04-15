@@ -1,0 +1,46 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="sending-requests-to-the-regex-detector_{context}"]
+= Sending requests to the regex detector
+[role='_abstract']
+
+You can use the Guardrails Orchestrator API to send requests to the regex detector. The regex detector filters conversations by flagging anything that matches regular expression patterns detection. 
+
+.Prerequisites
+* You have configured the regex detector and vLLM gateway.
+
+.Procedure
+* Send a request to the regex detector that you configured. The following example sends a request to a regex detector named `regex` to flag personally identifying information.
++
+[source,terminal]
+----
+GORCH_ROUTE=$(oc get routes guardrails-orchestrator-http -o jsonpath='{.spec.host}')
+curl -X 'POST' "https://$ORCH_ROUTE_HTTP/api/v2/text/detection/content" \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "detectors": {
+    "regex": {"regex": ["email"]}
+  },
+  "content": "my email is test@domain.com"
+}' | jq
+----
++
+.Example response
+[source,terminal]
+----
+{
+  "detections": [
+    {
+      "start": 12,
+      "end": 27,
+      "text": "test@domain.com",
+      "detection": "EmailAddress",
+      "detection_type": "pii",
+      "detector_id": "regex",
+      "score": 1.0
+    }
+  ]
+}
+----
