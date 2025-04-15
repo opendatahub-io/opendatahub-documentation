@@ -1,0 +1,118 @@
+:_module-type: CONCEPT
+
+[id='model-serving-runtimes_{context}']
+= Model-serving runtimes
+
+[role='_abstract']
+You can serve models on the single-model serving platform by using model-serving runtimes. The configuration of a model-serving runtime is defined by the *ServingRuntime* and *InferenceService* custom resource definitions (CRDs).
+
+== ServingRuntime
+
+The *ServingRuntime* CRD creates a serving runtime, an environment for deploying and managing a model. It creates the templates for pods that dynamically load and unload models of various formats and also exposes a service endpoint for inferencing requests.
+
+The following YAML configuration is an example of the *vLLM ServingRuntime for KServe* model-serving runtime. The configuration includes various flags, environment variables and command-line arguments.
+[source]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata: 
+  annotations: 
+    opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]' <1>
+    openshift.io/display-name: vLLM ServingRuntime for KServe <2>
+  labels:
+    opendatahub.io/dashboard: "true"
+  name: vllm-runtime
+spec:
+     annotations:
+          prometheus.io/path: /metrics <3>
+          prometheus.io/port: "8080" <4>
+     containers : 
+          - args:
+               - --port=8080
+               - --model=/mnt/models <5>
+               - --served-model-name={{.Name}} <6>
+             command: <7>
+                  - python
+                  - '-m'
+                  - vllm.entrypoints.openai.api_server
+             env: 
+                  - name: HF_HOME 
+                     value: /tmp/hf_home
+             image: <8> 
+quay.io/modh/vllm@sha256:8a3dd8ad6e15fe7b8e5e471037519719d4d8ad3db9d69389f2beded36a6f5b21 
+          name: kserve-container
+          ports:
+               - containerPort: 8080
+                   protocol: TCP
+    multiModel: false <9>
+    supportedModelFormats: <10>
+        - autoSelect: true
+           name: vLLM
+----
+<1> The recommended accelerator to use with the runtime.
+<2> The name with which the serving runtime is displayed.
+<3> The endpoint used by Prometheus to scrape metrics for monitoring.
+<4> The port used by Prometheus to scrape metrics for monitoring.
+<5> The path to where the model files are stored in the runtime container.
+<6> Passes the model name that is specified by the `{{.Name}}` template variable inside the runtime container specification to the runtime environment. The `{{.Name}}` variable maps to the `spec.predictor.name` field in the `InferenceService` metadata object.
+<7> The entrypoint command that starts the runtime container.
+<8> The runtime container image used by the serving runtime. This image differs depending on the type of accelerator used.
+<9> Specifies that the runtime is used for single-model serving. 
+<10> Specifies the model formats supported by the runtime.
+
+== InferenceService
+
+The *InferenceService* CRD creates a server or inference service that processes inference queries, passes it to the model, and then returns the inference output. 
+
+The inference service also performs the following actions:
+
+* Specifies the location and format of the model.
+* Specifies the serving runtime used to serve the model.
+* Enables the passthrough route for gRPC or REST inference.
+* Defines HTTP or gRPC endpoints for the deployed model.
+
+The following example shows the InferenceService YAML configuration file that is generated when deploying a granite model with the vLLM runtime: 
+[source]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  annotations:
+    openshift.io/display-name: granite
+    serving.knative.openshift.io/enablePassthrough: 'true'
+    sidecar.istio.io/inject: 'true'
+    sidecar.istio.io/rewriteAppHTTPProbers: 'true'
+  name: granite
+  labels:
+    opendatahub.io/dashboard: 'true'
+spec:
+  predictor:
+    maxReplicas: 1
+    minReplicas: 1
+    model:
+      modelFormat:
+        name: vLLM
+      name: ''
+      resources:
+        limits:
+          cpu: '6'
+          memory: 24Gi
+          nvidia.com/gpu: '1'
+        requests:
+          cpu: '1'
+          memory: 8Gi
+          nvidia.com/gpu: '1'
+      runtime: vLLM ServingRuntime for KServe
+      storage:
+        key: aws-connection-my-storage
+        path: models/granite-7b-instruct/
+    tolerations:
+      - effect: NoSchedule
+        key: nvidia.com/gpu
+        operator: Exists
+----
+
+[role="_additional-resources"]
+.Additional resources
+
+* link:https://kserve.github.io/website/0.11/modelserving/servingruntimes/[Serving Runtimes] 
