@@ -130,6 +130,11 @@ ifdef::self-managed,cloud-service[]
 IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
 endif::[]
 ... *For Open Container Image connections*: In the *OCI storage location* field, enter the model URI where the model is located.
++
+[NOTE]
+====
+If you are deploying a registered model version with an existing S3, URI, or OCI data connection, some of your connection details might be autofilled. This depends on the type of data connection and the number of matching connections available in your data science project. For example, if only one matching connection exists, fields like the path, URI, endpoint, model URI, bucket, and region might populate automatically. Matching connections will be labeled as **Recommended**.
+====
 
 * *To use a new connection* 
 ... To define a new connection that your model can access, select *New connection*.
