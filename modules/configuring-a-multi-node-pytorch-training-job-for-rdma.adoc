@@ -1,0 +1,267 @@
+:_module-type: PROCEDURE
+
+[id="configuring-a-multi-node-pytorch-training-job-for-rdma_{context}"]
+= Configuring a multi-node PyTorch training job for RDMA
+
+[role='_abstract']
+NVIDIA GPUDirect RDMA uses Remote Direct Memory Access (RDMA) to provide direct communication between NVIDIA GPUs, enabling peripheral devices to access NVIDIA GPU memory in remote systems directly.
+RDMA improves the training job performance because it eliminates the overhead of using the operating system CPUs and memory.
+Running a training job on multiple nodes using multiple GPUs can significantly reduce the completion time.
+
+In {productname-long}, NVIDIA GPUs can communicate directly by using GPUDirect RDMA across the following types of network: 
+
+* Ethernet: RDMA over Converged Ethernet (RoCE) 
+* InfiniBand
+
+When submitting a PyTorch training job to a cluster configured for RDMA, ensure that the job is configured to use the high-speed network interfaces, as described in this section. 
+
+
+.Prerequisites
+
+* You can access an OpenShift cluster that has multiple worker nodes with supported NVIDIA GPUs.
+
+* Your cluster administrator has configured the cluster as follows:
+
+ifdef::upstream[]
+** Installed {productname-long} with the required distributed training components, as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+ifdef::self-managed[]
+** Installed {productname-long} with the required distributed training components, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+endif::[]
+ifdef::cloud-service[]
+** Installed {productname-long} with the required distributed training components, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+ifdef::upstream[]
+** Configured the distributed training resources, as described in link:{odhdocshome}/managing-odh/#managing_distributed_workloads[Managing distributed workloads].
+endif::[]
+ifndef::upstream[]
+** Configured the distributed training resources, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai[Managing distributed workloads].
+endif::[]
+
+ifdef::upstream[]
+** Configured the cluster for RDMA, as described in link:{odhdocshome}/managing-odh/#configuring-a-cluster-for-rdma_managing-odh[Configuring a cluster for RDMA].
+endif::[]
+ifndef::upstream[]
+** Configured the cluster for RDMA, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai#configuring-a-cluster-for-rdma_managing-rhoai[Configuring a cluster for RDMA].
+endif::[]
+
+.Procedure
+. Log in to the OpenShift Console.
+
+. Create a `PyTorchJob` resource, as follows:
+.. In the *Administrator* perspective, click *Home -> Search*.
+.. From the *Project* list, select your project.
+.. Click the *Resources* list, and in the search field, start typing `PyTorchJob`.
+.. Select *PyTorchJob*, and click *Create PyTorchJob*.
++
+The *Create PyTorchJob* page opens, with some basic YAML code automatically added.
+
+. Attach the high-speed network interface to the `PyTorchJob` pods, as follows:
+
+.. Edit the `PyTorchJob` resource YAML code to include an annotation that adds the pod to an additional network, as shown in the following example:
++
+.Example annotation to attach network interface to pod
+[source,subs="+quotes"]
+----
+spec:
+  pytorchReplicaSpecs:
+    Master:
+      replicas: 1
+      restartPolicy: OnFailure
+      template:
+        metadata:
+          annotations:
+            k8s.v1.cni.cncf.io/networks: "example-net"
+----
+.. Replace the example network name `example-net` with the appropriate value for your configuration.
+
+. Configure the job to use NVIDIA Collective Communications Library (NCCL) interfaces, as follows:
+
+.. Edit the `PyTorchJob` resource YAML code to add the following environment variables:
++
+.Example environment variables
+[source,subs="+quotes"]
+----
+        spec:
+          containers:
+          - command:
+            - /bin/bash
+            - -c
+            - "your container command"
+            env:
+            - name: NCCL_SOCKET_IFNAME
+              value: "net1"
+            - name: NCCL_IB_HCA
+              value: "mlx5_1"
+----
+.. Replace the example environment-variable values with the appropriate values for your configuration:
+
+... Set the `*NCCL_SOCKET_IFNAME*` environment variable to specify the IP interface to use for communication.
+
+... [Optional] To explicitly specify the Host Channel Adapter (HCA) that NCCL should use, set the `*NCCL_IB_HCA*` environment variable.
+
+. Specify the base training image name, as follows:
+
+.. Edit the `PyTorchJob` resource YAML code to add the following text:
++
+.Example base training image
+[source,subs="+quotes"]
+----
+image: quay.io/modh/training:py311-cuda121-torch241
+----
+
+.. If you want to use a different base training image, replace the image name accordingly.
++
+For a list of supported training images, see link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations].
+
+. Specify the requests and limits for the network interface resources.
++
+The name of the resource varies, depending on the NVIDIA Network Operator configuration.
+The resource name might depend on the deployment mode, and is specified in the `NicClusterPolicy` resource.
++
+[NOTE]
+====
+You must use the resource name that matches your configuration.
+The name must correspond to the value advertised by the NVIDIA Network Operator on the cluster nodes.
+====
++
+The following example is for RDMA over Converged Ethernet (RoCE), where the Ethernet RDMA devices are using the RDMA shared device mode.
+
+.. Review the `NicClusterPolicy` resource to identify the `resourceName` value.
++
+.Example NicClusterPolicy
+[source,subs="+quotes"]
+----
+apiVersion: mellanox.com/v1alpha1
+kind: NicClusterPolicy
+spec:
+rdmaSharedDevicePlugin:
+  config: |
+    {
+      "configList": [
+        {
+          "resourceName": "rdma_shared_device_eth",
+          "rdmaHcaMax": 63,
+          "selectors": {
+            "ifNames": ["ens8f0np0"]
+          }
+        }
+      ]
+    }
+----
++
+In this example `NicClusterPolicy` resource, the `resourceName` value is `rdma_shared_device_eth`. 
+
+.. Edit the `PyTorchJob` resource YAML code to add the following text:
++
+.Example requests and limits for the network interface resources
+[source,subs="+quotes"]
+----
+            resources:
+              limits:
+                nvidia.com/gpu: "1"
+                rdma/rdma_shared_device_eth: "1"
+              requests:
+                nvidia.com/gpu: "1"
+                rdma/rdma_shared_device_eth: "1"
+----
+
+.. In the `limits` and `requests` sections, replace the resource name with the resource name from your `NicClusterPolicy` resource (in this example, `rdma_shared_device_eth`).
+
+.. Replace the specified value `1` with the number that you require.
+Ensure that the specified amount is available on your OpenShift cluster.
+
+. Repeat the above steps to make the same edits in the `Worker` section of the `PyTorchJob` YAML code.
+
+. Click *Create*.
+
+You have created a multi-node PyTorch training job that is configured to run with RDMA. 
+
+For your convenience, the entire YAML code for this example `PyTorchJob` resource is shown here:
+
+.Example code for a PyTorchJob resource configured for RDMA
+[source,subs="+quotes"]
+----
+apiVersion: kubeflow.org/v1
+kind: PyTorchJob
+metadata:
+  name: job
+spec:
+  pytorchReplicaSpecs:
+    Master:
+      replicas: 1
+      restartPolicy: OnFailure
+      template:
+        metadata: 
+          annotations:
+            k8s.v1.cni.cncf.io/networks: "example-net"
+        spec:
+          containers: 
+          - command:
+            - /bin/bash
+            - -c
+            - "your container command"
+            env:
+            - name: NCCL_SOCKET_IFNAME
+              value: "net1"
+            - name: NCCL_IB_HCA
+              value: "mlx5_1"
+            image: quay.io/modh/training:py311-cuda121-torch241
+            name: pytorch
+            resources:
+              limits:
+                nvidia.com/gpu: "1"
+                rdma/rdma_shared_device_eth: "1"
+              requests:
+                nvidia.com/gpu: "1"
+                rdma/rdma_shared_device_eth: "1"
+    Worker:
+      replicas: 3
+      restartPolicy: OnFailure
+      template:
+        metadata: 
+          annotations:
+            k8s.v1.cni.cncf.io/networks: "example-net"
+        spec:
+          containers: 
+          - command:
+            - /bin/bash
+            - -c
+            - "your container command"
+            env:
+            - name: NCCL_SOCKET_IFNAME
+              value: "net1"
+            - name: NCCL_IB_HCA
+              value: "mlx5_1"
+            image: quay.io/modh/training:py311-cuda121-torch241
+            name: pytorch
+            resources:
+              limits:
+                nvidia.com/gpu: "1"
+                rdma/rdma_shared_device_eth: "1"
+              requests:
+                nvidia.com/gpu: "1"
+                rdma/rdma_shared_device_eth: "1"
+----
+
+ 
+
+
+
+.Verification
+. In the OpenShift Console, open the *Administrator* perspective.
+. From the *Project* list, select your project.
+. Click *Home -> Search -> PyTorchJob* and verify that the job was created.
+. Click *Workloads -> Pods* and verify that requested head pod and worker pods are running.
+
+
+
+[role='_additional-resources']
+.Additional resources
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/networking/multiple-networks#attaching-pod[Attaching a pod to an additional network] in the OpenShift documentation
+* link:https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html[NCCL environment variables] in the NVIDIA documentation
+* link:https://docs.nvidia.com/networking/display/cokan10/network+operator#src-39285883_NetworkOperator-DeploymentExamplesDeploymentExamples[NVIDIA Network Operator deployment examples] in the NVIDIA documentation
+* link:https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/troubleshooting.html[NCCL Troubleshooting] in the NVIDIA documentation
+

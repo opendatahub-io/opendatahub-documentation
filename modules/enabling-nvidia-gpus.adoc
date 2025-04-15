@@ -120,15 +120,19 @@ ifndef::upstream[]
 ifdef::self-managed[]
 [NOTE]
 ====
-In {productname-short} {vernum}, {org-name} supports the use of accelerators within the same cluster only. 
-{org-name} does not support remote direct memory access (RDMA) between accelerators, or the use of accelerators across a network, for example, by using technology such as NVIDIA GPUDirect or NVLink.
+In {productname-short}, {org-name} supports the use of accelerators within the same cluster only. 
+
+Starting from {productname-long} 2.19, NVIDIA GPUs can communicate directly with each other by using NVIDIA GPUDirect RDMA across either Ethernet or InfiniBand networks.
+In this {productname-short} release, {org-name} does not support remote direct memory access (RDMA) or use across a network for other accelerator types.
 ====
 endif::[]
 ifdef::cloud-service[]
 [NOTE]
 ====
 In {productname-short}, {org-name} supports the use of accelerators within the same cluster only. 
-{org-name} does not support remote direct memory access (RDMA) between accelerators, or the use of accelerators across a network, for example, by using technology such as NVIDIA GPUDirect or NVLink.
+
+NVIDIA GPUs can communicate directly with each other by using NVIDIA GPUDirect RDMA across either Ethernet or InfiniBand networks.
+In this {productname-short} release, {org-name} does not support remote direct memory access (RDMA) or use across a network for other accelerator types.
 ====
 endif::[]
 endif::[]
