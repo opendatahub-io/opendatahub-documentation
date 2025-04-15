@@ -45,6 +45,9 @@ endif::[]
 
 * A `PersistentVolumeClaim` resource named `shared` with RWX access mode is attached to your workbench.
 
+* You have a HuggingFace account and access token.
+For more information, search for "user access tokens" in the link:https://huggingface.co/docs[HuggingFace documentation^].
+
 
 .Procedure
 . Open the workbench, as follows:
@@ -56,7 +59,7 @@ If your workbench is not already running, start the workbench.
 
 . Click *File -> Open*, and open the notebook that you used to configure the fine-tuning job.
 
-. Create a cell with the following content:
+. Create a cell to run the job, and add the following content:
 +
 [source,subs="+quotes"]
 ----
@@ -88,7 +91,7 @@ client.create_job(
     parameters=parameters,
     volumes=[
         V1Volume(name="shared",
-                 persistent_volume_claim=V1PersistentVolumeClaimVolumeSource(claim_name="shared")),
+            persistent_volume_claim=V1PersistentVolumeClaimVolumeSource(claim_name="shared")),
     ],
     volume_mounts=[
         V1VolumeMount(name="shared", mount_path="/mnt/shared"),
@@ -96,21 +99,37 @@ client.create_job(
 )
 ----
 
-. [Optional] Edit the content to specify the appropriate values for your model and dataset.
+. Edit the `HF_TOKEN` value to specify your HuggingFace access token.
++
+Optional: If you specify a different model, and your model is not a gated model from HuggingFace Hub, remove the `HF_HOME` and `HF_TOKEN` entries.
+
+. Optional: Edit the other content to specify the appropriate values for your environment, as follows:
 
 .. Edit the `num_workers` value to specify the number of worker nodes.
 .. Update the `resources_per_worker` values according to the job requirements and the resources available.
 .. The example provided is for NVIDIA GPUs. If you use AMD accelerators, make the following additional changes:
 
 * In the `resources_per_worker` entry, change `nvidia.com/gpu` to `amd.com/gpu`
-* Change the base_image value to `quay.io/modh/training:py311-rocm62-torch241`
-* Remove the `CUDA` and `NCCL` entries.
+* Change the `base_image` value to `quay.io/modh/training:py311-rocm62-torch241`
+* Remove the `CUDA` and `NCCL` entries
 
-.. Edit the `HF_TOKEN` value to specify your HuggingFace token.
+.. If the RWX `PersistentVolumeClaim` resource that is attached to your workbench has a different name instead of `shared`, update the following values to replace `shared` with your PVC name:
+
+* In this cell, update the `HF_HOME` value.
+* In this cell, in the `volumes` entry, update the PVC details:
+** In the `V1Volume` entry, update the `name` and `claim_name` values.
+** In the `volume_mounts` entry, update the `name` and `mount_path` values.
+
+ifndef::upstream[]
+* In the cell where you set the training parameters, update the `output_dir` value.
 +
-If you are not fine-tuning a gated model from HuggingFace Hub, remove the `HF_HOME` and `HF_TOKEN` entries.
-
-.. If your PVC has a different name or mount path, update the PVC details to specify the RWX storage attached to your workbench.
+For more information about setting the training parameters, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads#configuring-the-fine-tuning-job_distributed-workloads[Configuring the fine-tuning job].
+endif::[]
+ifdef::upstream[]
+* In the cell where you set the training parameters, update the `output_dir` value.
++
+For more information about setting the training parameters, see link:{odhdocshome}/working-with-distributed-workloads/#configuring-the-fine-tuning-job_distributed-workloads[Configuring the fine-tuning job].
+endif::[]
 
 
 . Run the cell to run the job.
