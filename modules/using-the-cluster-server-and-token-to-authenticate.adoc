@@ -1,0 +1,66 @@
+:_module-type: PROCEDURE
+
+[id="using-the-cluster-server-and-token-to-authenticate_{context}"]
+= Using the cluster server and token to authenticate
+
+[role='_abstract']
+To interact with the OpenShift cluster, you must authenticate to the OpenShift API by specifying the cluster server and token.
+You can find these values from the OpenShift Console.
+
+.Prerequisites
+* You can access the OpenShift Console.
+
+
+.Procedure
+. Log into the OpenShift Console.
++
+In the {productname-short} top navigation bar, click the application launcher icon (image:images/osd-app-launcher.png[The application launcher]) and then click *OpenShift Console*.
+. In the upper-right corner of the OpenShift Console, click your user name and click *Copy login command*. 
+. In the new tab that opens, log in as the user whose credentials you want to use.
+. Click *Display Token*.
+. In the *Log in with this token* section, find the required values as follows:
+
+* The `token` value is the text after the `--token=` prefix.
+* The `server` value is the text after the `--server=` prefix.
+
++
+[NOTE]
+====
+The `token` and `server` values are security credentials, treat them with care.
+
+* Do not save the token and server details in a notebook. 
+* Do not store the token and server details in Git.
+
+The token expires after 24 hours.
+====
+
+. You can use the token and server details to authenticate in various ways, as shown in the following examples:
+
+* You can specify the values in a notebook cell:
++
+[source,subs="+quotes"]
+----
+api_server = "__<server>__"
+token = "__<token>__"
+----
+
+* You can log into the OpenShift command-line interface (CLI) by copying the entire *Log in with this token* command and pasting the command in a terminal window.
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<server>__
+----
+
+////
+.Verification
+////
+
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////

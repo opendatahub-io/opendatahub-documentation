@@ -1,0 +1,326 @@
+:_module-type: PROCEDURE
+
+[id="configuring-the-fine-tuning-job_{context}"]
+= Configuring the fine-tuning job
+
+[role='_abstract']
+Before you can use a training job to fine-tune a model, you must configure the training job.
+You must set the training parameters, define the training function, and configure the Kubeflow Training Operator (KFTO) SDK.
+
+[NOTE]
+====
+The code in this procedure specifies how to configure an example fine-tuning job. 
+If you have the specified resources, you can run the example code without editing it.
+
+Alternatively, you can modify the example code to specify the appropriate configuration for your fine-tuning job.
+====
+
+.Prerequisites
+
+* You can access an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training or tuning job.
++
+The example fine-tuning job requires 8 worker nodes, where each worker node has 64 GiB memory, 4 CPUs, and 1 NVIDIA GPU.
+
+ifndef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/preparing-the-distributed-training-environment_distributed-workloads#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+ifdef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{odhdocshome}/working-with-distributed-workloads/#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+
+* You can access a dynamic storage provisioner that supports ReadWriteMany (RWX) Persistent Volume Claim (PVC) provisioning, such as link:https://www.redhat.com/fr/technologies/cloud-computing/openshift-data-foundation[{org-name} OpenShift Data Foundation].
+
+* You have administrator access for the data science project.
+** If you created the project, you automatically have administrator access. 
+** If you did not create the project, your cluster administrator must give you administrator access.
+
+
+.Procedure
+. Open the workbench, as follows:
+.. Log in to the {productname-long} web console.
+.. Click *Data science projects* and click your project.
+.. Click the *Workbenches* tab. 
+.. Ensure that the workbench uses a storage class with RWX capability.
+.. If your workbench is not already running, start the workbench.
+.. Click the *Open* link to open the IDE in a new window. 
+
+. Click *File -> New -> Notebook*.
+
+. Install any additional packages that are needed to run the training or tuning job.
+
+.. In a cell in the notebook, add the code to install the additional packages, as follows:
++
+.Code to install dependencies
+[source,bash]
+----
+# Install the yamlmagic package
+!pip install yamlmagic
+%load_ext yamlmagic
+
+!pip install git+https://github.com/kubeflow/trainer.git@release-1.9#subdirectory=sdk/python
+----
+
+.. Select the cell, and click *Run > Run selected cell*.
++
+The additional packages are installed.
+
+. Set the training parameters as follows:
+.. Create a cell with the following content:
++
+[source,subs="+quotes"]
+----
+%%yaml parameters
+
+# Model
+model_name_or_path: Meta-Llama/Meta-Llama-3.1-8B-Instruct
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+
+# PEFT / LoRA
+use_peft: true
+lora_r: 16
+lora_alpha: 8
+lora_dropout: 0.05
+lora_target_modules: ["q_proj", "v_proj", "k_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+lora_modules_to_save: []
+init_lora_weights: true
+
+# Quantization / BitsAndBytes
+load_in_4bit: false                       # use 4 bit precision for the base model (only with LoRA)
+load_in_8bit: false                       # use 8 bit precision for the base model (only with LoRA)
+
+# Datasets
+dataset_name: gsm8k                       # id or path to the dataset
+dataset_config: main                      # name of the dataset configuration
+dataset_train_split: train                # dataset split to use for training
+dataset_test_split: test                  # dataset split to use for evaluation
+dataset_text_field: text                  # name of the text field of the dataset
+dataset_kwargs:
+  add_special_tokens: false               # template with special tokens
+  append_concat_token: false              # add additional separator token
+
+# SFT
+max_seq_length: 1024                      # max sequence length for model and packing of the dataset
+dataset_batch_size: 1000                  # samples to tokenize per batch
+packing: false
+use_liger: false
+
+# Training
+num_train_epochs: 10                      # number of training epochs
+
+per_device_train_batch_size: 32           # batch size per device during training
+per_device_eval_batch_size: 32            # batch size for evaluation
+auto_find_batch_size: false               # find a batch size that fits into memory automatically
+eval_strategy: epoch                      # evaluate every epoch
+
+bf16: true                                # use bf16 16-bit (mixed) precision
+tf32: false                               # use tf32 precision
+
+learning_rate: 1.0e-4                     # initial learning rate
+warmup_steps: 10                          # steps for a linear warmup from 0 to `learning_rate`
+lr_scheduler_type: inverse_sqrt           # learning rate scheduler (see transformers.SchedulerType)
+
+optim: adamw_torch_fused                  # optimizer (see transformers.OptimizerNames)
+max_grad_norm: 1.0                        # max gradient norm
+seed: 42
+
+gradient_accumulation_steps: 1            # number of steps before performing a backward/update pass
+gradient_checkpointing: false             # use gradient checkpointing to save memory
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+
+# FSDP
+fsdp: "full_shard auto_wrap offload"      # remove offload if enough GPU memory
+fsdp_config:
+  activation_checkpointing: true
+  cpu_ram_efficient_loading: false
+  sync_module_states: true
+  use_orig_params: true
+  limit_all_gathers: false
+
+# Checkpointing
+save_strategy: epoch                      # save checkpoint every epoch
+save_total_limit: 1                       # limit the total amount of checkpoints
+resume_from_checkpoint: false             # load the last checkpoint in output_dir and resume from it
+
+# Logging
+log_level: warning                        # logging level (see transformers.logging)
+logging_strategy: steps
+logging_steps: 1                          # log every N steps
+report_to:
+- tensorboard                             # report metrics to tensorboard
+
+output_dir: /mnt/shared/Meta-Llama-3.1-8B-Instruct
+----
+.. Optional: If you specify a different model or dataset, edit the parameters to suit your model, dataset, and resources.
+If necessary, update the previous cell to specify the dependencies for your training or tuning job.
+
+.. Run the cell to set the training parameters.
+
+. Create the training function as follows:
+.. Create a cell with the following content:
++
+[source,subs="+quotes"]
+----
+def main(parameters):
+    import random
+
+    from datasets import load_dataset
+    from transformers import (
+        AutoTokenizer,
+        set_seed,
+    )
+
+    from trl import (
+        ModelConfig,
+        ScriptArguments,
+        SFTConfig,
+        SFTTrainer,
+        TrlParser,
+        get_peft_config,
+        get_quantization_config,
+        get_kbit_device_map,
+    )
+
+    parser = TrlParser((ScriptArguments, SFTConfig, ModelConfig))
+    script_args, training_args, model_args = parser.parse_dict(parameters)
+
+    # Set seed for reproducibility
+    set_seed(training_args.seed)
+
+    # Model and tokenizer
+    quantization_config = get_quantization_config(model_args)
+    model_kwargs = dict(
+        revision=model_args.model_revision,
+        trust_remote_code=model_args.trust_remote_code,
+        attn_implementation=model_args.attn_implementation,
+        torch_dtype=model_args.torch_dtype,
+        use_cache=False if training_args.gradient_checkpointing or
+                           training_args.fsdp_config.get("activation_checkpointing",
+                                                         False) else True,
+        device_map=get_kbit_device_map() if quantization_config is not None else None,
+        quantization_config=quantization_config,
+    )
+    training_args.model_init_kwargs = model_kwargs
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_args.model_name_or_path, trust_remote_code=model_args.trust_remote_code, use_fast=True
+    )
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    # You can override the template here according to your use case
+    # tokenizer.chat_template = ...
+
+    # Datasets
+    train_dataset = load_dataset(
+        path=script_args.dataset_name,
+        name=script_args.dataset_config,
+        split=script_args.dataset_train_split,
+    )
+    test_dataset = None
+    if training_args.eval_strategy != "no":
+        test_dataset = load_dataset(
+            path=script_args.dataset_name,
+            name=script_args.dataset_config,
+            split=script_args.dataset_test_split,
+        )
+
+    # Templatize datasets
+    def template_dataset(sample):
+        # return{"text": tokenizer.apply_chat_template(examples["messages"], tokenize=False)}
+        messages = [
+            {"role": "user", "content": sample['question']},
+            {"role": "assistant", "content": sample['answer']},
+        ]
+        return {"text": tokenizer.apply_chat_template(messages, tokenize=False)}
+
+    train_dataset = train_dataset.map(template_dataset, remove_columns=["question", "answer"])
+    if training_args.eval_strategy != "no":
+        # test_dataset = test_dataset.map(template_dataset, remove_columns=["messages"])
+        test_dataset = test_dataset.map(template_dataset, remove_columns=["question", "answer"])
+
+    # Check random samples
+    with training_args.main_process_first(
+        desc="Log few samples from the training set"
+    ):
+        for index in random.sample(range(len(train_dataset)), 2):
+            print(train_dataset[index]["text"])
+
+    # Training
+    trainer = SFTTrainer(
+        model=model_args.model_name_or_path,
+        args=training_args,
+        train_dataset=train_dataset,
+        eval_dataset=test_dataset,
+        peft_config=get_peft_config(model_args),
+        tokenizer=tokenizer,
+    )
+
+    if trainer.accelerator.is_main_process and hasattr(trainer.model, "print_trainable_parameters"):
+        trainer.model.print_trainable_parameters()
+
+    checkpoint = None
+    if training_args.resume_from_checkpoint is not None:
+        checkpoint = training_args.resume_from_checkpoint
+
+    trainer.train(resume_from_checkpoint=checkpoint)
+
+    trainer.save_model(training_args.output_dir)
+
+    with training_args.main_process_first(desc="Training completed"):
+        print(f"Training completed, model checkpoint written to {training_args.output_dir}")
+----
+
+.. Optional: If you specify a different model or dataset, edit the `tokenizer.chat_template` parameter to specify the appropriate value for your model and dataset.
+.. Run the cell to create the training function.
+
+. Configure the KFTO SDK client authentication as follows:
+.. Create a cell with the following content:
++
+[source,subs="+quotes"]
+----
+from kubernetes import client
+from kubeflow.training import TrainingClient
+from kubeflow.training.models import V1Volume, V1VolumeMount, V1PersistentVolumeClaimVolumeSource
+
+api_server = "<API_SERVER>"
+token = "<TOKEN>"
+
+configuration = client.Configuration()
+configuration.host = api_server
+configuration.api_key = {"authorization": f"Bearer {token}"}
+# Un-comment if your cluster API server uses a self-signed certificate or an un-trusted CA
+#configuration.verify_ssl = False
+api_client = client.ApiClient(configuration)
+client = TrainingClient(client_configuration=api_client.configuration)
+----
+
+.. Edit the `api_server` and `token` parameters to enter the values to authenticate to your OpenShift cluster.
++
+ifndef::upstream[]
+For information on how to find the server and token details, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+endif::[]
+ifdef::upstream[]
+For information on how to find the server and token details, see link:{odhdocshome}/working-with-distributed-workloads/#using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+endif::[]
+ 
+.. Run the cell to configure the KFTO SDK client authentication.
+
+
+. Click *File > Save Notebook As*, enter an appropriate file name, and click *Save*.
+
+
+
+.Verification
+. All cells run successfully.
+
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////

@@ -30,9 +30,9 @@ ifdef::upstream[]
 For information about projects and workbenches, see link:{odhdocshome}/working-on-data-science-projects[Working on data science projects].
 endif::[]
 
-* You have Admin access for the data science project.
-** If you created the project, you automatically have Admin access. 
-** If you did not create the project, your cluster administrator must give you Admin access.
+* You have administrator access for the data science project.
+** If you created the project, you automatically have administrator access. 
+** If you did not create the project, your cluster administrator must give you administrator access.
 
 * You have logged in to {productname-long}, started your workbench, and logged in to JupyterLab.
 
@@ -80,25 +80,12 @@ from codeflare_sdk import Cluster, ClusterConfiguration, TokenAuthentication
 
 . In each notebook, update the `TokenAuthentication` section to provide the `token` and `server` details to authenticate to the OpenShift cluster by using the CodeFlare SDK.
 +
-You can find your token and server details as follows:
-
-.. In the {productname-short} top navigation bar, click the application launcher icon (image:images/osd-app-launcher.png[The application launcher]) and then click *OpenShift Console* to open the OpenShift web console.
-.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*. 
-.. After you have logged in, click *Display Token*.
-.. In the *Log in with this token* section, find the required values as follows:
-* The `token` value is the text after the `--token=` prefix.
-* The `server` value is the text after the `--server=` prefix.
-
-+
-[NOTE]
-====
-The `token` and `server` values are security credentials, treat them with care.
-
-* Do not save the token and server details in a notebook. 
-* Do not store the token and server details in Git.
-
-The token expires after 24 hours.
-====
+ifndef::upstream[]
+For information on how to find the server and token details, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+endif::[]
+ifdef::upstream[]
+For information on how to find the server and token details, see link:{odhdocshome}/working-with-distributed-workloads/#using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+endif::[]
 
 . Optional: If you want to use custom certificates, update the `TokenAuthentication` section to add the `ca_cert_path` parameter to specify the location of the custom certificates, as shown in the following example:
 +

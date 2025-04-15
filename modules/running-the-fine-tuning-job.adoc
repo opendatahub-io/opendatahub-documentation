@@ -1,0 +1,162 @@
+:_module-type: PROCEDURE
+
+[id="running-the-fine-tuning-job_{context}"]
+= Running the fine-tuning job
+
+[role='_abstract']
+When you run a training job to tune a model, you must specify the resources needed, and provide any authorization credentials required. 
+
+[NOTE]
+====
+The code in this procedure specifies how to run the example fine-tuning job. 
+If you have the specified resources, you can run the example code without editing it.
+
+Alternatively, you can modify the example code to specify the appropriate details for your fine-tuning job.
+====
+
+.Prerequisites
+
+* You can access an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training or tuning job.
++
+The example fine-tuning job requires 8 worker nodes, where each worker node has 64 GiB memory, 4 CPUs, and 1 NVIDIA GPU.
+
+ifndef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/preparing-the-distributed-training-environment_distributed-workloads#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+ifdef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{odhdocshome}/working-with-distributed-workloads/#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+
+* You have administrator access for the data science project.
+** If you created the project, you automatically have administrator access. 
+** If you did not create the project, your cluster administrator must give you administrator access.
+
+* You have access to a model.
+* You have access to data that you can use to train the model.
+
+ifndef::upstream[]
+* You configured the fine-tuning job as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads#configuring-the-fine-tuning-job_distributed-workloads[Configuring the fine-tuning job].
+endif::[]
+ifdef::upstream[]
+* You configured the fine-tuning job as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-the-fine-tuning-job_distributed-workloads[Configuring the fine-tuning job].
+endif::[]
+
+* You can access a dynamic storage provisioner that supports ReadWriteMany (RWX) Persistent Volume Claim (PVC) provisioning, such as link:https://www.redhat.com/fr/technologies/cloud-computing/openshift-data-foundation[{org-name} OpenShift Data Foundation].
+
+* A `PersistentVolumeClaim` resource named `shared` with RWX access mode is attached to your workbench.
+
+* You have a Hugging Face account and access token.
+For more information, search for "user access tokens" in the link:https://huggingface.co/docs[Hugging Face documentation^].
+
+
+.Procedure
+. Open the workbench, as follows:
+.. Log in to the {productname-long} web console.
+.. Click *Data science projects* and click your project.
+.. Click the *Workbenches* tab. 
+If your workbench is not already running, start the workbench.
+.. Click the *Open* link to open the IDE in a new window. 
+
+. Click *File -> Open*, and open the notebook that you used to configure the fine-tuning job.
+
+. Create a cell to run the job, and add the following content:
++
+[source,subs="+quotes"]
+----
+client.create_job(
+    job_kind="PyTorchJob",
+    name="sft",
+    train_func=main,
+    num_workers=8,
+    num_procs_per_worker="1",
+    resources_per_worker={
+        "nvidia.com/gpu": 1,
+        "memory": "64Gi",
+        "cpu": 4,
+    },
+    base_image="quay.io/modh/training:py311-cuda121-torch241",
+    env_vars={
+        # Hugging Face
+        "HF_HOME": "/mnt/shared/.cache",
+        "HF_TOKEN": "",
+        # CUDA
+        "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
+        # NCCL
+        "NCCL_DEBUG": "INFO",
+        "NCCL_ENABLE_DMABUF_SUPPORT": "1",
+    },
+    packages_to_install=[
+        "tensorboard",
+    ],
+    parameters=parameters,
+    volumes=[
+        V1Volume(name="shared",
+            persistent_volume_claim=V1PersistentVolumeClaimVolumeSource(claim_name="shared")),
+    ],
+    volume_mounts=[
+        V1VolumeMount(name="shared", mount_path="/mnt/shared"),
+    ],
+)
+----
+
+. Edit the `HF_TOKEN` value to specify your Hugging Face access token.
++
+Optional: If you specify a different model, and your model is not a gated model from the Hugging Face Hub, remove the `HF_HOME` and `HF_TOKEN` entries.
+
+. Optional: Edit the other content to specify the appropriate values for your environment, as follows:
+
+.. Edit the `num_workers` value to specify the number of worker nodes.
+.. Update the `resources_per_worker` values according to the job requirements and the resources available.
+.. The example provided is for NVIDIA GPUs. If you use AMD accelerators, make the following additional changes:
+
+* In the `resources_per_worker` entry, change `nvidia.com/gpu` to `amd.com/gpu`
+* Change the `base_image` value to `quay.io/modh/training:py311-rocm62-torch241`
+* Remove the `CUDA` and `NCCL` entries
+
+.. If the RWX `PersistentVolumeClaim` resource that is attached to your workbench has a different name instead of `shared`, update the following values to replace `shared` with your PVC name:
+
+* In this cell, update the `HF_HOME` value.
+* In this cell, in the `volumes` entry, update the PVC details:
+** In the `V1Volume` entry, update the `name` and `claim_name` values.
+** In the `volume_mounts` entry, update the `name` and `mount_path` values.
+
+ifndef::upstream[]
+* In the cell where you set the training parameters, update the `output_dir` value.
++
+For more information about setting the training parameters, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads#configuring-the-fine-tuning-job_distributed-workloads[Configuring the fine-tuning job].
+endif::[]
+ifdef::upstream[]
+* In the cell where you set the training parameters, update the `output_dir` value.
++
+For more information about setting the training parameters, see link:{odhdocshome}/working-with-distributed-workloads/#configuring-the-fine-tuning-job_distributed-workloads[Configuring the fine-tuning job].
+endif::[]
+
+
+. Run the cell to run the job.
+
+
+.Verification
+View the progress of the job as follows:
+
+. Create a cell with the following content:
++
+[source,subs="+quotes"]
+----
+client.get_job_logs(
+    name="sft",
+    job_kind="PyTorchJob",
+    follow=True,
+)
+----
+
+. Run the cell to view the job progress.
+
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////
