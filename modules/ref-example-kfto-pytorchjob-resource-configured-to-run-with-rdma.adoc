@@ -1,0 +1,70 @@
+:_module-type: REFERENCE
+
+[id="ref-example-kfto-pytorchjob-resource-configured-to-run-with-rdma_{context}"]
+= Example KFTO PyTorchJob resource configured to run with RDMA
+[role='_abstract']
+This example shows how to create a KFTO PyTorch training job that is configured to run with Remote Direct Memory Access (RDMA). 
+
+[source,subs="+quotes"]
+----
+apiVersion: kubeflow.org/v1
+kind: PyTorchJob
+metadata:
+  name: job
+spec:
+  pytorchReplicaSpecs:
+    Master:
+      replicas: 1
+      restartPolicy: OnFailure
+      template:
+        metadata: 
+          annotations:
+            k8s.v1.cni.cncf.io/networks: "example-net"
+        spec:
+          containers: 
+          - command:
+            - /bin/bash
+            - -c
+            - "your container command"
+            env:
+            - name: NCCL_SOCKET_IFNAME
+              value: "net1"
+            - name: NCCL_IB_HCA
+              value: "mlx5_1"
+            image: quay.io/modh/training:py311-cuda121-torch241
+            name: pytorch
+            resources:
+              limits:
+                nvidia.com/gpu: "1"
+                rdma/rdma_shared_device_eth: "1"
+              requests:
+                nvidia.com/gpu: "1"
+                rdma/rdma_shared_device_eth: "1"
+    Worker:
+      replicas: 3
+      restartPolicy: OnFailure
+      template:
+        metadata: 
+          annotations:
+            k8s.v1.cni.cncf.io/networks: "example-net"
+        spec:
+          containers: 
+          - command:
+            - /bin/bash
+            - -c
+            - "your container command"
+            env:
+            - name: NCCL_SOCKET_IFNAME
+              value: "net1"
+            - name: NCCL_IB_HCA
+              value: "mlx5_1"
+            image: quay.io/modh/training:py311-cuda121-torch241
+            name: pytorch
+            resources:
+              limits:
+                nvidia.com/gpu: "1"
+                rdma/rdma_shared_device_eth: "1"
+              requests:
+                nvidia.com/gpu: "1"
+                rdma/rdma_shared_device_eth: "1"
+----

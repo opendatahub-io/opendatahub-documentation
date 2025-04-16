@@ -1,11 +1,10 @@
 :_module-type: PROCEDURE
 
-[id="configuring-a-kfto-pytorchjob-resource_{context}"]
-= Configuring a KFTO PyTorchJob resource
+[id="creating-a-kfto-pytorchjob-resource_{context}"]
+= Creating a KFTO PyTorchJob resource
 
 [role='_abstract']
-You can configure a `PyTorchJob` resource to run the KFTO PyTorch training script.
-specify the resources to be used.
+You can create a `PyTorchJob` resource to run the KFTO PyTorch training script.
 
 .Prerequisites
 
@@ -81,32 +80,7 @@ spec:
 .. In the `replicas` entry, specify `1`. 
 Only one master node is needed.
 
-.. To force the training to run on separate cluster nodes, add a pod anti-affinity rule, as shown in the following example:
-+
-.Adding a pod anti-affinity rule
-[source,subs="+quotes"]
----- 
-Spec:
-  pytorchReplicaSpecs:
-    Master:
-      ...
-      template:
-        metadata:
-          labels:
-            app: pytorch-multi-node-job
-        spec:
-          affinity: 
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution: 
-                - labelSelector:
-                    matchLabels: 
-                      app: pytorch-multi-node-job
-                  topologyKey: kubernetes.io/hostname
-          containers:
-            ...
-----
-
-.. To use a Configmap resource to provide the training script for the PyTorchJob deployment, add the ConfigMap volume mount information, as shown in the following example:
+.. To use a ConfigMap resource to provide the training script for the PyTorchJob pods, add the ConfigMap volume mount information, as shown in the following example:
 +
 .Adding the training script from a ConfigMap resource
 [source,subs="+quotes"]
@@ -144,9 +118,9 @@ SSpec:
           containers: ...
           resources:
             requests:
-                  cpu: "2"
-                  memory: "4Gi"
-                  nvidia.com/gpu: 1    # To use GPUs (Optional)
+                  cpu: "4"
+                  memory: "8Gi"
+                  nvidia.com/gpu: 2    # To use GPUs (Optional)
             limits:
                   cpu: "4"
                   memory: "8Gi"
@@ -161,10 +135,10 @@ SSpec:
 
 +
 ifndef::upstream[]
-For a complete example `PyTorchJob` resource, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-kfto-based-distributed-training-workloads_distributed-workloads/using-the-kubeflow-training-operator-to-run-distributed-training-workloads_distributed-workloads#ref-example-kfto-pytorchjob-resource-for-multi-node-training[Example KFTO PyTorchJob resource for multi-node training].
+For a complete example `PyTorchJob` resource, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-kfto-based-distributed-training-workloads_distributed-workloads/using-the-kubeflow-training-operator-to-run-distributed-training-workloads_distributed-workloads#ref-example-kfto-pytorchjob-resource-for-multi-node-training_distributed-workloads[Example KFTO PyTorchJob resource for multi-node training].
 endif::[]
 ifdef::upstream[]
-For a complete example `PyTorchJob` resource, see link:{odhdocshome}/working-with-distributed-workloads/#example-kfto-pytorch-training-scripts_distributed-workloads[Example KFTO PyTorch training scripts].
+For a complete example `PyTorchJob` resource, see link:{odhdocshome}/working-with-distributed-workloads/#ref-example-kfto-pytorchjob-resource-for-multi-node-training_distributed-workloads[Example KFTO PyTorchJob resource for multi-node training].
 endif::[]
 
 . Click *Create*.

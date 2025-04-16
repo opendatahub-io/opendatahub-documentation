@@ -7,18 +7,16 @@ ifdef::context[:parent-context: {context}]
 = Using the Kubeflow Training Operator to run distributed training workloads 
 
 [role='_abstract']
-You can use the KFTO `PyTorchJob` API to configure the job to run on multiple nodes with multiple accelerators per node.
+You can use the KFTO `PyTorchJob` API to configure a `PyTorchJob` resource so that the training job runs on multiple nodes with multiple GPUs.
 
-You configure the PyTorch training script, create a PyTorch job to run the training script, and then run the PyTorch training job on multiple nodes with multiple GPUs.
-
-You can store the training script in a `ConfigMap` resource, or in a custom container image.
+You can store the training script in a `ConfigMap` resource, or include it in a custom container image.
 
 
-include::modules/configuring-a-kfto-pytorch-training-script-configmap-resource.adoc[leveloffset=+1]
-include::modules/configuring-a-containerized-kfto-pytorch-training-script.adoc[leveloffset=+1]
-include::modules/configuring-a-kfto-pytorchjob-resource.adoc[leveloffset=+1]
-include::modules/configuring-a-kfto-pytorchjob-resource-by-using-the-cli.adoc[leveloffset=+1]
+include::modules/creating-a-kfto-pytorch-training-script-configmap-resource.adoc[leveloffset=+1]
+include::modules/creating-a-kfto-pytorchjob-resource.adoc[leveloffset=+1]
+include::modules/creating-a-kfto-pytorchjob-resource-by-using-the-cli.adoc[leveloffset=+1]
 include::./example-kfto-pytorch-training-scripts.adoc[leveloffset=+1]
+include::modules/ref-example-dockerfile-for-a-kfto-pytorch-training-script.adoc[leveloffset=+1]
 include::modules/ref-example-kfto-pytorchjob-resource-for-multi-node-training.adoc[leveloffset=+1]
 
 ifdef::parent-context[:context: {parent-context}]
