@@ -14,6 +14,9 @@ Distributed workloads provide the following benefits:
 * You can use complex models that could not be trained on a single node.
 * You can submit distributed workloads at any time, and the system then schedules the distributed workload when the required resources are available.
 
+
+== Distributed workloads infrastructure
+
 The distributed workloads infrastructure includes the following components:
 
 CodeFlare Operator::
@@ -27,6 +30,16 @@ Defines and controls the remote distributed compute jobs and infrastructure for 
 The CodeFlare SDK is not installed as part of {productname-short}, but it is contained in some of the notebook images provided by {productname-short}.
 ====
 
+Kubeflow Training Operator (KFTO)::
+Provides fine-tuning and scalable distributed training of ML models created with different ML frameworks such as PyTorch
+
+Kubeflow Training Operator Python Software Development Kit (KFTO SDK)::
+Simplifies the creation of distributed training and fine-tuning jobs
+[NOTE]
+====
+The KFTO SDK is not installed as part of {productname-short}, but it is contained in some of the workbench images provided by {productname-short}.
+====
+
 KubeRay::
 Manages remote Ray clusters on OpenShift for running distributed compute workloads
 
@@ -37,7 +50,7 @@ ifdef::self-managed[]
 [NOTE]
 ====
 The minimum version of {openshift-platform} that is compatible with Kueue 0.10.1 is 4.15. 
-If you deploy {productname-long} 2.18 on {openshift-platform} 4.14 or earlier, you must disable the API Priority and Fairness configuration for the Visibility API, as described in the link:https://kubernetes.io/docs/concepts/cluster-administration/flow-control/#enabling-disabling-api-priority-and-fairness[Enabling/Disabling API Priority and Fairness] section in the Kueue _Cluster Administration_ guide.
+If you deploy {productname-long} 2.18 or later on {openshift-platform} 4.14 or earlier, you must disable the API Priority and Fairness configuration for the Visibility API, as described in the link:https://kubernetes.io/docs/concepts/cluster-administration/flow-control/#enabling-disabling-api-priority-and-fairness[Enabling/Disabling API Priority and Fairness] section in the Kueue _Cluster Administration_ guide.
 This modification is required because the `PriorityLevelConfiguration` API is incompatible with older {openshift-platform} versions.
 ====
 endif::[]
@@ -47,6 +60,38 @@ ifdef::cloud-service[]
 ====
 You must disable the API Priority and Fairness configuration for the Visibility API, as described in the link:https://kubernetes.io/docs/concepts/cluster-administration/flow-control/#enabling-disabling-api-priority-and-fairness[Enabling/Disabling API Priority and Fairness] section in the Kueue _Cluster Administration_ guide.
 ====
+endif::[]
+
+
+ifdef::upstream[]
+For information about installing these components, see link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+ifdef::self-managed[]
+For information about installing these components, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+endif::[]
+
+ifdef::cloud-service[]
+For information about installing these components, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+
+
+== Types of distributed workloads
+
+Depending on which type of distributed workloads you want to run, you must enable different {productname-short} components:
+
+* Ray-based distributed workloads: Enable the `codeflare`, `kueue`, and `ray` components.
+* KFTO-based distributed workloads: Enable the `trainingoperator` and `kueue` components.
+
+
+For both Ray-based and KFTO-based distributed workloads, you can use Kueue and supported accelerators:
+
+* Use Kueue to manage the resources for the distributed workload.
+* Use CUDA training images for NVIDIA GPUs, and ROCm-based training images for AMD GPUs.
+
+ifndef::upstream[]
+For more information about supported accelerators, see the link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations] Knowledgebase article
 endif::[]
 
 

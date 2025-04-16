@@ -1,0 +1,77 @@
+:_module-type: REFERENCE
+
+[id="ref-example-kfto-pytorchjob-resource-for-multi-node-training_{context}"]
+= Example KFTO PyTorchJob resource for multi-node training
+
+[role='_abstract']
+This example shows how to create a KFTO PyTorch training job that runs on multiple nodes with multiple GPUs. 
+
+[source,bash,subs="+quotes"]
+----
+apiVersion: kubeflow.org/v1
+kind: PyTorchJob
+metadata:
+  name: pytorch-multi-node-job
+  namespace: test-namespace
+spec:
+  pytorchReplicaSpecs:
+    Master:
+      replicas: 1
+      restartPolicy: OnFailure
+      template:
+        metadata:
+          labels:
+            app: pytorch-multi-node-job
+        spec:
+          containers:
+          - name: pytorch
+            image: quay.io/modh/training:py311-cuda121-torch241
+            imagePullPolicy: IfNotPresent
+            command: ["torchrun", "/workspace/train.py"]
+            volumeMounts:
+              - name: training-script-volume
+                mountPath: /workspace
+            resources:
+              requests:
+                cpu: "4"
+                memory: "8Gi"
+                nvidia.com/gpu: "2"
+              limits:
+                cpu: "4"
+                memory: "8Gi"
+                nvidia.com/gpu: "2"
+          volumes:
+            - name: training-script-volume
+              configMap:
+                name: training-script-configmap
+    Worker:
+      replicas: 1
+      restartPolicy: OnFailure
+      template:
+        metadata:
+          labels:
+            app: pytorch-multi-node-job
+        spec:
+          containers:
+          - name: pytorch
+            image: quay.io/modh/training:py311-cuda121-torch241
+            imagePullPolicy: IfNotPresent
+            command: ["torchrun", "/workspace/train.py"]
+            volumeMounts:
+              - name: training-script-volume
+                mountPath: /workspace
+            resources:
+              requests:
+                cpu: "4"
+                memory: "8Gi"
+                nvidia.com/gpu: "2"
+              limits:
+                cpu: "4"
+                memory: "8Gi"
+                nvidia.com/gpu: "2"
+          volumes:
+            - name: training-script-volume
+              configMap:
+                name: training-script-configmap
+
+----

@@ -1,0 +1,26 @@
+:_module-type: REFERENCE
+
+[id="ref-example-dockerfile-for-a-kfto-pytorch-training-script_{context}"]
+= Example Dockerfile for a KFTO PyTorch training script
+
+[role='_abstract']
+You can use this example Dockerfile to include the training script in a custom training image.
+
+[source,subs="+quotes"]
+---- 
+FROM quay.io/modh/training:py311-cuda121-torch241
+WORKDIR /workspace
+COPY train.py /workspace/train.py
+CMD ["python", "train.py"]
+----
+
+This example copies the training script to the default PyTorch image, and runs the script.
+
+ifdef::upstream[]
+For more information about how to use this Dockerfile to include the training script in a custom container image, see
+link:{odhdocshome}/working-with-distributed-workloads/#creating-a-custom-training-image_distributed-workloads[Creating a custom training image].
+endif::[]
+
+ifndef::upstream[]
+For more information about how to use this Dockerfile to include the training script in a custom container image, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/managing-custom-training-images_distributed-workloads#creating-a-custom-training-image_distributed-workloads[Creating a custom training image].
+endif::[]

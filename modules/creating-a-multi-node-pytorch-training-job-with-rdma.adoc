@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
-[id="configuring-a-multi-node-pytorch-training-job-for-rdma_{context}"]
-= Configuring a multi-node PyTorch training job for RDMA
+[id="creating-a-multi-node-pytorch-training-job-with-rdma_{context}"]
+= Creating a multi-node PyTorch training job with RDMA
 
 [role='_abstract']
-NVIDIA GPUDirect RDMA uses Remote Direct Memory Access (RDMA) to provide direct communication between NVIDIA GPUs, enabling peripheral devices to access NVIDIA GPU memory in remote systems directly.
+NVIDIA GPUDirect RDMA uses Remote Direct Memory Access (RDMA) to provide direct GPU interconnect, enabling peripheral devices to access NVIDIA GPU memory in remote systems directly.
 RDMA improves the training job performance because it eliminates the overhead of using the operating system CPUs and memory.
 Running a training job on multiple nodes using multiple GPUs can significantly reduce the completion time.
 
@@ -13,7 +13,7 @@ In {productname-long}, NVIDIA GPUs can communicate directly by using GPUDirect R
 * Ethernet: RDMA over Converged Ethernet (RoCE) 
 * InfiniBand
 
-When submitting a PyTorch training job to a cluster configured for RDMA, ensure that the job is configured to use the high-speed network interfaces, as described in this section. 
+Before you create a PyTorch training job in a cluster configured for RDMA, you must configure the job to use the high-speed network interfaces. 
 
 
 .Prerequisites
@@ -55,7 +55,7 @@ endif::[]
 .. Click the *Resources* list, and in the search field, start typing `PyTorchJob`.
 .. Select *PyTorchJob*, and click *Create PyTorchJob*.
 +
-The *Create PyTorchJob* page opens, with some basic YAML code automatically added.
+The *Create PyTorchJob* page opens, with default YAML code automatically added.
 
 . Attach the high-speed network interface to the `PyTorchJob` pods, as follows:
 
@@ -178,75 +178,13 @@ Ensure that the specified amount is available on your OpenShift cluster.
 
 You have created a multi-node PyTorch training job that is configured to run with RDMA. 
 
-For your convenience, the entire YAML code for this example `PyTorchJob` resource is shown here:
 
-.Example code for a PyTorchJob resource configured for RDMA
-[source,subs="+quotes"]
-----
-apiVersion: kubeflow.org/v1
-kind: PyTorchJob
-metadata:
-  name: job
-spec:
-  pytorchReplicaSpecs:
-    Master:
-      replicas: 1
-      restartPolicy: OnFailure
-      template:
-        metadata: 
-          annotations:
-            k8s.v1.cni.cncf.io/networks: "example-net"
-        spec:
-          containers: 
-          - command:
-            - /bin/bash
-            - -c
-            - "your container command"
-            env:
-            - name: NCCL_SOCKET_IFNAME
-              value: "net1"
-            - name: NCCL_IB_HCA
-              value: "mlx5_1"
-            image: quay.io/modh/training:py311-cuda121-torch241
-            name: pytorch
-            resources:
-              limits:
-                nvidia.com/gpu: "1"
-                rdma/rdma_shared_device_eth: "1"
-              requests:
-                nvidia.com/gpu: "1"
-                rdma/rdma_shared_device_eth: "1"
-    Worker:
-      replicas: 3
-      restartPolicy: OnFailure
-      template:
-        metadata: 
-          annotations:
-            k8s.v1.cni.cncf.io/networks: "example-net"
-        spec:
-          containers: 
-          - command:
-            - /bin/bash
-            - -c
-            - "your container command"
-            env:
-            - name: NCCL_SOCKET_IFNAME
-              value: "net1"
-            - name: NCCL_IB_HCA
-              value: "mlx5_1"
-            image: quay.io/modh/training:py311-cuda121-torch241
-            name: pytorch
-            resources:
-              limits:
-                nvidia.com/gpu: "1"
-                rdma/rdma_shared_device_eth: "1"
-              requests:
-                nvidia.com/gpu: "1"
-                rdma/rdma_shared_device_eth: "1"
-----
-
- 
-
+ifdef::upstream[]
+You can see the entire YAML code for this example `PyTorchJob` resource in the link:{odhdocshome}/working-with-distributed-workloads/#ref-example-kfto-pytorchjob-resource-configured-to-run-with-rdma_distributed-workloads[Example KFTO PyTorchJob resource configured to run with RDMA].
+endif::[]
+ifndef::upstream[]
+You can see the entire YAML code for this example `PyTorchJob` resource in the link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-kfto-based-distributed-training-workloads_distributed-workloads/#ref-example-kfto-pytorchjob-resource-configured-to-run-with-rdma_distributed-workloads[Example KFTO PyTorchJob resource configured to run with RDMA].
+endif::[]
 
 
 .Verification
@@ -254,7 +192,6 @@ spec:
 . From the *Project* list, select your project.
 . Click *Home -> Search -> PyTorchJob* and verify that the job was created.
 . Click *Workloads -> Pods* and verify that requested head pod and worker pods are running.
-
 
 
 [role='_additional-resources']
