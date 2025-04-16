@@ -1,0 +1,112 @@
+:_module-type: REFERENCE
+
+[id="ref-example-kfto-pytorch-training-script-ddp_{context}"]
+= Example KFTO PyTorch training script: DDP
+
+[role='_abstract']
+This example shows how to configure a training script for a Distributed Data Parallel (DDP) training job. 
+
+[source,bash,subs="+quotes"]
+----
+import os
+import sys
+import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch import nn, optim
+
+# Enable verbose logging
+os.environ["TORCH_DISTRIBUTED_DEBUG"] = "INFO"
+
+def setup_ddp():
+    """Initialize the distributed process group dynamically."""
+    backend = "nccl" if torch.cuda.is_available() else "gloo"
+    dist.init_process_group(backend=backend)
+    local_rank = int(os.environ["LOCAL_RANK"])
+    world_size = dist.get_world_size()
+
+    # Ensure correct device is set
+    device = torch.device(f"cuda:{local_rank}" if torch.cuda.is_available() else "cpu")
+    torch.cuda.set_device(local_rank) if torch.cuda.is_available() else None
+
+    print(f"[Rank {local_rank}] Initialized with backend={backend}, world_size={world_size}")
+    sys.stdout.flush()  # Ensure logs are visible in Kubernetes
+    return local_rank, world_size, device
+
+def cleanup():
+    """Clean up the distributed process group."""
+    dist.destroy_process_group()
+
+class SimpleModel(nn.Module):
+    """A simple model with multiple layers."""
+    def __init__(self):
+        super(SimpleModel, self).__init__()
+        self.layer1 = nn.Linear(1024, 512)
+        self.layer2 = nn.Linear(512, 256)
+        self.layer3 = nn.Linear(256, 128)
+        self.layer4 = nn.Linear(128, 64)
+        self.output = nn.Linear(64, 1)
+
+    def forward(self, x):
+        x = torch.relu(self.layer1(x))
+        x = torch.relu(self.layer2(x))
+        x = torch.relu(self.layer3(x))
+        x = torch.relu(self.layer4(x))
+        return self.output(x)
+
+def log_ddp_parameters(model, rank):
+    """Log model parameter count for DDP."""
+    num_params = sum(p.numel() for p in model.parameters())
+    print(f"[Rank {rank}] Model has {num_params} parameters (replicated across all ranks)")
+    sys.stdout.flush()
+
+def log_memory_usage(rank):
+    """Log GPU memory usage if CUDA is available."""
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+        print(f"[Rank {rank}] GPU Memory Allocated: {torch.cuda.memory_allocated() / 1e6} MB")
+        print(f"[Rank {rank}] GPU Memory Reserved: {torch.cuda.memory_reserved() / 1e6} MB")
+        sys.stdout.flush()
+
+def main():
+    local_rank, world_size, device = setup_ddp()
+
+    # Initialize model and wrap with DDP
+    model = SimpleModel().to(device)
+    model = DDP(model, device_ids=[local_rank] if torch.cuda.is_available() else None)
+
+    print(f"[Rank {local_rank}] DDP Initialized")
+    log_ddp_parameters(model, local_rank)
+    log_memory_usage(local_rank)
+
+    # Optimizer and criterion
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    criterion = nn.MSELoss()
+
+    # Dummy dataset (adjust for real-world use case)
+    x = torch.randn(32, 1024).to(device)
+    y = torch.randn(32, 1).to(device)
+
+    # Training loop
+    for epoch in range(5):
+        model.train()
+        optimizer.zero_grad()
+
+        # Forward pass
+        outputs = model(x)
+        loss = criterion(outputs, y)
+
+        # Backward pass
+        loss.backward()
+        optimizer.step()
+
+        print(f"[Rank {local_rank}] Epoch {epoch}, Loss: {loss.item()}")
+        log_memory_usage(local_rank)  # Track memory usage
+
+        sys.stdout.flush()  # Ensure logs appear in real-time
+
+    cleanup()
+
+if __name__ == "__main__":
+    main()
+----

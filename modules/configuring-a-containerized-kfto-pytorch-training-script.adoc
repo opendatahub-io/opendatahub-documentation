@@ -1,0 +1,70 @@
+:_module-type: PROCEDURE
+
+[id="configuring-a-containerized-kfto-pytorch-training-script_{context}"]
+= Configuring a containerized KFTO PyTorch training script
+
+[role='_abstract']
+Instead of creating a ConfigMap resource to store the KFTO PyTorch training script, you can build the training script into a container image.
+
+
+.Prerequisites
+
+ifdef::upstream[]
+* Your cluster administrator has installed {productname-long} with the required distributed training components as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+ifdef::self-managed[]
+* Your cluster administrator has installed {productname-long} with the required distributed training components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+endif::[]
+
+ifdef::cloud-service[]
+* Your cluster administrator has installed {productname-long} with the required distributed training components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+
+
+* You know which base training image you want to use for your training job. 
+ifndef::upstream[]
++
+See link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations] for a list of the {productname-short} default workbench images and their preinstalled packages.
+endif::[]
+
+
+
+.Procedure
+. Open a terminal window.
+
+. Create a file named `train.py` and populate it with your training script.
++
+ifndef::upstream[]
+For example training scripts, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-kfto-based-distributed-training-workloads_distributed-workloads/using-the-kubeflow-training-operator-to-run-distributed-training-workloads_distributed-workloads#example-kfto-pytorch-training-scripts_distributed-workloads[Example KFTO PyTorch training scripts].
+endif::[]
+ifdef::upstream[]
+For example training scripts, see link:{odhdocshome}/working-with-distributed-workloads/#example-kfto-pytorch-training-scripts_distributed-workloads[Example KFTO PyTorch training scripts].
+endif::[]
+
+. Create a standard Dockerfile with the following content:
++
+.Example Dockerfile for creating a containerized training script
+[source,subs="+quotes"]
+---- 
+FROM quay.io/modh/training:py311-cuda121-torch241
+WORKDIR /workspace
+COPY train.py /workspace/train.py
+CMD ["python", "train.py"]
+----
++
+This example copies the training script to the default PyTorch image, and runs the script.
+
+. Build the image file. 
+You can use `podman build` locally where the image file is located and then push the image to a registry that is accessible to {productname-short}:
++
+----
+$ podman build -t my-registry/my-custom-image:0.0.1 .
+$ podman push my-registry/my-custom-image:0.0.1
+----
++
+Alternatively, you can leverage OpenShift's image build capabilities by using link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/builds_using_buildconfig/understanding-buildconfigs[BuildConfig].
+
+
+//.Verification

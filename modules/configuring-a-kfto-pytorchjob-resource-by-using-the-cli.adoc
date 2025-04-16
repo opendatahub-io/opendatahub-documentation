@@ -1,0 +1,150 @@
+:_module-type: PROCEDURE
+
+[id="configuring-a-kfto-pytorchjob-resource-by-using-the-cli_{context}"]
+= Configuring a KFTO PyTorchJob resource by using the CLI
+
+[role='_abstract']
+You can use the OpenShift command-line interface (CLI) to configure a `PyTorchJob` resource to run the KFTO PyTorch training script.
+
+
+.Prerequisites
+
+* You can access an OpenShift cluster that has multiple worker nodes with supported NVIDIA GPUs.
+
+* Your cluster administrator has configured the cluster as follows:
+
+ifdef::upstream[]
+** Installed {productname-long} with the required distributed training components, as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+ifdef::self-managed[]
+** Installed {productname-long} with the required distributed training components, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+endif::[]
+ifdef::cloud-service[]
+** Installed {productname-long} with the required distributed training components, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+ifdef::upstream[]
+** Configured the distributed training resources, as described in link:{odhdocshome}/managing-odh/#managing_distributed_workloads[Managing distributed workloads].
+endif::[]
+ifndef::upstream[]
+** Configured the distributed training resources, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai[Managing distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/preparing-the-distributed-training-environment_distributed-workloads#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+ifdef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{odhdocshome}/working-with-distributed-workloads/#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+
+* You have administrator access for the data science project.
+** If you created the project, you automatically have administrator access. 
+** If you did not create the project, your cluster administrator must give you administrator access.
+
+
+
+.Procedure
+. Log in to the OpenShift CLI, as follows:
++
+.Logging into the OpenShift CLI
+[source,subs="+quotes"]
+---- 
+oc login --token=__<token>__ --server=__<server>__
+----
++
+ifndef::upstream[]
+For information on how to find the server and token details, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+endif::[]
+ifdef::upstream[]
+For information on how to find the server and token details, see link:{odhdocshome}/working-with-distributed-workloads/#using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+endif::[]
+
+
+. Create a file named `train.py` and populate it with your training script, as follows:
++
+.Creating the training script
+[source,subs="+quotes"]
+---- 
+cat <<EOF > train.py 
+__<paste your content here>__
+EOF
+----
++
+Replace __<paste your content here>__ with your training script content.
++
+ifndef::upstream[]
+For example training scripts, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-kfto-based-distributed-training-workloads_distributed-workloads/using-the-kubeflow-training-operator-to-run-distributed-training-workloads_distributed-workloads#example-kfto-pytorch-training-scripts_distributed-workloads[Example KFTO PyTorch training scripts].
+endif::[]
+ifdef::upstream[]
+For example training scripts, see link:{odhdocshome}/working-with-distributed-workloads/#example-kfto-pytorch-training-scripts_distributed-workloads[Example KFTO PyTorch training scripts].
+endif::[]
+
+
+. Create the `ConfigMap` resource, as follows:
++
+.Creating the ConfigMap resource
+[source,subs="+quotes"]
+---- 
+oc create configmap training-script-configmap --from-file=train.py -n __<your-namespace>__
+----
++
+Replace __<your-namespace>__ with the name of your project.
+
+. Create a file named `pytorchjob.yaml` to define the distributed training job setup, as follows:
++
+.Defining the distributed training job
+[source,subs="+quotes"]
+---- 
+cat <<EOF > pytorchjob.py 
+__<paste your content here>__
+EOF
+----
++
+Replace __<paste your content here>__ with your training job content.
++
+ifndef::upstream[]
+For an example training job, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-kfto-based-distributed-training-workloads_distributed-workloads/using-the-kubeflow-training-operator-to-run-distributed-training-workloads_distributed-workloads#ref-example-kfto-pytorchjob-resource-for-multi-node-training[Example KFTO PyTorchJob resource for multi-node training].
+endif::[]
+ifdef::upstream[]
+For an example training job, see link:{odhdocshome}/working-with-distributed-workloads/#example-kfto-pytorch-training-scripts_distributed-workloads[Example KFTO PyTorch training scripts].
+endif::[]
+
+. Create the distributed training job, as follows:
++
+.Creating the distributed training job
+[source,subs="+quotes"]
+---- 
+oc apply -f pytorchjob.yaml
+----
+
+
+.Verification
+. Monitor the running distributed training job, as follows:
++
+.Monitoring the distributed training job
+[source,subs="+quotes"]
+---- 
+oc get pytorchjobs -n __<your-namespace>__
+----
++
+Replace __<your-namespace>__ with the name of your project.
+
+. Check the pod logs, as follows:
++
+.Checking the pod logs
+[source,subs="+quotes"]
+---- 
+oc logs __<pod-name>__ -n __<your-namespace>__
+----
++
+Replace __<your-namespace>__ with the name of your project.
+
+. When you want to delete the job, run the following command:
++
+.Deleting the job
+[source,subs="+quotes"]
+---- 
+oc delete pytorchjobs/pytorch-multi-node-job -n __<your-namespace>__
+----
++
+Replace __<your-namespace>__ with the name of your project.

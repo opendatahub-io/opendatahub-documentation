@@ -1,0 +1,53 @@
+:_module-type: PROCEDURE
+
+[id="configuring-a-kfto-pytorch-training-script-configmap-resource_{context}"]
+= Configuring a KFTO PyTorch training script ConfigMap resource
+
+[role='_abstract']
+You can configure a `ConfigMap` resource to store the KFTO PyTorch training script.
+
+.Prerequisites
+ifdef::upstream[]
+* Your cluster administrator has installed {productname-long} with the required distributed training components as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+ifdef::self-managed[]
+* Your cluster administrator has installed {productname-long} with the required distributed training components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+endif::[]
+
+ifdef::cloud-service[]
+* Your cluster administrator has installed {productname-long} with the required distributed training components as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+
+* You can access the OpenShift Console for the cluster where {productname-short} is installed. 
+
+
+
+.Procedure
+. Log in to the OpenShift Console.
+
+. Create a `ConfigMap` resource, as follows:
+.. In the *Administrator* perspective, click *Workloads* -> *ConfigMaps*.
+.. From the *Project* list, select your project.
+.. Click *Create ConfigMap*.
+.. In the *Configure via* section, select the *YAML view* option.
++
+The *Create ConfigMap* page opens, with default YAML code automatically added.
+. Replace the default YAML code with your training-script code.
++
+ifndef::upstream[]
+For example training scripts, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-kfto-based-distributed-training-workloads_distributed-workloads/using-the-kubeflow-training-operator-to-run-distributed-training-workloads_distributed-workloads#example-kfto-pytorch-training-scripts_distributed-workloads[Example KFTO PyTorch training scripts].
+endif::[]
+ifdef::upstream[]
+For example training scripts, see link:{odhdocshome}/working-with-distributed-workloads/#example-kfto-pytorch-training-scripts_distributed-workloads[Example KFTO PyTorch training scripts].
+endif::[]
+
+. Click *Create*.
+
+
+.Verification
+. In the OpenShift Console, in the *Administrator* perspective, click *Workloads* -> *ConfigMaps*.
+. From the *Project* list, select your project.
+. Click your ConfigMap resource to display the training script details.
+

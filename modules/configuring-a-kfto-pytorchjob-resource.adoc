@@ -1,0 +1,178 @@
+:_module-type: PROCEDURE
+
+[id="configuring-a-kfto-pytorchjob-resource_{context}"]
+= Configuring a KFTO PyTorchJob resource
+
+[role='_abstract']
+You can configure a `PyTorchJob` resource to run the KFTO PyTorch training script.
+specify the resources to be used.
+
+.Prerequisites
+
+* You can access an OpenShift cluster that has multiple worker nodes with supported NVIDIA GPUs.
+
+* Your cluster administrator has configured the cluster as follows:
+
+ifdef::upstream[]
+** Installed {productname-long} with the required distributed training components, as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+ifdef::self-managed[]
+** Installed {productname-long} with the required distributed training components, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+endif::[]
+ifdef::cloud-service[]
+** Installed {productname-long} with the required distributed training components, as described in link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+endif::[]
+
+ifdef::upstream[]
+** Configured the distributed training resources, as described in link:{odhdocshome}/managing-odh/#managing_distributed_workloads[Managing distributed workloads].
+endif::[]
+ifndef::upstream[]
+** Configured the distributed training resources, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai[Managing distributed workloads].
+endif::[]
+
+ifndef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/preparing-the-distributed-training-environment_distributed-workloads#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+ifdef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{odhdocshome}/working-with-distributed-workloads/#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+
+* You have administrator access for the data science project.
+** If you created the project, you automatically have administrator access. 
+** If you did not create the project, your cluster administrator must give you administrator access.
+
+
+
+.Procedure
+. Log in to the OpenShift Console.
+
+. Create a `PyTorchJob` resource, as follows:
+.. In the *Administrator* perspective, click *Home -> Search*.
+.. From the *Project* list, select your project.
+.. Click the *Resources* list, and in the search field, start typing `PyTorchJob`.
+.. Select *PyTorchJob*, and click *Create PyTorchJob*.
++
+The *Create PyTorchJob* page opens, with default YAML code automatically added.
+
+. Update the metadata to replace the `name` and `namespace` values with the values for your environment.
++
+[source,subs="+quotes"]
+---- 
+metadata:
+  name: pytorch-multi-node-job
+  namespace: test-namespace
+----
+
+. Add code to configure the master node.
++
+[source,subs="+quotes"]
+---- 
+spec:
+  pytorchReplicaSpecs:
+    Master:
+      replicas: 1
+      restartPolicy: OnFailure
+      template:
+        metadata:
+          labels:
+            app: pytorch-multi-node-job
+----
+
+.. In the `replicas` entry, specify `1`. 
+Only one master node is needed.
+
+.. To force the training to run on separate cluster nodes, add a pod anti-affinity rule, as shown in the following example:
++
+.Adding a pod anti-affinity rule
+[source,subs="+quotes"]
+---- 
+Spec:
+  pytorchReplicaSpecs:
+    Master:
+      ...
+      template:
+        metadata:
+          labels:
+            app: pytorch-multi-node-job
+        spec:
+          affinity: 
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution: 
+                - labelSelector:
+                    matchLabels: 
+                      app: pytorch-multi-node-job
+                  topologyKey: kubernetes.io/hostname
+          containers:
+            ...
+----
+
+.. To use a Configmap resource to provide the training script for the PyTorchJob deployment, add the ConfigMap volume mount information, as shown in the following example:
++
+.Adding the training script from a ConfigMap resource
+[source,subs="+quotes"]
+---- 
+Spec:
+  pytorchReplicaSpecs:
+    Master:
+      ...
+      template:
+        spec:
+          containers:
+          - name: pytorch
+            image: quay.io/modh/training:py311-cuda121-torch241
+            command: ["python", "/workspace/scripts/train.py"]
+            volumeMounts:
+            - name: training-script-volume
+              mountPath: /workspace
+          volumes:
+          - name: training-script-volume
+            configMap:
+              name: training-script-configmap
+----
+
+.. Add resource constraints, depending on resource availability, as shown in the following example:
++
+.Adding the resource contraints
+[source,subs="+quotes"]
+---- 
+SSpec:
+  pytorchReplicaSpecs:
+    Master:
+      ...
+      template: 
+        spec:
+          containers: ...
+          resources:
+            requests:
+                  cpu: "2"
+                  memory: "4Gi"
+                  nvidia.com/gpu: 1    # To use GPUs (Optional)
+            limits:
+                  cpu: "4"
+                  memory: "8Gi"
+                  nvidia.com/gpu: 2
+----
+
+. Make similar edits in the `Worker` section of the `PyTorchJob` resource.
+
+.. Update the `replicas` entry to specify the number of worker nodes.
+
+
+
++
+ifndef::upstream[]
+For a complete example `PyTorchJob` resource, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-kfto-based-distributed-training-workloads_distributed-workloads/using-the-kubeflow-training-operator-to-run-distributed-training-workloads_distributed-workloads#ref-example-kfto-pytorchjob-resource-for-multi-node-training[Example KFTO PyTorchJob resource for multi-node training].
+endif::[]
+ifdef::upstream[]
+For a complete example `PyTorchJob` resource, see link:{odhdocshome}/working-with-distributed-workloads/#example-kfto-pytorch-training-scripts_distributed-workloads[Example KFTO PyTorch training scripts].
+endif::[]
+
+. Click *Create*.
+
+
+.Verification
+. In the OpenShift Console, open the *Administrator* perspective.
+. From the *Project* list, select your project.
+. Click *Home -> Search -> PyTorchJob* and verify that the job was created.
+. Click *Workloads -> Pods* and verify that requested head pod and worker pods are running.
+

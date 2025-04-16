@@ -1,0 +1,91 @@
+:_module-type: REFERENCE
+
+[id="ref-example-kfto-pytorchjob-resource-for-multi-node-training_{context}"]
+= Example KFTO PyTorchJob resource for multi-node training
+
+[role='_abstract']
+This example shows how to configure a KFTO PyTorch training job to run on multiple nodes with multiple GPUs. 
+
+[source,bash,subs="+quotes"]
+----
+apiVersion: kubeflow.org/v1
+kind: PyTorchJob
+metadata:
+  name: pytorch-multi-node-job
+  namespace: test-namespace
+spec:
+  pytorchReplicaSpecs:
+    Master:
+      replicas: 1
+      restartPolicy: OnFailure
+      template:
+        metadata:
+          labels:
+            app: pytorch-multi-node-job
+        spec:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app: pytorch-multi-node-job
+                  topologyKey: kubernetes.io/hostname
+          containers:
+          - name: pytorch
+            image: quay.io/modh/training:py311-cuda121-torch241
+            imagePullPolicy: IfNotPresent
+            command: ["torchrun", "--nproc_per_node=1", "--nnodes=2", "/workspace/train.py"]
+            volumeMounts:
+              - name: training-script-volume
+                mountPath: /workspace
+            resources:
+              requests:
+                cpu: "1"
+                memory: "4Gi"
+                nvidia.com/gpu: "1"
+              limits:
+                cpu: "2"
+                memory: "6Gi"
+                nvidia.com/gpu: "1"
+          volumes:
+            - name: training-script-volume
+              configMap:
+                name: training-script-configmap
+    Worker:
+      replicas: 1
+      restartPolicy: OnFailure
+      template:
+        metadata:
+          labels:
+            app: pytorch-multi-node-job
+        spec:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app: pytorch-multi-node-job
+                  topologyKey: kubernetes.io/hostname
+          containers:
+          - name: pytorch
+            image: quay.io/modh/training:py311-cuda121-torch241
+            imagePullPolicy: IfNotPresent
+            command: ["torchrun", "--nproc_per_node=1", "--nnodes=2", "/workspace/train.py"]
+            volumeMounts:
+              - name: training-script-volume
+                mountPath: /workspace
+            resources:
+              requests:
+                cpu: "1"
+                memory: "4Gi"
+                nvidia.com/gpu: "1"
+              limits:
+                cpu: "2"
+                memory: "6Gi"
+                nvidia.com/gpu: "1"
+          volumes:
+            - name: training-script-volume
+              configMap:
+                name: training-script-configmap
+
+----

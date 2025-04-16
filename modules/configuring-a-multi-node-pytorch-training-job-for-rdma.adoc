@@ -4,7 +4,7 @@
 = Configuring a multi-node PyTorch training job for RDMA
 
 [role='_abstract']
-NVIDIA GPUDirect RDMA uses Remote Direct Memory Access (RDMA) to provide direct communication between NVIDIA GPUs, enabling peripheral devices to access NVIDIA GPU memory in remote systems directly.
+NVIDIA GPUDirect RDMA uses Remote Direct Memory Access (RDMA) to provide direct GPU interconnect, enabling peripheral devices to access NVIDIA GPU memory in remote systems directly.
 RDMA improves the training job performance because it eliminates the overhead of using the operating system CPUs and memory.
 Running a training job on multiple nodes using multiple GPUs can significantly reduce the completion time.
 
@@ -13,7 +13,7 @@ In {productname-long}, NVIDIA GPUs can communicate directly by using GPUDirect R
 * Ethernet: RDMA over Converged Ethernet (RoCE) 
 * InfiniBand
 
-When submitting a PyTorch training job to a cluster configured for RDMA, ensure that the job is configured to use the high-speed network interfaces, as described in this section. 
+Before you submit a PyTorch training job to a cluster configured for RDMA, you must configure the job to use the high-speed network interfaces. 
 
 
 .Prerequisites
@@ -55,7 +55,7 @@ endif::[]
 .. Click the *Resources* list, and in the search field, start typing `PyTorchJob`.
 .. Select *PyTorchJob*, and click *Create PyTorchJob*.
 +
-The *Create PyTorchJob* page opens, with some basic YAML code automatically added.
+The *Create PyTorchJob* page opens, with default YAML code automatically added.
 
 . Attach the high-speed network interface to the `PyTorchJob` pods, as follows:
 

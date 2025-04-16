@@ -1,0 +1,64 @@
+:_module-type: REFERENCE
+
+[id="ref-example-kfto-pytorch-training-script-nccl{context}"]
+= Example KFTO PyTorch training script: NCCL
+
+[role='_abstract']
+This NVIDIA Collective Communications Library (NCCL) example returns the rank and Tensor value for each accelerator. 
+
+[source,bash,subs="+quotes"]
+----
+import os
+import torch
+import torch.distributed as dist
+
+def main():
+    # Select backend dynamically: 'nccl' for GPU, 'gloo' for CPU
+    backend = "nccl" if torch.cuda.is_available() else "gloo"
+
+    # Initialize the process group
+    dist.init_process_group(backend)
+
+    # Get rank and world size
+    rank = dist.get_rank()
+    world_size = dist.get_world_size()
+
+    # Select device dynamically
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    print(f"Running on rank {rank} out of {world_size} using '{device}' with backend '{backend}'.")
+
+    # Initialize tensor on the selected device
+    tensor = torch.zeros(1, device=device)
+
+    if rank == 0:
+        tensor += 1
+        for i in range(1, world_size):
+            dist.send(tensor, dst=i)
+    else:
+        dist.recv(tensor, src=0)
+
+    print(f"Rank {rank}: Tensor value {tensor.item()} on {device}")
+
+if __name__ == "__main__":
+    main()
+----
+
+
+The `backend` value is automatically set to one of the following values:
+
+* `nccl`: Uses NVIDIA Collective Communications Library (NCCL) for NVIDIA GPUs or ROCm Communication Collectives Library (RCCL) for AMD GPUs
+* `gloo`: Uses Gloo for CPUs
+
+
+[NOTE]
+====
+Specify `backend="nccl"` for both NVIDIA GPUs and AMD GPUs. 
+
+For AMD GPUs, even though the `backend` value is set to `nccl`, the ROCm environment uses RCCL for communication.
+====
+
+
+
+
+
