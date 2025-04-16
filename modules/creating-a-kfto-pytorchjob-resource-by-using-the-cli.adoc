@@ -9,7 +9,7 @@ You can use the OpenShift command-line interface (CLI) to create a `PyTorchJob` 
 
 .Prerequisites
 
-* You can access an OpenShift cluster that has multiple worker nodes with supported NVIDIA GPUs.
+* You can access an OpenShift cluster that has multiple worker nodes with supported NVIDIA GPUs or AMD GPUs.
 
 * Your cluster administrator has configured the cluster as follows:
 
@@ -41,6 +41,8 @@ endif::[]
 ** If you created the project, you automatically have administrator access. 
 ** If you did not create the project, your cluster administrator must give you administrator access.
 
+* You have installed the OpenShift command-line interface (CLI), as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
 
 
 .Procedure
@@ -53,10 +55,10 @@ oc login --token=__<token>__ --server=__<server>__
 ----
 +
 ifndef::upstream[]
-For information on how to find the server and token details, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+For information about how to find the server and token details, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
 endif::[]
 ifdef::upstream[]
-For information on how to find the server and token details, see link:{odhdocshome}/working-with-distributed-workloads/#using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+For information about how to find the server and token details, see link:{odhdocshome}/working-with-distributed-workloads/#using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
 endif::[]
 
 
@@ -80,7 +82,7 @@ For example training scripts, see link:{odhdocshome}/working-with-distributed-wo
 endif::[]
 
 
-. Create the `ConfigMap` resource, as follows:
+. Create a `ConfigMap` resource to store the training script, as follows:
 +
 .Creating the ConfigMap resource
 [source,subs="+quotes"]

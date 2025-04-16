@@ -8,7 +8,7 @@ You can create a `PyTorchJob` resource to run the KFTO PyTorch training script.
 
 .Prerequisites
 
-* You can access an OpenShift cluster that has multiple worker nodes with supported NVIDIA GPUs.
+* You can access an OpenShift cluster that has multiple worker nodes with supported NVIDIA GPUs or AMD GPUs.
 
 * Your cluster administrator has configured the cluster as follows:
 
@@ -53,7 +53,7 @@ endif::[]
 +
 The *Create PyTorchJob* page opens, with default YAML code automatically added.
 
-. Update the metadata to replace the `name` and `namespace` values with the values for your environment.
+. Update the metadata to replace the `name` and `namespace` values with the values for your environment, as shown in the following example:
 +
 [source,subs="+quotes"]
 ---- 
@@ -62,7 +62,7 @@ metadata:
   namespace: test-namespace
 ----
 
-. Add code to configure the master node.
+. Configure the master node, as shown in the following example:
 +
 [source,subs="+quotes"]
 ---- 
@@ -104,7 +104,7 @@ Spec:
               name: training-script-configmap
 ----
 
-.. Add resource constraints, depending on resource availability, as shown in the following example:
+.. Add the appropriate resource constraints for your environment, as shown in the following example:
 +
 .Adding the resource contraints
 [source,subs="+quotes"]
