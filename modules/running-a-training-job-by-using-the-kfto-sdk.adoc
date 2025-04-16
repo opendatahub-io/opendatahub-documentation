@@ -1,0 +1,128 @@
+:_module-type: PROCEDURE
+
+[id="running-a-training-job-by-using-the-kfto-sdk_{context}"]
+= Running a training job by using the KFTO SDK
+
+[role='_abstract']
+When you run a training job to tune a model, you must specify the resources needed, and provide any authorization credentials required. 
+
+[NOTE]
+====
+The code in this procedure specifies how to run the example training job. 
+If you have the specified resources, you can run the example code without editing it.
+
+Alternatively, you can modify the example code to specify the appropriate details for your training job.
+====
+
+.Prerequisites
+
+* You can access an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training or tuning job.
+
+
+ifndef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/preparing-the-distributed-training-environment_distributed-workloads#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+ifdef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{odhdocshome}/working-with-distributed-workloads/#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+
+* You have administrator access for the data science project.
+** If you created the project, you automatically have administrator access. 
+** If you did not create the project, your cluster administrator must give you administrator access.
+
+* You have access to a model.
+* You have access to data that you can use to train the model.
+
+ifndef::upstream[]
+* You configured the training job as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-kubeflow-sdk-to-run-distributed-training_distributed-workloads#configuring-a-training-job-by-using-the-kfto-sdk_distributed-workloads[Configuring a training job by using the KFTO SDK].
+endif::[]
+ifdef::upstream[]
+* You configured the training job as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-a-training-job-by-using-the-kfto-sdk_distributed-workloads[Configuring a training job by using the KFTO SDK].
+endif::[]
+
+
+.Procedure
+. Open the workbench, as follows:
+.. Log in to the {productname-long} web console.
+.. Click *Data science projects* and click your project.
+.. Click the *Workbenches* tab. 
+If your workbench is not already running, start the workbench.
+.. Click the *Open* link to open the IDE in a new window. 
+
+. Click *File -> Open*, and open the notebook that you used to configure the training job.
+
+. Create a cell to run the job, and add the following content:
++
+[source,subs="+quotes"]
+----
+from kubernetes import client
+from kubeflow.training import TrainingClient
+
+# Use API client for authentication (Recommended)
+client = TrainingClient(client_configuration=api_client.configuration)
+
+# Start PyTorchJob with 2 Workers and 2 GPU per Worker (e.g. multi-node, multi-worker job).
+from kubeflow.training import TrainingClient
+
+# Start PyTorchJob with 2 Workers and 2 GPU per Worker (e.g. multi-node, multi-worker job).
+client.create_job(
+   name="pytorch-ddp",
+   train_func=train_func,
+   base_image="quay.io/modh/training:py311-cuda121-torch241",
+   num_workers=2,
+   resources_per_worker={"gpu": "1"},
+   packages_to_install=["torchvision==0.19.0"],
+   env_vars={"NCCL_DEBUG": "INFO", "TORCH_DISTRIBUTED_DEBUG": "DETAIL"},
+)
+----
++
+If the `job_kind` value is not explicitly set, the `TrainingClient` API automatically sets the `job_kind` value to `PyTorchJob`.
+
++
+[NOTE]
+====
+The `train` method from the `TrainingClient` API provides a higher-level API to fine-tune LLMs with PyTorchJobs. 
+The `train` method is in Developer Preview, and depends on the `huggingface` Python package, which you must install manually in your environment before running it. 
+For more information about the `train` method, see the link:https://www.kubeflow.org/docs/components/trainer/legacy-v1/user-guides/fine-tuning/[Kubeflow documentation].
+====
+
+
+. Edit the content to specify the appropriate values for your environment, as follows:
+
+.. Edit the `num_workers` value to specify the number of worker nodes.
+.. Update the `resources_per_worker` values according to the job requirements and the resources available.
+.. The example provided is for NVIDIA GPUs. If you use AMD accelerators, make the following additional changes:
+
+* In the `resources_per_worker` entry, change `nvidia.com/gpu` to `amd.com/gpu`
+* Change the `base_image` value to `quay.io/modh/training:py311-rocm62-torch241`
+* Remove the `NCCL_DEBUG` entry
+
+
+. Run the cell to run the job.
+
+
+.Verification
+View the progress of the job as follows:
+
+. Create a cell with the following content:
++
+[source,subs="+quotes"]
+----
+client.get_job_logs(
+    name="pytorch-ddp",
+    job_kind="PyTorchJob",
+    follow=True,
+)
+----
+
+. Run the cell to view the job progress.
+
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////

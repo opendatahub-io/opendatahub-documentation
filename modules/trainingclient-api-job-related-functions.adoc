@@ -1,0 +1,54 @@
+:_module-type: REFERENCE
+
+[id="trainingclient-api-job-related-functions_{context}"]
+= TrainingClient API: Job-related functions
+
+[role='_abstract']
+Use these functions to find job-related information.
+
+.List all training job resources
+
+[source,subs="+quotes"]
+----
+client.list_jobs(namespace=__<namespace>__)
+----
+
+.Get information about a specified training job
+
+[source,subs="+quotes"]
+----
+client.get_job("pytorch-distributed-trainer",__<namespace>__,"PyTorchJob")
+----
+
+.Get pod names for the training job
+
+[source,subs="+quotes"]
+----
+client.get_job_pod_names("pytorch-distributed-trainer", namespace=__<namespace>__)
+----
+
+.Get the logs from the training job
+
+[source,subs="+quotes"]
+----
+client.get_job_logs("pytorch-distributed-trainer", __<namespace>__,"PyTorchJob")
+----
+
+
+.Delete the training job
+
+[source,subs="+quotes"]
+----
+client.delete_job("pytorch-distributed-trainer", __<namespace>__)
+----
+
+
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////

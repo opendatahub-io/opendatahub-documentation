@@ -1,0 +1,171 @@
+:_module-type: PROCEDURE
+
+[id="configuring-a-training-job-by-using-the-kfto-sdk_{context}"]
+= Configuring a training job by using the KFTO SDK
+
+[role='_abstract']
+Before you can run a job to train a model, you must configure the training job.
+You must set the training parameters, define the training function, and configure the Kubeflow Training Operator (KFTO) SDK.
+
+[NOTE]
+====
+The code in this procedure specifies how to configure an example training job. 
+If you have the specified resources, you can run the example code without editing it.
+
+Alternatively, you can modify the example code to specify the appropriate configuration for your training job.
+====
+
+.Prerequisites
+
+* You can access an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training or tuning job.
+
+ifndef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/preparing-the-distributed-training-environment_distributed-workloads#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+ifdef::upstream[]
+* You can access a workbench that is suitable for distributed training, as described in link:{odhdocshome}/working-with-distributed-workloads/#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
+endif::[]
+
+* You have administrator access for the data science project.
+** If you created the project, you automatically have administrator access. 
+** If you did not create the project, your cluster administrator must give you administrator access.
+
+
+.Procedure
+. Open the workbench, as follows:
+.. Log in to the {productname-long} web console.
+.. Click *Data science projects* and click your project.
+.. Click the *Workbenches* tab. 
+.. Ensure that the workbench uses a storage class with RWX capability.
+.. If your workbench is not already running, start the workbench.
+.. Click the *Open* link to open the IDE in a new window. 
+
+. Click *File -> New -> Notebook*.
+
+. Install any additional packages that are needed to run the training or tuning job.
+
+.. In a cell in the notebook, add the code to install the additional packages, as shown in the following example:
++
+.Example code to install dependencies
+[source,bash]
+----
+# Install the yamlmagic package
+!pip install yamlmagic
+%load_ext yamlmagic
+
+!pip install git+https://github.com/kubeflow/trainer.git@release-1.9#subdirectory=sdk/python
+----
+
+.. Select the cell, and click *Run > Run selected cell*.
++
+The additional packages are installed.
+
+. Set the training parameters as shown in the following example:
+.. Create a cell with the following content:
++
+.Example to set a parameter value
+[source,subs="+quotes"]
+----
+__<parameter-name>__ = __<parameter-value>__
+----
+//.. Optional: If you specify a different model or dataset, edit the parameters to suit your model, dataset, and resources.
+//If necessary, update the previous cell to specify the dependencies for your training or tuning job.
+
+.. Run the cell to set the training parameters.
+
+. Create the training function as shown in the following example:
+.. Create a cell with the following content:
++
+.Example training function
+[source,subs="+quotes"]
+----
+def train_func():
+    import os
+    import torch
+    import torch.distributed as dist
+
+    # Select backend dynamically: 'nccl' for GPU, 'gloo' for CPU
+    backend = "nccl" if torch.cuda.is_available() else "gloo"
+
+    # Initialize the process group
+    dist.init_process_group(backend)
+
+    # Get rank and world size
+    rank = dist.get_rank()
+    world_size = dist.get_world_size()
+
+    # Select device dynamically
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Log rank initialization
+    print(f"Rank {rank}/{world_size} initialized with backend '{backend}' on device {device}.")
+
+    # Initialize tensor on the selected device
+    tensor = torch.zeros(1, device=device)
+
+    if rank == 0:
+        tensor += 1
+        for i in range(1, world_size):
+            dist.send(tensor, dst=i)
+    else:
+        dist.recv(tensor, src=0)
+
+    print(f"Rank {rank}: Tensor value {tensor.item()} on {device}")
+
+    # Cleanup
+    dist.destroy_process_group()
+----
+
+.. Optional: Edit the content to specify the appropriate values for your environment.
+.. Run the cell to create the training function.
+
+. Configure the KFTO SDK client authentication as follows:
+.. Create a cell with the following content:
++
+.Example KFTO SDK client authentication
+[source,subs="+quotes"]
+----
+from kubernetes import client
+from kubeflow.training import TrainingClient
+from kubeflow.training.models import V1Volume, V1VolumeMount, V1PersistentVolumeClaimVolumeSource
+
+api_server = "<API_SERVER>"
+token = "<TOKEN>"
+
+configuration = client.Configuration()
+configuration.host = api_server
+configuration.api_key = {"authorization": f"Bearer {token}"}
+# Un-comment if your cluster API server uses a self-signed certificate or an un-trusted CA
+#configuration.verify_ssl = False
+api_client = client.ApiClient(configuration)
+client = TrainingClient(client_configuration=api_client.configuration)
+----
+
+.. Edit the `api_server` and `token` parameters to enter the values to authenticate to your OpenShift cluster.
++
+ifndef::upstream[]
+For information on how to find the server and token details, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+endif::[]
+ifdef::upstream[]
+For information on how to find the server and token details, see link:{odhdocshome}/working-with-distributed-workloads/#using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
+endif::[]
+ 
+.. Run the cell to configure the KFTO SDK client authentication.
+
+
+. Click *File > Save Notebook As*, enter an appropriate file name, and click *Save*.
+
+
+
+.Verification
+. All cells run successfully.
+
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////
