@@ -19,15 +19,11 @@ GUARDRAILS_GATEWAY=https://$(oc get routes guardrails-gateway -o jsonpath='{.spe
 ----
 +
 ifdef::upstream[]
-Based on the example configurations provided in link:{odhdocshome}monitoring-data-science-models/#guardrails-orchestrator-configuring-regex-vllm_gateway_monitor[Configuring the regex detector and vLLM gateway], the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
+Based on the example configurations provided in link:{odhdocshome}/monitoring-data-science-models/#configuring-regex-detector-vllm-guardrails-gateway_monitor[Configuring the regex detector and vLLM gateway], the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
 endif::[]
 
-ifdef::self-managed[]
-Based on the example configurations provided in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-the-guardrails-orchestrator-service_monitor#guardrails-orchestrator-configuring-regex-vllm_gateway_monitor[Configuring the regex detector and vLLM gateway], the available endpoint for the model with guardrails is `$GUARDRAILS_GATEWAY/pii`.
-endif::[]
-
-ifdef::cloud-service[]
-Based on the example configurations provided in link:{rhoaidocshome}{default-format-url}monitoring-data-science-models/#guardrails-orchestrator-configuring-regex-vllm_gateway_monitor[Configuring the regex detector and vLLM gateway], the available endpoint for the model with guardrails is `$GUARDRAILS_GATEWAY/pii`.
+ifndef::upstream[]
+Based on the example configurations provided in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-the-guardrails-orchestrator-service_monitor#configuring-regex-detector-vllm-guardrails-gateway_monitor[Configuring the regex detector and vLLM gateway], the available endpoint for the model with guardrails is `$GUARDRAILS_GATEWAY/pii`.
 endif::[]
 
 . Query the model with guardrails `pii` endpoint:
