@@ -1,11 +1,11 @@
 :_module-type: PROCEDURE
 
 [id="configuring-a-training-job-by-using-the-kfto-sdk_{context}"]
-= Configuring a training job by using the KFTO SDK
+= Configuring a training job by using the Training Operator SDK
 
 [role='_abstract']
 Before you can run a job to train a model, you must configure the training job.
-You must set the training parameters, define the training function, and configure the Kubeflow Training Operator (KFTO) SDK.
+You must set the training parameters, define the training function, and configure the Training Operator SDK.
 
 [NOTE]
 ====
@@ -41,37 +41,6 @@ endif::[]
 .. Click the *Open* link to open the IDE in a new window. 
 
 . Click *File -> New -> Notebook*.
-
-. Install any additional packages that are needed to run the training or tuning job.
-
-.. In a cell in the notebook, add the code to install the additional packages, as shown in the following example:
-+
-.Example code to install dependencies
-[source,bash]
-----
-# Install the yamlmagic package
-!pip install yamlmagic
-%load_ext yamlmagic
-
-!pip install git+https://github.com/kubeflow/trainer.git@release-1.9#subdirectory=sdk/python
-----
-
-.. Select the cell, and click *Run > Run selected cell*.
-+
-The additional packages are installed.
-
-. Set the training parameters as shown in the following example:
-.. Create a cell with the following content:
-+
-.Example to set a parameter value
-[source,subs="+quotes"]
-----
-__<parameter-name>__ = __<parameter-value>__
-----
-//.. Optional: If you specify a different model or dataset, edit the parameters to suit your model, dataset, and resources.
-//If necessary, update the previous cell to specify the dependencies for your training or tuning job.
-
-.. Run the cell to set the training parameters.
 
 . Create the training function as shown in the following example:
 .. Create a cell with the following content:
@@ -115,14 +84,28 @@ def train_func():
     # Cleanup
     dist.destroy_process_group()
 ----
++
+[NOTE]
+====
+For this example training job, you do not need to install any additional packages or set any training parameters.
+
+ifndef::upstream[]
+
+For more information about how to add additional packages and set the training parameters, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads#configuring-the-fine-tuning-job_distributed-workloads[Configuring the fine-tuning job].
+endif::[]
+ifdef::upstream[]
+
+For more information about how to add additional packages and set the training parameters, see link:{odhdocshome}/working-with-distributed-workloads/#configuring-the-fine-tuning-job_distributed-workloads[Configuring the fine-tuning job].
+endif::[]
+====
 
 .. Optional: Edit the content to specify the appropriate values for your environment.
 .. Run the cell to create the training function.
 
-. Configure the KFTO SDK client authentication as follows:
+. Configure the Training Operator SDK client authentication as follows:
 .. Create a cell with the following content:
 +
-.Example KFTO SDK client authentication
+.Example Training Operator SDK client authentication
 [source,subs="+quotes"]
 ----
 from kubernetes import client
@@ -150,7 +133,7 @@ ifdef::upstream[]
 For information on how to find the server and token details, see link:{odhdocshome}/working-with-distributed-workloads/#using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
 endif::[]
  
-.. Run the cell to configure the KFTO SDK client authentication.
+.. Run the cell to configure the Training Operator SDK client authentication.
 
 
 . Click *File > Save Notebook As*, enter an appropriate file name, and click *Save*.

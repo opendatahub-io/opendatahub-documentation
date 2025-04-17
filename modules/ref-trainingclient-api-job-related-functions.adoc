@@ -1,6 +1,6 @@
 :_module-type: REFERENCE
 
-[id="trainingclient-api-job-related-functions_{context}"]
+[id="ref-trainingclient-api-job-related-functions_{context}"]
 = TrainingClient API: Job-related functions
 
 [role='_abstract']
@@ -10,28 +10,28 @@ Use these functions to find job-related information.
 
 [source,subs="+quotes"]
 ----
-client.list_jobs(namespace=__<namespace>__)
+client.list_jobs(namespace="__<namespace>__", job_kind="PyTorchJob")
 ----
 
 .Get information about a specified training job
 
 [source,subs="+quotes"]
 ----
-client.get_job("pytorch-distributed-trainer",__<namespace>__,"PyTorchJob")
+client.get_job(name="__<PyTorchJob-name>__", namespace="__<namespace>__", job_kind="PyTorchJob")
 ----
 
 .Get pod names for the training job
 
 [source,subs="+quotes"]
 ----
-client.get_job_pod_names("pytorch-distributed-trainer", namespace=__<namespace>__)
+client.get_job_pod_names(name="__<PyTorchJob-name>__", namespace="__<namespace>__")
 ----
 
 .Get the logs from the training job
 
 [source,subs="+quotes"]
 ----
-client.get_job_logs("pytorch-distributed-trainer", __<namespace>__,"PyTorchJob")
+client.get_job_logs(name="__<PyTorchJob-name>__", namespace="__<namespace>__", job_kind="PyTorchJob")
 ----
 
 
@@ -39,7 +39,7 @@ client.get_job_logs("pytorch-distributed-trainer", __<namespace>__,"PyTorchJob")
 
 [source,subs="+quotes"]
 ----
-client.delete_job("pytorch-distributed-trainer", __<namespace>__)
+client.delete_job(name="__<PyTorchJob-name>__", namespace="__<namespace>__", job_kind="PyTorchJob")
 ----
 
 

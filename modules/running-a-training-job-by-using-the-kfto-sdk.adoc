@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
 [id="running-a-training-job-by-using-the-kfto-sdk_{context}"]
-= Running a training job by using the KFTO SDK
+= Running a training job by using the Training Operator SDK
 
 [role='_abstract']
 When you run a training job to tune a model, you must specify the resources needed, and provide any authorization credentials required. 
@@ -34,10 +34,10 @@ endif::[]
 * You have access to data that you can use to train the model.
 
 ifndef::upstream[]
-* You configured the training job as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-kubeflow-sdk-to-run-distributed-training_distributed-workloads#configuring-a-training-job-by-using-the-kfto-sdk_distributed-workloads[Configuring a training job by using the KFTO SDK].
+* You configured the training job as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-kubeflow-sdk-to-run-distributed-training_distributed-workloads#configuring-a-training-job-by-using-the-kfto-sdk_distributed-workloads[Configuring a training job by using the Training Operator SDK].
 endif::[]
 ifdef::upstream[]
-* You configured the training job as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-a-training-job-by-using-the-kfto-sdk_distributed-workloads[Configuring a training job by using the KFTO SDK].
+* You configured the training job as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-a-training-job-by-using-the-kfto-sdk_distributed-workloads[Configuring a training job by using the Training Operator SDK].
 endif::[]
 
 
@@ -56,36 +56,53 @@ If your workbench is not already running, start the workbench.
 [source,subs="+quotes"]
 ----
 from kubernetes import client
-from kubeflow.training import TrainingClient
 
-# Use API client for authentication (Recommended)
-client = TrainingClient(client_configuration=api_client.configuration)
-
-# Start PyTorchJob with 2 Workers and 2 GPU per Worker (e.g. multi-node, multi-worker job).
-from kubeflow.training import TrainingClient
-
-# Start PyTorchJob with 2 Workers and 2 GPU per Worker (e.g. multi-node, multi-worker job).
+# Start PyTorchJob with 2 Workers and 2 GPU per Worker (multi-node, multi-worker job).
 client.create_job(
    name="pytorch-ddp",
    train_func=train_func,
    base_image="quay.io/modh/training:py311-cuda121-torch241",
    num_workers=2,
-   resources_per_worker={"gpu": "1"},
+   resources_per_worker={"nvidia.com/gpu": "2"},
    packages_to_install=["torchvision==0.19.0"],
    env_vars={"NCCL_DEBUG": "INFO", "TORCH_DISTRIBUTED_DEBUG": "DETAIL"},
 )
 ----
 +
 If the `job_kind` value is not explicitly set, the `TrainingClient` API automatically sets the `job_kind` value to `PyTorchJob`.
++
+If you use AMD GPUs, replace `nvidia.com/gpu` with `amd.com/gpu` in the example code.
 
+ifndef::upstream[]
 +
 [NOTE]
 ====
 The `train` method from the `TrainingClient` API provides a higher-level API to fine-tune LLMs with PyTorchJobs. 
-The `train` method is in Developer Preview, and depends on the `huggingface` Python package, which you must install manually in your environment before running it. 
+The `train` method is Developer Preview software, and depends on the `huggingface` Python package, which you must install manually in your environment before running it. 
 For more information about the `train` method, see the link:https://www.kubeflow.org/docs/components/trainer/legacy-v1/user-guides/fine-tuning/[Kubeflow documentation].
 ====
++
+[IMPORTANT]
+====
+Developer Preview features are not supported by {org-name} in any way and are not functionally complete or production-ready. 
+Do not use Developer Preview features for production or business-critical workloads. 
+Developer Preview features provide early access to functionality in advance of possible inclusion in a {org-name} product offering. 
+Customers can use these features to test functionality and provide feedback during the development process. 
+Developer Preview features might not have any documentation, are subject to change or removal at any time, and have received limited testing. 
+{org-name} might provide ways to submit feedback on Developer Preview features without an associated SLA.
 
+For more information about the support scope of {org-name} Developer Preview features, see link:https://access.redhat.com/support/offerings/devpreview/[Developer Preview Support Scope].
+====
+endif::[]
+ifdef::upstream[]
++
+[NOTE]
+====
+The `train` method from the `TrainingClient` API provides a higher-level API to fine-tune LLMs with PyTorchJobs. 
+The `train` method depends on the `huggingface` Python package, which you must install manually in your environment before running it. 
+For more information about the `train` method, see the link:https://www.kubeflow.org/docs/components/trainer/legacy-v1/user-guides/fine-tuning/[Kubeflow documentation].
+====
+endif::[]
 
 . Edit the content to specify the appropriate values for your environment, as follows:
 

@@ -30,14 +30,14 @@ Defines and controls the remote distributed compute jobs and infrastructure for 
 The CodeFlare SDK is not installed as part of {productname-short}, but it is contained in some of the notebook images provided by {productname-short}.
 ====
 
-Kubeflow Training Operator (KFTO)::
+Kubeflow Training Operator::
 Provides fine-tuning and scalable distributed training of ML models created with different ML frameworks such as PyTorch
 
-Kubeflow Training Operator Python Software Development Kit (KFTO SDK)::
+Kubeflow Training Operator Python Software Development Kit (Training Operator SDK)::
 Simplifies the creation of distributed training and fine-tuning jobs
 [NOTE]
 ====
-The KFTO SDK is not installed as part of {productname-short}, but it is contained in some of the workbench images provided by {productname-short}.
+The Training Operator SDK is not installed as part of {productname-short}, but it is contained in some of the workbench images provided by {productname-short}.
 ====
 
 KubeRay::
@@ -82,10 +82,10 @@ endif::[]
 Depending on which type of distributed workloads you want to run, you must enable different {productname-short} components:
 
 * Ray-based distributed workloads: Enable the `codeflare`, `kueue`, and `ray` components.
-* KFTO-based distributed workloads: Enable the `trainingoperator` and `kueue` components.
+* Training Operator-based distributed workloads: Enable the `trainingoperator` and `kueue` components.
 
 
-For both Ray-based and KFTO-based distributed workloads, you can use Kueue and supported accelerators:
+For both Ray-based and Training Operator-based distributed workloads, you can use Kueue and supported accelerators:
 
 * Use Kueue to manage the resources for the distributed workload.
 * Use CUDA training images for NVIDIA GPUs, and ROCm-based training images for AMD GPUs.
