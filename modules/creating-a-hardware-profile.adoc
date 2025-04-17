@@ -1,0 +1,75 @@
+:_module-type: PROCEDURE
+
+[id="creating-a-hardware-profile_{context}"]
+= Creating a hardware profile
+
+[role='_abstract']
+To configure specific hardware configurations for your data scientists to use in {productname-short}, you must create an associated hardware profile.
+
+.Prerequisites
+* You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
+* The relevant hardware is installed and you have confirmed that it is detected in your environment.
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Hardware profiles*.
++
+The *Hardware profiles* page appears, displaying existing hardware profiles. To enable or disable an existing hardware profile, on the row containing the relevant hardware profile, click the toggle in the *Enabled* column.
+. Click *Create hardware profile*. 
++
+The *Create hardware profile* page appears.
+. In the *Name* field, enter a name for the hardware profile.
+. Optional: To change the default name of your Kubernetes resource, click *Edit resource name* and enter a name in the *Resource name* field. The resource name cannot be edited after creation.
+. Optional: In the *Description* field, enter a description for the hardware profile.
+. In the *Visiblity* section, set the hardware profile visibility level:
+.. To access the hardware profile in all areas of {productname-short}, leave the *Visible everywhere* radio button selected.
+.. Click the *Limited visibility* radio button to limit the areas of {productname-short} where your data scientists can use the hardware profile.
+. Optional: Configure node resource request limits:
+.. Click *Add resource*. 
++
+The *Add resource* dialog opens.
+.. In the *Resource label* field, enter a unique resource label. 
+.. In the *Resource identifier* field, enter a unique resource identifier. 
+.. From the *Resource type* field, select a resource type from the list. 
+.. In the *Default* field, enter the default resource request limit. This value must be equal to or between the minimum and maximum limits.
+.. In the *Minimum allowed* field, enter the minimum number of resources that users can request. 
+.. In the *Maximum allowed* field, enter the maximum number of resources that users can request:
+... To set a specific maximum request limit, click the *Set maximum limit* radio button and enter a value.
+... To set no maximum request limit, click the *No maximum limit* radio button.
+.. Click *Add*.
+. Optional: Add a node selector to schedule pods on nodes with matching labels.
+.. Click *Add node selector*. 
++
+The *Add node selector* dialog opens.
+.. In the *Key* field, enter a node selection key. The key must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
+.. In the *Value* field, enter a node selection value. The value must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
+.. Click *Add*.
+. Optional: Add a toleration to schedule pods with matching taints.
+.. Click *Add toleration*. 
++
+The *Add toleration* dialog opens.
+.. From the *Operator* list, select one of the following options:
+* *Equal* - The *key/value/effect* parameters must match. This is the default.
+* *Exists* - The *key/effect* parameters must match. You must leave a blank value parameter, which matches any.
+.. From the *Effect* list, select one of the following options:
+* *None* 
+* *NoSchedule* - New pods that do not match the taint are not scheduled onto that node. Existing pods on the node remain.
+* *PreferNoSchedule* - New pods that do not match the taint might be scheduled onto that node, but the scheduler tries not to. Existing pods on the node remain.
+* *NoExecute* - New pods that do not match the taint cannot be scheduled onto that node. Existing pods on the node that do not have a matching toleration are removed.
+.. In the *Key* field, enter a toleration key. The key must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
+.. In the *Value* field, enter a toleration value. The value must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
+.. In the *Toleration Seconds* section, select one of the following options to specify how long a pod stays bound to a node that has a node condition:
+** *Forever* - Pods stays permanently bound to a node. 
+** *Custom value* - Enter a value, in seconds, to define how long pods stay bound to a node that has a node condition.
+.. Click *Add*.
+. Click *Create hardware profile*.
+
+.Verification
+* The hardware profile appears on the *Hardware profiles* page.
+* The hardware profile appears in the *Hardware profiles* list on the *Create workbench* page.
+* The hardware profile appears on the *Instances* tab on the details page for the `HardwareProfile` custom resource definition (CRD).
+
+[role='_additional-resources']
+.Additional resources
+* link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#toleration-v1-core[Toleration v1 core]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/controlling-pod-placement-onto-nodes-scheduling#nodes-scheduler-taints-tolerations-about_nodes-scheduler-taints-tolerations[Understanding taints and tolerations]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/understanding-operators#crd-managing-resources-from-crds[Managing resources from custom resource definitions]

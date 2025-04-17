@@ -53,16 +53,16 @@ ifdef::upstream[]
 * To use the *vLLM NVIDIA GPU ServingRuntime for KServe* runtime or use graphics processing units (GPUs) with your model server, you have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
 endif::[]
 ifndef::upstream[]
-* To use the *vLLM Intel Gaudi Accelerator ServingRuntime for KServe* runtime, you have enabled support for hybrid processing units (HPUs) in {productname-short}. This includes installing the Intel Gaudi AI accelerator operator and configuring an accelerator profile. For more information, see link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html#openshift-installation[Setting up Gaudi for OpenShift^] in the AMD documentation and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-accelerator-profiles_accelerators[Working with accelerator profiles^].
+* To use the *vLLM Intel Gaudi Accelerator ServingRuntime for KServe* runtime, you have enabled support for hybrid processing units (HPUs) in {productname-short}. This includes installing the Intel Gaudi AI accelerator operator and configuring an hardware profile. For more information, see link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html#openshift-installation[Setting up Gaudi for OpenShift^] in the AMD documentation and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
 ifdef::upstream[]
-* To use the *vLLM Intel Gaudi Accelerator ServingRuntime for KServe* runtime, you have enabled support for hybrid processing units (HPUs) in {productname-short}. This includes installing the Intel Gaudi Base Operator and configuring an accelerator profile. For more information, see link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html#openshift-installation[Setting up Gaudi for OpenShift^] and link:{odhdocshome}/working-with-accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles^].
+* To use the *vLLM Intel Gaudi Accelerator ServingRuntime for KServe* runtime, you have enabled support for hybrid processing units (HPUs) in {productname-short}. This includes installing the Intel Gaudi Base Operator and configuring a hardware profile. For more information, see link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html#openshift-installation[Setting up Gaudi for OpenShift^] and link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
 ifndef::upstream[]
-* To use the *vLLM AMD GPU ServingRuntime for KServe* runtime, you have enabled support for AMD graphic processing units (GPUs) in {productname-short}. This includes installing the AMD GPU operator and configuring an accelerator profile. For more information, see link:https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/openshift-olm.html[Deploying the AMD GPU operator on OpenShift^] and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-accelerator-profiles_accelerators[Working with accelerator profiles^].
+* To use the *vLLM AMD GPU ServingRuntime for KServe* runtime, you have enabled support for AMD graphic processing units (GPUs) in {productname-short}. This includes installing the AMD GPU operator and configuring a hardware profile. For more information, see link:https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/openshift-olm.html[Deploying the AMD GPU operator on OpenShift^] and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
 ifdef::upstream[]
-* To use the *vLLM AMD GPU ServingRuntime for KServe* runtime, you have enabled support for AMD graphic processing units (GPUs) in {productname-short}. This includes installing the AMD GPU Operator and configuring an accelerator profile. For more information, see link:https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/openshift-olm.html[Deploying the AMD GPU operator on OpenShift^] and link:{odhdocshome}/working-with-accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles^].
+* To use the *vLLM AMD GPU ServingRuntime for KServe* runtime, you have enabled support for AMD graphic processing units (GPUs) in {productname-short}. This includes installing the AMD GPU Operator and configuring a hardware profile. For more information, see link:https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/openshift-olm.html[Deploying the AMD GPU operator on OpenShift^] and link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
 ifdef::self-managed[]
 +
@@ -109,10 +109,9 @@ ifdef::upstream[]
 . From the **Deployment mode** list, select standard or advanced. For more information about deployment modes, see link:{odhdocshome}/serving-models/#about-kserve-deployment-modes_serving-large-models[About KServe deployment modes].
 endif::[]
 . In the *Number of model server replicas to deploy* field, specify a value.
-. From the *Model server size* list, select a value.
-. The following options are only available if you have enabled accelerator support on your cluster and created an accelerator profile:
-.. From the *Accelerator* list, select an accelerator.
-.. If you selected an accelerator in the preceding step, specify the number of accelerators to use in the *Number of accelerators* field.
+. The following options are only available if you have created a hardware profile:
+.. From the *Hardware profile* list, select a hardware profile.
+.. Optional To change these default values, click *Customize resource requests and limit* and enter new minimum (request) and maximum (limit) values. The hardware profile specifies the number of CPUs and the amount of memory allocated to the container, setting the guaranteed minimum (request) and maximum (limit) for both. 
 . Optional: In the *Model route* section, select the *Make deployed models available through an external route* checkbox to make your deployed models available to external clients.
 . To require token authentication for inference requests to the deployed model, perform the following actions:
 .. Select *Require token authentication*.

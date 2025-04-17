@@ -63,14 +63,12 @@ The *Add model server* dialog opens.
 If you are using a _custom_ model-serving runtime with your model server and want to use GPUs, you must ensure that your custom runtime supports GPUs and is appropriately configured to use them.
 ====
 . In the *Number of model replicas to deploy* field, specify a value.
-. From the *Model server size* list, select a value.
-. Optional: If you selected *Custom* in the preceding step, configure the following settings in the *Model server size* section to customize your model server:
-.. In the *CPUs requested* field, specify the number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
-.. In the *CPU limit* field, specify the maximum number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
-.. In the *Memory requested* field, specify the requested memory for the model server in gibibytes (Gi).
-.. In the *Memory limit* field, specify the maximum memory limit for the model server in gibibytes (Gi).
-. Optional: From the *Accelerator* list, select an accelerator.
-.. If you selected an accelerator in the preceding step, specify the number of accelerators to use.
+. From the *Hardware profile* list, select a hardware profile.
+. Optional: Click *Customize resource requests and limit* and update the following values:
+.. In the *CPUs requests* field, specify the number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
+.. In the *CPU limits* field, specify the maximum number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
+.. In the *Memory requests* field, specify the requested memory for the model server in gibibytes (Gi).
+.. In the *Memory limits* field, specify the maximum memory limit for the model server in gibibytes (Gi).
 . Optional: In the *Model route* section, select the *Make deployed models available through an external route* checkbox to make your deployed models available to external clients.
 . Optional: In the *Token authentication* section, select the *Require token authentication* checkbox to require token authentication for your model server. To finish configuring token authentication, perform the following actions:
 .. In the *Service account name* field, enter a service account name for which the token will be generated. The generated token is created and displayed in the *Token secret* field when the model server is configured.
