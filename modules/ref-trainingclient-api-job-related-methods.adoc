@@ -1,0 +1,87 @@
+:_module-type: REFERENCE
+
+[id="ref-trainingclient-api-job-related-methods_{context}"]
+= TrainingClient API: Job-related methods
+
+[role='_abstract']
+Use these methods to find job-related information.
+
+.List all training job resources
+
+[source,subs="+quotes"]
+----
+client.list_jobs(namespace="__<namespace>__", job_kind="PyTorchJob")
+----
+
+.Get information about a specified training job
+
+[source,subs="+quotes"]
+----
+client.get_job(name="__<PyTorchJob-name>__", namespace="__<namespace>__", job_kind="PyTorchJob")
+----
+
+.Get pod names for the training job
+
+[source,subs="+quotes"]
+----
+client.get_job_pod_names(name="__<PyTorchJob-name>__", namespace="__<namespace>__")
+----
+
+.Get the logs from the training job
+
+[source,subs="+quotes"]
+----
+client.get_job_logs(name="__<PyTorchJob-name>__", namespace="__<namespace>__", job_kind="PyTorchJob")
+----
+
+
+.Delete the training job
+
+[source,subs="+quotes"]
+----
+client.delete_job(name="__<PyTorchJob-name>__", namespace="__<namespace>__", job_kind="PyTorchJob")
+----
+
+
+
+ifndef::upstream[]
+
+[NOTE]
+====
+The `train` method from the `TrainingClient` API provides a higher-level API to fine-tune LLMs with PyTorchJobs. 
+The `train` method is Developer Preview software, and depends on the `huggingface` Python package, which you must install manually in your environment before running it. 
+For more information about the `train` method, see the link:https://www.kubeflow.org/docs/components/trainer/legacy-v1/user-guides/fine-tuning/[Kubeflow documentation].
+====
+
+[IMPORTANT]
+====
+Developer Preview features are not supported by {org-name} in any way and are not functionally complete or production-ready. 
+Do not use Developer Preview features for production or business-critical workloads. 
+Developer Preview features provide early access to functionality in advance of possible inclusion in a {org-name} product offering. 
+Customers can use these features to test functionality and provide feedback during the development process. 
+Developer Preview features might not have any documentation, are subject to change or removal at any time, and have received limited testing. 
+{org-name} might provide ways to submit feedback on Developer Preview features without an associated SLA.
+
+For more information about the support scope of {org-name} Developer Preview features, see link:https://access.redhat.com/support/offerings/devpreview/[Developer Preview Support Scope].
+====
+endif::[]
+
+ifdef::upstream[]
+
+[NOTE]
+====
+The `train` method from the `TrainingClient` API provides a higher-level API to fine-tune LLMs with PyTorchJobs. 
+The `train` method depends on the `huggingface` Python package, which you must install manually in your environment before running it. 
+For more information about the `train` method, see the link:https://www.kubeflow.org/docs/components/trainer/legacy-v1/user-guides/fine-tuning/[Kubeflow documentation].
+====
+endif::[]
+
+
+////
+[role='_additional-resources']
+.Additional resources
+<Do we want to link to additional resources?>
+
+
+* link:https://url[link text]
+////

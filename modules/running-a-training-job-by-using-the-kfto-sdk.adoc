@@ -34,10 +34,10 @@ endif::[]
 * You have access to data that you can use to train the model.
 
 ifndef::upstream[]
-* You configured the training job as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-kubeflow-sdk-to-run-distributed-training_distributed-workloads#configuring-a-training-job-by-using-the-kfto-sdk_distributed-workloads[Configuring a training job by using the Training Operator SDK].
+* You have configured the training job as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/using-the-kubeflow-sdk-to-run-distributed-training_distributed-workloads#configuring-a-training-job-by-using-the-kfto-sdk_distributed-workloads[Configuring a training job by using the Training Operator SDK].
 endif::[]
 ifdef::upstream[]
-* You configured the training job as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-a-training-job-by-using-the-kfto-sdk_distributed-workloads[Configuring a training job by using the Training Operator SDK].
+* You have configured the training job as described in link:{odhdocshome}/working-with-distributed-workloads/#configuring-a-training-job-by-using-the-kfto-sdk_distributed-workloads[Configuring a training job by using the Training Operator SDK].
 endif::[]
 
 
@@ -68,41 +68,6 @@ client.create_job(
    env_vars={"NCCL_DEBUG": "INFO", "TORCH_DISTRIBUTED_DEBUG": "DETAIL"},
 )
 ----
-+
-If the `job_kind` value is not explicitly set, the `TrainingClient` API automatically sets the `job_kind` value to `PyTorchJob`.
-+
-If you use AMD GPUs, replace `nvidia.com/gpu` with `amd.com/gpu` in the example code.
-
-ifndef::upstream[]
-+
-[NOTE]
-====
-The `train` method from the `TrainingClient` API provides a higher-level API to fine-tune LLMs with PyTorchJobs. 
-The `train` method is Developer Preview software, and depends on the `huggingface` Python package, which you must install manually in your environment before running it. 
-For more information about the `train` method, see the link:https://www.kubeflow.org/docs/components/trainer/legacy-v1/user-guides/fine-tuning/[Kubeflow documentation].
-====
-+
-[IMPORTANT]
-====
-Developer Preview features are not supported by {org-name} in any way and are not functionally complete or production-ready. 
-Do not use Developer Preview features for production or business-critical workloads. 
-Developer Preview features provide early access to functionality in advance of possible inclusion in a {org-name} product offering. 
-Customers can use these features to test functionality and provide feedback during the development process. 
-Developer Preview features might not have any documentation, are subject to change or removal at any time, and have received limited testing. 
-{org-name} might provide ways to submit feedback on Developer Preview features without an associated SLA.
-
-For more information about the support scope of {org-name} Developer Preview features, see link:https://access.redhat.com/support/offerings/devpreview/[Developer Preview Support Scope].
-====
-endif::[]
-ifdef::upstream[]
-+
-[NOTE]
-====
-The `train` method from the `TrainingClient` API provides a higher-level API to fine-tune LLMs with PyTorchJobs. 
-The `train` method depends on the `huggingface` Python package, which you must install manually in your environment before running it. 
-For more information about the `train` method, see the link:https://www.kubeflow.org/docs/components/trainer/legacy-v1/user-guides/fine-tuning/[Kubeflow documentation].
-====
-endif::[]
 
 . Edit the content to specify the appropriate values for your environment, as follows:
 
@@ -114,6 +79,13 @@ endif::[]
 * Change the `base_image` value to `quay.io/modh/training:py311-rocm62-torch241`
 * Remove the `NCCL_DEBUG` entry
 
+
++
+[NOTE] 
+====
+This example does not specify the `job_kind` parameter.
+If the `job_kind` value is not explicitly set, the `TrainingClient` API automatically sets the `job_kind` value to `PyTorchJob`.
+====
 
 . Run the cell to run the job.
 
