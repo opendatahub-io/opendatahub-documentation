@@ -52,6 +52,13 @@ endif::[]
 ifdef::upstream[]
 * To use the *vLLM NVIDIA GPU ServingRuntime for KServe* runtime or use graphics processing units (GPUs) with your model server, you have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
 endif::[]
+ifdef::self-managed[]
+* To use the VLLM runtime on IBM Z and IBM Power, use the *vLLM CPU ServingRuntime for KServe*. You cannot use GPU accelerators with IBM Z and IBM Power architectures.
+For more information, see link:https://access.redhat.com/solutions/7109527[Red{nbsp}Hat {openshift-platform} Multi Architecture Component Availability Matrix].
+endif::[]
+ifdef::upstream[]
+* To use the VLLM runtime on IBM Z and IBM Power, use the *vLLM CPU ServingRuntime for KServe*. For IBM Z and IBM Power, vLLM runtime is supported only on CPU.
+endif::[]
 ifndef::upstream[]
 * To use the *vLLM Intel Gaudi Accelerator ServingRuntime for KServe* runtime, you have enabled support for hybrid processing units (HPUs) in {productname-short}. This includes installing the Intel Gaudi AI accelerator operator and configuring an hardware profile. For more information, see link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html#openshift-installation[Setting up Gaudi for OpenShift^] in the AMD documentation and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
