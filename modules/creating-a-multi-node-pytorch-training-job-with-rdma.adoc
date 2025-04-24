@@ -33,7 +33,7 @@ ifdef::cloud-service[]
 endif::[]
 
 ifdef::upstream[]
-** Configured the distributed training resources, as described in link:{odhdocshome}/managing-odh/#managing_distributed_workloads[Managing distributed workloads].
+** Configured the distributed training resources, as described in link:{odhdocshome}/managing-odh/#managing-distributed-workloads_managing-odh[Managing distributed workloads].
 endif::[]
 ifndef::upstream[]
 ** Configured the distributed training resources, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai[Managing distributed workloads].
@@ -112,8 +112,10 @@ image: quay.io/modh/training:py311-cuda121-torch241
 ----
 
 .. If you want to use a different base training image, replace the image name accordingly.
+ifndef::upstream[]
 +
 For a list of supported training images, see link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations].
+endif::[]
 
 . Specify the requests and limits for the network interface resources.
 +
