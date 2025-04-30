@@ -1,0 +1,95 @@
+:_module-type: REFERENCE
+
+[id='ref-vllm-metrics_{context}']
+= vLLM metrics
+
+[role='_abstract']
+You can track metrics related to your vLLM model.
+
+== GPU and CPU cache utilization
+Tracks the percentage of GPU memory used by the vLLM model, providing insights into memory efficiency.
+
+Query
+`sum_over_time(vllm:gpu_cache_usage_perc{namespace="${namespace}",pod=~"granite.*"}[24h])`
+
+== Request and resource utilization metrics
+
+=== Waiting and running requests
+Running requests:: 
+The number of requests actively being processed. Helps monitor workload concurrency.
+`num_requests_running{namespace="$namespace", pod=~"granite.*"}`
+
+Waiting requests:: 
+Tracks requests in the queue, indicating system saturation.
+`num_requests_waiting{namespace="$namespace", pod=~"granite.*"}`
+
+=== Prefix cache hit rates
+High hit rates imply efficient reuse of cached computations, optimizing resource usage.
+
+Queries
+`vllm:gpu_cache_usage_perc{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}`
+`vllm:cpu_cache_usage_perc{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}`
+
+=== Request total count
+
+Queries
+`vllm:request_success_total{finished_reason="length",namespace="$namespace", pod=~"granite.*", model_name="$model_name"}`
+    * The request ended because it reached the maximum token limit set for the model inference.
+`vllm:request_success_total{finished_reason="stop",namespace="$namespace", pod=~"granite.*", model_name="$model_name"}`
+    * The request completed naturally based on the model's output or a stop condition (e.g., end of a sentence or token completion).
+
+
+== Performance metrics
+
+=== End-to-End Latency
+
+Measures the overall time to process a request for an optimal user experience.
+
+Queries
+Histogram:
+* `histogram_quantile(0.99, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `histogram_quantile(0.95, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `histogram_quantile(0.9, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `histogram_quantile(0.5, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `rate(vllm:e2e_request_latency_seconds_sum{namespace="$namespace", pod=~"granite.*",model_name="$model_name"}[5m])`
+    `  /`
+    `rate(vllm:e2e_request_latency_seconds_count{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])`
+
+== Throughput metrics 
+
+=== Time to first token (TTFT) latency
+ The time taken to generate the first token in a response.
+
+Queries:
+* `histogram_quantile(0.99, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `histogram_quantile(0.95, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `histogram_quantile(0.9, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `histogram_quantile(0.5, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `rate(vllm:time_to_first_token_seconds_sum{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])`
+    `/`
+    `rate(vllm:time_to_first_token_seconds_count{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])`
+
+=== Time per output token (TPOT) latency
+The average time taken to generate each output token.
+
+Queries
+* `histogram_quantile(0.99, sum by(le) (rate(vllm:time_per_output_token_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `histogram_quantile(0.95, sum by(le) (rate(vllm:time_per_output_token_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `histogram_quantile(0.9, sum by(le) (rate(vllm:time_per_output_token_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `histogram_quantile(0.5, sum by(le) (rate(vllm:time_per_output_token_seconds_bucket{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])))`
+* `rate(vllm:time_per_output_token_seconds_sum{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])`
+`/`
+`rate(vllm:time_per_output_token_seconds_count{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])`
+
+=== Prompt token throughput and generation throughput
+Tracks the speed of processing prompt tokens for LLM optimization.
+
+Queries
+* `rate(vllm:prompt_tokens_total{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])`
+* `rate(vllm:generation_tokens_total{namespace="$namespace", pod=~"granite.*", model_name="$model_name"}[5m])`
+
+=== Total token generated
+Measures the efficiency of generating response tokens, critical for real-time applications.
+
+Query
+`sum(vllm:generation_tokens_total{namespace="$namespace", po

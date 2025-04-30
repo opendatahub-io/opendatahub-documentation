@@ -1,0 +1,44 @@
+:_module-type: REFERENCE
+
+[id='ref-accelerator-metrics_{context}']
+= Accelerator metrics
+
+[role='_abstract']
+You can track metrics on your accelerators to ensure the health of the hardware.
+
+== GPU utilization
+Tracks the percentage of time the GPU is actively processing tasks, indicating GPU workload levels.
+
+.Query
+[source,bash]
+----
+DCGM_FI_DEV_GPU_UTIL{instance=~"$instance", gpu=~"$gpu"}
+----
+
+== GPU memory utilization
+Compares memory usage against free memory, which is critical for identifying memory bottlenecks in GPU-heavy workloads.
+
+Query
+`DCGM_FI_DEV_POWER_USAGE{instance=~"$instance", gpu=~"$gpu"}`
+
+Sum
+`sum(DCGM_FI_DEV_POWER_USAGE{instance=~"$instance", gpu=~"$gpu"})`
+
+== GPU temperature
+Ensures the GPU operates within safe thermal limits to prevent hardware degradation.
+
+Query
+`DCGM_FI_DEV_GPU_TEMP{instance=~"$instance", gpu=~"$gpu"}`
+
+Avg
+`avg(DCGM_FI_DEV_GPU_TEMP{instance=~"$instance", gpu=~"$gpu"})`
+
+== GPU throttling
+GPU throttling happens when the GPU automatically reduces the clock to avoid damage from overheating. 
+
+You can access the following metrics to identify GPU throttling:
+* GPU Temperature: Monitor the GPU temperature. Throttling often occurs when the GPU reaches a certain temperature, for example, 85-90°C.
+* SM Clock Speed: Monitor the core clock speed. A significant drop in the clock speed while the GPU is under load indicates throttling.
+
+//[role="_additional-resources"]
+//.Additional resources

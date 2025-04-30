@@ -1,0 +1,26 @@
+:_module-type: REFERENCE
+
+[id='ref-cpu-metrics_{context}']
+= CPU metrics
+
+[role='_abstract']
+You can track metrics on your CPU to ensure the health of the hardware.
+
+== CPU utilization
+Tracks CPU usage to identify workloads that are CPU-bound.
+
+Query
+sum(rate(container_cpu_usage_seconds_total{namespace="granite", pod=~"granite.*"}[5m])) by (namespace)
+
+== CPU-GPU bottlenecks
+A combination of CPU throttling and GPU usage metrics to identify resource allocation inefficiencies.
+
+If CPU throttling is low and GPU utilization is high, it indicates that the system is well-balanced, with the GPU being fully utilized without CPU constraints. If CPU throttling is high and GPU utilization is low, it indicates a CPU bottleneck. The CPU is unable to keep up with the GPU's processing demands, the GPU may be underused. If both metrics are high, it may indicate that the workload is increasing for both CPU and GPU, and you may need to scale up resources.
+
+Query
+
+sum(rate(container_cpu_cfs_throttled_seconds_total{namespace="$namespace", pod=~"granite.*"}[5m])) by (namespace)
+avg_over_time(DCGM_FI_DEV_GPU_UTIL{instance=~"$instance", gpu=~"$gpu"}[5m])
+
+//[role="_additional-resources"]
+//.Additional resources
