@@ -4,7 +4,7 @@
 = Customizing model selection options for the NVIDIA NIM model serving platform
 
 [role="_abstract"]
-The NVIDIA NIM model serving platform includes all the NVIDIA NIM models listed in the NVIDIA GPU Cloud (NGC) catalog for selection and deployment. You can select the model of your choice from the *NVIDIA NIM* list in the *Deploy model* dialog. To customize the models available for selection, you can create a `ConfigMap` object containing a list of preferred models according to your needs.
+The NVIDIA NIM model serving platform includes all the NVIDIA NIM models available in the NVIDIA GPU Cloud (NGC) catalog for selection and deployment. You can view and deploy the available NIM models in the *NVIDIA NIM* list of the *Deploy model* dialog. You can customize the models available for selection by creating a `ConfigMap` object that contains a list of preferred models.
 
 .Prerequisites
 
@@ -67,7 +67,7 @@ oc apply -f <configmap-name> -n <namespace>
 ----
 + 
 Replace _<configmap-name>_ with the name of your YAML file, and _<namespace>_ with the namespace of your `Account` CR.
-. Add the `ConfigMap` object that you previously created to the `spec` section of your `Account` CR.
+. Add the `ConfigMap` object that you previously created to the `spec.modelListConfig` section of your `Account` CR.
 +
 [source, console]
 ----
@@ -84,7 +84,7 @@ Replace _<account-name>_ with the name of your `Account` CR, and _<configmap-nam
 oc get account <account-name> -o yaml
 ----
 +
-You see the `ConfigMap` object in the `spec` section of your `Account` CR, similar to the following output. 
+You see the `ConfigMap` object in the `spec.modelListConfig` section of your `Account` CR, similar to the following output. 
 +
 [source, yaml]
 ----
@@ -97,10 +97,10 @@ spec:
 .Verification
 
 ifndef::upstream[]
-* Follow the steps to deploy a model as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-NVIDIA-NIM-model-serving-platform_serving-large-models[Deploying models on the NVIDIA NIM model serving platform to deploy a NIM model]. In the *Deploy model* dialog, you only see the models that you need in the *NVIDIA NIM* drop-down list.
+* Follow the steps to deploy a model as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-NVIDIA-NIM-model-serving-platform_serving-large-models[Deploying models on the NVIDIA NIM model serving platform to deploy a NIM model]. You see the models that you defined in the `ConfigMap` object in the *NVIDIA NIM* list on the *Deploy model* dialog.
 endif::[]
 ifdef::upstream[]
-* Follow the steps to deploy a model as described in link:{odhdocshome}/serving-models/#deploying-models-on-the-NVIDIA-NIM-model-serving-platform_serving-large-models[Deploying models on the NVIDIA NIM model serving platform to deploy a NIM model]. In the *Deploy model* dialog, you see your preferred models in the *NVIDIA NIM* list.
+* Follow the steps to deploy a model as described in link:{odhdocshome}/serving-models/#deploying-models-on-the-NVIDIA-NIM-model-serving-platform_serving-large-models[Deploying models on the NVIDIA NIM model serving platform to deploy a NIM model]. You see the models that you defined in the `ConfigMap` object in the *NVIDIA NIM* list on the *Deploy model* dialog.
 endif::[]
 
 // [role="_additional-resources"]
