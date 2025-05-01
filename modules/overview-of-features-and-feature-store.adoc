@@ -1,0 +1,107 @@
+:_module-type: CONCEPT
+
+[id='overview-of-features-and-feature-store_{context}']
+= Overview of machine learning features and Feature Store
+
+[role='_abstract']
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+Feature Store is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+Feature Store is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+A machine learning (ML) feature is a measurable property or attribute within a dataset that a machine learning model can analyze to learn patterns and make decisions. Examples of features include a customer's purchase history, demographic data like age and location, weather conditions, and financial market data. You can use these features to train models for tasks such as personalized product recommendations, fraud detection, and predictive maintenance.
+
+Feature Store is a {product-name-long} component that provides a centralized repository that stores, manages, and serves machine learning features for both training and inference purposes.
+
+== Overview of machine learning features
+
+In machine learning, a _feature_, also referred to as a field, is an individual measurable property. A feature is used as an input signal to a predictive model. For example, if a bank's loan department is trying to predict whether an applicant should be approved for a loan, a useful feature might be whether they have filed for bankruptcy in the past or how much credit card debt they currently carry.
+
+.A feature represents a column in a data table
+|===
+| customer_id | avg_cc_balance | credit_score | bankruptcy 
+| 1005 | 500.00 | 730 | 0 
+| 982 | 20000.00 | 570 | 2
+| 1001 | 1400.00 | 600 | 0
+|===
+
+Features are prepared data that help machine learning models understand patterns in the world. Feature engineering is the process of selecting, manipulating, and transforming raw data into features that can be used in supervised learning. As shown in the Table 1, a feature refers to an entire column in a dataset, for example, *credit_score*, and a feature value refers to a single value in a feature column, such as *730*.
+
+== Overview of Feature Store
+
+Feature Store is an {product-name-short} component that provides an interface between models and data. It is based on the link::https://feast.dev/[Feast] open source project. Feature Store provides a framework for storing, managing, and serving features to machine learning models by using your existing infrastructure and data stores. It facilitates the retrieval of feature data from different data sources to generate and manage features by providing unified feature management capabilities.
+
+Figure 1 shows where Feature Store fits in the ML workflow. In an ML workflow, features are inputs to ML models. The ML workflow starts with many types of relevant data, such as transactional data, customer references, and product data. The data comes from a variety of databases and data sources. From this data, ML engineers use Feature Store to curate features. The features are input to models and the models can then use the data from the features to make predictions.
+
+.Feature Store in the ML workflow
+image::images/feature-store-workflow.png[In the ML workflow, Feature Store fits between the data and features]
+
+
+Feature Store is a machine learning data system that provides the following capabilities:
+
+* Runs data pipelines that transform raw data into feature values
+* Stores and manages feature data
+* Serves feature data consistently for training and inference purposes
+* Manages features consistently across offline and online environments
+* Powers one model or thousands simultaneously with fresh, reusable features, on demand
+
+Feature Store is a centralized hub for storing, processing, and accessing commonly-used features that enables users in your ML organization to collaborate. When you register a feature in a Feature Store, it becomes available for immediate reuse by other models across your organization. The Feature Store registry reduces duplication of data engineering efforts and allows new ML projects to bootstrap with a library of curated, production-ready features.
+
+Feature Store provides consistency in model training and inference, promotes collaboration and usability across multiple projects, monitors lineage and versioning of models for data drifts, leaks, and training skews, and seamlessly integrates with other MLOps tools. Feature Store remotely manages data stored in other systems, such as BigQuery, Snowflake, DynamoDB, and Redis, to make features consistently available at training / serving time.
+
+//add diagram - Feature Store stores, registers, and serves online and offline features
+//As illustrated in the figure
+
+Before data enters Feature Store, the ML platform team completes tasks with existing infrastructure, such as managing data transformations.
+
+Feature Server performs the following tasks: 
+
+* Stores features in offline and online stores
+* Registers features in the registry for sharing 
+* Serves features to ML models
+
+ML platform teams use Feature Store to store and serve features consistently for offline training, such as batch-scoring, and online real-time model inference.
+
+Feature Store consists of the following key components:
+
+Registry:: A central catalog of all feature definitions and their related metadata. It allows data scientists to search, discover, and collaborate on new features. The registry exposes methods to apply, list, retrieve, and delete features.
+
+Offline Store:: The data store that contains historical data for scale-out batch scoring or model training. The offline store persists batch data that has been ingested into Feature Store. This data is used for producing training datasets. Examples of offline stores include Dask, Snowflake, BigQuery, Redshift, and DuckDB.
+
+Online Store:: The data store that is used for low-latency feature retrieval. The online store is used for real-time inference. Examples of online stores include Redis, GCP Datastore, and DynamoDB.
+
+Server:: A feature server that serves pre-computed features online.
+
+UI:: A web-based graphical user interface for viewing all the feature store objects and their relationships with each other.
+
+Feature Store provides the following software capabilities:
+
+* A Python SDK for programmatically defining features and data sources
+* A Python SDK for reading and writing features to offline and online data stores
+* An optional feature server for reading and writing features (useful for non-python languages) by using APIs
+* A web-based graphical user interface (UI) for viewing and exploring information about features defined in the project
+* A command line interface (CLI) for viewing and updating feature information
+
+== Audience for Feature Store
+
+The audience for Feature Store is ML platform/MLOps teams with DevOps experience in productionizing real-time models. Feature Store also helps these teams build a feature platform that improves collaboration between data engineers, software engineers, machine learning engineers, and data scientists.
+
+For Data Scientists:: Feature Store is a tool where you can define, store, and retrieve your features for both model development and model deployment. By using Feature Store, you can focus on what you do best: build features that power your AI/ML models and maximize the value of your data.
+
+For MLOps Engineers:: Feature Store is a library that connects your existing infrastructure, such as online database, application server, microservice, analytical database, and orchestration tooling. By using Feature Store , you can focus on maintaining a resilient system, instead of implementing features for data scientists.
+
+For Data Engineers:: Feature Store provides a centralized catalog for storing feature definitions, allowing you to maintain a single source of truth for feature data. It provides the abstraction for reading and writing to many different types of offline and online data stores. Using either the provided Python SDK or the feature server service, you can write data to the online and/or offline stores and then read that data out again in either low-latency online scenarios for model inference, or in batch scenarios for model training.
+
+For AI Engineers:: Feature Store provides a platform designed to scale your AI applications by enabling seamless integration of richer data and facilitating fine-tuning. With Feature Store, you can optimize the performance of your AI models while ensuring a scalable and efficient data pipeline.
