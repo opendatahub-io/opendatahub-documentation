@@ -6,7 +6,8 @@
 [role='_abstract']
 You can track metrics on your CPU to ensure the health of the hardware.
 
-.CPU utilization
+CPU utilization::
+--
 Tracks CPU usage to identify workloads that are CPU-bound.
 
 **Query**
@@ -14,11 +15,28 @@ Tracks CPU usage to identify workloads that are CPU-bound.
 ----
 sum(rate(container_cpu_usage_seconds_total{namespace="granite", pod=~"granite.*"}[5m])) by (namespace)
 ----
+--
 
-.CPU-GPU bottlenecks
+CPU-GPU bottlenecks::
+--
 A combination of CPU throttling and GPU usage metrics to identify resource allocation inefficiencies.
 
-If CPU throttling is low and GPU utilization is high, it indicates that the system is well-balanced, with the GPU being fully utilized without CPU constraints. If CPU throttling is high and GPU utilization is low, it indicates a CPU bottleneck. The CPU is unable to keep up with the GPU's processing demands, the GPU may be underused. If both metrics are high, it may indicate that the workload is increasing for both CPU and GPU, and you may need to scale up resources.
+[cols="1,1,1"] 
+|===
+| CPU throttling | GPU utilization | Meaning
+
+| Low 
+| High 
+| System well-balanced. GPU is fully used without CPU constraints.
+
+| High 
+| Low 
+| CPU resources are constrained. The CPU is unable to keep up with the GPU's processing demands, and the GPU may be underused.
+
+| High 
+| High 
+| Workload is increasing for both CPU and GPU, and you might need to scale up resources.
+|===
 
 **Query**
 [source,bash]
@@ -26,6 +44,6 @@ If CPU throttling is low and GPU utilization is high, it indicates that the syst
 sum(rate(container_cpu_cfs_throttled_seconds_total{namespace="$namespace", pod=~"granite.*"}[5m])) by (namespace)
 avg_over_time(DCGM_FI_DEV_GPU_UTIL{instance=~"$instance", gpu=~"$gpu"}[5m])
 ----
-
+--
 //[role="_additional-resources"]
 //.Additional resources
