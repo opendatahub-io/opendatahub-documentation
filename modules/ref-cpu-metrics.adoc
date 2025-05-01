@@ -10,7 +10,7 @@ CPU utilization::
 --
 Tracks CPU usage to identify workloads that are CPU-bound.
 
-**Query**
+_Query_
 [source,bash]
 ----
 sum(rate(container_cpu_usage_seconds_total{namespace="granite", pod=~"granite.*"}[5m])) by (namespace)
@@ -38,7 +38,7 @@ A combination of CPU throttling and GPU usage metrics to identify resource alloc
 | Workload is increasing for both CPU and GPU, and you might need to scale up resources.
 |===
 
-**Query**
+_Query_
 [source,bash]
 ----
 sum(rate(container_cpu_cfs_throttled_seconds_total{namespace="$namespace", pod=~"granite.*"}[5m])) by (namespace)
