@@ -4,18 +4,18 @@
 = Customizing model selection options for the NVIDIA NIM model serving platform
 
 [role="_abstract"]
-The NVIDIA NIM model serving platform includes all the NVIDIA NIM models available in the NVIDIA GPU Cloud (NGC) catalog for selection and deployment. You can select a NIM model of your choice from the *NVIDIA NIM* list in the *Deploy model* dialog. You can customize the models available for selection by creating a `ConfigMap` object that contains a list of preferred models.
+The NVIDIA NIM model serving platform provides access to all available NVIDIA NIM models from the NVIDIA GPU Cloud (NGC). You can deploy a NIM model by selecting it from the *NVIDIA NIM* list in the *Deploy model* dialog. To customize the models that appear in the list, you can create a `ConfigMap` object specifying your preferred models.
 
 .Prerequisites
 
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have an NVIDIA Cloud Account (NCA) and can access the NVIDIA GPU Cloud (NGC) portal. 
-* You know the ID or IDs of the models that you want to include for selection on the NVIDIA NIM model serving platform.
+* You know the IDs of the NVIDIA NIM models that you want to make available for selection on the NVIDIA NIM model serving platform.
 +
 [NOTE]
 ====
-* You can find the ID of a model from the link:https://catalog.ngc.nvidia.com/[NGC Catalog]. The ID is usually part of the URL path.
-* You can also find the ID of a model by using the NGC CLI.  For more information, see link:https://docs.ngc.nvidia.com/cli/cmd_registry.html#model[NGC CLI reference].
+* You can find the model ID from the link:https://catalog.ngc.nvidia.com/[NGC Catalog]. The ID is usually part of the URL path.
+* You can also find the model ID by using the NGC CLI.  For more information, see link:https://docs.ngc.nvidia.com/cli/cmd_registry.html#model[NGC CLI reference].
 ====
 * You know the name and namespace of your `Account` custom resource (CR).
 
@@ -27,7 +27,7 @@ The NVIDIA NIM model serving platform includes all the NVIDIA NIM models availab
 ----
 oc login <openshift_cluster_url> -u <admin_username> -p <password>
 ----
-. Define a `ConfigMap` object in a YAML file, similar to the one in the following example, containing the IDs of the models that you want to include for selection on the NVIDIA NIM model serving platform:
+. Define a `ConfigMap` object in a YAML file, similar to the one in the following example, containing the model IDs that you want to make available for selection on the NVIDIA NIM model serving platform:
 +
 [source, yaml]
 ----
@@ -59,7 +59,7 @@ You see output similar to the following example:
 NAMESPACE         NAME       TEMPLATE  CONFIGMAP  SECRET
 redhat-ods-applications  odh-nim-account
 ----
-. Deploy the `ConfigMap` object in the same namespace as your `Account` CR. 
+. Deploy the `ConfigMap` object in the same namespace as your `Account` CR: 
 +
 [source, bash]
 ----
@@ -67,7 +67,7 @@ oc apply -f <configmap-name> -n <namespace>
 ----
 + 
 Replace _<configmap-name>_ with the name of your YAML file, and _<namespace>_ with the namespace of your `Account` CR.
-. Add the `ConfigMap` object that you previously created to the `spec.modelListConfig` section of your `Account` CR.
+. Add the `ConfigMap` object that you previously created to the `spec.modelListConfig` section of your `Account` CR:
 +
 [source, console]
 ----
@@ -77,14 +77,14 @@ oc patch account <account-name> \
 ----
 +
 Replace _<account-name>_ with the name of your `Account` CR, and _<configmap-name>_ with your `ConfigMap` object.
-. Confirm that the `ConfigMap` object is added to your `Account` CR.
+. Confirm that the `ConfigMap` object is added to your `Account` CR:
 +
 [source, console]
 ----
 oc get account <account-name> -o yaml
 ----
 +
-You see the `ConfigMap` object in the `spec.modelListConfig` section of your `Account` CR, similar to the following output. 
+You see the `ConfigMap` object in the `spec.modelListConfig` section of your `Account` CR, similar to the following output: 
 +
 [source, yaml]
 ----
