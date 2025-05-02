@@ -93,7 +93,7 @@ Previously, cluster administrators used the `groupsConfig` option in the `OdhDas
 
 In {productname-short}, cluster administrators use Kueue to configure quota management for distributed workloads.
 
-When upgrading from {productname-short} v2.23.1 or earlier, the version of the MultiKueue Custom Resource Definitions (CRDs) should change from `v1alpha1` to `v1beta1`.
+When upgrading from {productname-short} v2.23.1 or earlier, the version of the MultiKueue Custom Resource Definitions (CRDs) changes from `v1alpha1` to `v1beta1`.
 
 However, if the `kueue` component is set to `Managed`, the {productname-long} Operator does not automatically remove the `v1alpha1` MultiKueue CRDs during the upgrade.
 The deployment of the Kueue component then becomes blocked, as indicated in the `default-dsc` `DataScienceCluster` custom resource, where the value of the `kueueReady` condition remains set to `False`.
@@ -122,10 +122,10 @@ app.opendatahub.io/kueue: 'true'
 . Remove the *MultiKueueCluster* and *MultiKueueConfig* CRDs, by completing the following steps for each CRD:
 .. Click the *Actions* menu.
 .. Click *Delete CustomResourceDefinition*.
+.. Click *Delete* to confirm the deletion.
 
 The {productname-long} Operator starts the Kueue Controller, and Kueue then automatically creates the `v1beta1` MultiKueue CRDs.
-In the `default-dsc` `DataScienceCluster` custom resource, the `kueueReady` condition changes to `True`.
-
+In the `default-dsc` `DataScienceCluster` custom resource, the `kueueReady` condition changes to `True`. 
 For information about how to check that the *kueue-controller-manager-_<pod-id>_* pod is *Running*, see link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
 
 
