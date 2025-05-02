@@ -1,0 +1,107 @@
+:_module-type: PROCEDURE
+
+[id="Customizing-model-selection-options_{context}"]
+= Customizing model selection options for the NVIDIA NIM model serving platform
+
+[role="_abstract"]
+The NVIDIA NIM model serving platform provides access to all available NVIDIA NIM models from the NVIDIA GPU Cloud (NGC). You can deploy a NIM model by selecting it from the *NVIDIA NIM* list in the *Deploy model* dialog. To customize the models that appear in the list, you can create a `ConfigMap` object specifying your preferred models.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have an NVIDIA Cloud Account (NCA) and can access the NVIDIA GPU Cloud (NGC) portal. 
+* You know the IDs of the NVIDIA NIM models that you want to make available for selection on the NVIDIA NIM model serving platform.
++
+[NOTE]
+====
+* You can find the model ID from the link:https://catalog.ngc.nvidia.com/[NGC Catalog]. The ID is usually part of the URL path.
+* You can also find the model ID by using the NGC CLI.  For more information, see link:https://docs.ngc.nvidia.com/cli/cmd_registry.html#model[NGC CLI reference].
+====
+* You know the name and namespace of your `Account` custom resource (CR).
+
+.Procedure
+
+. In a terminal window, log in to the {openshift-platform} CLI as a cluster administrator as shown in the following example:
++
+[source, console]
+----
+oc login <openshift_cluster_url> -u <admin_username> -p <password>
+----
+. Define a `ConfigMap` object in a YAML file, similar to the one in the following example, containing the model IDs that you want to make available for selection on the NVIDIA NIM model serving platform:
++
+[source, yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+ name: nvidia-nim-enabled-models
+data:
+ models: |-
+    [
+    "mistral-nemo-12b-instruct",
+    "llama3-70b-instruct",
+    "phind-codellama-34b-v2-instruct",
+    "deepseek-r1",
+    "qwen-2.5-72b-instruct"
+    ]
+----
+. Confirm the name and namespace of your `Account` CR: 
++
+[source, console]
+----
+oc get account -A
+----
++
+You see output similar to the following example:
++
+[source, console]
+----
+NAMESPACE         NAME       TEMPLATE  CONFIGMAP  SECRET
+redhat-ods-applications  odh-nim-account
+----
+. Deploy the `ConfigMap` object in the same namespace as your `Account` CR: 
++
+[source, bash]
+----
+oc apply -f <configmap-name> -n <namespace>
+----
++ 
+Replace _<configmap-name>_ with the name of your YAML file, and _<namespace>_ with the namespace of your `Account` CR.
+. Add the `ConfigMap` object that you previously created to the `spec.modelListConfig` section of your `Account` CR:
++
+[source, console]
+----
+oc patch account <account-name> \
+  --type='merge' \
+  	-p '{"spec": {"modelListConfig": {"name": "<configmap-name>"}}}'
+----
++
+Replace _<account-name>_ with the name of your `Account` CR, and _<configmap-name>_ with your `ConfigMap` object.
+. Confirm that the `ConfigMap` object is added to your `Account` CR:
++
+[source, console]
+----
+oc get account <account-name> -o yaml
+----
++
+You see the `ConfigMap` object in the `spec.modelListConfig` section of your `Account` CR, similar to the following output: 
++
+[source, yaml]
+----
+spec:
+ enabledModelsConfig:
+ modelListConfig:
+  name: <configmap-name>
+----
+
+.Verification
+
+ifndef::upstream[]
+* Follow the steps to deploy a model as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-NVIDIA-NIM-model-serving-platform_serving-large-models[Deploying models on the NVIDIA NIM model serving platform to deploy a NIM model]. You see that the *NVIDIA NIM* list in the *Deploy model* dialog displays your preferred list of models instead of all the models available in the NGC catalog.
+endif::[]
+ifdef::upstream[]
+* Follow the steps to deploy a model as described in link:{odhdocshome}/serving-models/#deploying-models-on-the-NVIDIA-NIM-model-serving-platform_serving-large-models[Deploying models on the NVIDIA NIM model serving platform to deploy a NIM model]. You see that the *NVIDIA NIM* list in the *Deploy model* dialog displays your preferred list of models instead of all the models available in the NGC catalog.
+endif::[]
+
+// [role="_additional-resources"]
+// .Additional resources
