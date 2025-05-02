@@ -88,6 +88,48 @@ Previously, cluster administrators used the `groupsConfig` option in the `OdhDas
 
 |===
 
+
+*Update Kueue*
+
+In {productname-short}, cluster administrators use Kueue to configure quota management for distributed workloads.
+
+When upgrading from {productname-short} v2.23.1 or earlier, the version of the MultiKueue Custom Resource Definitions (CRDs) changes from `v1alpha1` to `v1beta1`.
+
+However, if the `kueue` component is set to `Managed`, the {productname-long} Operator does not automatically remove the `v1alpha1` MultiKueue CRDs during the upgrade.
+The deployment of the Kueue component then becomes blocked, as indicated in the `default-dsc` `DataScienceCluster` custom resource, where the value of the `kueueReady` condition remains set to `False`.
+
+You can resolve this problem as follows:
+
+[NOTE]
+====
+If you created any resources based on the MultiKueue CRDs, those resources will be deleted when you delete the CRDs.
+If you do not want to lose your data, create a backup before deleting the CRDs.
+====
+
+. Log in to the OpenShift Console.
+. In the *Administrator* perspective, click *Administration -> CustomResourceDefinitions*.
+. In the search field, enter `multik`.
+. Update the *MultiKueueCluster* CRD as follows:
+.. Click the CRD name, and click the *YAML* tab.
+.. Ensure that the `metadata:labels` section includes the following entry:
++
+[source]
+---- 
+app.opendatahub.io/kueue: 'true'
+----
+.. Click *Save*.
+. Repeat the above steps to update the *MultiKueueConfig* CRD.
+. Remove the *MultiKueueCluster* and *MultiKueueConfig* CRDs, by completing the following steps for each CRD:
+.. Click the *Actions* menu.
+.. Click *Delete CustomResourceDefinition*.
+.. Click *Delete* to confirm the deletion.
+
+The {productname-long} Operator starts the Kueue Controller, and Kueue then automatically creates the `v1beta1` MultiKueue CRDs.
+In the `default-dsc` `DataScienceCluster` custom resource, the `kueueReady` condition changes to `True`. 
+For information about how to check that the *kueue-controller-manager-_<pod-id>_* pod is *Running*, see link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+
+
+
 *Check the status of certificate management*
 
 You can use self-signed certificates in {productname-short}.
