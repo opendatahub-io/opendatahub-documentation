@@ -37,11 +37,11 @@ In machine learning, a _feature_, also referred to as a field, is an individual 
 | 1001 | 1400.00 | 600 | 0
 |===
 
-Features are prepared data that help machine learning models understand patterns in the world. Feature engineering is the process of selecting, manipulating, and transforming raw data into features that can be used in supervised learning. As shown in the Table 1, a feature refers to an entire column in a dataset, for example, *credit_score*, and a feature value refers to a single value in a feature column, such as *730*.
+Features are prepared data that help machine learning models understand patterns in the world. Feature engineering is the process of selecting, manipulating, and transforming raw data into features that can be used in supervised learning. As shown in Table 1, a feature refers to an entire column in a dataset, for example, *credit_score*, and a feature value refers to a single value in a feature column, such as *730*.
 
 == Overview of Feature Store
 
-Feature Store is an {product-name-short} component that provides an interface between models and data. It is based on the link::https://feast.dev/[Feast] open source project. Feature Store provides a framework for storing, managing, and serving features to machine learning models by using your existing infrastructure and data stores. It facilitates the retrieval of feature data from different data sources to generate and manage features by providing unified feature management capabilities.
+Feature Store is an {product-name-short} component that provides an interface between models and data. It is based on the link:https://feast.dev/[Feast] open source project. Feature Store provides a framework for storing, managing, and serving features to machine learning models by using your existing infrastructure and data stores. It facilitates the retrieval of feature data from different data sources to generate and manage features by providing unified feature management capabilities.
 
 Figure 1 shows where Feature Store fits in the ML workflow. In an ML workflow, features are inputs to ML models. The ML workflow starts with many types of relevant data, such as transactional data, customer references, and product data. The data comes from a variety of databases and data sources. From this data, ML engineers use Feature Store to curate features. The features are input to models and the models can then use the data from the features to make predictions.
 
@@ -66,7 +66,7 @@ Feature Store provides consistency in model training and inference, promotes col
 
 Before data enters Feature Store, the ML platform team completes tasks with existing infrastructure, such as managing data transformations.
 
-Feature Server performs the following tasks: 
+Feature Store performs the following tasks: 
 
 * Stores features in offline and online stores
 * Registers features in the registry for sharing 
@@ -84,24 +84,24 @@ Online Store:: The data store that is used for low-latency feature retrieval. Th
 
 Server:: A feature server that serves pre-computed features online.
 
-UI:: A web-based graphical user interface for viewing all the feature store objects and their relationships with each other.
+UI:: A web-based graphical user interface (UI) for viewing all the feature store objects and their relationships with each other.
 
 Feature Store provides the following software capabilities:
 
 * A Python SDK for programmatically defining features and data sources
 * A Python SDK for reading and writing features to offline and online data stores
 * An optional feature server for reading and writing features (useful for non-python languages) by using APIs
-* A web-based graphical user interface (UI) for viewing and exploring information about features defined in the project
+* A web-based UI for viewing and exploring information about features defined in the project
 * A command line interface (CLI) for viewing and updating feature information
 
 == Audience for Feature Store
 
-The audience for Feature Store is ML platform/MLOps teams with DevOps experience in productionizing real-time models. Feature Store also helps these teams build a feature platform that improves collaboration between data engineers, software engineers, machine learning engineers, and data scientists.
+The target audience for Feature Store is ML platform and MLOps teams with DevOps experience in deploying real-time models to production. Feature Store also helps these teams build a feature platform that improves collaboration between data engineers, software engineers, machine learning engineers, and data scientists.
 
 For Data Scientists:: Feature Store is a tool where you can define, store, and retrieve your features for both model development and model deployment. By using Feature Store, you can focus on what you do best: build features that power your AI/ML models and maximize the value of your data.
 
-For MLOps Engineers:: Feature Store is a library that connects your existing infrastructure, such as online database, application server, microservice, analytical database, and orchestration tooling. By using Feature Store , you can focus on maintaining a resilient system, instead of implementing features for data scientists.
+For MLOps Engineers:: Feature Store is a library that connects your existing infrastructure, such as online database, application server, microservice, analytical database, and orchestration tooling. By using Feature Store, you can focus on maintaining a resilient system, instead of implementing features for data scientists.
 
-For Data Engineers:: Feature Store provides a centralized catalog for storing feature definitions, allowing you to maintain a single source of truth for feature data. It provides the abstraction for reading and writing to many different types of offline and online data stores. Using either the provided Python SDK or the feature server service, you can write data to the online and/or offline stores and then read that data out again in either low-latency online scenarios for model inference, or in batch scenarios for model training.
+For Data Engineers:: Feature Store provides a centralized catalog for storing feature definitions, allowing you to maintain a single source of truth for feature data. It provides the abstraction for reading and writing to many different types of offline and online data stores. Using the provided Python SDK or the feature server service, you can write data to the online and offline stores and then read that data out again in either batch scenarios for model training or low-latency online scenarios for model inference.
 
 For AI Engineers:: Feature Store provides a platform designed to scale your AI applications by enabling seamless integration of richer data and facilitating fine-tuning. With Feature Store, you can optimize the performance of your AI models while ensuring a scalable and efficient data pipeline.
