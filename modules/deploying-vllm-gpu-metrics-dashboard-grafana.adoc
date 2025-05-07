@@ -1,0 +1,61 @@
+:_module-type: PROCEDURE
+
+[id="deploying-vllm-gpu-metrics-dashboard-grafana_{context}"]
+= Deploying a vLLM/GPU metrics dashboard on a Grafana instance
+
+[role='_abstract']
+Deploy Grafana boards to monitor accelerator and vLLM performance metrics.
+
+.Prerequisites
+ifdef::upstream[]
+* You have deployed a Grafana metrics dashboard, as described in link:{odhdocshome}/serving-models/Deploying-a-grafana-metrics-dashboard[Deploying a Grafana metrics dashboard].
+endif::[]
+ifndef::upstream[]
+* You have deployed a Grafana metrics dashboard, as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#Deploying-a-grafana-metrics-dashboard_serving-large-models[Deploying a Grafana metrics dashboard].
+endif::[]
+
+* You can access a Grafana instance. 
+* You have installed `envsubst`, a command-line tool used to substitute environment variables in configuration files. For more information, see the link:https://www.gnu.org/software/gettext/[GNU gettext documentation].
+
+.Procedure
+
+. Define a `GrafanaDashboard` object in a YAML file, similar to the following example
+// TBA
+
+. Create an `inputs.env` file similar to the following example. Replace the `NAMESPACE` and `MODEL_NAME` parameters with your own values:
++
+[source]
+----
+NAMESPACE=<namespace> <1>
+MODEL_NAME=<model-name> <2>
+----
+<1> **NAMESPACE** is the target namespace where the model will be deployed.
+<2> **MODEL_NAME** is the model name as defined in your InferenceService. The model name is also used to filter the pod name in the Grafana dashboard.
+
+. Replace the `NAMESPACE` and `MODEL_NAME` parameters in your YAML file with the values from the `input.env` file by performing the following actions:
+
+.. Export the parameters described in the `inputs.env` as environment variables:
++
+[source]
+----
+export $(cat inputs.env | xargs)
+----
+.. Replace the  ‘$NAMESPACE’ and ‘${MODEL_NAME)’variables in the YAML file with the values of the exported environment variables:
++
+[source]
+----
+envsubst '${NAMESPACE} ${MODEL_NAME}' < nvidia-vllm-dashboard.yaml > nvidia-vllm-dashboard-replaced.yaml
+----
+
+. Confirm that your YAML file contains updated values.
+
+. Deploy the dashboard object:
++
+[source]
+----
+oc create -f nvidia-vllm-dashboard-replaced.yaml
+----
+
+.Verification
+
+You can see the accelerator and vLLM metrics dashboard on your Grafana instance.
