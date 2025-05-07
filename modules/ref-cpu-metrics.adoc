@@ -13,7 +13,7 @@ Tracks CPU usage to identify workloads that are CPU-bound.
 _Query_
 [source,bash]
 ----
-sum(rate(container_cpu_usage_seconds_total{namespace="granite", pod=~"granite.*"}[5m])) by (namespace)
+sum(rate(container_cpu_usage_seconds_total{namespace="$namespace", pod=~"granite.*"}[5m])) by (namespace)
 ----
 --
 
