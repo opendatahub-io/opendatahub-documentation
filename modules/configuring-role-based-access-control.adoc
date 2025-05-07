@@ -1,0 +1,29 @@
+:_module-type: CONCEPT
+
+[id="configuring-role-based-access-control_{context}"]
+= Configuring role-based access control
+
+[role='_abstract']
+Role-Based Access Control (RBAC) is a security mechanism that restricts access to resources based on the roles of individual users within an organization. Feature Store RBAC ensures that only authorized users or groups can access or modify specific resources, thereby maintaining data security and operational integrity.
+
+The RBAC implementation in Feature Store is designed to provide the following capabilities:
+
+* *Assign Permissions* - Allow administrators to assign permissions for various operations and resources to users or groups based on their roles.
+
+* *Seamless Integration* - Integrate smoothly with existing business code without requiring significant modifications.
+Backward Compatibility: Maintain support for non-authorized models as the default to ensure backward compatibility.
+
+Feature Store RBAC provides the following benefits:
+
+* *Feature sharing* - Enable multiple teams to share the feature store while ensuring controlled access. This capability allows for collaborative work without compromising data security.
+* *Access Control Management* - Prevent unauthorized access to team-specific resources and spaces, governing the operations that each user or group can perform.
+
+The Feature Store permissions model allows you to configure granular permission policies to all the resources defined in a feature store.
+
+The permission authorization enforcement is performed when requests are executed through one of the Feature Store (Python) servers:
+
+* The online feature server (REST)
+* The offline feature server (Apache Arrow Flight) The Offline feature server is an Apache Arrow Flight Server that uses the gRPC communication protocol to exchange data. This server wraps calls to existing offline store implementations and exposes interfaces as Arrow Flight endpoints.
+* The registry server (gRPC)
+
+NOTE: If you configure the feature store with a local provider (the default), there is no permission enforcement when accessing the Feature Store API.

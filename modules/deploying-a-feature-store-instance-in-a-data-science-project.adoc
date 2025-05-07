@@ -1,0 +1,123 @@
+:_module-type: PROCEDURE
+
+[id="deploying-a-feature-store-instance-in-a-data-science-project_{context}"]
+= Deploying a feature store instance in a data science project
+
+[role='_abstract']
+You can add an instance of Feature Store to a data science project by creating a custom resource definition (CRD) in the OpenShift console.
+
+The following example shows the minimum requirements for a Feature Store CRD YAML file:
++
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+apiVersion: feast.dev/v1alpha1
+kind: FeatureStore
+metadata:
+  name: sample
+spec:
+  feastProject: my_feast_project
+----
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have enabled the Feature Store component, as described in link:[Enabling the Feature Store component].
+
+* You have created a data science project, as described in link:[Creating a data science project]. In the following procedure, `my_ds_project` is the name of the data science project.
+
+.Procedure
+
+. In the OpenShift console, click the *Quick Create* (image:images/quick-create-icon.png[]) icon and then click the *Import YAML* option.
+
+. Verify that your data science project is the selected project.
+
+. Copy the following code and paste it into the YAML editor:
++
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+apiVersion: feast.dev/v1alpha1
+kind: FeatureStore
+metadata:
+  name: sample 
+spec:
+  feastProject: my_feast_project 
+----
+
+. Optionally, change the `metadata.name` for the feature store instance.
+. Optionally, edit the name of the feature project that you want to use for organizing your Feature Store code.
+. Click *Create*.
+
+When you create the Feature Store CRD file in OpenShift, Feature Store starts a remote online feature server, and configures a default registry and an offline store with the local provider. 
+
+A _provider_ is a customizable interface that provides default Feature Store components, such as the registry, offline store, and online store, that target a specific environment, ensuring that these components can work together seamlessly. The local provider uses the following default settings:
+
+* Registry: A SQL registry or local file
+* Offline store:  A Parquet file
+* Online store: SQLite
+
+.Verification
+Follow these steps to verify that you added Feature Store to your data science project:
+
+. In the {openshift-platform} console, select *Workloads* -> *Pods*.
+. Make sure that your data science project (for example, my_ds_project) is selected.
+. Click the feast pod and then select Pod details. 
+. Scroll down to see the online container. This container is the deployment for the online server. It makes the feature server REST API available in the OpenShift cluster.
+. Scroll up and then click Terminal.
+. In the Terminal window, enter the following commands.
+. To view the files for the feature store project, enter the following command:
++
+----
+$ ls -la
+----
+
+. You should see output similar to the following:
++
+[.lines_space]
+[.console-output]
+[source, yaml]
+----
+.
+..
+data
+example_repo.py
+feature_store.yaml
+__init__.py
+__pycache__
+test_workflow.py
+----
+
+. To view the `feature_store.yaml`` configuration file, enter the following command:
++
+----
+$ cat feature_store.yaml
+----
++
+You should see output similar to the following:
++
+[.lines_space]
+[.console-output]
+[source, yaml]
+----
+project: my_feast_project
+provider: local
+online_store:
+	path: /feast-data/online_store.db
+	type: sqlite
+registry:
+	path: /feast-data/registry.db
+	registry_type: file
+auth:
+	type: no_auth
+entity_key_serialization_version: 3
+----
++
+*NOTE:* Although the offline_store service is not shown in the `feature_store.yaml` file, the feature store instance uses a DASK file-based store and although the registry type is `file`, it uses a simple SQL lite database.
+
+.Next steps
+
+If you want to customize the default configurations for the offline store, online store, or registry, you can edit the YAML configuration for the Feature Store CRD, as described in link:[Customizing your feature store configuration].

@@ -1,0 +1,93 @@
+:_module-type: PROCEDURE
+
+[id="viewing-feature-store-objects-in-the-web-based-ui_{context}"]
+= Viewing feature store objects in the web-based UI
+
+[role='_abstract']
+You can use the Feature Store Web UI to view all registered features, data sources, entities, and feature services.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You have installed the Kubernetes Command line tool (kubectl). See https://kubernetes.io/docs/reference/kubectl[Command line tool (kubectl)^].
+
+* You have enabled the Feature Store component, as described in Enabling the Feature Store component.
+
+.Procedure
+
+. In the OpenShift console, click the *Quick Create* (image:images/quick-create-icon.png[]) icon and then click the *Import YAML* option.
+. Verify that your data science project is the selected project.
+. Copy the following code and paste it into the YAML editor:  
++
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+apiVersion: feast.dev/v1alpha1
+kind: FeatureStore
+metadata:
+  name: sample 
+spec:
+  feastProject: my_project 
+  services: 
+	ui: {}  # <1>
+----
+<1> Specifies to create a Web UI for the feature store instance.
+
+. Click *Create*.
++
+The Feature Store operator starts a container for the web-based Feature Store UI and creates an OpenShift route that provides the URL so that you can access it. 
+
+. In the {openshift-platform} console, select *Workloads* -> *Pods*.
+. Make sure that your project (for example, `my_ds_project`) is selected.
++
+You should see a deployment for the web-based UI. Note that OpenShift enables TLS by default at runtime.
+
+. To populate the web-based UI with the objects in your feature store, create an OpenShift Cron Job:
+.. Open a terminal window.
+.. If you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in as shown in the following example:
++
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+.. Make sure that you are using the data science project in which you enabled Feature Store, for example, `my_ds_project`.
++
+----
+$ oc project my_ds_project
+----
+
+.. Create a cron job by running a command with the following syntax:
++
+----
+$ kubectl create job --from=cronjob/feast-<FeatureStore CR name> feast-apply
+----
++
+For example, if the metadata.name in the Feature Store CRD is sample, run the following command: 
++
+----
+$ kubectl create job --from=cronjob/feast-sample feast-apply
+----
+
+.. Run the following commands:
++
+----
+$ kubectl wait --for=condition=complete job/feast-apply
+
+$ kubectl logs job/feast-apply --all-containers=true
+----
+
+. To find the URL for the Feature Store UI, in the OpenShif console, click *Networking* -> *Routes*. 
++
+In the row for the Feature Store UI, for example `feast-sample-ui`, the URL is in the *Location* column. 
+
+. Click the URL link to open it in your default web browser.
+
+
+.Verification
+
+The Feature Store Web UI appears and shows the feature objects in your project as shown in Figure 2:
+
+.The Feature Store Web UI
+image::images/feature-store-ui.png[The Feature Store Web UI]

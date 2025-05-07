@@ -1,0 +1,39 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="customizing-your-feature-store-configuration_{context}"]
+= Customizing your feature store configuration
+
+[role='_abstract']
+Optionally, you can apply the following configurations to your feature store instance:
+
+* Specify to use an existing feature project in a git repository
+* Configure an offline store
+* Configure an online store
+* Configure the feature registry
+* Configure PVCs 
+* Configure role-based access control
+
+The examples in the following sections describe how to customize a feature store instance by creating a new custom resource definition (CRD). Alternatively, you can customize an existing feature instance as described in link:[Editing an existing feature store instance].
+
+include::modules/specifying-to-use-a-feature-project-from-git-repository.adoc[leveloffset=+1]
+
+include::modules/configuring-an-offline-store.adoc[leveloffset=+1]
+
+include::modules/configuring-an-online-store.adoc[leveloffset=+1]
+
+include::modules/configuring-the-feature-registry.adoc[leveloffset=+1]
+
+include::modules/ref-example-PVC-configuration.adoc[leveloffset=+1]
+
+include::modules/configuring-role-based-access-control.adoc[leveloffset=+1]
+
+include::modules/ref-default-authorization-configuration.adoc[leveloffset=+2]
+include::modules/ref-example-oidc-authorization-configuration.adoc[leveloffset=+2]
+include::modules/ref-example-kubernetes-authorization-configuration.adoc[leveloffset=+2]
+
+include::modules/editing-an-existing-feature-store-instance.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

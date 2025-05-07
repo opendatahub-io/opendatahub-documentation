@@ -48,7 +48,6 @@ Figure 1 shows where Feature Store fits in the ML workflow. In an ML workflow, f
 .Feature Store in the ML workflow
 image::images/feature-store-workflow.png[In the ML workflow, Feature Store fits between the data and features]
 
-
 Feature Store is a machine learning data system that provides the following capabilities:
 
 * Runs data pipelines that transform raw data into feature values
@@ -82,7 +81,11 @@ Offline Store:: The data store that contains historical data for scale-out batch
 
 Online Store:: The data store that is used for low-latency feature retrieval. The online store is used for real-time inference. Examples of online stores include Redis, GCP Datastore, and DynamoDB.
 
-Server:: A feature server that serves pre-computed features online.
+Server:: A feature server that serves pre-computed features online. There are three Feature Store servers:
+
+* *The online feature server* - A Python feature server that is an HTTP endpoint that serves features with JSON I/O. You can write and read features from the online store using any programming language that can make HTTP requests.
+* *The offline feature server* - An Apache Arrow Flight Server that uses the gRPC communication protocol to exchange data. This server wraps calls to existing offline store implementations and exposes interfaces as Arrow Flight endpoints.
+* *The registry server* - A server that uses the gRPC communication protocol to exchange data. You can communicate with the server using any programming language that can make gRPC requests.
 
 UI:: A web-based graphical user interface (UI) for viewing all the feature store objects and their relationships with each other.
 

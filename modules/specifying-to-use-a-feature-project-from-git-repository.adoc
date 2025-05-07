@@ -1,0 +1,55 @@
+:_module-type: PROCEDURE
+
+[id="specifying-to-use-a-feature-project-from-git-repository_{context}"]
+= Specifying to use a feature project from git repository
+
+[role='_abstract']
+If you want to start with a pre-existing feature project that exists in a git repository, create a feature store instance that includes a reference to the feature project location in the git repository.
+
+NOTE: The example code in the following procedure requires that you edit it with values that are specific to your use case.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have enabled the Feature Store component, as described in link:[Enabling the Feature Store component].
+
+* You have created a data science project, as described in link:[Creating a data science project]. In the following procedure, `my_ds_project` is the name of the data science project.
+
+* You have an existing feature store project in an existing git repository.
+
+.Procedure
+
+. In the OpenShift console, click the *Quick Create* (image:images/quick-create-icon.png[]) icon and then click the *Import YAML* option.
+. Verify that your data science project is the selected project.
+. Copy the following example code and paste it into the YAML editor: 
++
+[source,yaml]
+----   
+apiVersion: feast.dev/v1alpha1
+kind: FeatureStore
+metadata:
+  name: sample-git-repopath
+spec:
+  feastProject: feast_demo_odfv
+  feastProjectDir:
+	git:
+  	url: https://github.com/feast-dev/feast-workshop # <1>
+  	ref: e959053    # <2>
+  	featureRepoPath: module_2/feature_repo  # <3>
+----
+<1> The URL for the git repository
+<2> The git commit ID or branch
+<3> The path to the feature store repository that you want to use
+
+. Edit the git repository URL, the reference (commit ID or branch), and the path to specify values that are specific to your use case.
+
+. Click *Create*.
+
+.Verification
+
+. In the {openshift-platform} console, select *Workloads* -> *Pods*.
+. Make sure that your project (for example, `my_ds_project`) is selected.
+. Find the pod that has the `feast-` prefix, followed by the metadata name that you specified in the CRD configuration, for example, `feast-sample-git-repopath`.
+. Verify that the status is *Running*.
+

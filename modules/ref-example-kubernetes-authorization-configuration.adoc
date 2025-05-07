@@ -1,0 +1,29 @@
+:_module-type: REFERENCE
+
+[id="ref-example-kubernetes-authorization-configuration_{context}"]
+= Example Kubernetes Authorization configuration
+
+The following example shows a Kubernetes authorization configuration in the Feature Store custom resource definition (CRD):
+
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+apiVersion: feast.dev/v1alpha1
+kind: FeatureStore
+metadata:
+  name: sample-kubernetes-auth
+spec:
+  feastProject: feast_rbac
+  authz:
+	kubernetes:
+  	roles:
+      - feast-writer
+      - feast-reader
+----
+NOTE: The example code requires that you edit it with values that are specific to your use case.
+
+For more information, see link:https://docs.feast.dev/getting-started/components/authz_manager#kubernetes-rbac-authorization[Kubernetes RBAC configuration^] in the Feast documentation.
+
+For an example of how to implement Kubernetes RBAC Authorization see link:https://github.com/feast-dev/feast/tree/v0.49.0/examples/operator-rbac[Running the Feast RBAC example on Kubernetes using the Feast Operator^].
+

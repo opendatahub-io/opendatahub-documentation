@@ -1,0 +1,38 @@
+:_module-type: REFERENCE
+
+[id="ref-example-oidc-authorization-configuration_{context}"]
+= Example OIDC Authorization configuration
+
+The following example shows an OIDC authorization configuration in the Feature Store custom resource definition (CRD):
+
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+apiVersion: feast.dev/v1alpha1
+kind: FeatureStore
+metadata:
+  name: sample-oidc-auth
+spec:
+  feastProject: my_project
+  authz:
+    oidc:
+  	  secretRef:
+    	  name: oidc-secret
+
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: oidc-secret
+stringData:
+  client_id: client_id
+  auth_discovery_url: auth_discovery_url
+  client_secret: client_secret
+  username: username
+  password: password
+----
+
+NOTE: This example code requires that you edit it with values that are specific to your use case.
+
+For more information, see link:https://docs.feast.dev/getting-started/components/authz_manager#oidc-authorization[OIDC configuration^] in the Feast documentation.
