@@ -8,7 +8,7 @@ Deploy Grafana boards to monitor accelerator and vLLM performance metrics.
 
 .Prerequisites
 ifdef::upstream[]
-* You have deployed a Grafana metrics dashboard, as described in link:{odhdocshome}/serving-models/Deploying-a-grafana-metrics-dashboard[Deploying a Grafana metrics dashboard].
+* You have deployed a Grafana metrics dashboard, as described in link:{odhdocshome}/serving-models/#Deploying-a-grafana-metrics-dashboard[Deploying a Grafana metrics dashboard].
 endif::[]
 ifndef::upstream[]
 * You have deployed a Grafana metrics dashboard, as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#Deploying-a-grafana-metrics-dashboard_serving-large-models[Deploying a Grafana metrics dashboard].
@@ -19,8 +19,9 @@ endif::[]
 
 .Procedure
 
-. Define a `GrafanaDashboard` object in a YAML file, similar to the following example
-// TBA
+. Define a `GrafanaDashboard` object in a YAML file, similar to the following examples.
+.. To monitor accelerator metrics, see link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app/nvidia-vllm-dashboard.yaml[`nvidia-vllm-dashboard.yaml`].
+.. To monitor vLLM metrics, see link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app/grafana-vllm-dashboard.yaml[`grafana-vllm-dashboard.yaml`].
 
 . Create an `inputs.env` file similar to the following example. Replace the `NAMESPACE` and `MODEL_NAME` parameters with your own values:
 +
