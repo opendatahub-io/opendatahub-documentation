@@ -1,0 +1,52 @@
+:_module-type: PROCEDURE
+
+[id="enabling-the-feature-store-component_{context}"]
+= Enabling the Feature Store component
+
+[role='_abstract']
+To allow the data scientists in your organization to work with machine learning features, you must enable the Feature Store component in {productname-long}.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have installed {productname-short}.
+
+.Procedure
+
+. In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
+. Click the *{productname-long}* Operator.
+. Click the *Data Science Cluster* tab.
+. Click the default instance name (for example, *default-dsc*) to open the instance details page.
+. Click the *YAML* tab.
+. Edit the `spec:components` section. For the `feastoperator` component set the `managementState` field to `Managed`:
++
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+spec:
+  components:
+    feastoperator:
+      managementState: Managed
+----
+
+. Click *Save*.
+
+.Verification
+
+Check the status of the feast-operator pod:
+
+. Click *Workloads* -> *Deployments*.
+. From the *Project* list, select *redhat-ods-applications*.
+. Search for the *feast-operator-controller-manager* deployment.
+. Click the *feast-operator-controller-manager* deployment name to open the deployment details page.
+. Click the *Pods* tab.
+. View the pod status.
+
+When the status of the `feast-operator-controller-manager-<pod-id>` pod is *Running*, Feature Store is enabled.
+
+.Next Step
+
+* Deploy a feature store instance in a data science project.
+

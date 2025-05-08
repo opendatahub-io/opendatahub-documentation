@@ -1,0 +1,26 @@
+:_module-type: PROCEDURE
+
+[id="editing-an-existing-feature-store-instance_{context}"]
+= Editing an existing feature store instance
+
+[role='_abstract']
+The examples in this document describe how to customize a feature store instance by creating a new custom resource definition (CRD). Alternatively, you can customize an existing feature instance.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have created a feature store instance, as described in _Deploying a feature store instance in a data science project_.
+
+.Procedure
+
+. In the OpenShift console, select *Administration* -> *CustomResourceDefinitions*.
+. To filter the list, in the *Search by Name* field, enter *feature*.
+. Click the *FeatureStore* CRD and then click *Instances*.
+. Select the instance that you want to edit, and then click *YAML*.
+. In the YAML editor, edit the configuration.
+. Click *Save* and then click *Reload*.
+
+.Verification
+
+The feature store instance CRD deploys successfully.

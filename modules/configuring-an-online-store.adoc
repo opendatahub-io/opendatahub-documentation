@@ -1,0 +1,66 @@
+:_module-type: PROCEDURE
+
+[id="configuring-an-online-store_{context}"]
+= Configuring an online store
+
+[role='_abstract']
+When you create a feature instance using the minimal configuration, by default, the online store is a SQLite database.
+
+The example in the following procedure shows how to configure a PostgreSQL database for the online store.
+
+You can configure other online stores, such as Snowflake, Redis, and DynamoDB, as detailed in the link:https://docs.feast.dev/v0.49-branch/reference/online-stores[Feast reference documentation for online stores^].
+
+NOTE: The example code in the following procedure requires that you edit it with values that are specific to your use case.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have enabled the Feature Store component, as described in _Enabling the Feature Store component_.
+
+ifndef::upstream[]
+* You have created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project]. In the following procedure, `my-ds-project` is the name of the data science project.
+endif::[]
+
+ifdef::upstream[]
+* You have created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project]. In the following procedure, `my-ds-project` is the name of the data science project.
+endif::[]
+
+* Your data science project includes an existing secret that provides credentials for accessing the database that you want to use for the online store. The example in the following procedure requires that you have configured a PostgreSQL database.
+
+.Procedure
+
+. In the OpenShift console, click the *Quick Create* (image:images/quick-create-icon.png[]) icon and then click the *Import YAML* option.
+. Verify that your data science project is the selected project.
+. Copy the following code and paste it into the YAML editor:  
++
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+apiVersion: feast.dev/v1alpha1
+kind: FeatureStore
+metadata:
+  name: sample-db-persistence
+spec:
+  feastProject: my_project
+  services: 
+    onlineStore:
+      persistence:
+        store:
+          type: postgres
+          secretRef:
+            name: feast-data-stores
+----
+
+. Edit the `services.onlineStore` section to specify values that are specific to your use case.
+
+. Click *Create*.
+
+.Verification
+
+. In the {openshift-platform} console, select *Workloads* -> *Pods*.
+. Make sure that your project (for example, `my-ds-project`) is selected.
+. Find the pod that has the `feast-` prefix, followed by the metadata name that you specified in the CRD configuration, for example, `feast-sample-db-persistence`.
+. Verify that the status is *Running*.
+

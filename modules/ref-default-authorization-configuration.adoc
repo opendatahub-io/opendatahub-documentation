@@ -1,0 +1,20 @@
+:_module-type: REFERENCE
+
+[id="ref-default-authorization-configuration_{context}"]
+= Default authorization configuration
+
+The default configuration is that no permission enforcement is applied. The following example Feature Store does not include a `spec.authz` section, which indicates no authorization.
+
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+apiVersion: feast.dev/v1alpha1
+kind: FeatureStore
+metadata:
+  name: sample-no-auth
+spec:
+  feastProject: my_project
+----
+
+Optionally, you can configure either OIDC and Kubernetes RBAC authorization protocols.
