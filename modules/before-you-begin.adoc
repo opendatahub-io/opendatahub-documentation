@@ -4,12 +4,12 @@
 = Before you begin
 
 [role='_abstract']
-Before you implement Feature Store in your machine learning workflow, you need the following resources or information:
+Before you implement Feature Store in your machine learning workflow, you must have the following information:
 
 Knowledge of your data and use case::
-You need knowledge of your use case and your raw underlying data so that you can identify the properties or attributes that you want to define as features. For example, if you are developing ML models that detect possible credit card fraud transactions, you would identify data such as purchase history, transaction location, transaction frequency, or credit limit. 
+You must know your use case and your raw underlying data so that you can identify the properties or attributes that you want to define as features. For example, if you are developing ML models that detect possible credit card fraud transactions, you would identify data such as purchase history, transaction location, transaction frequency, or credit limit. 
 +
-With Feature Store, you define each of those attributes as a feature. You group the semantically-related features (features that share a conceptual link or relationship) together to define an entity. You define entities to map to the domain of your use case. Not all features need to be in an entity.
+With Feature Store, you define each of those attributes as a feature. You group the semantically-related features (features that share a conceptual link or relationship) together to define an entity. You define entities to map to the domain of your use case. Not all features must be in an entity.
 
 Knowledge of your data source::
 You must know the source of the raw data that you want to use in your ML workflow. When you configure the Feature Store online and offline stores and the feature registry, you must specify an environment that is compatible with the data source. Also, when you define features, you must specify the data source for the features.
@@ -22,7 +22,7 @@ Batch data source::
 A method of collecting and processing data in discrete chunks or batches, rather than continuously streaming it. This approach is commonly used for large datasets or when real-time processing is not essential. In a data processing context, a batch data source defines the connection to the data-at-rest source, allowing you to access and process data in batches. Examples of batch data sources include data warehouses (for example, BigQuery, Snowflake, and Redshift) or data lakes (for example, S3 and GCS). Typically, you define a batch data source when you configure the Feature Store offline store.
 
 Stream data source::
-The origin of data that is continuously flowing or emitted for online, real-time processing. Although Feature Store does not have native streaming integrations, it facilitates push sources that allow you to push features into Feature Store and make it available for training / batch scoring ("offline"), for realtime feature serving ("online") or both. Typically, you define a stream data source when you configure the Feature Store online store.
+The origin of data that is continuously flowing or emitted for online, real-time processing. Although Feature Store does not have native streaming integrations, it facilitates push sources that allow you to push features into Feature Store and make it available for training or batch scoring (offline), for real-time feature serving (online), or for both. Typically, you define a stream data source when you configure the Feature Store online store.
 
 You can use the following data sources with Feature Store:
 
