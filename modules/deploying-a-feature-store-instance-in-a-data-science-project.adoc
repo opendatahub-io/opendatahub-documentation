@@ -7,7 +7,7 @@
 You can add an instance of Feature Store to a data science project by creating a custom resource definition (CRD) in the OpenShift console.
 
 The following example shows the minimum requirements for a Feature Store CRD YAML file:
-+
+
 [.lines_space]
 [.console-input]
 [source, yaml]
@@ -24,9 +24,16 @@ spec:
 
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 
-* You have enabled the Feature Store component, as described in link:[Enabling the Feature Store component].
+* You have enabled the Feature Store component, as described in _Enabling the Feature Store component_.
 
-* You have created a data science project, as described in link:[Creating a data science project]. In the following procedure, `my_ds_project` is the name of the data science project.
+
+ifndef::upstream[]
+* You have created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project]. In the following procedure, `my-ds-project` is the name of the data science project.
+endif::[]
+
+ifdef::upstream[]
+* You have created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project]. In the following procedure, `my-ds-project` is the name of the data science project.
+endif::[]
 
 .Procedure
 
@@ -64,7 +71,7 @@ A _provider_ is a customizable interface that provides default Feature Store com
 Follow these steps to verify that you added Feature Store to your data science project:
 
 . In the {openshift-platform} console, select *Workloads* -> *Pods*.
-. Make sure that your data science project (for example, my_ds_project) is selected.
+. Make sure that your data science project (for example, my-ds-project) is selected.
 . Click the feast pod and then select Pod details. 
 . Scroll down to see the online container. This container is the deployment for the online server. It makes the feature server REST API available in the OpenShift cluster.
 . Scroll up and then click Terminal.
@@ -91,7 +98,7 @@ __pycache__
 test_workflow.py
 ----
 
-. To view the `feature_store.yaml`` configuration file, enter the following command:
+. To view the `feature_store.yaml` configuration file, enter the following command:
 +
 ----
 $ cat feature_store.yaml
@@ -120,4 +127,4 @@ entity_key_serialization_version: 3
 
 .Next steps
 
-If you want to customize the default configurations for the offline store, online store, or registry, you can edit the YAML configuration for the Feature Store CRD, as described in link:[Customizing your feature store configuration].
+If you want to customize the default configurations for the offline store, online store, or registry, you can edit the YAML configuration for the Feature Store CRD, as described in _Customizing your feature store configuration_.

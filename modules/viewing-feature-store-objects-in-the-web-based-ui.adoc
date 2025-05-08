@@ -27,11 +27,11 @@ You can use the Feature Store Web UI to view all registered features, data sourc
 apiVersion: feast.dev/v1alpha1
 kind: FeatureStore
 metadata:
-  name: sample 
+  name: sample
 spec:
-  feastProject: my_project 
-  services: 
-	ui: {}  # <1>
+  feastProject: my_project
+  services:
+	  ui: {}  # <1>
 ----
 <1> Specifies to create a Web UI for the feature store instance.
 
@@ -40,7 +40,7 @@ spec:
 The Feature Store operator starts a container for the web-based Feature Store UI and creates an OpenShift route that provides the URL so that you can access it. 
 
 . In the {openshift-platform} console, select *Workloads* -> *Pods*.
-. Make sure that your project (for example, `my_ds_project`) is selected.
+. Make sure that your project (for example, `my-ds-project`) is selected.
 +
 You should see a deployment for the web-based UI. Note that OpenShift enables TLS by default at runtime.
 
@@ -52,10 +52,10 @@ You should see a deployment for the web-based UI. Note that OpenShift enables TL
 $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
 
-.. Make sure that you are using the data science project in which you enabled Feature Store, for example, `my_ds_project`.
+.. Make sure that you are using the data science project in which you enabled Feature Store, for example, `my-ds-project`.
 +
 ----
-$ oc project my_ds_project
+$ oc project my-ds-project
 ----
 
 .. Create a cron job by running a command with the following syntax:
@@ -78,7 +78,7 @@ $ kubectl wait --for=condition=complete job/feast-apply
 $ kubectl logs job/feast-apply --all-containers=true
 ----
 
-. To find the URL for the Feature Store UI, in the OpenShif console, click *Networking* -> *Routes*. 
+. To find the URL for the Feature Store UI, in the OpenShift console, click *Networking* -> *Routes*. 
 +
 In the row for the Feature Store UI, for example `feast-sample-ui`, the URL is in the *Location* column. 
 
