@@ -45,6 +45,18 @@ The *Deploy model* dialog opens.
 .. In the *Number of model server replicas to deploy* field, specify a value.
 .. From the *Model server size* list, select a value.
 . From the *Hardware profile* list, select a hardware profile.
++
+[IMPORTANT]
+====
+By default, hardware profiles are hidden from appearing in the dashboard navigation menu and user interface. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}/html/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[]
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/managing-odh/#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[] 
+====
+
 . Optional: Click *Customize resource requests and limit* and update the following values:
 .. In the *CPUs requests* field, specify the number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
 .. In the *CPU limits* field, specify the maximum number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
