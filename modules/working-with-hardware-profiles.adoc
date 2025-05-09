@@ -4,18 +4,27 @@
 = Working with hardware profiles
 
 [role='_abstract']
-ifndef::upsream[]
+ifndef::upstream[]
 [IMPORTANT]
 ====
 Hardware profiles are currently available in {productname-long} as a Technology Preview feature only. Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete. {org-name} does not recommend using them in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
 
 For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview[Technology Preview Features Support Scope]
-
-By default, this feature is hidden from appearing in the dashboard navigation menu. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and other user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. For more information, see link:{rhoaidocshome}/html/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
 ====
 endif::[]
 
 In {productname-long}, you can schedule user workloads on worker nodes that have specific hardware configurations, such as hardware accelerators, CPU-only nodes, or specialized memory allocations. With hardware profiles, you can define these hardware resources explicitly, enabling precise targeting of workloads to specific nodes and improving resource management efficiency.
+
+[IMPORTANT]
+====
+By default, this feature is hidden from appearing in the dashboard navigation menu. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and other user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}.
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}/html/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[]
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/managing-odh/#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[]
+====
 
 You can use hardware profiles to create profiles with hardware identifiers, explicit resource allocation limits (CPU, memory, and accelerators), tolerations, and node selectors. These capabilities are particularly beneficial in environments with heterogeneous hardware, including multiple GPU types, CPU-only configurations, memory-intensive workloads, or even single-node deployments. This targeted scheduling significantly enhances resource utilization, reduces overhead, and optimizes costs, especially in complex environments, such as clusters with diverse hardware.
 
