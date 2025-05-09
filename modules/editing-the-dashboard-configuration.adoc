@@ -20,8 +20,17 @@ As an administrator, you can customize the interface of the dashboard by editing
 . Click the *YAML* tab. 
 . Edit the values of the options that you want to change.
 +
-For example, to show or hide a menu option in the dashboard navigation menu, update the `spec.dashboardConfig` section to edit the relevant dashboard configuration option. 
-If the relevant dashboard configuration option is not included in the default CR, add the entry.
+For example, to show or hide a menu item in the dashboard navigation menu, update the `spec.dashboardConfig` section to edit the relevant dashboard configuration option. 
++
+[NOTE]
+====
+If a dashboard configuration option is not included in the `OdhDashboardConfig` CR, the default value is used.
+
+To change the default behavior for such options, edit the `OdhDashboardConfig` CR to add the missing entry to the `spec.dashboardConfig` section, and set the preferred value:
+
+* To show the feature, set the value to `false`
+* To hide the feature, set the value to `true`
+====
 +
 ifndef::upstream[]
 For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
