@@ -30,12 +30,13 @@ Advanced deployment mode does not require this additional setup.
 . Update the KServe ConfigMap (`inferenceservice-config`) in the {productname-short} UI:
 .. From the OpenShift console, click *Workloads* → *ConfigMaps*.
 ifdef::upstream[]
-.. Select the `opendatahub-ods-applications` namespace.
+.. From the project drop-down list, select the `opendatahub-ods-applications` namespace.
 endif::[]
 ifndef::upstream[]
-.. Select the `redhat-ods-applications` namespace.
+.. From the project drop-down list, select the `redhat-ods-applications` namespace.
 endif::[]
-.. Find and edit the `inferenceservice-config` ConfigMap.
+.. Find the `inferenceservice-config` ConfigMap. 
+.. Click the options menu (&#8942;) for that ConfigMap, and then click *Edit ConfigMap*.
 .. Add the following parameters to the logger key:
 +
 [source,json]
@@ -45,7 +46,11 @@ endif::[]
  "tlsSkipVerify": false
 ----
 +
-. Use the following code to create a ConfigMap in your model's namespace to hold the CA certificate:
+.. Click *Save*.
+
+. Create a ConfigMap in your model's namespace to hold the CA certificate:
+.. Click *Create Config Map*.
+..  Enter the following code in the created ConfigMap:
 +
 [source,json]
 ----   
@@ -59,7 +64,7 @@ endif::[]
    data: {}
 ----
 +
-. Deploy the model and the TrustyAI service. 
+. Click *Save*.
 
 [NOTE]
 --
