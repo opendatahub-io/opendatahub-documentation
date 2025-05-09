@@ -1,0 +1,68 @@
+:_module-type: PROCEDURE
+
+[id='assemblies/modules/enabling-trustyai-kserve-integration{context}']
+= Enabling TrustyAI Integration with KServe RawDeployment
+
+[role='_abstract']
+TrustyAI can be used with KServe Serverless and KServe RawDeployment. 
+
+To integrate KServe RawDeployment models with the TrustyAI service, you must first update the KServe ConfigMap, then create another ConfigMap in your model's namespace to hold the Certificate Authority (CA) certificate. 
+
+[NOTE]
+--
+KServe Serverless does not require this additional setup. 
+--
+
+.Prerequisites
+* You have cluster administrator privileges for your {productname-short} cluster.
+* You have access to the data science cluster.
+* You have installed {productname-long}.
+
+.Procedure
+. Update the KServe ConfigMap (`inferenceservice-config`) in the {productname-short} UI:
+.. Go to the OpenShift console and click *Workloads* → *ConfigMaps*
+ifdef::upstream[]
+.. Select the `opendatahub-ods-applications` namespace
+endif::[]
+ifndef::upstream[]
+.. Select the `redhat-ods-applications` namespace
+endif::[]
+.. Find and edit the `inferenceservice-config` ConfigMap
+.. Add the following to the logger key:
++
+[source,json]
+----
+ "caBundle": "kserve-logger-ca-bundle",
+ "caCertFile": "service-ca.crt",
+ "tlsSkipVerify": false
+----
++
+. Input the following code to create a ConfigMap in your model's namespace to hold the CA certificate:
++
+[source,json]
+----   
+  apiVersion: v1
+   kind: ConfigMap
+   metadata:
+     name: kserve-logger-ca-bundle
+     namespace: <your-model-namespace>
+     annotations:
+       service.beta.openshift.io/inject-cabundle: "true"
+   data: {}
+----
++
+. Deploy the model and the TrustyAI service. 
+
+[NOTE]
+--
+The `caBundle` name can be any valid Kubernetes name, as long as it matches the name you used in the KServe ConfigMap.
+The `caCertFile` needs to match the cert name available in the CA bundle.
+--
+
+.Verification
+When you send inferences to your KServe Raw model, TrustyAI now acknowledges the data capture in the output logs. 
+
+[NOTE]
+--
+If you do not observe any data on the Trusty AI logs, try redeploying the pod after completing these configuration steps.
+--
