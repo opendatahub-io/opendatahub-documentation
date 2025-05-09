@@ -1,34 +1,42 @@
 :_module-type: PROCEDURE
 
 [id='assemblies/modules/enabling-trustyai-kserve-integration{context}']
-= Enabling TrustyAI Integration with KServe RawDeployment
+= Enabling TrustyAI Integration with standard model deployment
 
 [role='_abstract']
-TrustyAI can be used with KServe Serverless and KServe RawDeployment. 
+TrustyAI can be used with standard and advanced model deployments. 
+Standard deployment mode is based on KServe RawDeployment and advanced deployment mode is based on KServe Serverless. 
+ifdef::upstream[]
+For more information about deployment modes, see link:link:{odhdocshome}/docs/serving-models/#about-kserve-deployment-modes_serving-large-models[About KServe deployment modes].
+endif::[]
+ifndef::upstream[]
+For more information about deployment modes, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#about-kserve-deployment-modes_serving-large-models[About KServe deployment modes].
+endif::[]
 
-To integrate KServe RawDeployment models with the TrustyAI service, you must first update the KServe ConfigMap, then create another ConfigMap in your model's namespace to hold the Certificate Authority (CA) certificate. 
+To use the TrustyAI service with standard model deployments, you must first update the KServe ConfigMap, then create another ConfigMap in your model's namespace to hold the Certificate Authority (CA) certificate. 
 
 [NOTE]
 --
-KServe Serverless does not require this additional setup. 
+Advanced deployment mode does not require this additional setup. 
 --
 
 .Prerequisites
-* You have cluster administrator privileges for your {productname-short} cluster.
-* You have access to the data science cluster.
 * You have installed {productname-long}.
+* You have cluster administrator privileges for your {productname-short} cluster.
+* You have access to a data science cluster that has TrustyAI enabled.
+* You have enabled the model serving platform in either standard or advanced mode.
 
 .Procedure
 . Update the KServe ConfigMap (`inferenceservice-config`) in the {productname-short} UI:
-.. Go to the OpenShift console and click *Workloads* → *ConfigMaps*
+.. From the OpenShift console, click *Workloads* → *ConfigMaps*.
 ifdef::upstream[]
-.. Select the `opendatahub-ods-applications` namespace
+.. Select the `opendatahub-ods-applications` namespace.
 endif::[]
 ifndef::upstream[]
-.. Select the `redhat-ods-applications` namespace
+.. Select the `redhat-ods-applications` namespace.
 endif::[]
-.. Find and edit the `inferenceservice-config` ConfigMap
-.. Add the following to the logger key:
+.. Find and edit the `inferenceservice-config` ConfigMap.
+.. Add the following parameters to the logger key:
 +
 [source,json]
 ----
@@ -37,7 +45,7 @@ endif::[]
  "tlsSkipVerify": false
 ----
 +
-. Input the following code to create a ConfigMap in your model's namespace to hold the CA certificate:
+. Use the following code to create a ConfigMap in your model's namespace to hold the CA certificate:
 +
 [source,json]
 ----   
@@ -60,9 +68,9 @@ The `caCertFile` needs to match the cert name available in the CA bundle.
 --
 
 .Verification
-When you send inferences to your KServe Raw model, TrustyAI now acknowledges the data capture in the output logs. 
+When you send inferences to your KServe Raw model, TrustyAI acknowledges the data capture in the output logs. 
 
 [NOTE]
 --
-If you do not observe any data on the Trusty AI logs, try redeploying the pod after completing these configuration steps.
+If you do not observe any data on the Trusty AI logs, complete these configuration steps and redeploy the pod.
 --
