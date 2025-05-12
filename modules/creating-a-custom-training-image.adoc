@@ -45,14 +45,14 @@ The following table shows some example base training images:
 | KFTO
 | CUDA
 | 3.11
-| `training:py311-cuda121-torch241`
-| Python 3.11, CUDA 12.1, PyTorch 2.4.1
+| `training:py311-cuda124-torch251`
+| Python 3.11, CUDA 12.4, PyTorch 2.5.1
 
 | KFTO
 | ROCm
 | 3.11
-| `training:py311-rocm62-torch241`
-| Python 3.11, ROCm 6.2, PyTorch 2.4.1
+| `training:py311-rocm62-torch251`
+| Python 3.11, ROCm 6.2, PyTorch 2.5.1
 
 |===
 
@@ -98,7 +98,7 @@ FROM quay.io/modh/ray:2.35.0-py311-cu121
 +
 [source,bash]
 ----
-FROM quay.io/modh/training:py311-rocm62-torch241
+FROM quay.io/modh/training:py311-rocm62-torch251
 ----
 
 .. Use the `RUN` instruction to install additional packages.
@@ -109,7 +109,7 @@ The following example shows how to install a specific version of the Python PyTo
 [source,bash]
 ----
 # Install PyTorch
-RUN python3 -m pip install torch==2.4.0
+RUN python3 -m pip install torch==2.5.1
 ----
 
 

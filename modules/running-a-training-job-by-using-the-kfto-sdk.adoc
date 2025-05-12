@@ -61,7 +61,7 @@ from kubernetes import client
 client.create_job(
    name="pytorch-ddp",
    train_func=train_func,
-   base_image="quay.io/modh/training:py311-cuda121-torch241",
+   base_image="quay.io/modh/training:py311-cuda124-torch251",
    num_workers=2,
    resources_per_worker={"nvidia.com/gpu": "2"},
    packages_to_install=["torchvision==0.19.0"],
@@ -76,7 +76,7 @@ client.create_job(
 .. The example provided is for NVIDIA GPUs. If you use AMD accelerators, make the following additional changes:
 
 * In the `resources_per_worker` entry, change `nvidia.com/gpu` to `amd.com/gpu`
-* Change the `base_image` value to `quay.io/modh/training:py311-rocm62-torch241`
+* Change the `base_image` value to `quay.io/modh/training:py311-rocm62-torch251`
 * Remove the `NCCL_DEBUG` entry
 
 
