@@ -17,7 +17,7 @@ sum_over_time(vllm:gpu_cache_usage_perc{namespace="${namespace}",pod=~"$model_na
 ----
 --
 
-== Request and resource utilization metrics
+// == Request and resource utilization metrics
 --
 
 Running requests::
@@ -72,7 +72,7 @@ The request completed naturally based on the model's output or a stop condition,
 --
 --
 
-== Performance metrics
+// == Performance metrics
 --
 End-to-end latency::
 
@@ -90,7 +90,7 @@ rate(vllm:e2e_request_latency_seconds_count{namespace="$namespace", pod=~"$model
 ----
 --
 
-== Throughput metrics
+// == Throughput metrics
 --
 Time to first token (TTFT) latency::
 --
@@ -139,7 +139,7 @@ rate(vllm:generation_tokens_total{namespace="$namespace", pod=~"$model_name.*", 
 --
 --
 
-== Total tokens generated
+Total tokens generated::
 Measures the efficiency of generating response tokens, critical for real-time applications.
 
 _Query_
