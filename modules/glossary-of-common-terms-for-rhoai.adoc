@@ -77,7 +77,7 @@ quantization:: A method of compressing foundation model weights to speed up infe
 serving:: The process of hosting a trained machine learning model as a network-accessible service. Real-world applications can send inference requests to the service by using a REST or gRPC API and receive predictions.
 // Reference: https://www.hopsworks.ai/dictionary/model-serving
 
-serving runtime:: A configurable environment or system for deploying and managing a trained ML model. It also dynamically loads and unloads models of various formats and exposes a service endpoint for inferencing requests. 
+ServingRuntime:: A custom resource definition (CRD) that defines the templates for pods that can serve one or more particular model formats. Each ServingRuntime CRD defines key information such as the container image of the runtime and a list of the model formats that the runtime supports. Other configuration settings for the runtime can be conveyed through environment variables in the container specification. It also dynamically loads and unloads models from disk into memory on demand and exposes a gRPC service endpoint to serve inferencing requests for loaded models.
 
 vLLM:: A high-throughput and efficient inference engine for running large-language models that integrates with popular models and frameworks.
 
