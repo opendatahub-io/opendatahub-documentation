@@ -1,0 +1,240 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="enabling-lab-tuning_{context}"]
+= Enabling LAB-tuning
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+LAB-tuning is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+LAB-tuning is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+[role='_abstract']
+Data scientists can use LAB-tuning in {productname-short} to run an end-to-end workflow for customizing large language models (LLMs). The link:https://arxiv.org/abs/2403.01081[LAB] (Large-scale Alignment for chatBots) method provides a more efficient alternative to traditional fine-tuning by using taxonomy-guided synthetic data generation (SDG) combined with a multi-phase training process. LAB-tuning workflows can be launched directly from the {productname-short} dashboard using the preconfigured InstructLab pipeline, simplifying the tuning process.
+
+LAB-tuning depends on several {productname-short} components working together to support model customization. It uses data science pipelines to run the tuning workflow, KServe to deploy and serve the teacher and judge models, and the Training Operator to run distributed model training across GPU-enabled nodes. LAB-tuning also relies on the model registry to manage model versions, storage connections (such as S3 or OCI) to store pipeline artifacts and model outputs, and GPU hardware profiles to schedule training workloads.
+
+To enable LAB-tuning, an {openshift-cluster} cluster administrator must configure the required infrastructure and platform components by completing the following tasks:
+
+* Install the required Operators
+* Install the required components
+* Configure a storage class that supports dynamic provisioning
+
+A cluster administrator or a {productname-short} administrator must perform additional setup within the {productname-short} dashboard:
+
+* Make LAB-tuning features visible in the dashboard
+* Create a model registry
+* Create a GPU hardware profile
+
+== Requirements for LAB-tuning
+
+* You have an {openshift-platform} cluster with cluster administrator access.
+* Your {openshift-platform} cluster includes at least one node with 4 GPUs (such as NVIDIA A100s) to run distributed LAB-tuning workloads.
+* Your {openshift-platform} cluster has additional GPU-enabled nodes to serve the teacher and judge models based on the selected model size and serving runtime.
+* Your environment meets the prerequisites for installing the required Operators and using the required components, storage, model registry, and GPU hardware profiles.
+
+== Installing the required Operators for LAB-tuning
+
+To enable your data scientists to customize models using LAB-tuning in {productname-short}, a cluster administrator must install the following Operators in {openshift-platform}:
+
+* {productname-long} Operator
+* {org-name} Authorino Operator (Technical Preview)
+* {org-name} {openshift-platform} Serverless Operator
+* {org-name} {openshift-platform} Service Mesh 2 Operator
+* NVIDIA GPU Operator, version 24.6
++
+[IMPORTANT]
+====
+LAB-tuning requires NVIDIA GPU Operator version 24.6. If a different version is currently installed, uninstall it before proceeding. Install the NVIDIA GPU Operator version 24.6 from OperatorHub in the recommended namespace: `nvidia-gpu-operator`. After installation, create a `ClusterPolicy` resource using the default values.
+====
+* Node Feature Discovery Operator
++
+[IMPORTANT]
+====
+Install the Node Feature Discovery Operator from OperatorHub in the recommended namespace: `openshift-nfd`. After installation, create a `NodeFeatureDiscovery` resource using the default values.
+====
+
+.Prerequisites
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+
+.Procedure
+* To install Operators, follow the steps described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster] in the OpenShift documentation.
+
+== Installing the required components for LAB-tuning
+
+To use the LAB-tuning in {productname-short}, you must install several components.
+
+.Prerequisites
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+* You have installed the required Operators for LAB-tuning. 
+
+.Procedure
+. In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
+ifdef::self-managed,cloud-service[]
+. Search for the *Red Hat OpenShift AI* Operator, and then click the Operator name to open the Operator details page.
+endif::[]
+ifdef::upstream[]
+. Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
+endif::[]
+. Click the *Data Science Cluster* tab.
+. Click the default instance name (for example, *default-dsc*) to open the instance details page.
+. Click the *YAML* tab to show the instance specifications.
+. In the `spec.components` section, set the `managementState` field to `Managed` for the following components:
++
+* `datasciencepipelines`
+* `kserve`
+* `kueue` 
+* `trainingoperator`
+
+ifdef::upstream[]
+. In the `spec.components` section, include the following `modelregistry` component entry with the `managementState` field set to `Managed` and the `registriesNamespace` field set to `odh-model-registries`:
++
+[source]
+----
+ modelregistry:
+    managementState: Managed
+    registriesNamespace: odh-model-registries
+----
+endif::[]
+ifndef::upstream[]
+. In the `spec.components` section, include the following `modelregistry` component entry with the `managementState` field set to `Managed` and the `registriesNamespace` field set to `rhoai-model-registries`:
++
+[source]
+----
+ modelregistry:
+    managementState: Managed
+    registriesNamespace: rhoai-model-registries
+----
+endif::[]
+
+. Click *Save*.
+
+[role='_additional-resources']
+=== Additional resources
+* _Installing and managing {productname-long} components_
+* _Installing the distributed workloads components_
+* _Configuring the model registry component_
+
+== Configuring a storage class with dynamic provisioning
+
+The InstructLab pipeline requires a storage class that supports dynamic provisioning with the `ReadWriteMany` access mode. This ensures that `PersistentVolumes` can be created automatically and shared across multiple pods.
+
+.Prerequisites
+* You have installed the required Operators and components for LAB-tuning. 
+* You are logged in to {productname-short} as a user with administrator privileges.
+
+.Procedure
+. To configure a storage class, follow the steps described in https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/storage/configuring-persistent-storage[Configuring persistent storage] in the {openshift-platform} documentation.
++
+TIP: To quickly configure a compatible storage class for a non-production environment, see https://github.com/opendatahub-io/ilab-on-ocp/blob/main/manifests/nfs_storage/nfs_storage.md[Set up NFS StorageClass]. The image provided in this example is for test purposes only. For production environments, you must use a production-ready storage class that supports `ReadWriteMany` access mode.
+
+. Follow the steps described in link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.19/html/managing_resources/managing-storage-classes#configuring-storage-class-settings_resource-mgmt[Storage class settings] to ensure that the new storage class is available for use in {productname-short}. 
+
+== Making LAB-tuning features visible in the dashboard
+
+By default, hardware profiles and LAB-tuning features are hidden from the {productname-short} dashboard navigation menu and user interface. You must manually enable these features in your current session to access the *Model catalog*, *Model customization*, and *Hardware profiles* pages. 
+
+.Prerequisites
+* You have installed the required Operators and components for LAB-tuning. 
+* You are logged in to {productname-short}.
+
+.Procedure
+. In the browser tab where the {productname-short} dashboard is open, add `?devFeatureFlags` to the end of the URL.  
+For example:
+`https://<your-dashboard-url>?devFeatureFlags`
++
+A banner appears at the top of the {productname-short} dashboard:
++  
+`Feature flags are overridden in the current session. Click here to reset back to defaults.`
+. Click the `overridden` link in the banner to open the *Feature flags* modal.
+. In the *Feature flags* modal, clear the following check boxes:
++
+* `disableModelCatalog`: Clear the check box to enable the *Models* → *Model catalog* page in the dashboard.  
+* `disableFineTuning`: Clear the check box to enable the *Models* → *Model customization* page and the *LAB-tune* button on the model detail page in the model registry.
+* `disableHardwareProfiles`: Clear the check box to enable the *Settings* → *Hardware profiles* page and related UI components.  
+. Close the *Feature flags* modal.
+
+.Verification
+
+The following pages should now appear in the {productname-short} dashboard navigation menu:
+
+* *Models* → *Model catalog*  
+* *Models* → *Model customization*  
+* *Settings* → *Hardware profiles*
+
+== Creating a model registry for LAB-tuning
+
+A model registry is required to register base models and manage LAB-tuned models in {productname-short}. To start a LAB-tuning run, users must first register a base model from the model registry. The LAB-tune workflow is then launched directly from the model's detail page. In addition, after a LAB-tuning run completes, the resulting fine-tuned model can be automatically added to the registry where users can track versions, view metadata, and deploy the model.
+
+You must configure a model registry in {productname-short} so users can register base models, launch LAB-tuning, and manage tuned model versions from the dashboard.
+
+.Prerequisites
+* You are logged in to {productname-short} as a user with administrator privileges.
+* The model registry component is enabled for your environment.
+
+.Procedure
+. Follow the steps described in link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.19/html/managing_model_registries/creating-a-model-registry_managing-model-registries[Creating a model registry].
+
+== Creating a GPU hardware profile for LAB-tuning
+
+A GPU hardware profile is required to run LAB-tuning workloads in {productname-short}. LAB-tuning uses distributed training that must be scheduled on nodes with GPU resources. A GPU hardware profile allows users to target specific GPU-enabled worker nodes when launching pipelines, ensuring that training workloads run on compatible hardware.
+
+You must configure a GPU hardware profile in {productname-short} that users can select when launching a LAB-tuning run.
+
+.Prerequisites
+* You are logged in to {productname-short} as a user with administrator privileges.
+* The relevant hardware is installed and you have confirmed that it is detected in your environment.
+
+.Procedure
+. Follow the steps described in link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.19/html/working_with_accelerators/working-with-hardware-profiles_accelerators#creating-a-hardware-profile_accelerators[Creating a hardware profile] to create a GPU hardware profile with the following configurations:
++
+[cols="1,2", options="header"]
+|===
+| Setting
+| Value
+
+| Memory, Maximum allowed
+| Greater than 100 GiB
+
+| Resource label
+| `nvidia.com/gpu`
+
+| Resource identifier
+| `nvidia.com/gpu`
+
+| Resource type
+| `Accelerator`
+
+| Node selector key (optional)
+| `node.kubernetes.io/instance-type`
+
+| Node selector value
+| `a2-ultragpu-2g`
+
+| Toleration operator (optional)
+| `Exists`
+
+| Toleration key
+| `nvidia.com/gpu`
+
+| Toleration effect
+| `NoSchedule`
+|===
+
+. Ensure that the new hardware profile is available for use with a check mark in the *Enable* column. 
+
+
+
