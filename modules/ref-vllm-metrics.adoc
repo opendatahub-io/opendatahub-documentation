@@ -17,20 +17,21 @@ sum_over_time(vllm:gpu_cache_usage_perc{namespace="${namespace}",pod=~"$model_na
 ----
 --
 
-Request and resource utilization metrics::
---
-**Waiting and running requests**
+== Request and resource utilization metrics
 --
 
-Running requests:: 
+Running requests::
+--
 The number of requests actively being processed. Helps monitor workload concurrency.
 
 [source,bash]
 ----
 num_requests_running{namespace="$namespace", pod=~"$model_name.*"}
 ----
+--
 
-Waiting requests:: 
+Waiting requests::
+--
 Tracks requests in the queue, indicating system saturation.
 
 [source,bash]
@@ -39,7 +40,7 @@ num_requests_waiting{namespace="$namespace", pod=~"$model_name.*"}
 ----
 --
 
-**Prefix cache hit rates**
+Prefix cache hit rates::
 
 --
 High hit rates imply efficient reuse of cached computations, optimizing resource usage.
@@ -52,7 +53,7 @@ vllm:cpu_cache_usage_perc{namespace="$namespace", pod=~"$model_name.*", model_na
 ----
 --
 
-**Request total count**
+Request total count::
 --
 
 _Query_
@@ -71,9 +72,9 @@ The request completed naturally based on the model's output or a stop condition,
 --
 --
 
-Performance metrics::
+== Performance metrics
 --
-**End-to-end latency**
+End-to-end latency::
 
 Measures the overall time to process a request for an optimal user experience.
 
@@ -89,9 +90,9 @@ rate(vllm:e2e_request_latency_seconds_count{namespace="$namespace", pod=~"$model
 ----
 --
 
-Throughput metrics:: 
+== Throughput metrics
 --
-**Time to first token (TTFT) latency**
+Time to first token (TTFT) latency::
 --
 The time taken to generate the first token in a response.
 
@@ -107,7 +108,7 @@ rate(vllm:time_to_first_token_seconds_count{namespace="$namespace", pod=~"$model
 ----
 --
 
-**Time per output token (TPOT) latency**
+Time per output token (TPOT) latency::
 
 --
 The average time taken to generate each output token.
@@ -124,7 +125,7 @@ rate(vllm:time_per_output_token_seconds_count{namespace="$namespace", pod=~"$mod
 ----
 --
 
-**Prompt token throughput and generation throughput**
+Prompt token throughput and generation throughput::
 
 --
 Tracks the speed of processing prompt tokens for LLM optimization.
@@ -138,7 +139,7 @@ rate(vllm:generation_tokens_total{namespace="$namespace", pod=~"$model_name.*", 
 --
 --
 
-Total tokens generated::
+== Total tokens generated
 Measures the efficiency of generating response tokens, critical for real-time applications.
 
 _Query_
