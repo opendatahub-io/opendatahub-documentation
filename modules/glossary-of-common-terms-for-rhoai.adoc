@@ -1,6 +1,6 @@
 :_module-type: REFERENCE
 
-[id='glossary-of-common-terms-for-{productname-short}_{context}']
+[id='glossary-of-common-terms-for-openshift-ai_{context}']
 = Glossary of common terms for {productname-short}
 
 This glossary defines common terms for {productname-long}.
@@ -14,7 +14,10 @@ artificial intelligence (AI):: The capability to acquire, process, create and ap
 bias detection:: The process of calculating fairness metrics to detect when AI models are delivering unfair outcomes based on certain attributes.
 //Reference:: IBM glossary https://dataplatform.cloud.ibm.com/docs/content/wsj/wscommon/glossary-wx.html?context=wx#x9721361
 
-cluster storage:: A persistent volume that retains the files and data within a workbench. A workbench has access to one or more cluster storage instances.
+persistent storage:: A persistent volume that retains the files and data within a workbench. A workbench has access to one or more cluster storage instances.
+
+persistent volume claim (PVC):: A persistent volume claim (PVC) is a request for storage in the cluster by a user.
+//Reference https://redhat-documentation.github.io/supplementary-style-guide/#persistent-volume-claim
 
 custom resource (CR):: A resource implemented through the Kubernetes CustomResourceDefinition API. A custom resource is distinct from the built-in Kubernetes resources, such as the pod and service resources. Every CR is part of an API group.
 //Reference: https://github.com/openshift/openshift-docs/blob/main/contributing_to_docs/term_glossary.adoc#custom-resource
@@ -22,11 +25,13 @@ custom resource (CR):: A resource implemented through the Kubernetes CustomResou
 custom resource definition (CRD):: In Red Hat OpenShift, a custom resource definition (CRD) defines a new, unique object `Kind` in the cluster and lets the Kubernetes API server handle its entire lifecycle.
 // Reference:: https://redhat-documentation.github.io/supplementary-style-guide/#custom-resource-definition
 
-data connection:: The configuration parameters required to connect to a data source, such as an S3 object bucket.
+connections:: A configuration that stores the parameters required to connect to a data source such as an object storage or database from a data science project.  
+
+connection type:: The type of data source to connect to from a data science project.
 
 data science pipelines:: A portable machine learning (ML) workflow to develop and deploy data science models.
 
-data science project:: An isolated environment for developing, training and serving machine learning models.
+data science project::  An OpenShift project for organizing data science work. Each project is scoped to its own Kubernetes namespace.
 
 disconnected environment:: An environment on a restricted network that does not have an active connection to the Internet.
 // Reference: https://github.com/openshift/openshift-docs/blob/main/contributing_to_docs/term_glossary.adoc#disconnected
@@ -41,7 +46,7 @@ graphics processing unit (GPU):: A specialized processor designed to rapidly man
 
 inference:: The process of using a trained AI model to generate predictions or conclusions based on the input data provided to the model. 
 
-inference server:: A server that helps an AI model make new conclusions based on its prior training. Inference servers feed the input requests through a machine learning model and return an output.
+inference server:: A server that performs inference. Inference servers feed the input requests through a machine learning model and return an output.
 
 large language model (LLM):: A language model with a large number of parameters, trained on a large quantity of text.
 //Reference: https://dataplatform.cloud.ibm.com/docs/content/wsj/wscommon/glossary-wx.html?context=wx#x10298052
@@ -51,13 +56,13 @@ machine learning (ML):: A branch of artificial intelligence (AI) and computer sc
 model:: In a machine learning context, a set of functions and algorithms that have been trained and tested on a data set to provide predictions or decisions. 
 // https://dataplatform.cloud.ibm.com/docs/content/wsj/wscommon/glossary-wx.html?context=wx#x2245601
 
-model registry:: A central repository containing metadata related to machine learning models from inception to deployment. The metadata ranges from high-level information like the deployment environment and project origins, to intricate details like training hyperparameters, performance metrics, and deployment events.
+model registry:: A central repository containing metadata related to machine learning models from inception to deployment. The metadata ranges from high-level information such as the deployment environment and project origins, to intricate details like training hyperparameters, performance metrics, and deployment events.
 // Reference: https://dataplatform.cloud.ibm.com/docs/content/wsj/wscommon/glossary-wx.html?context=wx#x8397498
 
 MLOps:: The practice for collaboration between data scientists and operations professionals to help manage production machine learning (or deep learning) lifecycle. MLOps looks to increase automation and improve the quality of production ML while also focusing on business and regulatory requirements. It involves model development, training, validation, deployment, monitoring, and management and uses methods like CI/CD.
 //Reference: https://dataplatform.cloud.ibm.com/docs/content/wsj/wscommon/glossary-wx.html?context=wx#x10072886
 
-notebook:: An interactive document that contains executable code, descriptive text for that code, and the results of any code that is run.
+notebook interface:: An interactive document that contains executable code, descriptive text for that code, and the results of any code that is run.
 // Reference https://dataplatform.cloud.ibm.com/docs/content/wsj/wscommon/glossary-wx.html?context=wx#x2031718
 
 object storage:: A method of storing data, typically used in the cloud, in which data is stored as discrete units, or objects, in a storage pool or repository that does not use a file hierarchy but that stores all objects at the same level.
@@ -66,12 +71,10 @@ object storage:: A method of storing data, typically used in the cloud, in which
 OpenShift Container Platform cluster::  A group of physical machines that contains the controllers, pods, services, and configurations required to build and run containerized applications.
 //Reference: https://redhat-documentation.github.io/supplementary-style-guide/#ocp-cluster
 
-persistent volume clain (PVC):: A persistent volume claim (PVC) is a request for storage in the cluster by a user.
-//Reference https://redhat-documentation.github.io/supplementary-style-guide/#persistent-volume-claim
+quantization:: A method of compressing foundation model weights to speed up inferencing and reduce memory needs.
+//Reference https://dataplatform.cloud.ibm.com/docs/content/wsj/wscommon/glossary-wx.html?context=wx#x10451003
 
-quantization:: A method of compressing foundation model weights to speed up inferencing and reduce GPU memory needs.
-
-serving:: The process of deploying a trained ML model into a production environment and making it available for inferencing as a network service. Real-world applications can access the deployed model by using a REST or gRPC API. 
+serving:: The process of hosting a trained machine learning model as a network-accessible service. Real-world applications can send inference requests to the service by using a REST or gRPC API and receive predictions.
 // Reference: https://www.hopsworks.ai/dictionary/model-serving
 
 serving runtime:: A configurable environment or system for deploying and managing a trained ML model. It also dynamically loads and unloads models of various formats and exposes a service endpoint for inferencing requests. 
@@ -80,6 +83,6 @@ vLLM:: A high-throughput and efficient inference engine for running large-langua
 
 workbench:: An isolated environment for development and experimentation with ML models. Workbenches typically contain IDEs, such as JupyterLab, RStudio, and Visual Studio Code.
 
-workbench image:: An image optimized with the tools and libraries that you need for model development. Includes an integrated development environment (IDE) for developing your machine learning (ML) models.
+workbench image:: An image that includes preinstalled tools and libraries that you need for model development. Includes an integrated development environment (IDE) for developing your machine learning (ML) models.
 
 YAML:: A human-readable data-serialization language. It is commonly used for configuration files and in applications where data is being stored or transmitted.
