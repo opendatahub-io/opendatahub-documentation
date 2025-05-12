@@ -41,6 +41,22 @@ endif::[]
 ifndef::upstream[]
 * You have enabled the model catalog feature as described ine link:{rhoaidocshome}{default-format-url}/configuring_the_model_registry_component/enabling-the-model-catalog_model-registry-config[Enabling the model catalog].
 endif::[]
+* You have installed KServe.
+* You have enabled the single-model serving platform.
+ifdef::self-managed[]
+ifndef::disconnected[]
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+endif::[]
+ifdef::disconnected[]
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+endif::[]
+endif::[]
+ifdef::cloud-service[]
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
+endif::[]
+ifdef::upstream[]
+* (Advanced deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider.
+endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *Models* -> *Model catalog*.
@@ -73,9 +89,12 @@ The resource name must not match the name of any other model deployment resource
 +
 NOTE: The *Model framework* list shows only the frameworks that are supported by the model serving runtime that you specified when you deployed your model.
 +
-.. From the *Deployment mode* drop-down list, select a deployment mode for your model deployment:
-* *Standard*: 
-* *Advanced*:
+ifndef::upstream[]
+. From the **Deployment mode** list, select *Standard* or *Advanced*. For more information about deployment modes, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#about-kserve-deployment-modes_serving-large-models[About KServe deployment modes].
+endif::[]
+ifdef::upstream[]
+. From the **Deployment mode** list, select *Standard* or *Advanced*. For more information about deployment modes, see link:{odhdocshome}/serving-models/#about-kserve-deployment-modes_serving-large-models[About KServe deployment modes].
+endif::[]
 .. In the *Number of model server replicas to deploy* field, specify a value.
 .. From the *Model server size* list, select a value.
 .. Optional: From the *Accelerator* list, select an accelerator. 
