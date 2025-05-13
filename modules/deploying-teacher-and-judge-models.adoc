@@ -4,12 +4,15 @@
 = Deploying teacher and judge models
 
 [role='_abstract']
-To use LAB-tuning in {productname-short}, you must deploy both a teacher model and a judge model. The teacher model generates synthetic data, and the judge model evaluates the performance of the LAB-tuned model. 
+LAB-tuning in {productname-short} uses a teacher model (link:https://catalog.redhat.com/software/containers/rhelai1/modelcar-mixtral-8x7b-instruct-v0-1/67922f1e167e94db874af7ab[rhelai1/modelcar-mixtral-8x7b-instruct-v0-1:1.4]) to generate synthetic data and a judge model (link:https://catalog.redhat.com/software/containers/rhelai1/modelcar-prometheus-8x7b-v2-0/67922f21a4baf873b6f43d8c[rhelai1/modelcar-prometheus-8x7b-v2-0:1.4]) to evaluate the performance of the LAB-tuned model. 
+
+You can deploy the models in the same cluster as the LAB-tuning process or in a different cluster. When you configure your LAB-tuning run, you will provide the URL endpoints and authentication details for the teacher and judge models.
 
 .Prerequisites
 
 * You have logged in to {productname-long}.
 * Your cluster administrator has configured LAB-tuning in your cluster, as described in _Enabling LAB-tuning_. 
+* Your cluster has available GPUs capable to deploy the teacher and judge models.
 * You have enabled the LAB-tuning features in your current session, as described in _Making LAB-tuning features visible_.
 * You have created a data science project and configured its pipeline server.
 
@@ -18,7 +21,7 @@ To use LAB-tuning in {productname-short}, you must deploy both a teacher model a
 +
 The *Model catalog* page opens showing the pre-built, curated models that are available to your organization.
 . Under *{org-name} models*, select a model with the `LAB teacher` label.
-. On the model details page, click the *Deploy model* button to launch a model server that hosts the selected model and makes it available to your project.
+. On the model details page, click the *Deploy model* button to deploy a model server that hosts the selected model and makes it available to your project.
 +
 The *Deploy model* form appears.
 . For *Project*, select your data science project.
