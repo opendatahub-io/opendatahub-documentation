@@ -6,7 +6,30 @@
 [role='_abstract']
 You can manage access to a model registry for individual users and user groups in your organization, and for service accounts in a project.
 
-{productname-short} creates the `<model-registry-name>-users` group automatically for use with model registries. You can add users to this group in OpenShift, or ask the cluster admin to do so.
+[NOTE]
+====
+{productname-short} creates the `<model-registry-name>-users` group automatically for use with model registries. You can add users to this group in OpenShift, or ask the cluster administrator to do so.
+
+ifndef::upstream[]
+The model registry operator uses {openshift-platform} Role-Based Access Control (RBAC), and creates various RBAC resources in the `rhoai-model-registries` namespace.
+endif::[]
+
+ifdef::upstream[]
+The model registry operator uses {openshift-platform} Role-Based Access Control (RBAC), and creates various RBAC resources in the `odh-model-registries` namespace.
+endif::[]
+
+For each model registry instance, the operator creates a `registry-users-<model registry instance name>` role and an {openshift-platform} group called `<model registry instance name>-users`. To grant an individual user, service account, or group access to a model registry instance, your cluster administrator must create a role binding to the `registry-users-<model registry instance name>` role for the instance.
+
+The `<model registry instance name>-users` group has a role binding to the `registry-users-<model registry instance name>` role. Your cluster administrator can add users to this group to grant them access to the model registry instance without needing to create a role binding for each user.
+
+ifdef::upstream,self-managed[]
+For more information about managing RBAC in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/using-rbac[Using RBAC to define and apply permissions].
+endif::[]
+
+ifdef::cloud-service[]
+For more information about managing RBAC in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/authentication_and_authorization/using-rbac[Using RBAC to define and apply permissions](Red Hat OpenShift Service on AWS) and link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/authentication_and_authorization/using-rbac[Using RBAC to define and apply permissions](OpenShift Dedicated).
+endif::[]
+====
 
 .Prerequisites
 * You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
