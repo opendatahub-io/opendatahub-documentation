@@ -1,0 +1,50 @@
+:_module-type: PROCEDURE
+
+[id="deploying-teacher-and-judge-models_{context}"]
+= Deploying teacher and judge models
+
+[role='_abstract']
+To use LAB-tuning in {productname-short}, you must deploy both a teacher model and a judge model. The teacher model generates synthetic data, and the judge model evaluates the performance of the LAB-tuned model. 
+
+.Prerequisites
+
+* You have logged in to {productname-long}.
+* Your cluster administrator has configured LAB-tuning in your cluster, as described in _Enabling LAB-tuning_. 
+* You have enabled the LAB-tuning features in your current session, as described in _Making LAB-tuning features visible_.
+* You have created a data science project and configured its pipeline server.
+
+.Procedure
+. From the {productname-short} dashboard, click *Models* -> *Model catalog*.
++
+The *Model catalog* page opens showing the pre-built, curated models that are available to your organization.
+. Under *{org-name} models*, select a model with the `LAB teacher` label.
+. On the model details page, click the *Deploy model* button to launch a model server that hosts the selected model and makes it available to your project.
++
+The *Deploy model* form appears.
+. For *Project*, select your data science project.
+. For *Model deployment name*, enter the name of the inference service to be created when the model is deployed.
+. For *Serving runtime*, select *vLLM NVIDIA GPU ServingRuntime for KServe*.
+//Select a *Serving runtime* with the `Compatible with hardware profile` label. For more information, see _Supported model-serving runtimes_.
++
+The `vLLm` *Model framework* is automatically selected.
+. For *Deployment mode*, select one of the following options:
+* **Standard**: Recommended for catalog models. Uses default settings for a quick, guided deployment.
+* **Advanced**: Use for custom models or when you need to change the model URI, runtime settings, or storage connection.
+. Enter the *Number of model server replicas to deploy*. Set this number based on expected traffic and availability needs, such as support for failover.
+. Select a *Hardware profile* with the `Compatible` label.
+//Customize resource requests and limits
+. For *Model route*, select the *Make deployed models available through an external route* check box.
+. For *Token authentication*, select whether to *Require token authentication*. Enabling this option is recommended to reduce the risk of security vulnerabilities.
+. For *Source model location*, select *Current URI*.
+. Optional: Under *Configuration parameters*, add *Additional serving runtime arguments* or *Environment variables*, if needed. The values that you configure here apply only to this model deployment.
+. Click *Deploy*.
+
+.Verification
+
+* The *Model deployments* page opens and shows your deployed model in the list. 
+* The In Progress icon is displayed in the *Status* column. When the deployment completes successfully, the icon changes to a green checkmark. 
+
+////
+[role='_additional-resources']
+.Additional resources
+////

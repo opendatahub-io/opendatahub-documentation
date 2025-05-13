@@ -1,0 +1,79 @@
+:_module-type: PROCEDURE
+
+[id="creating-a-project-for-lab-tuning_{context}"]
+= Creating a project for LAB-tuning
+
+[role='_abstract']
+To run LAB-tuning, create a data science project in {productname-short} and set up its pipeline server. The project keeps your resources organized, and the pipeline server runs and manages each step of the LAB-tuning workflow.
+
+.Prerequisites
+* You have logged in to {productname-short}.
+* You have the appropriate roles and permissions to create projects.
+* You have an existing S3-compatible object storage bucket and you have configured write access to your S3 bucket on your storage account.
+* If you are configuring a pipeline server for production pipeline workloads, you have an existing external MySQL or MariaDB database.
+** For an external MySQL database, your database must use at least MySQL version 5.x. However, {org-name} recommends that you use MySQL version 8.x. 
+** For an external MariaDB database, your database must use MariaDB version 10.3 or later. However, {org-name} recommends that you use at least MariaDB version 10.5.
+* Your cluster administrator has configured LAB-tuning in your cluster, as described in _Enabling LAB-tuning_. 
+
+.Procedure
+. From the {productname-short} dashboard, click *Data science projects*.
++
+The *Data science projects* page opens.
+. Create a data science project:
+.. Click *Create project*.
++
+The *Create project* form opens.
+.. For *Name*, enter a unique display name for your project.
+.. Optional: If you want to change the default resource name for your project, click *Edit resource name*. 
++
+The resource name is what your resource is labeled in {openshift-platform}.
+Valid characters include lowercase letters, numbers, and hyphens (-).
+The resource name cannot exceed 30 characters, and it must start with a letter and end with a letter or number.
++
+*Note:* You cannot change the resource name after the project is created.
+You can edit only the display name and the description.
+.. Optional: In the *Description* field, provide a project description.
+
+.. Click *Create*.
++
+The project details page opens. 
+. Create a connection that links an object storage bucket to your data science project for saving pipeline artifacts:
+.. Click the *Connections* tab, and then click *Create connection*.
++
+The *Create connection* form opens.
+.. For *Connection type* select *S3 compatible object storage - v1*.
+.. Complete the *Connection details*. For more information, see _Adding a connection to your data science project_.
+.. Click *Create*.
++
+The new connection is displayed on the *Connections* tab for the project.
+. Configure a pipeline server to run and track the InstructLab pipeline:
+.. Click the *Pipelines* tab, and then click *Configure pipeline server*.
++
+The *Configure pipeline server* form opens.
+.. In the *Object storage connection* section, in the *Access key* field next to the key icon, click the drop-down menu, and then select the connection you just created.
++
+The form populates with credentials for the connection.
+.. In the *Database* section, select one of the following options:
++
+* *Use default database stored on your cluster*: For development and testing purposes only. 
+* *Connect to external MySQL database*: For production pipeline workloads. For more information, see _Configuring a pipeline server_.
+.. In the *Install preconfigured pipelines* section, select the *InstructLab pipeline* check box.
++
+This installs the InstructLab pipeline on your project, allowing you to customize your model with LAB-tuning. 
++
+[IMPORTANT]
+====
+{productname-short} automatically updates the InstructLab pipeline. To disable automatic updates, go to the *Pipelines* tab of your data science project, click the drop-down arrow next to *Import pipeline*, select *Manage preconfigured pipelines*, clear the *InstructLab pipeline* check box, and click *Apply*.
+====
+.. Click *Configure pipeline server*.
+
+.Verification
+
+* The *InstructLab* pipeline appears on the *Pipelines* tab for your data science project.
+
+[role='_additional-resources']
+.Additional resources
+
+* _Creating a data science project_
+* _Adding a connection to your data science project_
+* _Configuring a pipeline server_
