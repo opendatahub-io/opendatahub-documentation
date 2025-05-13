@@ -1,0 +1,57 @@
+:_module-type: PROCEDURE
+
+[id="creating-a-hardware-profile-for-lab-tuning_{context}"]
+= Creating a hardware profile for LAB-tuning
+
+[role='_abstract']
+Configure a GPU hardware profile in {productname-short} that users can select when launching a LAB-tuning run.
+
+A GPU hardware profile is required to run LAB-tuning workloads in {productname-short}. LAB-tuning uses distributed training that must be scheduled on nodes with GPU resources. A GPU hardware profile allows users to target specific GPU-enabled worker nodes when launching pipelines, ensuring that training workloads run on compatible hardware.
+
+.Prerequisites
+* You are logged in to {productname-short} as a user with administrator privileges.
+* The relevant hardware is installed and you have confirmed that it is detected in your environment.
+
+.Procedure
+. Follow the steps described in link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/working_with_accelerators/working-with-hardware-profiles_accelerators#creating-a-hardware-profile_accelerators[Creating a hardware profile] to create a `LAB-tuning` hardware profile, adapting the following configurations to your specific cluster setup:
++
+[cols="1,2", options="header"]
+|===
+| Setting
+| Value
+
+| CPU
+| Default: 4 Cores; Minimum allowed: 2 Cores; Maximum allowed: 4 Cores
+
+| Memory
+| Maximum allowed: Greater than 100 GiB
+
+| Resource label
+| `nvidia.com/gpu`
+
+| Resource identifier
+| `nvidia.com/gpu`
+
+| Resource type
+| `Accelerator`
+
+| Node selector key (optional)
+| `node.kubernetes.io/instance-type`
+
+| Node selector value
+| `a2-ultragpu-2g`
+
+| Toleration operator (optional)
+| `Exists`
+
+| Toleration key
+| `nvidia.com/gpu`
+
+| Toleration effect
+| `NoSchedule`
+|===
+
+. Ensure that the new hardware profile is available for use with a check mark in the *Enable* column. 
+
+
+

@@ -1,0 +1,34 @@
+:_module-type: PROCEDURE
+
+[id="making-lab-tuning-and-hardware-profile-features-visible_{context}"]
+= Making LAB-tuning and hardware profile features visible
+
+[role='_abstract']
+By default, hardware profiles and LAB-tuning features are hidden from the {productname-short} dashboard navigation menu and user interface. You must manually enable these features in your current session to access the *Model catalog*, *Model customization*, and *Hardware profiles* pages. 
+
+.Prerequisites
+* You have installed the required Operators and components for LAB-tuning. 
+* You are logged in to {productname-short}.
+
+.Procedure
+. In the browser tab where the {productname-short} dashboard is open, add `?devFeatureFlags` to the end of the URL.  
+For example:
+`https://<your-dashboard-url>?devFeatureFlags`
++
+A banner appears at the top of the {productname-short} dashboard:
++  
+`Feature flags are overridden in the current session. Click here to reset back to defaults.`
+. Click the `overridden` link in the banner to open the *Feature flags* modal.
+. In the *Feature flags* modal, clear the following check boxes:
++
+* `disableModelCatalog`: Clear the check box to enable the *Models* → *Model catalog* page in the dashboard.  
+* `disableFineTuning`: Clear the check box to enable the *Models* → *Model customization* page and the *LAB-tune* button on the model detail page in the model registry.
+* `disableHardwareProfiles`: Clear the check box to enable the *Settings* → *Hardware profiles* page and related UI components.  
+. Close the *Feature flags* modal.
+
+.Verification
+The following pages appear in the {productname-short} dashboard navigation menu:
+
+* *Models* → *Model catalog*  
+* *Models* → *Model customization*  
+* *Settings* → *Hardware profiles*
