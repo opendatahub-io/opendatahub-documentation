@@ -1,0 +1,53 @@
+:_module-type: PROCEDURE
+
+[id='registering-a-model-from-the-model-catalog_{context}']
+= Registering a model from the model catalog
+
+[role='_abstract']
+As a data scientist, you can register models directly from the model catalog.
+
+[IMPORTANT]
+====
+The model catalog feature is not currently supported for disconnected environments.
+====
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have access to an available model registry in your deployment.
+ifdef::upstream[]
+* You have enabled the model catalog feature as described in link:{odhdocshome}/working-with-model-registries/#enabling-the-model-catalog_model-registry[Enabling the model catalog].
+endif::[]
+ifndef::upstream[]
+* You have enabled the model catalog feature as described in link:{rhoaidocshome}{default-format-url}/configuring_the_model_registry_component/enabling-the-model-catalog_model-registry-config[Enabling the model catalog].
+endif::[]
+
+.Procedure
+. From the {productname-short} dashboard, click *Models* -> *Model catalog*.
+. From the *{org-name} models* section, click the name of the model that you want to register. 
++
+The model details page opens.
+. Click *Register model*.
+. In the *Model details* section, configure details to apply to all versions of the model:
+.. Optional: In the **Model name** field, enter a specific name for the model. 
+.. Optional: In the **Model description** field, update the description of the model.
+. In the *Version details* section, enter details to apply to the first version of the model:
+.. In the *Version name* field, enter a name for the model version.
+.. Optional: In the *Version description* field, enter a description for the first version of the model.
+.. In the *Source model format* field, enter the name of the model format, for example, `onnx`.
+.. In the *Source model format version* field, enter the version of the model format.
+. In the *Model location* section, the URI of the model is displayed.
+. Click *Register model*.
+
+.Verification
+* The new model appears on the *Model registry* page.
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete
+
