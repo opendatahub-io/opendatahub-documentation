@@ -1,0 +1,33 @@
+:_module-type: PROCEDURE
+
+[id="making-lab-tuning-features-visible_{context}"]
+= Making LAB-tuning features visible
+
+[role='_abstract']
+By default, LAB-tuning features are hidden from the {productname-short} dashboard navigation menu and user interface. You must manually enable these features in your current session to access the *Model catalog* and *Model customization* pages and use the InstructLab pipeline.
+
+.Prerequisites
+* Your cluster administrator has configured LAB-tuning in your cluster, as described in _Enabling LAB-tuning_. 
+* You have logged in to {productname-long}.
+
+.Procedure
+. In the browser tab where the {productname-short} dashboard is open, add `?devFeatureFlags` to the end of the URL.  
+For example:
+`https://<your-dashboard-url>?devFeatureFlags`
++
+The following banner appears at the top of the {productname-short} dashboard:
++  
+`Feature flags are overridden in the current session. Click here to reset back to defaults.`
+. Click the `overridden` link in the banner to open the *Feature flags* modal.
+. In the *Feature flags* modal, clear the following checkboxes:
++
+* `disableModelCatalog`: Clear the checkbox to enable the *Models* → *Model catalog* page in the dashboard.  
+* `disableFineTuning`: Clear the checkbox to enable the *Models* → *Model customization* page and the *LAB-tune* button on the model detail page in the model registry. 
+. Close the *Feature flags* modal.
+
+.Verification
+
+The following pages appear in the {productname-short} dashboard navigation menu:
+
+* *Models* → *Model catalog*  
+* *Models* → *Model customization*  
