@@ -15,7 +15,9 @@ The InstructLab pipeline requires a storage class that supports dynamic provisio
 +
 TIP: To quickly configure a compatible storage class for a non-production environment, see link:https://github.com/opendatahub-io/ilab-on-ocp/blob/main/manifests/nfs_storage/nfs_storage.md[Set up NFS StorageClass]. The image provided in this example is for test purposes only. For production environments, you must use a production-ready storage class that supports `ReadWriteMany` access mode.
 
-. Follow the steps described in _Configuring storage class settings_ to ensure that the new storage class is available for use in {productname-short}. 
-
-//link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/managing_resources/managing-storage-classes#configuring-storage-class-settings_resource-mgmt
-
+ifndef::upstream[]
+. Follow the steps described in link:{rhoaidocshome}{default-format-url}/managing_resources/managing-storage-classes#configuring-storage-class-settings_resource-mgmt[Configuring storage class settings] to ensure that the new storage class is available for use in {productname-short}.
+endif::[]
+ifdef::upstream[]
+. Follow the steps described in link:{odhdocshome}/managing-resources/#configuring-storage-class-settings_managing-resources[Configuring storage class settings] to ensure that the new storage class is available for use in {productname-short}.
+endif::[]
