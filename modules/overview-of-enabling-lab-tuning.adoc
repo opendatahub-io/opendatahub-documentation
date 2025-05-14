@@ -1,0 +1,46 @@
+:_module-type: CONCEPT
+
+[id="overview-of-enabling-lab-tuning_{context}"]
+= Overview of enabling LAB-tuning
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+LAB-tuning is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+LAB-tuning is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+[role='_abstract']
+Data scientists can use LAB-tuning in {productname-short} to run an end-to-end workflow for customizing large language models (LLMs). The link:https://arxiv.org/abs/2403.01081[LAB] (Large-scale Alignment for chatBots) method provides a more efficient alternative to traditional fine-tuning by using taxonomy-guided synthetic data generation (SDG) combined with a multi-phase training process. LAB-tuning workflows can be launched directly from the {productname-short} dashboard using the preconfigured InstructLab pipeline, simplifying the tuning process.
+
+LAB-tuning depends on several {productname-short} components working together to support model customization. It uses data science pipelines to run the tuning workflow, KServe to deploy and serve the teacher and judge models, and the Training Operator to run distributed model training across GPU-enabled nodes. LAB-tuning also relies on the model registry to manage model versions, storage connections (such as S3 or OCI) to store pipeline artifacts and model outputs, and GPU hardware profiles to schedule training workloads.
+
+To enable LAB-tuning, an {openshift-cluster} cluster administrator must configure the required infrastructure and platform components by completing the following tasks:
+
+* Install the required Operators
+* Install the required components
+* Configure a storage class that supports dynamic provisioning
+
+A cluster administrator or a {productname-short} administrator must perform additional setup within the {productname-short} dashboard:
+
+* Make LAB-tuning features visible in the dashboard
+* Create a model registry
+* Create a GPU hardware profile
+
+== Requirements for LAB-tuning
+
+* You have an {openshift-platform} cluster with cluster administrator access.
+* Your {openshift-platform} cluster has at least one node with 1 NVIDIA GPUs (for example, NVIDIA L40S 48 GB) for the LAB-tuning process. Multiple GPUs on the same or different nodes are required to run distributed LAB-tuning workloads.
+* To deploy the teacher model (link:https://catalog.redhat.com/software/containers/rhelai1/modelcar-mixtral-8x7b-instruct-v0-1/67922f1e167e94db874af7ab[rhelai1/modelcar-mixtral-8x7b-instruct-v0-1:1.4]), the {openshift-platform} cluster has a worker node with one or multiple GPUs capable of running the model (for example, a2-ultragpu-4g, which contains 4 x NVIDIA A100 with 80GB vRAM) and has at least 100 GiB of available disk storage to store the model.
+* To deploy the judge model (link:https://catalog.redhat.com/software/containers/rhelai1/modelcar-prometheus-8x7b-v2-0/67922f21a4baf873b6f43d8c[rhelai1/modelcar-prometheus-8x7b-v2-0:1.4]), the {openshift-platform} cluster has a worker node with one or multiple GPUs capable of running this model (for example, a2-ultragpu-2g, which contains 2 x NVIDIA A100 with 80GB vRAM) and has at least at least 100 GiB of available disk storage to store the model.
+* Your environment meets the prerequisites for installing the required Operators and using the required components, storage, model registry, and GPU hardware profiles.
