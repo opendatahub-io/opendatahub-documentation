@@ -53,24 +53,28 @@ $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 
 .. Make sure that you are using the data science project in which you enabled Feature Store, for example, `my-ds-project`.
 +
+[source]
 ----
 $ oc project my-ds-project
 ----
 
 .. Create a cron job by running a command with the following syntax:
 +
+[source]
 ----
 $ oc create job --from=cronjob/feast-<FeatureStore CR name> feast-apply
 ----
 +
 For example, if the metadata.name in the Feature Store CRD is sample, run the following command: 
 +
+[source]
 ----
 $ oc create job --from=cronjob/feast-sample feast-apply
 ----
 
 .. Run the following commands:
 +
+[source]
 ----
 $ oc wait --for=condition=complete job/feast-apply
 
