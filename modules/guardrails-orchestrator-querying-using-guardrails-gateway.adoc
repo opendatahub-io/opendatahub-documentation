@@ -5,7 +5,7 @@ ifdef::context[:parent-context: {context}]
 = Querying using guardrails gateway
 [role='_abstract']
 
-Guardrails gateway is a sidecar image that can be used with the *GuardrailsOrchestrator* service. It provides the OpenAI `v1/chat/completions` API and allows you to specify which detectors and endpoints you want to use to access the service. 
+Guardrails gateway is a sidecar image that you can use with the `GuardrailsOrchestrator` service. It provides the OpenAI `v1/chat/completions` API and allows you to specify which detectors and endpoints you want to use to access the service. 
 
 .Prerequisites
 * You have configured the guardrails gateway image.
@@ -19,11 +19,11 @@ GUARDRAILS_GATEWAY=https://$(oc get routes guardrails-gateway -o jsonpath='{.spe
 ----
 +
 ifdef::upstream[]
-Based on the example configurations provided in link:{odhdocshome}/monitoring-data-science-models/#configuring-regex-guardrails-gateway_[Configuring the regex detector and guardrails gateway], the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
+Based on the example configurations provided in link:{odhdocshome}/monitoring-data-science-models/#configuring-regex-guardrails-gateway_monitor[Configuring the regex detector and guardrails gateway], the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
 endif::[]
 
 ifndef::upstream[]
-Based on the example configurations provided in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-the-guardrails-orchestrator-service_monitor#configuring-regex-guardrails-gateway_[Configuring the regex detector and guardrails gateway], the available endpoint for the model with guardrails is `$GUARDRAILS_GATEWAY/pii`.
+Based on the example configurations provided in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-the-guardrails-orchestrator-service_monitor#configuring-regex-guardrails-gateway_monitor[Configuring the regex detector and guardrails gateway], the available endpoint for the model with guardrails is `$GUARDRAILS_GATEWAY/pii`.
 endif::[]
 
 . Query the model with guardrails `pii` endpoint:

@@ -5,7 +5,7 @@ ifdef::context[:parent-context: {context}]
 = Configuring the regex detector and guardrails gateway
 [role='_abstract']
 
-The regex detector and guardrails gateway are two sidecar images that can be used with the `GuardrailsOrchestrator` service, either individually or together. They are enabled by the `GuardrailsOrchestrator`custom resource (CR).
+The regex detector and Guardrails gateway are sidecar containers that you can deploy with the `GuardrailsOrchestrator` service, either individually or together. Use the `GuardrailsOrchestrator` custom resource (CR) to enable them.
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -87,7 +87,7 @@ data:
 <3> The detector will be used for both input and output. 
 <4> The resulting endpoints for the  detectors. For example, `pii` is served at `$GUARDRAILS_GATEWAY_URL/pii/v1/chat/completions` and uses the `regex` detector. The `passthrough` preset does not use any detectors.
 
-. Deploy the  guardrails gateway `detectors_cm.yaml` config map:
+. Deploy the guardrails gateway `detectors_cm.yaml` config map:
 +
 [source,terminal]
 ----
