@@ -1,0 +1,58 @@
+:_module-type: PROCEDURE
+
+[id="installing-the-required-components-for-lab-tuning_{context}"]
+= Installing the required components for LAB-tuning
+
+[role='_abstract']
+To use the LAB-tuning in {productname-short}, you must install several components.
+
+.Prerequisites
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+* You have installed the required Operators for LAB-tuning. 
+
+.Procedure
+. In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
+ifdef::self-managed,cloud-service[]
+. Search for the *Red Hat OpenShift AI* Operator, and then click the Operator name to open the Operator details page.
+endif::[]
+ifdef::upstream[]
+. Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
+endif::[]
+. Click the *Data Science Cluster* tab.
+. Click the default instance name (for example, *default-dsc*) to open the instance details page.
+. Click the *YAML* tab to show the instance specifications.
+. In the `spec.components` section, set the `managementState` field to `Managed` for the following components:
++
+* `datasciencepipelines`
+* `kserve`
+* `kueue` 
+* `trainingoperator`
+
+ifdef::upstream[]
+. In the `spec.components` section, include the following `modelregistry` component entry with the `managementState` field set to `Managed` and the `registriesNamespace` field set to `odh-model-registries`:
++
+[source]
+----
+ modelregistry:
+    managementState: Managed
+    registriesNamespace: odh-model-registries
+----
+endif::[]
+ifndef::upstream[]
+. In the `spec.components` section, include the following `modelregistry` component entry with the `managementState` field set to `Managed` and the `registriesNamespace` field set to `rhoai-model-registries`:
++
+[source]
+----
+ modelregistry:
+    managementState: Managed
+    registriesNamespace: rhoai-model-registries
+----
+endif::[]
+
+. Click *Save*.
+
+[role='_additional-resources']
+.Additional resources
+* _Installing and managing {productname-long} components_
+* _Installing the distributed workloads components_
+* _Configuring the model registry component_

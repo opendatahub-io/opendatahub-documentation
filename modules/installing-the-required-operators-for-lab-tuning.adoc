@@ -1,0 +1,33 @@
+:_module-type: PROCEDURE
+
+[id="installing-the-required-operators-for-lab-tuning_{context}"]
+= Installing the required Operators for LAB-tuning
+
+[role='_abstract']
+To enable your data scientists to customize models using LAB-tuning in {productname-short}, a cluster administrator must install the following Operators in {openshift-platform}:
+
+* {productname-long} Operator
+* {org-name} Authorino Operator, version 1.2.1 or later
+* {org-name} {openshift-platform} Serverless Operator
+* {org-name} {openshift-platform} Service Mesh 2 Operator
+* NVIDIA GPU Operator, version 24.6
++
+[IMPORTANT]
+====
+LAB-tuning requires NVIDIA GPU Operator version 24.6. If a different version is currently installed, uninstall it before proceeding. Install the NVIDIA GPU Operator version 24.6 from OperatorHub in the recommended namespace: `nvidia-gpu-operator`. After installation, create a `ClusterPolicy` resource using the default values.
+====
+* Node Feature Discovery Operator
++
+[IMPORTANT]
+====
+Install the Node Feature Discovery Operator from OperatorHub in the recommended namespace: `openshift-nfd`. After installation, create a `NodeFeatureDiscovery` resource using the default values.
+====
+
+.Prerequisites
+* You have logged in to {openshift-platform} with the `cluster-admin` role.
+
+.Procedure
+* To install Operators, follow the steps described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster] in the OpenShift documentation.
+
+.Verification
+* In the {openshift-platform} web console, click *Operators* → *Installed Operators* and confirm that the Operators show the `Succeeded` status.
