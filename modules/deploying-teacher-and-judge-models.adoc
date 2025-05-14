@@ -4,9 +4,16 @@
 = Deploying teacher and judge models
 
 [role='_abstract']
-LAB-tuning in {productname-short} uses a teacher model (link:https://catalog.redhat.com/software/containers/rhelai1/modelcar-mixtral-8x7b-instruct-v0-1/67922f1e167e94db874af7ab[rhelai1/modelcar-mixtral-8x7b-instruct-v0-1:1.4]) to generate synthetic data and a judge model (link:https://catalog.redhat.com/software/containers/rhelai1/modelcar-prometheus-8x7b-v2-0/67922f21a4baf873b6f43d8c[rhelai1/modelcar-prometheus-8x7b-v2-0:1.4]) to evaluate the performance of the LAB-tuned model. 
+LAB-tuning in {productname-short} uses a teacher model to generate synthetic data and a judge model to evaluate the performance of the LAB-tuned model. 
 
-You can deploy the models in the same cluster as the LAB-tuning process or in a different cluster. When you configure your LAB-tuning run, you will provide the URL endpoints and authentication details for the teacher and judge models.
+////
+For more information about the teacher and judge models, see the {org-name} Ecosystem Catalog:
+
+* Teacher model: link:https://catalog.redhat.com/software/containers/rhelai1/modelcar-mixtral-8x7b-instruct-v0-1/67922f1e167e94db874af7ab[rhelai1/modelcar-mixtral-8x7b-instruct-v0-1:1.4]
+* Judge model: link:https://catalog.redhat.com/software/containers/rhelai1/modelcar-prometheus-8x7b-v2-0/67922f21a4baf873b6f43d8c[rhelai1/modelcar-prometheus-8x7b-v2-0:1.4]
+////
+
+You can deploy the models in the same cluster as the LAB-tuning process or in a different cluster. When you configure your LAB-tuning run, you provide the URL endpoints and authentication details for the teacher and judge models.
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -19,9 +26,9 @@ You can deploy the models in the same cluster as the LAB-tuning process or in a 
 .Procedure
 . From the {productname-short} dashboard, click *Models* -> *Model catalog*.
 +
-The *Model catalog* page opens showing the pre-built, curated models that are available to your organization.
+The *Model catalog* page opens, which shows the pre-built, curated models that are available to your organization.
 . Under *{org-name} models*, select a model with the `LAB teacher` label.
-. On the model details page, click the *Deploy model* button to deploy a model server that hosts the selected model and makes it available to your project.
+. On the model details page, click *Deploy model* to deploy a model server that hosts the selected model and makes it available to your project.
 +
 The *Deploy model* form appears.
 . For *Project*, select your data science project.
@@ -36,7 +43,7 @@ The `vLLm` *Model framework* is automatically selected.
 . Enter the *Number of model server replicas to deploy*. Set this number based on expected traffic and availability needs, such as support for failover.
 . Select a *Hardware profile* with the `Compatible` label.
 //Customize resource requests and limits
-. For *Model route*, select the *Make deployed models available through an external route* check box.
+. For *Model route*, select the *Make deployed models available through an external route* checkbox.
 . For *Token authentication*, select whether to *Require token authentication*. Enabling this option is recommended to reduce the risk of security vulnerabilities.
 . For *Source model location*, select *Current URI*.
 . Optional: Under *Configuration parameters*, add *Additional serving runtime arguments* or *Environment variables*, if needed. The values that you configure here apply only to this model deployment.

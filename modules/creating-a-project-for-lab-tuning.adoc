@@ -4,15 +4,21 @@
 = Creating a project for LAB-tuning
 
 [role='_abstract']
-To run LAB-tuning, create a data science project in {productname-short} and set up its pipeline server. The project keeps your resources organized, and the pipeline server runs and manages each step of the LAB-tuning workflow.
+To run LAB-tuning, create a data science project in {productname-short} and set up its pipeline server. The data science project keeps your resources organized, and the pipeline server runs and manages each step of the LAB-tuning workflow.
 
 .Prerequisites
 * You have logged in to {productname-short}.
 * You have the appropriate roles and permissions to create projects.
 * You have an existing S3-compatible object storage bucket and you have configured write access to your S3 bucket on your storage account.
 * If you are configuring a pipeline server for production pipeline workloads, you have an existing external MySQL or MariaDB database.
+ifndef::upstream[]
 ** For an external MySQL database, your database must use at least MySQL version 5.x. However, {org-name} recommends that you use MySQL version 8.x. 
 ** For an external MariaDB database, your database must use MariaDB version 10.3 or later. However, {org-name} recommends that you use at least MariaDB version 10.5.
+endif::[]
+ifdef::upstream[]
+** For an external MySQL database, your database must use at least MySQL version 5.x. However, MySQL version 8.x is recommended.
+** For an external MariaDB database, your database must use MariaDB version 10.3 or later. However, MariaDB version 10.5 is recommended.
+endif::[]
 * Your cluster administrator has configured LAB-tuning in your cluster, as described in _Enabling LAB-tuning_. 
 
 .Procedure
@@ -26,7 +32,7 @@ The *Create project* form opens.
 .. For *Name*, enter a unique display name for your project.
 .. Optional: If you want to change the default resource name for your project, click *Edit resource name*. 
 +
-The resource name is what your resource is labeled in {openshift-platform}.
+The resource name is how your resource is labeled in {openshift-platform}.
 Valid characters include lowercase letters, numbers, and hyphens (-).
 The resource name cannot exceed 30 characters, and it must start with a letter and end with a letter or number.
 +
@@ -57,13 +63,13 @@ The form populates with credentials for the connection.
 +
 * *Use default database stored on your cluster*: For development and testing purposes only. 
 * *Connect to external MySQL database*: For production pipeline workloads. For more information, see _Configuring a pipeline server_.
-.. In the *Install preconfigured pipelines* section, select the *InstructLab pipeline* check box.
+.. In the *Install preconfigured pipelines* section, select the *InstructLab pipeline* checkbox.
 +
 This installs the InstructLab pipeline on your project, allowing you to customize your model with LAB-tuning. 
 +
 [IMPORTANT]
 ====
-{productname-short} automatically updates the InstructLab pipeline. To disable automatic updates, go to the *Pipelines* tab of your data science project, click the drop-down arrow next to *Import pipeline*, select *Manage preconfigured pipelines*, clear the *InstructLab pipeline* check box, and click *Apply*.
+{productname-short} automatically updates the InstructLab pipeline. To disable automatic updates, go to the *Pipelines* tab of your data science project, click the drop-down arrow next to *Import pipeline*, select *Manage preconfigured pipelines*, clear the *InstructLab pipeline* checkbox, and click *Apply*.
 ====
 .. Click *Configure pipeline server*.
 

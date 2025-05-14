@@ -47,7 +47,7 @@ The *Model catalog* page opens.
 . Select a model with the `LAB starter` label.
 +
 The details page for the model opens.
-. Click the *Register model* button.
+. Click *Register model*.
 +
 The *Register model* page opens.
 . In the *Model details* section, configure details to apply to all versions of the model:
@@ -66,11 +66,11 @@ The details page for the registered base model opens.
 
 == Starting a LAB-tuning run from the registered model
 
-After registering a base model, you can start a LAB-tuning run to create your customized large language model (LLM). During the run configuration, you will provide the following details:
+After registering a base model, you can start a LAB-tuning run to create your customized large language model (LLM). When you configure the run, you will provide the following details:
 
 * The Git repository URL for your taxonomy.
 * The URLs where the teacher and judge models are deployed and the credentials needed to access them.
-* The amount of hardware resources (hardware profile) to use for data generation, training, and evaluation.
+* The hardware profile to use for data generation, training, and evaluation.
 * Any hyperparameters to apply to the tuning process.
 * The location to store the LAB-tuned model and the credentials needed to access the storage location.
 
@@ -93,7 +93,7 @@ The details page for the registered model opens.
 +
 The details page for the version opens.
 . Review the version details.
-. Click the *LAB-tune* button.
+. Click *LAB-tune*.
 +
 The *Start a LAB-tuning run* dialog opens.
 . Select your project from the *Data science project* drop-down list.
@@ -107,23 +107,18 @@ The *Start a LAB-tuning run* dialog opens.
 +
 [TIP]
 ====
-To find this information, go to the *Models* tab of your data science project. For *Endpoint* and *Model name*, click *Internal and external endpoint details*. For *Token*, expand the section for your model and find the *Token authentication* section.
+To find token authentication for your judge and teacher models, go to the *Models* tab of your data science project. For *Endpoint* and *Model name*, click *Internal and external endpoint details* for your model. For *Token*, expand the section for your model and find the *Token authentication* section.
 ====
 . In the *LAB judge model* section, if your judge model requires token authentication, select *Authenticated endpoint* and enter the *Endpoint*, *Token*, and *Model name*. If your judge model does not require token authentication, select *Unauthenticated endpoint* and enter the *Endpoint* and *Model name*.
-+
-[TIP]
-====
-To find this information, go to the *Models* tab of your data science project. For *Endpoint* and *Model name*, click *Internal and external endpoint details* for your model. For *Token*, expand the section for your model and find the *Token authentication* section.
-====
 . In the *Training hardware* section, configure the following settings:
 .. For *Hardware profile*, select a hardware profile to match the hardware requirements of your workload to available node resources. 
-.. For *Training nodes*, enter the total number of nodes to use for the run. Note that one node is used for the evaluation run phase.
+.. For *Training nodes*, enter the total number of nodes to use for the run. One node is used for the evaluation run phase.
 .. For *Storage class*, select a storage class that is compatible with LAB-tuning and distributed training.
 . Optional: In the *Hyperparameters* section, configure advanced settings for the run.
 . In the *Fine-tuned model details* section, configure settings for the fine-tuned version of the base model:
 .. For *Model output storage location*, select an *Existing connection* location to store the fine-tuned model output, or select *Create connection* to create a new connection.
-.. For *OCI storage location* field, enter the full *Model URI* where the LAB-tuned model will be stored (for example, `oci://quay.io/my-org/fine-tuned-model-name:version`). Note that this value is separate from the connection. The connection provides access, while the URI defines the specific location.
-. Select the *Add model to registry* check box to enable storing, sharing, versioning, and deploying the LAB-tuned model in the model registry.
+.. For *OCI storage location* field, enter the full *Model URI* where the LAB-tuned model will be stored (for example, `oci://quay.io/my-org/fine-tuned-model-name:version`). The value of the URI is different from the connection. The connection provides access, while the URI defines the specific location.
+. Select the *Add model to registry* checkbox so you can store, share, version, and deploy the LAB-tuned model in the model registry.
 .. For *Model version name*, enter a name for the new LAB-tuned model version.
 . Click *Start run*.
 
@@ -142,9 +137,9 @@ To monitor the status of your LAB-tuning run, follow these steps:
 
 == Reviewing and deploying your LAB-tuned model
 
-When the pipeline run is finished, your LAB-tuned model is available in the storage location you specified during the LAB-tune run configuration.
+When the pipeline run is finished, your LAB-tuned model is available in the storage location that you specified during the LAB-tune run configuration.
 
-If you selected the *Add model to registry* check box when you configured the run, the LAB-tuned model is in the model registry as a new version of the registered base model. 
+If you selected *Add model to registry* when you configured the run, the LAB-tuned model is in the model registry as a new version of the registered base model. 
 
 To view and deploy your LAB-tuned model from the model registry, follow these steps:
 
@@ -157,5 +152,5 @@ The details page for the registered model opens.
 . On the *Versions* tab of the model details page, click the name of the new version.
 +
 The details page for the version opens.
-. To deploy the LAB-tuned model, click the *Deploy* button.
+. To deploy the LAB-tuned model, click *Deploy*.
 
