@@ -9,10 +9,10 @@ LAB-tuning in {productname-short} uses a teacher model (link:https://catalog.red
 You can deploy the models in the same cluster as the LAB-tuning process or in a different cluster. When you configure your LAB-tuning run, you will provide the URL endpoints and authentication details for the teacher and judge models.
 
 .Prerequisites
-
 * You have logged in to {productname-long}.
 * Your cluster administrator has configured LAB-tuning in your cluster, as described in _Enabling LAB-tuning_. 
-* Your cluster has available GPUs capable to deploy the teacher and judge models.
+* For the teacher model (link:https://catalog.redhat.com/software/containers/rhelai1/modelcar-mixtral-8x7b-instruct-v0-1/67922f1e167e94db874af7ab[rhelai1/modelcar-mixtral-8x7b-instruct-v0-1:1.4]), the {openshift-platform} cluster has a worker node with 1 or multiple GPUs capable of running the model (for example, a2-ultragpu-4g, which contains 4 x NVIDIA A100 with 80GB vRAM) and has at least 100 GiB of available disk storage to store the model.
+* For the judge model (link:https://catalog.redhat.com/software/containers/rhelai1/modelcar-prometheus-8x7b-v2-0/67922f21a4baf873b6f43d8c[rhelai1/modelcar-prometheus-8x7b-v2-0:1.4]), the {openshift-platform} cluster has a worker node with 1 or multiple GPUs capable of running this model (for example, a2-ultragpu-2g, which contains 2 x NVIDIA A100 with 80GB vRAM) and has at least at least 100 GiB of available disk storage to store the model.
 * You have enabled the LAB-tuning features in your current session, as described in _Making LAB-tuning features visible_.
 * You have created a data science project and configured its pipeline server.
 
