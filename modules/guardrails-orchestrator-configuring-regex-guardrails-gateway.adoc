@@ -1,30 +1,11 @@
 :_module-type: PROCEDURE
 
 ifdef::context[:parent-context: {context}]
-[id="configuring-regex-detector-vllm-guardrails-gateway_{context}"]
-= Configuring the regex detector and vLLM guardrails gateway
+[id="configuring-regex-guardrails-gateway_{context}"]
+= Configuring the regex detector and guardrails gateway
 [role='_abstract']
 
-//The following TP note is to be removed in 2.20 when G-Orch regex detector and vLLM guardrails gateway is scheduled to be GA  
-ifndef::upstream[]
-[IMPORTANT]
-====
-ifdef::self-managed[]
-The Guardrails Orchestrator regex detector and vLLM guardrails gateway are currently available in {productname-long} {vernum} as a Technology Preview feature.
-endif::[]
-ifdef::cloud-service[]
-The Guardrails Orchestrator regex detector and vLLM guardrails gateway are currently available in {productname-long} as a Technology Preview feature.
-endif::[]
-Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
-{org-name} does not recommend using them in production.
-These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
-
-For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
-====
-endif::[]
-
-The following example demonstrates how to enable the regex detector and guardrails gateway sidecar images with the `GuardrailsOrchestrator` service. The regex detector and vLLM guardrails gateway must be configured together but can be used separately. 
-
+The regex detector and guardrails gateway are two sidecar images that can be used with the `GuardrailsOrchestrator` service, either individually or together. They are enabled by the `GuardrailsOrchestrator`custom resource (CR).
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -46,28 +27,28 @@ endif::[]
 
 . Define a `ConfigMap` object in a YAML file to specify the `regexDetectorImage`. For example, create a YAML file called `regex_image_cm.yaml` with the following content:
 +
-.Example `regex_vllm_images_cm.yaml`
+.Example `regex_gateway_images_cm.yaml`
 [source,yaml]
 ----
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: gorch-regex-vllm-image-config
+  name: gorch-regex-gateway-image-config
 data:
   regexDetectorImage: 'quay.io/repository/trustyai/regex-detector@sha256:efab6cd8b637b9c35d311aaf639dfedee7d28de3ee07b412ab473deadecd3606'            <1>
-  vllmGatewayImage: 'quay.io/repository/trustyai/vllm-orchestrator-gateway@sha256:c511b386d61a728acdfe8a1ac7a16b3774d072dd053718e5b9c5fab0f025ac3b' <2>
+  GatewayImage: 'quay.io/repository/trustyai/vllm-orchestrator-gateway@sha256:c511b386d61a728acdfe8a1ac7a16b3774d072dd053718e5b9c5fab0f025ac3b' <2>
 ----
 <1> The regex detector is a sidecar image that provides regex-based detections.
-<2> The vLLM guardrails gateway is a sidecar image that emulates the vLLM chat completions API and saves preset detector configurations.
+<2> The guardrails gateway is a sidecar image that emulates the vLLM chat completions API and saves preset detector configurations.
 
-. Deploy the `regex_vllm_images_cm.yaml` config map:
+. Deploy the `regex_gateway_images_cm.yaml` config map:
 +
 [source,terminal]
 ----
-$ oc apply -f regex_vllm_images_cm.yaml -n <TEST_NAMESPACE>
+$ oc apply -f regex_gateway_images_cm.yaml -n <TEST_NAMESPACE>
 ----
 
-. Define another vLLM guardrails gateway `ConfigMap` object to specify the `detectors` and `routes`. For example, create a YAML file called `detectors_cm.yaml` with the following contents:
+. Define the guardrails gateway `ConfigMap` object to specify the `detectors` and `routes`. For example, create a YAML file called `detectors_cm.yaml` with the following contents:
 +
 .Example `detectors_cm.yaml`
 [source,yaml]
@@ -84,17 +65,20 @@ data:
       host: "localhost"
       port: 8032
     detectors:      <2>
-      - name: regex
+      - name: regex_language
         input: true <3>
         output: true
         detector_params:
           regex:
             - email
             - ssn
+      - name: hap
+        detector_params: {}
     routes:         <4>
-      - name: pii
+      - name: all
         detectors:
-          - regex
+          - regex_language
+          - hap
       - name: passthrough
         detectors:
 ----
@@ -103,7 +87,7 @@ data:
 <3> The detector will be used for both input and output. 
 <4> The resulting endpoints for the  detectors. For example, `pii` is served at `$GUARDRAILS_GATEWAY_URL/pii/v1/chat/completions` and uses the `regex` detector. The `passthrough` preset does not use any detectors.
 
-. Deploy the vLLM guardrails gateway `detectors_cm.yaml` config map:
+. Deploy the  guardrails gateway `detectors_cm.yaml` config map:
 +
 [source,terminal]
 ----
@@ -121,7 +105,7 @@ metadata:
   name: gorch-sample
 spec:
   orchestratorConfig: "fms-orchestr8-config-nlp"   <1>
-  "gorch-regex-vllm-image-config"                  <2>
+  "gorch-regex-gateway-image-config"                  <2>
   "fms-orchestr8-config-gateway"                   <3>
   replicas: 1
 ----
