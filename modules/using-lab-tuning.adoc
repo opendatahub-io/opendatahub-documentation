@@ -103,13 +103,16 @@ The *Start a LAB-tuning run* dialog opens.
 . Review the *Project details*, *Pipeline details*, and *Base model* sections for accuracy.
 . In the *Taxonomy details* section, enter your *Taxonomy GIT URL*. 
 . If your Git repository requires authentication, select either the *SSH key* or *Username and token* method and enter the appropriate credentials.
-. In the *LAB teacher model* section, if your teacher model requires token authentication, select *Authenticated endpoint* and enter the *Endpoint*, *Token*, and *Model name*. If your teacher model does not require token authentication, select *Unauthenticated endpoint* and enter the *Endpoint* and *Model name*. 
+. In the *LAB teacher model* and *LAB judge model* sections, configure the following settings:
+.. Select *Authenticated endpoint* if your model requires token authentication, otherwise select *Unauthenticated endpoint*. 
+.. Enter the *Endpoint* ending with `/v1`. For example: `https://mixtral-my-project.apps.my-cluster.com/v1`
 +
 [TIP]
 ====
-To find token authentication for your judge and teacher models, go to the *Models* tab of your data science project. For *Endpoint* and *Model name*, click *Internal and external endpoint details* for your model. For *Token*, expand the section for your model and find the *Token authentication* section.
+To find authentication details for your judge and teacher models, go to the *Models* tab of your data science project. For *Endpoint* and *Model name*, click *Internal and external endpoint details* for your model. For *Token*, expand the section for your model and find the *Token authentication* section.
 ====
-. In the *LAB judge model* section, if your judge model requires token authentication, select *Authenticated endpoint* and enter the *Endpoint*, *Token*, and *Model name*. If your judge model does not require token authentication, select *Unauthenticated endpoint* and enter the *Endpoint* and *Model name*.
+.. Enter the *Model name*. 
+.. If authenticated, enter the *Token*.
 . In the *Training hardware* section, configure the following settings:
 .. For *Hardware profile*, select a hardware profile to match the hardware requirements of your workload to available node resources. 
 .. For *Training nodes*, enter the total number of nodes to use for the run. One node is used for the evaluation run phase.
@@ -117,14 +120,15 @@ To find token authentication for your judge and teacher models, go to the *Model
 . Optional: In the *Hyperparameters* section, configure advanced settings for the run.
 . In the *Fine-tuned model details* section, configure settings for the fine-tuned version of the base model:
 .. For *Model output storage location*, select an *Existing connection* location to store the fine-tuned model output, or select *Create connection* to create a new connection.
-.. For *OCI storage location* field, enter the full *Model URI* where the LAB-tuned model will be stored (for example, `oci://quay.io/my-org/fine-tuned-model-name:version`). The value of the URI is different from the connection. The connection provides access, while the URI defines the specific location.
-. Select the *Add model to registry* checkbox so you can store, share, version, and deploy the LAB-tuned model in the model registry.
+.. For *OCI storage location* field, enter the full *Model URI* where the LAB-tuned model will be stored. For example: `oci://quay.io/my-org/fine-tuned-model-name:version`
++
+The value of the URI is different from the connection. The connection provides access, while the URI defines the specific location.
+. Select the *Add model to registry* checkbox so that you can store, share, version, and deploy the LAB-tuned model in the model registry.
 .. For *Model version name*, enter a name for the new LAB-tuned model version.
 . Click *Start run*.
 
 .Verification
 * The *Runs* page opens for the pipeline version.
-//Other ways to verify?
 
 == Monitoring your LAB-tuning run
 
