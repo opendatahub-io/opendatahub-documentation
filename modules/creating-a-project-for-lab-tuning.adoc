@@ -14,12 +14,13 @@ To run LAB-tuning, create a data science project in {productname-short} and set 
 ifndef::upstream[]
 ** For an external MySQL database, your database must use at least MySQL version 5.x. However, {org-name} recommends that you use MySQL version 8.x. 
 ** For an external MariaDB database, your database must use MariaDB version 10.3 or later. However, {org-name} recommends that you use at least MariaDB version 10.5.
+* Your cluster administrator has configured LAB-tuning in your cluster, as described in link:{rhoaidocshome}{default-format-url}/enabling_lab-tuning/index[Enabling LAB-tuning].
 endif::[]
 ifdef::upstream[]
 ** For an external MySQL database, your database must use at least MySQL version 5.x. However, MySQL version 8.x is recommended.
 ** For an external MariaDB database, your database must use MariaDB version 10.3 or later. However, MariaDB version 10.5 is recommended.
+* Your cluster administrator has configured LAB-tuning in your cluster, as described in link:{odhdocshome}/customizing-models-with-lab-tuning/#enabling-lab-tuning_lab-tuning[Enabling LAB-tuning].
 endif::[]
-* Your cluster administrator has configured LAB-tuning in your cluster, as described in _Enabling LAB-tuning_. 
 
 .Procedure
 . From the {productname-short} dashboard, click *Data science projects*.
@@ -48,7 +49,12 @@ The project details page opens.
 +
 The *Create connection* form opens.
 .. For *Connection type* select *S3 compatible object storage - v1*.
-.. Complete the *Connection details*. For more information, see _Adding a connection to your data science project_.
+ifndef::upstream[]
+. Complete the *Connection details*. For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+endif::[]
+ifdef::upstream[]
+. Complete the *Connection details*. For more information, see link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+endif::[]
 .. Click *Create*.
 +
 The new connection is displayed on the *Connections* tab for the project.
@@ -62,7 +68,12 @@ The form populates with credentials for the connection.
 .. In the *Database* section, select one of the following options:
 +
 * *Use default database stored on your cluster*: For development and testing purposes only. 
-* *Connect to external MySQL database*: For production pipeline workloads. For more information, see _Configuring a pipeline server_.
+ifndef::upstream[]
+* *Connect to external MySQL database*: For production pipeline workloads. For more information, see link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+endif::[]
+ifdef::upstream[]
+* *Connect to external MySQL database*: For production pipeline workloads. For more information, see link:{odhdocshome}/working-with-data-science-pipelines/#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+endif::[]
 .. In the *Install preconfigured pipelines* section, select the *InstructLab pipeline* checkbox.
 +
 This installs the InstructLab pipeline on your project, allowing you to customize your model with LAB-tuning. 
@@ -79,7 +90,13 @@ This installs the InstructLab pipeline on your project, allowing you to customiz
 
 [role='_additional-resources']
 .Additional resources
-
-* _Creating a data science project_
-* _Adding a connection to your data science project_
-* _Configuring a pipeline server_
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project]
+* link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project]
+* link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server]
+endif::[]
+ifdef::upstream[]
+* link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project]
+* link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project]
+* link:{odhdocshome}/working-with-data-science-pipelines/#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server]
+endif::[]
