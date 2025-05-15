@@ -104,17 +104,17 @@ kind: GuardrailsOrchestrator
 metadata:
   name: gorch-sample
 spec:
-  orchestratorConfig: "fms-orchestr8-config-nlp"   <1>
-  "gorch-regex-gateway-image-config"                  <2>
-  "fms-orchestr8-config-gateway"                   <3>
+  orchestratorConfig: "fms-orchestr8-config-nlp"   
+  enableBuiltInDetectors: True  <1>
+  enableGuardrailsGateway: True  <2>
+  guardrailsGatewayConfig: "fms-orchestr8-config-gateway" <3>
   replicas: 1
 ----
-<1> The `ConfigMap` for general Guardrails Orchestrator deployment. 
-<2> The `ConfigMap` that sets `chat_generation.service.hostname` and `detectors.hap.service.hostname`.
-<3> The `ConfigMap` that specifies the `detectors` and `routes`.
-
-
-. Deploy the orchestrator custom resource. This creates a service account, deployment, service, and route object in your namespace.
+<1> The `enableBuiltInDetectors` field, if set to `True`, injects built-in detectors as a sidecar container into the orchestrator pod.
+<2> The `enableGuardrailsGateway` field, if set to `True`, injects guardrails gateway as a sidecar container into the orchestrator pod.
+<3> The `guardrailsGatewayConfig` field specifies the name of a `ConfigMap` resource that reroutes the orchestrator and regex detector routes to specific paths.
+	
+. Deploy the orchestrator custom resource. This step creates a service account, deployment, service, and route object in your namespace.
 +
 [source,terminal]
 ----
