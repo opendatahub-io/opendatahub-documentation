@@ -110,11 +110,11 @@ spec:
   guardrailsGatewayConfig: "fms-orchestr8-config-gateway" <3>
   replicas: 1
 ----
-<1> The `enableBuiltInDetectors`, if set to `True`, injects regex detectors as a sidecar container into the orchestrator pod.
-<2> The `enableGuardrailsGateway`, if set to `True`, injects the guardrails gateway as a sidecar container into the orchestrator pod.
-<3> The `guardrailsGatewayConfig` field specifies a `ConfigMap` that reroutes the orchestrator and regex detector routes to specific paths.
+<1> The `enableBuiltInDetectors` field, if set to `True`, injects built-in detectors as a sidecar container into the orchestrator pod.
+<2> The `enableGuardrailsGateway` field, if set to `True`, injects guardrails gateway as a sidecar container into the orchestrator pod.
+<3> The `guardrailsGatewayConfig` field specifies the name of a `ConfigMap` resource that reroutes the orchestrator and regex detector routes to specific paths.
 	
-. Deploy the orchestrator custom resource. This creates a service account, deployment, service, and route object in your namespace.
+. Deploy the orchestrator custom resource. This step creates a service account, deployment, service, and route object in your namespace.
 +
 [source,terminal]
 ----
