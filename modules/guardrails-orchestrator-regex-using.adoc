@@ -15,8 +15,8 @@ You can use the Guardrails Orchestrator API to send requests to the regex detect
 +
 [source,terminal]
 ----
-GORCH_ROUTE=$(oc get routes guardrails-orchestrator-http -o jsonpath='{.spec.host}')
-curl -X 'POST' "https://$ORCH_ROUTE_HTTP/api/v2/text/detection/content" \
+GORCH_ROUTE=$(oc get routes guardrails-orchestrator -o jsonpath='{.spec.host}')
+curl -X 'POST' "https://$ORCH_ROUTE/api/v2/text/detection/content" \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
