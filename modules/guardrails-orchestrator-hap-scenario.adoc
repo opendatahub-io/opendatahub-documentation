@@ -63,7 +63,7 @@ $ oc apply -f orchestrator_cm.yaml -n <TEST_NAMESPACE>
 +
 [source,terminal]
 ----
-GORCH_ROUTE_HTTP=$(oc get routes gorch-test-http -o jsonpath='{.spec.host}' -n <TEST_NAMESPACE>)
+GORCH_ROUTE=$(oc get routes gorch-test -o jsonpath='{.spec.host}' -n <TEST_NAMESPACE>)
 ----
 +
 . Query the orchestrator's `api/v2/chat/completions-detections` endpoint without the HAP detector enabled to generate a response without guardrails:
