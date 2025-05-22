@@ -1,0 +1,38 @@
+:_module-type: PROCEDURE
+
+[id="showing-hiding-information-about-available-applications_{context}"]
+= Showing or hiding information about available applications
+
+[role='_abstract']
+You can view a list of available applications in the *Exploring applications* page of the {productname-short} dashboard. By default, the following extra information is provided for each application:
+
+* Any independent software vendor (ISV) application is indicated with a label on the tile indicating “{org-name} managed”, “Partner managed”, or “Self-managed”. As a cluster administrator, you can hide or show the labels. For example, if you are running a self-managed environment, you might want to show all available applications regardless of the support level. 
+
+* When a user clicks on an application, an information panel appears and provides more information about the application, including links to quick starts or detailed documentation. You can disable or enable the appearance of application information panels.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+.Procedure
+
+. Log in to the {openshift-platform} console as a cluster administrator.
+. Open the dashboard configuration file:
+.. In the *Administrator* perspective, click *Home* -> *API Explorer*.
+.. In the search bar, enter `OdhDashboardConfig` to filter by kind.
+.. Click the `OdhDashboardConfig` custom resource (CR) to open the resource details page.
+.. Select the `redhat-ods-applications` project from the *Project* list.
+.. Click the *Instances* tab.
+.. Click the `odh-dashboard-config` instance to open the details page.
+.. Click the *YAML* tab. 
+
+. In the `spec.dashboardConfig` section, set either or both of the following options:
+
+** `disableInfo` - Set to `true` to hide the appearance of application information panel. Set to `False` (the default) to show the application information panel.
+** `disableISVBadges` - Set to `true` to hide the appearance of the support-level label. Set to `False` (the default) to show the support-level label.
+
+. Click *Save* to apply your changes and then click *Reload* to make sure that your changes are synced to the cluster.
+
+.Verification
+
+Log in to {productname-short} and verify that your dashboard configurations apply.
