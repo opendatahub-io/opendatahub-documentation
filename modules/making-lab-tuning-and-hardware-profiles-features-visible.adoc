@@ -4,27 +4,29 @@
 = Making LAB-tuning and hardware profile features visible
 
 [role='_abstract']
-By default, hardware profiles and LAB-tuning features are hidden from the {productname-short} dashboard navigation menu and user interface. You must manually enable these features in your current session to access the *Model catalog*, *Model customization*, and *Hardware profiles* pages. 
+By default, hardware profiles and LAB-tuning features are hidden from the {productname-short} dashboard navigation menu and user interface. You must enable these features to access the *Model catalog*, *Model customization*, and *Hardware profiles* pages. 
 
 .Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have installed the required Operators and components for LAB-tuning. 
-* You are logged in to {productname-short}.
+ifdef::upstream[]
+* A cluster administrator has configured and enabled the model registry component in your {productname-short} deployment. For more information, see link:{odhdocshome}/working-with-model-registries/#configuring-the-model-registry-component_model-registry[Configuring the model registry component].
+endif::[]
+ifndef::upstream[]
+* A cluster administrator has configured and enabled the model registry component in your {productname-short} deployment. For more information, see link:{rhoaidocshome}{default-format-url}/configuring_the_model_registry_component/configuring-the-model-registry-component_model-registry-config[Configuring the model registry component].
+endif::[]
 
 .Procedure
-. In the browser tab where the {productname-short} dashboard is open, add `?devFeatureFlags` to the end of the URL.  
-For example:
-`https://<your-dashboard-url>?devFeatureFlags`
+ifdef::upstream[]
+. Follow the steps described in link:{odhdocshome}/managing-odh/#customizing-the-dashboard[Customizing the dashboard] to set the following dashboard configuration options to `false`: 
+endif::[]
+ifndef::upstream[]
+. Follow the steps described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/customizing-the-dashboard[Customizing the dashboard] to set the following dashboard configuration options to `false`: 
+endif::[]
 +
-The following banner appears at the top of the {productname-short} dashboard:
-+  
-`Feature flags are overridden in the current session. Click here to reset back to defaults.`
-. Click the `overridden` link in the banner to open the *Feature flags* modal.
-. In the *Feature flags* modal, clear the following checkboxes:
-+
-* `disableModelCatalog`: Clear the checkbox to enable the *Models* → *Model catalog* page in the dashboard.  
-* `disableFineTuning`: Clear the checkbox to enable the *Models* → *Model customization* page and the *LAB-tune* button on the model detail page in the model registry.
-* `disableHardwareProfiles`: Clear the checkbox to enable the *Settings* → *Hardware profiles* page and related UI components.  
-. Close the *Feature flags* modal.
+* `disableModelCatalog`: Set to `false` to enable the *Models* → *Model catalog* page in the dashboard.  
+* `disableFineTuning`: Set to `false` to enable the *Models* → *Model customization* page and the *LAB-tune* button on the model details page in the model registry.
+* `disableHardwareProfiles`: Set to `false` to enable the *Settings* → *Hardware profiles* page and related UI components.  
 
 .Verification
 The following pages appear in the {productname-short} dashboard navigation menu:
@@ -32,3 +34,4 @@ The following pages appear in the {productname-short} dashboard navigation menu:
 * *Models* → *Model catalog*  
 * *Models* → *Model customization*  
 * *Settings* → *Hardware profiles*
+
