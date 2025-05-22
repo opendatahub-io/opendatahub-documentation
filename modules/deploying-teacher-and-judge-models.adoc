@@ -12,11 +12,9 @@ You can deploy the models in the same cluster as the LAB-tuning process or in a 
 * You have logged in to {productname-long}.
 ifndef::upstream[]
 * Your cluster administrator has configured LAB-tuning in your cluster, as described in link:{rhoaidocshome}{default-format-url}/enabling_lab-tuning/index[Enabling LAB-tuning].
-* You have enabled the LAB-tuning features in your current session, as described in link:{rhoaidocshome}{default-format-url}/customizing_models_with_lab-tuning/making-lab-tuning-features-visible_lab-tuning[Making LAB-tuning features visible].
 endif::[]
 ifdef::upstream[]
 * Your cluster administrator has configured LAB-tuning in your cluster, as described in link:{odhdocshome}/customizing-models-with-lab-tuning/#enabling-lab-tuning_lab-tuning[Enabling LAB-tuning].
-* You have enabled the LAB-tuning features in your current session, as described in link:{odhdocshome}/customizing-models-with-lab-tuning/#making-lab-tuning-features-visible_lab-tuning[Making LAB-tuning features visible].
 endif::[]
 * You have created a data science project and configured its pipeline server.
 * For the teacher model (link:https://catalog.redhat.com/software/containers/rhelai1/modelcar-mixtral-8x7b-instruct-v0-1/67922f1e167e94db874af7ab[rhelai1/modelcar-mixtral-8x7b-instruct-v0-1:1.4]), the {openshift-platform} cluster has a worker node with 1 or multiple GPUs capable of running the model (for example, a2-ultragpu-4g, which contains 4 x NVIDIA A100 with 80GB vRAM) and has at least 100 GiB of available disk storage to store the model.
@@ -26,7 +24,7 @@ endif::[]
 . From the {productname-short} dashboard, click *Models* -> *Model catalog*.
 +
 The *Model catalog* page opens, which shows the pre-built, curated models that are available to your organization.
-. Under *{org-name} models*, select a model with the `LAB teacher` label.
+. Under *{org-name} models*, select a model with the `LAB teacher` or `LAB judge` label.
 . On the model details page, click *Deploy model* to deploy a model server that hosts the selected model and makes it available to your project.
 +
 The *Deploy model* form appears.
