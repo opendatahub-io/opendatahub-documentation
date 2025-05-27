@@ -93,9 +93,10 @@ def ray_fn():
            namespace="my_project", <4>
            name="raytest",
            num_workers=1,
-           head_cpus="500m",
-           min_memory=1,
-           max_memory=1,
+           head_cpu_requests="500m",
+           head_cpu_limits="500m",
+           worker_memory_requests=1,
+           worker_memory_limits=1,
            worker_extended_resource_requests={“nvidia.com/gpu”: 1}, <5>
            image="quay.io/modh/ray:2.35.0-py39-cu121", <6>
            local_queue="local_queue_name", <7>
@@ -159,8 +160,6 @@ if __name__ == '__main__': <14>
 <5> Optional: Specifies the requested accelerators for the Ray cluster (in this example, 1 NVIDIA GPU).
 If you do not use NVIDIA GPUs, replace `nvidia.com/gpu` with the correct value for your accelerator; for example, specify `amd.com/gpu` for AMD GPUs.
 If no accelerators are required, set the value to 0 or omit the line.
-Note: To specify the requested accelerators for the Ray cluster, use the `worker_extended_resource_requests` parameter instead of the deprecated `num_gpus` parameter.
-For more details, see the link:https://github.com/project-codeflare/codeflare-sdk/blob/v0.18.0/src/codeflare_sdk/cluster/config.py#L43-L73[CodeFlare SDK documentation].
 <6> Specifies the location of the Ray cluster image. 
 The Python version in the Ray cluster image must be the same as the Python version in the workbench.
 If you omit this line, one of the default CUDA-compatible Ray cluster images is used, based on the Python version detected in the workbench.
