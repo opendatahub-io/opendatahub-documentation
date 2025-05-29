@@ -9,7 +9,7 @@ You can revoke a user's access to Jupyter by removing the user from the {product
 IMPORTANT: Follow these steps only if you have implemented {productname-short} user groups to restrict access to {productname-short}. To completely remove a user from {productname-short}, you must remove them from the allowed group in your OpenShift identity provider.
 
 .Prerequisites
-* You have stopped any notebook servers owned by the user you want to delete.
+* You have stopped any workbenches owned by the user you want to delete.
 ifdef::cloud-service[]
 * You are part of the `cluster-admins` or `dedicated-admins` user group in your OpenShift cluster. The `dedicated-admins` user group applies only to OpenShift Dedicated.
 endif::[]
@@ -33,7 +33,7 @@ The *Group details* page for the group appears.
 
 .Verification
 * Check the *Users* section on the *Details* tab and confirm that the user that you removed is not visible.
-* In the `rhods-notebooks` project, check under *Workloads* -> *Pods* and ensure that there is no notebook server pod for this user. If you see a pod named `jupyter-nb-<username>-*` for the user that you have removed, delete that pod to ensure that the deleted user is not consuming resources on the cluster.
+* In the `rhods-notebooks` project, check under *Workloads* -> *Pods* and ensure that there is no workbench pod for this user. If you see a pod named `jupyter-nb-<username>-*` for the user that you have removed, delete that pod to ensure that the deleted user is not consuming resources on the cluster.
 * In the {productname-short} dashboard, check the list of data science projects. Delete any projects that belong to the user.
 
 //[role="_additional-resources"]
