@@ -17,10 +17,10 @@ To run a distributed data science workload in a disconnected environment, you mu
 * You have logged in to {productname-long}.
 
 ifndef::upstream[]
-* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project].
+* You have created a data science project that contains a workbench, and the workbench is running a default workbench image that contains the CodeFlare SDK, for example, the *Standard Data Science* workbench. For information about how to create a project, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project].
 endif::[]
 ifdef::upstream[]
-* You have created a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project].
+* You have created a data science project that contains a workbench, and the workbench is running a default workbench image that contains the CodeFlare SDK, for example, the *Standard Data Science* workbench. For information about how to create a project, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project].
 endif::[]
 
 * You have administrator access for the data science project.
@@ -30,8 +30,8 @@ endif::[]
 
 .Procedure
 . Configure the disconnected data science cluster to run distributed workloads as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai[Managing distributed workloads].
-. In the `ClusterConfiguration` section of the notebook or pipeline, ensure that the `image` value specifies a Ray cluster image that you can access from the disconnected environment:
-* Notebooks use the Ray cluster image to create a Ray cluster when running the notebook.
+. In the `ClusterConfiguration` section of the Jupyter notebook or pipeline, ensure that the `image` value specifies a Ray cluster image that you can access from the disconnected environment:
+* Jupyter notebooks use the Ray cluster image to create a Ray cluster when running the notebook cells.
 * Pipelines use the Ray cluster image to create a Ray cluster during the pipeline run.
 . If any of the Python packages required by the workload are not available in the Ray cluster, configure the Ray cluster to download the Python packages from a private PyPI server.
 +
@@ -44,12 +44,12 @@ PIP_TRUSTED_HOST: pypi-notebook.apps.mylocation.com
 where
 * `PIP_INDEX_URL` specifies the base URL of your private PyPI server (the default value is https://pypi.org).
 * `PIP_TRUSTED_HOST` configures Python to mark the specified host as trusted, regardless of whether that host has a valid SSL certificate or is using a secure channel.
-. Run the distributed data science workload, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#running-distributed-data-science-workloads-from-notebooks_distributed-workloads[Running distributed data science workloads from notebooks] or link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#running-distributed-data-science-workloads-from-ds-pipelines_distributed-workloads[Running distributed data science workloads from data science pipelines].
+. Run the distributed data science workload, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#running-distributed-data-science-workloads-from-notebooks_distributed-workloads[Running distributed data science workloads from Jupyter notebooks] or link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#running-distributed-data-science-workloads-from-ds-pipelines_distributed-workloads[Running distributed data science workloads from data science pipelines].
 
 .Verification
-The notebook or pipeline run completes without errors:
+The Jupyter notebook or pipeline run completes without errors:
 
-* For notebooks, the output from the `cluster.status()` function or `cluster.details()` function indicates that the Ray cluster is `Active`.
+* For Jupyter notebooks, the output from the `cluster.status()` function or `cluster.details()` function indicates that the Ray cluster is `Active`.
 * For pipeline runs, you can view the run details as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-pipeline-runs_ds-pipelines#viewing-the-details-of-a-pipeline-run_ds-pipelines[Viewing the details of a pipeline run].
 
 [role='_additional-resources']

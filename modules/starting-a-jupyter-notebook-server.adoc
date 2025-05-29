@@ -1,23 +1,23 @@
 :_module-type: PROCEDURE
 
 [id='starting-a-jupyter-notebook-server_{context}']
-= Starting a Jupyter notebook server
+= Starting a Jupyter workbench
 
 [role='_abstract']
-Jupyter is based on a server-client architecture. The Jupyter notebook server runs in a container on the Red Hat OpenShift cluster. The client is the JupyterLab interface that opens in your web browser on your local computer. However, all of the commands that you enter in JupyterLab are executed by the notebook server. This architecture allows you to interact through your local computer in a browser environment, while all processing occurs on the cluster. The cluster provides the benefits of larger available resources and security because the data being processed never leaves the cluster.
+Jupyter is based on a server-client architecture. The Jupyter workbench runs in a container on the Red Hat OpenShift cluster. The client is the JupyterLab interface that opens in your web browser on your local computer. However, all of the commands that you enter in JupyterLab are executed by the workbench. This architecture allows you to interact through your local computer in a browser environment, while all processing occurs on the cluster. The cluster provides the benefits of larger available resources and security because the data being processed never leaves the cluster.
 
-From the Jupyter application tile, you can start a Jupyter notebook server. If you require extra power for use with large datasets, you can assign accelerators to your notebook server to optimize performance. 
+From the Jupyter application tile, you can start a Jupyter workbench. If you require extra power for use with large datasets, you can assign accelerators to your workbench to optimize performance. 
 
 .Prerequisites
 * You are logged in to {productname-long}.
-* You are starting Jupyter for the first time or you stopped your notebook server.
-* You know the names and values you want to use for any environment variables in your notebook server environment, for example, `AWS_SECRET_ACCESS_KEY`.
-* If you want to work with a large data set, work with your administrator to proactively increase the storage capacity of your notebook server. If applicable, also consider assigning accelerators to your notebook server. 
+* You are starting Jupyter for the first time or you stopped your workbench.
+* You know the names and values you want to use for any environment variables in your workbench environment, for example, `AWS_SECRET_ACCESS_KEY`.
+* If you want to work with a large data set, work with your administrator to proactively increase the storage capacity of your workbench. If applicable, also consider assigning accelerators to your workbench. 
 
 .Procedure
 
 . In the left navigation pane, click *Applications* -> *Enabled*.
-. Locate the *Jupyter* tile on the *Enabled applications* page.
+. Locate the * tile on the *Enabled applications* page.
 
 . Click *Launch application*.
 +
@@ -29,18 +29,18 @@ ifdef::upstream[]
 Ask your administrator to add you to the correct group.
 endif::[]
 +
-If your credentials are accepted, the *Notebook server control panel* opens displaying the *Start a notebook server* page.
-. Start a notebook server.
+If your credentials are accepted, the *Workbench control panel* opens displaying the *Start a basic workbench* page.
+. Start a basic workbench.
 
-.. In the *Notebook image* section, select the notebook image to use for your server. 
+.. In the *Workbench image* section, select the workbench image to use for your server. 
 +
-Different notebook images have different packages installed by default. Click the help icon (?) next to a notebook image name to view a list of its included packages.
+Different workbench images have different packages installed by default. Click the help icon (?) next to a workbench image name to view a list of its included packages.
 
-.. If the notebook image contains multiple versions, select the version of the notebook image from the *Versions* section.
+.. If the workbench image contains multiple versions, select the version of the workbench image from the *Versions* section.
 +
 [NOTE]
 --
-When a new version of a notebook image is released, the previous version remains available and supported on the cluster. This gives you time to migrate your work to the latest version of the notebook image.
+When a new version of a workbench image is released, the previous version remains available and supported on the cluster. This gives you time to migrate your work to the latest version of the workbench image.
 --
 .. From the *Container size* list, select a suitable container size for your server.
 .. Optional: From the *Accelerator* list, select an accelerator. 
@@ -49,10 +49,10 @@ When a new version of a notebook image is released, the previous version remains
 [IMPORTANT]
 --
 ifdef::upstream[]
-Using accelerators is only supported with specific notebook images. For GPUs, only the AMD ROCm, PyTorch, TensorFlow, and CUDA notebook images are supported. In addition, you can only specify the number of accelerators required for your notebook server if accelerators are enabled on your cluster.
+Using accelerators is only supported with specific workbench images. For GPUs, only the AMD ROCm, PyTorch, TensorFlow, and CUDA workbench images are supported. In addition, you can only specify the number of accelerators required for your workbench if accelerators are enabled on your cluster.
 endif::[]
 ifndef::upstream[]
-Using accelerators is only supported with specific notebook images. For GPUs, only the AMD ROCm, PyTorch, TensorFlow, and CUDA notebook images are supported. In addition, you can only specify the number of accelerators required for your notebook server if accelerators are enabled on your cluster. To learn how to enable accelerator support, see link:{rhoaidocshome}{default-format-url}/working_with_accelerators/overview-of-accelerators_accelerators[Working with accelerators].
+Using accelerators is only supported with specific workbench images. For GPUs, only the AMD ROCm, PyTorch, TensorFlow, and CUDA workbench images are supported. In addition, you can only specify the number of accelerators required for your workbench if accelerators are enabled on your cluster. To learn how to enable accelerator support, see link:{rhoaidocshome}{default-format-url}/working_with_accelerators/overview-of-accelerators_accelerators[Working with accelerators].
 endif::[]
 --
 .. Optional: Select and specify values for any new *Environment variables*.
@@ -63,20 +63,20 @@ The interface stores these variables so that you only need to enter them once. E
 ====
 Select the *Secret* checkbox for variables with sensitive values that must remain private, such as passwords.
 ====
-.. Optional: Check *Start server in current tab*.
-.. Click *Start server*.
+.. Optional: Check *Start workbench in current tab*.
+.. Click *Start workbench*.
 +
-The *Starting server* progress indicator appears. Click *Expand event log* to view additional information about the server creation process. Depending on the deployment size and resources you requested, starting the server can take up to several minutes. Only click *Cancel* if you want to cancel the server creation.
+The *Workbench status* progress indicator appears. Click the *Events log* tab to view additional information about the workbench creation process. Depending on the deployment size and resources you requested, starting the workbench can take up to several minutes. Only click *Cancel* if you want to cancel the workbench creation.
 +
 After the server starts, you see one of the following behaviors:
 +
 --
-* If you selected *Start server in current tab* in the preceding step, the JupyterLab interface opens in the current tab of your web browser.
-* If you did not select *Start server in current tab* in the preceding step, the *Starting server* dialog box prompts you to open the server in a new browser tab or in the current browser tab.
+* If you selected *Start workbench in current tab* in the preceding step, the JupyterLab interface opens in the current tab of your web browser.
+* If you did not select *Start workbench in current tab* in the preceding step, the *Workbench status* dialog box prompts you to open the server in a new browser tab or in the current browser tab.
 --
 
 .Verification
 * The JupyterLab interface opens.
 
 .Troubleshooting
-* If you see the "Unable to load notebook server configuration options" error message, contact your administrator so that they can review the logs associated with your Jupyter pod and determine further details about the problem.
+* If you see the "Unable to load workbench configuration options" error message, contact your administrator so that they can review the logs associated with your Jupyter pod and determine further details about the problem.
