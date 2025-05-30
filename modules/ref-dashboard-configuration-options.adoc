@@ -35,7 +35,7 @@ endif::[]
 *Note:* The `spec.dashboardConfig.disableAcceleratorProfiles` option is superseded by the `spec.dashboardConfig.disableHardwareProfiles` option.
 If both options are set to `false`, the `disableHardwareProfiles` option overrides the `disableAcceleratorProfiles` option, and the *Settings → Hardware profiles* menu item is shown in the dashboard navigation menu.
 | `spec.dashboardConfig.disableAdminConnectionTypes` | `false` | Shows the *Settings → Connection types* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
-| `spec.dashboardConfig.disableBYONImageStream` | `false` | Shows the *Settings → Notebook images* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.disableBYONImageStream` | `false` | Shows the *Settings → Workbench images* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
 | `spec.dashboardConfig.disableClusterManager` | `false` | Shows the *Settings → Cluster settings* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
 | `spec.dashboardConfig.disableCustomServingRuntimes` | `false` | Shows the *Settings → Serving runtimes* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`. 
 | `spec.dashboardConfig.disableDistributedWorkloads` | `false` | Shows the *Distributed workloads* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
@@ -106,7 +106,7 @@ endif::[]
 | `spec.groupsConfig` | No longer used | Read-only. To configure access to the {productname-short} dashboard, use the `spec.adminGroups` and `spec.allowedGroups` options in the {openshift-platform} `Auth` resource in the `services.platform.opendatahub.io` API group.
 | `spec.modelServerSizes` | `Small`, `Medium`, `Large` | Allows you to customize names and resources for model servers.
 | `spec.notebookController.enabled` | `true` | Controls the Notebook Controller behavior, such as whether it is enabled in the dashboard and which parts are visible.
-| `spec.notebookSizes` | `Small`, `Medium`, `Large`, `X Large` | Allows you to customize names and resources for notebooks. 
+| `spec.notebookSizes` | `Small`, `Medium`, `Large`, `X Large` | Allows you to customize names and resources for workbenches. 
 The Kubernetes-style sizes are shown in the drop-down menu that appears when launching a workbench with the Notebook Controller. 
 
 *Note:* These sizes must follow conventions. For example, requests must be smaller than limits.

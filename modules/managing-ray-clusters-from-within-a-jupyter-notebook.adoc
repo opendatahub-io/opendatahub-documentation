@@ -7,24 +7,24 @@
 You can use interactive browser controls to simplify Ray cluster tasks when working within a Jupyter notebook.
 
 The interactive browser controls provide an alternative to the equivalent commands, but do not replace them.
-You can continue to manage the Ray clusters by running commands within the notebook, for ease of use in scripts and pipelines.
+You can continue to manage the Ray clusters by running commands within the Jupyter notebook, for ease of use in scripts and pipelines.
 
 Several different interactive browser controls are available:
 
-* When you run a cell that provides the cluster configuration, the notebook automatically shows the controls for starting or deleting the cluster.
+* When you run a cell that provides the cluster configuration, the Jupyter notebook automatically shows the controls for starting or deleting the cluster.
 
 * You can run the `view_clusters()` command to add controls that provide the following functionality:
 ** View a list of the Ray clusters that you can access.
 ** View cluster information, such as cluster status and allocated resources, for the selected Ray cluster.
-You can view this information from within the notebook, without switching to the {openshift-platform} console or the Ray dashboard.
-** Open the Ray dashboard directly from the notebook, to view the submitted jobs.
+You can view this information from within the Jupyter notebook, without switching to the {openshift-platform} console or the Ray dashboard.
+** Open the Ray dashboard directly from the Jupyter notebook, to view the submitted jobs.
 ** Refresh the Ray cluster list and the cluster information for the selected cluster.
 
 +
-You can add these controls to existing notebooks, or manage the Ray clusters from a separate notebook.
+You can add these controls to existing Jupyter notebooks, or manage the Ray clusters from a separate Jupyter notebook.
 
-The `3_widget_example.ipynb` demo notebook shows all of the available interactive browser controls.
-In the example in this procedure, you create a new notebook to manage the Ray clusters, similar to the example provided in the `3_widget_example.ipynb` demo notebook.
+The `3_widget_example.ipynb` demo Jupyter notebook shows all of the available interactive browser controls.
+In the example in this procedure, you create a new Jupyter notebook to manage the Ray clusters, similar to the example provided in the `3_widget_example.ipynb` demo Jupyter notebook.
 
 
 .Prerequisites
@@ -41,11 +41,11 @@ endif::[]
 ** The Python dependencies for the workload, either in a Ray image or in your own Python Package Index (PyPI) server
 
 ifndef::upstream[]
-* You can access a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+* You can access a data science project that contains a workbench, and the workbench is running a default workbench image that contains the CodeFlare SDK, for example, the *Standard Data Science* workbench. 
 For information about projects and workbenches, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects[Working on data science projects].
 endif::[]
 ifdef::upstream[]
-* You can access a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+* You can access a data science project that contains a workbench, and the workbench is running a default workbench image that contains the CodeFlare SDK, for example, the *Standard Data Science* workbench. 
 For information about projects and workbenches, see link:{odhdocshome}/working-on-data-science-projects[Working on data science projects].
 endif::[]
 
@@ -56,23 +56,23 @@ endif::[]
 * You have logged in to {productname-long}, started your workbench, and logged in to JupyterLab.
 
 ifndef::upstream[]
-* You have downloaded the demo notebooks provided by the CodeFlare SDK, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#downloading-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Downloading the demo notebooks from the CodeFlare SDK].
+* You have downloaded the demo Jupyter notebooks provided by the CodeFlare SDK, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#downloading-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Downloading the demo Jupyter notebooks from the CodeFlare SDK].
 endif::[]
 ifdef::upstream[]
-* You have downloaded the demo notebooks provided by the CodeFlare SDK, as described in link:{odhdocshome}/working-with-distributed-workloads/#downloading-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Downloading the demo notebooks from the CodeFlare SDK].
+* You have downloaded the demo Jupyter notebooks provided by the CodeFlare SDK, as described in link:{odhdocshome}/working-with-distributed-workloads/#downloading-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Downloading the demo Jupyter notebooks from the CodeFlare SDK].
 endif::[]
 
 
 .Procedure
 
 ifndef::upstream[]
-. Run all of the demo notebooks in the order indicated by the file-name prefix (`0_`, `1_`, and so on), as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo notebooks from the CodeFlare SDK].
+. Run all of the demo Jupyter notebooks in the order indicated by the file-name prefix (`0_`, `1_`, and so on), as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo Jupyter notebooks from the CodeFlare SDK].
 endif::[]
 ifdef::upstream[]
-. Run all of the demo notebooks in the order indicated by the file-name prefix (`0_`, `1_`, and so on), as described in link:{odhdocshome}/working-with-distributed-workloads/#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo notebooks from the CodeFlare SDK].
+. Run all of the demo Jupyter notebooks in the order indicated by the file-name prefix (`0_`, `1_`, and so on), as described in link:{odhdocshome}/working-with-distributed-workloads/#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo Jupyter notebooks from the CodeFlare SDK].
 endif::[]
 
-. In each demo notebook, when you run the cluster configuration step, the following interactive controls are automatically shown in the notebook:
+. In each demo Jupyter notebook, when you run the cluster configuration step, the following interactive controls are automatically shown in the Jupyter notebook:
 
 * *Cluster Up*: You can click this button to start the Ray cluster. 
 This button is equivalent to the `cluster.up()` command. 
@@ -83,17 +83,17 @@ This button is equivalent to the `cluster.down()` command.
 The cluster is deleted immediately; you are not prompted to confirm the deletion.
 When you click this button, a message indicates whether the cluster was successfully deleted.
 
-* *Wait for Cluster*: You can select this option to specify that the notebook should wait for the Ray cluster dashboard to be ready before proceeding to the next step. 
+* *Wait for Cluster*: You can select this option to specify that the notebook cell should wait for the Ray cluster dashboard to be ready before proceeding to the next step. 
 This option is equivalent to the `cluster.wait_ready()` command.
 
-. In the JupyterLab interface, create a new notebook to manage the Ray clusters, as follows:
+. In the JupyterLab interface, create a new Jupyter notebook to manage the Ray clusters, as follows:
 
 .. Click *File > New > Notebook*. 
 Specify your preferred Python version, and then click *Select*. 
 +
-A new notebook is created in an `.ipynb` file.
+A new Jupyter notebook is created in an `.ipynb` file.
 
-.. Add the following code to a cell in the new notebook:
+.. Add the following code to a cell in the new Jupyter notebook:
 +
 .Code to import the required packages
 [source,bash]
@@ -103,7 +103,7 @@ from codeflare_sdk import TokenAuthentication, view_clusters
 +
 The `view_clusters` package provides the interactive browser controls for listing the clusters, showing the cluster details, opening the Ray dashboard, and refreshing the cluster data.
 
-.. Add a new cell to the notebook, and add the following code to the new cell:
+.. Add a new notebook cell, and add the following code to the new cell:
 +
 .Code to authenticate
 [source,bash]
@@ -117,13 +117,13 @@ auth.login()
 ----
 +
 ifndef::upstream[]
-For information about how to find the token and server values, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo notebooks from the CodeFlare SDK].
+For information about how to find the token and server values, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo Jupyter notebooks from the CodeFlare SDK].
 endif::[]
 ifdef::upstream[]
-For information about how to find the token and server values, see link:{odhdocshome}/working-with-distributed-workloads/#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo notebooks from the CodeFlare SDK].
+For information about how to find the token and server values, see link:{odhdocshome}/working-with-distributed-workloads/#running-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Running the demo Jupyter notebooks from the CodeFlare SDK].
 endif::[]
 
-.. Add a new cell to the notebook, and add the following code to the new cell:
+.. Add a new notebook cell, and add the following code to the new cell:
 +
 .Code to view clusters in the current project
 [source,bash]
@@ -144,7 +144,7 @@ view_clusters("my_second_project")
 .. Click *File > Save Notebook As*, enter `demo-notebooks/guided-demos/manage_ray_clusters.ipynb`, and click *Save*.
 
 
-. In the `demo-notebooks/guided-demos/manage_ray_clusters.ipynb` notebook, select each cell in turn, and click *Run > Run selected cell*.
+. In the `demo-notebooks/guided-demos/manage_ray_clusters.ipynb` Jupyter notebook, select each cell in turn, and click *Run > Run selected cell*.
 
 . When you run the cell with the `view_clusters()` function, the output depends on whether any Ray clusters exist.
 +
@@ -155,7 +155,7 @@ If no Ray clusters exist, the following text is shown, where `_[project-name]_` 
 No clusters found in the _[project-name]_ namespace.
 ----
 +
-Otherwise, the notebook shows the following information about the existing Ray clusters:
+Otherwise, the Jupyter notebook shows the following information about the existing Ray clusters:
 
 * *Select an existing cluster* 
 +
@@ -173,12 +173,12 @@ A message indicates whether the cluster was successfully deleted, and the corres
 * *View Jobs*
 +
 Click this button to open the *Jobs* tab in the Ray dashboard for the selected cluster, and view details of the submitted jobs.
-The corresponding URL is shown in the notebook.
+The corresponding URL is shown in the Jupyter notebook.
 
 * *Open Ray Dashboard*
 +
 Click this button to open the *Overview* tab in the Ray dashboard for the selected cluster.
-The corresponding URL is shown in the notebook.
+The corresponding URL is shown in the Jupyter notebook.
 
 * *Refresh Data*
 +
@@ -187,8 +187,8 @@ The cluster details are automatically refreshed when you select a cluster and wh
 
 
 .Verification
-. The demo notebooks run to completion without errors. 
-. In the `manage_ray_clusters.ipynb` notebook, the output from the `view_clusters()` function is correct.
+. The demo Jupyter notebooks run to completion without errors. 
+. In the `manage_ray_clusters.ipynb` Jupyter notebook, the output from the `view_clusters()` function is correct.
 
 ////
 [role='_additional-resources']

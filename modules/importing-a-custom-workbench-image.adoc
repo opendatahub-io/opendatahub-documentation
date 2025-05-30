@@ -5,7 +5,7 @@
 
 [role='_abstract']
 ifdef::upstream[]
-You can import custom workbench images that cater to your {productname-short} project's specific requirements. From the *Notebook images* page, you can enable or disable a previously imported workbench image and create a hardware profile as a recommended accelerator for existing notebook images.
+You can import custom workbench images that cater to your {productname-short} project's specific requirements. From the *Workbench images* page, you can enable or disable a previously imported workbench image and create a hardware profile as a recommended accelerator for existing workbench images.
 endif::[]
 ifndef::upstream[]
 In addition to workbench images provided and supported by {org-name} and independent software vendors (ISVs), you can import custom workbench images that cater to your project's specific requirements.
@@ -22,10 +22,10 @@ endif::[]
 * Your custom image exists in an image registry that is accessible to {productname-short}.
 
 ifdef::upstream[]
-* The *Settings* -> *Notebook images* dashboard navigation menu item is enabled, as described in link:{odhdocshome}/managing-odh/#enabling-custom-images_custom-images[Creating a custom image from a default {productname-short} image].
+* The *Settings* -> *Workbench images* dashboard navigation menu item is enabled, as described in link:{odhdocshome}/managing-odh/#enabling-custom-images_custom-images[Creating a custom image from a default {productname-short} image].
 endif::[]
 ifndef::upstream[]
-* The *Settings* -> *Notebook images* dashboard navigation menu item is enabled, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/creating-custom-workbench-images#enabling-custom-images_custom-images[Enabling custom workbench images in {productname-short}].
+* The *Settings* -> *Workbench images* dashboard navigation menu item is enabled, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/creating-custom-workbench-images#enabling-custom-images_custom-images[Enabling custom workbench images in {productname-short}].
 endif::[]
 ifndef::upstream[]
 * If you want to associate an accelerator with the custom image that you want to import, you know the accelerator's identifier - the unique string that identifies the hardware accelerator. You must also have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
@@ -35,22 +35,22 @@ ifdef::upstream[]
 endif::[]
 
 .Procedure
-. From the {productname-short} dashboard, click *Settings* -> *Notebook images*.
+. From the {productname-short} dashboard, click *Settings* -> *Workbench images*.
 +
-The *Notebook images* page appears. Previously imported images are displayed. To enable or disable a previously imported image, on the row containing the relevant image, click the toggle in the *Enable* column. 
+The *Workbench images* page appears. Previously imported images are displayed. To enable or disable a previously imported image, on the row containing the relevant image, click the toggle in the *Enable* column. 
 
 . Optional: If you want to associate an accelerator and you have not already created a hardware profile, click  *Create profile* on the row containing the image and complete the relevant fields. If the image does not contain an accelerator identifier, you must manually configure one before creating an associated hardware profile.  
 
 . Click *Import new image*. Alternatively, if no previously imported images were found, click *Import image*.
 +
-The *Import Notebook images* dialog appears.
+The *Import workbench image* dialog appears.
 . In the *Image location* field, enter the URL of the repository containing the image. For example: `quay.io/my-repo/my-image:tag`, `quay.io/my-repo/my-image@sha256:xxxxxxxxxxxxx`, or
 `docker.io/my-repo/my-image:tag`.
 
 . In the *Name* field, enter an appropriate name for the image.
 . Optional: In the *Description* field, enter a description for the image.
 . Optional: From the *Accelerator identifier* list, select an identifier to set its accelerator as recommended with the image. If the image contains only one accelerator identifier, the identifier name displays by default.
-. Optional: Add software to the image. After the import has completed, the software is added to the image's meta-data and displayed on the Jupyter server creation page.
+. Optional: Add software to the image. After the import has completed, the software is added to the image's meta-data and displayed on the Jupyter workbench creation page.
 .. Click the *Software* tab.
 .. Click the *Add software* button.
 .. Click *Edit* (image:images/rhoai-edit-icon.png[The Edit icon]).
@@ -58,7 +58,7 @@ The *Import Notebook images* dialog appears.
 .. Enter the software *Version*.
 .. Click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]) to confirm your entry.
 .. To add additional software, click *Add software*, complete the relevant fields, and confirm your entry.
-. Optional: Add packages to the notebook images. After the import has completed, the packages are added to the image's meta-data and displayed on the Jupyter server creation page.
+. Optional: Add packages to the workbench images. After the import has completed, the packages are added to the image's meta-data and displayed on the Jupyter workbench creation page.
 .. Click the *Packages* tab.
 .. Click the  *Add package* button.
 .. Click *Edit* (image:images/rhoai-edit-icon.png[The Edit icon]).
@@ -69,7 +69,7 @@ The *Import Notebook images* dialog appears.
 . Click *Import*.
 
 .Verification
-* The image that you imported is displayed in the table on the *Notebook images* page.
+* The image that you imported is displayed in the table on the *Workbench images* page.
 * Your custom image is available for selection when a user creates a workbench.
 
 [role="_additional-resources"]
