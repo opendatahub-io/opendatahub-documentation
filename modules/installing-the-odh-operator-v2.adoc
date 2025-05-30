@@ -26,6 +26,7 @@ Argo Workflows resources that are created by {productname-short} have the follow
     app.opendatahub.io/data-science-pipelines-operator: 'true'
 ----
 ====
+* If you are using {productname-short} on a cluster running in FIPS mode, any custom container images for data science pipelines must be based on UBI 9 or RHEL 9. This ensures compatibility with FIPS-approved pipeline components and prevents errors related to mismatched OpenSSL or GNU C Library (glibc) versions.
 
 .Procedure
 . Log in to your OpenShift Container Platform as a user with `cluster-admin` privileges. If you are performing a developer installation on link:http://try.openshift.com[try.openshift.com], you can log in as the `kubeadmin` user.
