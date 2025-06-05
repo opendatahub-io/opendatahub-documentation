@@ -1,0 +1,155 @@
+:_module-type: PROCEDURE
+
+[id="ingesting-content-into-a-llama-model_{context}"]
+= Ingesting content into a Llama model
+
+[role='_abstract']
+You can quickly customize and prototype your retrievable content by ingesting raw text into your model from inside a Jupyter notebook. This approach voids requiring a separate ingestion pipeline. By using the LlamaStack SDK, you can embed and store text in your vector store in real-time, enabling immediate RAG workflows. 
+
+.Prerequisites
+* You have deployed a Llama 3.2 model with a vLLM model server and you have integrated LlamaStack.
+* You have created a project workbench within a data science project.
+* You have opened a Jupyter notebook and it is running in your workbench environment.
+* You have a created and configured a vector database instance and you know its identifier.
+ifdef::self-managed[]
+* Ensure that your environment has network access to the vector database service through {openshift-platform}.
+endif::self-managed[]
+
+.Procedure
+. In a new notebook cell, install the `llama_stack` client package:
++
+[source,python]
+----
+%pip install llama_stack
+----
+
+. In a new notebook cell, import RAGDocument and LlamaStackClient:
++
+[source,python]
+----
+from llama_stack_client import RAGDocument, LlamaStackClient
+----
+
+. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a LlamaStackClient instance:
++
+[source,python]
+----
+client = LlamaStackClient(base_url="<your deployment endpoint>")
+----
+
+. List the available models. and select the first LLM and the first embedding model:
++
+[source,python]
+----
+# Fetch all registered models
+models = client.models.list()
+----
+
+. Verify that the list of registered models includes your Llama model and an embedding model. Here is an example of a list of registered models:
++
+[source,python]
+----
+[Model(identifier='llama-32-3b-instruct', metadata={}, api_model_type='llm', provider_id='vllm-inference', provider_resource_id='llama-32-3b-instruct', type='model', model_type='llm'),
+ Model(identifier='ibm-granite/granite-embedding-125m-english', metadata={'embedding_dimension': 768.0}, api_model_type='embedding', provider_id='sentence-transformers', provider_resource_id='ibm-granite/granite-embedding-125m-english', type='model', model_type='embedding')]
+----
+
+. Select the first LLM and the first embedding model:
++
+[source,python]
+----
+model_id = next(m.identifier for m in models if m.model_type == "llm")
+
+embedding_model = next(m for m in models if m.model_type == "embedding")
+embedding_model_id = embedding_model.identifier
+embedding_dimension = embedding_model.metadata["embedding_dimension"]
+----
+
+. In a new notebook cell, register or confirm your vector database to store embeddings:
++
+[source,python]
+----
+vector_db_id = "<your vector database ID>"
+
+_ = client.vector_dbs.register(
+vector_db_id=vector_db_id,
+embedding_model=embedding_model_id,
+embedding_dimension=embedding_dimension,
+provider_id="<your provider ID>",
+)
+print(f"Registered vector DB: {vector_db_id}")
+----
++
+[IMPORTANT]
+====
+If you skip this step, and as a result, you do not register your vector database with your vector database ID, an error occurs if you attempt to ingest text into your vector database. 
+====
+
+. In a new notebook cell, define the raw text that you want to ingest into the vector store: 
++ 
+[source,python]
+----
+# Example raw text passage
+raw_text = """
+LlamaStack can embed raw text into a vector store for retrieval.
+This example ingests a small passage for demonstration.
+"""
+----
+
+. In a new notebook cell, create a RAGDocument object to contain the raw text:
++
+[source,python]
+----
+document = RAGDocument(
+document_id="raw_text_001",
+content=raw_text,
+mime_type="text/plain",
+metadata={"source": "example_passage"},
+)
+----
+
+. In a new notebook cell, ingest the raw text:  
++
+[source,python]
+----
+vector_db_id = "<your vector database ID>"
+# Ingest the RAGDocument
+insert_response = await client.tool_runtime.rag_tool.insert(
+documents=[document],
+vector_db_id=vector_db_id,
+chunk_size_in_tokens=100,
+)
+
+print(insert_response)
+----
+
+. In a new notebook cell, create a RAGDocument from an HTML source and ingest it into the vector store:
++
+[source,python]
+----
+source = "https://www.paulgraham.com/greatwork.html"
+print("rag_tool> Ingesting document:", source)
+
+document = RAGDocument(
+document_id="document_1",
+content=source,
+mime_type="text/html",
+metadata={},
+)
+----
+
+. In a new notebook cell, ingest the content into the vector store:
++
+[source,python]
+----
+await client.tool_runtime.rag_tool.insert(
+documents=[document],
+vector_db_id=vector_db_id,
+chunk_size_in_tokens=50,
+)
+----
+
+.Verification
+
+* Review the output to confirm successful ingestion. A typical response after ingestion includes the number of text chunks inserted and any warnings or errors.
+* The insert() call returns the number of embedded text chunks.
+* The model list returned by client.models.list() includes your Llama 3.2 model and an embedding model.
