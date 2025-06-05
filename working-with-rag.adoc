@@ -1,0 +1,42 @@
+---
+layout: docs
+title: Working with RAG
+permalink: /docs/working-with-rag
+custom_css: asciidoc.css
+---
+//:self-managed:
+:upstream:
+include::_artifacts/document-attributes-global.adoc[]
+
+:doctype: book
+:toc: left
+:compat-mode:
+:context: rag
+
+= Working with RAG
+
+Retrieval-augmented generation (RAG) in {productname-short} extends the capabilities of large language models (LLMs) by integrating domain-specific data sources directly into a model’s context. 
+
+By combining retrieval from these data sources with real-time generation, your AI engineers get tailored, accurate, and verifiable answers to complex queries that rely on your own datasets from within a data science project. When your AI engineers use RAG within {productname-short}, they can gain insights from structured or unstructured data, such as from PDF documents. This data is then incorporated into conversational outputs. RAG indexes your content and then builds an embedding store that your end user can then query. 
+
+When an end user poses a question, the system retrieves the most relevant pieces of data, passes them to the language model as context, and then generates a response that reflects both the prompt and the retrieved content. 
+
+////
+== Audience for RAG
+
+The target audience for RAG is practitioners who need to build data-grounded conversational AI applications using {productname-short} infrastructure.
+
+For Data Scientists::  
+Data scientists can leverage RAG to prototype and validate models that answer natural-language queries against data sources without managing low-level embedding pipelines or vector stores. They can focus on creating prompts and evaluating model outputs instead of building retrieval infrastructure.
+
+For MLOps Engineers::  
+MLOps engineers are responsible for productionizing and operationalizing RAG pipelines. Within {productname-short}, they configure and monitor index updates, manage LLM endpoints, and ensure that retrieval and generation components scale reliably. RAG simplifies lifecycle management by decoupling vector store maintenance (for example, using Milvus) from the serving layer, allowing engineers to apply CI/CD practices to both data ingestion and model deployment.
+
+For Data Engineers::  
+Data engineers own the ingestion workflows that feed the retrieval indices. They define ETL jobs (for example, Apache Airflow DAGs) to extract, transform, and load business-critical data into object stores or databases that {productname-short} can index. Using RAG, data engineers ensure that embeddings stay in sync with source systems (for example, Kafka topics, S3 buckets, or relational tables) so that chatbot responses remain up-to-date and accurate.
+
+For AI Engineers::  
+AI engineers design the end-to-end architecture of RAG-powered applications, including prompt templates, retrieval strategies, and fallback logic. They integrate LlamaStack agents, customize prompt engineering (using YAML or JSON configs), and extend the chatbot interface with domain-specific tools—such as connectors to Prometheus for real-time telemetry or OpenShift jobs for model retraining. By focusing on model orchestration rather than low-level data plumbing, AI engineers can rapidly iterate on conversational features and maintain explainability through RAG’s source citations.
+////
+
+include::assemblies/creating-a-chatbot-interface.adoc[leveloffset=+1]

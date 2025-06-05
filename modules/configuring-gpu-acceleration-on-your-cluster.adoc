@@ -1,0 +1,62 @@
+:_module-type: PROCEDURE
+
+[id="configuring-gpu-acceleration-openshift-cluster_{context}"]
+= Configuring GPU acceleration on an OpenShift cluster
+
+You must configure GPU acceleration on your {openshift-platform} cluster to support efficient large language model (LLM) inference, such as when using vLLM. vLLM is optimized for NVIDIA GPUs and does not perform efficiently on CPU-only nodes.
+
+.Prerequisites
+
+* You have cluster administrator privileges.
+* You have access to the OpenShift web console and the OpenShift CLI (`oc`).
+* Your infrastructure supports GPU-enabled instance types (for example, `g4dn.xlarge` on AWS).
+ifndef::upstream[]
+* You have enabled GPU support in {productname-short}, including installing the Node Feature Discovery operator and NVIDIA GPU Operator. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
+endif::[]
+ifdef::upstream[]
+* You have enabled GPU support in {productname-short}, including installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
+endif::[]
+* You have created a `NodeFeatureDiscovery` resource instance on your cluster.
+* You have created a `ClusterPolicy` resource with default values on your cluster.
+
+.Procedure
+
+. Open a new terminal window.
+. Log in to your {openshift-platform} cluster from the CLI:
+.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
+.. After you have logged in, click *Display token*.
+.. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
+----
+
+. Manually apply the GPU label to your GPU-enabled node:
++
+Replace `<gpu-node-name>` with the node name.
++
+[source,terminal]
+----
+oc label node <gpu-node-name> feature.node.kubernetes.io/pci-10de.present=true
+----
+
+.Verification
+
+. Verify that the GPU-enabled node is labeled correctly:
++
+[source,terminal]
+----
+oc get nodes -l feature.node.kubernetes.io/pci-10de.present=true
+----
++
+This command should return a list of nodes with GPU capability.
+
+. Verify that the GPU node is available and allocated correctly:
++
+[source,terminal]
+----
+oc get nodes
+----
++
+Check that the *ALLOCATED RESOURCES* column for your GPU node lists `nvidia.com/gpu: 1` or higher.  If you see` nvidia.com/gpu: 0` or the entry is missing, the GPU is not correctly exposed to the cluster.
