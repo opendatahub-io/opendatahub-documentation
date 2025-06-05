@@ -1,23 +1,23 @@
 :_module-type: PROCEDURE
 
 [id='starting-a-jupyter-notebook-server_{context}']
-= Starting a Jupyter workbench
+= Starting a basic workbench
 
 [role='_abstract']
-Jupyter is based on a server-client architecture. The Jupyter workbench runs in a container on the Red Hat OpenShift cluster. The client is the JupyterLab interface that opens in your web browser on your local computer. However, all of the commands that you enter in JupyterLab are executed by the workbench. This architecture allows you to interact through your local computer in a browser environment, while all processing occurs on the cluster. The cluster provides the benefits of larger available resources and security because the data being processed never leaves the cluster.
+Using the basic workbench is based on a server-client architecture. The basic workbench runs in a container on the Red Hat OpenShift cluster. The client is the IDE interface that opens in your web browser on your local computer. However, all of the commands that you enter in the IDE are executed by the workbench. This architecture allows you to interact through your local computer in a browser environment, while all processing occurs on the cluster. The cluster provides the benefits of larger available resources and security because the data being processed never leaves the cluster.
 
-From the Jupyter application tile, you can start a Jupyter workbench. If you require extra power for use with large datasets, you can assign accelerators to your workbench to optimize performance. 
+From the *Start basic workbench* tile, you can start a basic workbench. If you require extra power for use with large datasets, you can assign accelerators to your workbench to optimize performance. 
 
 .Prerequisites
 * You are logged in to {productname-long}.
-* You are starting Jupyter for the first time or you stopped your workbench.
+* You are starting the workbench for the first time or you stopped your workbench.
 * You know the names and values you want to use for any environment variables in your workbench environment, for example, `AWS_SECRET_ACCESS_KEY`.
 * If you want to work with a large data set, work with your administrator to proactively increase the storage capacity of your workbench. If applicable, also consider assigning accelerators to your workbench. 
 
 .Procedure
 
 . In the left navigation pane, click *Applications* -> *Enabled*.
-. Locate the * tile on the *Enabled applications* page.
+. On the *Enabled* page, locate the *Start basic workbench* tile.
 
 . Click *Launch application*.
 +
@@ -71,12 +71,12 @@ The *Workbench status* progress indicator appears. Click the *Events log* tab to
 After the server starts, you see one of the following behaviors:
 +
 --
-* If you selected *Start workbench in current tab* in the preceding step, the JupyterLab interface opens in the current tab of your web browser.
+* If you selected *Start workbench in current tab* in the preceding step, the IDE interface opens in the current tab of your web browser.
 * If you did not select *Start workbench in current tab* in the preceding step, the *Workbench status* dialog box prompts you to open the server in a new browser tab or in the current browser tab.
 --
 
 .Verification
-* The JupyterLab interface opens.
+* The IDE interface opens.
 
 .Troubleshooting
 * If you see the "Unable to load workbench configuration options" error message, contact your administrator so that they can review the logs associated with your Jupyter pod and determine further details about the problem.
