@@ -30,22 +30,30 @@ endif::[]
 [cols="32%,10%,58%","header"]
 |===
 | Feature configuration option | Default value | Description
-| `spec.dashboardConfig.disableAcceleratorProfiles` | `false`| Shows the *Settings → Accelerator profiles* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.`
+`disableAcceleratorProfiles` | `false`| Shows the *Settings → Accelerator profiles* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
 
 *Note:* The `spec.dashboardConfig.disableAcceleratorProfiles` option is superseded by the `spec.dashboardConfig.disableHardwareProfiles` option.
 If both options are set to `false`, the `disableHardwareProfiles` option overrides the `disableAcceleratorProfiles` option, and the *Settings → Hardware profiles* menu item is shown in the dashboard navigation menu.
-| `spec.dashboardConfig.disableAdminConnectionTypes` | `false` | Shows the *Settings → Connection types* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
-| `spec.dashboardConfig.disableBYONImageStream` | `false` | Shows the *Settings → Notebook images* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
-| `spec.dashboardConfig.disableClusterManager` | `false` | Shows the *Settings → Cluster settings* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
-| `spec.dashboardConfig.disableCustomServingRuntimes` | `false` | Shows the *Settings → Serving runtimes* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`. 
-| `spec.dashboardConfig.disableDistributedWorkloads` | `false` | Shows the *Distributed workloads* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
-| `spec.dashboardConfig.disableFineTuning` 
+| `spec.dashboardConfig.` +
+`disableAdminConnectionTypes` | `false` | Shows the *Settings → Connection types* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableBYONImageStream` | `false` | Shows the *Settings → Notebook images* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableClusterManager` | `false` | Shows the *Settings → Cluster settings* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableCustomServingRuntimes` | `false` | Shows the *Settings → Serving runtimes* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`. 
+| `spec.dashboardConfig.` +
+`disableDistributedWorkloads` | `false` | Shows the *Distributed workloads* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableFineTuning` 
 
 (Technology Preview) | `true` | Hides the *Models → Model customization* menu item in the dashboard navigation menu, and the *LAB-tune* menu item and button for registered model versions. 
 To show these items, set the value to `false`.
 
 LAB-tuning is a Technology Preview feature in this {productname-short} release.
-| `spec.dashboardConfig.disableHardwareProfiles` 
+| `spec.dashboardConfig.` +
+`disableHardwareProfiles` 
 
 (Technology Preview) | `true` | Hides the *Settings → Hardware profiles* menu item in the dashboard navigation menu, and shows the *Settings → Accelerator profiles* menu item if the `spec.dashboardConfig.disableAcceleratorProfiles` value is set to `false`. 
 To show the *Settings → Hardware profiles* menu item in the dashboard navigation menu, set the value to `false`.
@@ -53,13 +61,20 @@ To show the *Settings → Hardware profiles* menu item in the dashboard navigati
 If both options are set to `false`, the `disableHardwareProfiles` option overrides the `disableAcceleratorProfiles` option, and the *Settings → Hardware profiles* menu item is shown in the dashboard navigation menu.
 
 Hardware profiles is a Technology Preview feature in this {productname-short} release.
-| `spec.dashboardConfig.disableHome` | `false` | Shows the *Home* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
-| `spec.dashboardConfig.disableInfo` | `false` | On the *Applications → Explore* page, when a user clicks on an application tile, an information panel opens with more details about the application. To disable the information panel for all applications on the *Applications → Explore* page , set the value to `true`.
-| `spec.dashboardConfig.disableISVBadges` | `false` | Shows the label on a tile that indicates whether the application is “{org-name} managed”, “Partner managed”, or “Self-managed”. To hide these labels, set the value to `true`. 
-| `spec.dashboardConfig.disableKServe` | `false` | Enables the ability to select KServe as a model-serving platform. To disable this ability, set the value to `true`.
-| `spec.dashboardConfig.disableKServeAuth` | `false` | Enables the ability to use authentication with KServe. To disable this ability, set the value to `true`.
-| `spec.dashboardConfig.disableKServeMetrics` | `false` | Enables the ability to view KServe metrics. To disable this ability, set the value to `true`.
-| `spec.dashboardConfig.disableKServeRaw` | `false` | On the *Settings → Cluster settings* page, in the *Single-model serving platform* section, shows the *Default deployment mode* list. 
+| `spec.dashboardConfig.` +
+`disableHome` | `false` | Shows the *Home* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableInfo` | `false` | On the *Applications → Explore* page, when a user clicks on an application tile, an information panel opens with more details about the application. To disable the information panel for all applications on the *Applications → Explore* page , set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableISVBadges` | `false` | Shows the label on a tile that indicates whether the application is “{org-name} managed”, “Partner managed”, or “Self-managed”. To hide these labels, set the value to `true`. 
+| `spec.dashboardConfig.` +
+`disableKServe` | `false` | Enables the ability to select KServe as a model-serving platform. To disable this ability, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableKServeAuth` | `false` | Enables the ability to use authentication with KServe. To disable this ability, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableKServeMetrics` | `false` | Enables the ability to view KServe metrics. To disable this ability, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableKServeRaw` | `false` | On the *Settings → Cluster settings* page, in the *Single-model serving platform* section, shows the *Default deployment mode* list. 
 
 On the *Deploy model* dialog when using the single-model serving platform: 
 
@@ -68,41 +83,59 @@ On the *Deploy model* dialog when using the single-model serving platform:
 &nbsp; &nbsp; &nbsp; - If the {org-name} OpenShift Serverless Operator and {org-name} OpenShift Service Mesh Operator are not installed, hides the *Deployment mode* list, and sets the deployment mode to *Standard*.
 
 To hide these deployment-mode lists and set the deployment mode to *Advanced* when using the single-model serving platform, set the `spec.dashboardConfig.disableKServeRaw` value to `true`.
-| `spec.dashboardConfig.disableModelCatalog` 
+| `spec.dashboardConfig.` +
+`disableModelCatalog` 
 
 (Technology Preview) | `true` | Hides the *Models → Model catalog* menu item in the dashboard navigation menu. 
 To show this menu item, set the value to `false`.
 
 Model catalog is a Technology Preview feature in this {productname-short} release.
-| `spec.dashboardConfig.disableModelMesh` | `false` | Enables the ability to select ModelMesh as a model-serving platform. To disable this ability, set the value to `true`.
-| `spec.dashboardConfig.disableModelRegistry` 
+| `spec.dashboardConfig.` +
+`disableModelMesh` | `false` | Enables the ability to select ModelMesh as a model-serving platform. To disable this ability, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableModelRegistry` 
 
 (Technology Preview) | `false` | Shows the *Models → Model registry* menu item and the *Settings → Model registry settings* menu item in the dashboard navigation menu. To hide these menu items, set the value to `true`.
 
 Model registry is a Technology Preview feature in this {productname-short} release.
-| `spec.dashboardConfig.disableModelRegistrySecureDB` 
+| `spec.dashboardConfig.` +
+`disableModelRegistrySecureDB` 
 
 (Technology Preview) | `false` | Shows the *Add CA certificate to secure database connection* section in the *Create model registry* dialog and the *Edit model registry* dialog. To hide this section, set the value to `true`.
 
 Model registry is a Technology Preview feature in this {productname-short} release.
-| `spec.dashboardConfig.disableModelServing` | `false` | Shows the *Models → Model deployments* menu item in the dashboard navigation menu, and the *Models* tab in data science projects. To hide these items, set the value to `true`. 
-| `spec.dashboardConfig.disableNIMModelServing` | `false` | Enables the ability to select NVIDIA NIM as a model-serving platform. To disable this ability, set the value to `true`.
-| `spec.dashboardConfig.disablePerformanceMetrics` | `false` | Shows the *Endpoint Performance* tab on the *Model deployments* page. To hide this tab, set the value to `true`.
-| `spec.dashboardConfig.disablePipelines` | `false` | Shows the *Data science pipelines* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
-| `spec.dashboardConfig.disableProjects` | `false` | Shows the *Data science projects* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
-| `spec.dashboardConfig.disableProjectSharing` | `false` | Allows users to share access to their data science projects with other users. To prevent users from sharing data science projects, set the value to `true`.
-| `spec.dashboardConfig.disableServingRuntimeParams` | `false` | Shows the *Configuration parameters* section in the *Deploy model* dialog and the *Edit model* dialog when using the single-model serving platform. To hide this section, set the value to `true`.
-| `spec.dashboardConfig.disableStorageClasses` | `false` | Shows the *Settings → Storage classes* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
-| `spec.dashboardConfig.disableSupport` | `false` | Shows the *Support* menu item when a user clicks the Help icon in the dashboard toolbar. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableModelServing` | `false` | Shows the *Models → Model deployments* menu item in the dashboard navigation menu, and the *Models* tab in data science projects. To hide these items, set the value to `true`. 
+| `spec.dashboardConfig.` +
+`disableNIMModelServing` | `false` | Enables the ability to select NVIDIA NIM as a model-serving platform. To disable this ability, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disablePerformanceMetrics` | `false` | Shows the *Endpoint Performance* tab on the *Model deployments* page. To hide this tab, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disablePipelines` | `false` | Shows the *Data science pipelines* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableProjects` | `false` | Shows the *Data science projects* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableProjectSharing` | `false` | Allows users to share access to their data science projects with other users. To prevent users from sharing data science projects, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableServingRuntimeParams` | `false` | Shows the *Configuration parameters* section in the *Deploy model* dialog and the *Edit model* dialog when using the single-model serving platform. To hide this section, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableStorageClasses` | `false` | Shows the *Settings → Storage classes* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.` +
+`disableSupport` | `false` | Shows the *Support* menu item when a user clicks the Help icon in the dashboard toolbar. To hide this menu item, set the value to `true`.
 ifdef::upstream[]
-| `spec.dashboardConfig.disableTracking` | `true` | Disables the collection of data about {productname-short} usage in your cluster. To enable data collection, set the value to `false`. You can also set this option in the {productname-short} dashboard interface from the *Settings → Cluster settings* navigation menu.	
+| `spec.dashboardConfig.` +
+`disableTracking` | `true` | Disables the collection of data about {productname-short} usage in your cluster. To enable data collection, set the value to `false`. You can also set this option in the {productname-short} dashboard interface from the *Settings → Cluster settings* navigation menu.	
 endif::[]
 ifndef::upstream[]
-| `spec.dashboardConfig.disableTracking` | `false` | Allows {org-name} to collect data about {productname-short} usage in your cluster. To disable data collection, set the value to `true`. You can also set this option in the {productname-short} dashboard interface from the *Settings → Cluster settings* navigation menu.	
+| `spec.dashboardConfig.` +
+`disableTracking` | `false` | Allows {org-name} to collect data about {productname-short} usage in your cluster. To disable data collection, set the value to `true`. You can also set this option in the {productname-short} dashboard interface from the *Settings → Cluster settings* navigation menu.	
 endif::[]
-| `spec.dashboardConfig.disableTrustyBiasMetrics` | `false` | Shows the *Model Bias* tab on the *Models* page. To hide this tab, set the value to `true`. 
-| `spec.dashboardConfig.disableUserManagement` | `false` | Shows the *Settings → User management* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
-| `spec.dashboardConfig.enablement` | `true` | Enables {productname-short} administrators to add applications to the {productname-short} dashboard *Applications → Enabled* page. To disable this ability, set the value to `false`.
+| `spec.dashboardConfig.` +
+`disableTrustyBiasMetrics` | `false` | Shows the *Model Bias* tab on the *Models* page. To hide this tab, set the value to `true`. 
+| `spec.dashboardConfig.` +
+`disableUserManagement` | `false` | Shows the *Settings → User management* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.` +
+`enablement` | `true` | Enables {productname-short} administrators to add applications to the {productname-short} dashboard *Applications → Enabled* page. To disable this ability, set the value to `false`.
 | `spec.groupsConfig` | No longer used | Read-only. To configure access to the {productname-short} dashboard, use the `spec.adminGroups` and `spec.allowedGroups` options in the {openshift-platform} `Auth` resource in the `services.platform.opendatahub.io` API group.
 | `spec.modelServerSizes` | `Small`, `Medium`, `Large` | Allows you to customize names and resources for model servers.
 | `spec.notebookController.enabled` | `true` | Controls the Notebook Controller behavior, such as whether it is enabled in the dashboard and which parts are visible.
