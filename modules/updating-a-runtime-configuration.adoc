@@ -18,7 +18,12 @@ endif::[]
 * You have created a data science project that contains a workbench.
 * You have created and configured a pipeline server within the data science project that contains your workbench.
 * A previously created runtime configuration is available in the JupyterLab interface.
-* You have created and launched a Jupyter server from a notebook image that contains the Elyra extension (Standard data science, TensorFlow, TrustyAI, or PyTorch).
+* You have created and launched a workbench from a workbench image that contains the Elyra extension (Standard Data Science, TensorFlow, TrustyAI, ROCm-PyTorch, ROCm-TensorFlow, or PyTorch).
++
+[IMPORTANT]
+====
+The Elyra pipeline editor is available in specific workbench images only. To use Elyra, the workbench must be based on a JupyterLab image. The Elyra extension is not available in code-server or RStudio IDEs. The workbench must also be derived from the Standard Data Science image. It is not available in Minimal Python or CUDA-based workbenches. All other supported JupyterLab-based workbench images have access to the Elyra extension.
+====
 
 .Procedure
 . In the left sidebar of JupyterLab, click *Runtimes* (image:images/jupyter-runtimes-sidebar.png[The Runtimes icon]).
@@ -37,7 +42,7 @@ The *Data Science Pipelines runtime configuration* page opens.
 +
 [IMPORTANT]
 ====
-If you created a notebook directly from the Jupyter tile on the dashboard, select `EXISTING_BEARER_TOKEN` from the *Authentication Type* list.
+If you created a workbench directly from the *Start basic workbench* tile on the dashboard, select `EXISTING_BEARER_TOKEN` from the *Authentication Type* list.
 ====
 ... In the *Data Science Pipelines API Endpoint Username* field, update the user name required for the authentication type, if applicable.
 ... In the *Data Science Pipelines API Endpoint Password Or Token*, update the password or token required for the authentication type, if applicable.
