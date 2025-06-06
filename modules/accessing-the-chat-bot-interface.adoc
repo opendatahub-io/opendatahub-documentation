@@ -1,0 +1,43 @@
+:_module-type: PROCEDURE
+
+[id="accessing-the-chat-bot-interface_{context}"]
+= Accessing the chat bot interface
+
+[role='_abstract']
+Embedding a Llama stack large language model (LLM) chat bot interface directly into a data science project gives you immediate, context-aware assistance without switching tools. This allows you to quickly explore model parameters, troubleshoot errors, and experiment interactively within a data science project. 
+
+[IMPORTANT]
+====
+By default, the chat bot interface is hidden from appearing from within the data science project user interface. To show the  user interface components associated with the chat bot interface, set the `disableLlamaStackClient` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}/html/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[]
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/managing-odh/#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[] 
+====
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* The `disableLlamaStackClient` feature flag value is set to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have created a data science project.
+
+.Procedure
+. From the {productname-short} dashboard, click *Data science projects*.
++
+The *Data science projects* page opens.
+. Click the data science project for which you want to access the chat bot.
++
+A project details page opens.
+. Click the *Chat bot* tab.
++
+The LlamaStack chat bot interface appears. 
+
+.Verification
+* You can access the *Chat bot* tab from within a data science project.
