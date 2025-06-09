@@ -12,8 +12,8 @@ You can quickly customize and prototype your retrievable content by ingesting ra
 * You have opened a Jupyter notebook and it is running in your workbench environment.
 * You have a created and configured a vector database instance and you know its identifier.
 ifdef::self-managed[]
-* Ensure that your environment has network access to the vector database service through {openshift-platform}.
-endif::self-managed[]
+* Your environment has network access to the vector database service through {openshift-platform}.
+endif::[]
 
 .Procedure
 . In a new notebook cell, install the `llama_stack` client package:
@@ -37,7 +37,7 @@ from llama_stack_client import RAGDocument, LlamaStackClient
 client = LlamaStackClient(base_url="<your deployment endpoint>")
 ----
 
-. List the available models. and select the first LLM and the first embedding model:
+. List the available models:
 +
 [source,python]
 ----
