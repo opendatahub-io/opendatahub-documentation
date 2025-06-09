@@ -12,7 +12,6 @@ endif::[]
 ifdef::cloud-service[]
 * You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
 endif::[]
-* You are logged in to your {openshift-platform} cluster.
 
 .Procedure
 
@@ -31,24 +30,26 @@ $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 +
 [source,terminal]
 ----
-LLAMASTACK_REPO=https://raw.githubusercontent.com/llamastack/llama-stack-k8s-operator
+$ LLAMASTACK_REPO=https://raw.githubusercontent.com/llamastack/llama-stack-k8s-operator
 ----
 
 . Apply the operator manifest to your cluster:
 +
 [source,terminal]
 ----
-oc apply -f $LLAMASTACK_REPO/main/release/operator.yaml
+$ oc apply -f $LLAMASTACK_REPO/main/release/operator.yaml
 ----
+
+.Verification
 
 . Verify that the Llama Stack Operator pods are running:
 +
 [source,terminal]
 ----
-oc logs -l app.kubernetes.io/name=llama-stack-k8s-operator -n llama-stack-k8s-operator-system -f
+$ oc logs -l app.kubernetes.io/name=llama-stack-k8s-operator -n llama-stack-k8s-operator-system -f
 ----
 +
-You should see log entries similar to the following, which indicate the operator is running:
+You should see log entries similar to the following, which indicate that the operator is running:
 +
 [source,text]
 ----
