@@ -3,21 +3,26 @@
 [id="configuring-gpu-acceleration-openshift-cluster_{context}"]
 = Configuring GPU acceleration on an OpenShift cluster
 
-You must configure GPU acceleration on your {openshift-platform} cluster to support efficient large language model (LLM) inference, such as when using vLLM. vLLM is optimized for NVIDIA GPUs and does not perform efficiently on CPU-only nodes.
+You must configure GPU acceleration on your {openshift-platform} cluster to support efficient large language model (LLM) inference, for example, when you use vLLM. vLLM is optimized for NVIDIA GPUs and does not perform efficiently on CPU-only nodes.
 
 .Prerequisites
 
 * You have cluster administrator privileges.
-* You have access to the OpenShift web console and the OpenShift CLI (`oc`).
-* Your infrastructure supports GPU-enabled instance types (for example, `g4dn.xlarge` on AWS).
+ifdef::upstream,self-managed[]
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+ifdef::cloud-service[]
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
+endif::[]
+* Your infrastructure supports GPU-enabled instance types, for example, `g4dn.xlarge` on AWS.
 ifndef::upstream[]
 * You have enabled GPU support in {productname-short}, including installing the Node Feature Discovery operator and NVIDIA GPU Operator. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
 endif::[]
 ifdef::upstream[]
 * You have enabled GPU support in {productname-short}, including installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
 endif::[]
-* You have created a `NodeFeatureDiscovery` resource instance on your cluster.
-* You have created a `ClusterPolicy` resource with default values on your cluster.
+* You have created a `NodeFeatureDiscovery` resource instance on your cluster, as described in link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-nfd.html#Procedure[Installing the Node Feature Discovery operator and creating a NodeFeatureDiscovery instance^] in the NVIDIA documentation.
+* You have created a `ClusterPolicy` resource instance with default values on your cluster, as described in link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html#create-the-clusterpolicy-instance[Creating the ClusterPolicy instance^] in the NVIDIA documentation.
 
 .Procedure
 
@@ -32,31 +37,61 @@ endif::[]
 $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 ----
 
-. Manually apply the GPU label to your GPU-enabled node:
-+
-Replace `<gpu-node-name>` with the node name.
+. Run the following command to manually apply the GPU label to your GPU-enabled node. Replace `<gpu-node-name>` with name of your node.
 +
 [source,terminal]
 ----
-oc label node <gpu-node-name> feature.node.kubernetes.io/pci-10de.present=true
+$ oc label node <gpu-node-name> feature.node.kubernetes.io/pci-10de.present=true
 ----
 
 .Verification
 
-. Verify that the GPU-enabled node is labeled correctly:
+. Run the following commands to verify correct configuration of the GPU-enabled node:
+.. Verify that the GPU-enabled node is labeled correctly:
 +
 [source,terminal]
 ----
-oc get nodes -l feature.node.kubernetes.io/pci-10de.present=true
+$ oc get nodes -l feature.node.kubernetes.io/pci-10de.present=true
 ----
 +
 This command should return a list of nodes with GPU capability.
 
-. Verify that the GPU node is available and allocated correctly:
+.. Verify that the GPU node is available and allocated correctly:
 +
 [source,terminal]
 ----
-oc get nodes
+$ oc get nodes
 ----
 +
 Check that the *ALLOCATED RESOURCES* column for your GPU node lists `nvidia.com/gpu: 1` or higher.  If you see` nvidia.com/gpu: 0` or the entry is missing, the GPU is not correctly exposed to the cluster.
+If you see `nvidia.com/gpu: 0` or the entry is missing, this indicates that the GPU is not correctly exposed to the cluster. Perform the following steps to troubleshoot this issue:
+
+... Ensure that Node Feature Discovery labeled the node:
++
+[source,terminal]
+----
+$ oc get node <gpu-node-name> -o yaml | grep -A2 "feature.node.kubernetes.io/pci-10de.present"
+----
+... Confirm that the NVIDIA GPU Operator device plugin daemonset is running:
++
+[source,terminal]
+----
+$ oc get daemonset nvidia-device-plugin-daemonset -n nvidia-gpu-operator
+$ oc get pods -n nvidia-gpu-operator | grep device-plugin
+----
+... Review the GPU device plugin logs for errors:
++
+[source,terminal]
+----
+$ oc logs daemonset/nvidia-device-plugin-daemonset -n nvidia-gpu-operator
+----
+... If the previous steps do not resolve the issue, consider performing the following tasks:
+- Drain the node to force a restart of the NVIDIA GPU Operator pods, and then uncordon the node:
++
+[source,terminal]
+----
+$ oc adm drain <gpu-node-name> --ignore-daemonsets --delete-local-data
+$ oc delete pod -l app=nvidia-device-plugin -n nvidia-gpu-operator
+$ oc adm uncordon <gpu-node-name>
+----
+- Reinstall or update the NVIDIA GPU Operator and Node Feature Discovery Operator.
