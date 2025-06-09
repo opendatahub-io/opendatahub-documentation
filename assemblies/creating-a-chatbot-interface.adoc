@@ -6,13 +6,13 @@ ifdef::context[:parent-context: {context}]
 = Creating a chatbot interface
 
 [role='_abstract']
-To configure and implement a chat bot interface that uses Retrieval-Augmented Generation (RAG) for data scientists to use in {productname-short}, a cluster administrator does the following tasks:
+As an OpenShift cluster administrator, you can configure and implement a chat bot interface that uses Retrieval-Augmented Generation (RAG). AI engineers can then use the chat bot interface in {productname-short}. To configure and implement a chat bot interface that uses RAG, complete the following tasks: 
 
 * Install and configure the LlamaStack Operator.
-* Enable GPU support on the OpenShift cluster (including necessary NVIDIA Operators).
+* Enable GPU support on the OpenShift cluster. This task includes installing the required NVIDIA Operators.
 * Configure vLLM as the inference provider.
-* Deploy a Llama model by using vLLM (includes creating a storage connection and configuring GPU allocation).
-* Configure a vector store (for example, Milvus) and ingest domain data for retrieval.
+* Deploy a Llama model by using vLLM. This task includes creating a storage connection and configuring GPU allocation.
+* Configure a vector store, for example, Milvus, and ingest domain data for retrieval.
 * Integrate LlamaStack with the inference service to enable RAG.
 * Expose and secure the model endpoints.
 * Configure a chat client to send queries to LlamaStack.
