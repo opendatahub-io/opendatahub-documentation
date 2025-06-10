@@ -30,6 +30,19 @@ endif::[]
 ** If you created the project, you automatically have administrator access. 
 ** If you did not create the project, your cluster administrator must give you administrator access.
 
+* (Optional) If you want to enforce the use of local queues, the local-queue labeling policy is enabled for your data science project namespace. 
++
+ifndef::upstream[]
+For more information about enforcing the use of local queues, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai#enforcing-lqlabel-all_managing-rhoai[Enforcing the local-queue labeling policy for all projects] or link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai#enforcing-lqlabel-some_managing-rhoai[Enforcing the local-queue labeling policy for some projects only].
++
+If the local-queue labeling policy is enabled for your namespace, you have created resource flavor, cluster queue, and local queue Kueue objects for your data science project. For more information about creating these objects, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/index#configuring-quota-management-for-distributed-workloads_managing-rhoai[Configuring quota management for distributed workloads]. 
+endif::[]
+ifdef::upstream[]
+For more information about enforcing the use of local queues, see link:{odhdocshome}/managing-odh/#enforcing-lqlabel-all_managing-odh[Enforcing the local-queue labeling policy for all projects] or link:{odhdocshome}/managing-odh/#enforcing-lqlabel-some_managing-odh[Enforcing the local-queue labeling policy for some projects only].
++
+If the local-queue labeling policy is enabled, you have created resource flavor, cluster queue, and local queue Kueue objects for your data science project. For more information about creating these objects, see link:{odhdocshome}/managing-odh/#configuring-quota-management-for-distributed-workloads_managing-odh[Configuring quota management for distributed workloads]. 
+endif::[]
+
 * You have access to a model.
 * You have access to data that you can use to train the model.
 
@@ -66,6 +79,8 @@ client.create_job(
    resources_per_worker={"nvidia.com/gpu": "2"},
    packages_to_install=["torchvision==0.19.0"],
    env_vars={"NCCL_DEBUG": "INFO", "TORCH_DISTRIBUTED_DEBUG": "DETAIL"},
+   labels={"key": "value"}, 
+   annotations={"key": "value"}
 )
 ----
 
@@ -78,8 +93,18 @@ client.create_job(
 * In the `resources_per_worker` entry, change `nvidia.com/gpu` to `amd.com/gpu`
 * Change the `base_image` value to `quay.io/modh/training:py311-rocm62-torch251`
 * Remove the `NCCL_DEBUG` entry
+* If the local-queue labeling policy is enabled, add a `labels` entry for the local queue object in your project namespace:
++
+[source]
+----
+client.create_job(
+    name="pytorch-ddp"
+...
+    labels={"kueue.x-k8s.io/queue-name": "<local-queue-name>"}
+...
+)
 
-
+----
 +
 [NOTE] 
 ====
