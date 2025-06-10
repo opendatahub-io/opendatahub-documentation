@@ -4,8 +4,13 @@
 = Enforcing the local-queue labeling policy for all projects
 
 [role='_abstract']
-When the local-queue labeling policy is enforced, Ray clusters are created _only if_ they are configured to use a local queue, and the Ray cluster resources are then managed by Kueue.
+When the local-queue labeling policy is enforced, Ray clusters and PyTorchJobs are created _only if_ they are configured to use a local queue, and these job resources are then managed by Kueue.
 The local-queue labeling policy is enforced for all projects by default.
+
+[NOTE]
+----
+The Validating Admission Policy (VAP) is enforced on both RayCluster and PyTorchJob resources, and enforces its rules in an all-or-nothing manner.
+----
 
 If the original `ValidatingAdmissionPolicyBinding` resource is edited, you use either of the following methods to undo the edits and enforce the policy for all projects:
 
@@ -78,6 +83,7 @@ spec:
 
 .Verification 
 
+To verify that the local-queue labeling policy is enforced for Ray clusters:
 . Create a project.
 . Complete the following steps in the new project:
 .. Before you configure a local queue, try to create a Ray cluster.
@@ -94,3 +100,16 @@ The Validating Admission Policy rejects the request, and the Ray cluster is not 
 .. Try to create a Ray cluster without specifying a value in the `local_queue` field.
 +
 The Validating Admission Policy approves the request, and the Ray cluster is created even though a local queue is not specified, because the default local queue is used.
+
+To verify that the local-queue labeling policy is enforced for PyTorchJobs:
+. Complete the following steps in the new project:
+.. Before you configure a local queue, try to create a PyTorchJob.
++
+The Validating Admission Policy rejects the request, and the PyTorchJob is not created, because no local queue is configured.
+.. Create a local queue.
+.. Try to create a PyTorchJob and add the `kueue.x-k8s.io/queue-name: <local-queue-name>` label in the `labels` field.
++
+The Validating Admission Policy approves the request, and the PyTorchJob is created.
+.. Try to create a PyTorchJob without specifying the `kueue.x-k8s.io/queue-name` label in the `labels` field.
++
+The Validating Admission Policy rejects the request, and the PyTorchJob is not created, because a local queue is not specified.

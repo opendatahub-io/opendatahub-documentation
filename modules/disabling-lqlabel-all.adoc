@@ -73,6 +73,8 @@ spec:
 
 .Verification 
 
+To verify that the local-queue labeling policy is disabled for Ray clusters:
+
 . Create a project.
 . Complete the following steps in the new project:
 .. Before you configure a local queue, try to create a Ray cluster.
@@ -90,3 +92,17 @@ The Ray cluster is created, but the Ray cluster resources are not managed by Kue
 .. Try to create a Ray cluster without specifying a value in the `local_queue` field.
 +
 The Ray cluster is created, and the Ray cluster resources are managed by Kueue.
+
+To verify that the local-queue labeling policy is disabled for PyTorchJobs:
+. Create a project.
+. Complete the following steps in the new project:
+.. Before you configure a local queue, try to create a PyTorchJob.
++
+The PyTorchJob is created, even though no local queue is configured, because the Validating Admission Policy is not enforced. The PyTorchJob resources are not managed by Kueue.
+.. Create a local queue.
+.. Try to create a PyTorchJob and add the `kueue.x-k8s.io/queue-name: <local-queue-name>` label in the `labels` field.
++
+The PyTorchJob is created, and the PyTorchJob resources are managed by Kueue.
+.. Try to create a PyTorchJob without adding the `kueue.x-k8s.io/queue-name: <local-queue-name>` label in the `labels` field.
++
+The PyTorchJob is created, but the PyTorchJob resources are not managed by Kueue.
