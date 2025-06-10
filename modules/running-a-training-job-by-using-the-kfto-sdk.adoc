@@ -93,7 +93,7 @@ client.create_job(
 * In the `resources_per_worker` entry, change `nvidia.com/gpu` to `amd.com/gpu`
 * Change the `base_image` value to `quay.io/modh/training:py311-rocm62-torch251`
 * Remove the `NCCL_DEBUG` entry
-* If the local-queue labeling policy is enabled, add a `labels` entry for the local queue object in your project namespace:
+* If the local-queue labeling policy is enabled, add the `kueue.x-k8s.io/queue-name: <local-queue-name>` label in the `labels` field:
 +
 [source]
 ----
