@@ -7,10 +7,12 @@
 When the local-queue labeling policy is enforced, Ray clusters and PyTorchJobs are created _only if_ they are configured to use a local queue, and these job resources are then managed by Kueue.
 The local-queue labeling policy is enforced for all projects by default.
 
-[NOTE]
-----
-The Validating Admission Policy (VAP) is enforced on both RayCluster and PyTorchJob resources, and enforces its rules in an all-or-nothing manner.
-----
+The Validating Admission Policy is enforced on both RayCluster and PyTorchJob resources.
+
+[IMPORTANT]
+====
+The `kueue.openshift.io/managed=true` label is supported for {productname-short} projects only. 
+====
 
 If the original `ValidatingAdmissionPolicyBinding` resource is edited, you use either of the following methods to undo the edits and enforce the policy for all projects:
 
