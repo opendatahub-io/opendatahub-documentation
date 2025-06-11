@@ -1,0 +1,68 @@
+[id="installing-the-llama-stack-operator_{context}"]
+= Installing the Llama Stack Operator
+
+You can install the Llama Stack Operator on your {openshift-platform} cluster by applying the latest release manifest from the upstream repository.
+
+.Prerequisites
+
+* You have cluster administrator privileges.
+ifdef::upstream,self-managed[]
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+ifdef::cloud-service[]
+* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
+endif::[]
+
+.Procedure
+
+. Open a new terminal window.
+. Log in to your {openshift-platform} cluster from the CLI:
+.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
+.. After you have logged in, click *Display token*.
+.. Copy the *Log in with this token* command and paste it into the terminal where you are using the OpenShift command-line interface (CLI).
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
+----
+
+. Set the Llama Stack Operator repository URL:
++
+[source,terminal]
+----
+$ LLAMASTACK_REPO=https://raw.githubusercontent.com/llamastack/llama-stack-k8s-operator
+----
+
+. Apply the operator manifest to your cluster:
++
+[source,terminal]
+----
+$ oc apply -f $LLAMASTACK_REPO/main/release/operator.yaml
+----
+
+.Verification
+
+. Verify that the Llama Stack Operator pods are running:
++
+[source,terminal]
+----
+$ oc logs -l app.kubernetes.io/name=llama-stack-k8s-operator -n llama-stack-k8s-operator-system -f
+----
++
+You should see log entries indicating that the Llama Stack Operator has started successfully. For example:
++
+[source,text]
+----
+2025-06-11T16:36:12Z INFO setup starting manager
+2025-06-11T16:36:13Z INFO controller-runtime.metrics Metrics server is starting to listen {"addr": ":8080"}
+2025-06-11T16:36:13Z INFO Starting Controller {"controller": "llamastackdistribution", ...}
+----
++
+If you see log messages showing that the manager, metrics server, or controller are starting or running, the Llama Stack Operator is operating as expected.
++
+[NOTE]
+====
+The log output might differ depending on the Operator version and your environment.
+====
+
+
