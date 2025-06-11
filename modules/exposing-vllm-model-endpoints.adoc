@@ -1,0 +1,92 @@
+:_module-type: PROCEDURE
+
+[id="exposing-vllm-model-endpoints_{context}"]
+= Exposing vLLM model endpoints
+
+[role='_abstract']
+To test that your deployed Llama 3.2 model is accessible from outside your {openshift-platform} cluster, you must expose your vLLM model server as a network endpoint. 
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have logged in to {productname-long}.
+* You have installed the Llama Stack Operator.
+* You have successfully deployed a vLLM model server with a Llama 3.2 model and have the inference service URL.
+ifdef::upstream,self-managed[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+ifdef::cloud-service[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
+endif::[]
+
+.Procedure
+
+. Open a new terminal window.
+.. Log in to your {openshift-platform} cluster from the CLI:
+.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
+.. After you have logged in, click *Display token*.
+.. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
+----
+. Create a service that exposes the vLLM deployment on port 8000:
++
+[source,sh]
+----
+$ oc expose deployment vllm --port=8000 --target-port=8000
+----
+. Create a route that exposes the vLLM service externally:
++
+[source,sh]
+----
+$ oc expose svc vllm
+----
+. Retrieve the route URL:
++
+[source,sh]
+----
+$ {openshift-platform} URL=http://$(oc get route vllm -o jsonpath={.spec.host})
+----
+
+.Verification
+
+. Test the endpoint with a sample chat completion request:
++
+[source,sh]
+----
+$ curl -X POST $URL/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"messages": [{"role": "user", "content": "Hello"}]}'
+----
+. Confirm that you received a JSON response containing a chat completion. Here is an example:
++
+[source,json]
+----
+{
+  "id": "chatcmpl-05d24b91b08a4b78b0e084d4cc91dd7e",
+  "object": "chat.completion",
+  "created": 1747279170,
+  "model": "meta-llama/Llama-3.2-3B-Instruct",
+  "choices": [{
+    "index": 0,
+    "message": {
+      "role": "assistant",
+      "reasoning_content": null,
+      "content": "Hello! It's nice to meet you. Is there something I can help you with or would you like to chat?",
+      "tool_calls": []
+    },
+    "logprobs": null,
+    "finish_reason": "stop",
+    "stop_reason": null
+  }],
+  "usage": {
+    "prompt_tokens": 37,
+    "total_tokens": 62,
+    "completion_tokens": 25,
+    "prompt_tokens_details": null
+  },
+  "prompt_logprobs": null
+}
+----

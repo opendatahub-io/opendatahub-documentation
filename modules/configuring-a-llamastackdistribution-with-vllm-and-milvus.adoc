@@ -1,0 +1,138 @@
+:_module-type: PROCEDURE
+
+[id="configuring-a-llamastackdistribution-with-vllm-and-milvus"]
+= Configuring a Llama
+
+[role='_abstract']
+You can gain scalable, high-performance inference and efficient vector storage for advanced retrieval-augmented generation (RAG) workloads by deploying a custom Llama Stack with an external vLLM inference service and Milvus vector database. To do this, you must build a custom Llama Stack container image and configure a LlamaStackDistribution custom resource and then deploy the solution in your {productname-short} environment.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have logged in to {productname-long}.
+* You have installed the Llama Stack Operator.
+* You have push access to a container registry, such as Quay.io.
+* You have deployed, or have access to, an external vLLM service endpoint.
+* You have deployed, or have access to, an external Milvus vector database endpoint, including any required credentials.
+* You have identified the values for any required environment variables in your LlamaStackDistribution custom resource, such as the inference model, vLLM endpoint URL, and Milvus database path.
+* The project namespace where you will deploy the LlamaStackDistribution has sufficient resource quota, persistent storage available, and any required image pull secrets to access private container registries.
+ifdef::upstream,self-managed[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+ifdef::cloud-service[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
+endif::[]
+* You have installed Podman on your local machine. You can use Docker as an alternative.
+
+.Procedure
+
+. Clone the `llama-stack` repository:
++
+[source,terminal]
+----
+$ git clone https://github.com/meta-llama/llama-stack.git
+$ cd llama-stack
+----
+
+. Use the `remote-vllm` template for your build, which includes the files `build.yaml` and `run.yaml` in the `llama_stack/templates/remote-vllm` directory.
+
+. Update the `build.yaml` file to use Milvus as the only vector database and set the image type to `container`:
++
+.File: `llama_stack/templates/remote-vllm/build.yaml`
+[source,yaml]
+----
+version: '2'
+distribution_spec:
+  description: Use (an external) vLLM server for running LLM inference
+  providers:
+    inference:
+      - remote::vllm
+      - inline::sentence-transformers
+    vector_io:
+      - inline::milvus
+  # ... other providers unchanged
+  image_type: container
+----
+
+. Update the `run.yaml` file to specify your Milvus vector database, set the embedding model, and define the relevant providers and model references.
++
+.File: `llama_stack/templates/remote-vllm/run.yaml`
+[source,yaml]
+----
+providers:
+  inference:
+    - provider_id: vllm-inference
+      provider_type: remote::vllm
+      config:
+        url: ${env.VLLM_URL:http://localhost:8000/v1}
+        max_tokens: ${env.VLLM_MAX_TOKENS:4096}
+        api_token: ${env.VLLM_API_TOKEN:fake}
+        tls_verify: ${env.VLLM_TLS_VERIFY:true}
+    - provider_id: sentence-transformers
+      provider_type: inline::sentence-transformers
+      config: {}
+  vector_io:
+    - provider_id: milvus
+      provider_type: inline::milvus
+      config:
+        db_path: ${env.MILVUS_DB_PATH}
+models:
+  metadata: {}
+  model_id: ${env.INFERENCE_MODEL}
+  provider_id: vllm-inference
+  model_type: llm
+
+metadata:
+  embedding_dimension: 768
+  model_id: ibm-granite/granite-embedding-125m-english
+  provider_id: sentence-transformers
+  model_type: embedding
+# ... other sections unchanged
+----
+
+. Build the Llama Stack image:
++
+[source,terminal]
+----
+$ CONTAINER_BINARY=podman BUILD_PLATFORM=linux/amd64 USE_COPY_NOT_MOUNT=true LLAMA_STACK_DIR=. llama stack build --template remote-vllm --image-type container
+----
+
+. Tag and push your image to your container registry. Replace placeholders with your image details:
++
+[source,terminal]
+----
+$ podman tag <local-image> quay.io/<your-namespace>/<your-image>:<tag>
+$ podman push quay.io/<your-namespace>/<your-image>:<tag>
+----
+
+[NOTE]
+====
+Before you can deploy your custom image, you must create or update the `LlamaStackDistribution` custom resource (CR) in your project to specify your custom image and any required environment variables in the CR YAML. 
+====
+
+.Verification
+
+. Open a new terminal window.
+. Log in to your {openshift-platform} cluster from the CLI:
+. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
+.. After you have logged in, click *Display token*.
+.. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
+----
+
+. Check that the `LlamaStackDistribution` pod is running:
++
+[source,terminal]
+----
+$ oc get pods -n llamastack
+----
+
+. View the pod logs for any errors or status information:
++
+[source,terminal]
+----
+$ oc logs deployment/llama-test-milvus -n llamastack
+----
