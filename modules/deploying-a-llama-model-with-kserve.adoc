@@ -4,7 +4,7 @@
 = Deploying a Llama model with KServe
 
 [role='_abstract']
-To use Llama Stack and retrieval-augmented generation (RAG) workloads in {productname-short}, you must deploy a Llama model with a vLLM model server and configure KServe in raw deployment mode.
+To use Llama Stack and retrieval-augmented generation (RAG) workloads in {productname-short}, you must deploy a Llama model with a vLLM model server and configure KServe in standard deployment mode.
 
 .Prerequisites
 
@@ -21,7 +21,7 @@ endif::[]
 ifndef::upstream[]
 * You have enabled the single-model serving platform. For more information about enabling the single-model serving platform, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#enabling-the-single-model-serving-platform_serving-large-models[Enabling the single-model serving platform^].
 endif::[]
-* You have not disabled the ability to select the single-model serving platform in the dashboard configuration. 
+* You can access the single-model serving platform in the dashboard configuration. 
 ifndef::upstream[]
 For more information, see link:{rhoaidocshome}/html/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
 endif::[]
@@ -99,7 +99,7 @@ kserve:
 ----
 .. Click *Save*.
 
-This configuration disables service mesh integration for the vLLM deployment and sets KServe to raw deployment mode. 
+This configuration disables service mesh integration for the vLLM deployment and sets KServe to standard deployment mode. 
 
 . In the {productname-short} dashboard, navigate to the project details page and click the *Models* tab.
 . In the *Single-model serving platform* tile, click *Select single-model*.
@@ -135,7 +135,7 @@ The *Deploy model* dialog opens.
 --tool-call-parser=llama3_json
 --chat-template=/app/data/template/tool_chat_template_llama3.2_json.jinja
 ----
-.. Click the *Deploy* button to start the deployment.
+.. Click *Deploy*.
 
 .Verification 
 . Verify that the `kserve-controller-manager` and `odh-model-controller` pods are running:
@@ -180,7 +180,7 @@ $ oc get pods -n llamastack | grep llama
 ----
 * The deployment automatically creates the following resources:
 ** A `ServingRuntime` resource.
-** An `InferenceService` resource, a `Deployment`, a Pod, and a Service pointing to the Pod.
+** An `InferenceService` resource, a `Deployment`, a pod, and a service pointing to the pod.
 * To verify that the server is running, check for output similar to the following example log:
 +
 [source,log]
