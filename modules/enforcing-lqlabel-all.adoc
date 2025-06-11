@@ -5,11 +5,10 @@
 
 [role='_abstract']
 When the local-queue labeling policy is enforced, Ray clusters and PyTorchJobs are created _only if_ they are configured to use a local queue, and the Ray cluster and PyTorchJob resources are then managed by Kueue.
-The local-queue labeling policy is enforced for all projects by default.
 
-The Validating Admission Policy is enforced on both RayCluster and PyTorchJob resources.
+The local-queue labeling policy is enforced for all projects by default. The Validating Admission Policy is enforced on both RayCluster and PyTorchJob resources.
 
-If the original `ValidatingAdmissionPolicyBinding` resource is edited, you use either of the following methods to undo the edits and enforce the policy for all projects:
+If the original `ValidatingAdmissionPolicyBinding` resource is edited, you can use either of the following methods to undo the edits and enforce the policy for all projects:
 
 * Delete the `kueue-validating-admission-policy-binding` resource.
 The resource is automatically re-created with the default values. 
