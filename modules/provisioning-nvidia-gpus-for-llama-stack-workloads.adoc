@@ -1,9 +1,9 @@
 :_module-type: PROCEDURE
 
-[id="configuring-gpu-acceleration-openshift-cluster_{context}"]
-= Configuring GPU acceleration on an OpenShift cluster
+[id="provisioning-nvidia-gpus-for-llama-stack-workloads_{context}"]
+= Provisioning NVIDIA GPUs for Llama Stack workloads
 
-You must configure GPU acceleration on your {openshift-platform} cluster to support efficient large language model (LLM) inference, for example, when you use vLLM. vLLM is optimized for NVIDIA GPUs and does not perform efficiently on CPU-only nodes.
+You must provision and configure NVIDIA GPU acceleration on your {openshift-platform} cluster to support Llama Stack workloads, such as large language model (LLM) inference with vLLM. This module applies only to NVIDIA GPUs and does not cover the configuration of other accelerator types. The procedures described here are required prerequisites for running Llama Stack inference workloads that require NVIDIA GPU resources.
 
 .Prerequisites
 
@@ -37,12 +37,39 @@ endif::[]
 $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 ----
 
-. Run the following command to manually apply the GPU label to your GPU-enabled node. Replace `<gpu-node-name>` with name of your node.
+. Confirm that your node has NVIDIA GPUs correctly detected and allocated by running the following command:
 +
 [source,terminal]
 ----
-$ oc label node <gpu-node-name> feature.node.kubernetes.io/pci-10de.present=true
+$ oc describe node <gpu-node-name> | grep Capacity -A 15
 ----
++
+You should see output similar to the following example, confirming that the `nvidia.com/gpu` resource is present in both the *Capacity* and *Allocatable* sections:
++
+[source,text]
+----
+Capacity:
+  cpu:                96
+  ephemeral-storage:  209124332Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             1176302348Ki
+  nvidia.com/gpu:     8
+  pods:               250
+Allocatable:
+  cpu:                95500m
+  ephemeral-storage:  191655242229
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             1175151372Ki
+  nvidia.com/gpu:     8
+  pods:               250
+----
+
+If you do **not** see `nvidia.com/gpu` or its value is `0`, verify that:
+* The Node Feature Discovery and NVIDIA GPU Operator pods are running.
+* The correct driver is installed on the node.
+* The node is not tainted or cordoned.
 
 .Verification
 
