@@ -7,9 +7,7 @@
 When the local-queue labeling policy is enforced, Ray clusters and PyTorchJobs are created _only if_ they are configured to use a local queue, and the Ray cluster and PyTorchJob resources are then managed by Kueue.
 Disabling the policy means that it is possible to create Ray clusters or PyTorchJobs that do not use a local queue, but the resources of such Ray clusters or PyTorchJobs are not managed by Kueue.
 
-The Validating Admission Policy is enforced on both RayCluster and PyTorchJob resources.
-
-The local-queue labeling policy is enforced for all projects by default. To enforce the local-queue labeling policy for _some_ projects only, follow these steps.
+The local-queue labeling policy is enforced for all projects by default. The Validating Admission Policy is enforced on both RayCluster and PyTorchJob resources. To enforce the local-queue labeling policy for _some_ projects only, follow these steps.
 
 .Prerequisites
 ifdef::upstream,self-managed[]
