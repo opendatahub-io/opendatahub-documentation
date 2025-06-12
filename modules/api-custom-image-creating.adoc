@@ -57,9 +57,11 @@ spec:
         opendatahub.io/notebook-python-dependencies: '[{"name":"PyTorch","version":"2.2"}]' # <7>
         opendatahub.io/notebook-software: '[{"name":"Python","version":"v3.11"}]' # <8>
         opendatahub.io/workbench-image-recommended: 'true' # <9>
+        opendatahub.io/image-tag-outdated: 'true' # <10>
+        opendatahub.io/notebook-build-commit: 3e71410 # <11>
       from:
         kind: DockerImage
-        name: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-workbench:latest' # <10>
+        name: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-workbench:latest' # <12>
       importPolicy: 
       importPolicy:
         importMode: Legacy
@@ -77,8 +79,10 @@ The example YAML file includes the following information:
 <6> The version for the image. You can configure multiple versions for the same image. For this example, the version is 1.0.
 <7> An annotation that gives the user information about the Python packages and versions that are pre-installed in the image.
 <8> An annotation that specifies information such as the Python version, Jupyter version, or CUDA version.
-<9> An annotation that specifies whether the `ImageStream` version is the default version of the image. Set this field to `'true'` if the `ImageStream` version is the default. Otherwise, set it to `'false'`. You must specify the `opendatahub.io/workbench-image-recommended` annotation field if there are multiple versions of the image with different configurations. If you have only one version of the image, set the field to `'true'`.
-<10> The image registry URL to store the image stream. Store the image stream in an image registry outside of the cluster where {productname-short} is installed.
+<9> An annotation that specifies whether the `ImageStream` version is the default version of the image. Set this field to `'true'` if the `ImageStream` version is the default. Otherwise, set it to `'false'`. You must specify the `opendatahub.io/workbench-image-recommended` annotation field if there are multiple versions of the image with different configurations. If you have only one version of the image, set the field to `'true'`. 
+<10> An annotation that specifies whether the image version has tags that are outdated and out of the regular maintenance cycle.
+<11> An annotation that is a reference to the build commit with the ID for the updated information.
+<12> The image registry URL to store the image stream. Store the image stream in an image registry outside of the cluster where {productname-short} is installed.
 
 . To create the `ImageStream` CR, run the following command, where the `ImageStream` CRD YAML manifest file name is `notebook-image-stream.yaml`:
 +
