@@ -58,7 +58,7 @@ spec:
         opendatahub.io/notebook-software: '[{"name":"Python","version":"v3.11"}]' # <8>
         opendatahub.io/workbench-image-recommended: 'true' # <9>
         opendatahub.io/image-tag-outdated: 'true' # <10>
-        opendatahub.io/notebook-build-commit: 3e71410 # <11>
+        opendatahub.io/notebook-build-commit: '3e71410' # <11>
       from:
         kind: DockerImage
         name: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:latest' # <12>
@@ -81,8 +81,8 @@ The example YAML file includes the following information:
 <8> An annotation that specifies information such as the Python version, Jupyter version, or CUDA version.
 <9> An annotation that specifies whether the `ImageStream` version is the default version of the image. Set this field to `'true'` if the `ImageStream` version is the default. Otherwise, set it to `'false'`. You must specify the `opendatahub.io/workbench-image-recommended` annotation field if there are multiple versions of the image with different configurations. If you have only one version of the image, set the field to `'true'`. 
 <10> An annotation that specifies whether the image version has tags that are outdated and out of the regular maintenance cycle.
-<11> An annotation that is a reference to the build commit with the ID for the updated information.
-<12> The image registry URL to store the image stream. Store the image stream in an image registry outside of the cluster where {productname-short} is installed.
+<11> An annotation that is a reference to the build commit ID containing the latest content.
+<12> The image registry path where the image has been uploaded. Store the image stream in your preferred image registry.
 
 . To create the `ImageStream` CR, run the following command, where the `ImageStream` CRD YAML manifest file name is `notebook-image-stream.yaml`:
 +
