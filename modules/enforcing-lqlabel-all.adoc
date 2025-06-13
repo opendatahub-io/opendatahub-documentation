@@ -4,10 +4,11 @@
 = Enforcing the local-queue labeling policy for all projects
 
 [role='_abstract']
-When the local-queue labeling policy is enforced, Ray clusters are created _only if_ they are configured to use a local queue, and the Ray cluster resources are then managed by Kueue.
-The local-queue labeling policy is enforced for all projects by default.
+When the local-queue labeling policy is enforced, Ray clusters and PyTorchJobs are created _only if_ they are configured to use a local queue, and the Ray cluster and PyTorchJob resources are then managed by Kueue.
 
-If the original `ValidatingAdmissionPolicyBinding` resource is edited, you use either of the following methods to undo the edits and enforce the policy for all projects:
+The local-queue labeling policy is enforced for all projects by default. The Validating Admission Policy is enforced on both RayCluster and PyTorchJob resources.
+
+If the original `ValidatingAdmissionPolicyBinding` resource is edited, you can use either of the following methods to undo the edits and enforce the policy for all projects:
 
 * Delete the `kueue-validating-admission-policy-binding` resource.
 The resource is automatically re-created with the default values. 
@@ -41,7 +42,7 @@ endif::[]
 
 .Procedure
 
-. In the {openshift-platform} console, open the *Administrator* perspective,
+. In the {openshift-platform} console, open the *Administrator* perspective.
 . From the *Project* list, select *All Projects*.
 . Click *Home* -> *Search*.
 . In the *Resources* list, search for *ValidatingAdmissionPolicyBinding*.
@@ -78,6 +79,8 @@ spec:
 
 .Verification 
 
+To verify that the local-queue labeling policy is enforced for Ray clusters:
+
 . Create a project.
 . Complete the following steps in the new project:
 .. Before you configure a local queue, try to create a Ray cluster.
@@ -94,3 +97,17 @@ The Validating Admission Policy rejects the request, and the Ray cluster is not 
 .. Try to create a Ray cluster without specifying a value in the `local_queue` field.
 +
 The Validating Admission Policy approves the request, and the Ray cluster is created even though a local queue is not specified, because the default local queue is used.
+
+To verify that the local-queue labeling policy is enforced for PyTorchJobs:
+
+. Complete the following steps in the new project:
+.. Before you configure a local queue, try to create a PyTorchJob.
++
+The Validating Admission Policy rejects the request, and the PyTorchJob is not created, because no local queue is configured.
+.. Create a local queue.
+.. Try to create a PyTorchJob and add the `kueue.x-k8s.io/queue-name: <local-queue-name>` label in the `labels` field.
++
+The Validating Admission Policy approves the request, and the PyTorchJob is created.
+.. Try to create a PyTorchJob without specifying the `kueue.x-k8s.io/queue-name` label in the `labels` field.
++
+The Validating Admission Policy rejects the request, and the PyTorchJob is not created, because a local queue is not specified.
