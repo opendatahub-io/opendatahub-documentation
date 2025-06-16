@@ -1,0 +1,159 @@
+:_module-type: REFERENCE
+
+ifdef::context[:parent-context: {context}]
+[id="configuring-the-guardrails-detector-hugging-face-serving-runtime_{context}"]
+= Configuring the Guardrails Detector Hugging Face serving runtime
+
+[role='_abstract']
+
+
+In order to use the link:https://huggingface.co/docs/transformers/model_doc/auto#transformers.AutoModelForSequenceClassification[Hugging Face AutoModelsForSequenceClassification models] with the Guardrails Orchestrator, we need to first configure a Hugging Face serving runtime.
+
+The link:https://github.com/opendatahub-io/odh-model-controller/blob/incubating/config/runtimes/hf-detector-template.yaml[guardrails-detector-huggingface-runtime] is a KServe serving runtime for Hugging Face models that is used to detect and mitigate certain types of risks in text data, for example, hateful speech.
+This runtime is intended to be compatible with most Hugging Face `AutoModelsForSequenceClassification` models and allows models like the link:https://huggingface.co/ibm-granite/granite-guardian-hap-38m[ibm-granite/granite-guardian-hap-38m] to be used within the TrustyAI Guardrails Ecosystem.
+
+.Example custom serving runtime
+
+This YAML file contains an example of a custom serving runtime with four workers for the Prompt Injection detector:
+
+[source,YAML]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  name: guardrails-detector-runtime-prompt-injection
+  annotations:
+    openshift.io/display-name: Guardrails Detector ServingRuntime for KServe
+    opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
+  labels:
+    opendatahub.io/dashboard: 'true'
+spec:
+  annotations:
+    prometheus.io/port: '8080'
+    prometheus.io/path: '/metrics'
+  multiModel: false
+  supportedModelFormats:
+    - autoSelect: true
+      name: guardrails-detector-huggingface
+  containers:
+    - name: kserve-container
+      image: quay.io/trustyai/guardrails-detector-huggingface-runtime:v0.2.0
+      command:
+        - uvicorn
+        - app:app
+      args:
+        - "--workers=4"  # Override default
+        - "--host=0.0.0.0"
+        - "--port=8000"
+        - "--log-config=/common/log_conf.yaml"
+      env:
+        - name: MODEL_DIR
+          value: /mnt/models
+        - name: HF_HOME
+          value: /tmp/hf_home
+      ports:
+        - containerPort: 8000
+          protocol: TCP
+----
+
+The following tables provide some useful references for your Guardrails Detector Hugging Face serving runtime.
+
+.Template configuration
+[cols="2,5"]
+|===
+| Property | Value
+
+| Template Name
+| `guardrails-detector-huggingface-serving-template`
+
+| Runtime Name
+| `guardrails-detector-huggingface-runtime`
+
+| Display Name
+| `Hugging Face Detector ServingRuntime for KServe`
+
+| Model Format
+| `guardrails-detector-hf-runtime`
+
+|===
+
+
+.Server configuration
+
+[cols="2,2,3"]
+|===
+| Component | Configuration | Value
+
+| Server		
+| uvicorn 
+| `app:app`
+
+| Port	
+| Container	
+| `8000`
+
+| Metrics Port			
+| Prometheus	
+| `8080`
+
+| Metrics Path 
+| Prometheus	
+| `/metrics`
+
+| Log Config		
+| Path
+| `/common/log_conf.yaml`
+|===
+
+.Parameters
+[cols="3,2,3"]
+|===
+| Parameter | Default | Description
+
+| `80guardrails-detector-huggingface-runtime-image`
+| -		
+| Container image (required)
+
+| ` MODEL_DIR`
+|	`/mnt/models`	
+| Model mount path		
+
+| `HF_HOME`
+| `/tmp/hf_home`		
+| HuggingFace cache
+
+| `--workers`
+| 	`1`	
+| Uvicorn workers		
+
+| `--host`
+| `0.0.0.0`	
+| Server bind address		
+
+| `--port`
+| `8000`
+| Server port		
+|===
+
+.Parameters
+[cols="3,2,3,2,3"]
+|===
+| Endpoint | Method | Description | Content-Type | Headers
+
+| `/health`
+|	GET		
+| Health check endpoint
+| `-`
+| `-`
+
+| `/api/v1/text/contents`
+|	POST		
+| Content detection endpoint
+| `application/json`
+a| 3 types:
+* `application/json`
+* `detector-id: {detector_name}`
+* `Content-Type: application/json`
+
+|===
+	
