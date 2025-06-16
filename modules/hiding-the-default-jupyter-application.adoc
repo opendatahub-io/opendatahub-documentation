@@ -1,12 +1,12 @@
 :_module-type: PROCEDURE
 
 [id="hiding-the-default-jupyter-application_{context}"]
-= Hiding the default basic-workbench application
+= Hiding the default basic workbench application
 
 [role='_abstract']
 The {productname-short} dashboard includes *Start basic workbench* as an enabled application by default.
 
-To hide the *Start basic workbench* tile from the list of Enabled applications, edit the dashboard configuration file.
+To hide the *Start basic workbench* tile so that it is no longer included in the list of applications on the *Applications* → *Enabled* page, edit the dashboard configuration file.
 
 .Prerequisite
 
@@ -24,10 +24,11 @@ To hide the *Start basic workbench* tile from the list of Enabled applications, 
 .. Click the *Instances* tab.
 .. Click the `odh-dashboard-config` instance to open the details page.
 .. Click the *YAML* tab. 
-. In the `spec:notebookController` section, set the value of `enabled` to `false` to hide the *Start basic workbench* tile from the list of Enabled applications.
+. In the `spec:notebookController` section, set the value of `enabled` to `false` to remove the *Start basic workbench* tile from the list of applications on the *Applications* → *Enabled* page.
 . Click *Save* to apply your changes and then click *Reload* to make sure that your changes are synced to the cluster.
 
 .Verification
 
-In the {productname-short} dashboard, select *Applications> Enabled*. You should not see the *Start basic workbench* tile.
+In the {productname-short} dashboard, click *Applications* → *Enabled*. 
+The list of applications no longer includes the *Start basic workbench* tile.
 

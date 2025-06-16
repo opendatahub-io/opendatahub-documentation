@@ -40,10 +40,10 @@ endif::[]
 
 .Problem
 ifdef::upstream,self-managed[]
-The {openshift-platform} cluster that hosts the user's workbench might not have access to enough resources, or the Jupyter pod may have failed.
+The {openshift-platform} cluster that hosts the user's workbench might not have access to enough resources, or the workbench pod may have failed.
 endif::[]
 ifdef::cloud-service[]
-The OpenShift cluster that hosts the user's workbench might not have access to enough resources, or the Jupyter pod may have failed.
+The OpenShift cluster that hosts the user's workbench might not have access to enough resources, or the workbench pod may have failed.
 endif::[]
 
 .Diagnosis
@@ -69,7 +69,7 @@ ifdef::cloud-service[]
 endif::[]
 +
 If worker nodes with sufficient CPU and RAM are available for scheduling in the cluster, continue with diagnosis.
-. Check the state of the Jupyter pod.
+. Check the state of the workbench pod.
 
 
 .Resolution
@@ -83,7 +83,7 @@ ifdef::cloud-service[]
 * If the workbench does not have sufficient resources to run the selected workbench image, either add more resources to the OpenShift cluster, or choose a smaller image size.
 endif::[]
 ifndef::upstream[]
-* If the Jupyter pod is in a *FAILED* state:
+* If the workbench pod is in a *FAILED* state:
 .. Retrieve the logs for the `jupyter-nb-*` pod and send them to {org-name} Support for further evaluation.
 .. Delete the `jupyter-nb-*` pod.
 * If none of the previous resolutions apply, contact {org-name} Support.
