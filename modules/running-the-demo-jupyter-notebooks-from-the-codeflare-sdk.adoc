@@ -1,12 +1,12 @@
 :_module-type: PROCEDURE
 
-[id="running-the-demo-notebooks-from-the-codeflare-sdk_{context}"]
-= Running the demo notebooks from the CodeFlare SDK
+[id="running-the-demo-jupyter-notebooks-from-the-codeflare-sdk_{context}"]
+= Running the demo Jupyter notebooks from the CodeFlare SDK
 
 [role='_abstract']
-To run the demo notebooks from the CodeFlare SDK, you must provide environment-specific information.
+To run the demo Jupyter notebooks from the CodeFlare SDK, you must provide environment-specific information.
 
-In the examples in this procedure, you edit the demo notebooks in JupyterLab to provide the required information, and then run the notebooks.
+In the examples in this procedure, you edit the demo Jupyter notebooks in JupyterLab to provide the required information, and then run the Jupyter notebooks.
 
 .Prerequisites
 ifndef::upstream[]
@@ -22,11 +22,11 @@ endif::[]
 ** The Python dependencies for the workload, either in a Ray image or in your own Python Package Index (PyPI) server
 
 ifndef::upstream[]
-* You can access a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+* You can access a data science project that contains a workbench, and the workbench is running a default workbench image that contains the CodeFlare SDK, for example, the *Standard Data Science* workbench. 
 For information about projects and workbenches, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects[Working on data science projects].
 endif::[]
 ifdef::upstream[]
-* You can access a data science project that contains a workbench, and the workbench is running a default notebook image that contains the CodeFlare SDK, for example, the *Standard Data Science* notebook. 
+* You can access a data science project that contains a workbench, and the workbench is running a default workbench image that contains the CodeFlare SDK, for example, the *Standard Data Science* workbench. 
 For information about projects and workbenches, see link:{odhdocshome}/working-on-data-science-projects[Working on data science projects].
 endif::[]
 
@@ -37,10 +37,10 @@ endif::[]
 * You have logged in to {productname-long}, started your workbench, and logged in to JupyterLab.
 
 ifndef::upstream[]
-* You have downloaded the demo notebooks provided by the CodeFlare SDK, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#downloading-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Downloading the demo notebooks from the CodeFlare SDK].
+* You have downloaded the demo Jupyter notebooks provided by the CodeFlare SDK, as described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#downloading-the-demo-jupyter-notebooks-from-the-codeflare-sdk_distributed-workloads[Downloading the demo Jupyter notebooks from the CodeFlare SDK].
 endif::[]
 ifdef::upstream[]
-* You have downloaded the demo notebooks provided by the CodeFlare SDK, as described in link:{odhdocshome}/working-with-distributed-workloads/#downloading-the-demo-notebooks-from-the-codeflare-sdk_distributed-workloads[Downloading the demo notebooks from the CodeFlare SDK].
+* You have downloaded the demo Jupyter notebooks provided by the CodeFlare SDK, as described in link:{odhdocshome}/working-with-distributed-workloads/#downloading-the-demo-jupyter-notebooks-from-the-codeflare-sdk_distributed-workloads[Downloading the demo Jupyter notebooks from the CodeFlare SDK].
 endif::[]
 
 
@@ -63,14 +63,14 @@ If the `kueue.x-k8s.io/default-queue` annotation is set to `'true'`, the queue i
 +
 [NOTE]
 ====
-If your cluster administrator does not define a default local queue, you must specify a local queue in each notebook.
+If your cluster administrator does not define a default local queue, you must specify a local queue in each Jupyter notebook.
 ====
 
 . In the JupyterLab interface, open the *demo-notebooks > guided-demos* folder. 
-. Open all of the notebooks by double-clicking each notebook file.
+. Open all of the Jupyter notebooks by double-clicking each Jupyter notebook file.
 +
-Notebook files have the `.ipynb` file name extension.
-. In each notebook, ensure that the `import` section imports the required components from the CodeFlare SDK, as follows:
+Jupyter notebook files have the `.ipynb` file name extension.
+. In each Jupyter notebook, ensure that the `import` section imports the required components from the CodeFlare SDK, as follows:
 +
 .Example import section
 [source,bash]
@@ -78,7 +78,7 @@ Notebook files have the `.ipynb` file name extension.
 from codeflare_sdk import Cluster, ClusterConfiguration, TokenAuthentication
 ----
 
-. In each notebook, update the `TokenAuthentication` section to provide the `token` and `server` details to authenticate to the OpenShift cluster by using the CodeFlare SDK.
+. In each Jupyter notebook, update the `TokenAuthentication` section to provide the `token` and `server` details to authenticate to the OpenShift cluster by using the CodeFlare SDK.
 +
 ifndef::upstream[]
 For information about how to find the server and token details, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/preparing-the-distributed-training-environment_distributed-workloads#using-the-cluster-server-and-token-to-authenticate_distributed-workloads[Using the cluster server and token to authenticate].
@@ -103,7 +103,7 @@ auth.login()
 +
 Alternatively, you can set the `CF_SDK_CA_CERT_PATH` environment variable to specify the location of the custom certificates.
 
-. In each notebook, update the cluster configuration section as follows:
+. In each Jupyter notebook, update the cluster configuration section as follows:
 
 .. If the `namespace` value is specified, replace the example value with the name of your project.
 +
@@ -145,7 +145,7 @@ local_queue="_your_local_queue_name_"
 labels = {"exampleLabel1": "exampleLabel1Value", "exampleLabel2": "exampleLabel2Value"}
 ----
 
-. In the `2_basic_interactive.ipynb` notebook, ensure that the following Ray cluster authentication code is included after the Ray cluster creation section:
+. In the `2_basic_interactive.ipynb` Jupyter notebook, ensure that the following Ray cluster authentication code is included after the Ray cluster creation section:
 +
 .Ray cluster authentication code
 [source,bash,subs="+quotes"]
@@ -158,20 +158,20 @@ generate_cert.export_env(cluster.config.name, cluster.config.namespace)
 [NOTE]
 ====
 Mutual Transport Layer Security (mTLS) is enabled by default in the CodeFlare component in {productname-short}.
-You must include the Ray cluster authentication code to enable the Ray client that runs within a notebook to connect to a secure Ray cluster that has mTLS enabled.
+You must include the Ray cluster authentication code to enable the Ray client that runs within a Jupyter notebook to connect to a secure Ray cluster that has mTLS enabled.
 ====
 
-. Run the notebooks in the order indicated by the file-name prefix (`0_`, `1_`, and so on).
+. Run the Jupyter notebooks in the order indicated by the file-name prefix (`0_`, `1_`, and so on).
 
 ifndef::upstream[]
-.. In each notebook, run each cell in turn, and review the cell output.
+.. In each Jupyter notebook, run each cell in turn, and review the cell output.
 .. If an error is shown, review the output to find information about the problem and the required corrective action. 
 For example, replace any deprecated parameters as instructed.
 See also link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/troubleshooting-common-problems-with-distributed-workloads-for-users_distributed-workloads[Troubleshooting common problems with distributed workloads for users].
 .. For more information about the interactive browser controls that you can use to simplify Ray cluster tasks when working within a Jupyter notebook, see link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-ray-based-distributed-workloads_distributed-workloads#managing-ray-clusters-from-within-a-jupyter-notebook_distributed-workloads[Managing Ray clusters from within a Jupyter notebook].
 endif::[]
 ifdef::upstream[]
-.. In each notebook, run each cell in turn, and review the cell output.
+.. In each Jupyter notebook, run each cell in turn, and review the cell output.
 .. If an error is shown, review the output to find information about the problem and the required corrective action. 
 For example, replace any deprecated parameters as instructed.
 See also link:{odhdocshome}/working-with-distributed-workloads/#troubleshooting-common-problems-with-distributed-workloads-for-users_distributed-workloads[Troubleshooting common problems with distributed workloads for users].
@@ -179,8 +179,8 @@ See also link:{odhdocshome}/working-with-distributed-workloads/#troubleshooting-
 endif::[]
 
 .Verification
-. The notebooks run to completion without errors. 
-. In the notebooks, the output from the `cluster.status()` function or `cluster.details()` function indicates that the Ray cluster is `Active`.
+. The Jupyter notebooks run to completion without errors. 
+. In the Jupyter notebooks, the output from the `cluster.status()` function or `cluster.details()` function indicates that the Ray cluster is `Active`.
 
 ////
 [role='_additional-resources']

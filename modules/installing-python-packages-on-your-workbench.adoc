@@ -1,0 +1,72 @@
+:_module-type: PROCEDURE
+
+[id="installing-python-packages-on-your-workbench_{context}"]
+= Installing Python packages on your workbench
+
+
+[role='_abstract']
+You can install Python packages that are not part of the default workbench by adding the package and the version to a `requirements.txt` file and then running the `pip install` command in a notebook cell.
+
+NOTE: Although you can install packages directly, it is recommended that you use a `requirements.txt` file so that the packages stated in the file can be easily re-used across different workbenches.
+
+.Prerequisites
+* Log in to JupyterLab and open a Jupyter notebook.
+
+.Procedure
+. Create a new text file using one of the following methods:
+** Click *+* to open a new launcher and then click *Text file*.
+** Click *File* -> *New* -> *Text File*.
+. Rename the text file to `requirements.txt`.
+.. Right-click the name of the file and then click *Rename Text*. The *Rename File* dialog opens.
+.. Enter `requirements.txt` in the *New Name* field and then click *Rename*.
+. Add the packages to install to the `requirements.txt` file.
++
+[source]
+----
+altair
+----
++
+You can specify the exact version to install by using the `==` (equal to) operator, for example:
++
+[source]
+----
+altair==4.1.0
+----
++
+ifndef::upstream[]
+[NOTE]
+====
+{org-name} recommends specifying exact package versions to enhance the stability of your workbench over time. New package versions can introduce undesirable or unexpected changes in your environment's behavior.
+====
+endif::[]
+ifdef::upstream[]
+Specifying exact package versions to enhance the stability of your workbench over time is recommended. New package versions can introduce undesirable or unexpected changes in your environment's behavior. 
+endif::[]
+To install multiple packages at the same time, place each package on a separate line.
+. Install the packages in `requirements.txt` to your server by using a notebook cell.
+.. Create a new notebook cell and enter the following command:
++
+[source]
+----
+!pip install -r requirements.txt
+----
+.. Run the cell by pressing Shift and Enter.
+
++
+[IMPORTANT]
+====
+The `pip install` command installs the package on your workbench. However, you must run the `import` statement in a code cell to use the package in your code.
+
+----
+import altair
+----
+====
+
+.Verification
+* Confirm that the packages in the `requirements.txt` file appear in the list of packages installed on the workbench. 
+ifndef::upstream[]
+See link:{rhoaidocshome}{default-format-url}/working_in_your_data_science_ide/#viewing-python-packages-installed-on-your-workbench_{context}[Viewing Python packages installed on your workbench] for details.
+endif::[]
+ifdef::upstream[]
+See link:{odhdocshome}/working-in-your-data-science-ide/#viewing-python-packages-installed-on-your-workbench_{context}[Viewing Python packages installed on your workbench] for details.
+endif::[]

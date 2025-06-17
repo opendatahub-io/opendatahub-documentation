@@ -1,10 +1,10 @@
 :_module-type: REFERENCE
 
-[id="troubleshooting-common-problems-in-jupyter-for-administrators_{context}"]
-= Troubleshooting common problems in Jupyter for administrators
+[id="troubleshooting-common-problems-in-workbenches-for-administrators_{context}"]
+= Troubleshooting common problems in workbenches for administrators
 
 [role='_abstract']
-If your users are experiencing errors in {productname-long} relating to Jupyter, their notebooks, or their notebook server, read this section to understand what could be causing the problem, and how to resolve the problem.
+If your users are experiencing errors in {productname-long} relating to Jupyter, their Jupyter notebooks, or their workbench, read this section to understand what could be causing the problem, and how to resolve the problem.
 
 ifndef::upstream[]
 If you cannot see the problem here or in the release notes, contact {org-name} Support.
@@ -36,14 +36,14 @@ ifdef::upstream[]
 * If the user is not added to any of the groups allowed access to Jupyter, add them.
 endif::[]
 
-== A user's notebook server does not start
+== A user's workbench does not start
 
 .Problem
 ifdef::upstream,self-managed[]
-The {openshift-platform} cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
+The {openshift-platform} cluster that hosts the user's workbench might not have access to enough resources, or the workbench pod may have failed.
 endif::[]
 ifdef::cloud-service[]
-The OpenShift cluster that hosts the user's notebook server might not have access to enough resources, or the Jupyter pod may have failed.
+The OpenShift cluster that hosts the user's workbench might not have access to enough resources, or the workbench pod may have failed.
 endif::[]
 
 .Diagnosis
@@ -53,37 +53,37 @@ endif::[]
 ifdef::upstream,self-managed[]
 . Log in to the {openshift-platform} web console.
 endif::[]
-. Delete and restart the notebook server pod for this user.
+. Delete and restart the workbench pod for this user.
 .. Click *Workloads* -> *Pods* and set the *Project* to `rhods-notebooks`.
 
-.. Search for the notebook server pod that belongs to this user, for example, `jupyter-nb-<username>-*`.
+.. Search for the workbench pod that belongs to this user, for example, `jupyter-nb-<username>-*`.
 +
-If the notebook server pod exists, an intermittent failure may have occurred in the notebook server pod.
+If the workbench pod exists, an intermittent failure may have occurred in the workbench pod.
 +
-If the notebook server pod for the user does not exist, continue with diagnosis.
+If the workbench pod for the user does not exist, continue with diagnosis.
 ifdef::upstream,self-managed[]
-. Check the resources currently available in the {openshift-platform} cluster against the resources required by the selected notebook server image.
+. Check the resources currently available in the {openshift-platform} cluster against the resources required by the selected workbench image.
 endif::[]
 ifdef::cloud-service[]
-. Check the resources currently available in the OpenShift cluster against the resources required by the selected notebook server image.
+. Check the resources currently available in the OpenShift cluster against the resources required by the selected workbench image.
 endif::[]
 +
 If worker nodes with sufficient CPU and RAM are available for scheduling in the cluster, continue with diagnosis.
-. Check the state of the Jupyter pod.
+. Check the state of the workbench pod.
 
 
 .Resolution
-* If there was an intermittent failure of the notebook server pod:
-.. Delete the notebook server pod that belongs to the user.
-.. Ask the user to start their notebook server again.
+* If there was an intermittent failure of the workbench pod:
+.. Delete the workbench pod that belongs to the user.
+.. Ask the user to start their workbench again.
 ifdef::upstream,self-managed[]
-* If the notebook server does not have sufficient resources to run the selected notebook server image, either add more resources to the {openshift-platform} cluster, or choose a smaller image size.
+* If the workbench does not have sufficient resources to run the selected workbench image, either add more resources to the {openshift-platform} cluster, or choose a smaller image size.
 endif::[]
 ifdef::cloud-service[]
-* If the notebook server does not have sufficient resources to run the selected notebook server image, either add more resources to the OpenShift cluster, or choose a smaller image size.
+* If the workbench does not have sufficient resources to run the selected workbench image, either add more resources to the OpenShift cluster, or choose a smaller image size.
 endif::[]
 ifndef::upstream[]
-* If the Jupyter pod is in a *FAILED* state:
+* If the workbench pod is in a *FAILED* state:
 .. Retrieve the logs for the `jupyter-nb-*` pod and send them to {org-name} Support for further evaluation.
 .. Delete the `jupyter-nb-*` pod.
 * If none of the previous resolutions apply, contact {org-name} Support.
@@ -92,10 +92,10 @@ endif::[]
 == The user receives a *database or disk is full* error or a *no space left on device* error when they run notebook cells
 
 .Problem
-The user might have run out of storage space on their notebook server.
+The user might have run out of storage space on their workbench.
 
 .Diagnosis
-. Log in to Jupyter and start the notebook server that belongs to the user having problems. If the notebook server does not start, follow these steps to check whether the user has run out of storage space:
+. Log in to Jupyter and start the workbench that belongs to the user having problems. If the workbench does not start, follow these steps to check whether the user has run out of storage space:
 ifdef::upstream,self-managed[]
 .. Log in to the {openshift-platform} web console.
 endif::[]
@@ -103,7 +103,7 @@ ifdef::cloud-service[]
 .. Log in to the OpenShift web console.
 endif::[]
 .. Click *Workloads* -> *Pods* and set the *Project* to `rhods-notebooks`.
-.. Click the notebook server pod that belongs to this user, for example, `jupyter-nb-<idp>-<username>-*`.
+.. Click the workbench pod that belongs to this user, for example, `jupyter-nb-<idp>-<username>-*`.
 .. Click *Logs*. The user has exceeded their available capacity if you see lines similar to the following:
 +
 ----
@@ -117,11 +117,11 @@ endif::[]
 ifdef::upstream[]
 * Increase the user's available storage by expanding their persistent volume.
 endif::[]
-* Work with the user to identify files that can be deleted from the `/opt/app-root/src` directory on their notebook server to free up their existing storage space.
+* Work with the user to identify files that can be deleted from the `/opt/app-root/src` directory on their workbench to free up their existing storage space.
 
 [NOTE]
 --
-When you delete files using the JupyterLab file explorer, the files move to the hidden `/opt/app-root/src/.local/share/Trash/files` folder in the persistent storage for the notebook. To free up storage space for notebooks, you must permanently delete these files.
+When you delete files using the JupyterLab file explorer, the files move to the hidden `/opt/app-root/src/.local/share/Trash/files` folder in the persistent storage for the workbench. To free up storage space for workbenches, you must permanently delete these files.
 -- 
 
 // [role='_additional-resources']

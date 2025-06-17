@@ -1,0 +1,40 @@
+:_module-type: PROCEDURE
+
+[id='stopping-basic-workbenches-owned-by-other-users_{context}']
+= Stopping basic workbenches owned by other users
+
+[role='_abstract']
+{productname-short} administrators can stop basic workbenches that are owned by other users to reduce resource consumption on the cluster, or as part of removing a user and their resources from the cluster.
+
+.Prerequisites
+
+* You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
+
+ifdef::upstream[]
+* You have launched the *Start basic workbench* application, as described in link:{odhdocshome}/working-with-connected-applications/#starting-a-basic-workbench_connected-apps[Starting a basic workbench].
+endif::[]
+
+ifndef::upstream[]
+* You have launched the *Start basic workbench* application, as described in link:{rhoaidocshome}{default-format-url}/working_with_connected_applications/using_the_jupyter_application/#starting-a-basic-workbench_connected-apps[Starting a basic workbench].
+endif::[]
+
+* The workbench that you want to stop is running.
+
+.Procedure
+. On the page that opens when you launch a basic workbench, click the *Administration* tab.
+. Stop one or more servers.
+** If you want to stop one or more specific servers, perform the following actions:
+... In the *Users* section, locate the user that the workbench belongs to.
+... To stop the workbench, perform one of the following actions:
+* Click the action menu (*&#8942;*) beside the relevant user and select *Stop server*.
+* Click *View server* beside the relevant user and then click *Stop workbench*.
++
+The *Stop server* dialog box appears.
+... Click *Stop server*.
+
+** If you want to stop all workbenches, perform the following actions:
+... Click the *Stop all workbenches* button.
+... Click *OK* to confirm stopping all servers.
+
+.Verification
+* The *Stop server* link beside each server changes to a *Start workbench* link when the workbench has stopped.
