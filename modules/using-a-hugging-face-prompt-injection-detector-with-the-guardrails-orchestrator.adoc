@@ -1,16 +1,18 @@
 :_module-type: PROCEDURE
 
 ifdef::context[:parent-context: {context}]
-[id="using-a hugging-face-prompt-injection-detector-with-guardrails-orchestrator_{context}"]
+[id="using-a-hugging-face-prompt-injection-detector-with-guardrails-orchestrator_{context}"]
 = Using a Hugging Face Prompt Injection detector with the Guardrails Orchestrator
 
 [role='_abstract']
 
-These instructions outline two scenarios using a Hugging Face (HF) Prompt Injection detector: 
+These instructions build on the previous HAP scenario example and consider two detectors: HAP and Prompt Injections deployed as part of the guardrailing system.
 
-. Using the Prompt Injection detector with a generative large language model (LLM), deployed as part of the Guardrails Orchestrator service and managed by the TrustyAI Operator, to perform analysis of text input and/or output of an LLM.
+The instructions focus on the Hugging Face (HF) Prompt Injection detector, outlining two scenarios: 
 
-. Perform a standalone detection using an open-source link:https://foundation-model-stack.github.io/fms-guardrails-orchestrator/?urls.primaryName=Detector+API[detector API^] 
+. Using the Prompt Injection detector with a generative large language model (LLM), deployed as part of the Guardrails Orchestrator service and managed by the TrustyAI Operator, to perform analysis of text input and/or output of an LLM, using the link:https://foundation-model-stack.github.io/fms-guardrails-orchestrator/[Orchestrator API].
+
+. Perform standalone detections on text samples using an open-source link:https://foundation-model-stack.github.io/fms-guardrails-orchestrator/?urls.primaryName=Detector+API[Detector API^] 
 
 
 .Prerequisites
@@ -27,15 +29,15 @@ ifndef::upstream[]
 endif::[]
 
 ifdef::upstream[]
-* You have configured and deployed the Guardrails Orchestrator service. See link:{odhdocshome}/monitoring_data_science_models/#deploying-the-guardrails-orchestrator-service_monitor[Deploying the Guardrails Orchestrator].
+* You are familiar with how to configure and deploy the Guardrails Orchestrator service. See link:{odhdocshome}/monitoring_data_science_models/#deploying-the-guardrails-orchestrator-service_monitor[Deploying the Guardrails Orchestrator].
 endif::[]
 ifndef::upstream[]
-* You have configured and deployed the Guardrails Orchestrator service. See link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-the-guardrails-orchestrator-service_monitor#deploying-the-guardrails-orchestrator-service_monitor[Deploying the Guardrails Orchestrator] 
+* You are familiar with how to configure and deploy the Guardrails Orchestrator service. See link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-the-guardrails-orchestrator-service_monitor#deploying-the-guardrails-orchestrator-service_monitor[Deploying the Guardrails Orchestrator] 
 endif::[]
 
 * You have the TrustyAI component in your OpenShift AI `DataScienceCluster` set to `Managed`.
 
-* You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace.
+* You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace, in order to follow the Orchestrator API example. You do no need to have an LLM deployed inyour namespace for the Detectors API example.
 
 
 .Procedure 1: Using a Prompt Injection detector with a generative large language mode
@@ -50,7 +52,7 @@ oc new-project detector-demo
 +
 [source,bash]
 ----
-oc apply -f
+oc apply -f service_account.yaml
 ----
 
 . Download the required detector model(s) from link:https://huggingface.co/models[Hugging Face Model Hub] and place it in a storage location:
@@ -113,10 +115,12 @@ spec:
   replicas: 1
 ---
 ----
+[NOTE]
+--
+The in-built detectors have been switched off by setting `enableBuiltInDetectors` to `false`.
+--
 
-
-
-//. Use the detector from the standalone example and apply it to a generative large language model:
+. Use HAP and Prompt Injection detectors to perform detections on lists of messages comprising a conversation and/or completions from a model:
 +
 [source,bash]
 ----
@@ -145,13 +149,20 @@ curl -s -X POST \
   }' | jq
 ----
 
-. You can now use this detector within the orchestrator API:
-.. To use as content filtering for a text generation language model at the input and/or output level.
-.. To perform standalone detections using the Orchestrator API.
+.Verification
+
+. Within the Orchestrator API, you can use these detectors (HAP and Prompt Injection) to:
+.. Carry out content filtering for a text generation LLM at the input and/or output level.
+.. Perform standalone detections.
+
+In the next section, there is an example of how you can use a Detector API with these detectors (HAP and Prompt Injection) to perfrom detections that work on user -prompted or generated text content.
+
+//You can also use a Detector API to perform standalone detections, outlined in Procedure 2.
+
 
 .Procedure 2: Using a Prompt Injection detector to perform standalone detections
 
-You can also use these types of detectors to perform standalone detections using an open-source detector API.
+You can also use these types of detectors to perform standalone detections using an open-source Detector API.
 
 
 . Get the route of your detector:
