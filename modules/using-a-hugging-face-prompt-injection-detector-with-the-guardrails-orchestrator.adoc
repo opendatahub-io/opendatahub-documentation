@@ -12,7 +12,7 @@ The instructions focus on the Hugging Face (HF) Prompt Injection detector, outli
 
 . Using the Prompt Injection detector with a generative large language model (LLM), deployed as part of the Guardrails Orchestrator service and managed by the TrustyAI Operator, to perform analysis of text input and/or output of an LLM, using the link:https://foundation-model-stack.github.io/fms-guardrails-orchestrator/[Orchestrator API].
 
-. Perform standalone detections on text samples using an open-source link:https://foundation-model-stack.github.io/fms-guardrails-orchestrator/?urls.primaryName=Detector+API[Detector API^] 
+. Perform standalone detections on text samples using an open-source link:https://foundation-model-stack.github.io/fms-guardrails-orchestrator/?urls.primaryName=Detector+API[Detector API^].
 
 [NOTE]
 --
@@ -40,10 +40,9 @@ endif::[]
 
 * You have the TrustyAI component in your OpenShift AI `DataScienceCluster` set to `Managed`.
 
-* You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace, in order to follow the Orchestrator API example. You do no need to have an LLM deployed inyour namespace for the Detectors API example.
+* You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace, in order to follow the Orchestrator API example.
 
-
-.Procedure 1: Using a Prompt Injection detector with a generative large language mode
+.Scenario 1: Using a Prompt Injection detector with a generative large language model
 . Create a new project in Openshift using the cli:
 +
 [source,bash]
@@ -54,7 +53,7 @@ oc new-project detector-demo
 . Create `service_account.yaml`:
 +
 [source,yaml]
-____
+----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -71,7 +70,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: view
-____
+----
 
 . Apply `service_account.yaml` to create the service account:
 +
@@ -308,9 +307,9 @@ oc apply -f prompt_injection_detector.yaml
 --
 * To see further details on customizing the serving runtime and the inference service, refer to the previous section on configuring the Guardrails Detector Hugging Face serving runtime.
 
-* The HAP detector can be configured in a similar way to the Prompt Injection detector. See link:https://github.com/trustyai-explainability/trustyai-llm-demo/tree/main/guardrails/hap_detector[this demo] on how to configure serving runtime and inference services for this detector.
+* The HAP detector can be configured in a similar way to the Prompt Injection detector. See this link:https://github.com/trustyai-explainability/trustyai-llm-demo/tree/main/guardrails/hap_detector[HAP Detector demo] on how to configure serving runtime and inference services for this detector.
 
-* To see an example on how to deploy a text generation LLM (named `qwen2` in the example, as opposed to `llm` like in the `ConfigMap` below), see link:https://github.com/trustyai-explainability/trustyai-llm-demo/tree/main/vllm[this demo]. 
+* To see an example on how to deploy a text generation LLM (named `qwen2` in the example, as opposed to `llm` like in the `ConfigMap` below), see this link:https://github.com/trustyai-explainability/trustyai-llm-demo/tree/main/vllm[LLM demo]. 
 --
 
 . Add the detector to the `ConfigMap` in the Guardrails Orchestrator:
@@ -356,7 +355,7 @@ spec:
 ----
 [NOTE]
 --
-The in-built detectors have been switched off by setting `enableBuiltInDetectors` to `false`.
+The in-built detectors have been switched off by setting the `enableBuiltInDetectors` option to `false`.
 --
 
 . Use HAP and Prompt Injection detectors to perform detections on lists of messages comprising a conversation and/or completions from a model:
@@ -392,16 +391,13 @@ curl -s -X POST \
 
 . Within the Orchestrator API, you can use these detectors (HAP and Prompt Injection) to:
 .. Carry out content filtering for a text generation LLM at the input and/or output level.
-.. Perform standalone detections.
-
-In the next section, there is an example of how you can use a Detector API with these detectors (HAP and Prompt Injection) to perfrom detections that work on user -prompted or generated text content.
-
-//You can also use a Detector API to perform standalone detections, outlined in Procedure 2.
+.. Perform standalone detections with the Orchestrator API.
 
 
-.Procedure 2: Using a Prompt Injection detector to perform standalone detections
 
-You can also use these types of detectors to perform standalone detections using an open-source Detector API.
+.Scenario 2: Using a Prompt Injection detector to perform standalone detections
+
+You can also use these types of detectors to perform standalone detections using a Detector API (as well as performing standaolone detections with the Orchestrator API).
 
 
 . Get the route of your detector:
