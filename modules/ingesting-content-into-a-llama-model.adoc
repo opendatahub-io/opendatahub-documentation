@@ -156,24 +156,7 @@ client.tool_runtime.rag_tool.insert(
 print("Raw text ingested successfully")
 ----
 
-. Retrieve metadata for the ingested documents:
-+
-[source,python]
-----
-metadata_raw = await client.tool_runtime.rag_tool.get_metadata(
-    vector_db_id=vector_db_id,
-    document_ids=["raw_text_001"],
-)
-metadata_html = await client.tool_runtime.rag_tool.get_metadata(
-    vector_db_id=vector_db_id,
-    document_ids=["document_1"],
-)
-print("Raw text metadata:", metadata_raw)
-print("HTML document metadata:", metadata_html)
-----
-
 .Verification
 
 * Review the output to confirm successful ingestion. A typical response after ingestion includes the number of text chunks inserted and any warnings or errors.
-* The metadata output displays chunk counts and any stored metadata fields.  
 * The model list returned by `client.models.list()` includes your Llama 3.2 model and an embedding model.
