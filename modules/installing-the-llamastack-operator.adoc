@@ -51,24 +51,24 @@ $ oc apply -f $LLAMASTACK_REPO/main/release/operator.yaml
 
 .Verification
 
-. Verify that the Llama Stack Operator pods are running:
-+
+Verify that the Llama Stack Operator pods are running:
+
 [source,terminal]
 ----
 $ oc logs -l app.kubernetes.io/name=llama-stack-k8s-operator -n llama-stack-k8s-operator-system -f
 ----
-+
+
 You should see log entries indicating that the Llama Stack Operator has started successfully. For example:
-+
+
 [source,text]
 ----
 2025-06-11T16:36:12Z INFO setup starting manager
 2025-06-11T16:36:13Z INFO controller-runtime.metrics Metrics server is starting to listen {"addr": ":8080"}
 2025-06-11T16:36:13Z INFO Starting Controller {"controller": "llamastackdistribution", ...}
 ----
-+
+
 If you see log messages showing that the manager, metrics server, or controller are starting or running, the Llama Stack Operator is operating as expected.
-+
+
 [NOTE]
 ====
 The log output might differ depending on the Operator version and your environment.
