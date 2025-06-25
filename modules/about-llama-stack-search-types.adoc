@@ -1,0 +1,21 @@
+:_module-type: REFERENCE
+
+[id="about-llama-stack-search-types_{context}"]
+= About Llama stack search types
+
+[role='_abstract']
+Llama Stack supports keyword, vector, and hybrid search modes for retrieving context in retrieval-augmented generation (RAG) workloads. Each mode offers different trade-offs in precision, recall, semantic depth, and computational cost.
+
+== Supported search modes
+
+=== Keyword search
+Keyword search applies lexical matching techniques, such as TF-IDF or BM25, to locate documents that contain exact or near-exact query terms. It is effective when precise term-matching is critical and remains widely used in information-retrieval systems. For more information, see link:https://www.researchgate.net/publication/220613776_The_Probabilistic_Relevance_Framework_BM25_and_Beyond[The Probabilistic Relevance Framework: BM25 and Beyond].
+
+=== Vector search
+Vector search encodes documents and queries as dense numerical vectors, known as embeddings, and measures similarity with metrics such as cosine similarity or inner product. This approach captures contextual meaning and supports semantic matching beyond exact word overlap. For more information, see link:https://ieeexplore.ieee.org/document/8733051[Billion-scale similarity search with GPUs].
+
+=== Hybrid search
+Hybrid search blends keyword and vector techniques, typically by combining individual scores with a weighted sum or methods, such as Reciprocal Rank Fusion (RRF). This approach returns results that balance exact matches with semantic relevance. For more information, see link:https://arxiv.org/html/2410.20381v1[Sparse, Dense, and Hybrid Retrieval for Answer Ranking].
+
+== Retrieval database support
+Milvus is the supported retrieval database for Llama Stack. It currently provides vector search. However, keyword and hybrid search capabilities are not currently supported.
