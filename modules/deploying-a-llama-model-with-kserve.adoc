@@ -54,52 +54,8 @@ endif::[]
 
 [IMPORTANT]
 ====
-For {productname-short} versions before 2.20, you must configure the `DSCI` (DataScienceClusterInitialization) and `DSC` (DataScienceCluster) resources in KServe standard mode before deploying a vLLM instance. In {productname-short} versions 2.20 and later, you can deploy the model by selecting *Standard model* in the UI without changing the `DSC` resource.
+These steps are only supported in {productname-short} versions 2.19 and later.
 ====
-
-. Log in to the {openshift-platform} as a cluster administrator.
-. In the web console, click *Operators* → *Installed Operators* and then click the {productname-long} Operator.
-. Configure the `DSCI` custom resource:
-.. Click the *DSC Initialization* tab.
-.. Click the *default-dsci* object.
-.. Click the *YAML* tab.
-.. Update `.spec.serviceMesh.managementState` to `Removed`:
-+
-[source,yaml]
-----
-spec:
-  applicationsNamespace: redhat-ods-applications
-  monitoring:
-    managementState: Managed
-    namespace: redhat-ods-monitoring
-  serviceMesh:
-    controlPlane:
-      metricsCollection: Istio
-      name: data-science-smcp
-      namespace: istio-system
-    managementState: Removed
-----
-.. Click *Save*.
-
-. Configure the `DSC` custom resource:
-.. Click the *Data Science Cluster* tab.
-.. Click the *default-dsc* object.
-.. Click the *YAML* tab.
-.. Update `spec.components.kserve` as shown in the following example:
-+
-[source,yaml]
-----
-kserve:
-  defaultDeploymentMode: RawDeployment
-  RawDeploymentServiceConfig: Headed
-  managementState: Managed
-  serving:
-    managementState: Removed
-    name: knative-serving
-----
-.. Click *Save*.
-
-This configuration disables service mesh integration for the vLLM deployment and sets KServe to standard deployment mode. 
 
 . In the {productname-short} dashboard, navigate to the project details page and click the *Models* tab.
 . In the *Single-model serving platform* tile, click *Select single-model*.

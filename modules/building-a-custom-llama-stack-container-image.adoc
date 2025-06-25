@@ -1,10 +1,11 @@
 :_module-type: PROCEDURE
 
-[id="configuring-a-llamastackdistribution-with-vllm-and-milvus_{context}"]
-= Configuring a LlamaStackDistribution with vLLM and Milvus
+[id="building-a-custom-llama-stack-container-image_{context}"]
+= Building a custom Llama Stack container image
 
 [role='_abstract']
-You can gain scalable, high-performance inference and efficient vector storage for advanced retrieval-augmented generation (RAG) workloads by deploying a custom Llama Stack with an external vLLM inference service and Milvus vector database. To do this, you must build a custom Llama Stack container image and configure a LlamaStackDistribution custom resource and then deploy the solution in your {productname-short} environment.
+You can use a default Llama Stack container image for most deployments. However, if you require custom configuration, such as additional providers or model support, you can build your own image and then push it to a container registry, such as Quay.io.
+
 
 .Prerequisites
 
@@ -23,6 +24,7 @@ ifdef::cloud-service[]
 * You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
 endif::[]
 * You have installed Podman on your local machine. You can use Docker as an alternative.
+* You have installed uv on your local machine. For more information, see https://docs.astral.sh/uv/[uv] in the uv documentation.
 
 .Procedure
 
@@ -81,9 +83,8 @@ models:
   model_id: ${env.INFERENCE_MODEL}
   provider_id: vllm-inference
   model_type: llm
-
-metadata:
-  embedding_dimension: 768
+  metadata:
+    embedding_dimension: 768
   model_id: ibm-granite/granite-embedding-125m-english
   provider_id: sentence-transformers
   model_type: embedding
@@ -94,7 +95,25 @@ metadata:
 +
 [source,terminal]
 ----
-$ CONTAINER_BINARY=podman BUILD_PLATFORM=linux/amd64 USE_COPY_NOT_MOUNT=true LLAMA_STACK_DIR=. llama stack build --template remote-vllm --image-type container
+$ CONTAINER_BINARY=podman BUILD_PLATFORM=linux/amd64 USE_COPY_NOT_MOUNT=true LLAMA_STACK_DIR=. uv run --with llama-stack llama stack build --template remote-vllm --image-type container
+----
++
+This commands creates a `remote-vllm` container image.
+
+. Enter the following command to list all container images on your system and verify that a `remote-vllm` image has been created.
++
+[source,terminal]
+----
+$ podman images
+----
++
+Here is some example output that displays the new container image:
++
+[source,terminal]
+----
+REPOSITORY                            TAG        IMAGE ID       CREATED          SIZE
+localhost/llama-stack-remote-vllm-dev latest     8d34e2a6eae1   3 minutes ago    4.2 GB
+quay.io/myuser/llama-stack:mytag      mytag      97c88a1bbd23   5 minutes ago    4.2 GB
 ----
 
 . Tag and push your image to your container registry. Replace placeholders with your image details:
@@ -102,12 +121,18 @@ $ CONTAINER_BINARY=podman BUILD_PLATFORM=linux/amd64 USE_COPY_NOT_MOUNT=true LLA
 [source,terminal]
 ----
 $ podman tag <local-image> quay.io/<your-namespace>/<your-image>:<tag>
-$ podman push quay.io/<your-namespace>/<your-image>:<tag>
+$ podman push <container registry path>/<your-namespace>/<your-image>:<tag>
 ----
 
 [NOTE]
 ====
-Before you can deploy your custom image, you must create or update the `LlamaStackDistribution` custom resource (CR) in your project to specify your custom image and any required environment variables in the CR YAML. 
+ifndef::upstream[]
+Before you can deploy your custom image, you must create or update the `LlamaStackDistribution` custom resource (CR) in your project to specify your custom image and any required environment variables in the CR YAML, as described in link:{rhoaidocshome}{default-format-url}/working_with_rag/creating-a-chatbot-interface_rag#creating-a-llama-stack-distribution_rag[Creating a Llama Stack Distribution]. 
+endif::[]
+
+ifdef::upstream[]
+Before you can deploy your custom image, you must create or update the `LlamaStackDistribution` custom resource (CR) in your project to specify your custom image and any required environment variables in the CR YAML, as described in link:{odhdocshome}/working-with-rag/creating-a-chatbot-interface/#creating-a-llama-stack-distribution_rag[Creating a Llama Stack Distribution]. 
+endif::[]
 ====
 
 .Verification
@@ -123,16 +148,14 @@ Before you can deploy your custom image, you must create or update the `LlamaSta
 $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 ----
 
-. Check that the `LlamaStackDistribution` pod is running:
+. Confirm that your container image appears in your container registry, such as Quay.io:
 +
 [source,terminal]
 ----
-$ oc get pods -n llamastack
+$ podman search <container registry path>
 ----
++
+Alternatively, use the container registry web interface to check the repository and confirm that the new tag is present.
 
-. View the pod logs for any errors or status information:
-+
-[source,terminal]
-----
-$ oc logs deployment/llama-test-milvus -n llamastack
-----
+
+
