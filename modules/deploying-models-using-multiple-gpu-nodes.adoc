@@ -6,7 +6,7 @@
 [role='_abstract']
 Deploy models across multiple GPU nodes to handle large models, such as large language models (LLMs).
 
-You can serve models on {productname-long} across multiple GPU nodes using the vLLM serving framework. Multi-node inferencing uses the `vllm-multinode-runtime` custom runtime, which uses the same image as the VLLM NVIDIA GPU ServingRuntime for KServe runtime and also includes information necessary for multi-GPU inferencing.
+You can serve models on {productname-long} across multiple GPU nodes using the vLLM serving framework. Multi-node inferencing uses the `vllm-multinode-runtime` custom runtime, which uses the same image as the vLLM NVIDIA GPU ServingRuntime for KServe runtime and also includes information necessary for multi-GPU inferencing.
 
 You can deploy the model from a persistent volume claim (PVC) or from an Open Container Initiative (OCI) container image.
 
@@ -41,8 +41,8 @@ endif::[]
 ** You have specified the GPU type through either the `ServingRuntime` or `InferenceService`. If the GPU type specified in the `ServingRuntime` differs from what is set in the `InferenceService`, both GPU types are assigned to the resource and can cause errors. 
 * You have enabled KServe on your cluster.
 * You have only one head pod in your setup. Do not adjust the replica count using the `min_replicas` or `max_replicas` settings in the `InferenceService`. Creating additional head pods can cause them to be excluded from the Ray cluster.	
-* **For deploying from a PVC**: You have a persistent volume claim (PVC) set up and configured for ReadWriteMany (RWX) access mode.
-* **For deploying from an OCI container**:
+* *For deploying from a PVC*: You have a persistent volume claim (PVC) set up and configured for ReadWriteMany (RWX) access mode.
+* *For deploying from an OCI container*:
 ** You have stored a model in an OCI image.
 ** If the model is stored in a private OCI repository, you have configured an image pull secret
 
@@ -161,7 +161,7 @@ endif::[]
 <9> If you encounter SSL errors, change `S3_VERIFY_SSL` to `false`.
 +
 
-. Create the `vllm-multinode-runtime` custom runtime in your project namepsace:
+. Create the `vllm-multinode-runtime` custom runtime in your project namespace:
 +
 ifndef::upstream[]
 [source]
