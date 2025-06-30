@@ -198,11 +198,11 @@ spec:
     workerSpec: {} <2>
 ----
 +
-<1> Specify the path to your model based on your deployment method:
+* <1> Specify the path to your model based on your deployment method:
 +
-* *For PVC*: `pvc://<pvc_name>/<model_path>`
-* *For an OCI container image*: `oci://<repository_name>/<model_path>`
-<2> The following configuration can be added to the `InferenceService`:
+** *For PVC*: `pvc://<pvc_name>/<model_path>`
+** *For an OCI container image*: `oci://<repository_name>/<model_path>`
+* <2> The following configuration can be added to the `InferenceService`:
 +
 * `workerSpec.tensorParallelSize`: Determines how many GPUs are used per node. The GPU type count in both the head and worker node deployment resources is updated automatically. Ensure that the value of `workerSpec.tensorParallelSize` is at least `1`.
 * `workerSpec.pipelineParallelSize`: Determines how many nodes are used to balance the model in deployment. This variable represents the total number of nodes, including both the head and worker nodes. Ensure that the value of `workerSpec.pipelineParallelSize` is at least `2`. Do not modify this value in production environments.
