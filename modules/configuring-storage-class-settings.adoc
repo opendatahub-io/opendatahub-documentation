@@ -20,6 +20,13 @@ The *Edit storage class details* dialog opens.
 
 . Optional: In the *Display Name* field, update the name for the storage class. This name is used only in {productname-short} and does not impact the storage class within {openshift-platform}.
 . Optional: In the *Description* field, update the description for the storage class. This description is used only in {productname-short} and does not impact the storage class within {openshift-platform}.
+. To enable access modes in storage class settings, select from the available *Access mode enablement* options.
+* ReadWriteOnce (RWO): Enabled by default. The storage can be attached to a single workbench at a given time.
+* ReadWriteMany (RWX): The storage can be attached to many workbenches simultaneously.
+* ReadOnlyMany (ROX): The storage can be attached to many workbenches as read-only.
+* ReadWriteOncePod (RWOP): The storage can be attached to a single pod on a single node as read-write. 
++
+NOTE: Access mode is a Kubernetes concept that determines how nodes can interact with the volume. Users can create storage using enabled access modes. The OpenShift storage class determines which access modes (RWO, RWX, ROX and RWOP) are supported by default.
 . Click *Save*.
 
 .Verification
