@@ -20,12 +20,7 @@ If the `LMEvalJob` needs to access a model on HuggingFace with the access token,
 
 .Procedure
 
-. To start an evaluation job for a `huggingface` model, use the {productname-short} CLI to apply the following YAML file to your data science project:
-+
-[source,subs="+quotes"]
----- 
-$ oc apply -f <yaml_file> -n <project_name> 
-----
+. To start an evaluation job for a `huggingface` model, use the OpenShift CLI to apply the following YAML file to your data science project:
 +
 [source]
 ----
@@ -47,6 +42,13 @@ spec:
       env:
       - name: HF_TOKEN
         value: "My HuggingFace token"
+----
++ 
+For example: 
+[source,subs="+quotes"]
++ 
+---- 
+$ oc apply -f <yaml_file> -n <project_name> 
 ----
 
 . (Optional) You can also create a secret to store the token, then refer the key from the `secretKeyRef` object using the following reference syntax:
