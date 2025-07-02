@@ -1,0 +1,28 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="deploying-a-rag-stack-in-a-data-science-project_{context}"]
+= Deploying a RAG stack in a data science project
+
+[role='_abstract']
+As an {openshift-platform} cluster administrator, you can deploy a Retrieval‑Augmented Generation (RAG) stack in {productname-short}. This stack provides the infrastructure, including LLM inference, vector storage, and retrieval services that data scientists and AI engineers use to build conversational workflows in their projects.
+
+To deploy the RAG stack in a data science project, complete the following tasks:
+
+* Install and configure the LlamaStack Operator.
+* Enable GPU support on the {openshift-platform} cluster. This task includes installing the required NVIDIA Operators.
+* Configure vLLM as the inference provider.
+* Deploy a Llama model by using vLLM. This task includes creating a storage connection and configuring GPU allocation.
+* Configure a vector store, for example, Milvus, and ingest domain data for retrieval.
+* Ingest documents by using Docling in a data science pipeline or a Jupyter notebook to keep embeddings up to date.
+* Integrate LlamaStack with the inference service to enable RAG functionality.
+* Expose and secure the model endpoints.
+* Enable monitoring, logging, and autoscaling for inference and retrieval components.
+* Validate the deployment with sample queries and optimize performance.
+
+include::modules/installing-the-llamastack-operator.adoc[leveloffset=+1]
+include::modules/ingesting-content-into-a-llama-model.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
