@@ -1,0 +1,99 @@
+:_module-type: PROCEDURE
+
+[id="creating-project-scoped-resources-as-administrator_{context}"]
+= Creating project-scoped resources as administrator
+
+[role='_abstract']
+Users can access _global resources_ in all projects, but can access _project-scoped resources_ within the specified project only.
+
+Cluster administrators can create the following project-scoped resources in any project:
+
+* Workbench images
+* Hardware profiles
+* Accelerator profiles
+* Model-serving runtimes for KServe
+
+The name of each resource must be unique within the project.
+
+.Prerequisites
+
+* You can access the {openshift-platform} console as a cluster administrator.
+
+ifdef::upstream[]
+* You have set the `disableProjectScoped` dashboard configuration option to `false`, as described in link:{odhdocshome}/managing-odh/#customizing-the-dashboard[Customizing the dashboard].
+endif::[]
+ifndef::upstream[]
+* You have set the `disableProjectScoped` dashboard configuration option to `false`, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/customizing-the-dashboard[Customizing the dashboard].
+endif::[]
+
+
+.Procedure
+. Log in to the {openshift-platform} console as a cluster administrator.
+. In the *Administrator* perspective, click *Home* -> *Search*.
+. In the *Resources* list, search for the relevant resource type, as follows:
+
+* For workbench images, search for `ImageStream`.
+* For hardware profiles, search for `HardwareProfile`.
+* For accelerator profiles, search for `AcceleratorProfile`.
+* For serving runtimes, search for `Template`. 
+From the resulting list, find a template that has the `objects.kind` specification set to `ServingRuntime`. 
+
+ifdef::upstream[]
+. From the *Project* list, select the `opendatahub` project to display a list of global resources of the specified type.
+endif::[]
+ifndef::upstream[]
+. From the *Project* list, select the `redhat-ods-applications` project to display a list of global resources of the specified type.
+endif::[]
+
+. Optional: If you want to maintain a global version and project-scoped version of the same resource, duplicate the global resource, as follows:
+
+.. Select the resource in the list.
+.. Click the *YAML* tab.
+.. Select and copy the entire YAML content.
+.. Click *Cancel*.
+.. From the toolbar, click the *+* icon to open the *Import YAML* page.
+.. Paste the copied YAML content into the code area.
+.. Edit the `metadata.name` value to assign a unique name.
+.. Click *Create*.
+
+. Change the resource scope from global to project-scoped, as follows:
+.. Select the resource in the list.
+.. Click the *YAML* tab.
+.. Edit the `metadata.namespace` value to replace the global project name with the name of an existing project.
+.. Optional: Edit the `metadata.name` value to change the name of the project-scoped resource.
+The resource name must be unique within the project.
+.. Click *Save*.  
+
+
+
+.Verification
+. Log in to the {productname-short} console as a regular user.
+. Verify that the project-scoped resource is shown in the specified project only:
+
+ifdef::upstream[]
+* For workbench images, hardware profiles, and accelerator profiles, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-project-workbench_projects[Creating a workbench].
+endif::[]
+ifndef::upstream[]
+* For workbench images, hardware profiles, and accelerator profiles, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a workbench].
+endif::[]
+
+ifdef::upstream[]
+* For serving runtimes, see link:{odhdocshome}/serving-models/#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+endif::[]
+ifndef::upstream[]
+* For serving runtimes, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+endif::[]
+
+
+////
+Uncomment when the equivalent procedure for regular users is created
+[role='_additional-resources']
+.Additional resources
+
+ifdef::upstream[]
+* link:{odhdocshome}/working-on-data-science-projects/#creating-project-scoped-resources-as-user_projects[Creating project-scoped resources as user]
+endif::[]
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/creating-project-scoped-resources-as-user_projects[Creating project-scoped resources as user]
+endif::[]
+////
