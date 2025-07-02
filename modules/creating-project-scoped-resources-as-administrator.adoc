@@ -1,19 +1,30 @@
 :_module-type: PROCEDURE
 
-[id="creating-project-scoped-resources-as-administrator_{context}"]
-= Creating project-scoped resources as administrator
+[id="creating-project-scoped-resources_{context}"]
+= Creating project-scoped resources
 
 [role='_abstract']
-Users can access _global resources_ in all projects, but can access _project-scoped resources_ within the specified project only.
+Users can access _global resources_ in all {productname-short} projects, but can access _project-scoped resources_ within the specified project only.
 
-Cluster administrators can create the following project-scoped resources in any project:
+Cluster administrators can create the following types of project-scoped resources in any {productname-short} project:
 
 * Workbench images
 * Hardware profiles
 * Accelerator profiles
 * Model-serving runtimes for KServe
 
-The name of each resource must be unique within the project.
+All resource names must be unique within a project.
+
+
+[NOTE]
+====
+ifdef::upstream[]
+A project member who is not a cluster administrator can create project-scoped resources for their project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-project-scoped-resources-for-your-project_projects[Creating project-scoped resources for your project].
+endif::[]
+ifndef::upstream[]
+A project member who is not a cluster administrator can create project-scoped resources for their project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/creating-project-scoped-resources-for-your-project_projects[Creating project-scoped resources for your project].
+endif::[]
+====
 
 .Prerequisites
 
@@ -29,41 +40,42 @@ endif::[]
 
 .Procedure
 . Log in to the {openshift-platform} console as a cluster administrator.
-. In the *Administrator* perspective, click *Home* -> *Search*.
-. In the *Resources* list, search for the relevant resource type, as follows:
+. Copy the YAML code to create the resource.
++
+For example, you can copy the YAML code from an existing resource, as follows:
+
+.. In the *Administrator* perspective, click *Home* -> *Search*.
+.. From the *Project* list, select the appropriate value.
++
+ifdef::upstream[]
+To limit the search to global {productname-short} resources only, select the `opendatahub` project.
+endif::[]
+ifndef::upstream[]
+To limit the search to global {productname-short} resources only, select the `redhat-ods-applications` project.
+endif::[]
+.. In the *Resources* list, search for the relevant resource type, as follows:
 
 * For workbench images, search for `ImageStream`.
 * For hardware profiles, search for `HardwareProfile`.
 * For accelerator profiles, search for `AcceleratorProfile`.
 * For serving runtimes, search for `Template`. 
-From the resulting list, find a template that has the `objects.kind` specification set to `ServingRuntime`. 
+From the resulting list, find the templates that have the `objects.kind` specification set to `ServingRuntime`. 
 
-ifdef::upstream[]
-. From the *Project* list, select the `opendatahub` project to display a list of global resources of the specified type.
-endif::[]
-ifndef::upstream[]
-. From the *Project* list, select the `redhat-ods-applications` project to display a list of global resources of the specified type.
-endif::[]
+.. Select a resource, and click the *YAML* tab. 
+.. Copy the YAML content, and click *Cancel*.
 
-. Optional: If you want to maintain a global version and project-scoped version of the same resource, duplicate the global resource, as follows:
+. From the *Project* list, select the target project name. Note the spelling.
+. From the toolbar, click the *+* icon to open the *Import YAML* page.
+. Paste the relevant YAML content into the code area.
+. Edit the `metadata.namespace` value to specify the name of the target project.
+. If necessary, edit the `metadata.name` value to ensure that the resource name is unique within the specified project.
+. Optional: Edit the resource name that is displayed in the {productname-short} console, as follows:
 
-.. Select the resource in the list.
-.. Click the *YAML* tab.
-.. Select and copy the entire YAML content.
-.. Click *Cancel*.
-.. From the toolbar, click the *+* icon to open the *Import YAML* page.
-.. Paste the copied YAML content into the code area.
-.. Edit the `metadata.name` value to assign a unique name.
-.. Click *Create*.
+* For workbench images, edit the `metadata.annotations.opendatahub.io/notebook-image-name` value.
+* For hardware profiles and accelerator profiles, edit the `spec.displayName` value.
+* For serving runtimes, edit the `objects.metadata.openshift.io/display-name` value.
 
-. Change the resource scope from global to project-scoped, as follows:
-.. Select the resource in the list.
-.. Click the *YAML* tab.
-.. Edit the `metadata.namespace` value to replace the global project name with the name of an existing project.
-.. Optional: Edit the `metadata.name` value to change the name of the project-scoped resource.
-The resource name must be unique within the project.
-.. Click *Save*.  
-
+. Click *Create*.  
 
 
 .Verification
@@ -86,14 +98,6 @@ endif::[]
 
 
 ////
-Uncomment when the equivalent procedure for regular users is created
 [role='_additional-resources']
 .Additional resources
-
-ifdef::upstream[]
-* link:{odhdocshome}/working-on-data-science-projects/#creating-project-scoped-resources-as-user_projects[Creating project-scoped resources as user]
-endif::[]
-ifndef::upstream[]
-* link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/creating-project-scoped-resources-as-user_projects[Creating project-scoped resources as user]
-endif::[]
 ////
