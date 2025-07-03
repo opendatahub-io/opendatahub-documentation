@@ -30,20 +30,20 @@ To confirm caching status for specific tasks, navigate to the pipeline details v
 == Disabling caching
 
 ifdef::upstream,self-managed[]
-In {productname-short}, caching is enabled by default to improve performance, but there are situations where you might want to disable caching for specific tasks, an entire pipeline, or all pipelines. For example, caching might not be beneficial for tasks that rely on frequently updated data or unique computational needs. In other cases, such as debugging, development, or when deterministic re-execution is required, you might want to disable caching for all pipelines.
+Caching is enabled by default in {productname-short} to improve performance. However, there are instances when disabling caching might be necessary for specific tasks, an entire pipeline, or all pipelines. For example, caching might not be beneficial for tasks that rely on frequently updated data or unique computational needs. In other cases, such as debugging, development, or when deterministic re-execution is required, you might want to disable caching for all pipelines.
 
 [CAUTION]
 ====
-Disabling caching at the pipeline or pipeline server level causes all tasks to run again, potentially increasing compute time and resource usage.
+Disabling caching at the pipeline or pipeline server level causes all tasks to re-run, potentially increasing compute time and resource usage.
 ====
 endif::[]
 
 ifdef::cloud-service[]
-In {productname-short}, caching is enabled by default to improve performance, but there are situations where you might want to disable caching for specific tasks or the entire pipeline. For example, caching might not be beneficial for tasks that rely on frequently updated data or unique computational needs. 
+Caching is enabled by default in {productname-short} to improve performance. However, there are instances when disabling caching might be necessary for specific tasks or an entire pipeline. For example, caching might not be beneficial for tasks that rely on frequently updated data or unique computational needs.
 
 [CAUTION]
 ====
-Disabling caching at the pipeline level causes all tasks to run again, potentially increasing compute time and resource usage.
+Disabling caching at the pipeline level causes all tasks to re-run, potentially increasing compute time and resource usage.
 ====
 endif::[]
 
@@ -60,7 +60,10 @@ endif::[]
 
 To disable caching for a particular task, apply the `set_caching_options` method directly to the task in your pipeline code:
 
-`task_name.set_caching_options(False)`
+[source]
+----
+task_name.set_caching_options(False)
+----
 
 After applying this setting, {productname-short} runs the task in future pipeline runs, ignoring any cached results.
 
@@ -82,7 +85,10 @@ To disable caching for the entire pipeline during pipeline submission, set the `
 
 Example:
 
-`pipeline_func(enable_caching=False)`
+[source]
+----
+pipeline_func(enable_caching=False)
+----
 
 ifdef::upstream,self-managed[]
 [NOTE]
