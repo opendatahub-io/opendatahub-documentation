@@ -9,26 +9,28 @@ You can transform your source documents with a Docling-enabled data science pipe
 The pipeline registers a Milvus vector database and downloads the source PDFs, then splits them for parallel processing and converts each batch to Markdown with Docling. It generates sentence-transformer embeddings from the Markdown and stores them in the vector store, making the documents instantly searchable in Llama Stack.
 
 .Prerequisites
-* You have logged in to {openshift-platform} web console.
-* You have a data science project and access to Pipelines in the {productname-short} dashboard.
-* You have created and configured a pipeline server within the data science project that contains your workbench.
-* You have configured a Llama Stack deployment.
-* You have deployed a Llama 3.2 model with a vLLM model server and you are aware of its endpoint URL.
-* You have created a project workbench within a data science project.
-* You have opened a Jupyter notebook and it is running in your workbench environment.
-* You have a created and configured a vector database instance and you know its identifier. Alternatively, you know the credentials required to register a vector database instance. 
-ifdef::self-managed[]
-* Your environment has network access to the vector database service through {openshift-platform}.
-endif::[]
-* You have installed local object storage buckets and created connections, as described in xref:storing-data-with-connections[Storing data with connections].
 ifndef::upstream[]
 * You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
 endif::[]
 ifdef::upstream[]
 * You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
 endif::[]
-* You have a pipeline that contains a Docling transform and you have compiled this pipeline into YAML format. 
-* You have PDF documents ready for ingestion and know their storage location.
+* You have logged in to {openshift-platform} web console.
+* You have a data science project and access to pipelines in the {productname-short} dashboard.
+* You have created and configured a pipeline server within the data science project that contains your workbench.
+* You have activated the Llama Stack Operator in {productname-short}.
+* You have deployed an inference model, for example, the llama-3.2-3b-instruct model. 
+* You have configured a Llama Stack deployment by creating a `LlamaStackDistribution` instance to enable RAG functionality.
+* You have created a project workbench within a data science project.
+* You have opened a Jupyter notebook and it is running in your workbench environment.
+ifdef::upstream[]
+* You have installed local object storage buckets and created connections, as described in link:link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+endif::[]
+ifndef::upstream[]
+* You have installed local object storage buckets and created connections, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+endif::[]
+* You have compiled to YAML a data science pipeline that includes a Docling transform, either one of the RAG demo samples or your own custom pipeline.
+//* You have PDF documents ready for ingestion and know their storage location.
 * Your data science project quota allows between 500 millicores (0.5 CPU) and 4 CPU cores for the pipeline run.
 * Your data science project quota allows from 2 GiB up to 6 GiB of RAM for the pipeline run.
 * If you are using GPU acceleration, you have at least one NVIDIA GPU available.
@@ -83,6 +85,11 @@ print(client.vector_dbs.list_providers()) # lists available connectors
 vector_db_id = "<your vector database ID>"
 provider_id  = "<your provider ID>"
 ----
++
+[IMPORTANT] 
+====
+If you are using the sample Docling pipeline from the RAG demo repository, the pipeline registers the database automatically and you can skip this step. However, if you are using your own pipeline, you must register the database yourself.
+==== 
 
 . In a new notebook cell, register or confirm your vector database to store embeddings:
 +
@@ -107,32 +114,32 @@ endif::[]
 ifndef::upstream[]
 . Create a pipeline run to execute your Docling pipeline, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#executing-a-pipeline-run_ds-pipelines[Executing a pipeline run]. The pipeline run inserts your PDF documents into the vector database. Before you run the Docling pipeline, you can customize the following parameters:
 
-* base_url: The bse URL to fetch PDF files from.
-* pdf_filenames: A Comma-separated list of PDF filenames to download and convert.
-* num_workers: The number of parallel workers.
-* vector_db_id: The Milvus vector database ID.
-* service_url: The Milvus service URL.
-* embed_model_id: The embedding model to use.
-* max_tokens: The maximum tokens for each chunk.
-* use_gpu: Enable or disable GPU acceleration.
+* `base_url`: The base URL to fetch PDF files from.
+* `pdf_filenames`: A comma-separated list of PDF filenames to download and convert.
+* `num_workers`: The number of parallel workers.
+* `vector_db_id`: The Milvus vector database ID.
+* `service_url`: The Milvus service URL.
+* `embed_model_id`: The embedding model to use.
+* `max_tokens`: The maximum tokens for each chunk.
+* `use_gpu`: Enable or disable GPU acceleration.
 endif::[]
 
 ifdef::upstream[]
 . Create a pipeline run to execute your Docling pipeline, as described in link:{odhdocshome}/working-with-data-science-pipelines/#executing-a-pipeline-run_ds-pipelines[Executing a pipeline run]. The pipeline run inserts your PDF documents into the vector database. Before you run the Docling pipeline, you can customize the following parameters:
 
-* base_url: The base URL to fetch PDF files from.
-* pdf_filenames: A Comma-separated list of PDF filenames to download and convert.
-* num_workers: The number of parallel workers.
-* vector_db_id: The Milvus vector database ID.
-* service_url: The Milvus service URL.
-* embed_model_id: The embedding model to use.
-* max_tokens: The maximum tokens for each chunk.
-* use_gpu: Enable or disable GPU acceleration.
+* `base_url`: The base URL to fetch PDF files from.
+* `pdf_filenames`: A comma-separated list of PDF filenames to download and convert.
+* `num_workers`: The number of parallel workers.
+* `vector_db_id`: The Milvus vector database ID.
+* `service_url`: The Milvus service URL.
+* `embed_model_id`: The embedding model to use.
+* `max_tokens`: The maximum tokens for each chunk.
+* `use_gpu`: Enable or disable GPU acceleration.
 endif::[]
 
 .Verification
 
-. To ascertain if the document ingestion has been successful, in your Jupyter notebook, query the LLM with a question that relates to the ingested content. Here is an example:   
+. In your Jupyter notebook, query the LLM with a question that relates to the ingested content. For example:   
 +
 [source,python]
 ----
