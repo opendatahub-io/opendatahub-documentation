@@ -29,17 +29,19 @@ A project details page opens.
 The *Add cluster storage* dialog opens.
 . In the *Name* field, enter a unique name for the cluster storage.
 . Optional: In the *Description* field, enter a description for the cluster storage.
-. Optional: From the *Storage class* list, select the type of cluster storage.
+. From the *Storage class* list, select the type of cluster storage.
 +
 NOTE: You cannot change the storage class after you add the cluster storage to the project.
-. Optional: From the admin enabled access modes, select the type of *Access mode*.
-* ReadWriteOnce (RWO): Selected by default. The storage can be attached to a single workbench at a given time.
-* ReadWriteMany (RWX): The storage can be attached to many workbenches simultaneously.
-* ReadOnlyMany (ROX): The storage can be attached to many workbenches as read-only.
-* ReadWriteOncePod (RWOP): The storage can be attached to a single pod on a single node as read-write.
+. For storage classes that support multiple access modes, select an *Access mode* to define how the storage can be used. For more information, see __About storage classes__. 
 +
+The available access modes depend on what your cluster and {productname-short} administrators have enabled for the storage class:
++
+* `ReadWriteOnce (RWO)`: (Default) The storage can be attached to a single workbench at a given time.
+* `ReadWriteMany (RWX)`: The storage can be attached to many workbenches simultaneously.
+* `ReadOnlyMany (ROX)`: The storage can be attached to many workbenches as read-only.
+* `ReadWriteOncePod (RWOP)`: The storage can be attached to a single pod on a single node as read-write.
 NOTE: Only the access modes enabled by the admin will be visible.
-
++
 . In the *Persistent storage size* section, specify a new size in gibibytes or mebibytes.
 . Optional: If you want to connect the cluster storage to an existing workbench:
 .. From the *Connected workbench* list, select a workbench.

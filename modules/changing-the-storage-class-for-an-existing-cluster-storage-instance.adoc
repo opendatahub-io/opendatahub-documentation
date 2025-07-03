@@ -33,7 +33,14 @@ The *Add cluster storage* dialog opens.
 .. Enter a *name* for the cluster storage.
 .. Optional: Enter a *description* for the cluster storage.
 .. Select the needed *storage class* for the cluster storage.
-.. Select the needed *access mode* from admin enabled access mode options (RWO, RWX, ROX, RWOP). 
+.. For storage classes that support multiple access modes, select an *Access mode* to define how the storage can be used. For more information, see __About storage classes__. 
++
+The available access modes depend on what your cluster and {productname-short} administrators have enabled for the storage class:
++
+* `ReadWriteOnce (RWO)`: (Default) The storage can be attached to a single workbench at a given time.
+* `ReadWriteMany (RWX)`: The storage can be attached to many workbenches simultaneously.
+* `ReadOnlyMany (ROX)`: The storage can be attached to many workbenches as read-only.
+* `ReadWriteOncePod (RWOP)`: The storage can be attached to a single pod on a single node as read-write.
 .. Under *Persistent storage size*, enter a size in gibibytes or mebibytes. 
 .. Under *Connected workbench*, select the workbench with the storage class that you want to change.
 .. Under *Mount folder name*, enter a new storage directory for the cluster storage to mount to. For example, `backup`.

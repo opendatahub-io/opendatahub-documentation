@@ -1,0 +1,54 @@
+:_module-type: CONCEPT
+
+[id='about-storage-classes_{context}']
+= About storage classes
+
+[role="_abstract"]
+{productname-short} uses persistent storage to support workbenches, project data, and model training. This storage is provisioned through {openshift-platform} storage classes and configured with access modes that determine how users access the data. Understanding how storage classes and access modes work can help you choose the right storage for your use case and avoid potential risks, especially when sharing data across multiple workbenches.
+
+== Storage classes in {productname-short}
+
+Storage classes in {productname-short} are available from the underlying OpenShift cluster. A storage class defines how persistent volumes are provisioned, including which storage backend is used and what access modes it supports. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/storage/understanding-persistent-storage[Dynamic provisioning] in the OpenShift documentation.
+
+Cluster administrators create and configure storage classes in the OpenShift cluster, including the access modes each class supports. {productname-short} administrators can further control which of those storage classes are enabled for use in {productname-short} and which access modes are enabled for each one. 
+
+When adding cluster storage, the storage classes and access modes available depend on what your {productname-short} administrator has enabled, based on the supported OpenShift cluster settings.
+
+== Access modes
+
+Each storage class supports one or more access modes. An access mode defines how a volume can be mounted and used by one or more workbenches. If a storage class supports multiple access modes, you can select the one that fits your use case. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/storage/understanding-persistent-storage#pv-access-modes_understanding-persistent-storage[Access modes] in the OpenShift documentation.
+
+[cols="1,3"]
+|===
+|Access mode | Description
+
+|`ReadWriteOnce (RWO)`
+|The storage can be attached to a single workbench (or pod) at a time. This is the default and safest option for most individual workloads.
+
+|`ReadWriteMany (RWX)`
+|The storage can be attached to many workbenches simultaneously. This enables collaboration and shared data access but includes additional risks.
+
+|`ReadOnlyMany (ROX)`
+|The storage can be attached to many workbenches as read-only. Useful for sharing reference data without allowing changes.
+
+|`ReadWriteOncePod (RWOP)`
+|The storage can be attached to a single pod on a single node as read-write. Similar to RWO but with additional node-level restrictions.
+|===
+
+=== Using shared storage (RWX)
+
+The `ReadWriteMany (RWX)` access mode allows multiple workbenches to access and write to the same storage volume at the same time. This is useful for collaborative work where multiple users need to access shared datasets or project files.
+
+However, shared storage introduces several risks:
+
+* *Data corruption*: If multiple workbenches try to change the same part of a file at the same time without proper coordination, the data can become corrupted or overwritten. Ensure your applications or workflows are designed to handle shared access—for example, by using file locking or database transactions.
+* *Accidental data loss*: One user could unintentionally delete or overwrite files that others are using. Always use caution when modifying shared data.
+* *Security and privacy*: If a workbench with access to shared storage is compromised, all data on that volume may be at risk. Only share sensitive data with trusted workbenches and users.
+
+To use shared storage safely, consider the following best practices:
+
+* *Know your application*: Ensure your tools or workflows are designed to work with shared storage and can manage simultaneous writes (for example, databases or distributed data processing frameworks).
+* *Be cautious with changes*: Deleting or editing files affects everyone who shares the volume.
+* *Back up your work*: Regular backups can help prevent data loss due to mistakes or misconfigurations.
+* *Limit access*: Only share RWX volumes with trusted users and secure workbenches.
+* *Consider alternatives*: For most individual tasks, `ReadWriteOnce (RWO)` or `ReadOnlyMany (ROX)` is safer and easier to manage.
