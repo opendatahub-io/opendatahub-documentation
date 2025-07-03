@@ -8,3 +8,19 @@ Retrieval-augmented generation (RAG) in {productname-short} extends the capabili
 RAG indexes content and builds an embedding store that data scientists and AI engineers can query. When data scientists or AI engineers pose a question to a RAG chat bot, the RAG pipeline retrieves the most relevant pieces of data, passes them to the LLM as context, and generates a response that reflects both the prompt and the retrieved content.
 
 By implementing RAG, data scientists and AI engineers can obtain tailored, accurate, and verifiable answers to complex queries based on their own datasets within a data science project.
+
+== Audience for RAG
+
+The target audience for RAG is practitioners who build data-grounded conversational AI applications using {productname-short} infrastructure.
+
+For Data Scientists:: 
+Data scientists can use RAG to prototype and validate models that answer natural-language queries against data sources without managing low-level embedding pipelines or vector stores. They can focus on creating prompts and evaluating model outputs instead of building retrieval infrastructure.
+
+For MLOps Engineers::  
+MLOps engineers typically deploy and operate RAG pipelines in production. Within {productname-short}, they manage LLM endpoints, monitor performance, and ensure that both retrieval and generation scale reliably. RAG decouples vector store maintenance from the serving layer, enabling MLOps engineers to apply CI/CD workflows to data ingestion and model deployment alike.  
+
+For Data Engineers::  
+Data engineers build workflows to load data into storage that {productname-short} indexes. They keep embeddings in sync with source systems, such as S3 buckets or relational tables to ensure that chatbot responses are accurate.  
+
+For AI Engineers:: 
+AI engineers architect RAG chat bots by defining prompt templates, retrieval methods, and fallback logic. They configure agents and add domain-specific tools, such as {openshift-platform} job triggers, enabling rapid iteration.  
