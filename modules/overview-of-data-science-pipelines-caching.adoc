@@ -43,7 +43,7 @@ In {productname-short}, caching is enabled by default to improve performance, bu
 
 [CAUTION]
 ====
-Disabling caching at the pipeline server level causes all tasks to run again, potentially increasing compute time and resource usage.
+Disabling caching at the pipeline level causes all tasks to run again, potentially increasing compute time and resource usage.
 ====
 endif::[]
 
@@ -66,8 +66,15 @@ After applying this setting, {productname-short} runs the task in future pipelin
 
 [NOTE]
 ====
-You can re-enable caching for individual tasks by setting `set_caching_options(True)`. This setting is ignored if caching is disabled in the pipeline server.
+You can re-enable caching for individual tasks by setting `set_caching_options(True)`.
 ====
+
+ifdef::upstream,self-managed[]
+[NOTE]
+====
+This setting is ignored if caching is disabled in the pipeline server.
+====
+endif::[]
 
 === Disabling caching for a pipeline at submit time
 
@@ -77,10 +84,19 @@ Example:
 
 `pipeline_func(enable_caching=False)`
 
+ifdef::upstream,self-managed[]
 [NOTE]
 ====
 This setting is ignored if caching is disabled during pipeline compilation or in the pipeline server.
 ====
+endif::[]
+
+ifdef::cloud-service[]
+[NOTE]
+====
+This setting is ignored if caching is disabled during pipeline compilation.
+====
+endif::[]
 
 === Disabling caching for a pipeline at compile time
 
@@ -100,10 +116,12 @@ export KFP_DISABLE_EXECUTION_CACHING_BY_DEFAULT=true
 kfp dsl compile --disable-execution-caching-by-default
 ----
 
+ifdef::upstream,self-managed[]
 [NOTE]
 ====
 This setting is ignored if caching is disabled in the pipeline server.
 ====
+endif::[]
 
 ifdef::upstream,self-managed[]
 === Disabling caching for all pipelines (pipeline server)
