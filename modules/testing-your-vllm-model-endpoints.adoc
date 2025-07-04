@@ -1,17 +1,22 @@
 :_module-type: PROCEDURE
 
-[id="exposing-vllm-model-endpoints_{context}"]
-= Exposing vLLM model endpoints
+[id="testing-your-vllm-model-endpoints_{context}"]
+= Testing your vLLM model endpoints
 
 [role='_abstract']
 To verify that your deployed Llama 3.2 model is accessible externally, expose your vLLM model server as a network endpoint. This process lets you test access to the model from outside both the {openshift-platform} cluster and the {productname-short} interface.
+
+[IMPORTANT]
+====
+If you selected *Make deployed models available through an external route* during deployment, your vLLM model endpoint is already accessible outside the cluster. You do not need to manually expose the model server. Manually exposing vLLM model endpoints, for example, by using `oc expose`, creates an unsecured route unless you configure authentication. Avoid exposing endpoints without security controls to prevent unauthorized access.
+====
 
 .Prerequisites
 
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have logged in to {productname-long}.
-* You have installed the Llama Stack Operator.
-* You have successfully deployed a vLLM model server with a Llama 3.2 model and have the inference service URL.
+* You have activated the Llama Stack Operator in {productname-short}.
+* You have deployed an inference model, for example, the llama-3.2-3b-instruct model. 
 ifdef::upstream,self-managed[]
 * You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
 endif::[]
@@ -31,27 +36,6 @@ endif::[]
 ----
 $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 ----
-. Create a service that exposes the vLLM deployment on port 8000:
-+
-[source,sh]
-----
-$ oc expose deployment vllm --port=8000 --target-port=8000
-----
-. Create a route that exposes the vLLM service externally:
-+
-[source,sh]
-----
-$ oc expose svc vllm
-----
-. Retrieve the route URL:
-+
-[source,sh]
-----
-$ {openshift-platform} URL=http://$(oc get route vllm -o jsonpath={.spec.host})
-----
-
-.Verification
-
 . Test the endpoint with a sample chat completion request:
 +
 [source,sh]
@@ -68,8 +52,11 @@ $ curl -X POST $URL/v1/chat/completions \
  ]
 }'
 ----
-. Confirm that you received a JSON response containing a chat completion. Here is an example:
-+
+
+.Verification
+
+Confirm that you received a JSON response containing a chat completion. For example:
+
 [source,json]
 ----
 {
