@@ -9,10 +9,6 @@ Tested and verified runtimes are community versions of model-serving runtimes th
 
 {org-name} tests the current version of a tested and verified runtime each time there is a new version of {productname-short}. If a new version of a tested and verified runtime is released in the middle of an {productname-short} release cycle, it will be tested and verified in an upcoming release.
 
-ifndef::upstream[]
-A list of the tested and verified runtimes and compatible versions is available in the link:{rhoaidocshome}html-single/release_notes[{productname-short} release notes].
-endif::[]
-
 [NOTE]
 --
 Tested and verified runtimes are not directly supported by {org-name}. You are responsible for ensuring that you are licensed to use any tested and verified runtimes that you add, and for correctly configuring and maintaining them.
@@ -28,17 +24,25 @@ endif::[]
 | Name | Description | Exported model format 
 
 | NVIDIA Triton Inference Server | An open-source inference-serving software for fast and scalable AI in applications. | TensorRT, TensorFlow, PyTorch, ONNX, OpenVINO, Python, RAPIDS FIL, and more
+| Seldon MLServer | An open-source inference server designed to simplify the deployment of machine learning models. | Scikit-Learn (sklearn), XGBoost, LightGBM, CatBoost, HuggingFace and MLflow
 
 |===
 
 .Deployment requirements
 
 |===
-| Name | Default protocol | Additonal protocol | Model mesh support | Single node OpenShift support | Deployment mode
+| Name | Default protocol | Additional protocol | Model mesh support | Single node OpenShift support | Deployment mode
 
 | NVIDIA Triton Inference Server | gRPC | REST | Yes | Yes | Raw and serverless
+| Seldon MLServer | gRPC | REST | No | Yes | Raw and serverless
 
 |===
+
+
+[NOTE]
+--
+The `alibi-detect` and `alibi-explain` libraries from Seldon are under the Business Source License 1.1 (BSL 1.1). These libraries are not tested, verified, or supported by {org-name} as part of the certified *Seldon MLServer* runtime. It is not recommended that you use these libraries in production environments with the runtime.
+--
 
 [role="_additional-resources"]
 .Additional resources
