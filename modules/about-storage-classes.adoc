@@ -4,37 +4,35 @@
 = About storage classes
 
 [role="_abstract"]
-{productname-short} uses persistent storage to support workbenches, project data, and model training. This storage is provisioned through {openshift-platform} storage classes and configured with access modes that determine how users access the data. Understanding how storage classes and access modes work can help you choose the right storage for your use case and avoid potential risks, especially when sharing data across multiple workbenches.
+{productname-short} uses persistent storage to support workbenches, project data, and model training. This storage is provisioned through {openshift-platform} storage classes and persistent volumes and is configured with access modes that determine how users access the data. Understanding how storage classes and access modes control volume provisioning and access can help you choose the right storage for your use case and avoid potential risks, especially when sharing data across multiple workbenches.
 
 == Storage classes in {productname-short}
 
-Storage classes in {productname-short} are available from the underlying OpenShift cluster. A storage class defines how persistent volumes are provisioned, including which storage backend is used and what access modes it supports. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/storage/understanding-persistent-storage[Dynamic provisioning] in the OpenShift documentation.
+Storage classes in {productname-short} are available from the underlying OpenShift cluster. A storage class defines how persistent volumes are provisioned, including which storage backend is used and what access modes the provisioned volumes can support. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/storage/understanding-persistent-storage[Dynamic provisioning] in the OpenShift documentation.
 
-Cluster administrators create and configure storage classes in the OpenShift cluster, including the access modes each class supports. {productname-short} administrators then enable specific storage classes and access modes for use in {productname-short}.  
+Cluster administrators create and configure storage classes in the OpenShift cluster. These storage classes provision persistent volumes that support one or more access modes, depending on the capabilities of the storage backend. {productname-short} administrators then enable specific storage classes and access modes for use in {productname-short}.   
 
 When adding cluster storage to your project or workbench, you can choose from these enabled storage classes and access modes.
 
 == Access modes
 
-Each storage class supports one or more access modes. An access mode defines how a volume can be mounted and used by one or more workbenches. If a storage class supports multiple access modes, you can select the one that fits your use case. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/storage/understanding-persistent-storage#pv-access-modes_understanding-persistent-storage[Access modes] in the OpenShift documentation.
+Storage classes create persistent volumes that can support different access modes, depending on the storage backend. Access modes control how a volume can be mounted and used by one or more workbenches. If a storage class allows more than one access mode, you can select the one that best fits your needs when you request storage. All persistent volumes support `ReadWriteOnce (RWO)` by default.
 
 [cols="1,3"]
 |===
 |Access mode | Description
 
 |`ReadWriteOnce (RWO)`
-|The storage can be attached to a single workbench (or pod) at a time. This is the default and safest option for most individual workloads. 
-
-NOTE: RWO is always enabled by default and cannot be disabled by the administrator. 
+|The storage can be attached to a single workbench (or pod) at a time. This is the default and safest option for most individual workloads. `RWO`` is always enabled by default and cannot be disabled by the administrator. 
 
 |`ReadWriteMany (RWX)`
 |The storage can be attached to many workbenches simultaneously. This enables collaboration and shared data access but includes additional risks.
 
 |`ReadOnlyMany (ROX)`
-|The storage can be attached to many workbenches as read-only. Useful for sharing reference data without allowing changes. This is useful for sharing reference data without allowing changes.
+|The storage can be attached to many workbenches as read-only. This is useful for sharing reference data without allowing changes.
 
 |`ReadWriteOncePod (RWOP)`
-|The storage can be attached to a single pod on a single node as read-write. Similar to RWO but with additional node-level restrictions. This is similar to RWO but with additional node-level restrictions.
+|The storage can be attached to a single pod on a single node as read-write. This is similar to RWO but with additional node-level restrictions.
 |===
 
 === Using shared storage (RWX)
@@ -53,4 +51,4 @@ To use shared storage safely, consider the following best practices:
 * *Be cautious with changes*: Deleting or editing files affects everyone who shares the volume.
 * *Back up your work*: Regular backups can help prevent data loss due to mistakes or misconfigurations.
 * *Limit access*: Only share RWX volumes with trusted users and secure workbenches.
-* *Consider alternatives*: For most individual tasks, `ReadWriteOnce (RWO)` or `ReadOnlyMany (ROX)` is safer and easier to manage.
+* *Consider alternative access modes*: For most individual tasks, `ReadWriteOnce (RWO)` is safer because only one workbench can write to the volume at a time. Use `ReadWriteMany (RWX)` only when collaboration on a shared volume is required.
