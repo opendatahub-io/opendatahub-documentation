@@ -14,26 +14,22 @@ If you previously enabled the *NVIDIA NIM model serving platform* in {productnam
 endif::[]
 
 .Prerequisites
-* You have logged in to {productname-long} as an administrator.
+* You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
 ifdef::upstream[]
 * You have enabled the single-model serving platform. You do not need to enable a preinstalled runtime. For more information about enabling the single-model serving platform, see link:{odhdocshome}/serving-models/#deploying-models-using-the-single-model-serving-platform_serving-large-models[Enabling the single-model serving platform^].
 endif::[]
 ifndef::upstream[]
 * You have enabled the single-model serving platform. You do not need to enable a preinstalled runtime. For more information about enabling the single-model serving platform, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#enabling-the-single-model-serving-platform_serving-large-models[Enabling the single-model serving platform^].
 endif::[]
-* The `disableNIMModelServing` {productname-short} dashboard configuration is set to `false`:
+* The `disableNIMModelServing` dashboard configuration option is set to `false`.
 +
-[source]
-----
-disableNIMModelServing: false
-----
-+
-ifndef::upstream[]
-For more information, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
-endif::[]
 ifdef::upstream[]
-For more information, see link:{odhdocshome}/managing-resources/#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
 endif::[]
+ifndef::upstream[]
+For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
+endif::[]
+
 ifndef::upstream[]
 * You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
 endif::[]
@@ -45,7 +41,6 @@ endif::[]
 * You have generated an NGC API key on the NGC portal. For more information, see link:https://docs.nvidia.com/ngc/gpu-cloud/ngc-user-guide/index.html#ngc-api-keys[NGC API keys].
 
 .Procedure
-. Log in to {productname-short}.
 . In the left menu of the {productname-short} dashboard, click *Applications* -> *Explore*.
 . On the *Explore* page, find the *NVIDIA NIM* tile.
 . Click *Enable* on the application tile.
