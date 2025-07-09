@@ -142,6 +142,14 @@ If you are using S3-compatible storage, add these recommended environment variab
 .. Select a *storage class* for the cluster storage.
 +
 NOTE: You cannot change the storage class after you add the cluster storage to the workbench.
+.. For storage classes that support multiple access modes, select an *Access mode* to define how the volume can be accessed. For more information, see __About persistent storage__. 
++
+Only the access modes that have been enabled for the storage class by your cluster and {productname-short} administrators are visible.
++
+** `ReadWriteOnce (RWO)`: (Default) The storage can be attached to a single workbench at a given time.
+** `ReadWriteMany (RWX)`: The storage can be attached to many workbenches simultaneously.
+** `ReadOnlyMany (ROX)`: The storage can be attached to many workbenches in read-only mode.
+** `ReadWriteOncePod (RWOP)`: The storage can be attached to a single pod on a single node in read-write mode.
 .. Under *Persistent storage size*, enter a new size in gibibytes or mebibytes.
 * *Use existing persistent storage* to reuse existing storage and select the storage from the *Persistent storage* list. 
 

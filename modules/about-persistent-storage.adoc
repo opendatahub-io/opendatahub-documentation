@@ -1,0 +1,57 @@
+:_module-type: CONCEPT
+
+[id='about-persistent-storage_{context}']
+= About persistent storage
+
+[role="_abstract"]
+{productname-short} uses persistent storage to support workbenches, project data, and model training. 
++
+Persistent storage is provisioned through {openshift-platform} storage classes and persistent volumes. Volume provisioning and data access are determined by access modes.
++
+Understanding storage classes and access modes can help you choose the right storage for your use case and avoid potential risks when sharing data across multiple workbenches.
+
+== Storage classes in {productname-short}
+
+Storage classes in {productname-short} are available from the underlying OpenShift cluster. A storage class defines how persistent volumes are provisioned, including which storage backend is used and what access modes the provisioned volumes can support. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/storage/understanding-persistent-storage[Dynamic provisioning] in the OpenShift documentation.
+
+Cluster administrators create and configure storage classes in the OpenShift cluster. These storage classes provision persistent volumes that support one or more access modes, depending on the capabilities of the storage backend. {productname-short} administrators then enable specific storage classes and access modes for use in {productname-short}.   
+
+When adding cluster storage to your project or workbench, you can choose from any enabled storage classes and access modes.
+
+== Access modes
+
+Storage classes create persistent volumes that can support different access modes, depending on the storage backend. Access modes control how a volume can be mounted and used by one or more workbenches. If a storage class allows more than one access mode, you can select the one that best fits your needs when you request storage. All persistent volumes support `ReadWriteOnce (RWO)` by default.
+
+[cols="1,3"]
+|===
+|Access mode | Description
+
+|`ReadWriteOnce (RWO)` (Default)
+|The storage can be attached to a single workbench or pod at a time and is ideal for most individual workloads. `RWO` is always enabled by default and cannot be disabled by the administrator.  
+
+|`ReadWriteMany (RWX)`
+|The storage can be attached to many workbenches simultaneously. `RWX` enables shared data access, but can introduce data risks.
+
+|`ReadOnlyMany (ROX)`
+|The storage can be attached to many workbenches as read-only. `ROX` is useful for sharing reference data without allowing changes.
+
+|`ReadWriteOncePod (RWOP)`
+|The storage can be attached to a single pod on a single node with read-write permissions. `RWOP` is similar to `RWO` but includes additional node-level restrictions.
+|===
+
+=== Using shared storage (RWX)
+
+The `ReadWriteMany (RWX)` access mode allows multiple workbenches to access and write to the same storage volume at the same time. Use `RWX` access mode for collaborative work where multiple users need to access shared datasets or project files.
+
+However, shared storage introduces several risks:
+
+* *Data corruption or data loss*: If multiple workbenches modify the same part of a file simultaneously, the data can become corrupted or lost. Ensure your applications or workflows are designed to safely handle shared access, for example, by using file locking or database transactions.
+* *Security and privacy*: If a workbench with access to shared storage is compromised, all data on that volume might be at risk. Only share sensitive data with trusted workbenches and users.
+
+To use shared storage safely:
+
+* Ensure that your tools or workflows are designed to work with shared storage and can manage simultaneous writes. For example, use databases or distributed data processing frameworks.
+* Be cautious with changes. Deleting or editing files affects everyone who shares the volume.
+* Back up your data regularly, which can help prevent data loss due to mistakes or misconfigurations.
+* Limit access to RWX volumes to trusted users and secure workbenches.
+* Use `ReadWriteMany (RWX)` only when collaboration on a shared volume is required. For most individual tasks, `ReadWriteOnce (RWO)` is ideal because only one workbench can write to the volume at a time.
