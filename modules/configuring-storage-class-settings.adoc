@@ -4,7 +4,12 @@
 = Configuring storage class settings 
 
 [role='_abstract']
-As an {productname-short} administrator, you can manage {openshift-platform} cluster storage class settings for usage within {productname-short}, including the display name, description, access modes, and whether users can use the storage class when creating or editing cluster storage. These settings do not impact the storage class within {openshift-platform}.
+As an {productname-short} administrator, you can manage the following {openshift-platform} cluster storage class settings for use within {productname-short}:
+* Display name
+* Description
+* Access modes
+* Whether users can use the storage class when creating or editing cluster storage
+These settings do not impact the storage class within {openshift-platform}.
 
 .Prerequisites
 * You have logged in to {productname-short} as a user with {productname-short} administrator privileges. 
@@ -20,14 +25,9 @@ The *Edit storage class details* dialog opens.
 
 . Optional: In the *Display Name* field, update the name for the storage class. This name is used only in {productname-short} and does not impact the storage class within {openshift-platform}.
 . Optional: In the *Description* field, update the description for the storage class. This description is used only in {productname-short} and does not impact the storage class within {openshift-platform}.
-. For storage classes that support multiple access modes, select an *Access mode* to define how the volume can be accessed. For more information, see __About storage classes__. 
+. For storage classes that support multiple access modes, select an *Access mode* to define how the volume can be accessed. For more information, see __About persistent storage__. 
 +
 Only the access modes that have been enabled for the storage class by your cluster administrator are available for selection.
-+
-* `ReadWriteOnce (RWO)`: (Default) The storage can be attached to a single workbench at a given time.
-* `ReadWriteMany (RWX)`: The storage can be attached to many workbenches simultaneously.
-* `ReadOnlyMany (ROX)`: The storage can be attached to many workbenches as read-only.
-* `ReadWriteOncePod (RWOP)`: The storage can be attached to a single pod on a single node as read-write.
 +
 . Click *Save*.
 
