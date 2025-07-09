@@ -21,14 +21,9 @@ endif::[]
 .Procedure
 . Log in to the {openshift-platform} console as an {productname-short} administrator.
 . In the *Administrator* perspective, click *Home* -> *API Explorer*.
-. On the *API Explorer* page, search for the `OdhApplication` kind.
-. Click the `OdhApplication` kind to open the resource details page.
-ifndef::upstream[]
-. From the *Project* list, select the {productname-short} application namespace; the default is `redhat-ods-applications`.
-endif::[]
-ifdef::upstream[]
-. From the *Project* list, select the {productname-short} application namespace; the default is `opendatahub`.
-endif::[]
+. In the search bar, enter `OdhApplication` to filter by kind.
+. Click the `OdhApplication` custom resource (CR) to open the resource details page.
+. From the *Project* list, select the {productname-short} application namespace; the default is `{dbd-config-default-namespace}`.
 . Click the *Instances* tab.
 . Click *Create OdhApplication*.
 . On the *Create OdhApplication* page, copy the following code and paste it into the YAML editor.
@@ -41,7 +36,7 @@ apiVersion: dashboard.opendatahub.io/v1
 kind: OdhApplication
 metadata:
   name: examplename
-  namespace: redhat-ods-applications
+  namespace: {dbd-config-default-namespace}
   labels:
     app: odh-dashboard
     app.kubernetes.io/part-of: odh-dashboard
