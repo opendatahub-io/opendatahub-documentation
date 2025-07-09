@@ -1,0 +1,177 @@
+:_module-type: PROCEDURE
+
+[id="querying-ingested-content-in-a-llama-model_{context}"]
+= Querying ingested content in a Llama model
+
+[role='_abstract']
+This procedure guides you through querying content previously ingested into your Llama model using the LlamaStack SDK directly from a Jupyter notebook. You will run retrieval-augmented generation (RAG) queries against raw text or HTML sources stored in your vector database, enabling one-off lookups or multi-turn conversational flows without a separate retrieval service.
+
+.Prerequisites
+* You have deployed a Llama 3.2 model with a vLLM model server and integrated LlamaStack.
+* You have created a project workbench within a data science project.
+* You have opened a Jupyter notebook and it is running in your workbench environment.
+* A running Milvus (or other supported) vector-DB service accessible from your notebook. You’ll register it inline—so you only need:
+** `vector_db_id` – a unique logical name you choose (for example, `"my_milvus_db"`).
+** `provider_id` – the connector key your LlamaStack gateway has enabled (for Milvus it’s `"milvus"`, for Redis `"redis"`, etc.).
+  If you’re unsure which are available, list them first:
+  +++
+  [source,python]
+  print(client.vector_dbs.list_providers())
+  +++
+ifdef::self-managed[]
+* Your environment has network access to the vector database service through {openshift-platform}.
+endif::self-managed[]
+
+.Procedure
+
+. In a new notebook cell, install the `llama_stack` client package:
++
+[source,python]
+----
+%pip install llama_stack
+----
+
+. In a new notebook cell, import `RAGDocument` and `LlamaStackClient`:
++
+[source,python]
+----
+from llama_stack_client import RAGDocument, LlamaStackClient
+----
+
+. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a `LlamaStackClient` instance:
++
+[source,python]
+----
+client = LlamaStackClient(base_url="<your deployment endpoint>")
+----
+
+. List the available models:
++
+[source,python]
+----
+# Fetch all registered models
+models = client.models.list()
+----
+
+. Verify that the list includes your Llama model and an embedding model. Example:
++
+[source,python]
+----
+[Model(identifier='llama-32-3b-instruct', …, model_type='llm'),
+ Model(identifier='ibm-granite/granite-embedding-125m-english', …, model_type='embedding')]
+----
+
+. Select the first LLM and the first embedding model:
++
+[source,python]
+----
+model_id = next(m.identifier for m in models if m.model_type == "llm")
+
+embedding_model = next(m for m in models if m.model_type == "embedding")
+embedding_model_id = embedding_model.identifier
+embedding_dimension = embedding_model.metadata["embedding_dimension"]
+----
+
+. Define your parameters and list providers if needed:
++
+[source,python]
+----
+print(client.vector_dbs.list_providers())  # e.g. ["milvus", "redis", …]
+
+vector_db_id = "my_milvus_db"      # your chosen logical name
+provider_id  = "milvus"            # must match one of the above
+----
+
+. Register (or confirm) your vector database to store embeddings:
++
+[source,python]
+----
+_ = client.vector_dbs.register(
+    vector_db_id=vector_db_id,
+    embedding_model=embedding_model_id,
+    embedding_dimension=embedding_dimension,
+    provider_id=provider_id,
+)
+print(f"Registered vector DB: {vector_db_id}")
+----
++
+[IMPORTANT]
+====
+If you skip this step (or use an unregistered `vector_db_id`), any subsequent `insert()` call will fail because the vector store isn’t known to LlamaStack.
+====
+
+. Define the raw text you want to ingest:
++
+[source,python]
+----
+# Example raw text passage
+raw_text = """
+LlamaStack can embed raw text into a vector store for retrieval.
+This example ingests a small passage for demonstration.
+"""
+----
+
+. Create a `RAGDocument` for raw text:
++
+[source,python]
+----
+document = RAGDocument(
+    document_id="raw_text_001",
+    content=raw_text,
+    mime_type="text/plain",
+    metadata={"source": "example_passage"},
+)
+----
+
+. Ingest the raw text:
++
+[source,python]
+----
+client.tool_runtime.rag_tool.insert(
+    documents=[document],
+    vector_db_id=vector_db_id,
+    chunk_size_in_tokens=100,
+)
+print("✅ Raw text ingested successfully")
+----
+
+. Create a `RAGDocument` from an HTML source and ingest it:
++
+[source,python]
+----
+source = "https://www.paulgraham.com/greatwork.html"
+print("rag_tool> Ingesting document:", source)
+
+document = RAGDocument(
+    document_id="document_1",
+    content=source,
+    mime_type="text/html",
+    metadata={},
+)
+
+client.tool_runtime.rag_tool.insert(
+    documents=[document],
+    vector_db_id=vector_db_id,
+    chunk_size_in_tokens=50,
+)
+print("✅ HTML content ingested successfully")
+----
+
+. Query ingested content using the low-level RAG tool or the high-level Agent API with `AgentEventLogger`:
++
+[source,python]
+----
+# Example RAG query against your ingested content
+query = "What benefits do the ingested passages provide for retrieval?"
+result = client.tool_runtime.rag_tool.query(
+    vector_db_ids=[vector_db_id],
+    content=query,
+    top_k=3,
+)
+print("Query result:", result)
+----
+
+.Verification
+
+* Review printed messages to confirm both raw text and HTML content were ingested.  
+* The model list returned by `client.models.list()` includes your Llama 3.2 model and an embedding model.
