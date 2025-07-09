@@ -8,6 +8,11 @@ You can integrate LlamaStack and its retrieval-augmented generation (RAG) capabi
 
 When you create a `LlamaStackDistribution` custom resource (CR), specify the Llama Stack image `quay.io/opendatahub/llama-stack:odh` in the `spec.server.distribution.image` field. The image is hosted on link:https://quay.io[Quay.io], a secure registry that provides vulnerability scanning, role‑based access control, and globally distributed content delivery. Using this {org-name}–validated image ensures that your deployment automatically receives the latest security patches and compatibility updates. For more information about working with Quay.io, see link:https://docs.redhat.com/en/documentation/red_hat_quay/3/html/about_quay_io/quayio-overview[Quay.io overview].
 
+[IMPORTANT]
+====
+The Llama Stack image is hosted on link:https://quay.io[Quay.io] only during the Developer Preview phase of the Llama Stack integration with {productname-short}. When the Llama Stack integration reaches general availability, the image will be available on link:https://registry.redhat.com[registry.redhat.com].
+====
+
 ifdef::self-managed[]
 ifdef::disconnected[]
 If your cluster cannot pull images directly from public registries, first mirror the image to your local registry. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/disconnected_environments/mirroring-in-disconnected-environments#mirroring-images-disconnected-install[Mirroring images for disconnected installation] in the OpenShift documentation.
@@ -24,10 +29,45 @@ endif::[]
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have logged in to {productname-long}.
 * You have activated the Llama Stack Operator in {productname-short}.
-* You have deployed an inference model, for example, the llama-3.2-3b-instruct model. 
-* You have access to S3-compatible object storage, URI-based repository, or OCI-compliant registry.
+* You have deployed an inference model with vLLM, for example, the llama-3.2-3b-instruct model, and you have selected *Make deployed models available through an external route* and *Require token authentication* during model deployment.
+* You have the correct inference model identifier, for example, llama-3-2-3b.
+* You have the model endpoint URL, ending with `/v1`, such as `https://llama-32-3b-instruct-predictor:8443/v1`.
+* You have the API token required to access the model endpoint.
+ifdef::upstream,self-managed[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+ifdef::cloud-service[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
+endif::[]
 
 .Procedure
+
+
+. Open a new terminal window.
+.. Log in to your {openshift-platform} cluster from the CLI:
+.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
+.. After you have logged in, click *Display token*.
+.. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
+----
+. Create a secret containing the inference model environment variables:
++
+[source,terminal]
+----
+export INFERENCE_MODEL="llama-3-2-3b"
+export VLLM_URL="https://llama-32-3b-instruct-predictor:8443/v1"
+export VLLM_TLS_VERIFY="false" # Use "true" in production!
+export VLLM_API_TOKEN="<token identifier>"
+
+oc create secret generic llama-stack-inference-model-secret \
+  --from-literal INFERENCE_MODEL="$INFERENCE_MODEL" \
+  --from-literal VLLM_URL="$VLLM_URL" \
+  --from-literal VLLM_TLS_VERIFY="$VLLM_TLS_VERIFY" \
+  --from-literal VLLM_API_TOKEN="$VLLM_API_TOKEN"
+----
 
 . Log in to the OpenShift web console.
 . From the left-hand navigation, select *Administrator* view.
@@ -53,9 +93,25 @@ spec:
           memory: "12Gi"
       env:
         - name: INFERENCE_MODEL
-          value: vllm
+          valueFrom:
+            secretKeyRef:
+              key: INFERENCE_MODEL
+              name: llama-stack-inference-model-secret
         - name: VLLM_URL
-          value: http://vllm-predictor/v1
+          valueFrom:
+            secretKeyRef:
+              key: VLLM_URL
+              name: llama-stack-inference-model-secret
+        - name: VLLM_TLS_VERIFY
+          valueFrom:
+            secretKeyRef:
+              key: VLLM_TLS_VERIFY
+              name: llama-stack-inference-model-secret
+        - name: VLLM_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: VLLM_API_TOKEN
+              name: llama-stack-inference-model-secret
         - name: MILVUS_DB_PATH
           value: ~/.llama/milvus.db
         - name: FMS_ORCHESTRATOR_URL

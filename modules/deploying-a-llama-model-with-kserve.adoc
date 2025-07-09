@@ -40,9 +40,9 @@ endif::[]
 ifdef::cloud-service[]
 * You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
 endif::[]
-* You have created a storage connection for your Llama 3.2 model. 
+* You have created a data science project.
 * The vLLM serving runtime is installed and available in your environment.
-* You have created a storage connection with a `URI - v1` connection type. This storage connection must define the location of your Llama 3.2 model artifacts. For example, `oci://quay.io/redhat-ai-services/modelcar-catalog:llama-3.2-3b-instruct`. 
+* You have created a storage connection for your model that contains a `URI - v1` connection type. This storage connection must define the location of your Llama 3.2 model artifacts. For example, `oci://quay.io/redhat-ai-services/modelcar-catalog:llama-3.2-3b-instruct`. 
 ifdef::upstream[]
 For more information about creating storage connections, see link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
 endif::[] 
@@ -73,8 +73,8 @@ The *Deploy model* dialog opens.
 --
 * Set *CPUs requested* to `1 core`.
 * Set *Memory requested* to `10 GiB`.
-* Set *CPU limit* to `1 core`.
-* Set *Memory limit* to `10 GiB`.
+* Set *CPU limit* to `2 core`.
+* Set *Memory limit* to `14 GiB`.
 * Set *Accelerator* to `NVIDIA GPUs`.
 * Set *Accelerator count* to `1`.
 --
@@ -92,6 +92,11 @@ The *Deploy model* dialog opens.
 --chat-template=/app/data/template/tool_chat_template_llama3.2_json.jinja
 ----
 .. Click *Deploy*.
++
+[NOTE]
+====
+Model deployment can take several minutes, especially for the first model that is deployed on the cluster. Initial deployment may take more than 10 minutes while the relevant images download.
+====
 
 .Verification 
 . Verify that the `kserve-controller-manager` and `odh-model-controller` pods are running:
@@ -106,11 +111,20 @@ The *Deploy model* dialog opens.
 $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 ----
 .. Enter the following command to verify that the `kserve-controller-manager` and `odh-model-controller` pods are running:
+ifdef::upstream[]
 +
 [source,terminal]
 ----
 $ oc get pods -n opendatahub | grep -E 'kserve-controller-manager|odh-model-controller'
 ----
+endif::[]
+ifndef::upstream[]
++
+[source,terminal]
+----
+$ oc get pods -n redhat-ods-applications | grep -E 'kserve-controller-manager|odh-model-controller'
+----
+endif::[]
 +
 .. Confirm that you see output similar to the following example:
 +
@@ -121,23 +135,39 @@ odh-model-controller-7b7d5fd9cc-wxy34        1/1     Running   0          3m55s
 ----
 +
 .. If you do not see either of the `kserve-controller-manager` and `odh-model-controller` pods, there could be a problem with your deployment. In addition, if the pods appear in the list, but their `Status` is not set to `Running`, check the pod logs for errors:
+ifndef::upstream[]
++
+[source,terminal]
+----
+$ oc logs <pod-name> -n redhat-ods-applications
+----
+endif::[]
+ifdef::upstream[]
 +
 [source,terminal]
 ----
 $ oc logs <pod-name> -n opendatahub
 ----
+endif::[]
 +
 .. Check the status of the inference service:
 +
 [source,terminal]
 ----
 $ oc get inferenceservice -n llamastack
-$ oc get pods -n llamastack | grep llama
+$ oc get pods -n <data science project name> | grep llama
 ----
 * The deployment automatically creates the following resources:
 ** A `ServingRuntime` resource.
 ** An `InferenceService` resource, a `Deployment`, a pod, and a service pointing to the pod.
-* To verify that the server is running, check for output similar to the following example log:
+* Verify that the server is running. For example:
++
+[source,terminal]
+----
+$ oc logs llama-32-3b-instruct-predictor-77f6574f76-8nl4r  -n <data science project name>
+----
++
+Check for output similar to the following example log:
 +
 [source,log]
 ----
@@ -149,6 +179,15 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://['::', '0.0.0.0']:8321 (Press CTRL+C to quit)
 ----
 * The deployed model displays in the *Models* tab on the Data Science project details page for the project it was deployed under.
-
-
-
+. If you see a `ConvertTritonGPUToLLVM` error in the pod logs when querying the `/v1/chat/completions` API, and the vLLM server restarts or returns a `500 Internal Server` error, apply the following workaround:
++
+Before deploying the model, remove the `--enable-chunked-prefill` argument from the *Additional serving runtime arguments* field in the deployment dialog.
++
+The error appears similar to the following:
++
+[source,log]
+----
+/opt/vllm/lib64/python3.12/site-packages/vllm/attention/ops/prefix_prefill.py:36:0: error: Failures have been detected while processing an MLIR pass pipeline
+/opt/vllm/lib64/python3.12/site-packages/vllm/attention/ops/prefix_prefill.py:36:0: note: Pipeline failed while executing [`ConvertTritonGPUToLLVM` on 'builtin.module' operation]: reproducer generated at `std::errs, please share the reproducer above with Triton project.`
+INFO:     10.129.2.8:0 - "POST /v1/chat/completions HTTP/1.1" 500 Internal Server Error
+----
