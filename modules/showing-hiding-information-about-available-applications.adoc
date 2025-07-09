@@ -6,22 +6,27 @@
 [role='_abstract']
 You can view a list of available applications in the *Exploring applications* page of the {productname-short} dashboard. By default, the following information is provided for each application:
 
-* Any independent software vendor (ISV) application is indicated with a label on the tile indicating “{org-name} managed”, “Partner managed”, or “Self-managed”. As a cluster administrator, you can hide or show the labels. For example, if you are running a self-managed environment, you might want to show all available applications regardless of the support level. 
+* Any independent software vendor (ISV) application is indicated with a label on the tile indicating `{org-name} managed`, `Partner managed`, or `Self-managed`. As an {productname-short} administrator, you can hide or show the labels. For example, if you are running a self-managed environment, you might want to show all available applications regardless of the support level. 
 
 * When a user clicks on an application, an information panel appears and provides more information about the application, including links to quick starts or detailed documentation. You can disable or enable the appearance of application information panels.
 
 .Prerequisites
 
-* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have {productname-short} administrator privileges.
 
 .Procedure
 
-. Log in to the {openshift-platform} console as a cluster administrator.
+. Log in to the {openshift-platform} console as an {productname-short} administrator.
 . Open the dashboard configuration file:
 .. In the *Administrator* perspective, click *Home* -> *API Explorer*.
 .. In the search bar, enter `OdhDashboardConfig` to filter by kind.
 .. Click the `OdhDashboardConfig` custom resource (CR) to open the resource details page.
-.. Select the `redhat-ods-applications` project from the *Project* list.
+ifndef::upstream[]
+.. From the *Project* list, select the {productname-short} application namespace (default: `redhat-ods-applications`).
+endif::[]
+ifdef::upstream[]
+.. From the *Project* list, select the {productname-short} application namespace (default: `odh`).
+endif::[]
 .. Click the *Instances* tab.
 .. Click the `odh-dashboard-config` instance to open the details page.
 .. Click the *YAML* tab. 
