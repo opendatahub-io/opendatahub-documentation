@@ -1,0 +1,129 @@
+:_module-type: PROCEDURE
+
+[id="testing-your-vllm-model-endpoints_{context}"]
+= Testing your vLLM model endpoints
+
+[role='_abstract']
+To verify that your deployed Llama 3.2 model is accessible externally, ensure that your vLLM model server is exposed as a network endpoint. You can then test access to the model from outside both the {openshift-platform} cluster and the {productname-short} interface.
+
+[IMPORTANT]
+====
+If you selected *Make deployed models available through an external route* during deployment, your vLLM model endpoint is already accessible outside the cluster. You do not need to manually expose the model server. Manually exposing vLLM model endpoints, for example, by using `oc expose`, creates an unsecured route unless you configure authentication. Avoid exposing endpoints without security controls to prevent unauthorized access.
+====
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have logged in to {productname-long}.
+* You have activated the Llama Stack Operator in {productname-short}.
+* You have deployed an inference model, for example, the llama-3.2-3b-instruct model. 
+ifdef::upstream,self-managed[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+ifdef::cloud-service[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
+endif::[]
+
+.Procedure
+
+. Open a new terminal window.
+.. Log in to your {openshift-platform} cluster from the CLI:
+.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
+.. After you have logged in, click *Display token*.
+.. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
+----
+. If you enabled *Require token authentication* during model deployment, retrieve your token:
++
+[source,sh,subs="+quotes"]
+----
+$ export MODEL_TOKEN=$(oc get secret default-name-llama-32-3b-instruct-sa -n <project name> --template='{{ .data.token }}' | base64 -d)
+----
+. Obtain your model endpoint URL:
++
+* If you enabled *Make deployed models available through an external route* during model deployment, click *Endpoint details* on the *Model deployments* page in the {productname-short} dashboard to obtain your model endpoint URL.
+* In addition, if you did not enable *Require token authentication* during model deployment, you can also enter the following command to retrieve the endpoint URL:
++
+[source,sh,subs="+quotes"]
+----
+$ export MODEL_ENDPOINT="https://$(oc get route llama-32-3b-instruct -n <project name> --template='{{ .spec.host }}')"
+----
+. Test the endpoint with a sample chat completion request:
++
+* If you did not enable *Require token authentication* during model deployment, enter a chat completion request. For example:   
++
+[source,sh]
+----
+$ curl -X POST $MODEL_ENDPOINT/v1/chat/completions \
+ -H "Content-Type: application/json" \
+ -d '{
+ "model": "llama-32-3b-instruct",
+ "messages": [
+   {
+     "role": "user",
+     "content": "Hello"
+   }
+ ]
+}'
+----
+* If you enabled *Require token authentication* during model deployment, include a token in your request. For example: 
++
+[source,sh]
+----
+curl -s -k $MODEL_ENDPOINT/v1/chat/completions \
+--header "Authorization: Bearer $MODEL_TOKEN" \
+--header 'Content-Type: application/json' \
+-d '{
+  "model": "llama-32-3b-instruct",
+  "messages": [
+    {
+      "role": "user",
+      "content": "can you tell me a funny joke?"
+    }
+  ]
+}' | jq .
+----
++
+[NOTE]
+====
+The `-k` flag disables SSL verification and should only be used in test environments or with self-signed certificates.
+====
+
+.Verification
+
+Confirm that you received a JSON response containing a chat completion. For example:
+
+[source,json]
+----
+{
+  "id": "chatcmpl-05d24b91b08a4b78b0e084d4cc91dd7e",
+  "object": "chat.completion",
+  "created": 1747279170,
+  "model": "llama-32-3b-instruct",
+  "choices": [{
+    "index": 0,
+    "message": {
+      "role": "assistant",
+      "reasoning_content": null,
+      "content": "Hello! It's nice to meet you. Is there something I can help you with or would you like to chat?",
+      "tool_calls": []
+    },
+    "logprobs": null,
+    "finish_reason": "stop",
+    "stop_reason": null
+  }],
+  "usage": {
+    "prompt_tokens": 37,
+    "total_tokens": 62,
+    "completion_tokens": 25,
+    "prompt_tokens_details": null
+  },
+  "prompt_logprobs": null
+}
+----
+
+If you do not receive a response similar to the example, verify that the endpoint URL and token are correct, and ensure your model deployment is running.
+

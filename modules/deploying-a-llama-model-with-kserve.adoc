@@ -1,0 +1,193 @@
+:_module-type: PROCEDURE
+
+[id="Deploying-a-llama-model-with-kserve_{context}"]
+= Deploying a Llama model with KServe
+
+[role='_abstract']
+To use Llama Stack and retrieval-augmented generation (RAG) workloads in {productname-short}, you must deploy a Llama model with a vLLM model server and configure KServe in standard deployment mode.
+
+.Prerequisites
+
+* You have logged in to {productname-long}.
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have installed the Llama Stack Operator. 
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-rag/#installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+endif::[]
+* You have installed KServe.
+ifdef::upstream[]
+* You have enabled the single-model serving platform. For more information about enabling the single-model serving platform, see link:{odhdocshome}/serving-models/#deploying-models-using-the-single-model-serving-platform_serving-large-models[Enabling the single-model serving platform^].
+endif::[]
+ifndef::upstream[]
+* You have enabled the single-model serving platform. For more information about enabling the single-model serving platform, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#enabling-the-single-model-serving-platform_serving-large-models[Enabling the single-model serving platform^].
+endif::[]
+* You can access the single-model serving platform in the dashboard configuration. 
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}/html/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[]
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/managing-odh/#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[] 
+ifndef::upstream[]
+* You have enabled GPU support in {productname-short}, including installing the Node Feature Discovery Operator and NVIDIA GPU Operator. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
+endif::[]
+ifdef::upstream[]
+* You have enabled GPU support in {productname-short}, including installing the Node Feature Discovery Operator and NVIDIA GPU Operator. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
+endif::[]
+ifdef::upstream,self-managed[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+ifdef::cloud-service[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
+endif::[]
+* You have created a data science project.
+* The vLLM serving runtime is installed and available in your environment.
+* You have created a storage connection for your model that contains a `URI - v1` connection type. This storage connection must define the location of your Llama 3.2 model artifacts. For example, `oci://quay.io/redhat-ai-services/modelcar-catalog:llama-3.2-3b-instruct`. 
+ifdef::upstream[]
+For more information about creating storage connections, see link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+endif::[] 
+ifndef::upstream[]
+For more information about creating storage connections, see link:{rhoaidocshome}/html/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project]. 
+endif::[]
+
+.Procedure
+
+[IMPORTANT]
+====
+These steps are only supported in {productname-short} versions 2.19 and later.
+====
+
+. In the {productname-short} dashboard, navigate to the project details page and click the *Models* tab.
+. In the *Single-model serving platform* tile, click *Select single-model*.
+. Click the *Deploy model* button.
++
+The *Deploy model* dialog opens.
+. Configure the deployment properties for your model:
+.. In the *Model deployment name* field, enter a unique name for your deployment.
+.. In the *Serving runtime* field, select `vLLM NVIDIA GPU serving runtime for KServe` from the drop-down list.
+.. In the *Deployment mode* field, select `Standard` from the drop-down list.
+.. Set *Number of model server replicas to deploy* to `1`.
+.. In the *Model server size* field, select `Custom` from the drop-down list.
+.. :
++
+--
+* Set *CPUs requested* to `1 core`.
+* Set *Memory requested* to `10 GiB`.
+* Set *CPU limit* to `2 core`.
+* Set *Memory limit* to `14 GiB`.
+* Set *Accelerator* to `NVIDIA GPUs`.
+* Set *Accelerator count* to `1`.
+--
+.. From the *Connection type*, select a relevant data connection from the drop-down list.
+. In the *Additional serving runtime arguments* field, specify the following recommended arguments:
++
+[source,shell]
+----
+--dtype=half
+--max-model-len=20000
+--gpu-memory-utilization=0.95
+--enable-chunked-prefill
+--enable-auto-tool-choice
+--tool-call-parser=llama3_json
+--chat-template=/app/data/template/tool_chat_template_llama3.2_json.jinja
+----
+.. Click *Deploy*.
++
+[NOTE]
+====
+Model deployment can take several minutes, especially for the first model that is deployed on the cluster. Initial deployment may take more than 10 minutes while the relevant images download.
+====
+
+.Verification 
+. Verify that the `kserve-controller-manager` and `odh-model-controller` pods are running:
+.. Open a new terminal window.
+.. Log in to your {openshift-platform} cluster from the CLI:
+.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
+.. After you have logged in, click *Display token*.
+.. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
++
+[source,subs="+quotes"]
+----
+$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
+----
+.. Enter the following command to verify that the `kserve-controller-manager` and `odh-model-controller` pods are running:
+ifdef::upstream[]
++
+[source,terminal]
+----
+$ oc get pods -n opendatahub | grep -E 'kserve-controller-manager|odh-model-controller'
+----
+endif::[]
+ifndef::upstream[]
++
+[source,terminal]
+----
+$ oc get pods -n redhat-ods-applications | grep -E 'kserve-controller-manager|odh-model-controller'
+----
+endif::[]
++
+.. Confirm that you see output similar to the following example:
++
+[source,subs="+quotes"]
+----
+kserve-controller-manager-7c865c9c9f-xyz12   1/1     Running   0          4m21s
+odh-model-controller-7b7d5fd9cc-wxy34        1/1     Running   0          3m55s
+----
++
+.. If you do not see either of the `kserve-controller-manager` and `odh-model-controller` pods, there could be a problem with your deployment. In addition, if the pods appear in the list, but their `Status` is not set to `Running`, check the pod logs for errors:
+ifndef::upstream[]
++
+[source,terminal]
+----
+$ oc logs <pod-name> -n redhat-ods-applications
+----
+endif::[]
+ifdef::upstream[]
++
+[source,terminal]
+----
+$ oc logs <pod-name> -n opendatahub
+----
+endif::[]
++
+.. Check the status of the inference service:
++
+[source,terminal]
+----
+$ oc get inferenceservice -n llamastack
+$ oc get pods -n <data science project name> | grep llama
+----
+* The deployment automatically creates the following resources:
+** A `ServingRuntime` resource.
+** An `InferenceService` resource, a `Deployment`, a pod, and a service pointing to the pod.
+* Verify that the server is running. For example:
++
+[source,terminal]
+----
+$ oc logs llama-32-3b-instruct-predictor-77f6574f76-8nl4r  -n <data science project name>
+----
++
+Check for output similar to the following example log:
++
+[source,log]
+----
+INFO     2025-05-15 11:23:52,750 __main__:498 server: Listening on ['::', '0.0.0.0']:8321
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO     2025-05-15 11:23:52,765 __main__:151 server: Starting up
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://['::', '0.0.0.0']:8321 (Press CTRL+C to quit)
+----
+* The deployed model displays in the *Models* tab on the Data Science project details page for the project it was deployed under.
+. If you see a `ConvertTritonGPUToLLVM` error in the pod logs when querying the `/v1/chat/completions` API, and the vLLM server restarts or returns a `500 Internal Server` error, apply the following workaround:
++
+Before deploying the model, remove the `--enable-chunked-prefill` argument from the *Additional serving runtime arguments* field in the deployment dialog.
++
+The error appears similar to the following:
++
+[source,log]
+----
+/opt/vllm/lib64/python3.12/site-packages/vllm/attention/ops/prefix_prefill.py:36:0: error: Failures have been detected while processing an MLIR pass pipeline
+/opt/vllm/lib64/python3.12/site-packages/vllm/attention/ops/prefix_prefill.py:36:0: note: Pipeline failed while executing [`ConvertTritonGPUToLLVM` on 'builtin.module' operation]: reproducer generated at `std::errs, please share the reproducer above with Triton project.`
+INFO:     10.129.2.8:0 - "POST /v1/chat/completions HTTP/1.1" 500 Internal Server Error
+----
