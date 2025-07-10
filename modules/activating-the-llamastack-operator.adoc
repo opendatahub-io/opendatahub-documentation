@@ -1,7 +1,10 @@
-[id="installing-the-llama-stack-operator_{context}"]
-= Installing the Llama Stack Operator
+:_module-type: PROCEDURE
 
-You can install the Llama Stack Operator on your {openshift-platform} cluster by applying the latest release manifest from the upstream repository.
+[id="activating-the-llama-stack-operator_{context}"]
+= Activating the Llama Stack Operator
+
+[role='_abstract']
+You can activate the Llama Stack Operator on your {openshift-platform} cluster by setting its `managementState` to `Managed` in the {productname-short} Operator's `DataScienceCluster` custom resource (CR). This enables Llama-based model serving without reinstalling or directly editing operator subscriptions. You can perform this action through the {openshift-platform} web console or by using the OpenShift command-line interface (CLI). 
 
 .Prerequisites
 
@@ -12,6 +15,8 @@ endif::[]
 ifdef::cloud-service[]
 * You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
 endif::[]
+* You have installed the {productname-long} Operator on your cluster.
+* You have a `DataScienceCluster` custom resource in your environment, typically named `default-dsc`.
 * Your infrastructure supports GPU-enabled instance types, for example, `g4dn.xlarge` on AWS.
 ifndef::upstream[]
 * You have enabled GPU support in {productname-short}, including installing the Node Feature Discovery operator and NVIDIA GPU Operator. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
@@ -23,55 +28,41 @@ endif::[]
 * You have created a `ClusterPolicy` resource instance with default values on your cluster, as described in link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html#create-the-clusterpolicy-instance[Creating the ClusterPolicy instance^] in the NVIDIA documentation.
 
 .Procedure
-
-. Open a new terminal window.
-. Log in to your {openshift-platform} cluster from the CLI:
-.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
-.. After you have logged in, click *Display token*.
-.. Copy the *Log in with this token* command and paste it into the terminal where you are using the OpenShift command-line interface (CLI).
+. Log in to the {openshift-platform} web console as a cluster administrator.
+. In the web console, navigate to *Operators* → *Installed Operators*.
+. Click the *{productname-long} Operator* to open its details.
+. Select the *Data Science Cluster* tab.
+. On the *DataScienceClusters* page, click the `default-dsc` object.
+. Click the *YAML* tab.
 +
-[source,subs="+quotes"]
-----
-$ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
-----
-
-. Set the Llama Stack Operator repository URL:
+An embedded YAML editor opens, displaying the configuration for the `DataScienceCluster` custom resource.
+. In the YAML editor, locate the `spec.components` section. If the `llamastackoperator` field does not exist, add it. Then, set the `managementState` field to `Managed`:
 +
-[source,terminal]
+[source,yaml]
 ----
-$ LLAMASTACK_REPO=https://raw.githubusercontent.com/llamastack/llama-stack-k8s-operator
+spec:
+  components:
+    llamastackoperator:
+      managementState: Managed
 ----
-
-. Apply the operator manifest to your cluster:
+. Click *Save* to apply your changes.
 +
-[source,terminal]
-----
-$ oc apply -f $LLAMASTACK_REPO/main/release/operator.yaml
-----
+[NOTE]
+====
+Alternatively, you can activate the Llama Stack Operator from the OpenShift command-line interface (CLI) by running `oc patch datasciencecluster <name> --type='merge' -p '{"spec":{"components":{"llamastackoperator":{"managementState":"Managed"}}}}'`.
+
+Replace `<name>` with your `DataScienceCluster` name, for example, `default-dsc`.
+====
 
 .Verification
 
-Verify that the Llama Stack Operator pods are running:
-
-[source,terminal]
-----
-$ oc logs -l app.kubernetes.io/name=llama-stack-k8s-operator -n llama-stack-k8s-operator-system -f
-----
-
-You should see log entries indicating that the Llama Stack Operator has started successfully. For example:
-
-[source,text]
-----
-2025-06-11T16:36:12Z INFO setup starting manager
-2025-06-11T16:36:13Z INFO controller-runtime.metrics Metrics server is starting to listen {"addr": ":8080"}
-2025-06-11T16:36:13Z INFO Starting Controller {"controller": "llamastackdistribution", ...}
-----
-
-If you see log messages showing that the manager, metrics server, or controller are starting or running, the Llama Stack Operator is operating as expected.
-
+. After a short time, verify that the Llama Stack Operator is running:
+.. In the web console, go to *Workloads* → *Pods*.
+.. Select the *redhat-ods-applications* namespace.
+.. Confirm that a pod with the label `app.kubernetes.io/name=llama-stack-operator` has started and has a status of *Running*.
+. When activation is successful, one or more pods for the Llama Stack Operator appear in the *redhat-ods-applications* namespace and reach the *Running* state. The `managementState` field in the `DataScienceCluster` CR will also reflect `Managed`.
++
 [NOTE]
 ====
-The log output might differ depending on the Operator version and your environment.
+If you want to disable the Llama Stack Operator, set the `managementState` field to `Removed` in the same way. The operator will then remove the Llama Stack component from the cluster.
 ====
-
-
