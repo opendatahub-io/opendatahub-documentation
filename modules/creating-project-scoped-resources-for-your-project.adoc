@@ -1,0 +1,123 @@
+:_module-type: PROCEDURE
+
+[id="creating-project-scoped-resources-for-your-project_{context}"]
+= Creating project-scoped resources for your project
+
+[role='_abstract']
+Users can access _global resources_ in all {productname-short} projects, but can access _project-scoped resources_ within the specified project only.
+
+A project member who is not a cluster administrator can create the following types of project-scoped resources for their {productname-short} project:
+
+* Workbench images
+* Model-serving runtimes for KServe
+////
+When RHOAIENG-26758 is fixed, uncomment this section, after verifying that hardware profiles and accelerator profiles are both still supported
+* Hardware profiles
+* Accelerator profiles
+////
+
+All resource names must be unique within a project.
+
+[NOTE]
+====
+ifdef::upstream[]
+Cluster administrators can create project-scoped resources for any project, as described in link:{odhdocshome}/managing-odh/#creating-project-scoped-resources_managing-odh[Creating project-scoped resources].
+endif::[]
+ifndef::upstream[]
+Cluster administrators can create project-scoped resources for any project, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/creating-project-scoped-resources_managing-rhoai[Creating project-scoped resources].
+endif::[]
+====
+
+.Prerequisites
+
+* You can access the {openshift-platform} console.
+
+ifdef::upstream[]
+* An {productname-short} administrator has set the `disableProjectScoped` dashboard configuration option to `false`, as described in link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
+endif::[]
+ifndef::upstream[]
+* An {productname-short} administrator has set the `disableProjectScoped` dashboard configuration option to `false`, as described in link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
+endif::[]
+
+* You can access a project in the {productname-short} console.
+
+* You have example YAML code for the type of resource that you want to create.
++
+You can get the YAML code from a trusted source, such as an existing project-scoped resource, a Git repository, or documentation.
+Alternatively, you can contact your cluster administrator to request the relevant YAML code.
+
+
+.Procedure
+. Log in to the {openshift-platform} console.
+. Copy the YAML code from a trusted source to create the resource.
++
+Alternatively, if you can access an existing project-scoped resource in one of your projects, you can copy the YAML code as follows:
+
+.. In the *Administrator* perspective, click *Home* -> *Search*.
+.. From the *Projects* list, select the appropriate value.
+.. In the *Resources* list, search for the relevant resource type, as follows:
+
+* For workbench images, search for `ImageStream`.
+// When RHOAIENG-26758 is resolved, remove this line and uncomment the following two lines.
+// * For hardware profiles, search for `HardwareProfile`.
+// * For accelerator profiles, search for `AcceleratorProfile`.
+* For serving runtimes, search for `Template`. 
+From the resulting list, find the templates that have the `objects.kind` specification set to `ServingRuntime`. 
+
+.. Select a resource, and click the *YAML* tab. 
+.. Copy the YAML content, and click *Cancel*.
+
+. From the *Project* list, select your project name. Note the spelling.
+. From the toolbar, click the *+* icon to open the *Import YAML* page.
+. Paste the example YAML content into the code area.
+. Edit the `metadata.namespace` value to specify the name of your project.
+. If necessary, edit the `metadata.name` value to ensure that the resource name is unique within the specified project.
+. Optional: Edit the resource name that is displayed in the {productname-short} console, as follows:
+
+* For workbench images, edit the `metadata.annotations.opendatahub.io/notebook-image-name` value.
+// When RHOAIENG-26758 is resolved, remove this line and uncomment the following line.
+// * For hardware profiles and accelerator profiles, edit the `spec.displayName` value.
+* For serving runtimes, edit the `objects.metadata.annotations.openshift.io/display-name` value.
+. Click *Create*.
+
+
+.Verification
+. Log in to the {productname-short} console.
+. Verify that the project-scoped resource is shown in the specified project only:
+
+ifdef::upstream[]
+* For workbench images, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-project-workbench_projects[Creating a workbench].
+endif::[]
+ifndef::upstream[]
+* For workbench images, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a workbench].
+endif::[]
+
+ifdef::upstream[]
+* For serving runtimes, see link:{odhdocshome}/serving-models/#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+endif::[]
+ifndef::upstream[]
+* For serving runtimes, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+endif::[]
+
+////
+When RHOAIENG-26758 is resolved, remove the above lines and uncomment this section instead.
+
+ifdef::upstream[]
+* For workbench images, hardware profiles, and accelerator profiles, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-project-workbench_projects[Creating a workbench].
+endif::[]
+ifndef::upstream[]
+* For workbench images, hardware profiles, and accelerator profiles, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a workbench].
+endif::[]
+
+ifdef::upstream[]
+* For serving runtimes, see link:{odhdocshome}/serving-models/#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+endif::[]
+ifndef::upstream[]
+* For serving runtimes, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+endif::[]
+////
+
+////
+[role='_additional-resources']
+.Additional resources
+////
