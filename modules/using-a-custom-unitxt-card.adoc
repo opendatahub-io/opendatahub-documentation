@@ -1,0 +1,117 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="using-a-custom-unitxt-card_{context}"]
+= Using a custom Unitxt card  
+
+[role='_abstract']
+
+You can run evaluations using custom Unitxt cards. To do this, include the custom Unitxt card in JSON format within the `LMEvalJob` YAML.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+
+* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
+
+.Procedure
+. Pass a custom Unitxt Card in JSON format:
++
+[source]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: evaljob-sample
+spec:
+  model: hf
+  modelArgs:
+  - name: pretrained
+    value: google/flan-t5-base
+  taskList:
+    taskRecipes:
+    - template: "templates.classification.multi_class.relation.default"
+      card:
+        custom: |
+          {
+            "__type__": "task_card",
+            "loader": {
+              "__type__": "load_hf",
+              "path": "glue",
+              "name": "wnli"
+            },
+            "preprocess_steps": [
+              {
+                "__type__": "split_random_mix",
+                "mix": {
+                  "train": "train[95%]",
+                  "validation": "train[5%]",
+                  "test": "validation"
+                }
+              },
+              {
+                "__type__": "rename",
+                "field": "sentence1",
+                "to_field": "text_a"
+              },
+              {
+                "__type__": "rename",
+                "field": "sentence2",
+                "to_field": "text_b"
+              },
+              {
+                "__type__": "map_instance_values",
+                "mappers": {
+                  "label": {
+                    "0": "entailment",
+                    "1": "not entailment"
+                  }
+                }
+              },
+              {
+                "__type__": "set",
+                "fields": {
+                  "classes": [
+                    "entailment",
+                    "not entailment"
+                  ]
+                }
+              },
+              {
+                "__type__": "set",
+                "fields": {
+                  "type_of_relation": "entailment"
+                }
+              },
+              {
+                "__type__": "set",
+                "fields": {
+                  "text_a_type": "premise"
+                }
+              },
+              {
+                "__type__": "set",
+                "fields": {
+                  "text_b_type": "hypothesis"
+                }
+              }
+            ],
+            "task": "tasks.classification.multi_class.relation",
+            "templates": "templates.classification.multi_class.relation.all"
+          }
+  logSamples: true
+----
+
+. Inside the custom card specify the Hugging Face dataset loader:
++
+[source]
+----
+
+"loader": {
+              "__type__": "load_hf",
+              "path": "glue",
+              "name": "wnli"
+            },
+
+----
+
+. (Optional) You can use other Unitxt loaders (found on the Unitxt website) that contain the `volumes` and `volumeMounts` parameters to mount the dataset from persistent volumes. For example, if you use the `LoadCSV` Unitxt command, mount the files to the container and make the dataset accessible for the evaluation process.
