@@ -4,11 +4,19 @@
 = Enabling the multi-model serving platform
 
 [role='_abstract']
-To use the multi-model serving platform, you must first enable the platform.
+To use the multi-model serving platform, you must first enable the platform. 
+The multi-model serving platform uses the ModelMesh component.
 
 .Prerequisites
 * You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
-* Your cluster administrator has _not_ edited the {productname-short} dashboard configuration to disable the ability to select the multi-model serving platform, which uses the ModelMesh component. For more information, see link:{rhoaidocshome}/html/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+* The `spec.dashboardConfig.disableModelMesh` dashboard configuration option is set to `false` (the default).
++
+ifdef::upstream[]
+For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
+endif::[]
+ifndef::upstream[]
+For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
+endif::[]
 
 .Procedure
 . In the left menu of the {productname-short} dashboard, click *Settings* → *Cluster settings*.
