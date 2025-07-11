@@ -1,0 +1,60 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="accessing-hugging-face-models-with-an-environment-variable-token_{context}"]
+= Accessing Hugging Face models with an environment variable token
+
+[role='_abstract']
+
+If the `LMEvalJob` needs to access a model on HuggingFace with the access token, you can set up the `HF_TOKEN` as one of the environment variables for the `lm-eval` container.
+
+
+.Prerequisites
+* You have logged in to {productname-long}.
+
+* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
+
+.Procedure
+
+. To start an evaluation job for a `huggingface` model, apply the following YAML file to your data science project through the CLI:
++
+[source]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: evaljob-sample
+spec:
+  model: hf
+  modelArgs:
+  - name: pretrained
+    value: huggingfacespace/model
+  taskList:
+    taskNames:
+    - unfair_tos/
+  logSamples: true
+  pod:
+    container:
+      env:
+      - name: HF_TOKEN
+        value: "My HuggingFace token"
+----
++ 
+For example: 
++
+[source,subs="+quotes"]
+---- 
+$ oc apply -f <yaml_file> -n <project_name> 
+----
+. (Optional) You can also create a secret to store the token, then refer the key from the `secretKeyRef` object using the following reference syntax:
++
+[source]
+----
+env:
+  - name: HF_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: my-secret
+        key: hf-token
+
+----

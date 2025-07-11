@@ -1,0 +1,80 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="using-pvcs-as-storage_{context}"]
+= Using PVCs as storage
+
+[role='_abstract']
+
+To use a PVC as storage for the `LMEvalJob` results, you can use either managed PVCs or existing PVCs. Managed PVCs are managed by the TrustyAI operator. Existing PVCs are created by the end-user before the `LMEvalJob` is created.
+
+[NOTE]
+--
+If both managed and existing PVCs are referenced in outputs, the TrustyAI operator defaults to the managed PVC.
+--
+
+.Prerequisites
+* You have logged in to {productname-long}.
+
+* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
+
+== Managed PVCs
+
+To create a managed PVC, specify its size. The managed PVC is named `<job-name>-pvc` and is available after the job finishes. When the `LMEvalJob` is deleted, the managed PVC is also deleted.
+
+.Procedure
+* Enter the following code:
++
+[source]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: evaljob-sample
+spec:
+  # other fields omitted ...
+  outputs: 
+    pvcManaged: 
+      size: 5Gi 
+----
+
+.Notes on the code
+* `outputs` is the section for specifying custom storage locations
+* `pvcManaged` will create an operator-managed PVC
+* `size` (compatible with standard PVC syntax) is the only supported value
+
+== Existing PVCs
+
+To use an existing PVC, pass its name as a reference. The PVC must exist when you create the `LMEvalJob`. 
+The PVC is not managed by the TrustyAI operator, so it is available after deleting the `LMEvalJob`.
+
+.Procedure
+. Create a PVC. An example is the following:
++
+[source]
+----
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "my-pvc"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+----
+
+. Reference the new PVC from the `LMEvalJob`.
++
+[source]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: evaljob-sample
+spec:
+  # other fields omitted ...
+  outputs:
+    pvcName: "my-pvc" 
+----

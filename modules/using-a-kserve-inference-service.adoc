@@ -1,0 +1,78 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="using-a-kserve-inference-service_{context}"]
+= Using a KServe Inference Service
+
+[role='_abstract']
+
+To run an evaluation job on an `InferenceService` which is already deployed and running in your namespace, define your `LMEvalJob` CR, then apply this CR into the same namespace as your model.
+
+NOTE
+--
+The following example only works with Hugging Face or vLLM-based model-serving runtimes.
+--
+
+.Prerequisites
+* You have logged in to {productname-long}.
+
+* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
+
+* You have a namespace that contains an InferenceService with a vLLM model. This example assumes that a vLLM model is already deployed in your cluster.
+
+* Your cluster has Domain Name System (DNS) configured.
+
+.Procedure
+
+. Define your `LMEvalJob` CR:
++
+[source]
+----
+  apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: evaljob
+spec:
+  model: local-completions
+  taskList:
+    taskNames:
+      - mmlu
+  logSamples: true
+  batchSize: 1
+  modelArgs:
+    - name: model
+      value: granite
+    - name: base_url
+      value: $ROUTE_TO_MODEL/v1/completions 
+    - name: num_concurrent
+      value:  "1"
+    - name: max_retries
+      value:  "3"
+    - name: tokenized_requests
+      value: false
+    - name: tokenizer
+      value: huggingfacespace/model
+ env:
+   - name: OPENAI_TOKEN
+     valueFrom:
+          secretKeyRef: 
+            name: <secret-name> 
+            key: token 
+----
+
+. Apply this CR into the same namespace as your model. 
+
+.Verification
+
+A pod spins up in your model namespace called `evaljob`. In the pod terminal, you can see the output via `tail -f output/stderr.log`.
+
+.Notes on the code
+* `base_url` should be set to the route/service URL of your model. Make sure to include the `/v1/completions` endpoint in the URL.
+* `env.valueFrom.secretKeyRef.name` should point to a secret that contains a token that can authenticate to your model. `secretRef.name` should be the secret's name in the namespace, while `secretRef.key` should point at the token's key within the secret.
+* `secretKeyRef.name` can equal the output of:
++
+[source]
+----
+oc get secrets -o custom-columns=SECRET:.metadata.name --no-headers | grep user-one-token
+----
+* `secretKeyRef.key` is set to `token`
