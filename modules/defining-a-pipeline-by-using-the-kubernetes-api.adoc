@@ -30,12 +30,15 @@ endif::[]
 
 .Procedure
 
-. In a terminal window, log in to the OpenShift CLI as shown in the following example:
+. In a terminal window, run the following command to log in to the OpenShift CLI:
 +
 [source,subs="+quotes"]
 ----
-$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+$ oc login -u __<user_name>__
 ----
++
+When prompted, enter the {openshift-platform} server URL, connection type, and your password.
+
 
 . To configure the pipeline server to use Kubernetes API storage instead of the default `database` option, set the `spec.apiServer.pipelineStore` field to `kubernetes` in your project's `DataSciencePipelinesApplication` (DSPA) custom resource.
 +
