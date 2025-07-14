@@ -45,9 +45,7 @@ In this example, we use link:www.unitxt.ai[Unitxt] to define custom metrics, to 
 
 | Custom LLM-as-judge metric
 | Uses Mistral-7B with your custom instructions
-
 |===
-
 
 .Procedure
 . Update the TrustyAI configuration to allow online model access and code execution, by applying the following instructions to the test namespace, though the command line interface (CLI).
@@ -68,8 +66,8 @@ endif::[]
    opendatahub.io/managed:'false'
    }
  }'
-
 ----
+
 . Apply the following manifest through the CLI. The YAML content defines a custom evaluation job (`LMEvalJob`), the namespace, and the location of the model you want to evaluate.
 The YAML contains the following instructions:
 .. What model to evaluate.
@@ -225,8 +223,6 @@ taskList:
        limits:
          cpu: '2'
          memory: 16Gi
-
-
 ----
 
 .Verification
