@@ -4,7 +4,7 @@
 = Activating the Llama Stack Operator
 
 [role='_abstract']
-You can activate the Llama Stack Operator on your {openshift-platform} cluster by setting its `managementState` to `Managed` in the {productname-short} Operator's `DataScienceCluster` custom resource (CR). This enables Llama-based model serving without reinstalling or directly editing operator subscriptions. You can perform this action through the {openshift-platform} web console or by using the OpenShift command-line interface (CLI). 
+You can activate the Llama Stack Operator on your {openshift-platform} cluster by setting its `managementState` to `Managed` in the {productname-short} Operator `DataScienceCluster` custom resource (CR). This setting enables Llama-based model serving without reinstalling or directly editing Operator subscriptions. You can edit the CR in the {openshift-platform} web console or by using the OpenShift command-line interface (CLI).
 
 .Prerequisites
 
@@ -16,22 +16,22 @@ ifdef::cloud-service[]
 * You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
 endif::[]
 * You have installed the {productname-long} Operator on your cluster.
-* You have a `DataScienceCluster` custom resource in your environment, typically named `default-dsc`.
+* You have a `DataScienceCluster` custom resource in your environment; the default is `default-dsc`.
 * Your infrastructure supports GPU-enabled instance types, for example, `g4dn.xlarge` on AWS.
 ifndef::upstream[]
-* You have enabled GPU support in {productname-short}, including installing the Node Feature Discovery operator and NVIDIA GPU Operator. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
+* You have enabled GPU support in {productname-short}, including installing the Node Feature Discovery Operator and NVIDIA GPU Operator. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery Operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
 endif::[]
 ifdef::upstream[]
 * You have enabled GPU support in {productname-short}, including installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
 endif::[]
-* You have created a `NodeFeatureDiscovery` resource instance on your cluster, as described in link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-nfd.html#Procedure[Installing the Node Feature Discovery operator and creating a NodeFeatureDiscovery instance^] in the NVIDIA documentation.
+* You have created a `NodeFeatureDiscovery` resource instance on your cluster, as described in link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-nfd.html#Procedure[Installing the Node Feature Discovery Operator and creating a NodeFeatureDiscovery instance^] in the NVIDIA documentation.
 * You have created a `ClusterPolicy` resource instance with default values on your cluster, as described in link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html#create-the-clusterpolicy-instance[Creating the ClusterPolicy instance^] in the NVIDIA documentation.
 
 .Procedure
 . Log in to the {openshift-platform} web console as a cluster administrator.
-. In the web console, navigate to *Operators* → *Installed Operators*.
+. In the *Administrator* perspective, click *Operators* → *Installed Operators*.
 . Click the *{productname-long} Operator* to open its details.
-. Select the *Data Science Cluster* tab.
+. Click the *Data Science Cluster* tab.
 . On the *DataScienceClusters* page, click the `default-dsc` object.
 . Click the *YAML* tab.
 +
@@ -47,22 +47,24 @@ spec:
 ----
 . Click *Save* to apply your changes.
 +
-[NOTE]
-====
-Alternatively, you can activate the Llama Stack Operator from the OpenShift command-line interface (CLI) by running `oc patch datasciencecluster <name> --type='merge' -p '{"spec":{"components":{"llamastackoperator":{"managementState":"Managed"}}}}'`.
-
-Replace `<name>` with your `DataScienceCluster` name, for example, `default-dsc`.
-====
+Alternatively, you can activate the Llama Stack Operator from the OpenShift command-line interface (CLI) by running the following command:
++
+[source,subs="+macros"]
+----
+$ oc patch datasciencecluster _<name>_ --type='merge' -p '{"spec":{"components":{"llamastackoperator":{"managementState":"Managed"}}}}'
+----
++
+Replace _<name>_ with your `DataScienceCluster` name, for example, `default-dsc`.
 
 .Verification
 
 . After a short time, verify that the Llama Stack Operator is running:
-.. In the web console, go to *Workloads* → *Pods*.
-.. Select the *redhat-ods-applications* namespace.
+.. In the {openshift-platform} web console, go to *Workloads* → *Pods*.
+.. From the *Project* list, select the *redhat-ods-applications* namespace.
 .. Confirm that a pod with the label `app.kubernetes.io/name=llama-stack-operator` has started and has a status of *Running*.
-. When activation is successful, one or more pods for the Llama Stack Operator appear in the *redhat-ods-applications* namespace and reach the *Running* state. The `managementState` field in the `DataScienceCluster` CR will also reflect `Managed`.
+. Confirm that one or more pods for the Llama Stack Operator appear in the *redhat-ods-applications* namespace and reach the *Running* state. The `managementState` field in the `DataScienceCluster` CR will also reflect `Managed`.
 +
 [NOTE]
 ====
-If you want to disable the Llama Stack Operator, set the `managementState` field to `Removed` in the same way. The operator will then remove the Llama Stack component from the cluster.
+If you want to disable the Llama Stack Operator, set the `managementState` field to `Removed` in the same way. The Operator will then remove the Llama Stack component from the cluster.
 ====
