@@ -6,6 +6,18 @@
 [role='_abstract']
 You can activate the Llama Stack Operator on your {openshift-platform} cluster by setting its `managementState` to `Managed` in the {productname-short} Operator `DataScienceCluster` custom resource (CR). This setting enables Llama-based model serving without reinstalling or directly editing Operator subscriptions. You can edit the CR in the {openshift-platform} web console or by using the OpenShift command-line interface (CLI).
 
+[NOTE]
+====
+As an alternative to following the steps in this procedure, you can activate the Llama Stack Operator from the OpenShift command-line interface (CLI) by running the following command:
+
+[source,subs="+quotes"]
+----
+$ oc patch datasciencecluster _<name>_ --type='merge' -p '{"spec":{"components":{"llamastackoperator":{"managementState":"Managed"}}}}'
+----
+
+Replace _<name>_ with your `DataScienceCluster` name, for example, `default-dsc`.
+====
+
 .Prerequisites
 
 * You have cluster administrator privileges.
@@ -46,25 +58,11 @@ spec:
       managementState: Managed
 ----
 . Click *Save* to apply your changes.
-+
-Alternatively, you can activate the Llama Stack Operator from the OpenShift command-line interface (CLI) by running the following command:
-+
-[source,subs="+macros"]
-----
-$ oc patch datasciencecluster _<name>_ --type='merge' -p '{"spec":{"components":{"llamastackoperator":{"managementState":"Managed"}}}}'
-----
-+
-Replace _<name>_ with your `DataScienceCluster` name, for example, `default-dsc`.
 
 .Verification
 
-. After a short time, verify that the Llama Stack Operator is running:
-.. In the {openshift-platform} web console, go to *Workloads* → *Pods*.
-.. From the *Project* list, select the *redhat-ods-applications* namespace.
-.. Confirm that a pod with the label `app.kubernetes.io/name=llama-stack-operator` has started and has a status of *Running*.
-. In the `DataScienceCluster` CR, confirm that the `managementState` field is set to `Managed`.
-+
-[NOTE]
-====
-If you want to disable the Llama Stack Operator, set the `managementState` field to `Removed` in the same way. The Operator will then remove the Llama Stack component from the cluster.
-====
+After you activate the Llama Stack Operator, verify that it is running in your cluster:
+
+. In the {openshift-platform} web console, click *Workloads* → *Pods*.
+. From the *Project* list, select the *redhat-ods-applications* namespace.
+. Confirm that a pod with the label `app.kubernetes.io/name=llama-stack-operator` appears and has a status of *Running*.
