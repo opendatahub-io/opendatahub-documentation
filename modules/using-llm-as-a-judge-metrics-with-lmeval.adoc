@@ -41,14 +41,14 @@ In this example, we use link:www.unitxt.ai[Unitxt] to define custom metrics, to 
 | Pulls the numerical rating from judge's response.
 
 | `formats.models.mistral.instruction`
-| Formats the prompts for the Mistral model,
+| Formats the prompts for the Mistral model.
 
 | Custom LLM-as-judge metric
 | Uses Mistral-7B with your custom instructions
 |===
 
 .Procedure
-. Update the TrustyAI configuration to allow online model access and code execution, by applying the following instructions to the test namespace, though the command line interface (CLI).
+. Update the TrustyAI configuration to allow online model access and code execution, by applying the following instructions to the test namespace, through the command line interface (CLI).
 ifdef::upstream[]
 The operator `-n test` becomes `-n opendatahub`.
 endif::[]
@@ -62,8 +62,8 @@ endif::[]
  -n test --type=merge -p '{
    "data": {
      "lmes-allow-online": "true",
-     "lmes-code-execution": "true"
-   opendatahub.io/managed:'false'
+     "lmes-code-execution": "true",
+   opendatahub.io/managed:"false"
    }
  }'
 ----
@@ -81,7 +81,7 @@ The YAML contains the following instructions:
 You can put the YAML manifest into a file using a text editor and then apply it by using the command `oc apply -f file.yaml` either.
 --
 
-[source,bash]
+[source,YAML]
 ----
 apiVersion: trustyai.opendatahub.io/v1alpha1
 kind: LMEvalJob
@@ -166,7 +166,7 @@ taskList:
        metrics:
        - ref: llmaaj_metric
    custom:
-     templates:``
+     templates:
        - name: response_assessment.rating.mt_bench_single_turn
          value: |
            {
