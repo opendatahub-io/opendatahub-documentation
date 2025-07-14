@@ -43,11 +43,11 @@ This procedure does not require any specific type of content. It only requires t
 from llama_stack_client import Agent, AgentEventLogger, LlamaStackClient
 ----
 
-. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a `LlamaStackClient` instance:
+. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a `LlamaStackClient` instance. For example: 
 +
 [source,python]
 ----
-client = LlamaStackClient(base_url="<your deployment endpoint>")
+client = LlamaStackClient(base_url="http://lsd-llama-milvus-service:8321/") 
 ----
 
 . In a new notebook cell, list the available models:
@@ -57,7 +57,7 @@ client = LlamaStackClient(base_url="<your deployment endpoint>")
 models = client.models.list()
 ----
 
-. In a new notebook cell, verify that the list of registered models includes your Llama model and an embedding model. Here is an example of a list of registered models:
+. Verify that the list of registered models includes your Llama model and an embedding model. Here is an example of a list of registered models:
 +
 [source,python]
 ----
@@ -72,7 +72,7 @@ models = client.models.list()
 model_id = next(m.identifier for m in models if m.model_type == "llm")
 ----
 
-. In a new notebook cell, define the `vector_db_id`, which is a unique name that identifies your vector database, for example, `my_milvus_db`. If you do not know your vector database ID, contact an administrator to request assistance.
+. In a new notebook cell, define the `vector_db_id`, which is a unique name that identifies your vector database, for example, `my_milvus_db`. If you do not know your vector database ID, contact an administrator.
 +
 [source,python]
 ----
@@ -87,7 +87,6 @@ query = "What benefits do the ingested passages provide for retrieval?"
 result = client.tool_runtime.rag_tool.query(
     vector_db_ids=[vector_db_id],
     content=query,
-    top_k=3,
 )
 print("Low-level query result:", result)
 ----
