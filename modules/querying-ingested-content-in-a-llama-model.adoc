@@ -1,0 +1,130 @@
+:_module-type: PROCEDURE
+
+[id="querying-ingested-content-in-a-llama-model_{context}"]
+= Querying ingested content in a Llama model
+
+[role='_abstract']
+You can use the LlamaStack SDK in your Jupyter notebook to query ingested content by running retrieval-augmented generation (RAG) queries on raw text or HTML sources stored in your vector database. When you query the ingested content, you can perform one-off lookups or start multi-turn conversational flows without setting up a separate retrieval service.
+
+.Prerequisites
+ifndef::upstream[]
+* You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
+endif::[]
+ifdef::upstream[]
+* You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
+endif::[]
+* If you are using GPU acceleration, you have at least one NVIDIA GPU available.
+* You have logged in to {openshift-platform} web console.
+* You have activated the Llama Stack Operator in {productname-short}.
+* You have deployed an inference model, for example, the llama-3.2-3b-instruct model. 
+* You have configured a Llama Stack deployment by creating a `LlamaStackDistribution` instance to enable RAG functionality.
+* You have created a project workbench within a data science project.
+* You have opened a Jupyter notebook and it is running in your workbench environment.
+* You have ingested content into your model. 
+
+[NOTE]
+====
+This procedure does not require any specific type of content. It only requires that you have already ingested some text, HTML, or document data into your vector database, and that this content is available for retrieval. If you have previously ingested content, that content will be available to query. If you have not ingested any content yet, the queries in this procedure will return empty results or errors.
+====
+
+.Procedure
+
+. In a new notebook cell, install the `llama_stack` client package:
++
+[source,python]
+----
+%pip install llama_stack_client
+----
+
+. In a new notebook cell, import `Agent`, `AgentEventLogger`, and `LlamaStackClient`:
++
+[source,python]
+----
+from llama_stack_client import Agent, AgentEventLogger, LlamaStackClient
+----
+
+. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a `LlamaStackClient` instance. For example: 
++
+[source,python]
+----
+client = LlamaStackClient(base_url="http://lsd-llama-milvus-service:8321/") 
+----
+
+. In a new notebook cell, list the available models:
++
+[source,python]
+----
+models = client.models.list()
+----
+
+. Verify that the list of registered models includes your Llama model and an embedding model. Here is an example of a list of registered models:
++
+[source,python]
+----
+[Model(identifier='llama-32-3b-instruct', metadata={}, api_model_type='llm', provider_id='vllm-inference', provider_resource_id='llama-32-3b-instruct', type='model', model_type='llm'),
+ Model(identifier='ibm-granite/granite-embedding-125m-english', metadata={'embedding_dimension': 768.0}, api_model_type='embedding', provider_id='sentence-transformers', provider_resource_id='ibm-granite/granite-embedding-125m-english', type='model', model_type='embedding')]
+----
+
+. In a new notebook cell, select the first LLM in your list of registered models:
++
+[source,python]
+----
+model_id = next(m.identifier for m in models if m.model_type == "llm")
+----
+
+. In a new notebook cell, define the `vector_db_id`, which is a unique name that identifies your vector database, for example, `my_milvus_db`. If you do not know your vector database ID, contact an administrator.
++
+[source,python]
+----
+vector_db_id = "<your vector database ID>"
+----
+. In a new notebook cell, query the ingested content using the low-level RAG tool:
++
+[source,python]
+----
+# Example RAG query for one-off lookups
+query = "What benefits do the ingested passages provide for retrieval?"
+result = client.tool_runtime.rag_tool.query(
+    vector_db_ids=[vector_db_id],
+    content=query,
+)
+print("Low-level query result:", result)
+----
+
+. In a new notebook cell, query the ingested content by using the high-level Agent API:
++
+[source,python]
+----
+# Create an Agent for conversational RAG queries
+agent = Agent(
+    client,
+    model=model_id,
+    instructions="You are a helpful assistant.",
+    tools=[
+        {
+            "name": "builtin::rag/knowledge_search",
+            "args": {"vector_db_ids": [vector_db_id]},
+        }
+    ],
+)
+
+prompt = "How do you do great work?"
+print("Prompt>", prompt)
+
+# Create a session and run a streaming turn
+session_id = agent.create_session("rag_session")
+response = agent.create_turn(
+    messages=[{"role": "user", "content": prompt}],
+    session_id=session_id,
+    stream=True,
+)
+
+# Log and print the agent's response
+for log in AgentEventLogger().log(response):
+    log.print()
+----
+
+.Verification
+
+* The notebook prints query results for both the low-level RAG tool and the high-level Agent API.
+* No errors appear in the output, confirming the model can retrieve and respond to ingested content.
