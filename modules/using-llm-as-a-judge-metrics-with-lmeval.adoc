@@ -23,6 +23,8 @@ This example uses link:www.unitxt.ai[Unitxt] to define custom metrics and to see
 .Prerequisites
 * You have logged in to {productname-long}.
 
+* * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
 * Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
 
 * You are familiar with how to use Unitxt.
@@ -39,22 +41,28 @@ This example uses link:www.unitxt.ai[Unitxt] to define custom metrics and to see
 
 
 | `processors.extract_mt_bench_rating_judgment`
-| Pulls the numerical rating from judge's response.
+| Pulls the numerical rating from the judge's response.
 
 | `formats.models.mistral.instruction`
 | Formats the prompts for the Mistral model.
 
 | Custom LLM-as-judge metric
-| Uses Mistral-7B with your custom instructions
+| Uses Mistral-7B with your custom instructions.
 |===
 
 .Procedure
-. Update the TrustyAI configuration to allow online model access and code execution, by applying the following instructions to the test namespace, through the command line interface (CLI).
+. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+. Update the TrustyAI configuration to allow online model access and code execution by applying the following instructions to the test namespace.
 ifdef::upstream[]
-The operator `test` becomes {dbd-config-default-namespace}.
+The operator `test` becomes `{dbd-config-default-namespace}`.
 endif::[]
 ifndef::upstream[]
-The operator `test` becomes {dbd-config-default-namespace}.
+The operator `test` becomes `{dbd-config-default-namespace}`.
 endif::[]
 +
 [source, bash]
@@ -69,9 +77,9 @@ endif::[]
  }'
 ----
 
-. Apply the following manifest through the CLI. The YAML content defines a custom evaluation job (`LMEvalJob`), the namespace, and the location of the model you want to evaluate.
+. Apply the following manifest using the `oc apply -f -` command. The YAML content defines a custom evaluation job (`LMEvalJob`), the namespace, and the location of the model you want to evaluate.
 The YAML contains the following instructions:
-.. What model to evaluate.
+.. Which model to evaluate.
 .. What data to use.
 .. How to format inputs and outputs.
 .. Which judge model to use.
@@ -79,7 +87,7 @@ The YAML contains the following instructions:
 
 [NOTE]
 --
-You can also put the YAML manifest into a file using a text editor and then apply it by using the command `oc apply -f file.yaml`.
+You can also put the YAML manifest into a file using a text editor and then apply it by using the `oc apply -f file.yaml` command.
 --
 
 [source,YAML]
