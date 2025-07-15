@@ -59,10 +59,10 @@ $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
 . Update the TrustyAI configuration to allow online model access and code execution by applying the following instructions to the `pass:attributes[{dbd-config-default-namespace}]` namespace.
 +
-[source, bash]
+[source, bash, subs="attributes+"]
 ----
  oc patch configmap trustyai-service-operator-config
- -n pass:attributes[{dbd-config-default-namespace}] --type=merge -p '{
+ -n {dbd-config-default-namespace} --type=merge -p '{
    "data": {
      "lmes-allow-online": "true",
      "lmes-code-execution": "true",
