@@ -6,18 +6,18 @@ ifdef::context[:parent-context: {context}]
 
 [role='_abstract']
 
-You can use a large language model (LLM) as a human-like evaluator to assess the quality of outputs from another LLM.  This is known as LLM-as-a-Judge (LLMaaJ).
+You can use a large language model (LLM) to assess the quality of outputs from another LLM, known as LLM-as-a-Judge (LLMaaJ).
 
-It is especially useful when:
+You can use LLMaaJ to:
 
-* There is no clearly correct answer (for example, when assessing creative writing).
-* You want to judge quality (helpfulness, safety, depth), not just accuracy.
-* Traditional quantitative measures used to evaluate a model's performance (for example, `ROUGE` metrics) are not nuanced enough.
-* You want to test specific quality aspects of your model output.
+* Assess work with no clearly correct answer, such as creative writing.
+* Judge quality characteristics such as helpfulness, safety, and depth.
+* Augment traditional quantitative measures that are used to evaluate a model's performance (for example, `ROUGE` metrics).
+* Test specific quality aspects of your model output.
 
 Follow the custom quality assessment example below to learn more about using your own metrics criteria with LM-Eval to evaluate model responses.
 
-In this example, we use link:www.unitxt.ai[Unitxt] to define custom metrics, to see how our model (link:www.huggingface.co/google/flan-t5-small[flan-t5-small]) answers questions from MT-Bench, a standard benchmark. We use custom evaluation criteria and instructions from the link:www.huggingface.co/mistralai/Mistral-7B-Instruct-v0.2[Mistral-7B] model to rate the answers from 1-10, based on helpfulness, accuracy, and detail.
+This example uses link:www.unitxt.ai[Unitxt] to define custom metrics and to see how the model (link:www.huggingface.co/google/flan-t5-small[flan-t5-small]) answers questions from MT-Bench, a standard benchmark. Custom evaluation criteria and instructions from the link:www.huggingface.co/mistralai/Mistral-7B-Instruct-v0.2[Mistral-7B] model are used to rate the answers from 1-10, based on helpfulness, accuracy, and detail.
 
 
 .Prerequisites
@@ -35,7 +35,8 @@ In this example, we use link:www.unitxt.ai[Unitxt] to define custom metrics, to 
 | Parameter | Description
 
 | Custom template
-| Tells the judge how to rate (1-10 scale, what to look for).
+| Tells the judge to assign a score between 1 and 10 in a standardized format, based on specific criteria.
+
 
 | `processors.extract_mt_bench_rating_judgment`
 | Pulls the numerical rating from judge's response.
@@ -50,10 +51,10 @@ In this example, we use link:www.unitxt.ai[Unitxt] to define custom metrics, to 
 .Procedure
 . Update the TrustyAI configuration to allow online model access and code execution, by applying the following instructions to the test namespace, through the command line interface (CLI).
 ifdef::upstream[]
-The operator `-n test` becomes `-n opendatahub`.
+The operator `test` becomes {dbd-config-default-namespace}.
 endif::[]
 ifndef::upstream[]
-The operator `-n test` becomes `-n redhat-ods-applications`.
+The operator `test` becomes {dbd-config-default-namespace}.
 endif::[]
 +
 [source, bash]
@@ -78,7 +79,7 @@ The YAML contains the following instructions:
 
 [NOTE]
 --
-You can put the YAML manifest into a file using a text editor and then apply it by using the command `oc apply -f file.yaml` either.
+You can also put the YAML manifest into a file using a text editor and then apply it by using the command `oc apply -f file.yaml`.
 --
 
 [source,YAML]
