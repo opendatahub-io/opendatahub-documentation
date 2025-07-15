@@ -17,8 +17,29 @@ To deploy the RAG stack in a data science project, complete the following tasks:
 * Ingest domain data into Milvus by running Docling in a data science pipeline or Jupyter notebook. This process keeps the embeddings synchronized with the source data.
 * Expose and secure the model endpoints.
 
+ifndef::upstream[]
+
+[IMPORTANT]
+====
+Developer Preview features are not supported by {org-name} in any way and are not functionally complete or production-ready. 
+Do not use Developer Preview features for production or business-critical workloads. 
+Developer Preview features provide early access to functionality in advance of possible inclusion in a {org-name} product offering. 
+Customers can use these features to test functionality and provide feedback during the development process. 
+Developer Preview features might not have any documentation, are subject to change or removal at any time, and have received limited testing. 
+{org-name} might provide ways to submit feedback on Developer Preview features without an associated SLA.
+
+For more information about the support scope of {org-name} Developer Preview features, see link:https://access.redhat.com/support/offerings/devpreview/[Developer Preview Support Scope].
+====
+endif::[]
+
 include::modules/activating-the-llama-stack-operator.adoc[leveloffset=+1]
+include::modules/deploying-a-llama-model-with-kserve.adoc[leveloffset=+1]
+include::modules/testing-your-vllm-model-endpoints.adoc[leveloffset=+1]
+include::modules/deploying-a-llamastackdistribution-instance.adoc[leveloffset=+1]
 include::modules/ingesting-content-into-a-llama-model.adoc[leveloffset=+1]
+include::modules/querying-ingested-content-in-a-llama-model.adoc[leveloffset=+1]
+include::modules/preparing-documents-with-docling-for-llama-stack-retrieval.adoc[leveloffset=+1]
+include::modules/about-llama-stack-search-types.adoc[leveloffset=+1]
 
 ifdef::parent-context[:context: {parent-context}]
 ifndef::parent-context[:!context:]
