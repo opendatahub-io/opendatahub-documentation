@@ -64,7 +64,7 @@ $ oc patch $(oc get dsc -A -oname) --type='json' -p='[{"op": "replace", "path": 
 $ oc patch crd inferenceservices.serving.kserve.io --type=json -p='[{"op": "remove", "path": "/spec/conversion"}]'
 ----
 
-. Optionally, restart the Operator pod.
+. Optionally, restart the Operator pods.
 + 
 
 * If you deployed a model by using KServe in {productname-short} version 1, when you upgrade to version {vernum} the model does not automatically appear in the {productname-short} dashboard. To update the dashboard view, redeploy the model by using the {productname-short} dashboard.

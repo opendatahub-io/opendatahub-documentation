@@ -14,8 +14,8 @@ The following table shows the available log levels:
 | Log level | Stacktrace level | Verbosity | Output | Timestamp type 
 
 | `devel` or `development` | WARN | INFO | Console | Epoch timestamps 
-| `""`  (or no `logmode` value set)| ERROR | INFO | JSON | Human-readable timestamps 
-| `prod` or `production` | ERROR | INFO | JSON |Human-readable timestamps 
+| `""`  (or no `logmode` value set) | ERROR | INFO | JSON | Human-readable timestamps 
+| `prod` or `production` | ERROR | INFO | JSON | Human-readable timestamps 
 |===
 
 Logs that are set to `devel` or `development` generate in a plain text console format.
@@ -57,30 +57,38 @@ oc patch dsci default-dsci -p '{"spec":{"devFlags":{"logmode":"development"}}}' 
 * If you set the component log level to `devel` or `development`, logs generate more frequently and include logs at `WARN` level and above.
 * If you set the component log level to `prod` or `production`, or do not set a log level, logs generate less frequently and include logs at `ERROR` level or above.
 
-== Viewing the {productname-short} Operator log
+== Viewing the {productname-short} Operator logs
 
 ifdef::upstream[]
 . Log in to the OpenShift CLI.
-. Run the following command:
+. Run the following command to stream logs from all Operator pods:
 +
 [source]
 ----
-oc get pods -l name=opendatahub-operator -o name -n openshift-operators |  xargs -I {} oc logs -f {} -n openshift-operators
+for pod in $(oc get pods -l name=opendatahub-operator -n openshift-operators -o name); do
+  oc logs -f "$pod" -n openshift-operators &
+done
 ----
 +
-The operator pod log opens.
+The Operator pod logs open in your terminal.
++
+TIP: Press `Ctrl+C` to stop viewing. To fully stop all log streams, run `kill $(jobs -p)`.
 endif::[]
 
 ifndef::upstream[]
 . Log in to the OpenShift CLI.
-. Run the following command:
+. Run the following command to stream logs from all Operator pods:
 +
 [source]
 ----
-oc get pods -l name=rhods-operator -o name -n redhat-ods-operator |  xargs -I {} oc logs -f {} -n redhat-ods-operator
+for pod in $(oc get pods -l name=rhods-operator -n redhat-ods-operator -o name); do
+  oc logs -f "$pod" -n redhat-ods-operator &
+done
 ----
 +
-The operator pod log opens.
+The Operator pod logs open in your terminal.
++
+TIP: Press `Ctrl+C` to stop viewing. To fully stop all log streams, run `kill $(jobs -p)`.
 
-You can also view the operator pod log in the OpenShift Console, under *Workloads* -> *Deployments* -> *Pods* -> *`redhat-ods-operator`* -> *Logs*.
+You can also view each Operator pod log in the {openshift-platform} console by navigating to *Workloads* -> *Pods*, selecting the *redhat-ods-operator* project, clicking a pod name, and then clicking the *Logs* tab.
 endif::[]

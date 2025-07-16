@@ -53,7 +53,7 @@ If you upgrade to {productname-short} 2.10.0 or later with data science pipeline
 
 *Recreate model registries*
 
-When you upgrade from {productname-short} 2.19 or earlier to {productname-short} 2.20 or later versions, existing instances of the model registry component are not updated, which causes the instance pods to use older images than the ones referenced by the operator pod.
+When you upgrade from {productname-short} 2.19 or earlier, existing instances of the model registry component are not updated, which causes the instance pods to use older images than the ones referenced by the operator pods.
 
 To resolve this issue, after upgrading, create a new instance of each existing model registry, using the same database configuration, and delete the old model registry instance. The new model registry instance contains all existing registered models and their metadata.
 
