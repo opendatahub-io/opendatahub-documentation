@@ -61,14 +61,14 @@ $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 +
 [source, bash, subs="attributes+"]
 ----
- oc patch configmap trustyai-service-operator-config
- -n {dbd-config-default-namespace} --type=merge -p '{
-   "data": {
-     "lmes-allow-online": "true",
-     "lmes-code-execution": "true",
-   opendatahub.io/managed:"false"
-   }
- }'
+oc patch configmap trustyai-service-operator-config \
+  -n {dbd-config-default-namespace} --type=merge -p $'{
+    "data": {
+      "lmes-allow-online": "true",
+      "lmes-code-execution": "true",
+      "opendatahub.io/managed": "false"
+    }
+}'
 ----
 
 . Apply the following manifest by using the `oc apply -f -` command. The YAML content defines a custom evaluation job (`LMEvalJob`), the namespace, and the location of the model you want to evaluate.
