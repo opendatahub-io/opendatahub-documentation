@@ -8,7 +8,7 @@ Cluster administrators can use {openshift-platform} auditing to see changes made
 For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-view#audit-log-view[Viewing audit logs^] in the {openshift-platform} documentation.
 
 ifdef::self-managed[]
-NOTE: In {org-name} OpenShift Service on Amazon Web Services with hosted control planes (ROSA HCP), audit logging is disabled by default because the Elasticsearch log store does not provide secure storage for audit logs. To send the audit logs to Amazon CloudWatch, see link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/logging/log-collection-and-forwarding#cluster-logging-collector-log-forward-cloudwatch_configuring-log-forwarding[Forwarding logs to Amazon CloudWatch].
+NOTE: In {org-name} OpenShift Service on Amazon Web Services with hosted control planes (ROSA HCP), audit logging is disabled by default because the Elasticsearch log store does not provide secure storage for audit logs. To send the audit logs to Amazon CloudWatch, see link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/logging/logging-6-2#log6x-clf-6-2[Configuring log forwarding].
 endif::[]
 
 The following example shows how to use the {openshift-platform} audit logs to see the history of changes made (by users) to the DSC and DSCI custom resources.
@@ -25,7 +25,7 @@ The following example shows how to use the {openshift-platform} audit logs to se
 $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
 
-. To access the full content of the changed custom resources, set the {openshift-platform} audit log policy to `WriteRequestBodies` or a more comprehensive profile. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-policy-config#configuring-audit-policy_audit-log-policy-config[About audit log policy profiles^].
+. To access the full content of the changed custom resources, set the {openshift-platform} audit log policy to `WriteRequestBodies` or a more comprehensive profile. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-policy-config#configuring-audit-policy_audit-log-policy-config[Configuring the audit log policy^].
 
 . Fetch the audit log files that are available for the relevant control plane nodes. For example:
 +
@@ -62,7 +62,7 @@ To configure the log retention time, see the link:https://docs.redhat.com/en/doc
 .Additional resources
 * link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-view#audit-log-view[Viewing audit logs]
 
-* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-policy-config#configuring-audit-policy_audit-log-policy-config[About audit log policy profiles]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-policy-config#configuring-audit-policy_audit-log-policy-config[Configuring the audit log policy]
 endif::[]
 
 ifdef::cloud-service[]
