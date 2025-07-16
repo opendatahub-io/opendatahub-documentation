@@ -61,13 +61,13 @@ $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 +
 [source, bash, subs="attributes+"]
 ----
- oc patch configmap trustyai-service-operator-config
- -n {dbd-config-default-namespace} --type=merge -p '{
-   "data": {
-     "lmes-allow-online": "true",
-     "lmes-code-execution": "true",
-   opendatahub.io/managed:"false"
-   }
+oc patch configmap trustyai-service-operator-config \
+  -n {dbd-config-default-namespace} --type=merge -p $'{
+    "data": {
+      "lmes-allow-online": "true",
+      "lmes-code-execution": "true",
+      "opendatahub.io/managed": "false"
+    }
  }'
 ----
 
