@@ -9,7 +9,7 @@
 ====
 Accelerator profiles are now deprecated. To target specific worker nodes for workbenches or model serving workloads, use hardware profiles. By default, the accelerator profiles feature still appears in the dashboard navigation menu, while the hardware profiles feature is hidden. 
 
-To disable accelerator profiles from appearing in the dashboard navigation menu, set the `disableAcceleratorProfiles` value to `true` in the `OdhDashboardConfig` Custom Resource (CR) in {openshift-platform}. To enable hardware profiles, set the `disableHardwareProfiles` value to `false` in the same CR.
+To disable accelerator profiles in the dashboard navigation menu, set the `disableAcceleratorProfiles` value to `true` in the `OdhDashboardConfig` Custom Resource (CR) in {openshift-platform}. To enable hardware profiles, set the `disableHardwareProfiles` value to `false` in the same CR.
 
 *Note:* The `spec.dashboardConfig.disableAcceleratorProfiles` option is superseded by the `spec.dashboardConfig.disableHardwareProfiles` option. If both options are set to `false`, the `disableHardwareProfiles` option overrides the `disableAcceleratorProfiles` option, and the *Settings → Hardware profiles* menu item is shown in the dashboard navigation menu.
 
@@ -20,7 +20,7 @@ ifndef::upstream[]
 For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
 endif::upstream[]
 
-Red Hat recommends that you migrate any existing accelerator profiles to hardware profiles as soon as possible to ensure continued support and compatibility.
+{org-name} recommends that you migrate any existing accelerator profiles to hardware profiles as soon as possible to ensure continued support and compatibility.
 ====
 To configure accelerators for your data scientists to use in {productname-short}, you must create an associated accelerator profile. An accelerator profile is a custom resource definition (CRD) on OpenShift that has an AcceleratorProfile resource, and defines the specification of the accelerator. You can create and manage accelerator profiles by selecting *Settings* -> *Accelerator profiles* on the {productname-short} dashboard.
 
