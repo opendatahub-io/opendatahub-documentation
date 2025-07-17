@@ -38,7 +38,7 @@ If project-scoped hardware profiles exist, the *Hardware profile* list includes 
 +
 [IMPORTANT]
 ====
-By default, hardware profiles are hidden from appearing in the dashboard navigation menu and user interface. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+By default, hardware profiles are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. If you enable hardware profiles, the *Hardware profiles* list appears instead of the *Accelerator profiles* list. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
 ifdef::upstream[]
 For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
 endif::[]
@@ -46,7 +46,6 @@ ifndef::upstream[]
 For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
 endif::[] 
 ====
-
 .. Optional: Click *Customize resource requests and limit* and update the following values:
 ... In the *CPUs requests* field, specify the number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
 ... In the *CPU limits* field, specify the maximum number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
