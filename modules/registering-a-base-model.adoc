@@ -1,0 +1,44 @@
+:_module-type: PROCEDURE
+
+[id='registering-a-base-model_{context}']
+= Registering a base model
+
+[role='_abstract']
+To start LAB-tuning, you must first register a base model, or `LAB starter` model, that will be customized using the synthetic data generated from your taxonomy.
+
+.Prerequisites
+* You have logged in to {productname-short}.
+ifndef::upstream[]
+* Your cluster administrator has configured LAB-tuning in your cluster, as described in link:{rhoaidocshome}{default-format-url}/enabling_lab-tuning/index[Enabling LAB-tuning].
+* You have access to an available model registry in your deployment.
+* You have created your taxonomy, prepared an OCI storage location for the LAB-tuned model, created a data science project, and deployed teacher and judge models, as described in link:{rhoaidocshome}{default-format-url}/customizing_models_with_lab-tuning/preparing-lab-tuning-resources_lab-tuning[Preparing LAB-tuning resources].
+endif::[]
+ifdef::upstream[]
+* Your cluster administrator has configured LAB-tuning in your cluster, as described in link:{odhdocshome}/customizing-models-with-lab-tuning/#enabling-lab-tuning_lab-tuning[Enabling LAB-tuning].
+* You have access to an available model registry in your deployment.
+* You have created your taxonomy, prepared an OCI storage location for the LAB-tuned model, created a data science project, and deployed teacher and judge models, as described in link:{odhdocshome}/customizing-models-with-lab-tuning/#preparing-lab-tuning-resources_lab-tuning[Preparing LAB-tuning resources].
+endif::[]
+
+.Procedure
+. From the {productname-short} dashboard, click *Models* -> *Model catalog*.
++
+The *Model catalog* page opens.
+. Select a model with the `LAB starter` label.
++
+The details page for the model opens.
+. Click *Register model*.
++
+The *Register model* page opens.
+. In the *Model details* section, configure details to apply to all versions of the model:
+.. In the **Model name** field, enter a name for the model.
+.. Optional: In the **Model description** field, enter a description for the model.
+. In the *Version details* section, enter details to apply to the first version of the model:
+.. In the *Version name* field, enter a name for the model version.
+.. Optional: In the *Version description* field, enter a description for the first version of the model.
+.. Optional: In the *Source model format* field, enter the name of the model format.
+.. Optional: In the *Source model format version* field, enter the version of the model format.
+. Use the default *Model location*. 
+. Click *Register model*.
+
+.Verification
+The details page for the registered base model opens.
