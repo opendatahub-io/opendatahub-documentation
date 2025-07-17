@@ -142,11 +142,14 @@ If you are using S3-compatible storage, add these recommended environment variab
 .. Select a *storage class* for the cluster storage.
 +
 NOTE: You cannot change the storage class after you add the cluster storage to the workbench.
-ifndef::[upstream]
+ifndef::upstream[]
 .. For storage classes that support multiple access modes, select an *Access mode* to define how the volume can be accessed. For more information, see link:{odhdocshome}/managing_resources/managing-storage-classes#about-persistent-storage_resource-mgmt[About persistent storage]. 
+endif::[]
+ifdef::upstream[]
+.. For storage classes that support multiple access modes, select an *Access mode* to define how the volume can be accessed. For more information, see link:{odhdocshome}/managing-resources/#about-persistent-storage_managing-resources[About persistent storage]. 
+endif::[]
 +
 Only the access modes that have been enabled for the storage class by your cluster and {productname-short} administrators are visible.
-endif::[]
 .. Under *Persistent storage size*, enter a new size in gibibytes or mebibytes.
 * *Use existing persistent storage* to reuse existing storage and select the storage from the *Persistent storage* list. 
 
