@@ -63,11 +63,11 @@ The *Add model server* dialog opens.
 If you are using a _custom_ model-serving runtime with your model server and want to use GPUs, you must ensure that your custom runtime supports GPUs and is appropriately configured to use them.
 ====
 . In the *Number of model replicas to deploy* field, specify a value.
-. From the *Hardware profile* list, select a hardware profile.
+. From the *Accelerator profile* list, select an accelerator profile.
 +
 [IMPORTANT]
 ====
-By default, hardware profiles are hidden from appearing in the dashboard navigation menu and user interface. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+By default, hardware profiles are hidden from appearing in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. If you enable hardware profiles, the *Hardware profiles* list appears instead of the *Accelerator profiles* list. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
 ifdef::upstream[]
 For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
 endif::[]

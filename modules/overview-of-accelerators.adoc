@@ -34,7 +34,18 @@ endif::[]
 ifdef::upstream[]
 * Before you can use an accelerator in {productname-short}, you must enable GPU support in {productname-short}. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
 endif::[]
-In addition, your OpenShift instance must contain an associated hardware profile. For accelerators that are new to your deployment, you must configure a hardware profile for the accelerator in context. You can create a hardware profile from the *Settings* -> *Hardware profiles* page on the {productname-short} dashboard. If your deployment contains existing accelerators that had associated hardware profiles already configured, a hardware profile is automatically created after you upgrade to the latest version of {productname-short}.
+In addition, your OpenShift instance must contain an associated hardware profile or accelerator profile. For accelerators that are new to your deployment, you must configure a hardware profile or accelerator profile for the accelerator in context. You can create a hardware profile from the *Settings* -> *Hardware profiles* page on the {productname-short} dashboard. If your deployment contains existing accelerators that had associated profiles already configured, the profiles are automatically created after you upgrade to the latest version of {productname-short}.
++
+[IMPORTANT]
+====
+By default, hardware profiles are hidden from appearing in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. If you have enabled hardware profiles, create a hardware profile instead of creating an accelerator profile. 
+ifdef::upstream[]
+link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles].
+endif::[]
+ifndef::upstream[]
+link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles].
+endif::[] 
+====
 
 [role="_additional-resources"]
 .Additional resources
