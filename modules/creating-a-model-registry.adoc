@@ -21,6 +21,11 @@ endif::[]
 The `mysql_native_password` authentication plugin is required for the ML Metadata component to successfully connect to your database. `mysql_native_password` is disabled by default in MySQL 8.4 and later. If your database uses MySQL 8.4 or later, you must update your MySQL deployment to enable the `mysql_native_password` plugin. 
 
 For more information about enabling the `mysql_native_password` plugin, see link:https://dev.mysql.com/doc/refman/8.4/en/native-pluggable-authentication.html[Native Pluggable Authentication] in the MySQL documentation.
+
+The {openshift-platorm} MySQL template uses the `caching_sha2_password` authentication plugin by default. If you used the {openshift-platform} template for MySQL, you must manually update it to use `mysql_native_password` in order for the model registry to connect to your database instance successfully. 
+ifndef::upstream[]
+For more information, see the link:https://access.redhat.com/solutions/7128249[Model registry fails to connect to MySQL database due to an authentication plugin mismatch] Knowledgebase solution. 
+endif::[]
 ====
 
 .Procedure
