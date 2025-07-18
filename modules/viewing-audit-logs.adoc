@@ -8,7 +8,8 @@ Cluster administrators can use {openshift-platform} auditing to see changes made
 For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-view#audit-log-view[Viewing audit logs^] in the {openshift-platform} documentation.
 
 ifdef::self-managed[]
-NOTE: In {org-name} OpenShift Service on Amazon Web Services with hosted control planes (ROSA HCP), audit logging is disabled by default because the Elasticsearch log store does not provide secure storage for audit logs. To send the audit logs to Amazon CloudWatch, see link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/logging/logging-6-2#log6x-clf-6-2[Configuring log forwarding].
+NOTE: In {org-name} OpenShift Service on Amazon Web Services with hosted control planes (ROSA HCP), audit logging is disabled by default because the Elasticsearch log store does not provide secure storage for audit logs. 
+To configure log forwarding, see the link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/logging/index[Logging] section in the {openshift-platform} documentation.
 endif::[]
 
 The following example shows how to use the {openshift-platform} audit logs to see the history of changes made (by users) to the DSC and DSCI custom resources.
@@ -58,17 +59,12 @@ ifdef::self-managed[]
 To configure the log retention time, see the link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/logging/index[Logging] section in the {openshift-platform} documentation.
 ====
 
-[role="_additional-resources"]
-.Additional resources
-* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-view#audit-log-view[Viewing audit logs]
-
-* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-policy-config#configuring-audit-policy_audit-log-policy-config[Configuring the audit log policy]
 endif::[]
 
 ifdef::cloud-service[]
 [TIP]
 ====
-To configure the log retention time, see the link:https://docs.redhat.com/en/documentation/openshift_dedicated/4/html/logging/index[Logging] section in the {openshift-platform} documentation.
+To configure the log retention time, see the link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/logging/index[Logging] section in the {openshift-platform} documentation.
 ====
 
 endif::[]
