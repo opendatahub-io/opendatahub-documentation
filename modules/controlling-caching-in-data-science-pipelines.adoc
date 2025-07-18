@@ -54,9 +54,17 @@ To disable caching for the entire pipeline during pipeline submission, set the `
 
 Example:
 
-[source]
+[source,python]
 ----
-pipeline_func(enable_caching=False)
+import kfp
+client = kfp.Client()
+client.run_pipeline(
+    experiment_id=experiment.id,
+    pipeline_id=pipeline.id,
+    job_name="no-cache-run",
+    params={},                # optional
+    enable_caching=False,
+)
 ----
 
 ifdef::upstream,self-managed[]
