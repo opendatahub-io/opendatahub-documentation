@@ -1,0 +1,142 @@
+:_module-type: PROCEDURE
+
+[id='controlling-caching-in-data-science-pipelines_{context}']
+= Controlling caching in data science pipelines
+
+[role='_abstract']
+ifdef::upstream,self-managed[]
+Caching is enabled by default in {productname-short} to improve performance. However, there are instances when disabling caching might be necessary for specific tasks, an entire pipeline, or all pipelines. For example, caching might not be beneficial for tasks that rely on frequently updated data or unique computational needs. In other cases, such as debugging, development, or when deterministic re-execution is required, you might want to disable caching for all pipelines.
+
+[CAUTION]
+====
+Disabling caching at the pipeline or pipeline server level causes all tasks to re-run, potentially increasing compute time and resource usage.
+====
+endif::[]
+
+ifdef::cloud-service[]
+Caching is enabled by default in {productname-short} to improve performance. However, there are instances when disabling caching might be necessary for specific tasks or an entire pipeline. For example, caching might not be beneficial for tasks that rely on frequently updated data or unique computational needs.
+
+[CAUTION]
+====
+Disabling caching at the pipeline level causes all tasks to re-run, potentially increasing compute time and resource usage.
+====
+endif::[]
+
+You can control caching for data science pipelines in the following ways:
+
+* *Individual task*: Data scientists can disable caching for specific steps in a pipeline.
+* *Pipeline (submit time)*: Data scientists can disable caching when submitting a pipeline run.
+* *Pipeline (compile time)*: Data scientists can disable caching when compiling a pipeline.
+ifdef::upstream,self-managed[]
+* *All pipelines (pipeline server)*: Cluster administrators can disable caching for all pipelines in the pipeline server, which overrides all pipeline and task-level caching settings.  
+endif::[]
+
+== Disabling caching for individual tasks
+
+To disable caching for a particular task, apply the `set_caching_options` method directly to the task in your pipeline code:
+
+[source]
+----
+task_name.set_caching_options(False)
+----
+
+After applying this setting, {productname-short} runs the task in future pipeline runs, ignoring any cached results.
+
+You can re-enable caching for individual tasks by setting the `set_caching_options` parameter to `True` or by omitting `set_caching_options`.
+
+ifdef::upstream,self-managed[]
+This setting is ignored if caching is disabled in the pipeline server.
+endif::[]
+
+== Disabling caching for a pipeline at submit time
+
+To disable caching for the entire pipeline during pipeline submission, set the `enable_caching` parameter to `False` in your pipeline code. This setting ensures that no steps are cached during pipeline execution. The `enable_caching` parameter is available only when using the `kfp.client` to submit pipelines or start pipeline runs, such as the `run_pipeline` method.
+
+Example:
+
+[source,python]
+----
+import kfp
+client = kfp.Client()
+client.run_pipeline(
+    experiment_id=experiment.id,
+    pipeline_id=pipeline.id,
+    job_name="no-cache-run",
+    params={},                # optional
+    enable_caching=False,
+)
+----
+
+ifdef::upstream,self-managed[]
+This setting is ignored if caching is disabled during pipeline compilation or in the pipeline server.
+endif::[]
+
+ifdef::cloud-service[]
+This setting is ignored if caching is disabled during pipeline compilation.
+endif::[]
+
+== Disabling caching for a pipeline at compile time
+
+To disable caching for the entire pipeline during compilation, set one of the following options in your local environment or workbench:
+
+* Environment variable:
++
+[source,bash]
+----
+export KFP_DISABLE_EXECUTION_CACHING_BY_DEFAULT=true
+----
+
+* CLI flag (when using `kfp dsl compile`):
++
+[source,bash]
+----
+kfp dsl compile --disable-execution-caching-by-default
+----
+
+ifdef::upstream,self-managed[]
+These settings are ignored if caching is disabled in the pipeline server.
+endif::[]
+
+ifdef::upstream,self-managed[]
+== Disabling caching for all pipelines (pipeline server)
+
+Cluster administrators can disable caching for all pipelines in the pipeline server, which overrides all pipeline and task-level caching settings.
+
+In the {openshift-platform} console or CLI, set the `cacheEnabled` field to `false` in the `DataSciencePipelinesApplication` (DSPA) custom resource for the project. 
+
+Example:
+
+[source,yaml]
+----
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1
+kind: DataSciencePipelinesApplication
+metadata:
+  name: my-dspa
+  namespace: my-namespace
+spec:
+  apiServer:
+    cacheEnabled: false
+----
+
+After applying this setting, all pipeline and task-level caching settings are ignored.
+
+To allow caching to be configured at the pipeline and task level, set the `cacheEnabled` field to `true` in the DSPA custom resource.
+
+[NOTE]
+====
+Changing this setting updates the `CACHEENABLED` environment variable in the pipeline server deployment. 
+====
+endif::[]
+
+.Verification
+
+After configuring caching settings, you can verify its behavior by using one of the following methods:
+
+* *Check the UI*: Locate the green icons in the task list to identify cached steps.
+* *Test task re-runs*: Disable caching on specific tasks or the pipeline to confirm that steps re-execute as expected.
+* *Validate inputs*: Ensure the task inputs, parameters, and runtime settings are unchanged when caching is applied.
+
+[role="_additional-resources"]
+.Additional resources
+* Kubeflow caching documentation: link:https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/caching/[Kubeflow Pipelines - Use Caching]
+* The `kfp.client` module documentation for the `enable_caching` parameter: link:https://kubeflow-pipelines.readthedocs.io/en/stable/source/client.html#kfp.client.Client.run_pipeline.enable_caching[KFP SDK API Reference - kfp.client]
