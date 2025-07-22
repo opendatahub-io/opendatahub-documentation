@@ -15,39 +15,39 @@ The following YAML configuration is an example of the *vLLM ServingRuntime for K
 ----
 apiVersion: serving.kserve.io/v1alpha1
 kind: ServingRuntime
-metadata: 
-  annotations: 
+metadata:
+  annotations:
     opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]' <1>
     openshift.io/display-name: vLLM ServingRuntime for KServe <2>
   labels:
     opendatahub.io/dashboard: "true"
   name: vllm-runtime
+  namespace: <namespace>
 spec:
-     annotations:
-          prometheus.io/path: /metrics <3>
-          prometheus.io/port: "8080" <4>
-     containers : 
-          - args:
-               - --port=8080
-               - --model=/mnt/models <5>
-               - --served-model-name={{.Name}} <6>
-             command: <7>
-                  - python
-                  - '-m'
-                  - vllm.entrypoints.openai.api_server
-             env: 
-                  - name: HF_HOME 
-                     value: /tmp/hf_home
-             image: <8> 
-quay.io/modh/vllm@sha256:8a3dd8ad6e15fe7b8e5e471037519719d4d8ad3db9d69389f2beded36a6f5b21 
-          name: kserve-container
-          ports:
-               - containerPort: 8080
-                   protocol: TCP
-    multiModel: false <9>
-    supportedModelFormats: <10>
-        - autoSelect: true
-           name: vLLM
+  annotations:
+    prometheus.io/path: /metrics <3>
+    prometheus.io/port: "8080" <4>
+  containers:
+    - args:
+        - --port=8080
+        - --model=/mnt/models <5>
+        - --served-model-name={{.Name}} <6>
+      command: <7>
+        - python
+        - '-m'
+        - vllm.entrypoints.openai.api_server
+      env:
+        - name: HF_HOME
+          value: /tmp/hf_home
+      image: quay.io/modh/vllm@sha256:8a3dd8ad6e15fe7b8e5e471037519719d4d8ad3db9d69389f2beded36a6f5b21 <8>
+      name: kserve-container
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+  multiModel: false <9>
+  supportedModelFormats: <10>
+    - autoSelect: true
+      name: vLLM
 ----
 <1> The recommended accelerator to use with the runtime.
 <2> The name with which the serving runtime is displayed.
