@@ -42,7 +42,7 @@ task_name.set_caching_options(False)
 
 After applying this setting, {productname-short} runs the task in future pipeline runs, ignoring any cached results.
 
-You can re-enable caching for individual tasks by setting set_caching_options(True) or by omitting `set_caching_options`.
+You can re-enable caching for individual tasks by setting the `set_caching_options` parameter to `True` or by omitting `set_caching_options`.
 
 ifdef::upstream,self-managed[]
 This setting is ignored if caching is disabled in the pipeline server.
@@ -102,7 +102,7 @@ ifdef::upstream,self-managed[]
 
 Cluster administrators can disable caching for all pipelines in the pipeline server, which overrides all pipeline and task-level caching settings.
 
-In the OpenShift console or CLI, set the `cacheEnabled` field to `false` in the `DataSciencePipelinesApplication` (DSPA) custom resource for the project. 
+In the {openshift-platform} console or CLI, set the `cacheEnabled` field to `false` in the `DataSciencePipelinesApplication` (DSPA) custom resource for the project. 
 
 Example:
 
@@ -130,11 +130,11 @@ endif::[]
 
 .Verification
 
-After configuring caching settings, you can verify that caching behaves as expected by using one of the following methods:
+After configuring caching settings, you can verify its behavior by using one of the following methods:
 
-* *Checking the UI*: Confirm cached steps by locating the steps with the green icon in the task list.
-* *Testing task re-runs*: Disable caching on individual tasks or the pipeline and check for re-execution to verify cache bypassing.
-* *Validating inputs*: Ensure the task inputs, parameters, and environment remain unchanged if caching applies.
+* *Check the UI*: Locate the green icons in the task list to identify cached steps.
+* *Test task re-runs*: Disable caching on specific tasks or the pipeline to confirm that steps re-execute as expected.
+* *Validate inputs*: Ensure the task inputs, parameters, and runtime settings are unchanged when caching is applied.
 
 [role="_additional-resources"]
 .Additional resources
