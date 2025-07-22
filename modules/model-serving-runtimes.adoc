@@ -22,7 +22,7 @@ metadata:
   labels:
     opendatahub.io/dashboard: "true"
   name: vllm-runtime
-  namespace: keda-demo
+  namespace: <namespace>
 spec:
   annotations:
     prometheus.io/path: /metrics <3>
@@ -46,8 +46,8 @@ spec:
           protocol: TCP
   multiModel: false <9>
   supportedModelFormats: <10>
-  - autoSelect: true
-    name: vLLM
+    - autoSelect: true
+      name: vLLM
 ----
 <1> The recommended accelerator to use with the runtime.
 <2> The name with which the serving runtime is displayed.
