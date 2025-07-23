@@ -45,23 +45,6 @@ Manages remote Ray clusters on OpenShift for running distributed compute workloa
 
 Kueue::
 Manages quotas and how distributed workloads consume them, and manages the queueing of distributed workloads with respect to quotas
-ifdef::self-managed[]
-+
-[NOTE]
-====
-The minimum version of {openshift-platform} that is compatible with Kueue 0.10.1 is 4.15. 
-If you deploy {productname-long} 2.18 or later on {openshift-platform} 4.14 or earlier, you must disable the API Priority and Fairness configuration for the Visibility API, as described in the link:https://kubernetes.io/docs/concepts/cluster-administration/flow-control/#enabling-disabling-api-priority-and-fairness[Enabling/Disabling API Priority and Fairness] section in the Kueue _Cluster Administration_ guide.
-This modification is required because the `PriorityLevelConfiguration` API is incompatible with older {openshift-platform} versions.
-====
-endif::[]
-ifdef::cloud-service[]
-+
-[NOTE]
-====
-You must disable the API Priority and Fairness configuration for the Visibility API, as described in the link:https://kubernetes.io/docs/concepts/cluster-administration/flow-control/#enabling-disabling-api-priority-and-fairness[Enabling/Disabling API Priority and Fairness] section in the Kueue _Cluster Administration_ guide.
-====
-endif::[]
-
 
 ifdef::upstream[]
 For information about installing these components, see link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
