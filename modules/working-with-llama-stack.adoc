@@ -1,0 +1,44 @@
+:_module-type: CONCEPT
+
+[id="working-with-llama-stack_{context}"]
+= Working with Llama Stack
+
+[role="_abstract"]
+Llama Stack is a unified AI runtime environment designed to simplify the deployment and management of generative AI workloads on {productname-short}. Llama Stack integrates LLM inference servers, vector databases, and retrieval services in a single stack, optimized for Retrieval-Augmented Generation (RAG) and agent-based AI workflows. In {openshift-platform}, the Llama Stack Operator manages the deployment lifecycle of these components, ensuring scalability, consistency, and integration with {productname-short} projects.
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+Llama Stack integration is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+Llama Stack integration is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+Llama Stack includes the following components:
+
+* **Inference model servers** such as vLLM, designed to efficiently serve large language models.
+* **Vector storage** solutions, primarily Milvus, to store embeddings generated from your domain data.
+* **Retrieval and embedding management** workflows using integrated tools, such as Docling, to handle continuous data ingestion and synchronization.
+* **Integration with the {productname-short}** by using the `LlamaStackDistribution` custom resource, simplifying configuration and deployment.
+
+ifdef::upstream[]
+For information about how to deploy Llama Stack in {productname-short}, see link:{odhdocshome}/working-with-rag/#deploying-a-rag-stack-in-a-data-science-project_rag[Deploying a RAG stack in a Data Science Project].
+endif::[]
+ifndef::upstream[]
+For information about how to deploy Llama Stack in {productname-short}, see link:{rhoaidocshome}{default-format-url}/working_with_rag/deploying-a-rag-stack-in-a-data-science-project_rag[Deploying a RAG stack in a Data Science Project].
+endif::[]
+
+[role="_additional-resources"]
+.Additional resources
+* link:https://github.com/opendatahub-io/llama-stack-demos[Llama Stack Demos repository^]
+* link:https://llama-stack-k8s-operator.pages.dev/[Llama Stack Kubernetes Operator documentation^]
+* link:https://llama-stack.readthedocs.io/en/latest/[Llama Stack documentation]
