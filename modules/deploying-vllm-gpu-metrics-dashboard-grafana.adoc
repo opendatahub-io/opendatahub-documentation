@@ -35,7 +35,7 @@ MODEL_NAME=<model-name> <2>
 <1> **NAMESPACE** is the target namespace where the model will be deployed.
 <2> **MODEL_NAME** is the model name as defined in your InferenceService. The model name is also used to filter the pod name in the Grafana dashboard.
 
-. Replace the `NAMESPACE` and `MODEL_NAME` parameters in your YAML file with the values from the `input.env` file by performing the following actions:
+. Replace the `NAMESPACE` and `MODEL_NAME` parameters in your YAML file with the values from the `inputs.env` file by performing the following actions:
 
 .. Export the parameters described in the `inputs.env` as environment variables:
 +
@@ -44,7 +44,7 @@ MODEL_NAME=<model-name> <2>
 export $(cat inputs.env | xargs)
 ----
 
-.. Update the following YAML file, replacing the `$NAMESPACE` and `${MODEL_NAME)` variables with the values of the exported environment variables, and `dashboard_template` with the name of the `GrafanaDashboard` object YAML file that you created earlier:
+.. Update the following YAML file, replacing the `${NAMESPACE}` and `${MODEL_NAME}` variables with the values of the exported environment variables, and `dashboard_template.yaml` with the name of the `GrafanaDashboard` object YAML file that you created earlier:
 +
 [source]
 ----
