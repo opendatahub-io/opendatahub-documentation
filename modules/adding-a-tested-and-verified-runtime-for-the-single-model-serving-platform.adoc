@@ -4,16 +4,19 @@
 
 = Adding a tested and verified model-serving runtime for the single-model serving platform
 
-In addition to preinstalled and custom model-serving runtimes, you can also use {org-name} tested and verified model-serving runtimes such as the *NVIDIA Triton Inference Server* to support your needs. For more information about {org-name} tested and verified runtimes, see link:https://access.redhat.com/articles/7089743[Tested and verified runtimes for {productname-long}^].
+In addition to preinstalled and custom model-serving runtimes, you can also use {org-name} tested and verified model-serving runtimes to support your needs. For more information about {org-name} tested and verified runtimes, see link:https://access.redhat.com/articles/7089743[Tested and verified runtimes for {productname-long}^].
  
-You can use the {productname-long} dashboard to add and enable the *NVIDIA Triton Inference Server* or the *Seldon MLServer* runtime for the single-model serving platform. You can then choose the runtime when you deploy a model on the single-model serving platform.
+You can use the {productname-long} dashboard to add and enable tested and verified runtimes for the single-model serving platform. You can then choose the runtime when you deploy a model on the single-model serving platform.
 
 [role='_abstract']
 
 .Prerequisites
+
 * You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
+* If you are deploying the IBM Z Accelerated for NVIDIA Triton Inference Server runtime, you have access to IBM cloud container registry to pull the container image. For more information about obtaining credentials to the IBM cloud container registry, see link:https://github.com/IBM/ibmz-accelerated-for-nvidia-triton-inference-server?tab=readme-ov-file#container[Inference Server container image^].
 
 .Procedure
+
 . From the {productname-short} dashboard, click *Settings* -> *Serving runtimes*.
 +
 The *Serving runtimes* page opens and shows the model-serving runtimes that are already installed and enabled.
@@ -26,8 +29,135 @@ The *Serving runtimes* page opens and shows the model-serving runtimes that are 
 
 . Click *Start from scratch*.
 
-. Follow these steps to add the *NVIDIA Triton Inference Server* runtime:
+. Follow these steps to add the *IBM Z Accelerated for NVIDIA Triton Inference Server* runtime:
+.. If you selected the *REST* API protocol, enter or paste the following YAML code directly in the embedded editor.
++
+[source]
+----
+apiVersion: 
+serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  name: ibmz-triton-rest
+  labels:
+    opendatahub.io/dashboard: "true"
+spec:
+  annotations:
+    prometheus.kserve.io/path: /metrics
+    prometheus.kserve.io/port: "8002"
+  containers:
+    - name: kserve-container
+      command:
+        - /bin/sh
+        - -c
+      args:
+        - /opt/tritonserver/bin/tritonserver --model-repository=/mnt/models --http-port=8000 --grpc-port=8001 --metrics-port=8002
+      image: icr.io/ibmz/ibmz-accelerated-for-nvidia-triton-inference-server:xxx
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      resources:
+        limits:
+          cpu: "2"
+          memory: 4Gi
+        requests:
+          cpu: "5"
+          memory: 4Gi
+      ports:
+        - containerPort: 8000
+          protocol: TCP
+  protocolVersions:
+    - v2
+    - grpc-v2
+  supportedModelFormats:
+    - name: python
+      version: "1"
+      autoSelect: true
+    - name: onnx-mlir
+      version: "1"
+      autoSelect: true
+    - name: snapml
+      version: "1"
+      autoSelect: true
+    - name: pytorch
+      version: "1"
+      autoSelect: true
+----
 
+.. If you selected the *gRPC* API protocol, enter or paste the following YAML code directly in the embedded editor.
++
+[source]
+----
+apiVersion: 
+serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  name: ibmz-triton-grpc
+  labels:
+    opendatahub.io/dashboard: "true"
+spec:
+  annotations:
+    prometheus.kserve.io/path: /metrics
+    prometheus.kserve.io/port: "8002"
+  containers:
+    - name: kserve-container
+      command:
+        - /bin/sh
+        - -c
+      args:
+        - /opt/tritonserver/bin/tritonserver --model-repository=/mnt/models --grpc-port=8001 --http-port=8000 --metrics-port=8002
+      image: icr.io/ibmz/ibmz-accelerated-for-nvidia-triton-inference-server:xxx
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      resources:
+        limits:
+          cpu: "2"
+          memory: 4Gi
+        requests:
+          cpu: "5"
+          memory: 4Gi
+      ports:
+        - containerPort: 8001
+          name: grpc
+          protocol: TCP
+      volumeMounts:
+        - mountPath: /dev/shm
+          name: shm
+  protocolVersions:
+    - v2
+    - grpc-v2
+  supportedModelFormats:
+    - name: python
+      version: "1"
+      autoSelect: true
+    - name: onnx-mlir
+      version: "1"
+      autoSelect: true
+    - name: snapml
+      version: "1"
+      autoSelect: true
+    - name: pytorch
+      version: "1"
+      autoSelect: true
+volumes:
+  - emptyDir: null
+    medium: Memory
+    sizeLimit: 2Gi
+    name: shm
+----
+
+. Follow these steps to add the *NVIDIA Triton Inference Server* runtime:
 .. If you selected the *REST* API protocol, enter or paste the following YAML code directly in the embedded editor.
 +
 [source]
@@ -162,6 +292,7 @@ volumes:
     sizeLimit: 2Gi
     name: shm
 ----
+
 . Follow these steps to add the *Seldon MLServer* runtime:
 .. If you selected the *REST* API protocol, enter or paste the following YAML code directly in the embedded editor.
 +
@@ -360,6 +491,7 @@ The *Serving runtimes* page opens and shows the updated list of runtimes that ar
 . Optional: To edit the runtime, click the action menu (&#8942;) and select *Edit*.
 
 .Verification
+
 * The model-serving runtime that you added is shown in an enabled state on the *Serving runtimes* page.
 
 [role='_additional-resources']
