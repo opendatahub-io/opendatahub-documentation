@@ -4,9 +4,9 @@
 = Creating project-scoped resources
 
 [role='_abstract']
-Users can access _global resources_ in all {productname-short} projects, but can access _project-scoped resources_ within the specified project only.
+{productname-short} users can access _global resources_ in all {productname-short} projects. However, they can access _project-scoped resources_ only within projects that they have permissions to access.
 
-Cluster administrators can create the following types of project-scoped resources in any {productname-short} project:
+As a cluster administrator, you can create the following types of project-scoped resources in any {productname-short} project:
 
 * Workbench images
 * Hardware profiles
@@ -19,10 +19,10 @@ All resource names must be unique within a project.
 [NOTE]
 ====
 ifdef::upstream[]
-A project member who is not a cluster administrator can create project-scoped resources for their project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-project-scoped-resources-for-your-project_projects[Creating project-scoped resources for your project].
+A user with access permissions to a project can create project-scoped resources for that project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-project-scoped-resources-for-your-project_projects[Creating project-scoped resources for your project].
 endif::[]
 ifndef::upstream[]
-A project member who is not a cluster administrator can create project-scoped resources for their project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/creating-project-scoped-resources-for-your-project_projects[Creating project-scoped resources for your project].
+A user with access permissions to a project can create project-scoped resources for that project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/creating-project-scoped-resources-for-your-project_projects[Creating project-scoped resources for your project].
 endif::[]
 ====
 
@@ -39,6 +39,7 @@ endif::[]
 
 
 .Procedure
+
 . Log in to the {openshift-platform} console as a cluster administrator.
 . Copy the YAML code to create the resource.
 +
@@ -47,7 +48,7 @@ You can get the YAML code from a trusted source, such as an existing resource, a
 For example, you can copy the YAML code from an existing resource, as follows:
 
 .. In the *Administrator* perspective, click *Home* -> *Search*.
-.. From the *Project* list, select the appropriate value.
+.. From the *Project* list, select the appropriate project.
 +
 ifdef::upstream[]
 To limit the search to global {productname-short} resources only, select the `opendatahub` project.
@@ -55,7 +56,7 @@ endif::[]
 ifndef::upstream[]
 To limit the search to global {productname-short} resources only, select the `redhat-ods-applications` project.
 endif::[]
-.. In the *Resources* list, search for the relevant resource type, as follows:
+.. In the *Resources* list, search for the relevant resource type:
 
 * For workbench images, search for `ImageStream`.
 * For hardware profiles, search for `HardwareProfile`.
@@ -63,15 +64,15 @@ endif::[]
 * For serving runtimes, search for `Template`. 
 From the resulting list, find the templates that have the `objects.kind` specification set to `ServingRuntime`. 
 
-.. Select a resource, and click the *YAML* tab. 
-.. Copy the YAML content, and click *Cancel*.
+.. Select a resource, and then click the *YAML* tab. 
+.. Copy the YAML content, and then click *Cancel*.
 
-. From the *Project* list, select the target project name. Note the spelling.
+. From the *Project* list, select the target project name.
 . From the toolbar, click the *+* icon to open the *Import YAML* page.
 . Paste the relevant YAML content into the code area.
 . Edit the `metadata.namespace` value to specify the name of the target project.
 . If necessary, edit the `metadata.name` value to ensure that the resource name is unique within the specified project.
-. Optional: Edit the resource name that is displayed in the {productname-short} console, as follows:
+. Optional: Edit the resource name that is displayed in the {productname-short} console:
 
 * For workbench images, edit the `metadata.annotations.opendatahub.io/notebook-image-name` value.
 * For hardware profiles and accelerator profiles, edit the `spec.displayName` value.
@@ -82,7 +83,7 @@ From the resulting list, find the templates that have the `objects.kind` specifi
 
 .Verification
 . Log in to the {productname-short} console as a regular user.
-. Verify that the project-scoped resource is shown in the specified project only:
+. Verify that the project-scoped resource is shown in the specified project:
 
 ifdef::upstream[]
 * For workbench images, hardware profiles, and accelerator profiles, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-project-workbench_projects[Creating a workbench].
