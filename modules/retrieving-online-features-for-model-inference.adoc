@@ -1,0 +1,85 @@
+:_module-type: PROCEDURE
+
+[id="retrieving-online-features-for-model-inference_{context}"]
+= Retrieving online features for model inference
+
+After your cluster administrator loads feature data to the online store, you can retrieve features for model training.
+
+When the cluster administrator creates a FeatureStore CR, by default, it runs the online store feature server. This Python feature server is an HTTP endpoint that serves features with JSON I/O. You can write and read features from the online store by using any programming language that can make HTTP requests.
+
+*Note:* You can also retrieve online features: by using the Feast SDK as described in link::https://docs.feast.dev/getting-started/concepts/feature-retrieval#retrieving-online-features-for-model-inference[the upstream Feast documentation].
+
+A feature service is an object that represents a logical group of features from one or more feature views. With a feature service, your ML models can access features from within a feature view as needed.
+
+Typically, you create one feature service per model version, allowing for tracking of the features used by models. The features retrieved from the online store can belong to multiple feature views.
+
+Note: When you apply a feature service, an actual service is not deployed.
+
+.Prerequisites
+
+* In your IDE environment, you installed Feature Store and you added the `feature_store.yaml` file provided by your cluster administrator, as described in _Setting up your working environment_. 
+
+* Your cluster administrator has pushed feature data to the online store.
+
+* Optionally, you cloned a Git repository that includes your model training code.
+
+.Procedure
+
+. From the {productname-short} dashboard, click *Data science projects*. 
+. Click the name of the project and then click the *Workbenches* tab.
+. Click the open icon (image:images/open.png[The open icon]) next to the workbench.
+. In a Python notebook cell, run the following command to instantiate a local FeatureStore object that can parse the feature registry:
++
+[.lines_space]
+[source, python]
+----
+from feast import FeatureStore
+
+feature_store = FeatureStore('.')
+----
+
+. Identify the feature service:
++
+[.lines_space]
+[source, python]
+----
+feature_service = feature_store.get_feature_service("credit_activity")
+----
+
+. Retrieve features from the online store by using the `get_online_features` method:
++
+[.lines_space]
+[source, python]
+----
+features = feature_store.get_online_features(
+features=feature_service, entity_rows=[entity_dict]
+)
+entity_rows=[
+        # {join_key: entity_value}
+        {"dob_ssn": 19530219_5179},
+        {"dob_ssn": 19500806_6783},
+    ]
+----
+
+.Verification
+
+When you run the feast commands, you should see output similar to the following"
+
+.Example output
+----
+{
+ 'credit_card_due': [833,1297],
+ 'bankruptcies': [0, 1],
+ 'dob_ssn': [19530219_5179, 19500806_6783]
+}
+----
+
+.Next step
+
+* See the following Git repositories for an example of how to use features to train a model. 
++
+https://github.com/feast-dev/feast-credit-score-local-tutorial
++
+https://github.com/feast-dev/feast/tree/stable/examples/operator-quickstart
+
+

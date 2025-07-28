@@ -1,0 +1,23 @@
+:_module-type: PROCEDURE
+
+[id="specifying-files-to-ignore_{context}"]
+= Specifying files to ignore
+
+When you run the `feast apply` command, Feature Store reads all Python files recursively, including Python files in subdirectories, even if the Python files do not contain feature definitions.
+
+If you have Python files, such as imperative scripts,  in your registry folder that you want Feature Store to ignore when you run the  feast apply command, you should create a .feastignore file and add a list of paths to all files that you want Feature Store to ignore.
+
+.Example .feastignore file
+----
+# Ignore virtual environment
+venv
+
+# Ignore a specific Python file
+scripts/foo.py
+
+# Ignore all Python files directly under scripts directory
+scripts/*.py
+
+# Ignore all "foo.py" anywhere under scripts directory
+scripts/**/foo.py
+----
