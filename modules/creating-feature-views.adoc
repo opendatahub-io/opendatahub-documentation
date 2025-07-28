@@ -23,12 +23,12 @@ To define new features, you can edit the code in the example file or add a new f
 
 [source,python]
 ----
-CREATE TABLE driver_metadata (
-employee_id INT PRIMARY KEY,
-department TEXT,
-dummy_event_timestamp TIMESTAMP DEFAULT '2024-01-01'
+CREATE TABLE employee_metadata (
+  employee_id INT PRIMARY KEY,
+  department TEXT,
+  dummy_event_timestamp TIMESTAMP DEFAULT '2024-01-01'
 );
-INSERT INTO driver_metadata (driver_id, experience)
+INSERT INTO employee_metadata (employee_id, department)
 VALUES (1, 'Advanced'), (2, 'New');
 ----
 

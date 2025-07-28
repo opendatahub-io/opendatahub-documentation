@@ -7,7 +7,7 @@ After your cluster administrator loads feature data to the online store, you can
 
 When the cluster administrator creates a FeatureStore CR, by default, it runs the online store feature server. This Python feature server is an HTTP endpoint that serves features with JSON I/O. You can write and read features from the online store by using any programming language that can make HTTP requests.
 
-*Note:* You can also retrieve online features: by using the Feast SDK as described in link::https://docs.feast.dev/getting-started/concepts/feature-retrieval#retrieving-online-features-for-model-inference[the upstream Feast documentation].
+*Note:* You can also retrieve online features: by using the Feast SDK as described in link:https://docs.feast.dev/getting-started/concepts/feature-retrieval#retrieving-online-features-for-model-inference[the upstream Feast documentation].
 
 A feature service is an object that represents a logical group of features from one or more feature views. With a feature service, your ML models can access features from within a feature view as needed.
 
@@ -52,13 +52,13 @@ feature_service = feature_store.get_feature_service("credit_activity")
 [source, python]
 ----
 features = feature_store.get_online_features(
-features=feature_service, entity_rows=[entity_dict]
-)
-entity_rows=[
+features=feature_service,
+    entity_rows=[
         # {join_key: entity_value}
         {"dob_ssn": 19530219_5179},
         {"dob_ssn": 19500806_6783},
     ]
+)
 ----
 
 .Verification
