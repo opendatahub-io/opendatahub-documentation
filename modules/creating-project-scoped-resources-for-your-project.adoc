@@ -4,9 +4,9 @@
 = Creating project-scoped resources for your project
 
 [role='_abstract']
-Users can access _global resources_ in all {productname-short} projects, but can access _project-scoped resources_ within the specified project only.
+As an {productname-short}  user, you can access _global resources_ in all {productname-short} projects, but you can access _project-scoped resources_ within the specified project only.
 
-A project member who is not a cluster administrator can create the following types of project-scoped resources for their {productname-short} project:
+As a user with access permissions to a project, you can create the following types of project-scoped resources for your {productname-short} project:
 
 * Workbench images
 * Model-serving runtimes for KServe
@@ -21,10 +21,10 @@ All resource names must be unique within a project.
 [NOTE]
 ====
 ifdef::upstream[]
-Cluster administrators can create project-scoped resources for any project, as described in link:{odhdocshome}/managing-odh/#creating-project-scoped-resources_managing-odh[Creating project-scoped resources].
+A user with access permissions to a project can create project-scoped resources for that project, as described in link:{odhdocshome}/managing-odh/#creating-project-scoped-resources_managing-odh[Creating project-scoped resources].
 endif::[]
 ifndef::upstream[]
-Cluster administrators can create project-scoped resources for any project, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/creating-project-scoped-resources_managing-rhoai[Creating project-scoped resources].
+A user with access permissions to a project can create project-scoped resources for that project, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/creating-project-scoped-resources_managing-rhoai[Creating project-scoped resources].
 endif::[]
 ====
 
@@ -48,13 +48,14 @@ Alternatively, you can contact your cluster administrator to request the relevan
 
 
 .Procedure
+
 . Log in to the {openshift-platform} console.
-. Copy the YAML code from a trusted source to create the resource.
+. From a trusted source, copy the YAML code that you want to use for your project resource.
 +
-Alternatively, if you can access an existing project-scoped resource in one of your projects, you can copy the YAML code as follows:
+For example, if you can access an existing project-scoped resource in one of your projects, you can copy the YAML code as follows:
 
 .. In the *Administrator* perspective, click *Home* -> *Search*.
-.. From the *Projects* list, select the appropriate value.
+.. From the *Projects* list, select the appropriate project.
 .. In the *Resources* list, search for the relevant resource type, as follows:
 
 * For workbench images, search for `ImageStream`.
@@ -64,10 +65,10 @@ Alternatively, if you can access an existing project-scoped resource in one of y
 * For serving runtimes, search for `Template`. 
 From the resulting list, find the templates that have the `objects.kind` specification set to `ServingRuntime`. 
 
-.. Select a resource, and click the *YAML* tab. 
-.. Copy the YAML content, and click *Cancel*.
+.. Select a resource, and then click the *YAML* tab. 
+.. Copy the YAML content, and then click *Cancel*.
 
-. From the *Project* list, select your project name. Note the spelling.
+. From the *Project* list, select your project name.
 . From the toolbar, click the *+* icon to open the *Import YAML* page.
 . Paste the example YAML content into the code area.
 . Edit the `metadata.namespace` value to specify the name of your project.
@@ -82,31 +83,32 @@ From the resulting list, find the templates that have the `objects.kind` specifi
 
 
 .Verification
+
 . Log in to the {productname-short} console.
-. Verify that the project-scoped resource is shown in the specified project only:
+. Verify that the project-scoped resource is shown in the specified project:
 
 ifdef::upstream[]
-* For workbench images, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-project-workbench_projects[Creating a workbench].
+* For workbench images, when you create a workbench in the project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-project-workbench_projects[Creating a workbench], the workbench image that you added is available in the *Image selection* list.
 endif::[]
 ifndef::upstream[]
-* For workbench images, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a workbench].
+* For workbench images, when you create a workbench in the project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a workbench], the workbench image that you added is available in the *Image selection* list.
 endif::[]
 
 ifdef::upstream[]
-* For serving runtimes, see link:{odhdocshome}/serving-models/#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+* For model-serving runtimes, see link:{odhdocshome}/serving-models/#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
 endif::[]
 ifndef::upstream[]
-* For serving runtimes, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+* For model-serving runtimes, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
 endif::[]
 
 ////
 When RHOAIENG-26758 is resolved, remove the above lines and uncomment this section instead.
 
 ifdef::upstream[]
-* For workbench images, hardware profiles, and accelerator profiles, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-project-workbench_projects[Creating a workbench].
+* For workbench images, hardware profiles, and accelerator profiles, when you create a workbench in the project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-project-workbench_projects[Creating a workbench], the workbench image that you added is available in the *Image selection* list.
 endif::[]
 ifndef::upstream[]
-* For workbench images, hardware profiles, and accelerator profiles, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a workbench].
+* For workbench images, hardware profiles, and accelerator profiles, when you create a workbench in the project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a workbench], the workbench image that you added is available in the *Image selection* list.
 endif::[]
 
 ifdef::upstream[]
