@@ -20,7 +20,9 @@ endif::[]
 .Procedure
 
 . Define a `GrafanaDashboard` object in a YAML file, similar to the following examples:
-.. To monitor accelerator metrics, see link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app/nvidia-vllm-dashboard.yaml[`nvidia-vllm-dashboard.yaml`].
+.. To monitor NVIDIA accelerator metrics, see link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app/nvidia-vllm-dashboard.yaml[`nvidia-vllm-dashboard.yaml`].
+.. To monitor AMD accelerator metrics, see link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app/amd-vllm-dashboard.yaml[`amd-vllm-dashboard.yaml`].
+.. To monitor Intel accelerator metrics, see link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app/gaudi-vllm-dashboard.yaml[`gaudi-vllm-dashboard.yaml`].
 .. To monitor vLLM metrics, see link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app/grafana-vllm-dashboard.yaml[`grafana-vllm-dashboard.yaml`].
 
 . Create an `inputs.env` file similar to the following example. Replace the `NAMESPACE` and `MODEL_NAME` parameters with your own values:
@@ -33,9 +35,7 @@ MODEL_NAME=<model-name> <2>
 <1> **NAMESPACE** is the target namespace where the model will be deployed.
 <2> **MODEL_NAME** is the model name as defined in your InferenceService. The model name is also used to filter the pod name in the Grafana dashboard.
 
-// TO DO
 . Replace the `NAMESPACE` and `MODEL_NAME` parameters in your YAML file with the values from the `input.env` file by performing the following actions:
-// 
 
 .. Export the parameters described in the `inputs.env` as environment variables:
 +
@@ -43,13 +43,12 @@ MODEL_NAME=<model-name> <2>
 ----
 export $(cat inputs.env | xargs)
 ----
-// TO DO
-.. Replace the  `$NAMESPACE` and `${MODEL_NAME)` variables in the YAML file with the values of the exported environment variables:
-//
+
+.. Update the following YAML file, replacing the `$NAMESPACE` and `${MODEL_NAME)` variables with the values of the exported environment variables, and `dashboard_template` with the name of the `GrafanaDashboard` object YAML file that you created earlier:
 +
 [source]
 ----
-envsubst '${NAMESPACE} ${MODEL_NAME}' < nvidia-vllm-dashboard.yaml > nvidia-vllm-dashboard-replaced.yaml
+envsubst '${NAMESPACE} ${MODEL_NAME}' < dashboard_template.yaml > dashboard_template-replaced.yaml
 ----
 
 . Confirm that your YAML file contains updated values.
@@ -58,7 +57,7 @@ envsubst '${NAMESPACE} ${MODEL_NAME}' < nvidia-vllm-dashboard.yaml > nvidia-vllm
 +
 [source]
 ----
-oc create -f nvidia-vllm-dashboard-replaced.yaml
+oc create -f dashboard_template-replaced.yaml
 ----
 
 .Verification
