@@ -5,23 +5,23 @@
 
 After your cluster administrator loads feature data to the online store, you can retrieve features for model training.
 
-When the cluster administrator creates a FeatureStore CR, by default, it runs the online store feature server. This Python feature server is an HTTP endpoint that serves features with JSON I/O. You can write and read features from the online store by using any programming language that can make HTTP requests.
+When the cluster administrator creates a `FeatureStore` CR, by default, it runs the online store feature server. This Python feature server is an HTTP endpoint that serves features with JSON I/O. You can write and read features from the online store by using any programming language that can make HTTP requests.
 
-*Note:* You can also retrieve online features: by using the Feast SDK as described in link:https://docs.feast.dev/getting-started/concepts/feature-retrieval#retrieving-online-features-for-model-inference[the upstream Feast documentation].
+*Note:* You can also retrieve online features by using the Feast SDK as described in link:https://docs.feast.dev/getting-started/concepts/feature-retrieval#retrieving-online-features-for-model-inference[the upstream Feast documentation].
 
 A feature service is an object that represents a logical group of features from one or more feature views. With a feature service, your ML models can access features from within a feature view as needed.
 
 Typically, you create one feature service per model version, allowing for tracking of the features used by models. The features retrieved from the online store can belong to multiple feature views.
 
-Note: When you apply a feature service, an actual service is not deployed.
+*Note:* When you apply a feature service, an actual service is not deployed.
 
 .Prerequisites
 
-* In your IDE environment, you installed Feature Store and you added the `feature_store.yaml` file provided by your cluster administrator, as described in _Setting up your working environment_. 
+* In your IDE environment, you have installed Feature Store and added the `feature_store.yaml` file provided by your cluster administrator, as described in _Setting up your working environment_. 
 
 * Your cluster administrator has pushed feature data to the online store.
 
-* Optionally, you cloned a Git repository that includes your model training code.
+* Optionally, you have cloned a Git repository that includes your model training code.
 
 .Procedure
 
@@ -63,7 +63,7 @@ features=feature_service,
 
 .Verification
 
-When you run the feast commands, you should see output similar to the following"
+When you run the `feast` commands, you should see output similar to the following"
 
 .Example output
 ----

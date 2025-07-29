@@ -63,11 +63,10 @@ spec:
       ref: 598a270 
 ----
 +
-This example is from the Credit Store tutorial. The `spec.feastProjectDir` references a pre-existing Feature Store project that exists in a Git repository:
-https://github.com/feast-dev/feast-credit-score-local-tutorial
+The `spec.feastProjectDir` references a Feature Store project that is in the Git repository for a Credit Store tutorial.
 
 . Optionally, change the `metadata.name` for the feature store instance.
-. Optionally, edit `feastProject` which is the namespace for organizing your Feature Store instance. Note that this project is not the OpenShift AI data science project.
+. Optionally, edit `feastProject`, which is the namespace for organizing your Feature Store instance. Note that this project is not the {productname-short} data science project.
 
 . Click *Create*.
 
@@ -83,12 +82,12 @@ A _provider_ is a customizable interface that provides default Feature Store com
 
 . In the {openshift-platform} console, select *Workloads* -> *Pods*.
 . Make sure that your data science project (for example, my-ds-project) is selected.
-. Find the pod that has the `feast-`` prefix, followed by the `metadata.name`` that you specified in the CRD configuration, for example, `sample-git``. 
+. Find the pod that has the `feast-` prefix, followed by the `metadata.name` that you specified in the CRD configuration, for example, `sample-git`. 
 . Verify that the pod status is *Running*.
 . Click the `feast` pod and then select *Pod details*. 
 . Scroll down to see the online container. This container is the deployment for the online server. It makes the feature server REST API available in the OpenShift cluster.
 . Scroll up and then click *Terminal*.
-. Run the feast command with the help option to verify that the feast CLI is installed correctly:
+. Run the following command to verify that the `feast` CLI is installed correctly:
 +
 ----
 $ feast --help

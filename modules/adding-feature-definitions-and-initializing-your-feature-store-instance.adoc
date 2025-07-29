@@ -4,19 +4,19 @@
 = Adding feature definitions and initializing your Feature Store instance
 
 [role='_abstract']
-To initialize the Feature Store instance, run the `feast apply` command.
+Initialize the Feature Store instance to start using it.
 
-When you run the `feast apply` command, Feature Store completes the following tasks:
+When you initialize the Feature Store instance, Feature Store completes the following tasks:
 
 * Scans the Python files in your feature repository and finds all Feature Store object definitions, such as feature views, entities, and data sources.
 +
 *Note:* Feature Store reads all Python files recursively, including subdirectories, even if they do not contain feature definitions. For information on identifying Python files, such as imperative scripts that you want Feature Store to ignore, see _Specifying files to ignore_.
 
-* Validates your feature definitions (for example, it checks for uniqueness of features within a feature view).
+* Validates your feature definitions, for example, by checking for uniqueness of features within a feature view.
 
 * Syncs the metadata about objects to the feature registry. If a registry does not exist, Feature Store creates one. The default registry is a simple Protobuf binary file on disk (locally or in an object store).
 
-* Creates (or updates) all necessary feature store infrastructure. The exact infrastructure that Feature Store creates depends on the provider configuration that you have set in `feature_store`.yaml. For example, setting `local` as your provider results in the creation of a sqlite online store.
+* Creates or updates all necessary Feature Store infrastructure. The exact infrastructure that Feature Store creates depends on the provider configuration that you have set in `feature_store`.yaml. For example, setting `local` as your provider results in the creation of a sqlite online store.
 +
 *Note:*  When you use a cloud provider, such as Google Cloud Platform or Amazon Web Service, the `feast apply` command creates cloud infrastructure that might incur costs for your organization.
 
@@ -33,12 +33,12 @@ When you run the `feast apply` command, Feature Store completes the following ta
 .Procedure
 
 . In the OpenShift console, select *Workloads* -> *Pods*. 
-. Make sure that your data science project (for example, `my-ds-project`) is the current project. 
+. Make sure that your data science project is the current project. 
 . Click the `feast` pod and then select *Pod details*. 
-. Scroll down to see the online container. This container is the deployment for the online server. It makes the feature server REST API available in the OpenShift cluster. 
+. Scroll down to see the online container. This container is the deployment for the online server, and it makes the feature server REST API available in the OpenShift cluster. 
 . Scroll up and then click *Terminal*. 
 . Copy the feature definition (`.py`) file to your Feature Store namespace.
-. To create a feature registry, set up data connections, and add the feature definitions to the registry by running the following command:
+. To create a feature registry, set up data connections, and add the feature definitions to the registry, run the following command:
 +
 ----
 feast apply
@@ -46,7 +46,7 @@ feast apply
 
 .Verification
 
-* You should see output similar to the following that indicates that the features in the feature definition file were successfully added to the registry"
+* You should see output similar to the following that indicates that the features in the feature definition file were successfully added to the registry:
 +
 ----
 Created project credit_scoring_local

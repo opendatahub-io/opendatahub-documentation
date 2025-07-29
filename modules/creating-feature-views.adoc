@@ -3,23 +3,23 @@
 [id='creating-feature-views_{context}']
 = Creating feature views
  
-You define features within a feature view. A _feature view_ is an object that represente a logical group of time-series feature data in a data source. Feature views indicate to Feature Store where to find your feature values, for example, in a parquet file or a BigQuery table.
+You define features within a feature view. A _feature view_ is an object that represents a logical group of time-series feature data in a data source. Feature views indicate to Feature Store where to find your feature values, for example, in a parquet file or a BigQuery table.
 
 By using feature views, you define the existing feature data in a consistent way for both an offline environment, when you train your models, and an online environment, when you want to serve features to models in production.
 
 Feature Store uses feature views during the following tasks:
 
-* Generating training datasets by querying the data source of feature views in order to find historical feature values. A single training data set can consist of features from multiple feature views.
+* Generating training datasets by querying the data source of feature views to find historical feature values. A single training data set can consist of features from multiple feature views.
 
-* Loading of feature values into an online or offline  store. Feature views determine the storage schema in the online or offline store. Feature values can be loaded from batch sources or from stream sources.
+* Loading feature values into an online or offline  store. Feature views determine the storage schema in the online or offline store. Feature values can be loaded from batch sources or from stream sources.
 
 * Retrieving features from the online or offline store. Feature views provide the schema definition for looking up features from the online or offline store.
 
-When you create a feature project, the `feature_repo` subfolder includes a Python file that includes example feature definitions (for example, example_features.py) .
+When you create a feature project, the `feature_repo` subfolder includes a Python file that includes example feature definitions (for example, `example_features.py`) .
 
 To define new features, you can edit the code in the example file or add a new file to the feature repository.
 
-*Note:* Feature views do not work with non-timestamped data. A workaround is to insert dummy timestamps. The following example shows how to create a table with dummy timestamps for PostgreSQL-based data:
+*Note:* Feature views only work with timestamped data. If your data does not contain timestampe, insert dummy timestamps. The following example shows how to create a table with dummy timestamps for PostgreSQL-based data:
 
 [source,python]
 ----
@@ -72,12 +72,12 @@ credit_history = FeatureView(       <2>
 )
 ----
 +
-<1> A data source that provides time-stamped tabular data. A feature view must always have a data source for the generation of training datasets and when materializing feature values into the online store. Possible data sources are batch data sources from data warehouses (BigQuery, Snowflake, Redshift) or data lakes (S3, GCS) or stream sources from which users can push features into Feature Store, and make them available for training or batch scoring ("offline"), for realtime feature serving ("online"), or both.
+<1> A data source that provides time-stamped tabular data. A feature view must always have a data source for the generation of training datasets and when materializing feature values into the online store. Possible data sources are batch data sources from data warehouses (BigQuery, Snowflake, Redshift), data lakes (S3, GCS), or stream sources. Users can push features from data sources into Feature Store, and make the features available for training or batch scoring ("offline"), for realtime feature serving ("online"), or both.
 <2> A name that identifies the feature view in the project. Within a feature view, feature names must be unique.
 <3> Zero or more entities. Feature views generally contain features that are properties of a specific object, in which case that object is defined as an entity and included in the feature view. If the features are not related to a specific object, the feature view might not have entities.
-<4> (optional) Time-to-live (TTL) to limit how far back to look when Feature Store generates historical datasets.
+<4> (Optional) Time-to-live (TTL) to limit how far back to look when Feature Store generates historical datasets.
 <5> One or more feature definitions.
 <6> A reference to the data source.
-<7> Optionally, you can add metadata, such as tags that enable filtering of features when viewing them in the UI, listing them by using a CLI command, or by querying the registry directly.
+<7> (Optional) You can add metadata, such as tags that enable filtering of features when viewing them in the UI, listing them by using a CLI command, or by querying the registry directly.
 
 . Save the file.
