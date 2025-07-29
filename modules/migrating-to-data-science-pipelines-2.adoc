@@ -22,21 +22,24 @@ endif::[]
 Data science pipelines 2.0 contains an installation of Argo Workflows. {org-name} does not support direct customer use of this instance of Argo Workflows.
 
 ifdef::upstream[]
-To install or upgrade to {productname-short} 2.10.0 or later with data science pipelines, ensure that your cluster either does not have an existing Argo Workflows instance, or that the Argo Workflows instance is provided by {productname-short}.
- 
+To install or upgrade to {productname-short} 2.10.0 or later with data science pipelines, ensure that your cluster does not have an existing instance of Argo Workflows that is not installed by {productname-short}.  
 endif::[]
 ifndef::upstream[]
 ifdef::self-managed[]
-To install or upgrade to {productname-short} 2.9 or later with data science pipelines, ensure that your cluster either does not have an existing Argo Workflows instance, or that the Argo Workflows instance is provided by {productname-short}.
+To install or upgrade to {productname-short} 2.9 or later with data science pipelines, ensure that your cluster does not have an existing instance of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 ifdef::cloud-service[]
-To install or upgrade to {productname-short} with data science pipelines 2.0, ensure that your cluster either does not have an existing Argo Workflows instance, or that the Argo Workflows instance is provided by {productname-short}.
+To install or upgrade to {productname-short} with data science pipelines 2.0, ensure that your cluster does not have an existing instance of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 endif::[]
-Argo Workflows resources created by {productname-short} have the following labels in the {openshift-platform} console under *Administration > CustomResourceDefinitions*, in the `argoproj.io` group:
 
-* `app.kubernetes.io/part-of=data-science-pipelines-operator`
-* `app.opendatahub.io/data-science-pipelines-operator=true`
+Argo Workflows resources that are created by {productname-short} have the following labels in the OpenShift Console under *Administration > CustomResourceDefinitions*, in the `argoproj.io` group:
+[source,yaml]
+----
+labels:
+  app.kubernetes.io/part-of: data-science-pipelines-operator
+  app.opendatahub.io/data-science-pipelines-operator: 'true'
+----
 
 If there is an instance of Argo Workflows on your cluster that was not provided by {productname-short}, data science pipelines will be disabled after you install or upgrade {productname-short}. To enable data science pipelines, remove the separate instance of Argo Workflows from your cluster and data science pipelines will be enabled automatically. 
 ====
