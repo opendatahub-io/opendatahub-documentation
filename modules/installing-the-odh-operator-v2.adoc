@@ -8,22 +8,20 @@
 * Your OpenShift cluster has a minimum of 16 CPUs and 32GB of memory across all OpenShift worker nodes.
 * You have cluster administrator privileges for your OpenShift Container Platform cluster.
 * If you are using custom namespaces, you have created and labeled them as required. 
-* If you are installing {productname-short} 2.10.0 or later with data science pipelines, ensure your cluster does not have a separate installation of Argo Workflows that was not installed by {productname-short}.
+* If you are installing {productname-short} 2.10.0 or later with data science pipelines, ensure that your cluster either does not have an existing Argo Workflows instance, or that the Argo Workflows instance was installed by {productname-short}.
 +
 [IMPORTANT]
 ====
-Data science pipelines 2.0 includes an installation of Argo Workflows. {org-name} does not support direct customer usage of this installation of Argo Workflows.
+Data science pipelines 2.0 includes an installation of Argo Workflows. {org-name} does not support direct customer use of this instance of Argo Workflows.
 
-If there is an existing installation of Argo Workflows that is not installed by data science pipelines on your cluster, data science pipelines will be disabled after you install {productname-short}.
-
-To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster. Data science pipelines will be enabled automatically. 
+If there is an existing Argo Workflows instance on your cluster, data science pipelines will be disabled after you install {productname-short}. To enable data science pipelines, remove the separate Argo Workflows instance from your cluster. Data science pipelines will be enabled automatically. 
 
 Argo Workflows resources that are created by {productname-short} have the following labels in the OpenShift Console under *Administration > CustomResourceDefinitions*, in the `argoproj.io` group:
-[source]
+[source,yaml]
 ----
- labels:
-    app.kubernetes.io/part-of: data-science-pipelines-operator
-    app.opendatahub.io/data-science-pipelines-operator: 'true'
+labels:
+  app.kubernetes.io/part-of: data-science-pipelines-operator
+  app.opendatahub.io/data-science-pipelines-operator: 'true'
 ----
 ====
 * If you are using {productname-short} on a cluster running in FIPS mode, any custom container images for data science pipelines must be based on UBI 9 or RHEL 9. This ensures compatibility with FIPS-approved pipeline components and prevents errors related to mismatched OpenSSL or GNU C Library (glibc) versions.

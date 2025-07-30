@@ -19,28 +19,29 @@ endif::[]
 
 [IMPORTANT]
 ====
-Data science pipelines 2.0 contains an installation of Argo Workflows. {org-name} does not support direct customer usage of this installation of Argo Workflows.
+Data science pipelines 2.0 contains an installation of Argo Workflows. {org-name} does not support direct customer use of this instance of Argo Workflows.
 
 ifdef::upstream[]
-To install or upgrade to {productname-short} 2.10.0 or later with data science pipelines, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}. 
+To install or upgrade to {productname-short} 2.10.0 or later with data science pipelines, ensure that your cluster does not have an existing instance of Argo Workflows that is not installed by {productname-short}.  
 endif::[]
 ifndef::upstream[]
 ifdef::self-managed[]
-To install or upgrade to {productname-short} 2.9 or later with data science pipelines, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
+To install or upgrade to {productname-short} 2.9 or later with data science pipelines, ensure that your cluster does not have an existing instance of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 ifdef::cloud-service[]
-To install or upgrade to {productname-short} with data science pipelines 2.0, ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}.
+To install or upgrade to {productname-short} with data science pipelines 2.0, ensure that your cluster does not have an existing instance of Argo Workflows that is not installed by {productname-short}.
 endif::[]
 endif::[]
-If there is an existing installation of Argo Workflows that is not installed by data science pipelines on your cluster, data science pipelines will be disabled after you install or upgrade {productname-short}. To enable data science pipelines, remove the separate installation of Argo Workflows from your cluster. Data science pipelines will be enabled automatically. 
 
 Argo Workflows resources that are created by {productname-short} have the following labels in the OpenShift Console under *Administration > CustomResourceDefinitions*, in the `argoproj.io` group:
-[source]
+[source,yaml]
 ----
- labels:
-    app.kubernetes.io/part-of: data-science-pipelines-operator
-    app.opendatahub.io/data-science-pipelines-operator: 'true'
+labels:
+  app.kubernetes.io/part-of: data-science-pipelines-operator
+  app.opendatahub.io/data-science-pipelines-operator: 'true'
 ----
+
+If there is an instance of Argo Workflows on your cluster that was not provided by {productname-short}, data science pipelines will be disabled after you install or upgrade {productname-short}. To enable data science pipelines, remove the separate instance of Argo Workflows from your cluster and data science pipelines will be enabled automatically. 
 ====
 
 == Upgrading to data science pipelines 2.0
@@ -52,9 +53,9 @@ Starting with {productname-short} 2.16, data science pipelines 1.0 resources are
 
 To upgrade to data science pipelines 2.0, follow these steps:
 
-. Ensure that your cluster does not have an existing installation of Argo Workflows that is not installed by {productname-short}, and then follow the upgrade steps described in link:{odhdocshome}/upgrading-open-data-hub/#upgrading-odh-v2_upgradev2[Upgrading Open Data Hub version 2.0 to version 2.2].
+. Ensure that your cluster does not have an existing Argo Workflows instance, and then follow the upgrade steps described in link:{odhdocshome}/upgrading-open-data-hub/#upgrading-odh-v2_upgradev2[Upgrading Open Data Hub version 2.0 to version 2.2].
 +
-If you upgrade to {productname-short} with data science pipelines 2.0 enabled, and there is an existing installation of Argo Workflows that is not installed by data science pipelines on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable data science pipelines or remove the separate installation of Argo Workflows from your cluster. The component upgrade will then complete automatically. 
+If you upgrade to {productname-short} with data science pipelines 2.0 enabled and your cluster has an existing Argo Workflows instance that was not provided by {productname-short}, {productname-short} components will not be upgraded. To complete the component upgrade, disable data science pipelines or remove the separate instance of Argo Workflows from your cluster. The component upgrade will then complete automatically. 
 . Update your workbenches to use the workbench image version 2024.1 or later. For more information, see link:{odhdocshome}/working-on-data-science-projects/#updating-a-project-workbench_projects[Updating a project workbench].
 . Manually migrate your pipelines from data science pipelines 1.0 to 2.0:
 
