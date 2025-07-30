@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
-[id="deploying-a-feature-store-instance-in-a-data-science-project_{context}"]
-= Deploying a feature store instance in a data science project
+[id="creating-a-feature-store-instance-in-a-data-science-project_{context}"]
+= Creating a feature store instance in a data science project
 
 [role='_abstract']
 You can add an instance of Feature Store to a data science project by creating a custom resource definition (CRD) in the OpenShift console.
@@ -25,6 +25,10 @@ spec:
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 
 * You have enabled the Feature Store component, as described in _Enabling the Feature Store component_.
+
+* You have set up your database infrastructure for the online store, offline store, and registry. 
++
+For an example of setting up and running PostgreSQL (for the registry) and Redis (for the online store), see the Featire Store Operator quick start example: https://github.com/feast-dev/feast/tree/stable/examples/operator-quickstart.
 
 
 ifndef::upstream[]
@@ -50,13 +54,20 @@ endif::[]
 apiVersion: feast.dev/v1alpha1
 kind: FeatureStore
 metadata:
-  name: sample 
+  name: sample-git
 spec:
-  feastProject: my_feast_project 
+  feastProject: credit_scoring_local
+  feastProjectDir:
+    git:
+      url: https://github.com/feast-dev/feast-credit-score-local-tutorial
+      ref: 598a270 
 ----
++
+The `spec.feastProjectDir` references a Feature Store project that is in the Git repository for a Credit Store tutorial.
 
 . Optionally, change the `metadata.name` for the feature store instance.
-. Optionally, edit the name of the feature project that you want to use for organizing your Feature Store code.
+. Optionally, edit `feastProject`, which is the namespace for organizing your Feature Store instance. Note that this project is not the {productname-short} data science project.
+
 . Click *Create*.
 
 When you create the Feature Store CRD file in OpenShift, Feature Store starts a remote online feature server, and configures a default registry and an offline store with the local provider. 
@@ -71,9 +82,17 @@ A _provider_ is a customizable interface that provides default Feature Store com
 
 . In the {openshift-platform} console, select *Workloads* -> *Pods*.
 . Make sure that your data science project (for example, my-ds-project) is selected.
+. Find the pod that has the `feast-` prefix, followed by the `metadata.name` that you specified in the CRD configuration, for example, `sample-git`. 
+. Verify that the pod status is *Running*.
 . Click the `feast` pod and then select *Pod details*. 
 . Scroll down to see the online container. This container is the deployment for the online server. It makes the feature server REST API available in the OpenShift cluster.
 . Scroll up and then click *Terminal*.
+. Run the following command to verify that the `feast` CLI is installed correctly:
++
+----
+$ feast --help
+----
+
 . To view the files for the feature store project, enter the following command:
 +
 ----
@@ -120,9 +139,25 @@ auth:
 	type: no_auth
 entity_key_serialization_version: 3
 ----
-+
-*NOTE:* Although the `offline_store` service is not shown in the `feature_store.yaml` file, the feature store instance uses a DASK file-based offline store. In the `feature_store.yaml` file, the registry type is `file` but it uses a simple SQLite database.
+
+The `feature_store.yaml` file defines the following components:
+
+* *project* — The namespace for the Feature Store instance. Note that this project refers to the feature project rather than the {productname-short} data science project.
+
+* *provider* — The environment in which Feature Store deploys and operates.
+
+* *registry* — The location of the feature registry.
+
+* *online_store* — The location of the online store.
+
+* *auth* - The type of authentication and authorization (`no_auth`, `kubernetes`, or `oidc`) 
+
+* *entity_key_serialization_version* - Specifies the serialization scheme that Feature Store uses when writing data to the online store. 
+
+*NOTE:* Although the `offline_store` location is not included in the `feature_store.yaml` file, the feature store instance uses a DASK file-based offline store. In the `feature_store.yaml` file, the registry type is `file` but it uses a simple SQLite database.
 
 .Next steps
 
-Optionally, you can customize the default configurations for the offline store, online store, or registry by editing the YAML configuration for the Feature Store CRD, as described in _Customizing your feature store configuration_.
+* Optionally, you can customize the default configurations for the offline store, online store, or registry by editing the YAML configuration for the Feature Store CRD, as described in _Customizing your feature store configuration_.
+
+* Give your data scientists access to the data science project so that they can create a workbench. and provide them with a copy of the `feature_store.yaml` file so that they can add it to their workbench IDE, such as Jupyter.

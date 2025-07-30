@@ -1,0 +1,64 @@
+:_module-type: PROCEDURE
+
+[id="making-features-available-for-real-time-inference_{context}"]
+= Making features available for real-time inference
+
+To make features available for real-time inference for use by the data scientists on your team, load feature data to the online store.  
+
+Materialization ensures that the same features are available for both model training and real-time predictions, making your ML workflow robust and reproducible. The online store serves the latest features to models for online prediction. Data scientists on your team with access to your data science project can access the features in the online store.
+
+*Note:* Feature Store uses a "push" method for online serving. This means that the Feature Store pushes feature values to the online store, which reduces the latency of feature retrieval. This is more efficient than a "pull" method, where the model serving system would make a request to the Feature Store to retrieve feature values. 
+
+.Prerequisites
+
+* You have the `cluster-admin` role in {openshift-platform}.
+
+* You have registered the feature views that you want to materialize, as described in _Adding feature definitions and initializing your Feature Store instance_.
+
+
+.Procedure
+
+. To load feature data to the online store, run the `feast materialize` command and specify an historical time range (start and end) for the feature data that you want to load, as shown in the following example:
++
+----
+$ feast materialize 2020-01-01T00:00:00 2022-01-01T00:00:00
+----
++
+Feature Store queries the batch sources for all feature views over the provided time range, and loads the latest feature values into the configured online store, as indicated by output similar to the following:
++
+----
+Materializing 2 feature views to 2025-07-23 17:02:13+00:00 into the sqlite online store.
+
+zipcode_features from 2015-07-26 17:02:18+00:00 to 2025-07-23 17:02:13+00:00:
+credit_history from 2025-04-24 17:02:22+00:00 to 2025-07-23 17:02:13+00:00:
+----
+
+.Verification
+
+Run the following `feast` commands to verify that the feature data is in the online store:
+
+----
+$ feast feature-views list
+----
+
+Example output:
+
+----
+NAME          	ENTITIES 	TYPE
+zipcode_features  {'zipcode'}  FeatureView
+credit_history	{'dob_ssn'}  FeatureView
+total_debt_calc   {'dob_ssn'}  OnDemandFeatureView
+----
+
+----
+$ feast entities list
+----
+
+Example output:
+
+----
+Output:
+NAME 	DESCRIPTION   	TYPE
+zipcode               ValueType.INT64                                                    
+dob_ssn  Date of birth and last four digits of social security number  ValueType.STRING
+----

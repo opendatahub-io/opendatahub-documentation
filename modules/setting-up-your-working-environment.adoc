@@ -1,0 +1,73 @@
+:_module-type: PROCEDURE
+
+[id="setting-up-your-working-environment_{context}"]
+= Setting up your working environment
+
+You must set up your {productname-long} working environment so that you can use features to train models.
+
+.Prerequisites
+
+* You have access to the {productname-short} data science project in which your cluster administrator has set up the Feature Store instance and loaded features in the online store.
+
+* You have a `feature_store.yaml` file, shared by your cluster administrator. 
+
+.Procedure
+
+. From the {productname-short} dashboard, click *Data science projects*. 
+
+. Click the name of the project in which your cluster administrator has set up the Feature Store instance.
+
+ifdef::upstream[]
+. In the data science project in which the cluster administrator set up Feature Store, create a workbench, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-project-workbench_projects[Creating a workbench].
+endif::[]
+ifndef::upstream[]
+. In the data science project in which the cluster administrator set up Feature Store, create a workbench, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a workbench].
+endif::[]
+
+. To open the IDE (for example, JuypterLab), in a new window, click the open icon (image:images/open.png[The open icon]) next to the workbench. 
+
+ifdef::upstream[]
+. Add the `feature_store.yaml` file  to your notebook environment. For example,  upload a local file or clone a Git repo that contains the file, as described in link:{odhdocshome}/working-in-your-data-science-ide/#uploading-an-existing-notebook-file-to-jupyterlab-from-a-git-repository-using-cli_ide[Uploading an existing notebook file to JupyterLab from a Git repository by using the CLI].
+endif::[]
+ifndef::upstream[]
+. Add the `feature_store.yaml` file  to your notebook environment. For example, upload a local file or clone a Git repo that contains the file, as described in link:{rhoaidocshome}{default-format-url}/working_in_your_data_science_ide/working_in_jupyterlab#uploading-an-existing-notebook-file-to-jupyterlab-from-a-git-repository-using-cli_ide[Uploading an existing notebook file to JupyterLab from a Git repository by using the CLI].
+endif::[]
+
+. Open a new Python notebook.
+
+. In a cell, run the following command to install the `feast` CLI: 
++
+----
+! pip install feast 
+----
+
+.Verification
+
+. Run the following command to list the available features:
++
+----
+! feast features list
+----
++
+The output should show a list of features, Feature View and data type similar to the following:
++
+----
+Feature	Feature     View                    Data Type
+credit_card_due	    credit_history			Int64
+mortgage_due	    credit_history			Int64
+student_loan_due	credit_history			Int64
+vehicle_loan_due	credit_history			Int64
+city			    zipcode_features		String
+state			    zipcode_features		String
+location_type		zipcode_features		String
+----
+
+. Optionally, run the following commands to list the registered feast projects, feature views, and entities.
++
+----
+! feast projects list
+
+! feast feature-views list
+
+! feast entities list
+----

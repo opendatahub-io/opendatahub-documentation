@@ -1,0 +1,37 @@
+:_module-type: CONCEPT
+
+[id='about-feature-definitions_{context}']
+= About feature definitions
+ 
+A machine learning feature is a measurable property or attribute within a dataset that a machine learning model can analyze to learn patterns and make decisions. In Feature Store, you define a feature by defining the name and data type of an attribute. 
+
+A feature definition is a schema that includes the name and data type of an attribute, as shown in the following example:
+
+[source,python]
+----
+from feast import Field
+from feast.types import Int64
+
+credit_card_amount_due = Field(
+    name="credit_card_amount_due",
+    dtype=Int64
+)
+----
+
+For a list of supported data types for fields in Feature Store, see the link:https://rtd.feast.dev/en/master/feast.html#module-feast.types[`feast.types` module] in the Feast documentation.
+
+In addition to field name and data type, a feature view can include additional metadata, specified as descriptions of features, as shown in the following example:
+
+[source,python]
+----
+from feast import Field
+from feast.types import Int64
+
+
+credit_card_amount_due = Field(
+    name="credit_card_amount_due",
+    dtype=Int64,
+    description="Credit card amount due for user",
+    tags={"team": "loan_department"},
+)
+----

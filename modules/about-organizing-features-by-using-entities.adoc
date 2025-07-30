@@ -1,0 +1,33 @@
+:_module-type: CONCEPT
+
+[id='about-organizing-features-by-using-entities_{context}']
+= About organizing features by using entities
+ 
+Within a feature view, you can group features that share a conceptual link or relationship together to define an entity. You can think of an entity as a primary key that you can use to fetch features. Typically, an entity maps to the domain of your use case. For example, a fraud detection use case could have customers and transactions as their entities, with group-related features that correspond to these customers and transactions.
+
+A feature does not have to be associated with an entity. For example, a feature of a customer entity could be the number of transactions they have made on an average month, while a feature that is not observed on a specific entity could be the total number of transactions made by all users in the last month. 
+
+[source,python]
+----
+customer = Entity(name='dob_ssn', join_keys=['dob_ssn'])
+----
+
+The entity name uniquely identifies the entity. The join key identifies the physical primary key on which feature values are joined together for feature retrieval.
+
+The following table shows example data with a single entity column (`dob_ssn`) and two feature columns (`credit_card_due` and `rating`).
+
+.Example data showing an entity and features
+[cols="1,3,2,3,2"]
+|===
+| row | timestamp | dob_ssn | credit_card_due | bankruptcies
+
+| 1 | 5/22/2025 0:00:00 | 19530219_5179 | 833  | 0
+
+| 2 | 5/22/2025 0:00:00 | 19500806_6783 | 1297 | 0
+
+| 3 | 5/22/2025 0:00:00 | 19690214_3370 | 3912 | 1
+
+| 4 | 5/22/2025 0:00:00 | 19570513_7405 | 8840 | 0
+
+|===
+

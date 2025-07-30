@@ -1,0 +1,44 @@
+:_module-type: PROCEDURE
+
+[id='specifying-the-data-source-for-features_{context}']
+= Specifying the data source for features
+ 
+As an ML engineer, you must specify the data source for the features that you want to define.
+
+The data source differs depending on whether you are using an offline store, for batch data and training data sets, or an online store, for model inference. Optionally, you can use a Parquet or a Delta-formatted file as the data source. You can specify a local file or a file in storage, such as Amazon Simple Storage Service (S3).
+
+For offline stores, specify a batch data source. You can specify a data warehouse, such as BigQuery, Snowflake, Redshift, or a data lake, such as Amazon S3 or Google Cloud Platform (GCP). You can use Feature Store to ingest and query data across both types of data sources. 
+
+For online stores, specify a database backend, such as Redis, GCP Datastore, or DynamoDB.
+
+.Prerequisites
+
+* You know the location of the data source for your ML workflow.
+
+.Procedure
+
+. In the editor of your choice, create a new Python file.
+
+. At the beginning of the file, specify the data source for the features that you want to define within the file.
++
+For example, use the following code to specify the data source as a Parquet-formatted file:
++
+[source,python]
+----
+from feast import FileSource
+from feast.data_format import ParquetFormat
+
+parquet_file_source = FileSource(
+    file_format=ParquetFormat(),
+    path="file:///feast/customer.parquet",
+)
+----
+
+. Optionally, you can specify the feature repository as the location of the source file, as shown in the following example.
++
+[source,python]
+----
+store = FeatureStore(repo_path="./feature_repo/")
+----
+
+. Save the file.
