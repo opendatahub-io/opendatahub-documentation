@@ -27,6 +27,7 @@ endif::[]
 
 
 .Prerequisites
+
 * You have logged in to {productname-long} with administrator privileges.
  
 ifdef::upstream[]
@@ -37,7 +38,6 @@ ifndef::upstream[]
 endif::[]
 
 * You have created a data science project set up in RHOAI, with an LLM model deployed in it.
-
 
 ifdef::upstream[]
 [NOTE]
@@ -52,7 +52,6 @@ The LM-Eval feature flag is hidden from appearing in the dashboard navigation me
 --
 endif::[]
 
-
 .Procedure
 
 . In the dashboard, click *Models* > *Start evaluation run*. The Model evaluation page appears. It contains: 
@@ -64,7 +63,6 @@ endif::[]
 .. A *Project* dropdown option you can click to show the evaluations relating to one project instead of all projects.
 
 .. A filter to sort your evaluations by model or evaluation name.
-
 +
 The following table outlines the elements and functions of the evaluations list:
 
@@ -88,12 +86,12 @@ The following table outlines the elements and functions of the evaluations list:
 | More options icon
 | Click this icon to access the options to delete the evaluation, or download the evaluation log in JSON format.
 |===
-
++
 [NOTE]
 --
 If you have not run any previous evaluations, only the *Start evaluation run* button appears.
 --
-
++
 . From the *Project* dropdown menu, select the namespace of the project where you want to evaluate the model.
 
 . Click the *Start evaluation run* button. The Model evaluation form appears.
@@ -117,12 +115,11 @@ If you have not run any previous evaluations, only the *Start evaluation run* bu
 .. *Available online*: Allow your model access to the internet to download datasets.
 
 .. *Trust remote code*: Allow your model to trust code which is outside of the project namespace. 
-
++
 [NOTE]
 --
 The Security settings section will appear grayed out if the security option in global settings is set to active. 
 --
-
 +
 . Observe that a model argument summary appears as soon as you fill in the form details.
 
@@ -133,7 +130,7 @@ The Security settings section will appear grayed out if the security option in g
 .. *Tokenizer*: Type the model's tokenizer URL required for the evaluations. 
 
 . Click *Evaluate*. The screen returns to the Model evaluation page of your project and your job appears in the evaluations list.
-
++
 [NOTE]
 ====
 * It can take time for your evaluation to complete, depending on factors including hardware support, model size, and the type of evaluation task(s). Check the status column (_completed_, _running_, or _failed_) which updates continuously.
