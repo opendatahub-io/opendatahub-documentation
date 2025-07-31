@@ -6,17 +6,18 @@ ifdef::context[:parent-context: {context}]
 
 [role='_abstract']
 LM-Eval is a Language Model Evaluation as a Service (LM-Eval-aaS) feature integrated into the TrustyAI Operator. It offers a unified framework for testing generative language models across a wide variety of evaluation tasks. 
-You can access this framework and perform model evaluations through the {productname-long} dashboard or the command line interface (CLI). These instructions are for using the dashboard.
+You can use LM-Eval through the {productname-long} dashboard or the command line interface (CLI).
+These instructions are for using the dashboard.
 
 
 ifndef::upstream[]
 [IMPORTANT]
 ====
 ifdef::self-managed[]
-Model evaluation through the dashboard user interface is currently available in {productname-long} {vernum} as a Technology Preview feature.
+Model evaluation through the dashboard is currently available in {productname-long} {vernum} as a Technology Preview feature.
 endif::[]
 ifdef::cloud-service[]
-Model evaluation through the dashboard user interface is currently available in {productname-long} as a Technology Preview feature.
+Model evaluation through the dashboard is currently available in {productname-long} as a Technology Preview feature.
 endif::[]
 Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
 {org-name} does not recommend using them in production.
@@ -37,12 +38,14 @@ ifndef::upstream[]
 * You have enabled the TrustyAI component, as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-trustyai_monitor#enabling-trustyai-component_monitor[Enabling the TrustyAI component].
 endif::[]
 
-* You have created a data science project set up in {productname-short}, with an LLM model deployed in it.
+* You have created a data science project in {productname-short}.
+
+* You have deployed an LLM model in your data science project.
 
 ifdef::upstream[]
 [NOTE]
 --
-The LM-Eval feature flag is hidden from appearing in the dashboard navigation menu. To show the Model evaluations option in the dashboard, go to the `OdhDashboardConfig` custom resource (CR) in {productname-long} and set the `disableLMEval` value to false. See link:{odhdocshome}/managing-resources/#ref-dashboard-configuration-options_dashboard[Dashboard configuration options] for further details.
+By default, the *Model evaluations* option is hidden from the dashboard navigation menu. To show the *Model evaluations* option in the dashboard, go to the `OdhDashboardConfig` custom resource (CR) in {productname-long} and set the `disableLMEval` value to `false`. For more information about enabling dashboard configuration options, see link:{odhdocshome}/managing-resources/#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
 --
 endif::[]
 ifndef::upstream[]
@@ -95,7 +98,7 @@ The following table outlines the elements and functions of the evaluations list:
 
 . Click the *Start evaluation run* button. The Model evaluation form appears.
 
-. Fill in the details of the form:
+. Fill in the details of the form. The model argument summary appears after you complete the form details:
 
 .. *Model name*: Select a model from this dropdown list. It lists all the deployed LLMs in your project.
 
@@ -125,14 +128,14 @@ The Security settings section will appear grayed out if the security option in g
 
 . Complete the tokenizer settings:
 
-.. *Tokenized requests*: If tokenized requests are set to true, the evaluation requests are broken down to tokens. If set to false, the evaluation dataset remains as raw text. 
+.. *Tokenized requests*: If set to `true`, the evaluation requests are broken down into tokens. If set to `false`, the evaluation dataset remains as raw text. 
 
-.. *Tokenizer*: Type the model's tokenizer URL required for the evaluations. 
+.. *Tokenizer*: Type the model's tokenizer URL that is required for the evaluations. 
 
 . Click *Evaluate*. The screen returns to the Model evaluation page of your project and your job appears in the evaluations list.
 +
 [NOTE]
 ====
-* It can take time for your evaluation to complete, depending on factors including hardware support, model size, and the type of evaluation task(s). Check the status column (_completed_, _running_, or _failed_) which updates continuously.
+* It can take time for your evaluation to complete, depending on factors including hardware support, model size, and the type of evaluation task(s). The status column reports the current status of the evaluation: _completed_, _running_, or _failed_.
 * If your evaluation fails, look at the evaluation pod logs in your cluster for further information on why it did not succeed.
 ====
