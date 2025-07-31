@@ -51,15 +51,15 @@ endif::[]
 ifndef::upstream[]
 [NOTE]
 --
-The LM-Eval feature flag is hidden from appearing in the dashboard navigation menu. To show the Model evaluations option in the dashboard, go to the `OdhDashboardConfig` custom resource (CR) in {productname-long} and set the `disableLMEval` value to false. See link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options] for further details.
+By default, the *Model evaluations* option is hidden from the dashboard navigation menu. To show the *Model evaluations* option in the dashboard, go to the go to the `OdhDashboardConfig` custom resource (CR) in {productname-long} and set the `disableLMEval` value to false. or more information about enabling dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
 --
 endif::[]
 
 .Procedure
 
-. In the dashboard, click *Models* > *Start evaluation run*. The Model evaluation page appears. It contains: 
+. In the dashboard, click *Models* > *Model evaluation runs*. The Model evaluation page appears. It contains:  
 
-.. A *Start evaluation run* button. If you have not run any previous evaluations, this button alone appears.
+.. A *Start evaluation run* button. If you have not run any previous evaluations, only this button appears.
 
 .. A list of evaluations you have previously run, if any exist.
 
@@ -79,7 +79,7 @@ The following table outlines the elements and functions of the evaluations list:
 | The name of the evaluation.
 
 | Model
-| What model was used in the evaluation.
+| The model that was used in the evaluation.
 
 | Evaluated
 | The date and time when the evaluation was created.
@@ -100,27 +100,27 @@ The following table outlines the elements and functions of the evaluations list:
 
 . Fill in the details of the form. The model argument summary appears after you complete the form details:
 
-.. *Model name*: Select a model from this dropdown list. It lists all the deployed LLMs in your project.
+.. *Model name*: Select a model from all the deployed LLMs in your project.
 
 .. *Evaluation name*: Give your evaluation a unique name.
 
-.. *Tasks*: Choose from a dropdown list of the top 100 most common evaluation tasks to use to measure your LLM's capabilities. You can select multiple tasks.
+.. *Tasks*: Choose one or more evaluation tasks against which to measure your LLM. The 100 most common evaluation tasks are supported.
 
 .. *Model type*: Choose the type of model based on the type of prompt-formatting you use:
 
 ... *Local-completion*: You assemble the entire prompt chain yourself. Use this when you want to evaluate models that take a plain text prompt and return a continuation.
 
-... *Local-chat-completion*: The framework injects roles or templates automatically. Use this for models that simulate a conversation by taking a list of chat messages (with roles like `user` and `assistant`) and reply appropriately.
+... *Local-chat-completion*: The framework injects roles or templates automatically. Use this for models that simulate a conversation by taking a list of chat messages with roles like `user` and `assistant` and reply appropriately.
 
-. *Security settings*: Choose _enable_ or _disable_ from the security options for each of the following settings:
-
-.. *Available online*: Allow your model access to the internet to download datasets.
-
-.. *Trust remote code*: Allow your model to trust code which is outside of the project namespace. 
+.. *Security settings*:
+	
+	... *Available online*: Choose *enable* to allow your model to access the internet to download datasets.
+	
+	... *Trust remote code*: Choose *enable* to allow your model to trust code from outside of the project namespace. 
 +
 [NOTE]
 --
-The Security settings section will appear grayed out if the security option in global settings is set to active. 
+The *Security settings* section is grayed out if the security option in global settings is set to `active`.
 --
 
 +
