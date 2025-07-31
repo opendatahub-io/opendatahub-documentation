@@ -1,0 +1,33 @@
+name: Check links in AsciiDoc
+
+on: [push, pull_request]
+
+jobs:
+  check-links:
+    name: Check links in modified files
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Asciidoctor
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y asciidoctor
+
+      - name: Make scripts executable
+        run: |
+          chmod +x scripts/check-links.sh
+          chmod +x scripts/check-modified.sh
+
+      - name: Fetch base branch
+        run: git fetch origin main
+
+      - name: Check links in modified files
+        shell: bash
+        run: |
+          scripts/check-modified.sh
+
+
