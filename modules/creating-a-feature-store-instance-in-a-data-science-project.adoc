@@ -6,7 +6,7 @@
 [role='_abstract']
 You can add an instance of Feature Store to a data science project by creating a custom resource definition (CRD) in the OpenShift console.
 
-The following example shows the minimum requirements for a Feature Store CRD YAML file:
+The following example shows the minimum requirements for a Feature Store CR YAML file:
 
 [.lines_space]
 [.console-input]
@@ -28,7 +28,7 @@ spec:
 
 * You have set up your database infrastructure for the online store, offline store, and registry. 
 +
-For an example of setting up and running PostgreSQL (for the registry) and Redis (for the online store), see the Featire Store Operator quick start example: https://github.com/feast-dev/feast/tree/stable/examples/operator-quickstart.
+For an example of setting up and running PostgreSQL (for the registry) and Redis (for the online store), see the Feature Store Operator quick start example: https://github.com/feast-dev/feast/tree/stable/examples/operator-quickstart.
 
 
 ifndef::upstream[]
@@ -70,7 +70,7 @@ The `spec.feastProjectDir` references a Feature Store project that is in the Git
 
 . Click *Create*.
 
-When you create the Feature Store CRD file in OpenShift, Feature Store starts a remote online feature server, and configures a default registry and an offline store with the local provider. 
+When you create the Feature Store CR in OpenShift, Feature Store starts a remote online feature server, and configures a default registry and an offline store with the local provider. 
 
 A _provider_ is a customizable interface that provides default Feature Store components, such as the registry, offline store, and online store, that target a specific environment, ensuring that these components can work together seamlessly. The local provider uses the following default settings:
 
@@ -158,6 +158,6 @@ The `feature_store.yaml` file defines the following components:
 
 .Next steps
 
-* Optionally, you can customize the default configurations for the offline store, online store, or registry by editing the YAML configuration for the Feature Store CRD, as described in _Customizing your feature store configuration_.
+* Optionally, you can customize the default configurations for the offline store, online store, or registry by editing the YAML configuration for the Feature Store CR, as described in _Customizing your feature store configuration_.
 
 * Give your data scientists access to the data science project so that they can create a workbench. and provide them with a copy of the `feature_store.yaml` file so that they can add it to their workbench IDE, such as Jupyter.
