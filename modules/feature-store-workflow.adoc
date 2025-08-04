@@ -7,30 +7,29 @@ The Feature Store workflow involves the following tasks for ML engineers, OpenSh
 
 *Note:* This Feature Store workflow describes a local implementation. A production client-server architecture with full authorization and role assignments is planned for a future release.
 
-
-*ML Engineer*
-
-* Creates a feature definition file.
-* Defines the data sources and other feature store objects
-
-For more information, see _Appendix A: Defining features_.
-
-
 *Cluster administrator*
 
 . Installs OpenShift AI.
 . Enables the Feature Store component by using the Feature Store operator.
 . Creates a data science project.
 . In the data science project, creates a Feature Store instance by using a `feast.yaml` file that specifies the offline and online stores.
-. Sets up Feature Store, making features available to data scientists to use for model inference
+. Sets up Feature Store so that ML Engineers and data scientists can push and retrieve features to use for model training and inference.
 
 For more information, see _Chapter 2. Configuring Feature Store_.
+
+*ML Engineer*
+
+* Creates a feature definition file.
+* Defines the data sources and other feature store objects.
+* Makes features available for real-time inference.
+
+For more information, see _Chapter 3: Defining features_.
 
 *Data scientist*
 
 . Creates a workbench.
 . Obtains the `feature_store.yaml` from the cluster administrator.
-. Installs Feature Store in their IDE environment, for example Jupyter.
-. Uses `feast` commands to retrieve features for model training.
+. Installs the Feature Store Python SDK in their IDE environment, for example Jupyter.
+. Uses `feast` Python APIs to retrieve features for model training in the workbench.
 
-For more information, see _Chapter 3. Retrieving features for model training_.
+For more information, see _Chapter 4. Retrieving features for model training_.
