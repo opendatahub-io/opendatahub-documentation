@@ -3,11 +3,13 @@
 [id='feature-store-workflow_{context}']
 =  Feature Store workflow
 
-The Feature Store workflow involves the following tasks for ML engineers, OpenShift cluster administrators, and data scientists:	
+The Feature Store workflow involves the following tasks OpenShift cluster administrators, and machine learning (ML) engineers or data scientists:	
 
-*Note:* This Feature Store workflow describes a local implementation. A production client-server architecture with full authorization and role assignments is planned for a future release.
+*Note:* This Feature Store workflow describes a local implementation that is available in this Technology Preview release.
 
 *Cluster administrator*
+
+Installs and configures Feature Store, as described in _Chapter 2. Configuring Feature Store_:
 
 . Installs OpenShift AI.
 . Enables the Feature Store component by using the Feature Store operator.
@@ -15,21 +17,13 @@ The Feature Store workflow involves the following tasks for ML engineers, OpenSh
 . In the data science project, creates a Feature Store instance by using a `feast.yaml` file that specifies the offline and online stores.
 . Sets up Feature Store so that ML Engineers and data scientists can push and retrieve features to use for model training and inference.
 
-For more information, see _Chapter 2. Configuring Feature Store_.
+*ML Engineer or data scientist*
 
-*ML Engineer*
+* Prepares features, as described in _Chapter 3: Defining features_:
+.  Creates a feature definition file.
+.  Defines the data sources and other feature store objects.
+.  Makes features available for real-time inference.
 
-* Creates a feature definition file.
-* Defines the data sources and other feature store objects.
-* Makes features available for real-time inference.
-
-For more information, see _Chapter 3: Defining features_.
-
-*Data scientist*
-
-. Creates a workbench.
-. Obtains the `feature_store.yaml` from the cluster administrator.
-. Installs the Feature Store Python SDK in their IDE environment, for example Jupyter.
-. Uses `feast` Python APIs to retrieve features for model training in the workbench.
-
-For more information, see _Chapter 4. Retrieving features for model training_.
+* Prepares features for model training and real-time inference, as described in _Chapter 4. Retrieving features for model training_:
+. Makes features available to models.
+. Uses `feast` Python APIs to retrieve features for model training and inference.
