@@ -4,13 +4,13 @@
 = Configuring metric-based autoscaling
 
 [role="_abstract"]
-While knative-based autoscaling features are not available in standard deployment modes, you can enable metrics-based autoscaling for an inference service in these deployments. This capability helps you efficiently manage accelerator resources, lower operational costs, and ensure that your inference services meet performance requirements.
+While Knative-based autoscaling features are not available in standard deployment modes, you can enable metrics-based autoscaling for an inference service in these deployments. This capability helps you efficiently manage accelerator resources, lower operational costs, and ensure that your inference services meet performance requirements.
 
-To setup autoscaling for your inference service in standard deployments, you must install and configure the Openshift Custom Metrics Autoscaler (CMA), which is based on Kubernetes Event-driven Autoscaling (KEDA). You can then utilize various model runtime metrics available in OpenShift Monitoring, such as KVCache utilization, Time to First Token (TTFT), and concurrency, to trigger autoscaling of your inference service. 
+To setup autoscaling for your inference service in standard deployments, you must install and configure the OpenShift Custom Metrics Autoscaler (CMA), which is based on Kubernetes Event-driven Autoscaling (KEDA). You can then utilize various model runtime metrics available in OpenShift Monitoring, such as KVCache utilization, Time to First Token (TTFT), and concurrency, to trigger autoscaling of your inference service. 
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
-* You have installed the CMA operator on your cluster. For more informatipn, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/automatically-scaling-pods-with-the-custom-metrics-autoscaler-operator#nodes-cma-autoscaling-custom-install[Installing the custom metrics autoscaler].
+* You have installed the CMA operator on your cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/automatically-scaling-pods-with-the-custom-metrics-autoscaler-operator#nodes-cma-autoscaling-custom-install[Installing the custom metrics autoscaler].
 +
 [NOTE]
 ====
@@ -28,7 +28,7 @@ The `odh-controller` automatically creates the `TriggerAuthentication`, `Service
 . Click the `InferenceService` for your deployed model and then click *YAML*.
 . Under `spec.predictor`, define a metric-based autoscaling policy similar to the following example:
 +
-[source]
+[source,yaml]
 ----
 spec:
   predictor:
@@ -42,16 +42,16 @@ spec:
             metric:
               backend: "prometheus"
               serverAddress: "http://<thanos-service>.<monitoring-namespace>.svc.cluster.local:9092"
-              query: vllm:num_requests_waiting 
+              query: vllm:num_requests_waiting
             authenticationRef:
               name: openshift-monitoring-metrics-auth
             target:
               type: Value
-              value: "2"
+              value: 2
 ----
 +
 The example configures the inference service to autoscale between 1-5 replicas based on the number of requests waiting to be processed, as determined by the `vllm:num_requests_waiting` metric.
-. Click *Save*
+. Click *Save*.
 
 //[role="_additional-resources"]
 //.Additional resources
