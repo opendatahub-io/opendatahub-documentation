@@ -16,10 +16,10 @@ The RBAC implementation in Feature Store is designed to provide the following ca
 
 Feature Store RBAC provides the following benefits:
 
-* *Feature sharing* - Enable multiple teams to share the feature store while ensuring controlled access. This capability allows for collaborative work without compromising data security.
+* *Feature sharing* - Enable multiple teams to share a Feature Store instance while ensuring controlled access. This capability allows for collaborative work without compromising data security.
 * *Access control management* - Prevent unauthorized access to team-specific resources and spaces, governing the operations that each user or group can perform.
 
-The Feature Store permissions model allows you to configure granular permission policies to all the resources defined in a feature store.
+The Feature Store permissions model allows you to configure granular permission policies to all the resources defined in a Feature Store instance.
 
 The permission authorization enforcement is performed when requests are executed through one of the Feature Store (Python) servers:
 
@@ -27,4 +27,4 @@ The permission authorization enforcement is performed when requests are executed
 * The offline feature server (Apache Arrow Flight) uses the gRPC communication protocol to exchange data. This server wraps calls to existing offline store implementations and exposes interfaces as Arrow Flight endpoints.
 * The registry server (gRPC)
 
-NOTE: If you configure the feature store with a local provider (the default), there is no permission enforcement when accessing the Feature Store API.
+NOTE: If you configure your Feature Store with a local provider (the default), there is no permission enforcement when accessing the Feature Store API.
