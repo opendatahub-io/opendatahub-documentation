@@ -1,12 +1,12 @@
 :_module-type: PROCEDURE
 
-[id="configuring-metric-based-autoscaling_{context}"]
-= Configuring metric-based autoscaling
+[id="configuring-metrics-based-autoscaling_{context}"]
+= Configuring metrics-based autoscaling
 
 [role="_abstract"]
 While Knative-based autoscaling features are not available in standard deployment modes, you can enable metrics-based autoscaling for an inference service in these deployments. This capability helps you efficiently manage accelerator resources, lower operational costs, and ensure that your inference services meet performance requirements.
 
-To setup autoscaling for your inference service in standard deployments, you must install and configure the OpenShift Custom Metrics Autoscaler (CMA), which is based on Kubernetes Event-driven Autoscaling (KEDA). You can then utilize various model runtime metrics available in OpenShift Monitoring, such as KVCache utilization, Time to First Token (TTFT), and concurrency, to trigger autoscaling of your inference service. 
+To set up autoscaling for your inference service in standard deployments, you must install and configure the OpenShift Custom Metrics Autoscaler (CMA), which is based on Kubernetes Event-driven Autoscaling (KEDA). You can then utilize various model runtime metrics available in OpenShift Monitoring, such as KVCache utilization, Time to First Token (TTFT), and concurrency, to trigger autoscaling of your inference service. 
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -21,7 +21,7 @@ The `odh-controller` automatically creates the `TriggerAuthentication`, `Service
 
 .Procedure
 
-. Log in to the OpenShift console as a cluster administrator.
+. Log in to the {openshift-platform} console as a cluster administrator.
 . In the *Administrator* perspective, click *Home* -> *Search*.
 . Select the project where you have deployed your model.
 . From the *Resources* dropdown menu, select *InferenceService*.
@@ -35,13 +35,13 @@ spec:
     # …
     minReplicas: 1
     maxReplicas: 5
-    autoScaling:
+    autoscaling:
       metrics:
         - type: External
           external:
             metric:
               backend: "prometheus"
-              serverAddress: "http://<thanos-service>.<monitoring-namespace>.svc.cluster.local:9092"
+              serverAddress: "https://<thanos-service>.<monitoring-namespace>.svc.cluster.local:9092"
               query: vllm:num_requests_waiting
             authenticationRef:
               name: openshift-monitoring-metrics-auth
@@ -55,4 +55,3 @@ The example configures the inference service to autoscale between 1-5 replicas b
 
 //[role="_additional-resources"]
 //.Additional resources
-// link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/monitoring/index[Monitoring]
