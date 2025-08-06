@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
 [id="creating-a-feature-store-instance-in-a-data-science-project_{context}"]
-= Creating a feature store instance in a data science project
+= Creating a Feature Store instance in a data science project
 
 [role='_abstract']
 You can add an instance of Feature Store to a data science project by creating a custom resource definition (CRD) in the OpenShift console.
@@ -65,7 +65,7 @@ spec:
 +
 The `spec.feastProjectDir` references a Feature Store project that is in the Git repository for a Credit Store tutorial.
 
-. Optionally, change the `metadata.name` for the feature store instance.
+. Optionally, change the `metadata.name` for the Feature Store instance.
 . Optionally, edit `feastProject`, which is the namespace for organizing your Feature Store instance. Note that this project is not the {productname-short} data science project.
 
 . Click *Create*.
@@ -154,10 +154,10 @@ The `feature_store.yaml` file defines the following components:
 
 * *entity_key_serialization_version* - Specifies the serialization scheme that Feature Store uses when writing data to the online store. 
 
-*NOTE:* Although the `offline_store` location is not included in the `feature_store.yaml` file, the feature store instance uses a DASK file-based offline store. In the `feature_store.yaml` file, the registry type is `file` but it uses a simple SQLite database.
+*NOTE:* Although the `offline_store` location is not included in the `feature_store.yaml` file, the Feature Store instance uses a DASK file-based offline store. In the `feature_store.yaml` file, the registry type is `file` but it uses a simple SQLite database.
 
 .Next steps
 
-* Optionally, you can customize the default configurations for the offline store, online store, or registry by editing the YAML configuration for the Feature Store CR, as described in _Customizing your feature store configuration_.
+* Optionally, you can customize the default configurations for the offline store, online store, or registry by editing the YAML configuration for the Feature Store CR, as described in _Customizing your Feature Store configuration_.
 
 * Give your ML engineers and data scientists access to the data science project so that they can create a workbench. and provide them with a copy of the `feature_store.yaml` file so that they can add it to their workbench IDE, such as Jupyter.
