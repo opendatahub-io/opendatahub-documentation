@@ -33,16 +33,15 @@ To set up autoscaling for your inference service in standard deployments, you mu
 ----
 kind: InferenceService
 metadata:
-  # ...
+  name: my-inference-service
+  namespace: my-namespace
   annotations:
-    # ...
     serving.kserve.io/autoscalerClass: keda
 spec:
   predictor:
-    # …
     minReplicas: 1
     maxReplicas: 5
-    autoscaling:
+    autoScaling:
       metrics:
         - type: External
           external:
@@ -51,9 +50,8 @@ spec:
               serverAddress: "https://thanos-querier.openshift-monitoring.svc:9092"
               query: vllm:num_requests_waiting
             authenticationRef:
-              authModes: bearer
-              authenticationRef:
-                name: inference-prometheus-auth
+              name: inference-prometheus-auth
+            authModes: bearer
             target:
               type: Value
               value: 2
@@ -62,5 +60,15 @@ spec:
 The example configuration sets up the inference service to autoscale between 1 and 5 replicas based on the number of requests waiting to be processed, as indicated by the `vllm:num_requests_waiting` metric.
 . Click *Save*.
 
+.Verification
+
+* Confirm that the KEDA `ScaledObject` resource is created and that the &minReplicaCount*, *maxReplicacount* and *Target* values match your configuration:
++
+[source, console]
+----
+oc get scaledobject -n <namespace>
+oc describe scaledobject <scaledobject-name> -n <namespace>
+---- 
+* Check
 //[role="_additional-resources"]
 //.Additional resources
