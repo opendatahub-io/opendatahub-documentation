@@ -41,7 +41,7 @@ spec:
   predictor:
     minReplicas: 1
     maxReplicas: 5
-    autoScaling:
+    autoscaling:
       metrics:
         - type: External
           external:
@@ -49,9 +49,10 @@ spec:
               backend: "prometheus"
               serverAddress: "https://thanos-querier.openshift-monitoring.svc:9092"
               query: vllm:num_requests_waiting
-            authenticationRef:
-              name: inference-prometheus-auth
-            authModes: bearer
+          authenticationRef:
+            name: inference-prometheus-auth
+          authModes: 
+            - bearer
             target:
               type: Value
               value: 2
