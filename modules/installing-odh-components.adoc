@@ -4,10 +4,10 @@
 = Installing Open Data Hub components
 
 [role='_abstract']
-You can use the OpenShift web console to install specific components of Open Data Hub on your cluster when version 2 of the Open Data Hub Operator is already installed on the cluster.
+You can use the OpenShift web console to install specific components of Open Data Hub on your cluster when the Open Data Hub Operator is already installed on the cluster.
 
 .Prerequisites
-* You have installed version 2 of the Open Data Hub Operator.
+* You have installed the Open Data Hub Operator.
 * You can log in as a user with `cluster-admin` privileges.
 ifdef::upstream[]
 * If you want to use the `trustyai` component, you must enable user workload monitoring as described in link:{odhdocshome}/monitoring-data-science-models/#configuring-monitoring-for-the-multi-model-serving-platform_monitor[Configuring monitoring for the multi-model serving platform].
@@ -47,8 +47,10 @@ endif::[]
 . On the *Create DSCInitialization* page, configure by using *Form* view or *YAML* view. For general information about the supported components, see link:https://opendatahub.io/docs/tiered-components[Tiered Components].
 * Configure by using *Form* view:
 .. In the *Name* field, enter a value.
+.. If you are using a custom applications namespace, enter the namespace in the *Applications Namespace* field.
 .. In the *Components* section, expand each component and set the *managementState* to *Managed* or *Removed*.
 * Configure by using *YAML* view:
+.. If you are using a custom applications namespace, specify the namespace in the `spec.applicationsNamespace` field.
 .. In the `spec.components` section, for each component shown, set the value of the `managementState` field to either `Managed` or `Removed`.
 . Click *Create*.
 . Wait until the status of the DSCInitialization is *Ready*.
@@ -57,8 +59,10 @@ endif::[]
 * Configure by using *Form* view:
 .. In the *Name* field, enter a value.
 .. In the *Components* section, expand each component and set the *managementState* to *Managed* or *Removed*.
+.. If you are using a custom workbench namespace, enter the namespace in the *workbenchNamespace* field.
 * Configure by using *YAML* view:
 .. In the `spec.components` section, for each component shown, set the value of the `managementState` field to either `Managed` or `Removed`.
+.. If you are using a custom workbench namespace, specify the namespace in the `spec.workbenches.workbenchNamespace` field.
 . Click *Create*.
 
 
@@ -68,7 +72,7 @@ endif::[]
 
 *Note:* In the {productname-long} dashboard, users can view the list of the installed {productname-short} components, their corresponding source (upstream) components, and the versions of the installed components, as described in link:{odhdocshome}/installing-open-data-hub/#viewing-installed-components_get-started[Viewing installed {productname-short} components].
 
-.Next Step
+.Next step
 * link:{odhdocshome}/installing-open-data-hub/#accessing-the-odh-dashboard_installv2[Accessing the Open Data Hub dashboard].
 
 [role="_additional-resources"]

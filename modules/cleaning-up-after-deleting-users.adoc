@@ -4,35 +4,30 @@
 = Cleaning up after deleting users
 
 [role='_abstract']
-ifdef::upstream,self-managed[]
-After you remove a user's access to {productname-long} or Jupyter, you must also delete the configuration files for the user from {openshift-platform}.
-endif::[]
-ifdef::cloud-service[]
-After you remove a user's access to {productname-long} or Jupyter, you must also delete the configuration files for the user from OpenShift.
-endif::[]
+After you remove a user's access to {productname-long}, you must also delete the configuration files for the user from {openshift-platform}.
 {org-name} recommends that you back up the user's data before removing their configuration files.
 
 .Prerequisites
 
 * (Optional) If you want to completely remove the user's access to {productname-short}, you have removed their credentials from your identity provider.
-* You have revoked the user's access to Jupyter.
-
 ifdef::cloud-service[]
 * You have backed up the user's storage data from Amazon EBS or Google Persistent Disk.
 endif::[]
-
 ifdef::self-managed[]
 * You have backed up the user's storage data.
 endif::[]
-
 * You have logged in to the {openshift-platform} web console as a user with the `cluster-admin` role.
 
-//* You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
-
 .Procedure
+
 . Delete the user's persistent volume claim (PVC).
 .. Click *Storage* -> *PersistentVolumeClaims*.
-.. If it is not already selected, select the `rhods-notebooks` project from the project list.
+ifdef::cloud-service[]
+.. If it is not already selected, select the `pass:attributes[{workbench-default-namespace}]` project from the project list.
+endif::[]
+ifdef::self-managed,upstream[]
+.. If it is not already selected, select the default workbench project (`pass:attributes[{workbench-default-namespace}]` or your custom workbench namespace) from the project list.
+endif::[]
 .. Locate the  `jupyter-nb-<username>` PVC.
 +
 Replace `<username>` with the relevant user name.
@@ -43,7 +38,12 @@ The *Delete PersistentVolumeClaim* dialog appears.
 .. Click *Delete*.
 . Delete the user's ConfigMap.
 .. Click *Workloads* -> *ConfigMaps*.
-.. If it is not already selected, select the `rhods-notebooks` project from the project list.
+ifdef::cloud-service[]
+.. If it is not already selected, select the `pass:attributes[{workbench-default-namespace}]` project from the project list.
+endif::[]
+ifdef::self-managed,upstream[]
+.. If it is not already selected, select the default workbench project (`pass:attributes[{workbench-default-namespace}]` or your custom workbench namespace) from the project list.
+endif::[]
 .. Locate the `jupyterhub-singleuser-profile-<username>` ConfigMap.
 +
 Replace `<username>` with the relevant user name.
@@ -54,8 +54,6 @@ The *Delete ConfigMap* dialog appears.
 .. Click *Delete*.
 
 .Verification
-// TODO: When RHOAIENG-1137 is corrected, change to:
-//* The user is not visible in the administration interface for basic workbenches.
-* The user cannot access Jupyter any more, and sees an "Access permission needed" message if they try. 
+* The user cannot access {productname-short} and sees an "Access permission needed" message if they try. 
 * The user's single-user profile, persistent volume claim (PVC), and ConfigMap are not visible in {openshift-platform}.
 
