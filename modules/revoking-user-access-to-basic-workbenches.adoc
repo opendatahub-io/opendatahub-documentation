@@ -21,8 +21,8 @@ endif::[]
 .Procedure
 . In the {openshift-platform} web console, click *User Management* -> *Groups*.
 . Click the name of the group that you want to remove the user from.
-** For administrative users, click the name of your administrator group, for example, {oai-admin-group}.
-** For non-administrator users, click the name of your user group, for example, {oai-user-group}.
+** For administrative users, click the name of your administrator group, for example, {admin-group}.
+** For non-administrator users, click the name of your user group, for example, {user-group}.
 
 +
 The *Group details* page for the group appears.
@@ -32,8 +32,13 @@ The *Group details* page for the group appears.
 
 
 .Verification
-* Check the *Users* section on the *Details* tab and confirm that the user that you removed is not visible.
-* In the `rhods-notebooks` project, check under *Workloads* -> *Pods* and ensure that there is no workbench pod for this user. If you see a pod named `jupyter-nb-<username>-*` for the user that you have removed, delete that pod to ensure that the deleted user is not consuming resources on the cluster.
+* In the *Users* section on the *Details* tab of the *Group details* page, confirm that the user that you removed is not visible.
+ifdef::cloud-service[]
+In *Workloads* -> *Pods*, select the `pass:attributes[{workbench-default-namespace}]` project and ensure that there is no workbench pod for this user. If you see a pod named `jupyter-nb-<username>-*` for the user that you have removed, delete that pod to ensure that the deleted user is not consuming resources on the cluster.
+endif::[]
+ifdef::self-managed,upstream[]
+In *Workloads* -> *Pods*, select the default workbench project (`pass:attributes[{workbench-default-namespace}]` or your custom workbench namespace), and ensure that there is no workbench pod for this user. If you see a pod named `jupyter-nb-<username>-*` for the user that you have removed, delete that pod to ensure that the deleted user is not consuming resources on the cluster.
+endif::[]
 * In the {productname-short} dashboard, check the list of data science projects. Delete any projects that belong to the user.
 
 //[role="_additional-resources"]

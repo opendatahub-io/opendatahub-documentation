@@ -4,30 +4,76 @@
 = Configuring custom namespaces
 
 [role='_abstract']
-By default, {productname-short} uses predefined namespaces, but you can define a custom namespace for the operator and `DSCI.applicationNamespace` as needed. Namespaces created by {productname-short} typically include `openshift` or `redhat` in their name. Do not rename these system namespaces because they are required for {productname-short} to function properly.
+
+By default, {productname-short} uses the following predefined namespaces:
+
+* `pass:attributes[{operator-default-namespace}]` contains the {productname-long} Operator
+* `pass:attributes[{dbd-config-default-namespace}]` includes the dashboard and other required components of {productname-short}
+* `pass:attributes[{workbench-default-namespace}]` is where basic workbenches are deployed by default
+//* `pass:attributes[{monitoring-default-namespace}]` contains services for monitoring
+
+If needed, you can define custom namespaces to use instead of the predefined ones before installing {productname-short}. This flexibility supports environments with naming policies or conventions and allows cluster administrators to control where components such as workbenches are deployed.
+
+ifndef::upstream[]
+Namespaces created by {productname-short} typically include `openshift` or `redhat` in their name. Do not rename these system namespaces because they are required for {productname-short} to function properly.
+endif::[]
+ifdef::upstream[]
+Namespaces created by {productname-short} typically include `openshift` or `opendatahub` in their name. Do not rename these system namespaces because they are required for {productname-short} to function properly.
+endif::[]
 
 .Prerequisites
+
 * You have access to an {productname-short} cluster with cluster administrator privileges.
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You have not yet installed the {productname-long} Operator.
 
 .Procedure
+
 . In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the OpenShift CLI as shown in the following example:
 +
 [source,subs="+quotes"]
 ----
 oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
-. Enter the following command to create the custom namespace:
+
+. Optional: To configure a custom operator namespace:
+
+.. Create a new namespace:
 +
 [source]
 ----
-oc create namespace <custom_namespace>
+oc create namespace <operator_namespace>
 ----
-. If you are creating a namespace for a `DSCI.applicationNamespace`, enter the following command to add the correct label:
+
+.. When you install the {productname-long} Operator, use this namespace instead of `pass:attributes[{operator-default-namespace}]`.
+
+. Optional: To configure a custom applications namespace: 
+
+.. Create the namespace:
++
+[source]
+----
+oc create namespace <application_namespace>
+----
+
+.. Add the required label:
 +
 [source]
 ----
 oc label namespace <application_namespace> opendatahub.io/application-namespace=true
 ----
 
-//.Additional information
+. Optional: To configure a custom workbench namespace: 
+
+.. Create the namespace:
++
+[source]
+----
+oc create namespace <workbench_namespace>
+----
+
+.. When you install the {productname-long} components, specify this namespace 
+for the `spec.workbenches.workbenchNamespace` field. You cannot change the default workbench namespace after you have installed the {productname-long} Operator.
+
+.Next step
+* Install the {productname-long} Operator.

@@ -47,26 +47,20 @@ The OpenShift cluster that hosts the user's workbench might not have access to e
 endif::[]
 
 .Diagnosis
+. Log in to the {openshift-platform} web console.
+. Delete and restart the workbench pod for this user.
 ifdef::cloud-service[]
-. Log in to the OpenShift web console.
+.. Click *Workloads* -> *Pods* and set the *Project* to `pass:attributes[{workbench-default-namespace}]`.
 endif::[]
 ifdef::upstream,self-managed[]
-. Log in to the {openshift-platform} web console.
+.. Click *Workloads* -> *Pods* and set the *Project* to `pass:attributes[{workbench-default-namespace}]` or your custom workbench namespace.
 endif::[]
-. Delete and restart the workbench pod for this user.
-.. Click *Workloads* -> *Pods* and set the *Project* to `rhods-notebooks`.
-
 .. Search for the workbench pod that belongs to this user, for example, `jupyter-nb-<username>-*`.
 +
-If the workbench pod exists, an intermittent failure may have occurred in the workbench pod.
+If the workbench pod exists, an intermittent failure might have occurred in the workbench pod.
 +
 If the workbench pod for the user does not exist, continue with diagnosis.
-ifdef::upstream,self-managed[]
 . Check the resources currently available in the {openshift-platform} cluster against the resources required by the selected workbench image.
-endif::[]
-ifdef::cloud-service[]
-. Check the resources currently available in the OpenShift cluster against the resources required by the selected workbench image.
-endif::[]
 +
 If worker nodes with sufficient CPU and RAM are available for scheduling in the cluster, continue with diagnosis.
 . Check the state of the workbench pod.
@@ -76,12 +70,7 @@ If worker nodes with sufficient CPU and RAM are available for scheduling in the 
 * If there was an intermittent failure of the workbench pod:
 .. Delete the workbench pod that belongs to the user.
 .. Ask the user to start their workbench again.
-ifdef::upstream,self-managed[]
 * If the workbench does not have sufficient resources to run the selected workbench image, either add more resources to the {openshift-platform} cluster, or choose a smaller image size.
-endif::[]
-ifdef::cloud-service[]
-* If the workbench does not have sufficient resources to run the selected workbench image, either add more resources to the OpenShift cluster, or choose a smaller image size.
-endif::[]
 ifndef::upstream[]
 * If the workbench pod is in a *FAILED* state:
 .. Retrieve the logs for the `jupyter-nb-*` pod and send them to {org-name} Support for further evaluation.
@@ -96,13 +85,13 @@ The user might have run out of storage space on their workbench.
 
 .Diagnosis
 . Log in to Jupyter and start the workbench that belongs to the user having problems. If the workbench does not start, follow these steps to check whether the user has run out of storage space:
-ifdef::upstream,self-managed[]
 .. Log in to the {openshift-platform} web console.
-endif::[]
 ifdef::cloud-service[]
-.. Log in to the OpenShift web console.
+.. Click *Workloads* -> *Pods* and set the *Project* to `pass:attributes[{workbench-default-namespace}]`.
 endif::[]
-.. Click *Workloads* -> *Pods* and set the *Project* to `rhods-notebooks`.
+ifdef::upstream,self-managed[]
+.. Click *Workloads* -> *Pods* and set the *Project* to `pass:attributes[{workbench-default-namespace}]` or your custom workbench namespace.
+endif::[]
 .. Click the workbench pod that belongs to this user, for example, `jupyter-nb-<idp>-<username>-*`.
 .. Click *Logs*. The user has exceeded their available capacity if you see lines similar to the following:
 +

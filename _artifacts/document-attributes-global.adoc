@@ -11,6 +11,11 @@ ifdef::cloud-service[]
 :install-package: Add-on
 :openshift-platform: OpenShift
 :dbd-config-default-namespace: redhat-ods-applications
+:operator-default-namespace: redhat-ods-operator
+:workbench-default-namespace: rhods-notebooks
+:authorino-default-namespace: redhat-ods-applications-auth-provider
+:mr-default-namespace: rhoai-model-registries
+:monitoring-default-namespace: redhat-ods-monitoring
 endif::[]
 
 // conditional entities for RHOAI-SM
@@ -25,6 +30,11 @@ ifdef::self-managed[]
 :openshift-platform: OpenShift Container Platform
 :openshift-platform-url: openshift-container-platform
 :dbd-config-default-namespace: redhat-ods-applications
+:operator-default-namespace: redhat-ods-operator
+:workbench-default-namespace: rhods-notebooks
+:authorino-default-namespace: redhat-ods-applications-auth-provider
+:mr-default-namespace: rhoai-model-registries
+:monitoring-default-namespace: redhat-ods-monitoring
 endif::[]
 
 ifdef::upstream[]
@@ -32,6 +42,8 @@ ifdef::upstream[]
 :productname-short: Open Data Hub
 :odh-user-group: pass:q,a[`odh-users`]
 :odh-admin-group: pass:q,a[`odh-admins`]
+:user-group: pass:q,a[`odh-users`]
+:admin-group: pass:q,a[`odh-admins`]
 :url-productname-long: open_data_hub
 :url-productname-short: open_data_hub
 // change this to match the stage-<ver> branch, e.g. 1-latest, 1.n, to get the correct title for release notes
@@ -41,11 +53,18 @@ ifdef::upstream[]
 :openshift-platform-url: openshift-container-platform
 :odhdocshome: https://opendatahub.io/docs
 :dbd-config-default-namespace: opendatahub
+:operator-default-namespace: openshift-operators
+:workbench-default-namespace: opendatahub
+:authorino-default-namespace: opendatahub-auth-provider
+:mr-default-namespace: odh-model-registries
+:monitoring-default-namespace: opendatahub
 endif::[]
 
 ifndef::upstream[]
 :oai-user-group: pass:q,a[`rhoai-users`]
 :oai-admin-group: pass:q,a[`rhoai-admins`]
+:user-group: pass:q,a[`rhoai-users`]
+:admin-group: pass:q,a[`rhoai-admins`]
 endif::[]
 
 // conditional entities for release note titles using numbers or not
