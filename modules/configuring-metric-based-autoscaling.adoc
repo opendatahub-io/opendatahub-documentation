@@ -53,9 +53,9 @@ spec:
             name: inference-prometheus-auth
           authModes: 
             - bearer
-            target:
-              type: Value
-              value: 2
+          target:
+            type: Value
+            value: 2
 ----
 +
 The example configuration sets up the inference service to autoscale between 1 and 5 replicas based on the number of requests waiting to be processed, as indicated by the `vllm:num_requests_waiting` metric.
