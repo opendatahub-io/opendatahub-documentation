@@ -6,7 +6,7 @@
 [role="_abstract"]
 While Knative-based autoscaling features are not available in standard deployment modes, you can enable metrics-based autoscaling for an inference service in these deployments. This capability helps you efficiently manage accelerator resources, lower operational costs, and ensure that your inference services meet performance requirements.
 
-To set up autoscaling for your inference service in standard deployments, you must install and configure the OpenShift Custom Metrics Autoscaler (CMA), which is based on Kubernetes Event-driven Autoscaling (KEDA). You can then utilize various model runtime metrics available in OpenShift Monitoring, such as KVCache utilization, Time to First Token (TTFT), and concurrency, to trigger autoscaling of your inference service. 
+To set up autoscaling for your inference service in standard deployments, you must install and configure the OpenShift Custom Metrics Autoscaler (CMA), which is based on Kubernetes Event-driven Autoscaling (KEDA). You can then utilize various model runtime metrics available in OpenShift Monitoring, such as KVCache utilization, Time to First Token (TTFT), and Concurrency, to trigger autoscaling of your inference service. 
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -14,9 +14,10 @@ To set up autoscaling for your inference service in standard deployments, you mu
 +
 [NOTE]
 ====
-The `odh-controller` automatically creates the `TriggerAuthentication`, `ServiceAccount`, `Role`, `RoleBinding`, and `Secret` resources to allow CMA access to OpenShift Monitoring metrics.
+* You must configure the `KedaController` resource after installing the CMA operator. 
+* The `odh-controller` automatically creates the `TriggerAuthentication`, `ServiceAccount`, `Role`, `RoleBinding`, and `Secret` resources to allow CMA access to OpenShift Monitoring metrics. 
 ====
-* You have enabled User Workload Monitoring (UWM) for your cluster. For more information, see https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-user-workload-monitoring[Configuring user workload monitoring].
+* You have enabled User Workload Monitoring (UWM) for your cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-user-workload-monitoring[Configuring user workload monitoring].
 * You have deployed a model on the single-model serving platform in standard deployment mode.
 
 .Procedure
@@ -30,6 +31,12 @@ The `odh-controller` automatically creates the `TriggerAuthentication`, `Service
 +
 [source,yaml]
 ----
+kind: InferenceService
+metadata:
+  # ...
+  annotations:
+    # ...
+    serving.kserve.io/autoscalerClass: keda
 spec:
   predictor:
     # …
@@ -41,16 +48,18 @@ spec:
           external:
             metric:
               backend: "prometheus"
-              serverAddress: "https://<thanos-service>.<monitoring-namespace>.svc.cluster.local:9091"
+              serverAddress: "https://thanos-querier.openshift-monitoring.svc:9092"
               query: vllm:num_requests_waiting
             authenticationRef:
-              name: openshift-monitoring-metrics-auth
+              authModes: bearer
+              authenticationRef:
+                name: inference-prometheus-auth
             target:
               type: Value
               value: 2
 ----
 +
-The example configures the inference service to autoscale between 1-5 replicas based on the number of requests waiting to be processed, as determined by the `vllm:num_requests_waiting` metric.
+The example configuration sets up the inference service to autoscale between 1 and 5 replicas based on the number of requests waiting to be processed, as indicated by the `vllm:num_requests_waiting` metric.
 . Click *Save*.
 
 //[role="_additional-resources"]
