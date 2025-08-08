@@ -6,7 +6,7 @@ ifdef::context[:parent-context: {context}]
 = Updating LMEval Job configuration using the CLI
 
 [role='_abstract']
-Follow these steps to enable online access (`allowOnline`) and remote code execution (`allowCodeExecution`) modes in the CLI for LMEval Jobs. 
+Follow these steps to enable online access (`allowOnline`) and remote code execution (`allowCodeExecution`) modes using the CLI for LMEval Jobs. 
 
 [IMPORTANT]
 ====
@@ -51,7 +51,7 @@ If the `opendatahub.io/managed` annotation does not exist, the default value is 
 | `false`
 | Allows the user to manage the TrustyAI operator.
 |===
-. Update the settings for the TrustyAI operator to enable external connectivity and remote code execution:
+. Update the settings for the TrustyAI operator to enable external connectivity or remote code execution, or both:
 +
 [source,sh]
 ----
@@ -74,10 +74,23 @@ oc patch configmap trustyai-service-operator-config -n redhat-ods-applications \
 | `false`
 | Allows execution of code downloaded alongside datasets or tokenizers.
 |===
-
 . Restart the TrustyAI operator to apply the configuration changes:
-
++
 [source,sh]
 ----
 oc rollout restart deployment trustyai-service-operator-controller-manager -n redhat-ods-applications
+----
+. Set the flags on your `LMEvalJob` resource:
++
+[source,sh]
+----
+oc rollout restart deployment trustyai-service-operator-controller-manager -n redhat-ods-applications
+----
+. Enable online access and/or code execution on the specific `LMEvalJob`:
++
+[source,sh]
+----
+# Patch an existing job (example name: example-lmeval)
+oc patch lmevaljob example-lmeval -n <user-or-target-namespace> \
+  --type merge -p '{"spec":{"allowOnline":true,"allowCodeExecution":true}}'
 ----
