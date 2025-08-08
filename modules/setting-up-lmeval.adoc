@@ -76,14 +76,13 @@ You can configure the following properties for LM-Eval:
 | true
 | Whether LMEval jobs can set the online mode to `on` to access artifacts (models, datasets, tokenizers) from the internet. 
 
-| `lmes-code-execution`
+| `lmes-allow-code-execution`
 | true
 | Determines whether LMEval jobs can set the `trust remote code` mode to `on`.
  
 |===
 
 After updating the settings in the `ConfigMap`, restart the operator to apply the new values.
-
 
 // Notes on the 'allow online' setting and patches 
 
@@ -100,29 +99,6 @@ endif::[]
 ifndef::upstream[]
 [IMPORTANT]
 --
-The `allowOnline` and `allowCodeExecution` settings are *disabled* by default at the operator level in {productname-long}. This disallows job permissions to automatically download artifacts from external sources. 
+The `allowOnline` and `allowCodeExecution` settings are *disabled* by default at the operator level in {productname-long}. LMEval jobs do not have internet access or permission to run any externally downloaded code unless explicitly enabled.
 --
-
-.Enabling allowOnline and allowCodeExecution modes
-
-You can set your `LMEvalJob` to access online content by updating and patching the TrustyAI operator `ConfigMap`. 
-
-. In the `ConfigMap`, change the `opendatahub.io/managed` setting to `'false'`. 
-
-. Patch the TrustyAI operator `ConfigMap` with the following `kubectl` code: 
-+
-[source]
-----
- kubectl patch configmap trustyai-service-operator-config -n redhat-ods-applications \
---type merge -p '{"data":{"lmes-allow-online":"true","lmes-allow-code-execution":"true"}}'
-----
-+
-. Restart the TrustyAI operator with the following `kubectl` command: 
-+
-[source]
-----
-kubectl rollout restart deployment trustyai-service-operator-controller-manager -n redhat-ods-applications
-----
-
 endif::[]
-
