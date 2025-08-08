@@ -9,7 +9,7 @@ Follow these steps to enable online access (`allowOnline`) and remote code execu
 
 [IMPORTANT]
 ====
-Enabling online access and code execution involves a security risk. Only use these configurations if you trust the source(s).
+Enabling online access or code execution involves a security risk. Only use these configurations if you trust the source(s).
 ====
 
 .Prerequisites
@@ -25,16 +25,16 @@ Enabling online access and code execution involves a security risk. Only use the
 
 . Under *Annotations*, add:
 +
-[source, sh]
+[source, yaml]
 ----
-opendatahub.io/managed: false
+opendatahub.io/managed: "false"
 ----
 . Under *Data*, add or update:
 +
-[source, sh]
+[source, yaml]
 ----
-lmes-allow-online: true
-lmes-allow-code-execution: true
+lmes-allow-online: "true"
+lmes-allow-code-execution: "true"
 ----
 . Save the ConfigMap.
 
