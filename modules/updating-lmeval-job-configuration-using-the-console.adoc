@@ -1,0 +1,82 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+
+[id="updating-lmeval-job-configuration-using-the-console_{context}"]
+= Updating LMEval Job configuration using the console
+
+[role='_abstract']
+Follow these steps to enable online access (`allowOnline`) and remote code execution (`allowCodeExecution`) modes through the {productname-short} console for LMEval Jobs. 
+
+[IMPORTANT]
+====
+Enabling online access and code execution involves a security risk. Only use this configuration if you trust the source(s).
+====
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {productname-long} cluster.
+
+.Procedure
+. Navigate to *Workloads → ConfigMaps*.
+
+. Select the *`redhat-ods-applications`* namespace.
+
+. Open the *`trustyai-service-operator-config`* ConfigMap.
+
+. Under *Annotations*, add:
++
+[source, sh]
+----
+opendatahub.io/managed: false
+----
+. Under *Data*, add or update:
++
+[source, sh]
+----
+lmes-allow-online: true
+lmes-allow-code-execution: true
+----
+. Save the ConfigMap.
+
+. Navigate to *Workloads → Deployments*.
+
+. Select the *`redhat-ods-applications`* namespace.
+
+. Locate *`trustyai-service-operator-controller-manager`*.
+
+. Click the *Actions* menu and select *Restart rollout*.
++
+[NOTE]
+--
+Each LMEval Job must explicitly be set to allow online access and code execution.
+--
+. Add the following fields to the `LMEvalJob` custom resource to enable online access in the LMEvalJob custom resource:
+
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: example-lmeval
+spec:
+  allowOnline: true
+  allowCodeExecution: true
+  
+----
+
+.Configuration keys for LMEval job access
+[cols="3,2,5", options="header"]
+|===
+| Field
+| Default
+| Description
+
+| `spec.allowOnline`
+| `false`
+| Enables this job to access the internet (e.g., to download datasets or tokenizers).
+
+| `spec.allowCodeExecution`
+| `false`
+| Allows this job to run code included with downloaded resources.
+|===
