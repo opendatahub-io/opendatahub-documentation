@@ -1,7 +1,6 @@
 :_module-type: ASSEMBLY
 
 ifdef::context[:parent-context: {context}]
-
 [id="enabling-external-resource-access-for-lmeval-jobs_{context}"]
 = Enabling external resource access for LMEval Jobs
 
@@ -13,43 +12,4 @@ Follow the steps below to enable online access and remote code execution for LME
 include::modules/updating-lmeval-job-configuration-using-the-cli.adoc[leveloffset=+1]
 
 include::modules/updating-lmeval-job-configuration-using-the-console.adoc[leveloffset=+1]
-
-
-
-
-
-
-
-
-
-// Incl NOTE ? Opt in to online/code access per LMEvalJob
-
-// . Option 1/2: Enabling allowOnline and allowCodeExecution modes in your cluster
-
-
-
-
-////
-In an `LMEvalJob`, there are two configuration options that might require access to external resources: the task dataset and model tokenizer.
-You can set your `LMEvalJob` to access online content by updating and patching the TrustyAI operator `ConfigMap`. 
-
-. In the `ConfigMap`, change the `opendatahub.io/managed` setting to `'false'`. 
-
-. Patch the TrustyAI operator `ConfigMap` with the following code: 
-+
-[source]
-----
- oc patch configmap trustyai-service-operator-config -n redhat-ods-applications \
---type merge -p '{"data":{"lmes-allow-online":"true","lmes-allow-code-execution":"true"}}'
-----
-+
-. Restart the TrustyAI operator with the following command: 
-+
-[source]
-----
-oc rollout restart deployment trustyai-service-operator-controller-manager -n redhat-ods-applications
-----
-
-////
-
 

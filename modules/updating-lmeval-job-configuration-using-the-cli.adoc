@@ -10,7 +10,7 @@ Follow these steps to enable online access (`allowOnline`) and remote code execu
 
 [IMPORTANT]
 ====
-Enabling online access and code execution involves a security risk. Only use this configuration if you trust the source(s).
+Enabling online access and code execution involves a security risk. Only use these configurations if you trust the source(s).
 ====
 
 .Prerequisites
@@ -31,6 +31,10 @@ oc patch configmap trustyai-service-operator-config -n redhat-ods-applications \
 --type merge -p '{"metadata": {"annotations": {"opendatahub.io/managed": "false"}}}'
 ----
 +
+[NOTE]
+--
+If the `opendatahub.io/managed` annotation does not exist, the default value is `true`.
+--
 .Annotation keys for LMEval job access
 [cols="3,2,5",options="header"]
 |===
@@ -46,11 +50,6 @@ oc patch configmap trustyai-service-operator-config -n redhat-ods-applications \
 | `false`
 | Allows the user to manage the TrustyAI operator.
 |===
-+
-[NOTE]
---
-If the `opendatahub.io/managed` annotation does not exist, the default value is `true`.
---
 . Update the settings for the TrustyAI operator to enable external connectivity and remote code execution:
 +
 [source,sh]
