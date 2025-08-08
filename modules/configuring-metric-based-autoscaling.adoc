@@ -1,0 +1,73 @@
+:_module-type: PROCEDURE
+
+[id="configuring-metrics-based-autoscaling_{context}"]
+= Configuring metrics-based autoscaling
+
+[role="_abstract"]
+Knative-based autoscaling is not available in standard deployment mode. However, you can enable metrics-based autoscaling for an inference service in standard deployment mode. Metrics-based autoscaling helps you efficiently manage accelerator resources, lower operational costs, and ensure that your inference services meet performance requirements.
+
+To set up autoscaling for your inference service in standard deployments, install and configure the OpenShift Custom Metrics Autoscaler (CMA), which is based on Kubernetes Event-driven Autoscaling (KEDA). You can then use various model runtime metrics available in OpenShift Monitoring to trigger autoscaling of your inference service, such as KVCache utilization, Time to First Token (TTFT), and Concurrency. 
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have installed the CMA operator on your cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/automatically-scaling-pods-with-the-custom-metrics-autoscaler-operator#nodes-cma-autoscaling-custom-install[Installing the custom metrics autoscaler].
++
+[NOTE]
+====
+* You must configure the `KedaController` resource after installing the CMA operator. 
+* The `odh-controller` automatically creates the `TriggerAuthentication`, `ServiceAccount`, `Role`, `RoleBinding`, and `Secret` resources to allow CMA access to OpenShift Monitoring metrics. 
+====
+* You have enabled User Workload Monitoring (UWM) for your cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-user-workload-monitoring[Configuring user workload monitoring].
+* You have deployed a model on the single-model serving platform in standard deployment mode.
+
+.Procedure
+
+. Log in to the {openshift-platform} console as a cluster administrator.
+. In the *Administrator* perspective, click *Home* -> *Search*.
+. Select the project where you have deployed your model.
+. From the *Resources* dropdown menu, select *InferenceService*.
+. Click the `InferenceService` for your deployed model and then click *YAML*.
+. Under `spec.predictor`, define a metric-based autoscaling policy similar to the following example:
++
+[source,yaml]
+----
+kind: InferenceService
+metadata:
+  name: my-inference-service
+  namespace: my-namespace
+  annotations:
+    serving.kserve.io/autoscalerClass: keda
+spec:
+  predictor:
+    minReplicas: 1
+    maxReplicas: 5
+    autoscaling:
+      metrics:
+        - type: External
+          external:
+            metric:
+              backend: "prometheus"
+              serverAddress: "https://thanos-querier.openshift-monitoring.svc:9092"
+              query: vllm:num_requests_waiting
+          authenticationRef:
+            name: inference-prometheus-auth
+          authModes: bearer
+          target:
+            type: Value
+            value: 2
+----
++
+The example configuration sets up the inference service to autoscale between 1 and 5 replicas based on the number of requests waiting to be processed, as indicated by the `vllm:num_requests_waiting` metric.
+. Click *Save*.
+
+.Verification
+
+* Confirm that the KEDA `ScaledObject` resource is created:
++
+[source, console]
+----
+oc get scaledobject -n <namespace>
+---- 
+
+//[role="_additional-resources"]
+//.Additional resources
