@@ -58,6 +58,11 @@ endif::[]
 .. In the *Password* field, enter the password for the default user account.
 .. In the *Database* field, enter the database name.
 . Optional: Select the *Add CA certificate to secure database connection* to use a certificate with your database connection.
++
+[IMPORTANT]
+====
+If your external database is configured to enforce Transport Layer Security (TLS), then you must add a Certificate Authority (CA) certificate.
+====
 .. Click *Use cluster-wide CA bundle* to use the `ca-bundle.crt` bundle in the `odh-trusted-ca-bundle` ConfigMap.
 .. Click *Use {productname-long} CA bundle* to use the `odh-ca-bundle.crt` bundle in the `odh-trusted-ca-bundle` ConfigMap.
 ifdef::upstream[]
