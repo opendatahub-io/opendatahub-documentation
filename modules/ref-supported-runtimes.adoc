@@ -4,7 +4,10 @@
 = Supported model-serving runtimes
 
 [role='_abstract']
+
 {productname-short} includes several preinstalled model-serving runtimes. You can use preinstalled model-serving runtimes to start serving models without modifying or defining the runtime yourself. You can also add a custom runtime to support a model. 
+
+See link:https://access.redhat.com/articles/rhoai-supported-configs[Supported configurations] for a list of the supported model-serving runtimes and deployment requirements.
 
 ifdef::upstream[]
 For help adding a custom runtime, see link:{odhdocshome}/serving-models/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
@@ -13,74 +16,6 @@ endif::[]
 ifndef::upstream[]
 For help adding a custom runtime, see link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_serving-large-models[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
-
-.Model-serving runtimes
-
-|===
-| Name | Description | Exported model format 
-
-| Caikit Text Generation Inference Server (Caikit-TGIS) ServingRuntime for KServe (1)| A composite runtime for serving models in the Caikit format | Caikit Text Generation 
-
-| Caikit Standalone ServingRuntime for KServe (2) | A runtime for serving models in the Caikit embeddings format for embeddings tasks | Caikit Embeddings
-
-| OpenVINO Model Server | A scalable, high-performance runtime for serving models that are optimized for Intel architectures | PyTorch, TensorFlow, OpenVINO IR, PaddlePaddle, MXNet, Caffe, Kaldi 
-
-| [Deprecated] Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe (3) |  A runtime for serving TGI-enabled models | PyTorch Model Formats
-
-| vLLM NVIDIA GPU ServingRuntime for KServe | A high-throughput and memory-efficient inference and serving runtime for large language models that supports NVIDIA GPU accelerators| link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
-
-| vLLM Intel Gaudi Accelerator ServingRuntime for KServe | A high-throughput and memory-efficient inference and serving runtime that supports Intel Gaudi accelerators| link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
-
-| vLLM AMD GPU ServingRuntime for KServe | A high-throughput and memory-efficient inference and serving runtime that supports AMD GPU accelerators| link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
-
-| vLLM CPU ServingRuntime for KServe | A high-throughput and memory-efficient inference and serving runtime that supports IBM Power (ppc64le) and IBM Z (s390x).| link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models^]
-
-|===
-
-ifdef::upstream[]
-
-. The composite Caikit-TGIS runtime is based on link:https://github.com/opendatahub-io/caikit[Caikit^] and link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]. To use this runtime, you must convert your models to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
-
-. The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/caikit/caikit-nlp/blob/main/tests/modules/text_embedding/test_embedding.py[Tests for text embedding module^].
-
-. The *Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe* is deprecated. For more information, see link:{rhoaidocshome}{default-format-url}/release_notes/index[{productname-long} release notes].
-
-endif::[]
-
-ifndef::upstream[]
-
-. The composite Caikit-TGIS runtime is based on link:https://github.com/opendatahub-io/caikit[Caikit^] and link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]. To use this runtime, you must convert your models to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
-
-. The Caikit Standalone runtime is based on link:https://github.com/caikit/caikit-nlp/tree/main[Caikit NLP^]. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see link:https://github.com/caikit/caikit-nlp/blob/main/tests/modules/text_embedding/test_embedding.py[Tests for text embedding module^].
-
-. The *Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe* is deprecated. For more information, see link:{rhoaidocshome}{default-format-url}/release_notes/index[{productname-long} release notes].
-
-endif::[]
-
-.Deployment requirements
-
-|===
-| Name | Default protocol | Additonal protocol | Model mesh support | Single node OpenShift support | Deployment mode
-
-| Caikit Text Generation Inference Server (Caikit-TGIS) ServingRuntime for KServe | REST | gRPC | No | Yes | Raw and serverless
-
-| Caikit Standalone ServingRuntime for KServe | REST | gRPC | No | Yes | Raw and serverless 
-
-| OpenVINO Model Server | REST | None | Yes | Yes | Raw and serverless 
-
-| [Deprecated] Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe | gRPC | None | No | Yes | Raw and serverless
-
-| vLLM NVIDIA GPU ServingRuntime for KServe | REST | None | No | Yes | Raw and serverless
-
-| vLLM Intel Gaudi Accelerator ServingRuntime for KServe | REST | None | No | Yes | Raw and serverless 
-
-| vLLM AMD GPU ServingRuntime for KServe | REST | None | No | Yes | Raw and serverless
-
-| vLLM CPU ServingRuntime for KServe[1] | REST | None | No | Yes | Raw
-
-|===
-
-footnote:[vLLM CPU ServingRuntime for KServe] If you are using IBM Z and IBM Power architecture, you can only deploy models in standard deployment mode.
 
 [role="_additional-resources"]
 .Additional resources
