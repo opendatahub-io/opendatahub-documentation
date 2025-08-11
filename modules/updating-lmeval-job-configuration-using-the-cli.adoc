@@ -86,9 +86,9 @@ oc rollout restart deployment trustyai-service-operator-controller-manager -n re
 +
 [source,sh]
 ----
-oc patch lmevaljobs example-lmeval -n <user-or-target-namespace > \
+oc patch lmevaljobs example-lmeval -n <user-or-target-namespace> \
   --type merge -p '{"spec":{"allowOnline":true,"allowCodeExecution":true}}'
-oc get lmevaljobs example-lmeval -n <user-or-target-namespace > \
+oc get lmevaljobs example-lmeval -n <user-or-target-namespace> \
   -o jsonpath='{.spec.allowOnline}{"\n"}{.spec.allowCodeExecution}{"\n"}'
 ----
 
@@ -100,6 +100,7 @@ apiVersion: trustyai.opendatahub.io/v1alpha1
 kind: LMEvalJob
 metadata:
   name: example-lmeval
+  namespace: <your-namespace>
 spec:
   allowOnline: true
   allowCodeExecution: true
