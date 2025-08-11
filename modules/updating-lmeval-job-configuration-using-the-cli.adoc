@@ -1,0 +1,111 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+
+[id="updating-lmeval-job-configuration-using-the-cli_{context}"]
+= Updating LMEval Job configuration using the CLI
+
+[role='_abstract']
+Follow these steps to enable online access (`allowOnline`) or remote code execution (`allowCodeExecution`) or both modes using the CLI for LMEval jobs. 
+
+[IMPORTANT]
+====
+Enabling online access or code execution involves a security risk. Only use these configurations if you trust the source(s).
+====
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {productname-long} cluster.
+
+ifndef::upstream[]
+* You have downloaded and installed the {productname-short} command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+
+.Procedure
+
+. Add or set the `opendatahub.io/managed` annotation to `false` to allow user changes to the `trustyai-service-operator-config` ConfigMap: 
++
+[source,sh]
+----
+oc patch configmap trustyai-service-operator-config -n redhat-ods-applications \
+--type merge -p '{"metadata": {"annotations": {"opendatahub.io/managed": "false"}}}'
+----
++
+[NOTE]
+--
+If the `opendatahub.io/managed` annotation does not exist, the default value is `true`.
+--
++
+.trustyai-service-operator-config annotation keys for LMEval job access
+[cols="3,2,5", options="header"]
+|===
+| Annotation Key
+| Value
+| Effect
+
+| `opendatahub.io/managed`
+| `true`
+| User changes are not allowed and will be automatically reverted. 
+
+| `opendatahub.io/managed`
+| `false`
+| Allows the user to manage the TrustyAI operator.
+|===
+. Update the settings for the TrustyAI operator to enable external connectivity or remote code execution, or both:
++
+[source,sh]
+----
+oc patch configmap trustyai-service-operator-config -n redhat-ods-applications \
+--type merge -p '{"data":{"lmes-allow-online":"true","lmes-allow-code-execution":"true"}}'
+----
++
+.trustyai-service-operator-config configuration keys for LMEval job access
+[cols="3,2,5", options="header"]
+|===
+| ConfigMap Key
+| Default
+| Description
+
+| `lmes-allow-online`
+| `false`
+| Enables internet access for LMEval jobs at the cluster level.
+
+| `lmes-allow-code-execution`
+| `false`
+| Allows execution of code downloaded alongside datasets or tokenizers.
+|===
+. Restart the TrustyAI operator to apply the configuration changes:
++
+[source,sh]
+----
+oc rollout restart deployment trustyai-service-operator-controller-manager -n redhat-ods-applications
+----
+. Enable online access or code execution or both on specific `LMEvalJob` resources: 
+
+.. For LMEval jobs that already exist, apply the following patch: 
++
+[source,sh]
+----
+oc patch lmevaljobs example-lmeval -n <user-or-target-namespace> \
+  --type merge -p '{"spec":{"allowOnline":true,"allowCodeExecution":true}}'
+oc get lmevaljobs example-lmeval -n <user-or-target-namespace> \
+  -o jsonpath='{.spec.allowOnline}{"\n"}{.spec.allowCodeExecution}{"\n"}'
+----
+
+.. For new LMEval jobs, apply a YAML that includes the following fields: 
++
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: example-lmeval
+  namespace: <your-namespace>
+spec:
+  allowOnline: true
+  allowCodeExecution: true
+
+----
+
+
+
