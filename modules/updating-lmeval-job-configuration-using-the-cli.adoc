@@ -59,7 +59,7 @@ oc patch configmap trustyai-service-operator-config -n redhat-ods-applications \
 --type merge -p '{"data":{"lmes-allow-online":"true","lmes-allow-code-execution":"true"}}'
 ----
 +
-.trustyai-service-operator-config	configuration keys for LMEval job access
+.trustyai-service-operator-config configuration keys for LMEval job access
 [cols="3,2,5", options="header"]
 |===
 | ConfigMap Key
@@ -80,19 +80,30 @@ oc patch configmap trustyai-service-operator-config -n redhat-ods-applications \
 ----
 oc rollout restart deployment trustyai-service-operator-controller-manager -n redhat-ods-applications
 ----
-. Set the flags on your `LMEvalJob` resource:
-+
-[source,sh]
-----
-oc rollout restart deployment trustyai-service-operator-controller-manager -n redhat-ods-applications
-----
 . Enable online access or code execution or both on specific `LMEvalJob` resources: 
+
+.. For LMEval Jobs that already exist, apply the following patch: 
 +
 [source,sh]
 ----
-oc patch lmevaljobs example-lmeval -n <user-or-target-namespace> \
+oc patch lmevaljobs example-lmeval -n <user-or-target-namespace > \
   --type merge -p '{"spec":{"allowOnline":true,"allowCodeExecution":true}}'
-
-oc get lmevaljobs example-lmeval -n <user-or-target-namespace> \
+oc get lmevaljobs example-lmeval -n <user-or-target-namespace > \
   -o jsonpath='{.spec.allowOnline}{"\n"}{.spec.allowCodeExecution}{"\n"}'
 ----
+
+.. For new LMEval Jobs, apply a YAML that includes the following fields: 
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: example-lmeval
+spec:
+  allowOnline: true
+  allowCodeExecution: true
+
+----
+
+
+
