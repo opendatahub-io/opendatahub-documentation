@@ -1,0 +1,572 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="using-guardrails-orchestrator-with-llama-stack_{context}"]
+= Using GuardrailsOrchestrator with LlamaStack
+[role='_abstract']
+
+The `trustyai_fms` orchestrator server is an external provider for LlamaStack that allows you to configure and use the GuardrailsOrchestrator and compatible detection models through the LlamaStack API.
+This implementation of Llama Stack combines the link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[FMS Guardrails Orchestrator] with a suite of community-developed detectors to provide robust content filtering and safety monitoring. 
+
+//potentially: list the detectors that can be used with trustyai_fms
+
+This example demonstrates how to use the built-in detectors of the GuardrailsOrchestrator as Llama Stack safety guardrails, using a local Llama Stack server running in a virtual environment.
+
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have downloaded and installed the {openshift-platform} command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
+
+ifdef::upstream[]
+* You have installed OpenDataHub version 2.29 or later.
+endif::[]
+ifdef::upstream[]
+* You have installed {productname-long, version 2.20 or later.
+endif::[]
+
+* A cluster administrator has installed the following Operators in {OpenShift}:
+** Red Hat OpenShift Service Mesh, version 2.6.7-0 or later.
+** Red Hat OpenShift Serverless, version 1.35.1 or later.
+** Red Hat Authorino Operator, version 1.2.1 or later.
+
+
+
+.Procedure
+
+. Configure your {productname-short} environment with the following configurations in the `DataScienceCluster`:
++	
+[source,sh]
+----
+spec:
+  trustyai:
+    managementState: Managed
+  llamastack:
+    managementState: Managed  
+kserve:
+    defaultDeploymentMode: RawDeployment
+    managementState: Managed
+    nim:
+      managementState: Managed
+    rawDeploymentServiceConfig: Headless
+  serving:
+    ingressGateway:
+      certificate:
+        type: OpenshiftDefaultIngress
+    managementState: Removed
+    name: knative-serving
+  serviceMesh:
+    managementState: Removed
+----
+ifdef::upstream[] 
+. In the command line interface (CLI), create and activate a local Python environment:
++
+[source,python]
+----
+ python -m venv .venv
+     source .venv/bin/activate
+----
+endif::[]
+
+ifdef::upstream[] 
+. Install the required Python packages: 
++
+[source,python]
+----
+pip install llama-stack==0.2.17
+      Pip install llama-stack-provider-trustyai-fms==0.1.4 
+----
+endif::[]
+
+. Create a project in {productname-short}:
++
+[source,terminal]
+----
+PROJECT_NAME="lls-minimal-example"
+oc new-project $PROJECT_NAME
+----
+
+. Deploy the FMS Guardrails Orchestrator with regex detectors by applying the orchestrator configuration for regex-based PII detection:
++
+[source,yaml]
+----
+cat <<EOF | oc apply -f -
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fms-orchestr8-config-nlp
+data:
+  config.yaml: |
+    detectors:
+      regex:
+        type: text_contents
+        service:
+          hostname: "127.0.0.1"
+          port: 8080
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.5
+---
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: guardrails-orchestrator
+spec:
+  orchestratorConfig: "fms-orchestr8-config-nlp"
+  enableBuiltInDetectors: true
+  enableGuardrailsGateway: false
+  replicas: 1
+EOF
+----
+
+ifdef::upstream[] 
+. Create the directory structure for the Llama Stack distribution:
++
+[source,terminal]
+----
+mkdir -p lls-distribution/providers.d/remote/safety
+----
+endif::[]
+ifdef::upstream[]  
+. Create the main Llama Stack configuration file:
++
+[source, yaml]
+----
+cat <<EOF > lls-distribution/run.yaml
+version: '2'
+image_name: minimal_example
+apis:
+  - safety
+  - shields
+providers:
+  safety:
+    - provider_id: trustyai_fms
+      provider_type: remote::trustyai_fms
+      config:
+        orchestrator_url: \${env.FMS_ORCHESTRATOR_URL}
+        shields: {}
+shields: []
+server:
+  port: 8321
+  tls_certfile: null
+  tls_keyfile: null
+external_providers_dir: lls-distribution/providers.d
+EOF
+----
+endif::[]
+
+ifdef::upstream[] 
+. Export the orchestrator URL:
++
+[source,terminal]
+----
+export FMS_ORCHESTRATOR_URL="https://$(oc get routes guardrails-orchestrator -o jsonpath='{.spec.host}')"
+----
+endif::[]
+
+ifdef::upstream[] 
+. Start local the Llama Stack server:
++
+[source,python]
+----
+python -m llama_stack.distribution.server.server --config lls-distribution/run.yaml --port 8321
+----
+endif::[]
+
+. In a separate terminal, while your server is running, use the `/v1/shields endpoint` to dynamically register a shield that uses regex patterns to detect personally identifiable information (PII):
++
+[source,curl]
+----
+
+
+curl -X POST http://localhost:8321/v1/shields \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "shield_id": "regex_detector",
+    "provider_shield_id": "regex_detector",
+    "provider_id": "trustyai_fms",
+    "params": {
+      "type": "content",
+      "confidence_threshold": 0.5,
+      "message_types": ["system", "user"],
+      "detectors": {
+        "regex": {
+          "detector_params": {
+            "regex": ["email", "ssn", "credit-card"]
+          }
+        }
+      }
+    }
+  }'
+----
+. Verify that the shield was registered:
++
+[source,curl]
+----
+curl -s http://localhost:8321/v1/shields | jq '.'
+----
+
+. The following output indicates that the shield has been registered successfully:
++
+[source,curl]
+----
+{
+  "data": [
+    {
+      "identifier": "regex_detector",
+      "provider_resource_id": "regex_detector",
+      "provider_id": "trustyai_fms",
+      "type": "shield",
+      "params": {
+        "type": "content",
+        "confidence_threshold": 0.5,
+        "message_types": [
+          "system",
+          "user"
+        ],
+        "detectors": {
+          "regex": {
+            "detector_params": {
+              "regex": [
+                "email",
+                "ssn",
+                "credit-card"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+----
+
+. Run tests using the registered shield
+
+.. Email detection example:
++
+[source,curl]
+----
+curl -X POST http://localhost:8321/v1/safety/run-shield \
+-H "Content-Type: application/json" \
+-d '{
+  "shield_id": "regex_detector",
+  "messages": [
+    {
+      "content": "My email is test@example.com",
+      "role": "user"
+    }
+  ]
+}' | jq '.'
+----
++
+This should return a response indicating that the email was detected:
++
+[source,curl]
+----
+{
+  "violation": {
+    "violation_level": "error",
+    "user_message": "Content violation detected by shield regex_detector (confidence: 1.00, 1/1 processed messages violated)",
+    "metadata": {
+      "status": "violation",
+      "shield_id": "regex_detector",
+      "confidence_threshold": 0.5,
+      "summary": {
+        "total_messages": 1,
+        "processed_messages": 1,
+        "skipped_messages": 0,
+        "messages_with_violations": 1,
+        "messages_passed": 0,
+        "message_fail_rate": 1.0,
+        "message_pass_rate": 0.0,
+        "total_detections": 1,
+        "detector_breakdown": {
+          "active_detectors": 1,
+          "total_checks_performed": 1,
+          "total_violations_found": 1,
+          "violations_per_message": 1.0
+        }
+      },
+      "results": [
+        {
+          "message_index": 0,
+          "text": "My email is test@example.com",
+          "status": "violation",
+          "score": 1.0,
+          "detection_type": "pii",
+          "individual_detector_results": [
+            {
+              "detector_id": "regex",
+              "status": "violation",
+              "score": 1.0,
+              "detection_type": "pii"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+----
+
+.. SSN detection example:
++
+[source,curl]
+----
+curl -X POST http://localhost:8321/v1/safety/run-shield \
+-H "Content-Type: application/json" \
+-d '{
+    "shield_id": "regex_detector",
+    "messages": [
+      {
+        "content": "My SSN is 123-45-6789",
+        "role": "user"
+      }
+    ]
+}' | jq '.'
+----
+
+This should return a response indicating that the SSN was detected:
++
+[source,curl]
+----
+{
+  "violation": {
+    "violation_level": "error",
+    "user_message": "Content violation detected by shield regex_detector (confidence: 1.00, 1/1 processed messages violated)",
+    "metadata": {
+      "status": "violation",
+      "shield_id": "regex_detector",
+      "confidence_threshold": 0.5,
+      "summary": {
+        "total_messages": 1,
+        "processed_messages": 1,
+        "skipped_messages": 0,
+        "messages_with_violations": 1,
+        "messages_passed": 0,
+        "message_fail_rate": 1.0,
+        "message_pass_rate": 0.0,
+        "total_detections": 1,
+        "detector_breakdown": {
+          "active_detectors": 1,
+          "total_checks_performed": 1,
+          "total_violations_found": 1,
+          "violations_per_message": 1.0
+        }
+      },
+      "results": [
+        {
+          "message_index": 0,
+          "text": "My SSN is 123-45-6789",
+          "status": "violation",
+          "score": 1.0,
+          "detection_type": "pii",
+          "individual_detector_results": [
+            {
+              "detector_id": "regex",
+              "status": "violation",
+              "score": 1.0,
+              "detection_type": "pii"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+----
+
+.. Credit card detection example:
++
+[source,curl]
+----
+curl -X POST http://localhost:8321/v1/safety/run-shield \
+-H "Content-Type: application/json" \
+-d '{
+    "shield_id": "regex_detector",
+    "messages": [
+      {
+        "content": "My credit card number is 4111-1111-1111-1111",
+        "role": "user"
+      }
+    ]
+}' | jq '.'
+----
+
+This should return a response indicating that the credit card number was detected:
++
+[source,curl]
+----
+{
+  "violation": {
+    "violation_level": "error",
+    "user_message": "Content violation detected by shield regex_detector (confidence: 1.00, 1/1 processed messages violated)",
+    "metadata": {
+      "status": "violation",
+      "shield_id": "regex_detector",
+      "confidence_threshold": 0.5,
+      "summary": {
+        "total_messages": 1,
+        "processed_messages": 1,
+        "skipped_messages": 0,
+        "messages_with_violations": 1,
+        "messages_passed": 0,
+        "message_fail_rate": 1.0,
+        "message_pass_rate": 0.0,
+        "total_detections": 1,
+        "detector_breakdown": {
+          "active_detectors": 1,
+          "total_checks_performed": 1,
+          "total_violations_found": 1,
+          "violations_per_message": 1.0
+        }
+      },
+      "results": [
+        {
+          "message_index": 0,
+          "text": "My credit card number is 4111-1111-1111-1111",
+          "status": "violation",
+          "score": 1.0,
+          "detection_type": "pii",
+          "individual_detector_results": [
+            {
+              "detector_id": "regex",
+              "status": "violation",
+              "score": 1.0,
+              "detection_type": "pii"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+----
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[source,terminal]
+----
+$ oc apply -f regex_gateway_images_cm.yaml -n <TEST_NAMESPACE>
+----
+
+. Define the guardrails gateway `ConfigMap` object to specify the `detectors` and `routes`. For example, create a YAML file called `detectors_cm.yaml` with the following contents:
++
+.Example `detectors_cm.yaml`
+[source,yaml]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fms-orchestr8-config-gateway
+  labels:
+    app: fmstack-nlp
+data:
+  config.yaml: |
+    orchestrator:   <1>
+      host: "localhost"
+      port: 8032
+    detectors:      <2>
+      - name: regex_language
+        input: true <3>
+        output: true
+        detector_params:
+          regex:
+            - email
+            - ssn
+      - name: hap
+        detector_params: {}
+    routes:         <4>
+      - name: all
+        detectors:
+          - regex_language
+          - hap
+      - name: passthrough
+        detectors:
+----
+<1> The orchestrator service.
+<2> A list of preconfigured regular expressions for common detection actions. These regular expressions detect personal identifying information, `email` and `ssn`.
+<3> The detector will be used for both input and output. 
+<4> The resulting endpoints for the  detectors. For example, `pii` is served at `$GUARDRAILS_GATEWAY_URL/pii/v1/chat/completions` and uses the `regex` detector. The `passthrough` preset does not use any detectors.
+
+. Deploy the guardrails gateway `detectors_cm.yaml` config map:
++
+[source,terminal]
+----
+$ oc apply -f detectors_cm.yaml -n <TEST_NAMESPACE>
+----
+
+. Specify the `ConfigMap` objects you created in the `GuardrailsOrchestrator` custom resource(CR). For example, create a YAML file named `orchestrator_cr.yaml` with the following contents:
++
+.Example `orchestrator_cr.yaml` CR
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: gorch-sample
+spec:
+  orchestratorConfig: "fms-orchestr8-config-nlp"   
+  enableBuiltInDetectors: True  <1>
+  enableGuardrailsGateway: True  <2>
+  guardrailsGatewayConfig: "fms-orchestr8-config-gateway" <3>
+  replicas: 1
+----
+<1> The `enableBuiltInDetectors` field, if set to `True`, injects built-in detectors as a sidecar container into the orchestrator pod.
+<2> The `enableGuardrailsGateway` field, if set to `True`, injects guardrails gateway as a sidecar container into the orchestrator pod.
+<3> The `guardrailsGatewayConfig` field specifies the name of a `ConfigMap` resource that reroutes the orchestrator and regex detector routes to specific paths.
+	
+. Deploy the orchestrator custom resource. This step creates a service account, deployment, service, and route object in your namespace.
++
+[source,terminal]
+----
+oc apply -f orchestrator_cr.yaml -n <TEST_NAMESPACE>
+----
+
+.Verification
+. Check the health of the orchestrator pod by using the `/info` endpoint of the orchestrator:
++
+[source,terminal]
+----
+GORCH_ROUTE=$(oc get routes guardrails-orchestrator-health -o jsonpath='{.spec.host}')
+curl -s https://$GORCH_ROUTE/info | jq
+----
++
+.Example response
+[source,terminal]
+----
+{
+  "services": {
+    "chat_generation": {
+      "status": "HEALTHY"
+    },
+    "regex": {
+      "status": "HEALTHY"
+    }
+  }
+}
+----
++
+In this example namespace, the Guardrails Orchestrator coordinates requests from the `regex` detector, over a single `chat_generation` LLM.
