@@ -1,0 +1,72 @@
+:_module-type: PROCEDURE
+
+[id="configuring-workload-management-with-kueue_{context}"]
+= Configuring workload management with Kueue
+
+[role="_abstract"]
+To enable workload queuing for {productname-short}, you must install the {rhbok-productname} Operator, configure {productname-short} to integrate with it, and opt-in your data science project namespaces.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You are using {openshift-platform} 4.18 or later.
+* You have installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
+.Procedure
+
+. In a terminal window, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+. Install the {rhbok-productname} Operator on your {openshift-platform} cluster as described in link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/latest/html/installing_on_openshift_container_platform/install-kueue[Installing Red Hat build of Kueue].
+
+. Activate the {rhbok-productname} Operator from the CLI by running the following command:
+
+[source,subs="+quotes"]
+----
+$ oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"components":{"kueue":{"managementState":"Unmanaged"}}}}'
+----
+
+. For each data science project that requires workload queuing, apply a label to the project namespace to opt it in to Kueue management:
++
+[source,terminal]
+----
+oc label namespace <project_namespace> kueue.openshift.io/managed=true
+----
++
+Replace `<project_namespace>` with the name of your data science project.
+
+.Verification
+
+. Verify that the default `ClusterQueue` was created:
++
+[source,terminal]
+----
+oc get clusterqueue
+----
++
+.Example output
+[source,text]
+----
+NAME                  STRATEGY                PENDING WORKLOADS   ADMITTED WORKLOADS
+default-cluster-queue   BestEffort              0                   0
+----
+
+. Verify that a default `LocalQueue` was created in your opted-in namespace:
++
+[source,terminal]
+----
+oc get localqueue -n <project_namespace>
+----
++
+.Example output
+[source,text]
+----
+NAME                  CLUSTERQUEUE            PENDING WORKLOADS   ADMITTED WORKLOADS
+user-workload-queue   default-cluster-queue   0                   0
+----
+
+.Next steps
+* Configure the default `ClusterQueue` with resource flavors and quotas that are appropriate for your cluster's available resources. For more information, see the link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue[{rhbok-productname}] documentation.

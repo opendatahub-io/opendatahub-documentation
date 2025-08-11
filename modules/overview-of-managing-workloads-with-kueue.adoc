@@ -1,0 +1,78 @@
+:_module-type: CONCEPT
+
+[id="overview-of-managing-workloads-with-kueue_{context}"]
+= Overview of managing workloads with Kueue
+
+[role="_abstract"]
+You can use Kueue in {productname-short} to manage AI and machine learning workloads at scale. Kueue controls how cluster resources are allocated and shared through hierarchical quota management, dynamic resource allocation, and prioritized job scheduling. These capabilities help prevent cluster contention, ensure fair access across teams, and optimize the use of heterogeneous compute resources such as GPUs.
+
+With Kueue, you can schedule and monitor diverse workloads, including Ray distributed training workloads, Kubeflow Training (PyTorchJobs), workbenches (Notebooks), and model serving deployments (InferenceServices). This integration enables quota-based scheduling and improves GPU utilization across workload types in {productname-short}.
+
+You can gain the following benefits by using Kueue in {productname-short}:
+
+* Preventing resource conflicts and ensuring workloads are processed in priority order
+* Managing quotas across teams and projects
+* Supporting consistent scheduling for different workload types
+* Maximizing use of GPUs and other specialized hardware
+
+[IMPORTANT]
+====
+Previously, {productname-short} included an embedded Kueue component for managing distributed workloads. Starting with {productname-short} 2.24, the embedded Kueue component will be deprecated and Kueue will be provided through {rhbok-productname}, which is installed and managed by the {rhbok-productname} Operator.
+
+You cannot install both the embedded Kueue and the {rhbok-productname} Operator on the same cluster because this creates conflicting controllers that manage the same resources.
+
+{productname-short} does not automatically migrate existing workloads to {rhbok-productname}. Cluster administrators must perform the migration manually to ensure that workloads continue to use queue management after upgrading. For more information, see xref:migrating-to-the-rhbok-operator.adoc[Migrating to the {rhbok-productname} Operator].
+====
+
+== Kueue management modes
+
+Kueue in {productname-short} can operate in one of three management states. The state you select determines whether {productname-short} installs and manages Kueue, integrates with an existing installation, or disables Kueue entirely. You configure the state in the `DataScienceCluster` custom resource.
+
+`Managed`::
+In this default mode, {productname-short} deploys and manages its own embedded Kueue distribution. This provides a quick way to enable job queuing, but it will be deprecated in {productname-short} 2.24 and later versions. To use `Managed` mode, you cannot have the {rhbok-productname} Operator installed. If you have installed both the embedded Kueue and the {rhbok-productname} Operator, {productname-short} stops reconciliation to prevent conflicts.
+
+`Unmanaged`::
+In this mode, {productname-short} integrates with an existing Kueue installation managed by the {rhbok-productname} Operator. You must have the {rhbok-productname} Operator installed and running on the cluster.
++
+In `Unmanaged` mode, the {productname-short} Operator activates the standalone {rhbok-productname} Operator by creating a default `Kueue` custom resource (CR) in the cluster, if one does not already exist. When the {rhbok-productname} Operator detects the  `Kueue` CR, it installs its controller manager and activates Kueue on the cluster. Therefore, a cluster administrator only needs to install the {rhbok-productname} Operator and set the `managementState` to `Unmanaged`.
+
+`Removed`::
+This mode disables Kueue in {productname-short}. If the mode was previously `Managed`, {productname-short} uninstalls the embedded distribution. If the mode was previously `Unmanaged`, {productname-short} stops checking for the external Kueue integration but does not uninstall the {rhbok-productname} Operator. An empty `managementState` value also functions as `Removed`.
+
+== Automated features for workload management
+
+When the Kueue component is enabled in either `Managed` or `Unmanaged` mode, {productname-short} provides several automated features.
+
+=== Validating webhook for queue enforcement
+
+A validating webhook is enabled to ensure that applicable workloads created in an opted-in namespace include the required `kueue.x-k8s.io/queue-name` label. If the label is missing, the webhook rejects the resource's creation or update, preventing it from bypassing the queuing system.
+
+[NOTE]
+====
+This validating webhook enforcement method replaces the Validating Admission Policy that was used with the embedded Kueue component.
+====
+
+The webhook enforces this rule on the `create` and `update` operations for the following resource kinds:
+
+* `PytorchJob`
+* `Notebook`
+* `RayJob`
+* `RayCluster`
+* `InferenceService`
+
+=== Automatic default queue provisioning
+
+{productname-short} automatically creates default `ClusterQueue` and `LocalQueue` objects for opted-in namespaces on a create-if-not-present basis. These resources are not managed after creation, and cluster administrators can customize or delete them. If deleted, {productname-short} recreates them during the next reconciliation.
+
+
+=== Restrictions for managing workloads with Kueue
+
+When you use Kueue to manage workloads in {productname-short}, note the following restrictions:
+
+* All workloads that you create from the {productname-short} dashboard, such as workbenches and model servers, must use a hardware profile that specifies a `localQueueName`.
+* You cannot use accelerator profiles with Kueue. You must migrate any existing accelerator profiles to hardware profiles.
+* You cannot use hardware profiles that contain `nodeSelectors` or `tolerations` for node placement. To direct workloads to specific nodes, use a hardware profile that specifies a `localQueueName` that is associated with a queue configured with the appropriate resource flavors.
+* Because workbenches (Notebooks) are not suspendable workloads, you can only assign them to a `LocalQueue` that is associated with a non-preemptive `ClusterQueue`. The default `ClusterQueue` that {productname-short} creates is non-preemptive.
+
+.Additional resources
+* link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/1.0[ {rhbok-productname} documentation]
