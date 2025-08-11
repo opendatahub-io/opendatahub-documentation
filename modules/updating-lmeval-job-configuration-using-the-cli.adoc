@@ -6,7 +6,7 @@ ifdef::context[:parent-context: {context}]
 = Updating LMEval Job configuration using the CLI
 
 [role='_abstract']
-Follow these steps to enable online access (`allowOnline`) or remote code execution (`allowCodeExecution`) or both modes using the CLI for LMEval Jobs. 
+Follow these steps to enable online access (`allowOnline`) or remote code execution (`allowCodeExecution`) or both modes using the CLI for LMEval jobs. 
 
 [IMPORTANT]
 ====
@@ -82,7 +82,7 @@ oc rollout restart deployment trustyai-service-operator-controller-manager -n re
 ----
 . Enable online access or code execution or both on specific `LMEvalJob` resources: 
 
-.. For LMEval Jobs that already exist, apply the following patch: 
+.. For LMEval jobs that already exist, apply the following patch: 
 +
 [source,sh]
 ----
@@ -92,7 +92,7 @@ oc get lmevaljobs example-lmeval -n <user-or-target-namespace > \
   -o jsonpath='{.spec.allowOnline}{"\n"}{.spec.allowCodeExecution}{"\n"}'
 ----
 
-.. For new LMEval Jobs, apply a YAML that includes the following fields: 
+.. For new LMEval jobs, apply a YAML that includes the following fields: 
 [source,yaml]
 ----
 apiVersion: trustyai.opendatahub.io/v1alpha1
