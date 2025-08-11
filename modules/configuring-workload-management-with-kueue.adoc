@@ -23,17 +23,19 @@ $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 . Install the {rhbok-productname} Operator on your {openshift-platform} cluster as described in link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/latest/html/installing_on_openshift_container_platform/install-kueue[Installing Red Hat build of Kueue].
 
 . Activate the {rhbok-productname} Operator from the CLI by running the following command:
-
++
 [source,subs="+quotes"]
 ----
-$ oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"components":{"kueue":{"managementState":"Unmanaged"}}}}'
+$ oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"components":{"kueue":{"managementState":"Unmanaged"}}}}' -n <operator_namespace>
 ----
++
+Replace _<operator_namespace>_ with your operator namespace, for example, `pass:attributes[{operator-default-namespace}]`.
 
 . For each data science project that requires workload queuing, apply a label to the project namespace to opt it in to Kueue management:
 +
 [source,terminal]
 ----
-oc label namespace <project_namespace> kueue.openshift.io/managed=true
+oc label namespace <project_namespace> kueue.openshift.io/managed=true --overwrite
 ----
 +
 Replace `<project_namespace>` with the name of your data science project.
@@ -46,6 +48,7 @@ Replace `<project_namespace>` with the name of your data science project.
 ----
 oc get clusterqueue
 ----
+////
 +
 .Example output
 [source,text]
@@ -53,13 +56,14 @@ oc get clusterqueue
 NAME                  STRATEGY                PENDING WORKLOADS   ADMITTED WORKLOADS
 default-cluster-queue   BestEffort              0                   0
 ----
-
+////
 . Verify that a default `LocalQueue` was created in your opted-in namespace:
 +
 [source,terminal]
 ----
 oc get localqueue -n <project_namespace>
 ----
+////
 +
 .Example output
 [source,text]
@@ -67,6 +71,7 @@ oc get localqueue -n <project_namespace>
 NAME                  CLUSTERQUEUE            PENDING WORKLOADS   ADMITTED WORKLOADS
 user-workload-queue   default-cluster-queue   0                   0
 ----
+////
 
 .Next steps
 * Configure the default `ClusterQueue` with resource flavors and quotas that are appropriate for your cluster's available resources. For more information, see the link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue[{rhbok-productname}] documentation.
