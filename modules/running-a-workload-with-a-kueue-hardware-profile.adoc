@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
-[id="creating-a-hardware-profile-for-workload-queuing_{context}"]
-= Creating a hardware profile for workload queuing
+[id="running-a-workload-with-a-kueue-hardware-profile_{context}"]
+= Running a workload with a Kueue-enabled hardware profile
 
 [role="_abstract"]
-You can create hardware profiles that schedule workloads through Kueue by linking them to a specific `LocalQueue`.
+You can run a workbench or deploy a model from the {productname-short} dashboard using a hardware profile that submits workloads to Kueue.
 
 ifdef::upstream[]
 [IMPORTANT]
@@ -37,26 +37,21 @@ For more information about setting dashboard configuration options, see link:{rh
 endif::[]
 
 .Prerequisites
-* You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
-* Your cluster is configured to manage workloads with Kueue, and your data science project is enabled for Kueue management.
-* The dashboard is configured to display hardware profiles and Kueue functionality.
+* A hardware profile configured for Kueue-based scheduling is available.
+* You are working in a data science project that is opted in to Kueue management.
 
 .Procedure
 
-. In the {productname-short} dashboard, click *Settings* -> *Hardware profiles*.
-. Click *Create hardware profile*.
-. Enter a *Name* and optional *Description*.
-. In the *Resource allocation* section, select *Local queue* in the *Workload allocation strategy* field to submit workloads to a `LocalQueue`.
-. In the *Local queue* field, enter the name of the `LocalQueue` that this hardware profile will use.
-+
-[NOTE]
-====
-For globally scoped profiles, use a `LocalQueue` name that exists in all user projects, such as the default queue created by the {productname-short} Operator.
-====
-. (Optional) From the *Workload priority* list, select a priority for jobs that use this profile. Higher-priority workloads are admitted before lower-priority workloads when resources are limited.
-. Configure any resource requests and limits as needed.
-. Click *Create hardware profile*.
+ifdef::upstream[]
+. From the {productname-short} dashboard, begin the process to create a workbench or deploy a model, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE] and  link:{odhdocshome}/serving-models/#deploying-models-using-the-single-model-serving-platform_serving-large-models[Enabling the single-model serving platform^].
+endif::[]
+
+ifndef::upstream[]
+. From the {productname-short} dashboard, begin the process to create a workbench or deploy a model, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE] and link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+endif::[]
+. When configuring the resources for your workload, select a hardware profile that is configured for Kueue-based scheduling from the *Hardware profile* list.
+. Complete the remaining configuration and launch the workload.
 
 .Verification
-* The new hardware profile appears in the list on the *Hardware profiles* page.
-* Expand the profile entry to confirm that *Local queue name* and *Workload priority* are correct.
+* The workload is submitted to the `LocalQueue` specified in the hardware profile.
+* The workload starts when the required cluster resources are available and admitted by the queue.
