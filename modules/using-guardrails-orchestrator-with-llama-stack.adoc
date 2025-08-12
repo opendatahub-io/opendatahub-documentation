@@ -1,0 +1,416 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="using-guardrails-orchestrator-with-llama-stack_{context}"]
+= Using Guardrails Orchestrator with Llama Stack
+[role='_abstract']
+
+The `trustyai_fms` orchestrator server is an external provider for Llama Stack that allows you to configure and use the Guardrails Orchestrator and compatible detection models through the Llama Stack API.
+This implementation of Llama Stack combines link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[Guardrails Orchestrator] with a suite of community-developed detectors to provide robust content filtering and safety monitoring. 
+
+//potentially: list the detectors that can be used with trustyai_fms
+
+
+This example demonstrates how to use the built-in link:https://github.com/trustyai-explainability/guardrails-regex-detector[Guardrails Regex Detector] with Guardrails Orchestrator as Llama Stack safety guardrails, using the `LlamaStack` Operator to deploy a distribution in your {productname-long} namespace.
+
+
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have downloaded and installed the {openshift-platform} command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
+
+ifdef::upstream[]
+* You have installed {productname-long}, version 2.29 or later.
+endif::[]
+ifdef::upstream[]
+* You have installed {productname-long}, version 2.20 or later.
+endif::[]
+
+* You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace.
+
+* A cluster administrator has installed the following Operators in {openshift-platform}:
+** Red Hat OpenShift Service Mesh, version 2.6.7-0 or later.
+** Red Hat OpenShift Serverless, version 1.35.1 or later.
+** Red Hat Authorino Operator, version 1.2.1 or later.
+
+
+.Procedure
+
+. Configure your {productname-short} environment with the following configurations in the `DataScienceCluster`. Note that you must manually update the `spec.llamastack.managementState` field to `Managed`:
++	
+[source,yaml]
+----
+spec:
+  trustyai:
+    managementState: Managed
+  llamastack:
+    managementState: Managed  
+  kserve:
+    defaultDeploymentMode: RawDeployment
+    managementState: Managed
+    nim:
+      managementState: Managed
+    rawDeploymentServiceConfig: Headless
+  serving:
+    ingressGateway:
+      certificate:
+        type: OpenshiftDefaultIngress
+    managementState: Removed
+    name: knative-serving
+  serviceMesh:
+    managementState: Removed
+----
+. Create a project in your {productname-short} namespace:
++
+[source,terminal]
+----
+PROJECT_NAME="lls-minimal-example"
+oc new-project $PROJECT_NAME
+----
+. Deploy the Guardrails Orchestrator with regex detectors by applying the orchestrator configuration for regex-based PII detection:
++
+[source,terminal]
+----
+cat <<EOF | oc apply -f -
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fms-orchestr8-config-nlp
+data:
+  config.yaml: |
+    detectors:
+      regex:
+        type: text_contents
+        service:
+          hostname: "127.0.0.1"
+          port: 8080
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.5
+---
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: guardrails-orchestrator
+spec:
+  orchestratorConfig: "fms-orchestr8-config-nlp"
+  enableBuiltInDetectors: true
+  enableGuardrailsGateway: false
+  replicas: 1
+EOF
+----
+. In the same namespace, create a Llama Stack distribution:
++
+[source,yaml]
+----
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: llamastackdistribution-sample
+  namespace: <PROJECT_NAMESPACE>
+spec:
+  replicas: 1
+  server:
+    containerSpec:
+      env:
+        - name: VLLM_URL
+          value: '${VLLM_URL}'
+        - name: INFERENCE_MODEL
+          value: '${INFERENCE_MODEL}'
+        - name: MILVUS_DB_PATH
+          value: '~/.llama/milvus.db'
+        - name: VLLM_TLS_VERIFY
+          value: 'false'
+        - name: FMS_ORCHESTRATOR_URL
+          value: '${FMS_ORCHESTRATOR_URL}'
+      name: llama-stack
+      port: 8321
+    distribution:
+      name: rh-dev
+    storage:
+      size: 20Gi
+----
+
+[NOTE]
+ --
+ After deploying the `LlamaStackDistribution` CR, a new pod is created in the same namespace. This pod runs the LlamaStack server for your distribution.
+ --
+
+[start=5]
+. Once the Llama Stack server is running, use the `/v1/shields` endpoint to dynamically register a shield. For example, register a shield that uses regex patterns to detect personally identifiable information (PII).
+
+. Open a port-forward to access it locally:
++ 
+[source,terminal] 
+---- 
+oc -n $PROJECT_NAME port-forward svc/llama-stack 8321:8321 
+----
+
+. Use the `/v1/shields` endpoint to dynamically register a shield. For example, register a shield that uses regex patterns to detect personally identifiable information (PII): 
++
+[source,json]
+----
+curl -X POST http://localhost:8321/v1/shields \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "shield_id": "regex_detector",
+    "provider_shield_id": "regex_detector",
+    "provider_id": "trustyai_fms",
+    "params": {
+      "type": "content",
+      "confidence_threshold": 0.5,
+      "message_types": ["system", "user"],
+      "detectors": {
+        "regex": {
+          "detector_params": {
+            "regex": ["email", "ssn", "credit-card"]
+          }
+        }
+      }
+    }
+  }'
+----
+. Verify that the shield was registered:
++
+[source,curl]
+----
+curl -s http://localhost:8321/v1/shields | jq '.'
+----
+
+. The following output indicates that the shield has been registered successfully:
++
+[source,curl]
+----
+{
+  "data": [
+    {
+      "identifier": "regex_detector",
+      "provider_resource_id": "regex_detector",
+      "provider_id": "trustyai_fms",
+      "type": "shield",
+      "params": {
+        "type": "content",
+        "confidence_threshold": 0.5,
+        "message_types": [
+          "system",
+          "user"
+        ],
+        "detectors": {
+          "regex": {
+            "detector_params": {
+              "regex": [
+                "email",
+                "ssn",
+                "credit-card"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+----
+
+. Once the shield has been registered, verify that it is working by sending a message containing PII to the `/v1/safety/run-shield` endpoint:
+
+.. Email detection example:
++
+[source,curl]
+----
+curl -X POST http://localhost:8321/v1/safety/run-shield \
+-H "Content-Type: application/json" \
+-d '{
+  "shield_id": "regex_detector",
+  "messages": [
+    {
+      "content": "My email is test@example.com",
+      "role": "user"
+    }
+  ]
+}' | jq '.'
+----
++
+This should return a response indicating that the email was detected:
++
+[source,curl]
+----
+{
+  "violation": {
+    "violation_level": "error",
+    "user_message": "Content violation detected by shield regex_detector (confidence: 1.00, 1/1 processed messages violated)",
+    "metadata": {
+      "status": "violation",
+      "shield_id": "regex_detector",
+      "confidence_threshold": 0.5,
+      "summary": {
+        "total_messages": 1,
+        "processed_messages": 1,
+        "skipped_messages": 0,
+        "messages_with_violations": 1,
+        "messages_passed": 0,
+        "message_fail_rate": 1.0,
+        "message_pass_rate": 0.0,
+        "total_detections": 1,
+        "detector_breakdown": {
+          "active_detectors": 1,
+          "total_checks_performed": 1,
+          "total_violations_found": 1,
+          "violations_per_message": 1.0
+        }
+      },
+      "results": [
+        {
+          "message_index": 0,
+          "text": "My email is test@example.com",
+          "status": "violation",
+          "score": 1.0,
+          "detection_type": "pii",
+          "individual_detector_results": [
+            {
+              "detector_id": "regex",
+              "status": "violation",
+              "score": 1.0,
+              "detection_type": "pii"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+----
++
+.. SSN detection example:
++
+[source,curl]
+----
+curl -X POST http://localhost:8321/v1/safety/run-shield \
+-H "Content-Type: application/json" \
+-d '{
+    "shield_id": "regex_detector",
+    "messages": [
+      {
+        "content": "My SSN is 123-45-6789",
+        "role": "user"
+      }
+    ]
+}' | jq '.'
+----
++
+This should return a response indicating that the SSN was detected:
++
+[source,curl]
+----
+{
+  "violation": {
+    "violation_level": "error",
+    "user_message": "Content violation detected by shield regex_detector (confidence: 1.00, 1/1 processed messages violated)",
+    "metadata": {
+      "status": "violation",
+      "shield_id": "regex_detector",
+      "confidence_threshold": 0.5,
+      "summary": {
+        "total_messages": 1,
+        "processed_messages": 1,
+        "skipped_messages": 0,
+        "messages_with_violations": 1,
+        "messages_passed": 0,
+        "message_fail_rate": 1.0,
+        "message_pass_rate": 0.0,
+        "total_detections": 1,
+        "detector_breakdown": {
+          "active_detectors": 1,
+          "total_checks_performed": 1,
+          "total_violations_found": 1,
+          "violations_per_message": 1.0
+        }
+      },
+      "results": [
+        {
+          "message_index": 0,
+          "text": "My SSN is 123-45-6789",
+          "status": "violation",
+          "score": 1.0,
+          "detection_type": "pii",
+          "individual_detector_results": [
+            {
+              "detector_id": "regex",
+              "status": "violation",
+              "score": 1.0,
+              "detection_type": "pii"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+----
++
+.. Credit card detection example:
++
+[source,curl]
+----
+curl -X POST http://localhost:8321/v1/safety/run-shield \
+-H "Content-Type: application/json" \
+-d '{
+    "shield_id": "regex_detector",
+    "messages": [
+      {
+        "content": "My credit card number is 4111-1111-1111-1111",
+        "role": "user"
+      }
+    ]
+}' | jq '.'
+----
++
+This should return a response indicating that the credit card number was detected:
++
+[source,curl]
+----
+{
+  "violation": {
+    "violation_level": "error",
+    "user_message": "Content violation detected by shield regex_detector (confidence: 1.00, 1/1 processed messages violated)",
+    "metadata": {
+      "status": "violation",
+      "shield_id": "regex_detector",
+      "confidence_threshold": 0.5,
+      "summary": {
+        "total_messages": 1,
+        "processed_messages": 1,
+        "skipped_messages": 0,
+        "messages_with_violations": 1,
+        "messages_passed": 0,
+        "message_fail_rate": 1.0,
+        "message_pass_rate": 0.0,
+        "total_detections": 1,
+        "detector_breakdown": {
+          "active_detectors": 1,
+          "total_checks_performed": 1,
+          "total_violations_found": 1,
+          "violations_per_message": 1.0
+        }
+      },
+      "results": [
+        {
+          "message_index": 0,
+          "text": "My credit card number is 4111-1111-1111-1111",
+          "status": "violation",
+          "score": 1.0,
+          "detection_type": "pii",
+          "individual_detector_results": [
+            {
+              "detector_id": "regex",
+              "status": "violation",
+              "score": 1.0,
+              "detection_type": "pii"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+----
