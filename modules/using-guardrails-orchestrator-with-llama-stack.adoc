@@ -10,7 +10,9 @@ This implementation of Llama Stack combines the link:https://github.com/foundati
 
 //potentially: list the detectors that can be used with trustyai_fms
 
-This example demonstrates how to use the built-in link:https://github.com/trustyai-explainability/guardrails-regex-detector[Regex detectors] of the Guardrails Orchestrator as Llama Stack safety guardrails, using a Llama Stack distribution running in your OpenShift namespace.
+
+This example demonstrates how to use the built-in link:https://github.com/trustyai-explainability/guardrails-regex-detector[Guardrails Regex Detector] with the Guardrails Orchestrator as Llama Stack safety guardrails, using the `LlamaStack` operator to deploy a distribution in your OpenShift namespace.
+
 
 
 .Prerequisites
@@ -27,7 +29,7 @@ endif::[]
 
 * You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace.
 
-* A cluster administrator has installed the following Operators in {OpenShift}:
+* A cluster administrator has installed the following Operators in {openshift-platform}:
 ** Red Hat OpenShift Service Mesh, version 2.6.7-0 or later.
 ** Red Hat OpenShift Serverless, version 1.35.1 or later.
 ** Red Hat Authorino Operator, version 1.2.1 or later.
@@ -35,16 +37,16 @@ endif::[]
 
 .Procedure
 
-. Configure your {productname-short} environment with the following configurations in the `DataScienceCluster`. Note that the `llamastack` setting `managementState` needs to be manually updated from it's default (`Removed`) to `Managed`:
+. Configure your {productname-short} environment with the following configurations in the `DataScienceCluster`. Note that the `llamastack` setting `managementState` needs to be manually updated from its default (`Removed`) to `Managed`:
 +	
-[source,sh]
+[source,yaml]
 ----
 spec:
   trustyai:
     managementState: Managed
   llamastack:
     managementState: Managed  
-kserve:
+  kserve:
     defaultDeploymentMode: RawDeployment
     managementState: Managed
     nim:
@@ -70,7 +72,7 @@ oc new-project $PROJECT_NAME
 
 . Deploy the FMS Guardrails Orchestrator with regex detectors by applying the orchestrator configuration for regex-based PII detection:
 +
-[source,yaml]
+[source,terminal]
 ----
 cat <<EOF | oc apply -f -
 kind: ConfigMap
@@ -116,9 +118,9 @@ spec:
         - name: VLLM_URL
           value: '${VLLM_URL}'
         - name: INFERENCE_MODEL
-          value: ${INFERENCE_MODEL}
+          value: '${INFERENCE_MODEL}'
         - name: MILVUS_DB_PATH
-          value: ~/.llama/milvus.db
+          value: '~/.llama/milvus.db'
         - name: VLLM_TLS_VERIFY
           value: 'false'
         - name: FMS_ORCHESTRATOR_URL
@@ -132,13 +134,22 @@ spec:
 ----
 +
 [NOTE]
---
-After deploying the `LlamaStackDistribution` CR, create a new pod in the same namespace. This pod contains the LlamaStack server for your distribution.
---
+ --
+After deploying the `LlamaStackDistribution` CR, a new pod is created in the same namespace. This pod runs the LlamaStack server for your distribution.
+ --
 
-. Once the LlamaStack server is running, use the `/v1/shields endpoint` to dynamically register a shield. For example, register a shield that uses regex patterns to detect personally identifiable information (PII):
+. Once the Llama Stack server is running, use the `/v1/shields endpoint` to dynamically register a shield. For example, register a shield that uses regex patterns to detect personally identifiable information (PII).
+
+. Once the Llama Stack server is running, open a port-forward to access it locally:
++ 
+[source,terminal] 
+---- 
+oc -n $PROJECT_NAME port-forward svc/llama-stack 8321:8321 
+----
+
+. Use the `/v1/shields` endpoint to dynamically register a shield. For example, register a shield that uses regex patterns to detect personally identifiable information (PII): 
 +
-[source,curl]
+[source,json]
 ----
 curl -X POST http://localhost:8321/v1/shields \
   -H 'Content-Type: application/json' \
@@ -203,7 +214,7 @@ curl -s http://localhost:8321/v1/shields | jq '.'
 }
 ----
 
-. Once the shield has been registered, verify that it's working by sending a message containing PII to the `/v1/safety/run-shield`endpoint:
+. Once the shield has been registered, verify that it's working by sending a message containing PII to the `/v1/safety/run-shield` endpoint:
 
 .. Email detection example:
 +
