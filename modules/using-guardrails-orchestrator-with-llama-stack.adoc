@@ -116,7 +116,7 @@ spec:
         - name: VLLM_URL
           value: '${VLLM_URL}'
         - name: INFERENCE_MODEL
-          value: /mnt/models
+          value: ${INFERENCE_MODEL}
         - name: MILVUS_DB_PATH
           value: ~/.llama/milvus.db
         - name: VLLM_TLS_VERIFY
@@ -130,6 +130,11 @@ spec:
     storage:
       size: 20Gi
 ----
++
+[NOTE]
+--
+After deploying the `LlamaStackDistribution` CR, create a new pod in the same namespace. This pod contains the LlamaStack server for your distribution.
+--
 
 . Once the LlamaStack server is running, use the `/v1/shields endpoint` to dynamically register a shield. For example, register a shield that uses regex patterns to detect personally identifiable information (PII):
 +
