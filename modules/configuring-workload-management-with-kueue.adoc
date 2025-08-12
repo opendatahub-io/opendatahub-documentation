@@ -30,7 +30,7 @@ $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 $ oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"components":{"kueue":{"managementState":"Unmanaged"}}}}' -n <operator_namespace>
 ----
 +
-Replace _<operator_namespace>_ with your operator namespace, for example, `pass:attributes[{operator-default-namespace}]`.
+Replace `<operator_namespace>` with your operator namespace, for example, `pass:attributes[{operator-default-namespace}]`.
 
 . To enable Kueue management for a data science project, apply the `kueue.openshift.io/managed=true` label to its namespace: 
 +
@@ -76,4 +76,4 @@ user-workload-queue   default-cluster-queue   0                   0
 
 .Next steps
 * Configure the default `ClusterQueue` with resource flavors and quotas that are appropriate for your cluster's available resources. For more information, see the link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue[{rhbok-productname}] documentation.
-* Create a hardware profile for workload queuing
+* Create a hardware profile for workload queuing.

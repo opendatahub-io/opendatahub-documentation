@@ -6,9 +6,7 @@
 [role="_abstract"]
 You can use Kueue in {productname-short} to manage AI and machine learning workloads at scale. Kueue controls how cluster resources are allocated and shared through hierarchical quota management, dynamic resource allocation, and prioritized job scheduling. These capabilities help prevent cluster contention, ensure fair access across teams, and optimize the use of heterogeneous compute resources, such as hardware accelerators.
 
-Kueue lets you schedule and monitor diverse workloads, including Ray distributed training workloads, PyTorchJobs, workbenches, and model serving deployments (InferenceService). 
-
-Kueue validation and queue enforcement apply only to workloads in namespaces with the `kueue.openshift.io/managed=true` label.
+Kueue lets you schedule and monitor diverse workloads, including Ray distributed training workloads, PyTorchJobs, workbenches, and model serving deployments (InferenceService). Kueue validation and queue enforcement apply only to workloads in namespaces with the `kueue.openshift.io/managed=true` label.
 
 Using Kueue in {productname-short} provides these benefits:
 
@@ -17,14 +15,25 @@ Using Kueue in {productname-short} provides these benefits:
 * Ensures consistent scheduling for all workload types
 * Maximizes GPU and other specialized hardware utilization
 
+ifndef::upstream[]
 [IMPORTANT]
 ====
+ifdef::self-managed[]
 {productname-short} 2.23 and earlier versions include an embedded Kueue component for managing distributed workloads. Starting with {productname-short} 2.24, the embedded Kueue component will be deprecated and Kueue will be provided through {rhbok-productname}, which is installed and managed by the {rhbok-productname} Operator.
 
 You cannot install both the embedded Kueue and the {rhbok-productname} Operator on the same cluster because this creates conflicting controllers that manage the same resources.
 
 {productname-short} does not automatically migrate existing workloads to {rhbok-productname}. Cluster administrators must manually migrate from the embedded Kueue to the {rhbok-productname} Operator to ensure workloads continue using queue management after upgrading. This configuration is supported in {productname-short} 2.23 as a Technology Preview feature. For more information, see _Migrating to the {rhbok-productname} Operator_.
+endif::[]
+ifdef::cloud-service[]
+{productname-short} includes an embedded Kueue component for managing distributed workloads. In the next release, the embedded Kueue component will be deprecated and Kueue will be provided through {rhbok-productname}, which is installed and managed by the {rhbok-productname} Operator.
+
+You cannot install both the embedded Kueue and the {rhbok-productname} Operator on the same cluster because this creates conflicting controllers that manage the same resources.
+
+{productname-short} does not automatically migrate existing workloads to {rhbok-productname}. Cluster administrators must manually migrate from the embedded Kueue to the {rhbok-productname} Operator to ensure workloads continue using queue management after upgrading. This configuration is currently supported as a Technology Preview feature. For more information, see _Migrating to the {rhbok-productname} Operator_.
+endif::[]
 ====
+endif::[]
 
 == Kueue management modes
 
@@ -66,14 +75,14 @@ The webhook enforces this rule on the `create` and `update` operations for the f
 
 [NOTE]
 ====
-You can apply hardware profiles to other workload types, but the validation webhook enforces the `kueue.x-k8s.io/queue-name` label requirement only for these specific resource kinds.
+You can apply hardware profiles to other workload types, but the validation webhook enforces the `kueue.x-k8s.io/queue-name` label requirement only for these specific resource types.
 ====
 
 === Automatic default queue provisioning
 
 {productname-short} automatically creates default `ClusterQueue` and `LocalQueue` objects for namespaces that are enabled for Kueue management if they do not already exist. After creation, these resources are not managed, and cluster administrators can change or delete them.
 
-=== Restrictions for managing workloads with Kueue
+== Restrictions for managing workloads with Kueue
 
 When you use Kueue to manage workloads in {productname-short}, the following restrictions apply:
 
