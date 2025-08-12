@@ -9,6 +9,15 @@ ifdef::context[:parent-context: {context}]
 
 As a cluster administrator, you can manage AI/ML workloads at scale by integrating the {rhbok-productname} with {productname-long}. This integration provides capabilities for quota management, resource allocation, and prioritized job scheduling.
 
+[IMPORTANT]
+====
+{productname-short} 2.23 and earlier versions include an embedded Kueue component for managing distributed workloads. Starting with {productname-short} 2.24, the embedded Kueue component will be deprecated and Kueue will be provided through {rhbok-productname}, which is installed and managed by the {rhbok-productname} Operator.
+
+You cannot install both the embedded Kueue and the {rhbok-productname} Operator on the same cluster because this creates conflicting controllers that manage the same resources.
+
+{productname-short} does not automatically migrate existing workloads to {rhbok-productname}. Cluster administrators must manually migrate from the embedded Kueue to the {rhbok-productname} Operator to ensure workloads continue using queue management after upgrading. This configuration is supported in {productname-short} 2.23 as a Technology Preview feature. 
+====
+
 ifndef::upstream[]
 [IMPORTANT]
 ====
@@ -31,6 +40,10 @@ include::modules/overview-of-managing-workloads-with-kueue.adoc[leveloffset=+1]
 include::modules/migrating-to-the-rhbok-operator.adoc[leveloffset=+1]
 
 include::modules/configuring-workload-management-with-kueue.adoc[leveloffset=+1]
+
+include::creating-a-hardware-profile-for-workload-queuing[leveloffset=+1]
+
+include::running-a-workload-with-a-kueue-hardware-profile[leveloffset=+2]
 
 ifdef::parent-context[:context: {parent-context}]
 ifndef::parent-context[:!context:]
