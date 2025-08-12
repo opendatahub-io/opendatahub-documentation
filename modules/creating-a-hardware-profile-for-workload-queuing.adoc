@@ -1,0 +1,44 @@
+:_module-type: PROCEDURE
+
+[id="creating-a-hardware-profile-for-workload-queuing_{context}"]
+= Creating a hardware profile for workload queuing
+
+[role="_abstract"]
+As a cluster administrator, you can create hardware profiles that schedule workloads through Kueue by linking them to a specific `LocalQueue`.
+
+[IMPORTANT]
+====
+By default, hardware profiles, including Kueue-enabled profiles, are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles and Kueue functionality, set the `disableHardwareProfiles` and `disableKueue` values to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+
+ifdef::upstream[]
+For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
+endif::[]
+ifndef::upstream[]
+For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
+endif::[]
+====
+
+.Prerequisites
+* You have administrator permissions.
+* Your data science project is opted in to Kueue management.
+* The dashboard is configured to display hardware profiles and Kueue functionality.
+
+.Procedure
+
+. In the {productname-short} dashboard, click *Settings* -> *Hardware profiles*.
+. Click *Create hardware profile*.
+. Enter a *Name* and optional *Description*.
+. In the *Resource allocation* section, select *Local queue* in the *Workload allocation strategy* field to submit workloads to a `LocalQueue`.
+. In the *Local queue* field, enter the name of the `LocalQueue` that this hardware profile will use.
++
+[NOTE]
+====
+For globally scoped profiles, use a `LocalQueue` name that exists in all user projects, such as the default queue created by the {productname-short} Operator.
+====
+. (Optional) From the *Workload priority* list, select a priority for jobs that use this profile. Higher-priority workloads are admitted before lower-priority workloads when resources are limited.
+. Configure any resource requests and limits as needed.
+. Click *Create hardware profile*.
+
+.Verification
+* The new hardware profile appears in the list on the *Hardware profiles* page.
+* Expand the profile entry to confirm that *Local queue name* and *Workload priority* are correct.
