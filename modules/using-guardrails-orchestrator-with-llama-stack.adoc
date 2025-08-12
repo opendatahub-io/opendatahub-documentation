@@ -6,12 +6,12 @@ ifdef::context[:parent-context: {context}]
 [role='_abstract']
 
 The `trustyai_fms` orchestrator server is an external provider for Llama Stack that allows you to configure and use the Guardrails Orchestrator and compatible detection models through the Llama Stack API.
-This implementation of Llama Stack combines the link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[FMS Guardrails Orchestrator] with a suite of community-developed detectors to provide robust content filtering and safety monitoring. 
+This implementation of Llama Stack combines link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[Guardrails Orchestrator] with a suite of community-developed detectors to provide robust content filtering and safety monitoring. 
 
 //potentially: list the detectors that can be used with trustyai_fms
 
 
-This example demonstrates how to use the built-in link:https://github.com/trustyai-explainability/guardrails-regex-detector[Guardrails Regex Detector] with the Guardrails Orchestrator as Llama Stack safety guardrails, using the `LlamaStack` operator to deploy a distribution in your OpenShift namespace.
+This example demonstrates how to use the built-in link:https://github.com/trustyai-explainability/guardrails-regex-detector[Guardrails Regex Detector] with Guardrails Orchestrator as Llama Stack safety guardrails, using the `LlamaStack` Operator to deploy a distribution in your {productname-long} namespace.
 
 
 
@@ -21,7 +21,7 @@ This example demonstrates how to use the built-in link:https://github.com/trusty
 * You have downloaded and installed the {openshift-platform} command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
 
 ifdef::upstream[]
-* You have installed OpenDataHub version 2.29 or later.
+* You have installed {productname-long}, version 2.29 or later.
 endif::[]
 ifdef::upstream[]
 * You have installed {productname-long}, version 2.20 or later.
@@ -37,7 +37,7 @@ endif::[]
 
 .Procedure
 
-. Configure your {productname-short} environment with the following configurations in the `DataScienceCluster`. Note that the `llamastack` setting `managementState` needs to be manually updated from its default (`Removed`) to `Managed`:
+. Configure your {productname-short} environment with the following configurations in the `DataScienceCluster`. Note that you must manually update the `spec.llamastack.managementState` field to `Managed`:
 +	
 [source,yaml]
 ----
@@ -68,7 +68,7 @@ spec:
 PROJECT_NAME="lls-minimal-example"
 oc new-project $PROJECT_NAME
 ----
-. Deploy the FMS Guardrails Orchestrator with regex detectors by applying the orchestrator configuration for regex-based PII detection:
+. Deploy the Guardrails Orchestrator with regex detectors by applying the orchestrator configuration for regex-based PII detection:
 +
 [source,terminal]
 ----
@@ -133,11 +133,11 @@ spec:
 
 [NOTE]
  --
-After deploying the `LlamaStackDistribution` CR, a new pod is created in the same namespace. This pod runs the LlamaStack server for your distribution.
+ After deploying the `LlamaStackDistribution` CR, a new pod is created in the same namespace. This pod runs the LlamaStack server for your distribution.
  --
 
 [start=5]
-. Once the Llama Stack server is running, use the `/v1/shields endpoint` to dynamically register a shield. For example, register a shield that uses regex patterns to detect personally identifiable information (PII).
+. Once the Llama Stack server is running, use the `/v1/shields` endpoint to dynamically register a shield. For example, register a shield that uses regex patterns to detect personally identifiable information (PII).
 
 . Open a port-forward to access it locally:
 + 
@@ -212,7 +212,7 @@ curl -s http://localhost:8321/v1/shields | jq '.'
 }
 ----
 
-. Once the shield has been registered, verify that it's working by sending a message containing PII to the `/v1/safety/run-shield` endpoint:
+. Once the shield has been registered, verify that it is working by sending a message containing PII to the `/v1/safety/run-shield` endpoint:
 
 .. Email detection example:
 +
