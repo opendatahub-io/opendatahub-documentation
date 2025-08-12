@@ -61,7 +61,6 @@ spec:
   serviceMesh:
     managementState: Removed
 ----
-
 . Create a project in your {productname-short} namespace:
 +
 [source,terminal]
@@ -69,7 +68,6 @@ spec:
 PROJECT_NAME="lls-minimal-example"
 oc new-project $PROJECT_NAME
 ----
-
 . Deploy the FMS Guardrails Orchestrator with regex detectors by applying the orchestrator configuration for regex-based PII detection:
 +
 [source,terminal]
@@ -101,7 +99,6 @@ spec:
   replicas: 1
 EOF
 ----
-
 . In the same namespace, create a Llama Stack distribution:
 [source,yaml]
 ----
@@ -137,10 +134,9 @@ spec:
  --
 After deploying the `LlamaStackDistribution` CR, a new pod is created in the same namespace. This pod runs the LlamaStack server for your distribution.
  --
-
 . Once the Llama Stack server is running, use the `/v1/shields endpoint` to dynamically register a shield. For example, register a shield that uses regex patterns to detect personally identifiable information (PII).
 
-. Once the Llama Stack server is running, open a port-forward to access it locally:
+. Open a port-forward to access it locally:
 + 
 [source,terminal] 
 ---- 
@@ -171,7 +167,6 @@ curl -X POST http://localhost:8321/v1/shields \
     }
   }'
 ----
-
 . Verify that the shield was registered:
 +
 [source,curl]
@@ -282,7 +277,7 @@ This should return a response indicating that the email was detected:
   }
 }
 ----
-
++
 .. SSN detection example:
 +
 [source,curl]
@@ -299,7 +294,7 @@ curl -X POST http://localhost:8321/v1/safety/run-shield \
     ]
 }' | jq '.'
 ----
-
++
 This should return a response indicating that the SSN was detected:
 +
 [source,curl]
@@ -349,7 +344,7 @@ This should return a response indicating that the SSN was detected:
   }
 }
 ----
-
++
 .. Credit card detection example:
 +
 [source,curl]
@@ -366,7 +361,7 @@ curl -X POST http://localhost:8321/v1/safety/run-shield \
     ]
 }' | jq '.'
 ----
-
++
 This should return a response indicating that the credit card number was detected:
 +
 [source,curl]
