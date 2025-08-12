@@ -8,7 +8,17 @@ The TrustyAI Guardrails Orchestrator service is a tool to invoke detections on t
 
 It is underpinned by the open-source project link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[FMS-Guardrails Orchestrator] from IBM. You can deploy the Guardrails Orchestrator service through a Custom Resource Definition (CRD) that is managed by the TrustyAI Operator.
 
-The following sections outline how to deploy Guardrails Orchestrator and outline its use cases:
+The following detectors can be used with trustyai_fms:
+
+* *Regex Detectors*: Pattern-based content detection for structured rule enforcement. These are the build-in detectors in the Guardrails Orcehstrator service. Learn more about the link:https://github.com/trustyai-explainability/guardrails-regex-detector[guardrails-regex-detector].
+
+* *Hugging Face Detectors*: Content detection compatible with most Hugging Face `AutoModelForSequenceClassification` models, such as `granite-guardian-hap-38m` or `deberta-v3-base-prompt-injection-v2`. Learn more about the detector algorithms for the link:https://github.com/trustyai-explainability/guardrails-detectors[FMS Guardrails Orchestrator].
+
+* *vLLM Detector Adapter*: Content detection compatible with Hugging Face `AutoModelForCausalLM` models, for example `ibm-granite/granite-guardian-3.1-2b`. Learn more about link:https://github.com/foundation-model-stack/vllm-detector-adapter[vllm-detector-adapter].
+
+
+
+The following sections show how to deploy Guardrails Orchestrator and outline a number of use cases:
 
 * Deploy a Guardrails Orchestrator instance
 * Monitor user-inputs to your LLM
@@ -17,7 +27,6 @@ The following sections outline how to deploy Guardrails Orchestrator and outline
 * Enable the OpenTelemetry exporter for observing metrics and tracing
 * Use Hugging Face models as detectors in the Guardrails Orchestrator service
 * Use Guardrails Orchestrator with Llama-stack
-
 
 
 include::modules/deploying-the-guardrails-orchestrator-service.adoc[leveloffset=+1]

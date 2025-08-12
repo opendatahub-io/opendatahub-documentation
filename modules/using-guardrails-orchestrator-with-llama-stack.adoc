@@ -2,15 +2,15 @@
 
 ifdef::context[:parent-context: {context}]
 [id="using-guardrails-orchestrator-with-llama-stack_{context}"]
-= Using GuardrailsOrchestrator with LlamaStack
+= Using Guardrails Orchestrator with Llama Stack
 [role='_abstract']
 
-The `trustyai_fms` orchestrator server is an external provider for LlamaStack that allows you to configure and use the GuardrailsOrchestrator and compatible detection models through the LlamaStack API.
+The `trustyai_fms` orchestrator server is an external provider for Llama Stack that allows you to configure and use the Guardrails Orchestrator and compatible detection models through the Llama Stack API.
 This implementation of Llama Stack combines the link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[FMS Guardrails Orchestrator] with a suite of community-developed detectors to provide robust content filtering and safety monitoring. 
 
 //potentially: list the detectors that can be used with trustyai_fms
 
-This example demonstrates how to use the built-in detectors of the GuardrailsOrchestrator as Llama Stack safety guardrails, using a local Llama Stack server running in a virtual environment.
+This example demonstrates how to use the built-in link:http://guardrails-regex-detector[Regex detectors] of the Guardrails Orchestrator as Llama Stack safety guardrails, using a local Llama Stack server running in a virtual environment.
 
 
 .Prerequisites
@@ -25,16 +25,17 @@ ifdef::upstream[]
 * You have installed {productname-long, version 2.20 or later.
 endif::[]
 
+* You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace.
+
 * A cluster administrator has installed the following Operators in {OpenShift}:
 ** Red Hat OpenShift Service Mesh, version 2.6.7-0 or later.
 ** Red Hat OpenShift Serverless, version 1.35.1 or later.
 ** Red Hat Authorino Operator, version 1.2.1 or later.
 
 
-
 .Procedure
 
-. Configure your {productname-short} environment with the following configurations in the `DataScienceCluster`:
+. Configure your {productname-short} environment with the following configurations in the `DataScienceCluster`. Note that the `llamastack` setting `managementState` needs to be manually updated from it's default (`Removed`) to `Managed`:
 +	
 [source,sh]
 ----
@@ -58,27 +59,8 @@ kserve:
   serviceMesh:
     managementState: Removed
 ----
-ifdef::upstream[] 
-. In the command line interface (CLI), create and activate a local Python environment:
-+
-[source,python]
-----
- python -m venv .venv
-     source .venv/bin/activate
-----
-endif::[]
 
-ifdef::upstream[] 
-. Install the required Python packages: 
-+
-[source,python]
-----
-pip install llama-stack==0.2.17
-      Pip install llama-stack-provider-trustyai-fms==0.1.4 
-----
-endif::[]
-
-. Create a project in {productname-short}:
+. Create a project in your {productname-short} namespace:
 +
 [source,terminal]
 ----
@@ -118,66 +100,41 @@ spec:
 EOF
 ----
 
-ifdef::upstream[] 
-. Create the directory structure for the Llama Stack distribution:
-+
-[source,terminal]
+. In the same namespace, create a Llama Stack distribution:
+[source,yaml]
 ----
-mkdir -p lls-distribution/providers.d/remote/safety
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: llamastackdistribution-sample
+  namespace: test-guardrails-huggingface
+spec:
+  replicas: 1
+  server:
+    containerSpec:
+      env:
+        - name: VLLM_URL
+          value: 'qwen-isvc-predictor.test-guardrails-huggingface.svc.cluster.local:8032/v1'
+        - name: INFERENCE_MODEL
+          value: /mnt/models
+        - name: MILVUS_DB_PATH
+          value: ~/.llama/milvus.db
+        - name: VLLM_TLS_VERIFY
+          value: 'false'
+        - name: FMS_ORCHESTRATOR_URL
+          value: 'http://guardrails-orchestrator-service.test-guardrails-huggingface.svc.cluster.local:8033'
+      name: llama-stack
+      port: 8321
+    distribution:
+      name: rh-dev
+    storage:
+      size: 20Gi
 ----
-endif::[]
-ifdef::upstream[]  
-. Create the main Llama Stack configuration file:
-+
-[source, yaml]
-----
-cat <<EOF > lls-distribution/run.yaml
-version: '2'
-image_name: minimal_example
-apis:
-  - safety
-  - shields
-providers:
-  safety:
-    - provider_id: trustyai_fms
-      provider_type: remote::trustyai_fms
-      config:
-        orchestrator_url: \${env.FMS_ORCHESTRATOR_URL}
-        shields: {}
-shields: []
-server:
-  port: 8321
-  tls_certfile: null
-  tls_keyfile: null
-external_providers_dir: lls-distribution/providers.d
-EOF
-----
-endif::[]
-
-ifdef::upstream[] 
-. Export the orchestrator URL:
-+
-[source,terminal]
-----
-export FMS_ORCHESTRATOR_URL="https://$(oc get routes guardrails-orchestrator -o jsonpath='{.spec.host}')"
-----
-endif::[]
-
-ifdef::upstream[] 
-. Start local the Llama Stack server:
-+
-[source,python]
-----
-python -m llama_stack.distribution.server.server --config lls-distribution/run.yaml --port 8321
-----
-endif::[]
 
 . In a separate terminal, while your server is running, use the `/v1/shields endpoint` to dynamically register a shield that uses regex patterns to detect personally identifiable information (PII):
 +
 [source,curl]
 ----
-
-
 curl -X POST http://localhost:8321/v1/shields \
   -H 'Content-Type: application/json' \
   -d '{
@@ -198,6 +155,7 @@ curl -X POST http://localhost:8321/v1/shields \
     }
   }'
 ----
+
 . Verify that the shield was registered:
 +
 [source,curl]
