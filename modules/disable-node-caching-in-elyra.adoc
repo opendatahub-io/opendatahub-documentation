@@ -4,7 +4,9 @@
 = Disabling node caching in Elyra
 
 [role='_abstract']
-Elyra automatically caches the ouputs of your components, or "nodes". You can also disable this feature if you want to ensure a fresh execution for each component instead of resuing outputs from previous runs.
+Elyra offers a feature within {productname-short} that allows you to cache components, or "nodes," within your data pipelines. When a pipeline component runs, Elyra stores its outputs by default. In subsequent runs, if Elyra detects that a particular component has already been executed and its inputs have not changed, it reuses the cached outputs instead of re-running the entire component. For more information about data science pipelines caching, see link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.22/html/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#overview-of-data-science-pipelines-caching_ds-pipelines[Overview of data science pipelines caching].
++
+If you do not want your component output to be cached, you can disable this feature for a single node or for all of the nodes in your pipeline.
 
 .Prerequisites
 * You have logged in to {productname-long}.
@@ -20,7 +22,7 @@ endif::[]
 +
 [IMPORTANT]
 ====
-To ensure that the runtime configuration is created automatically, you must create the pipeline server before you create the workbench.
+To ensure that the runtime configuration is created by default, you must create the pipeline server before you create the workbench.
 ====
 ifndef::upstream[]
 * You have created a workbench with a workbench image that contains the Elyra extension (Standard Data Science, TensorFlow, TrustyAI, ROCm-PyTorch, ROCm-TensorFlow, or PyTorch), as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE].
@@ -37,13 +39,28 @@ The Elyra pipeline editor is available in specific workbench images only. To use
 ====
 * You have access to S3-compatible storage.
 
+To disable caching on a single node, complete the following steps.
+
 .Procedure
 . After you open JupyterLab, confirm that the JupyterLab launcher is automatically displayed.
-. Open a pipeline to have access to the nodes that you want to modify.
+. Open the pipeline that includes the nodes that you want to modify.
 . Right-click on the node that you want to edit, and click on *Open Properties*.
 . Click on the *Node Properties* tab in the slide-out menu on the right.
 . Under *Additional Properties*, click on the option bar under *Disable node caching* that is automatically populated with *Use runtime default*
 . Select *True*.
 
 .Verification
-* Your component runs are re-executed in your target runtime environment.
+* Your node runs are re-executed in your target runtime environment.
+
+To disable caching for all nodes on your pipeline, complete the following steps.
+
+.Procedure
+. After you open JupyterLab, confirm that the JupyterLab launcher is automatically displayed.
+. Open the pipeline that includes the nodes that you want to modify.
+. Right-click on one of the nodes that you want to edit, and click on *Open Properties*.
+. Click on the *Pipeline Properties* tab in the slide-out menu on the right.
+. Under *Node Defaults*, click on the option bar under *Disable node caching* that is automatically populated with *Use runtime default*
+. Select *True*.
+
+.Verification
+* Your entire pipeline runs are re-executed in your target runtime environment.
