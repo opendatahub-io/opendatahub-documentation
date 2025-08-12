@@ -10,7 +10,7 @@ This implementation of Llama Stack combines the link:https://github.com/foundati
 
 //potentially: list the detectors that can be used with trustyai_fms
 
-This example demonstrates how to use the built-in link:http://guardrails-regex-detector[Regex detectors] of the Guardrails Orchestrator as Llama Stack safety guardrails, using a local Llama Stack server running in a virtual environment.
+This example demonstrates how to use the built-in link:https://github.com/trustyai-explainability/guardrails-regex-detector[Regex detectors] of the Guardrails Orchestrator as Llama Stack safety guardrails, using a Llama Stack distribution running in your OpenShift namespace.
 
 
 .Prerequisites
@@ -107,14 +107,14 @@ apiVersion: llamastack.io/v1alpha1
 kind: LlamaStackDistribution
 metadata:
   name: llamastackdistribution-sample
-  namespace: test-guardrails-huggingface
+  namespace: <PROJECT_NAMESPACE>
 spec:
   replicas: 1
   server:
     containerSpec:
       env:
         - name: VLLM_URL
-          value: 'qwen-isvc-predictor.test-guardrails-huggingface.svc.cluster.local:8032/v1'
+          value: '${VLLM_URL}'
         - name: INFERENCE_MODEL
           value: /mnt/models
         - name: MILVUS_DB_PATH
@@ -122,7 +122,7 @@ spec:
         - name: VLLM_TLS_VERIFY
           value: 'false'
         - name: FMS_ORCHESTRATOR_URL
-          value: 'http://guardrails-orchestrator-service.test-guardrails-huggingface.svc.cluster.local:8033'
+          value: '${FMS_ORCHESTRATOR_URL}'
       name: llama-stack
       port: 8321
     distribution:
@@ -131,7 +131,7 @@ spec:
       size: 20Gi
 ----
 
-. In a separate terminal, while your server is running, use the `/v1/shields endpoint` to dynamically register a shield that uses regex patterns to detect personally identifiable information (PII):
+. Once the LlamaStack server is running, use the `/v1/shields endpoint` to dynamically register a shield. For example, register a shield that uses regex patterns to detect personally identifiable information (PII):
 +
 [source,curl]
 ----
@@ -198,7 +198,7 @@ curl -s http://localhost:8321/v1/shields | jq '.'
 }
 ----
 
-. Run tests using the registered shield
+. Once the shield has been registered, verify that it's working by sending a message containing PII to the `/v1/safety/run-shield`endpoint:
 
 .. Email detection example:
 +
@@ -400,131 +400,3 @@ This should return a response indicating that the credit card number was detecte
   }
 }
 ----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-[source,terminal]
-----
-$ oc apply -f regex_gateway_images_cm.yaml -n <TEST_NAMESPACE>
-----
-
-. Define the guardrails gateway `ConfigMap` object to specify the `detectors` and `routes`. For example, create a YAML file called `detectors_cm.yaml` with the following contents:
-+
-.Example `detectors_cm.yaml`
-[source,yaml]
-----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: fms-orchestr8-config-gateway
-  labels:
-    app: fmstack-nlp
-data:
-  config.yaml: |
-    orchestrator:   <1>
-      host: "localhost"
-      port: 8032
-    detectors:      <2>
-      - name: regex_language
-        input: true <3>
-        output: true
-        detector_params:
-          regex:
-            - email
-            - ssn
-      - name: hap
-        detector_params: {}
-    routes:         <4>
-      - name: all
-        detectors:
-          - regex_language
-          - hap
-      - name: passthrough
-        detectors:
-----
-<1> The orchestrator service.
-<2> A list of preconfigured regular expressions for common detection actions. These regular expressions detect personal identifying information, `email` and `ssn`.
-<3> The detector will be used for both input and output. 
-<4> The resulting endpoints for the  detectors. For example, `pii` is served at `$GUARDRAILS_GATEWAY_URL/pii/v1/chat/completions` and uses the `regex` detector. The `passthrough` preset does not use any detectors.
-
-. Deploy the guardrails gateway `detectors_cm.yaml` config map:
-+
-[source,terminal]
-----
-$ oc apply -f detectors_cm.yaml -n <TEST_NAMESPACE>
-----
-
-. Specify the `ConfigMap` objects you created in the `GuardrailsOrchestrator` custom resource(CR). For example, create a YAML file named `orchestrator_cr.yaml` with the following contents:
-+
-.Example `orchestrator_cr.yaml` CR
-[source,yaml]
-----
-apiVersion: trustyai.opendatahub.io/v1alpha1
-kind: GuardrailsOrchestrator
-metadata:
-  name: gorch-sample
-spec:
-  orchestratorConfig: "fms-orchestr8-config-nlp"   
-  enableBuiltInDetectors: True  <1>
-  enableGuardrailsGateway: True  <2>
-  guardrailsGatewayConfig: "fms-orchestr8-config-gateway" <3>
-  replicas: 1
-----
-<1> The `enableBuiltInDetectors` field, if set to `True`, injects built-in detectors as a sidecar container into the orchestrator pod.
-<2> The `enableGuardrailsGateway` field, if set to `True`, injects guardrails gateway as a sidecar container into the orchestrator pod.
-<3> The `guardrailsGatewayConfig` field specifies the name of a `ConfigMap` resource that reroutes the orchestrator and regex detector routes to specific paths.
-	
-. Deploy the orchestrator custom resource. This step creates a service account, deployment, service, and route object in your namespace.
-+
-[source,terminal]
-----
-oc apply -f orchestrator_cr.yaml -n <TEST_NAMESPACE>
-----
-
-.Verification
-. Check the health of the orchestrator pod by using the `/info` endpoint of the orchestrator:
-+
-[source,terminal]
-----
-GORCH_ROUTE=$(oc get routes guardrails-orchestrator-health -o jsonpath='{.spec.host}')
-curl -s https://$GORCH_ROUTE/info | jq
-----
-+
-.Example response
-[source,terminal]
-----
-{
-  "services": {
-    "chat_generation": {
-      "status": "HEALTHY"
-    },
-    "regex": {
-      "status": "HEALTHY"
-    }
-  }
-}
-----
-+
-In this example namespace, the Guardrails Orchestrator coordinates requests from the `regex` detector, over a single `chat_generation` LLM.
