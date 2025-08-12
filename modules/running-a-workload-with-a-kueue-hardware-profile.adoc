@@ -1,0 +1,57 @@
+:_module-type: PROCEDURE
+
+[id="running-a-workload-with-a-kueue-hardware-profile_{context}"]
+= Running a workload with a Kueue-enabled hardware profile
+
+[role="_abstract"]
+You can run a workbench or deploy a model from the {productname-short} dashboard using a hardware profile that submits workloads to Kueue.
+
+ifdef::upstream[]
+[IMPORTANT]
+====
+By default, hardware profiles, including Kueue-enabled profiles, are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles and Kueue functionality, set the `disableHardwareProfiles` and `disableKueue` values to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+
+For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
+====
+endif::[]
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+The hardware profiles feature is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+The hardware profiles feature is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+
+By default, hardware profiles, including Kueue-enabled profiles, are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles and Kueue functionality, set the `disableHardwareProfiles` and `disableKueue` values to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+
+For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
+====
+endif::[]
+
+.Prerequisites
+* A hardware profile configured for Kueue-based scheduling is available.
+* You are working in a data science project that is opted in to Kueue management.
+
+.Procedure
+
+ifdef::upstream[]
+. From the {productname-short} dashboard, begin the process to create a workbench or deploy a model, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE] and  link:{odhdocshome}/serving-models/#deploying-models-using-the-single-model-serving-platform_serving-large-models[Enabling the single-model serving platform^].
+endif::[]
+
+ifndef::upstream[]
+. From the {productname-short} dashboard, begin the process to create a workbench or deploy a model, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE] and link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+endif::[]
+. When configuring the resources for your workload, select a hardware profile that is configured for Kueue-based scheduling from the *Hardware profile* list.
+. Complete the remaining configuration and launch the workload.
+
+.Verification
+* The workload is submitted to the `LocalQueue` specified in the hardware profile.
+* The workload starts when the required cluster resources are available and admitted by the queue.
