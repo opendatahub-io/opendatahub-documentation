@@ -1,0 +1,66 @@
+:_module-type: PROCEDURE
+
+[id="disabling-node-caching-in-elyra_{ds-pipelines}"]
+= Disabling node caching in Elyra
+
+[role='_abstract']
+Elyra offers a feature within {productname-short} that allows you to cache components, or "nodes," within your data pipelines. When a pipeline component runs, Elyra stores its outputs by default. In subsequent runs, if Elyra detects that a particular component has already been executed and its inputs have not changed, it reuses the cached outputs instead of re-running the entire component. 
+
+ifdef::upstream[]
+For more information about data science pipelines caching, see link:{odhdocshome}/working-with-data-science-pipelines/#overview-of-data-science-pipelines-caching_ds-pipelines[Overview of data science pipelines caching].
+endif::[]
+
+ifndef::upstream[]
+For more information about data science pipelines caching, see link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#overview-of-data-science-pipelines-caching_ds-pipelines[Overview of data science pipelines caching].
+endif::[]
+
+If you do not want your component output to be cached, you can disable this feature for a single node or for all of the nodes in your pipeline.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+
+* You have created a data science project.
+* You have created and configured a pipeline server within the data science project that contains your workbench.
++
+[IMPORTANT]
+====
+To ensure that the runtime configuration is created by default, you must create the pipeline server before you create the workbench.
+====
+ifndef::upstream[]
+* You have created a workbench with a workbench image that contains the Elyra extension (Standard Data Science, TensorFlow, TrustyAI, ROCm-PyTorch, ROCm-TensorFlow, or PyTorch), as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE].
+* You have started the workbench and opened the JupyterLab interface, as described in link:{rhoaidocshome}{default-format-url}/working_in_your_data_science_ide/accessing-your-workbench-ide_ide[Accessing your workbench IDE].
+endif::[]
+ifdef::upstream[]
+* You have created a workbench with a workbench image that contains the Elyra extension (Standard Data Science, TensorFlow, TrustyAI, ROCm-PyTorch, ROCm-TensorFlow, or PyTorch), as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE].
+* You have started the workbench and opened the JupyterLab interface, as described in link:{odhdocshome}/working-in-your-data-science-ide/#accessing-your-workbench-ide_ide[Accessing your workbench IDE].
+endif::[]
++
+[IMPORTANT]
+====
+The Elyra pipeline editor is available in specific workbench images only. To use Elyra, the workbench must be based on a JupyterLab image that includes the Elyra extension. The Elyra extension is not available in code-server or RStudio IDEs, and it is not included in Minimal Python workbenches. Supported JupyterLab-based images such as Standard Data Science, TensorFlow, PyTorch, TrustyAI, and ROCm variants include the Elyra extension.
+====
+* You have access to S3-compatible storage.
+* You have created a pipeline in JupyterLab.
+
+.Procedure
+. After you open JupyterLab, confirm that the JupyterLab launcher is automatically displayed.
+. Open the pipeline that includes the nodes that you want to modify.
+. Right-click the node that you want to edit, and then click *Open Properties*.
+. To disable caching on a single node, complete the following steps:
+.. Click the *Node Properties* tab in the slide-out menu on the right.
+.. Under *Additional Properties*, click the option bar under *Disable node caching* that is automatically populated with *Use runtime default*.
+.. Select *True*.
+. To disable caching for all nodes on your pipeline, complete the following steps:
+.. Click the *Pipeline Properties* tab in the slide-out menu on the right.
+.. Under *Node Defaults*, click the option bar under *Disable node caching* that is automatically populated with *Use runtime default*.
+.. Select *True*.
+
+.Verification
+* To verify that caching is disabled for a single node, check that node runs are re-executed in your target runtime environment.
+* To verify that caching is disabled for all nodes on your pipeline, check that your entire pipeline runs are re-executed in your target runtime environment.
