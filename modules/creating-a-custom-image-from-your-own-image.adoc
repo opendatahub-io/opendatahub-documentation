@@ -70,10 +70,10 @@ WORKDIR /opt/app-root/src
 +
 When a user launches a workbench from the {productname-short} *Applications* → *Enabled* page, the personal volume of the user is mounted in the user's HOME directory (`/opt/app-root/src`). Because this location is not configurable, when you build your custom image, you must specify this default location for persisted data.
 
-* Fix permissions to support PIP (the package manager for Python packages) in OpenShift environments. Add the following command to your custom image (if needed, change `python3.9` to the Python version that you are using):
+* Fix permissions to support PIP (the package manager for Python packages) in OpenShift environments. Add the following command to your custom image (if needed, change `python3.11` to the Python version that you are using):
 +
 ----
-chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
    fix-permissions /opt/app-root -P
 ----
 
