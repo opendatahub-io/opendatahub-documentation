@@ -38,41 +38,101 @@ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 
 . Optional: To configure a custom operator namespace:
 
-.. Create a new namespace:
+.. Create a namespace YAML file named `operator-namespace.yaml`.
++
+[source,YAML]
+----
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: <operator-namespace> <1>
+----
+<1> Defines the operator namespace.
+
+.. Create the namespace in your {openshift-platform} cluster.
 +
 [source]
 ----
-oc create namespace <operator_namespace>
+$ oc create -f operator-namespace.yaml
+----
++
+You see output similar to the following:
++
+[source,subs="+quotes"]
+----
+namespace/__<operator-namespace>__ created
 ----
 
 .. When you install the {productname-long} Operator, use this namespace instead of `pass:attributes[{operator-default-namespace}]`.
 
 . Optional: To configure a custom applications namespace: 
 
-.. Create the namespace:
+.. Create a namespace YAML file named `applications-namespace.yaml`.
 +
-[source]
+[source,YAML]
 ----
-oc create namespace <application_namespace>
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: <applications-namespace> <1>
+  labels:
+    opendatahub.io/application-namespace: 'true' <2>
 ----
+<1> Defines the applications namespace.
+<2> Adds the required label.
 
-.. Add the required label:
+.. Create the namespace in your {openshift-platform} cluster.
 +
 [source]
 ----
-oc label namespace <application_namespace> opendatahub.io/application-namespace=true
+$ oc create -f applications-namespace.yaml
+----
++
+You see output similar to the following:
++
+[source,subs="+quotes"]
+----
+namespace/__<applications-namespace>__ created
 ----
 
 . Optional: To configure a custom workbench namespace: 
 
-.. Create the namespace:
+.. Create a namespace YAML file named `workbench-namespace.yaml`.
++
+[source,YAML]
+----
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: <workbench-namespace> <1>
+----
+<1> Defines the workbench namespace.
+
+.. Create the namespace in your {openshift-platform} cluster.
 +
 [source]
 ----
-oc create namespace <workbench_namespace>
+$ oc create -f workbench-namespace.yaml
+----
++
+You see output similar to the following:
++
+[source,subs="+quotes"]
+----
+namespace/__<workbench-namespace>__ created
 ----
 
 .. When you install the {productname-long} components, specify this namespace for the `spec.workbenches.workbenchNamespace` field. You cannot change the default workbench namespace after you have installed the {productname-long} Operator.
 
 .Next step
-* Install the {productname-long} Operator.
+ifdef::upstream[]
+* link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing the {productname-short} Operator version 2].
+endif::[]
+ifdef::self-managed[]
+ifndef::disconnected[]
+* link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install#installing-the-openshift-data-science-operator_operator-install[Installing the {productname-long} Operator]
+endif::[]
+ifdef::disconnected[]
+link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/deploying-openshift-ai-in-a-disconnected-environment_install#installing-the-openshift-data-science-operator_operator-install[Installing the {productname-long} Operator]
+endif::[]
+endif::[]
