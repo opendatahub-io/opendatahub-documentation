@@ -321,10 +321,11 @@ spec:
       name: python
       version: "1"
   volumes:
-    - emptyDir: null
-      medium: Memory
-      sizeLimit: 2Gi
-      name: shm
+    - name: shm
+      emptyDir: null
+        medium: Memory
+        sizeLimit: 2Gi
+      
 ----
 . Follow these steps to add the *Seldon MLServer* runtime:
 .. If you selected the *REST* API protocol, enter or paste the following YAML code directly in the embedded editor.
