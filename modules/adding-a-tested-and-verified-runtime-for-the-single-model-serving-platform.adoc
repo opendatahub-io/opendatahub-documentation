@@ -69,8 +69,7 @@ spec:
 +
 [source]
 ----
-apiVersion: 
-serving.kserve.io/v1alpha1
+apiVersion: serving.kserve.io/v1alpha1
 kind: ServingRuntime
 metadata:
   name: ibmz-triton-rest
@@ -128,8 +127,7 @@ spec:
 +
 [source]
 ----
-apiVersion: 
-serving.kserve.io/v1alpha1
+apiVersion: serving.kserve.io/v1alpha1
 kind: ServingRuntime
 metadata:
   name: ibmz-triton-grpc
@@ -322,11 +320,11 @@ spec:
     - autoSelect: true
       name: python
       version: "1"
-volumes:
-  - emptyDir: null
-    medium: Memory
-    sizeLimit: 2Gi
-    name: shm
+  volumes:
+    - emptyDir: null
+      medium: Memory
+      sizeLimit: 2Gi
+      name: shm
 ----
 . Follow these steps to add the *Seldon MLServer* runtime:
 .. If you selected the *REST* API protocol, enter or paste the following YAML code directly in the embedded editor.
