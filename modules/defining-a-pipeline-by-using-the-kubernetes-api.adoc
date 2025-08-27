@@ -7,23 +7,6 @@
 
 You can define data science pipelines and pipeline versions by using the Kubernetes API, which stores them as custom resources in the cluster instead of the internal database. This approach makes it easier to use OpenShift GitOps (Argo CD) or similar tools to manage pipelines and pipeline versions, while still allowing you to manage them through the {productname-short} user interface (UI), API, and the Kubeflow Pipelines (`kfp`) Software Development Kit (SDK).
 
-ifndef::upstream[]
-[IMPORTANT]
-====
-ifdef::self-managed[]
-Defining pipeline versions by using the Kubernetes API is currently available in {productname-long} {vernum} as a Technology Preview feature.
-endif::[]
-ifdef::cloud-service[]
-Defining pipeline versions by using the Kubernetes API is currently available in {productname-long} as a Technology Preview feature.
-endif::[]
-Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
-{org-name} does not recommend using them in production.
-These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
-
-For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
-====
-endif::[]
-
 .Prerequisites
 * You have previously created a data science project that is available and has a pipeline server (a `DataSciencePipelinesApplication` custom resource).
 * You have installed the OpenShift command-line interface (CLI).
