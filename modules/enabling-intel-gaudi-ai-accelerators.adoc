@@ -4,7 +4,7 @@
 = Enabling Intel Gaudi AI accelerators
 
 [role='_abstract']
-Before you can use Intel Gaudi AI accelerators in {productname-short}, you must install the required dependencies, deploy the Intel Gaudi AI Accelerator Operator, and configure the environment.
+Before you can use Intel Gaudi AI accelerators in {productname-short}, you must install the required dependencies, deploy the Intel Gaudi Base Operator, and configure the environment.
 
 .Prerequisites
 ifdef::upstream,self-managed[]
@@ -24,7 +24,7 @@ ifdef::cloud-service[]
 endif::[]
 
 .Procedure
-. Install the latest version of the Intel Gaudi AI Accelerator Operator, as described in link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html[Intel Gaudi AI Operator OpenShift installation].
+. Install the latest version of the Intel Gaudi Base Operator, as described in link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html[Intel Gaudi Base Operator OpenShift installation].
 . By default, {openshift-platform} sets a per-pod PID limit of 4096. If your workload requires more processing power, such as when you use multiple Gaudi accelerators or when using vLLM with Ray, you must manually increase the per-pod PID limit to avoid `Resource temporarily unavailable` errors. These errors occur due to PID exhaustion. {org-name} recommends setting this limit to 32768, although values over 20000 are sufficient.
 .. Run the following command to label the node: 
 +
@@ -72,11 +72,11 @@ ifdef::upstream[]
 endif::[]
 //downstream - all
 ifndef::upstream[]
-. After installing the Intel Gaudi AI Accelerator Operator, create an accelerator profile, as described in link:{rhoaidocshome}{default-format-url}/working_with_accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+. After installing the Intel Gaudi Base Operator, create an accelerator profile, as described in link:{rhoaidocshome}{default-format-url}/working_with_accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
 endif::[]
 //upstream only
 ifdef::upstream[]
-. After installing the Intel Gaudi AI Accelerator Operator, create an accelerator profile, as described in link:{odhdocshome}/working-with-accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+. After installing the Intel Gaudi Base Operator, create an accelerator profile, as described in link:{odhdocshome}/working-with-accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
 endif::[]
 +
 [IMPORTANT]
@@ -93,7 +93,7 @@ endif::[]
 .Verification
 From the *Administrator* perspective, go to the *Operators* -> *Installed Operators* page. Confirm that the following Operators appear:
 
-* Intel Gaudi AI Accelerator
+* Intel Gaudi Base Operator
 * Node Feature Discovery (NFD)
 * Kernel Module Management (KMM)
 
