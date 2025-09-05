@@ -1,0 +1,85 @@
+:_module-type: PROCEDURE
+
+[id="Customizing-the-vllm-runtime_{context}"]
+= Customizing the vLLM model-serving runtime
+
+In certain cases, you may need to add additional flags or environment variables to the *vLLM ServingRuntime for KServe* runtime to deploy a family of LLMs.
+
+The following procedure describes customizing the vLLM model-serving runtime to deploy a Llama, Granite or Mistral model.
+
+.Prerequisites
+
+* You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
+* For Llama model deployment, you have downloaded a meta-llama-3 model to your object storage.
+* For Granite model deployment, you have downloaded a granite-7b-instruct or granite-20B-code-instruct model to your object storage.
+* For Mistral model deployment, you have downloaded a mistral-7B-Instruct-v0.3 model to your object storage.
+* You have enabled the *vLLM ServingRuntime for KServe* runtime.
+* You have enabled GPU support in {productname-short} and have installed and configured the Node Feature Discovery operator on your cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]
+
+
+.Procedure
+
+. Follow the steps to deploy a model as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+. In the *Serving runtime* field, select *vLLM ServingRuntime for KServe*.
+. If you are deploying a meta-llama-3 model, add the following arguments under *Additional serving runtime arguments* in the *Configuration parameters* section:
++
+[source]
+----
+–-distributed-executor-backend=mp <1>
+--max-model-len=6144 <2>
+----
+<1> Sets the backend to multiprocessing for distributed model workers
+<2> Sets the maximum context length of the model to 6144 tokens
+. If you are deploying a granite-7B-instruct model, add the following arguments under *Additional serving runtime arguments* in the *Configuration parameters* section:
++
+[source]
+----
+--distributed-executor-backend=mp <1>
+----
+<1> Sets the backend to multiprocessing for distributed model workers
+. If you are deploying a granite-20B-code-instruct model, add the following arguments under *Additional serving runtime arguments* in the *Configuration parameters* section:
++
+[source]
+----
+--distributed-executor-backend=mp <1>
+–-tensor-parallel-size=4 <2>
+--max-model-len=6448 <3>
+----
++
+<1> Sets the backend to multiprocessing for distributed model workers
+<2> Distributes inference across 4 GPUs in a single node
+<3> Sets the maximum context length of the model to 6448 tokens
+. If you are deploying a mistral-7B-Instruct-v0.3 model, add the following arguments under *Additional serving runtime arguments* in the *Configuration parameters* section:
++
+[source]
+----
+--distributed-executor-backend=mp <1>
+--max-model-len=15344 <2>
+----
+<1> Sets the backend to multiprocessing for distributed model workers
+<2> Sets the maximum context length of the model to 15344 tokens
+. Click *Deploy*.
+
+.Verification
+
+* Confirm that the deployed model is shown on the *Models* tab for the project, and on the *Model deployments* page of the dashboard with a checkmark in the *Status* column.
+* For granite models, use the following example command to verify API requests to your deployed model:
++
+[source]
+----
+curl -q -X 'POST' \
+    "https://<inference_endpoint_url>:443/v1/chat/completions" \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d "{
+    \"model\": \"<model_name>\",
+    \"prompt\": \"<prompt>",
+    \"max_tokens\": <max_tokens>,
+    \"temperature\": <temperature>
+    }"
+----
+
+[role='_additional-resources']
+.Additional resources
+
+* link:https://docs.vllm.ai/en/stable/serving/engine_args.html[vLLM: Engine Arguments]
