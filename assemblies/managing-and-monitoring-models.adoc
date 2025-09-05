@@ -1,0 +1,79 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: cluster-admin
+
+[id="managing-and-monitoring-models_{context}"]
+
+
+= Managing model-serving runtimes
+
+As a cluster administrator, you can create a custom model-serving runtime and edit the inference service for a model deployed in {productname-short}.
+
+include::modules/adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform.adoc[leveloffset=+1]
+
+= Managing and monitoring models on the single-model serving platform
+
+As a cluster administrator, you can manage and monitor models on the single-model serving platform. You can configure monitoring for the single-model serving platform, deploy models across multiple GPU nodes and set up a Grafana dashboard to visualize real-time metrics, among other tasks.
+
+include::modules/setting-timeout-for-kserve.adoc[leveloffset=+1]
+include::modules/deploying-models-using-multiple-gpu-nodes.adoc[leveloffset=+1]
+
+== Optimizing performance and tuning
+You can optimize and tune your deployed models to balance speed, efficiency, and cost for different use cases.
+
+To evaluate a model's inference performance, consider these key metrics:
+
+* Latency: The time it takes to generate a response, which is critical for real-time applications. This includes
+Time-to-First-Token (TTFT) and Inter-Token Latency (ITL).
+* Throughput: The overall efficiency of the model server, measured in Tokens per Second (TPS) or Requests per Second (RPS).
+* Cost per million tokens: The cost-effectiveness of the model's inference.
+
+Performance is influenced by factors like model size, available GPU memory, and input sequence length, especially for applications like text-summarization and retrieval-augmented generation (RAG). To meet your performance requirements, you can use techniques such as quantization to reduce memory needs or parallelism to distribute very large models across multiple GPUs.
+
+include::modules/determining-gpu-requirements-for-llm-powered-applications.adoc[leveloffset=+2]
+include::modules/performance-considerations-for-doc-apps.adoc[leveloffset=+2]
+include::modules/inference-performance-metrics.adoc[leveloffset=+2]
+include::modules/configuring-metric-based-autoscaling.adoc[leveloffset=+2]
+
+ifdef::upstream[]
+// Conditionalized for self-managed because monitoring of user-defined projects is enabled on OSD and ROSA by default
+== Monitoring models on the single-model serving platform
+
+include::modules/configuring-monitoring-for-the-single-model-serving-platform.adoc[leveloffset=+2]
+
+endif::[]
+
+== Using Grafana to monitor model performance
+You can deploy a Grafana metrics dashboard to monitor the performance and resource usage of your models. Metrics dashboards can help you visualize key metrics for your model-serving runtimes and hardware accelerators.
+
+include::modules/deploying-a-grafana-metrics-dashboard.adoc[leveloffset=+2]
+include::modules/deploying-vllm-gpu-metrics-dashboard-grafana.adoc[leveloffset=+2]
+include::modules/ref-grafana-metrics.adoc[leveloffset=+2]
+
+= Managing and monitoring models on the NVIDIA NIM model serving platform
+
+As a cluster administrator, you can manage and monitor models on the NVIDIA NIM model serving platform. You can customize your NVIDIA NIM model selection options and enable metrics for a NIM model, among other tasks.
+
+include::modules/customizing-model-selection-options.adoc[leveloffset=+1]
+include::modules/enabling-metrics-for-existing-nim-deployment.adoc[leveloffset=+1]
+include::modules/viewing-nvidia-nim-metrics-for-a-nim-model.adoc[leveloffset=+2]
+include::modules/viewing-performance-metrics-for-a-nim-model.adoc[leveloffset=+2]
+
+ifdef::upstream[]
+// Conditionalized for self-managed because monitoring of user-defined projects is enabled on OSD and ROSA by default
+= Managing and monitoring models on the multi-model serving platform
+As a cluster administrator, you can manage and monitor models on the multi-model serving platform.
+
+include::modules/configuring-monitoring-for-the-multi-model-serving-platform.adoc[leveloffset=+1]
+
+endif::[]
+
+
+
+// [role='_additional-resources']
+// == Additional resources
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

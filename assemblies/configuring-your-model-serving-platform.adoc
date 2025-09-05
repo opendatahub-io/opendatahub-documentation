@@ -1,0 +1,53 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: odh-admin
+
+[id="configuring-your-model-serving-platform_{context}"]
+
+= About model-serving platforms
+
+As an {productname-short} administrator, you can enable your preferred serving platform and make it available for serving models. You can also add a custom or a tested and verified model-serving runtime.
+
+include::modules/about-model-serving.adoc[leveloffset=+1]
+include::modules/model-serving-runtimes.adoc[leveloffset=+1]
+include::modules/ref-supported-runtimes.adoc[leveloffset=+2]
+include::modules/ref-tested-verified-runtimes.adoc[leveloffset=+2]
+
+= Configuring model servers on the single-model serving platform
+On the single-model serving platform, you configure model servers by using model-serving runtimes. A model-serving runtime adds support for a specified set of model frameworks and the model formats that they support.
+
+include::modules/enabling-the-single-model-serving-platform.adoc[leveloffset=+1]
+include::modules/optimizing-the-vllm-runtime.adoc[leveloffset=+1]
+include::modules/adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform.adoc[leveloffset=+1]
+include::modules/adding-a-tested-and-verified-runtime-for-the-single-model-serving-platform.adoc[leveloffset=+1]
+
+= Configuring model servers on the NVIDIA NIM model serving platform
+
+You configure and create a model server on the NVIDIA NIM model serving platform when you deploy an NVIDIA-optimized model. During the deployment process, you select a specific NIM from the available list and configure its properties, such as the number of replicas, server size, and the hardware profile.
+
+include::modules/enabling-the-nvidia-nim-model-serving-platform.adoc[leveloffset=+1]
+
+= Configuring model servers on the multi-model serving platform
+
+On the multi-model serving platform, you configure model servers for your data science project before you deploy models. A model server can host multiple models, which share the server's resources.
+
+include::modules/enabling-the-multi-model-serving-platform.adoc[leveloffset=+1]
+include::modules/adding-a-custom-model-serving-runtime-for-the-multi-model-serving-platform.adoc[leveloffset=+1]
+include::modules/adding-a-tested-and-verified-runtime-for-the-multi-model-serving-platform.adoc[leveloffset=+1]
+
+= Customizing model deployments
+
+You can customize a model's deployment on the single-model serving platform to suit your specific needs, for example, to deploy a particular family of models or to enhance an existing deployment. You can modify the runtime configuration for a specific deployment by setting additional serving runtime arguments and environment variables.
+
+These customizations apply only to the selected model deployment and do not change the default runtime configuration. You can set these parameters when you first deploy a model or by editing an existing deployment.
+
+include::modules/customizing-parameters-serving-runtime.adoc[leveloffset=+1]
+include::modules/customizable-model-serving-runtime-parameters.adoc[leveloffset=+1]
+include::modules/customizing-the-vllm-runtime.adoc[leveloffset=+1]
+// [role='_additional-resources']
+// == Additional resources
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
