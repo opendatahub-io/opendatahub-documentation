@@ -23,6 +23,18 @@ include::modules/deploying-models-using-multiple-gpu-nodes.adoc[leveloffset=+1]
 == Optimizing performance and tuning
 You can optimize and tune your deployed models to balance speed, efficiency, and cost for different use cases.
 
+To evaluate a model's inference performance, consider these key metrics:
+
+* Latency: The time it takes to generate a response, which is critical for real-time applications. This includes
+Time-to-First-Token (TTFT) and Inter-Token Latency (ITL).
+* Throughput: The overall efficiency of the model server, measured in Tokens per Second (TPS) or Requests per Second (RPS).
+* Cost per million tokens: The cost-effectiveness of the model's inference.
+
+Performance is influenced by factors like model size, available GPU memory, and input sequence length, especially for applications like text-summarization and retrieval-augmented generation (RAG). To meet your performance requirements, you can use techniques such as quantization to reduce memory needs or parallelism to distribute very large models across multiple GPUs.
+
+include::modules/determining-gpu-requirements-for-llm-powered-applications.adoc[leveloffset=+2]
+include::modules/performance-considerations-for-doc-apps.adoc[leveloffset=+2]
+include::modules/inference-performance-metrics.adoc[leveloffset=+2]
 include::modules/configuring-metric-based-autoscaling.adoc[leveloffset=+2]
 
 ifdef::upstream[]

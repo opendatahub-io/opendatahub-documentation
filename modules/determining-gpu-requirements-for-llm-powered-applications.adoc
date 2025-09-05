@@ -1,0 +1,38 @@
+:_module-type: CONCEPT
+
+[id="determining-gpu-requirements-for-llm-powered-applications_{context}"]
+
+= Determining GPU requirements for LLM-powered applications
+[role="_abstract"]
+
+There are several factors to consider when choosing GPUs for applications powered by a Large Language Model (LLM) hosted on {productname-short}.
+
+The following guidelines help you determine the hardware requirements for your application, depending on the size and expected usage of your model.
+
+* *Estimating memory needs*: A general rule of thumb is that a model with `N` parameters in 16-bit precision requires approximately `2N` bytes of GPU memory. For example, an 8-billion-parameter model requires around 16GB of GPU memory, while a 70-billion-parameter model requires around 140GB. 
+
+* *Quantization*: To reduce memory requirements and potentially improve throughput, you can use quantization to load or run the model at lower-precision formats such as INT8, FP8, or INT4. This reduces the memory footprint at the expense of a slight reduction in model accuracy.
++
+[NOTE]
+====
+The *vLLM ServingRuntime for KServe* model-serving runtime supports several quantization methods. For more information about supported implementations and compatible hardware, see link:https://docs.vllm.ai/en/latest/quantization/supported_hardware.html[Supported hardware for quantization kernels].
+====
+* *Additional memory for key-value cache*: In addition to model weights, GPU memory is also needed to store the attention key-value (KV) cache, which increases with the number of requests and the sequence length of each request. This can impact performance in real-time applications, especially for larger models.
+
+* *Recommended GPU configurations*:
+
+** *Small Models (1B–8B parameters)*: For models in the range, a GPU with 24GB of memory is generally sufficient to support a small number of concurrent users.
+
+** *Medium Models (10B–34B parameters)*: 
+*** Models under 20B parameters require at least 48GB of GPU memory. 
+*** Models that are between 20B - 34B parameters require at least 80GB or more of memory in a single GPU.
+
+** *Large Models (70B parameters)*:  Models in this range may need to be distributed across multiple GPUs by using tensor parallelism techniques. Tensor parallelism allows the model to span multiple GPUs, improving inter-token latency and increasing the maximum batch size by freeing up additional memory for KV cache. Tensor parallelism works best when GPUs have fast interconnects such as an NVLink.
+
+** *Very Large Models (405B parameters)*: For extremely large models, quantization is recommended to reduce memory demands. You can also distribute the model using pipeline parallelism across multiple GPUs, or even across two servers. This approach allows you to scale beyond the memory limitations of a single server, but requires careful management of inter-server communication for optimal performance.
+
+For best results, start with smaller models and then scale up to larger models as required, using techniques such as parallelism and quantization to meet your performance and memory requirements.
+
+[role="_additional-resources"]
+.Additional resources
+* https://docs.vllm.ai/en/latest/serving/distributed_serving.html[Distributed serving]

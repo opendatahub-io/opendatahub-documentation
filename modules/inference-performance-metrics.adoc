@@ -1,0 +1,29 @@
+:_module-type: CONCEPT
+
+[id="inference-performance-metrics_{context}"]
+= Inference performance metrics
+[role="_abstract"]
+
+*Latency*, *throughput* and *cost per million tokens* are key metrics to consider when evaluating the response generation efficiency of a model during inferencing. These metrics provide a comprehensive view of a model's inference performance and can help balance speed, efficiency, and cost for different use cases.
+
+== Latency
+*Latency* is critical for interactive or real-time use cases, and is measured using the following metrics:
+
+* *Time-to-First-Token (TTFT)*: The delay in milliseconds between the initial request and the generation of the first token. This metric is important for streaming responses.
+* *Inter-Token Latency (ITL)*: The time taken in milliseconds to generate each subsequent token after the first, also relevant for streaming.
+* *Time-Per-Output-Token (TPOT)*: For non-streaming requests, the average time taken in milliseconds to generate each token in an output sequence.
+
+== Throughput
+
+*Throughput* measures the overall efficiency of a model server and is expressed with the following metrics:
+
+* *Tokens per Second (TPS)*: The total number of tokens generated per second across all active requests.
+* *Requests per Second (RPS)*: The number of requests processed per second. RPS, like response time, is sensitive to sequence length.
+
+== Cost per million tokens
+
+*Cost per Million Tokens* measures the cost-effectiveness of a model's inference, indicating the expense incurred per million tokens generated. This metric helps to assess both the economic feasibility and scalability of deploying the model.
+
+
+//[role="_additional-resources"]
+//.Additional resources
