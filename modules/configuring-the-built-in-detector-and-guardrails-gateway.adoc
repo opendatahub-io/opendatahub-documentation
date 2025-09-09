@@ -1,11 +1,11 @@
 :_module-type: PROCEDURE
 
 ifdef::context[:parent-context: {context}]
-[id="configuring-regex-guardrails-gateway_{context}"]
-= Configuring the regex detector and guardrails gateway
+[id="configuring-the-built-in-detector-and-guardrails-gateway_{context}"]
+= Configuring the built-in detector and guardrails gateway
 [role='_abstract']
 
-The regex detector and guardrails gateway are sidecar containers that you can deploy with the `GuardrailsOrchestrator` service, either individually or together. Use the `GuardrailsOrchestrator` custom resource (CR) to enable them.
+The built-in detectors and guardrails gateway are sidecar containers that you can deploy with the `GuardrailsOrchestrator` service, either individually or together. Use the `GuardrailsOrchestrator` custom resource (CR) to enable them. This example uses the regex built-in detector to demonstrate the process.
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -71,7 +71,13 @@ data:
         detector_params:
           regex:
             - email
-            - ssn
+            - us-social-security-number
+            - credit-card
+            - ipv4
+            - ipv6
+            - us-phone-number
+            - uk-post-code
+            - $CUSTOM_REGEX
       - name: hap
         detector_params: {}
     routes:         <4>
@@ -83,7 +89,7 @@ data:
         detectors:
 ----
 <1> The orchestrator service.
-<2> A list of preconfigured regular expressions for common detection actions. These regular expressions detect personal identifying information, `email` and `ssn`.
+<2> A list of preconfigured regular expressions for common detection actions. These regular expressions detect personal identifying information, such as `email` and `credit-card`.
 <3> The detector will be used for both input and output. 
 <4> The resulting endpoints for the  detectors. For example, `pii` is served at `$GUARDRAILS_GATEWAY_URL/pii/v1/chat/completions` and uses the `regex` detector. The `passthrough` preset does not use any detectors.
 
