@@ -163,7 +163,7 @@ curl -X POST http://localhost:8321/v1/shields \
       "detectors": {
         "regex": {
           "detector_params": {
-            "regex": ["email", "ssn", "credit-card"]
+            "regex": ["email", "us-social-security-number", "credit-card"]
           }
         }
       }
@@ -200,7 +200,7 @@ curl -s http://localhost:8321/v1/shields | jq '.'
             "detector_params": {
               "regex": [
                 "email",
-                "ssn",
+                "us-social-security-number",
                 "credit-card"
               ]
             }
@@ -281,7 +281,7 @@ This should return a response indicating that the email was detected:
 }
 ----
 +
-.. SSN detection example:
+.. Social security number (SSN) detection example:
 +
 [source,curl]
 ----

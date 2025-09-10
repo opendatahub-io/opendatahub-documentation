@@ -25,15 +25,26 @@ You can modify the following parameters for the `GuardrailsOrchestrator` CR obje
 * `tracesEndpoint` -  Sets the OTLP endpoint for traces
 
 |`orchestrator` *(optional)* | The orchestrator service to specify when enabling regex detectors
-|`detectors` *(optional)* | A list of preconfigured regex expressions for common detection actions:
+|`detectors` *(optional)* | A list of preconfigured regex expressions and file types, for common detection actions:
 
-* `ssn` - registered pattern for social security numbers
-* `credit-card` - registered pattern for credit card numbers
-* `email` - registered pattern for email addresses
+* `us-social-security-number` - registered pattern for social security numbers
+* `credit-card` - registered regex pattern for credit card numbers
+* `email` - registered regex pattern for email addresses
+* `ipv4` - registered regex pattern for IPv4 addresses
+* `ipv6` - registered regex pattern for IP6 addresses
+* `us-phone-number` - registered regex pattern for US phone numbers
+* `uk-post-code` - registered regex pattern for UK post codes
+* `$CUSTOM_REGEX` - registered regex pattern for custom input. Replace with a custom regex to define your own regex detector
+* `json` - registered file type pattern for detecting valid JSON
+* `xml` - registered file type pattern for detecting valid XML
+* `yaml` - registered file type pattern for detecting valid YAML
+* `json-with-schema:$SCHEMA` - registered file type pattern for detecting whether the text content satisfies a provided JSON schema. To specify a schema, replace $SCHEMA with a JSON schema
+* `xml-with-schema:$SCHEMA` - registered file type pattern for detecting whether the text content satisfies a provided XML schema. To specify a schema, replace $SCHEMA with an XML Schema Definition (XSD)
+* `yaml-with-schema:$SCHEMA` - registered file type pattern for detecting  whether the text content satisfies a provided XML schema. To specify a schema, replace $SCHEMA with a JSON schema (not a YAML schema)
 
 |`routes` *(optional)* | The resulting endpoints for detections used with regex detectors
 
-|`enableRegexDetectors` *(optional)*| A boolean value to use to inject the regex detector sidecar container into the orchestrator pod. The regex detector is a lightweight HTTP server designed to parse text using predefined patterns or custom regular expressions.
+|`enableBuiltInDetectors` *(optional)*| A boolean value to inject the built-in detector sidecar container into the orchestrator pod. The built-in detector is a lightweight HTTP server designed to perform detections based on predefined patterns or custom regular expressions.
 
 |`enableGuardrailsGateway` *(optional)*| A boolean value to enable controlled interaction with the orchestrator service by enforcing stricter access to its exposed endpoints. It provides a mechanism of configuring fixed detector pipelines, and then provides a unique `/v1/chat/completions` endpoint per configured detector pipeline.
 

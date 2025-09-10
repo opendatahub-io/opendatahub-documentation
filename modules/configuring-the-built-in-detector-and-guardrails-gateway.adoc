@@ -1,15 +1,15 @@
 :_module-type: PROCEDURE
 
 ifdef::context[:parent-context: {context}]
-[id="configuring-regex-guardrails-gateway_{context}"]
-= Configuring the regex detector and guardrails gateway
+[id="configuring-the-built-in-detector-and-guardrails-gateway_{context}"]
+= Configuring the built-in detector and guardrails gateway
 [role='_abstract']
 
-The regex detector and guardrails gateway are sidecar containers that you can deploy with the `GuardrailsOrchestrator` service, either individually or together. Use the `GuardrailsOrchestrator` custom resource (CR) to enable them.
+The built-in detectors and guardrails gateway are sidecar containers that you can deploy with the `GuardrailsOrchestrator` service, either individually or together. Use the `GuardrailsOrchestrator` custom resource (CR) to enable them. This example uses the regex built-in detector to demonstrate the process.
 
 .Prerequisites
-* You have cluster administrator privileges for your {openshift-platform} cluster.
-* You have downloaded and installed the {openshift-platform} command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
+* You have cluster administrator privileges for your {productname-short} cluster.
+* You have downloaded and installed the {productname-short} command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
 * You are familiar with how to create a `ConfigMap` for monitoring a user-defined workflow. You perform similar steps in this procedure. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html-single/nodes/index#nodes-pods-configmap-overview_configmaps[Understanding config maps].
 
 ifdef::upstream[]
@@ -71,7 +71,13 @@ data:
         detector_params:
           regex:
             - email
-            - ssn
+            - us-social-security-number
+            - credit-card
+            - ipv4
+            - ipv6
+            - us-phone-number
+            - uk-post-code
+            - $CUSTOM_REGEX
       - name: hap
         detector_params: {}
     routes:         <4>
@@ -83,7 +89,7 @@ data:
         detectors:
 ----
 <1> The orchestrator service.
-<2> A list of preconfigured regular expressions for common detection actions. These regular expressions detect personal identifying information, `email` and `ssn`.
+<2> A list of preconfigured regular expressions for common detection actions. These regular expressions detect personal identifying information, such as `email` and `credit-card`.
 <3> The detector will be used for both input and output. 
 <4> The resulting endpoints for the  detectors. For example, `pii` is served at `$GUARDRAILS_GATEWAY_URL/pii/v1/chat/completions` and uses the `regex` detector. The `passthrough` preset does not use any detectors.
 
@@ -94,7 +100,7 @@ data:
 $ oc apply -f detectors_cm.yaml -n <TEST_NAMESPACE>
 ----
 
-. Specify the `ConfigMap` objects you created in the `GuardrailsOrchestrator` custom resource(CR). For example, create a YAML file named `orchestrator_cr.yaml` with the following contents:
+. Specify the `ConfigMap` objects you created in the `GuardrailsOrchestrator` custom resource (CR). For example, create a YAML file named `orchestrator_cr.yaml` with the following contents:
 +
 .Example `orchestrator_cr.yaml` CR
 [source,yaml]
