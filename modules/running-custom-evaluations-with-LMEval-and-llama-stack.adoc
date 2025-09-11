@@ -31,7 +31,7 @@ endif::[]
 
 .Procedure
 
-. Upload your custom dataset to your OpenShift cluster using PersistentVolumeClaim (PVC) and a temporary pod.  Create a PVC named `my-pvc` to store your dataset. Run the following command in your CLI, replacing <MODEL_NAMESPACE> with the namespace of your language model: 
+. Upload your custom dataset to your OpenShift cluster using a PersistentVolumeClaim (PVC) and a temporary pod. Create a PVC named `my-pvc` to store your dataset. Run the following command in your CLI, replacing <MODEL_NAMESPACE> with the namespace of your language model:
 +	
 [source,bash]
 ----
@@ -71,7 +71,8 @@ spec:
       claimName: my-pvc
 EOF
 ----
-. Copy your locally stored task dataset to the pod to place it within the PVC. . In this example, the dataset is named `example-dk-bench-input-bmo.jsonl` and it is copied to the `dataset-storage-pod` under the path `/data/upload_files/`. Replace <MODEL_NAMESPACE> with the namespace where the language model you wish to evaluate lives:
+. Copy your locally stored task dataset to the pod to place it within the PVC. In this example, the dataset is named `example-dk-bench-input-bmo.jsonl` and it is copied to the `dataset-storage-pod` under the path `/data/upload_files/`. Replace <MODEL_NAMESPACE> with the namespace where the language model you wish to evaluate lives:
+
 +
 [source,bash]
 ----
@@ -84,8 +85,8 @@ oc cp example-dk-bench-input-bmo.jsonl dataset-storage-pod:/data/upload_files/ex
 client.benchmarks.register(
     benchmark_id="trustyai_lmeval::dk-bench",
     dataset_id="trustyai_lmeval::dk-bench",
-    scoring_functions=["string"],
-    provider_benchmark_id="string",
+    scoring_functions=["accuracy"],
+    provider_benchmark_id="dk-bench",
     provider_id="trustyai_lmeval",
     metadata={
         "custom_task": {
@@ -109,7 +110,7 @@ client.benchmarks.register(
         "input": {"storage": {"pvc": "my-pvc"}}
     },
 )
-
+EOF
 ----
 . Run a benchmark evaluation on your model:
 +
@@ -133,7 +134,6 @@ job = client.eval.run_eval(
 )
 
 print(f"Starting job '{job.job_id}'")
-
 ----
 . Monitor the status of the evaluation job. The job runs asynchronously, so you can check its status periodically:
 +
@@ -145,11 +145,10 @@ def get_job_status(job_id, benchmark_id):
 while True:
     job = get_job_status(job_id=job.job_id, benchmark_id="trustyai_lmeval::dk-bench")
     print(job)
-    
+
     if job.status in ['failed', 'completed']:
         print(f"Job ended with status: {job.status}")
         break
 
     time.sleep(20)
-
 ----

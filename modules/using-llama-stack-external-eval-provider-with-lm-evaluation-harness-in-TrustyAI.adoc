@@ -5,7 +5,7 @@ ifdef::context[:parent-context: {context}]
 = Using Llama Stack external eval provider with lm-evaluation-harness in TrustyAI
 [role='_abstract']
 
-This example demonstrates how to evaluate a language model in {productname-long} using the LMEval Llama Stack external eval provider in a Python workbench. To do this, configure a Llama Stack server to use the LMEval Eval provider, register a benchmark dataset, and run a benchmark evaluation job on a language model.
+This example demonstrates how to evaluate a language model in {productname-long} using the LMEval Llama Stack external eval provider in a Python workbench. To do this, configure a Llama Stack server to use the LMEval eval provider, register a benchmark dataset, and run a benchmark evaluation job on a language model.
 
 
 .Prerequisites
@@ -97,7 +97,7 @@ client = create_http_client()
 ----
 benchmarks = client.benchmarks.list()
 
-pprint.print(f"Available benchmarks: {benchmarks}")
+pprint.pprint(f"Available benchmarks: {benchmarks}")
 ----
 . LMEval provides access to over 100 preconfigured evaluation datasets. Register the ARC-Easy benchmark, a dataset of grade-school level, multiple-choice science questions:
 +
