@@ -36,12 +36,12 @@ The *Deploy model* dialog opens.
 .. In the *Model deployment name* field, enter a unique name for the deployment.
 .. From the *NVIDIA NIM* list, select the NVIDIA NIM model that you want to deploy. For more information, see link:https://docs.nvidia.com/nim/large-language-models/latest/supported-models.html[Supported Models^]
 .. In the *NVIDIA NIM storage size* field, specify the size of the cluster storage instance that will be created to store the NVIDIA NIM model.
-
++
 [NOTE] 
 ====
 When resizing a PersistentVolumeClaim (PVC) backed by Amazon EBS in {productname-short}, you may encounter `VolumeModificationRateExceeded: You've reached the maximum modification rate per volume limit.` To avoid this error, wait at least six hours between modifications per EBS volume. If you resize a PVC before the cooldown expires, the Amazon EBS CSI driver (`ebs.csi.aws.com`) fails with this error. This error is an Amazon EBS service limit that applies to all workloads using EBS-backed PVCs.
 ====
-
++
 .. In the *Number of model server replicas to deploy* field, specify a value.
 .. From the *Model server size* list, select a value.
 . From the *Hardware profile* list, select a hardware profile.
