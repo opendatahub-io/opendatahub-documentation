@@ -1,0 +1,39 @@
+:_module-type: CONCEPT
+
+[id="kueue-workflow_{context}"]
+= Kueue workflow
+
+Managing workloads with Kueue in {productname-short} involves tasks for {openshift-platform} cluster administrators, {productname-short} administrators, and machine learning (ML) engineers or data scientists:
+
+*Cluster administrator*
+
+Installs and configures Kueue:
+
+. Installs the {rhbok-productname} Operator on the cluster, as described in link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/latest/html/installing_on_openshift_container_platform/install-kueue[Installing Red Hat build of Kueue].
+. Activates the Kueue integration by setting the `managementState` to `Unmanaged` in the `DataScienceCluster` custom resource, as described in _Configuring workload management with Kueue_.
+. Configures quotas to optimize resource allocation for user workloads, as described in the link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue[{rhbok-productname}] documentation.
+. Enables Kueue in the dashboard by setting `disableKueue` to `false` in the `OdhDashboardConfig` custom resource, as described in _Enabling Kueue in the dashboard_.
++
+[NOTE]
+====
+When Kueue is enabled in the dashboard, {productname-short} automatically enables Kueue management for all new projects created from the dashboard. For existing projects, or for projects created by using the command-line interface, you must enable Kueue management manually by applying the `kueue.openshift.io/managed=true` label to the project namespace.
+====
+
+
+*{productname-short} administrator*
+
+Prepares the {productname-short} environment:
+
+ifdef::upstream[]
+. Creates Kueue-enabled hardware profiles so that users can submit workloads from the {productname-short} dashboard, as described in link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles].
+endif::[]
+ifndef::upstream[]
+. Creates Kueue-enabled hardware profiles so that users can submit workloads from the {productname-short} dashboard, as described in link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles].
+endif::[]
+
+*ML Engineer or data scientist*
+
+Submits workloads to the queuing system:
+
+. For workloads created from the {productname-short} dashboard, such as workbenches and model servers, selects a Kueue-enabled hardware profile during creation.
+. For workloads created using a command-line interface or an SDK, such as distributed training jobs, adds the `kueue.x-k8s.io/queue-name` label to the workload's YAML manifest.
