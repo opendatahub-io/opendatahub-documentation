@@ -1,0 +1,169 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="using-llama-stack-external-eval-provider-with-lm-evaluation-harness-in-TrustyAI_{context}"]
+= Using Llama Stack external eval provider with lm-evaluation-harness in TrustyAI
+[role='_abstract']
+
+This example demonstrates how to evaluate a language model in {productname-long} using the LMEval Llama Stack external eval provider in a Python workbench. To do this, configure a Llama Stack server to use the LMEval Eval provider, register a benchmark dataset, and run a benchmark evaluation job on a language model.
+
+
+.Prerequisites
+
+ifdef::upstream[]
+* You have installed {productname-long}, version 2.29 or later.
+endif::[]
+ifndef::upstream[]
+* You have installed {productname-long}, version 2.20 or later.
+endif::[]
+
+* You have cluster administrator privileges for your {productname-short} cluster.
+
+* You have downloaded and installed the {productname-short}  command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
+
+* You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace.
+
+* You have installed TrustyAI Operator in your {productname-short} cluster.
+
+* You have set KServe to Raw Deployment mode in your cluster.
+
+
+.Procedure
+
+. Configure a Python virtual environment for this tutorial in your `DataScienceCluster`:
++	
+[source,bash]
+----
+python3 -m venv .venv
+source .venv/bin/activate
+----
+. Install the required packages from the Python Package Index (PyPI):
++
+[source,bash]
+----
+pip install \
+    llama-stack \
+    llama-stack-client \
+    llama-stack-provider-lmeval
+----
+. Configure the Llama Stack server. Set the variables to configure the runtime endpoint and namespace. The VLLM_URL value should be the `v1/completions` endpoint of your model route and the TRUSTYAI_LM_EVAL_NAMESPACE should be the namespace where your model is deployed. For example: 
++
+[source,bash]
+----
+export VLLM_URL=https://$(oc get $(oc get ksvc -o name | grep predictor) --template='{{.status.url}}')/v1/completions
+export TRUSTYAI_LM_EVAL_NAMESPACE=$(oc project | cut -d '"' -f2)
+----
+. Download the `providers.d` provider configuration directory and the `run.yaml` execution file:
++
+[source, bash]
+----
+curl --create-dirs --output providers.d/remote/eval/trustyai_lmeval.yaml https://raw.githubusercontent.com/trustyai-explainability/llama-stack-provider-lmeval/refs/heads/main/providers.d/remote/eval/trustyai_lmeval.yaml
+
+curl --create-dirs --output run.yaml https://raw.githubusercontent.com/trustyai-explainability/llama-stack-provider-lmeval/refs/heads/main/run.yaml
+----
+. Start the Llama Stack server in a virtual environment, which uses port `8321` by default: 
++
+[source,bash]
+----
+llama stack run run.yaml --image-type venv
+----
+. Create a Python script in a Jupyter workbench and import the following libraries and modules, to interact with the server and run an evaluation:
++
+[source,python]
+----
+import os
+import subprocess
+
+import logging
+
+import time
+import pprint 
+----
+. Start the Llama Stack Python client to interact with the running Llama Stack server:
++
+[source,python]
+----
+BASE_URL = "http://localhost:8321"
+
+def create_http_client():
+    from llama_stack_client import LlamaStackClient
+    return LlamaStackClient(base_url=BASE_URL)
+
+client = create_http_client()
+----
+. Print a list of the current available benchmarks:
++
+[source,python]
+----
+benchmarks = client.benchmarks.list()
+
+pprint.print(f"Available benchmarks: {benchmarks}")
+----
+. LMEval provides access to over 100 preconfigured evaluation datasets. Register the ARC-Easy benchmark, a dataset of grade-school level, multiple-choice science questions:
++
+[source,python]
+----
+client.benchmarks.register(
+    benchmark_id="trustyai_lmeval::arc_easy",
+    dataset_id="trustyai_lmeval::arc_easy",
+    scoring_functions=["string"],
+    provider_benchmark_id="string",
+    provider_id="trustyai_lmeval",
+     metadata={
+        "tokenizer": "google/flan-t5-small",
+        "tokenized_requests": False,
+   }
+)
+----
+. Verify that the benchmark has been registered successfully:
++
+[source,python]
+----
+benchmarks = client.benchmarks.list()
+pprint.print(f"Available benchmarks: {benchmarks}")
+----
+. Run a benchmark evaluation job on your deployed model using the following input. Replace phi-3 with the name of your deployed model:
++
+[source,python]
+----
+job = client.eval.run_eval(
+    benchmark_id="trustyai_lmeval::arc_easy",
+    benchmark_config={
+        "eval_candidate": {
+            "type": "model",
+            "model": "phi-3",
+            "provider_id": "trustyai_lmeval",
+            "sampling_params": {
+                "temperature": 0.7,
+                "top_p": 0.9,
+                "max_tokens": 256
+            },
+        },
+        "num_examples": 1000,
+     },
+)
+
+print(f"Starting job '{job.job_id}'")
+----
+. Monitor the status of the evaluation job using the following code. The job will run asynchronously, so you can check its status periodically: 
+[source, python]
+----
+def get_job_status(job_id, benchmark_id):
+    return client.eval.jobs.status(job_id=job_id, benchmark_id=benchmark_id)
+
+while True:
+    job = get_job_status(job_id=job.job_id, benchmark_id="trustyai_lmeval::arc_easy")
+    print(job)
+
+    if job.status in ['failed', 'completed']:
+        print(f"Job ended with status: {job.status}")
+        break
+
+    time.sleep(20)
+----
+. Retrieve the evaluation job results once the job status reports back as `completed`:
++
+[source,python]
+----
+pprint.pprint(client.eval.jobs.retrieve(job_id=job.job_id, benchmark_id="trustyai_lmeval::arc_easy").scores)
+----
