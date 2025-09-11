@@ -45,14 +45,14 @@ oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"components"
 +
 [source,terminal]
 ----
-oc get clusterqueue
+oc get clusterqueues
 ----
 
 . Verify that a default `LocalQueue` exists in the {productname-short} applications namespace; the default namespace is `pass:attributes[{dbd-config-default-namespace}]`.
 +
 [source,terminal]
 ----
-oc get localqueue -n <applications-namespace>
+oc get localqueues -n <applications-namespace>
 ----
 
 .Next steps

@@ -36,7 +36,7 @@ endif::[]
 You configure how {productname-short} interacts with Kueue by setting the `managementState` in the `DataScienceCluster` object.
 
 `Unmanaged`::
-This is supported state for using Kueue with {productname-short}. In this state, {productname-short} integrates with an existing Kueue installation managed by the {rhbok-productname} Operator. You must have the {rhbok-productname} Operator installed and running on the cluster.
+This is the supported state for using Kueue with {productname-short}. In this state, {productname-short} integrates with an existing Kueue installation managed by the {rhbok-productname} Operator. You must have the {rhbok-productname} Operator installed and running on the cluster.
 +
 When you enable `Unmanaged` mode, the {productname-short} Operator creates a default `Kueue` custom resource (CR) if one does not already exist. This prompts the {rhbok-productname} Operator to activate Kueue on the cluster.
 
@@ -52,7 +52,7 @@ To ensure workloads do not bypass the queuing system, a validating webhook autom
 
 After a project is enabled for Kueue management, the webhook requires that any new or updated workload has the `kueue.x-k8s.io/queue-name` label. If this label is missing, the webhook prevents the workload from being created or updated.
 
-{productname-short} automatically creates default `ClusterQueue` and `LocalQueue` objects for namespaces that are enabled for Kueue management if they do not already exist. After creation, these resources are not managed, and cluster administrators can change or delete them.
+{productname-short} creates a default, cluster-scoped `ClusterQueue` (if one does not already exist) and a namespace-scoped `LocalQueue` for that namespace (if one does not already exist). After creation, these resources are not managed, and cluster administrators can change or delete them.
 
 [NOTE]
 ====
