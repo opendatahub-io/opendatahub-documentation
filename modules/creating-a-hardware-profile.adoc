@@ -21,9 +21,9 @@ The *Create hardware profile* page opens.
 . Optional: To change the default name of your Kubernetes resource, click *Edit resource name* and enter a name in the *Resource name* field. The resource name cannot be edited after creation.
 . Optional: In the *Description* field, enter a description for the hardware profile.
 . In the *Visiblity* section, set the hardware profile visibility level:
-.. To access the hardware profile in all areas of {productname-short}, leave the *Visible everywhere* radio button selected.
-.. Click the *Limited visibility* radio button to limit the areas of {productname-short} where your data scientists can use the hardware profile.
-. Optional: Configure node resource request limits:
+* To access the hardware profile in all areas of {productname-short}, leave the *Visible everywhere* radio button selected.
+* To limit the areas of {productname-short} where your data scientists can use the hardware profile, select the *Limited visibility* radio button.
+. Optional: Configure resource request and limits:
 .. Click *Add resource*. 
 +
 The *Add resource* dialog opens.
@@ -36,28 +36,41 @@ The *Add resource* dialog opens.
 ... To set a specific maximum request limit, click the *Set maximum limit* radio button and enter a value.
 ... To set no maximum request limit, click the *No maximum limit* radio button.
 .. Click *Add*.
-. Optional: Add a node selector to schedule pods on nodes with matching labels.
-.. Click *Add node selector*. 
+. In the *Resource allocation* section, select a *Workload allocation strategy* to configure how workloads are assigned to nodes:
++
+Local queue::
+.. To use Kueue to automatically queue jobs and manage resources based on workload priority, select *Local queue*. This option is available only if your cluster is configured to manage workloads with Kueue. 
+.. In the *Local queue* field, enter the name of the `LocalQueue` that this hardware profile will use.
++
+[NOTE]
+====
+For globally scoped profiles, use a `LocalQueue` name that exists in all user projects, such as the default queue created by the {productname-short} Operator.
+====
+.. Optional: From the *Workload priority* list, select a priority for jobs that use this profile. Higher-priority workloads are admitted before lower-priority workloads when resources are limited.
+Node selectors and tolerations::
+.. To manually add node selectors and tolerations, select *Node selectors and tolerations*.
+.. Optional: Add a node selector to schedule pods on nodes with matching labels.
+... Click *Add node selector*. 
 +
 The *Add node selector* dialog opens.
-.. In the *Key* field, enter a node selection key. The key must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
-.. In the *Value* field, enter a node selection value. The value must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
-.. Click *Add*.
-. Optional: Add a toleration to schedule pods with matching taints.
-.. Click *Add toleration*. 
+... In the *Key* field, enter a node selection key. The key must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
+... In the *Value* field, enter a node selection value. The value must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
+... Click *Add*.
+.. Optional: Add a toleration to schedule pods with matching taints.
+... Click *Add toleration*. 
 +
 The *Add toleration* dialog opens.
-.. From the *Operator* list, select one of the following options:
-* *Equal* - The *key/value/effect* parameters must match. This is the default.
-* *Exists* - The *key/effect* parameters must match. You must leave a blank value parameter, which matches any.
-.. From the *Effect* list, select one of the following options:
-* *None* 
-* *NoSchedule* - New pods that do not match the taint are not scheduled onto that node. Existing pods on the node remain.
-* *PreferNoSchedule* - New pods that do not match the taint might be scheduled onto that node, but the scheduler tries not to. Existing pods on the node remain.
-* *NoExecute* - New pods that do not match the taint cannot be scheduled onto that node. Existing pods on the node that do not have a matching toleration are removed.
-.. In the *Key* field, enter a toleration key. The key must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
-.. In the *Value* field, enter a toleration value. The value must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
-.. In the *Toleration Seconds* section, select one of the following options to specify how long a pod stays bound to a node that has a node condition:
+... From the *Operator* list, select one of the following options:
+** *Equal* - The *key/value/effect* parameters must match. This is the default.
+** *Exists* - The *key/effect* parameters must match. You must leave a blank value parameter, which matches any.
+... From the *Effect* list, select one of the following options:
+** *None* 
+** *NoSchedule* - New pods that do not match the taint are not scheduled onto that node. Existing pods on the node remain.
+** *PreferNoSchedule* - New pods that do not match the taint might be scheduled onto that node, but the scheduler tries not to. Existing pods on the node remain.
+** *NoExecute* - New pods that do not match the taint cannot be scheduled onto that node. Existing pods on the node that do not have a matching toleration are removed.
+... In the *Key* field, enter a toleration key. The key must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
+... In the *Value* field, enter a toleration value. The value must begin with a letter or number, and may contain letters, numbers, hyphens, dots, and underscores.
+... In the *Toleration Seconds* section, select one of the following options to specify how long a pod stays bound to a node that has a node condition:
 ** *Forever* - Pods stays permanently bound to a node. 
 ** *Custom value* - Enter a value, in seconds, to define how long pods stay bound to a node that has a node condition.
 .. Click *Add*.
