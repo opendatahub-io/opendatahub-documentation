@@ -48,16 +48,16 @@ This state disables Kueue in {productname-short}. If the state was previously `M
 
 == Queue enforcement for projects
 
-To ensure workloads do not bypass the queuing system, a validating webhook automatically enforces queuing rules on any project that is enabled for Kueue management. You enable a project for Kueue management by applying the `kueue.openshift.io/managed=true` label to the project namespace.
+To ensure workloads do not bypass the queuing system, a validating webhook automatically enforces queuing rules on any project that is enabled for Kueue management. You enable a project for Kueue management by applying the `kueue.openshift.io/managed=true` label to the project namespace. 
 
-After a project is enabled for Kueue management, the webhook requires that any new or updated workload has the `kueue.x-k8s.io/queue-name` label. If this label is missing, the webhook prevents the workload from being created or updated.
+[NOTE]  
+====  
+This validating webhook enforcement method replaces the Validating Admission Policy that was used with the deprecated embedded Kueue component. The system also supports the legacy `kueue-managed` label for backward compatibility, but `kueue.openshift.io/managed=true` is the recommended label going forward.  
+====  
 
-{productname-short} creates a default, cluster-scoped `ClusterQueue` (if one does not already exist) and a namespace-scoped `LocalQueue` for that namespace (if one does not already exist). After creation, these resources are not managed, and cluster administrators can change or delete them.
+After a project is enabled for Kueue management, the webhook requires that any new or updated workload has the `kueue.x-k8s.io/queue-name` label. If this label is missing, the webhook prevents the workload from being created or updated.  
 
-[NOTE]
-====
-This validating webhook enforcement method replaces the Validating Admission Policy that was used with the deprecated embedded Kueue component.
-====
+{productname-short} creates a default, cluster-scoped `ClusterQueue` (if one does not already exist) and a namespace-scoped `LocalQueue` for that namespace (if one does not already exist). These default resources are created with the `opendatahub.io/managed=false` annotation, so they are not managed after creation and cluster administrators can change or delete them.  
 
 The webhook enforces this rule on the `create` and `update` operations for the following resource types:
 
