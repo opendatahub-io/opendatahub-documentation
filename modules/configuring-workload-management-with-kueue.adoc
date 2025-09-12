@@ -18,25 +18,25 @@ To use workload queuing in {productname-short}, install the {rhbok-productname} 
 +
 [source,subs="+quotes"]
 ----
-oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
 
 . Install the {rhbok-productname} Operator on your {openshift-platform} cluster as described in link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/latest/html/installing_on_openshift_container_platform/install-kueue[Installing Red Hat build of Kueue].
 
 . Activate the Kueue integration. You can use the predefined names for the default cluster queue and default local queue, or specify custom names.  
 +
-* To use the predefined queue names (`default`), run the following command. Replace `<operator-namespace>` with your operator namespace (the default is `pass:attributes[{operator-default-namespace}]`).  
+* To use the predefined queue names (`default`), run the following command. Replace `<operator-namespace>` with your operator namespace. The default operator namespace is `pass:attributes[{operator-default-namespace}]`.  
 +
 [source,terminal]
 ----
-oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"components":{"kueue":{"managementState":"Unmanaged"}}}}' -n <operator-namespace>
+$ oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"components":{"kueue":{"managementState":"Unmanaged"}}}}' -n <operator-namespace>
 ----
 +
-* To specify custom queue names, run the following command. Replace `<example-cluster-queue>` and `<example-local-queue>` with your custom queue names, and replace `<operator-namespace>` with your operator namespace (the default is `pass:attributes[{operator-default-namespace}]`).  
+* To specify custom queue names, run the following command. Replace `<example-cluster-queue>` and `<example-local-queue>` with your custom queue names, and replace `<operator-namespace>` with your operator namespace. The default operator namespace is `pass:attributes[{operator-default-namespace}]`.
 +
 [source,terminal]
 ----
-oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"components":{"kueue":{"managementState":"Unmanaged","defaultClusterQueueName":"<example-cluster-queue>","defaultLocalQueueName":"<example-local-queue>"}}}}' -n <operator-namespace>
+$ oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"components":{"kueue":{"managementState":"Unmanaged","defaultClusterQueueName":"<example-cluster-queue>","defaultLocalQueueName":"<example-local-queue>"}}}}' -n <operator-namespace>
 ----
 
 .Verification
@@ -45,19 +45,19 @@ oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"components"
 +
 [source,terminal]
 ----
-oc get clusterqueues
+$ oc get clusterqueues
 ----
 
-. Verify that a default `LocalQueue` exists in the {productname-short} applications namespace; the default namespace is `pass:attributes[{dbd-config-default-namespace}]`.
+. Verify that a default `LocalQueue` exists in the {productname-short} applications namespace. The default namespace is `pass:attributes[{dbd-config-default-namespace}]`.
 +
 [source,terminal]
 ----
-oc get localqueues -n <applications-namespace>
+$ oc get localqueues -n <applications-namespace>
 ----
 
 .Next steps
 * Configure quotas by creating and modifying `ResourceFlavor`, `ClusterQueue`, and `LocalQueue` objects. For details, see the link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue[{rhbok-productname}] documentation.
-* Enable Kueue in the dashboard so that users can select Kueue-enabled options when creating workloads. This also enables Kueue management for all new projects created from the dashboard. See _Enabling Kueue in the dashboard_.
+* Enable Kueue in the dashboard so that users can select Kueue-enabled options when creating workloads. When you enable Kueue, you also enable Kueue management for all new projects created from the dashboard. See _Enabling Kueue in the dashboard_.
 * Cluster administrators and {productname-short} administrators can create hardware profiles so that users can submit workloads from the {productname-short} dashboard. 
 ifdef::upstream[]
 See link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles].

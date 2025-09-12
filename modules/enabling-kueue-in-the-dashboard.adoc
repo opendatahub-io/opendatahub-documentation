@@ -6,9 +6,7 @@
 [role="_abstract"]
 Enable Kueue in the {productname-short} dashboard so that users can select Kueue-enabled options when creating workloads. 
 
-When Kueue is enabled in the dashboard, {productname-short} automatically enables Kueue management for all new projects created from the dashboard. For these projects, {productname-short} applies the `kueue.openshift.io/managed=true` label to the namespace and creates default `ClusterQueue` and `LocalQueue` objects if they do not already exist. These default resources are created with the `opendatahub.io/managed=false` annotation, so they are not managed after creation and cluster administrators can change or delete them.  
-
-A validating webhook then enforces that new or updated workload resources include the `kueue.x-k8s.io/queue-name` label.
+When you enable Kueue in the dashboard, {productname-short} automatically enables Kueue management for all new projects created from the dashboard. For these projects, {productname-short} applies the `kueue.openshift.io/managed=true` label to the namespace and creates default `ClusterQueue` and `LocalQueue` objects if they do not already exist. These default resources are created with the `opendatahub.io/managed=false` annotation, so they are not managed after creation. Cluster administrators can change or delete them. A validating webhook then enforces that new or updated workload resources include the `kueue.x-k8s.io/queue-name` label.
 
 [NOTE]
 ====
@@ -16,7 +14,7 @@ For existing projects, or for projects created by using the command-line interfa
 
 [source,terminal]
 ----
-oc label namespace <project-namespace> kueue.openshift.io/managed=true --overwrite
+$ oc label namespace <project-namespace> kueue.openshift.io/managed=true --overwrite
 ----
 ====
 
@@ -32,41 +30,18 @@ oc label namespace <project-namespace> kueue.openshift.io/managed=true --overwri
 +
 [source,subs="+quotes"]
 ----
-oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
 
-. Update the `odh-dashboard-config` custom resource in the {productname-short} applications namespace. Replace `<applications-namespace>` with your {productname-short} application namespace (the default is `pass:attributes[{dbd-config-default-namespace}]`):
+. Update the `odh-dashboard-config` custom resource in the {productname-short} applications namespace. Replace `<applications-namespace>` with your {productname-short} applications namespace. The default is `pass:attributes[{dbd-config-default-namespace}]`.
 
 [source,terminal,subs="+quotes"]
 ----
-oc patch odhdashboardconfig odh-dashboard-config \
+$ oc patch odhdashboardconfig odh-dashboard-config \
   -n <applications-namespace> \
   --type merge \
   -p '{"spec":{"dashboardConfig":{"disableHardwareProfiles":false,"disableKueue":false}}}'
 ----
-
-////
-. Log in to the {openshift-platform} console as an {productname-short} administrator.
-. Open the dashboard configuration file:
-.. In the *Administrator* perspective, click *Home* -> *API Explorer*.
-.. In the search bar, enter `OdhDashboardConfig` to filter by kind.
-.. Click the `OdhDashboardConfig` custom resource (CR) to open the resource details page.
-.. From the *Project* list, select the {productname-short} application namespace; the default is `pass:attributes[{dbd-config-default-namespace}]`.
-.. Click the *Instances* tab.
-.. Click the `odh-dashboard-config` instance to open the details page.
-.. Click the *YAML* tab. 
-. In the `spec.dashboardConfig` section, add the `disableKueue` and `disableHardwareProfiles` fields (if they are not already present) and set their values to `false` as shown:
-+
-[source,subs="+quotes"]
-----
-spec:
-  dashboardConfig:
-    disableHardwareProfiles: false
-    disableKueue: false
-----
-
-. Click *Save* to apply your changes and then click *Reload* to make sure that your changes are synced to the cluster.
-////
 
 .Verification
 . From the {productname-short} dashboard, create a new project.
@@ -74,15 +49,15 @@ spec:
 +
 [source,terminal]
 ----
-oc get ns <project-namespace> -o jsonpath='{.metadata.labels.kueue\.openshift\.io/managed}{"\n"}'
+$ oc get ns <project-namespace> -o jsonpath='{.metadata.labels.kueue\.openshift\.io/managed}{"\n"}'
 ----
 The output should be `true`.
 
-. Confirm that a default `LocalQueue` exists for the project namespace (if it did not previously):
+. Confirm that a default `LocalQueue` exists for the project namespace:
 +
 [source,terminal]
 ----
-oc get localqueues -n <project-namespace>
+$ oc get localqueues -n <project-namespace>
 ----
 . Create a test workload (for example, a `Notebook`) and verify that it includes the `kueue.x-k8s.io/queue-name` label.
 
