@@ -30,11 +30,11 @@ endif::[]
 .Procedure
 . Optional: When you migrate from the embedded Kueue to {rhbok-productname}, the {productname-short} Operator automatically moves your existing Kueue configuration from the `kueue-manager-config` ConfigMap to the `Kueue` custom resource (CR). 
 +
-To retain the `kueue-manager-config` ConfigMap, run the following command. Replace `<applications-namespace>` with your {productname-short} application namespace (the default is `pass:attributes[{dbd-config-default-namespace}]`):
+To retain the `kueue-manager-config` ConfigMap, run the following command. Replace `<applications-namespace>` with your {productname-short} applications namespace. The default is `pass:attributes[{dbd-config-default-namespace}]`.
 +
 [source,terminal]
 ----
-oc annotate configmap kueue-manager-config -n <applications-namespace> opendatahub.io/managed=false
+$ oc annotate configmap kueue-manager-config -n <applications-namespace> opendatahub.io/managed=false
 ----
 
 . Log in to the {openshift-platform} web console as a cluster administrator.
@@ -68,10 +68,20 @@ spec:
 .. In the web console, click *Operators* → *Installed Operators* and then click the {productname-long} Operator.  
 .. Click the *Data Science Cluster* tab.  
 .. Click the *default-dsc* object.  
-.. Click the *YAML* tab.  
-.. Set `spec.components.kueue.managementState` to `Unmanaged` as shown. 
+.. Click the *YAML* tab.
+.. Set `spec.components.kueue.managementState` to `Unmanaged`. You can either use the predefined names (`default`) for the default cluster queue and default local queue, or specify custom names, as shown in the following examples.  
+
+* To use the predefined queue names, apply the following configuration:
 +
-You can optionally specify custom default names for the cluster queue and local queue. Replace `<example-cluster-queue>` and `<example-local-queue>` in the following example with your custom names. 
+[source,yaml]
+----
+spec:
+  components:
+    kueue:
+      managementState: Unmanaged
+----
++
+* To specify custom queue names, apply the following configuration, replacing `<example-cluster-queue>` and `<example-local-queue>` with your custom values:
 +
 [source,yaml]
 ----
@@ -88,7 +98,7 @@ spec:
 +
 [source,terminal]
 ----
-oc label namespace <project-namespace> kueue.openshift.io/managed=true --overwrite
+$ oc label namespace <project-namespace> kueue.openshift.io/managed=true --overwrite
 ----
 Replace `<project-namespace>` with the name of your project.
 +
@@ -104,7 +114,7 @@ Kueue validation and queue enforcement apply only to workloads in namespaces wit
 
 .Next steps
 * Configure quotas by creating and modifying `ResourceFlavor`, `ClusterQueue`, and `LocalQueue` objects. For details, see the link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue[{rhbok-productname}] documentation.
-* Enable Kueue in the dashboard so that users can select Kueue-enabled options when creating workloads. This also enables Kueue management for all new projects created from the dashboard. See _Enabling Kueue in the dashboard_.
+* Enable Kueue in the dashboard so that users can select Kueue-enabled options when creating workloads. When you enable Kueue, you also enable Kueue management for all new projects created from the dashboard. See _Enabling Kueue in the dashboard_.
 * Cluster administrators and {productname-short} administrators can create hardware profiles so that users can submit workloads from the {productname-short} dashboard. 
 ifdef::upstream[]
 See link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles].
