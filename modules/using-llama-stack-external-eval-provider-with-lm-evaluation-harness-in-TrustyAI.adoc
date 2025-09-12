@@ -30,7 +30,7 @@ endif::[]
 
 .Procedure
 
-. Configure a Python virtual environment for this tutorial in your `DataScienceCluster`:
+. Create and activate a Python virtual environment for this tutorial in your local machine:
 +	
 [source,bash]
 ----
@@ -46,13 +46,22 @@ pip install \
     llama-stack-client \
     llama-stack-provider-lmeval
 ----
+// NOTE: KServe Raw Deployment doesn't expose external model routes, so you must create a route manually.
+. Create the model route: 
++
+[source,bash]
+----
+oc create route edge vllm --service=<VLLM_SERVICE> --port=<VLLM_PORT> -n <MODEL_NAMESPACE>
+----
 . Configure the Llama Stack server. Set the variables to configure the runtime endpoint and namespace. The VLLM_URL value should be the `v1/completions` endpoint of your model route and the TRUSTYAI_LM_EVAL_NAMESPACE should be the namespace where your model is deployed. For example: 
 +
 [source,bash]
 ----
-export VLLM_URL=https://$(oc get $(oc get ksvc -o name | grep predictor) --template='{{.status.url}}')/v1/completions
-export TRUSTYAI_LM_EVAL_NAMESPACE=$(oc project | cut -d '"' -f2)
+export TRUSTYAI_LM_EVAL_NAMESPACE=<MODEL_NAMESPACE>
+export MODEL_ROUTE=$(oc get route -n "$TRUSTYAI_LM_EVAL_NAMESPACE" | awk '/predictor/{print $2; exit}')
+export VLLM_URL="https://${MODEL_ROUTE}/v1/completions"
 ----
+
 . Download the `providers.d` provider configuration directory and the `run.yaml` execution file:
 +
 [source, bash]
