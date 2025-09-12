@@ -5,11 +5,14 @@ ifdef::context[:parent-context: {context}]
 = Running custom evaluations with LM-Eval and Llama Stack 
 [role='_abstract']
 
-This example demonstrates how to use the link:https://github.com/trustyai-explainability/llama-stack-provider-lmeval[LM-Eval Llama Stack external eval provider] to evaluate a language model with a custom dataset. Creating a custom task is useful for evaluating specific model knowledge and behavior. 
+This example demonstrates how to use the link:https://github.com/trustyai-explainability/llama-stack-provider-lmeval[LM-Eval Llama Stack external eval provider] to evaluate a language model with a custom benchmark. Creating a custom benchmark is useful for evaluating specific model knowledge and behavior. 
+
 The process involves three steps:
 
 * Uploading the task dataset to your {productname-short} cluster 
+
 * Registering it as a custom benchmark dataset with Llama Stack 
+
 * Running a benchmark evaluation job on a language model
 
 .Prerequisites
@@ -25,17 +28,15 @@ endif::[]
 
 * You have downloaded and installed the {productname-short}  command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
 
-* You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace.
+* You have a large language model (LLM) for chat generation or text classification, or both, deployed on vLLM Serving Runtime in your {productname-short} cluster.
 
 * You have installed TrustyAI Operator in your {productname-short} cluster.
 
 * You have set KServe to Raw Deployment mode in your cluster.
 
-* You have a language model deployed on vLLM Serving Runtime in your {productname-short} cluster.
-
 .Procedure
 
-. Upload your custom dataset to your OpenShift cluster using a PersistentVolumeClaim (PVC) and a temporary pod. Create a PVC named `my-pvc` to store your dataset. Run the following command in your CLI, replacing <MODEL_NAMESPACE> with the namespace of your language model:
+. Upload your custom benchmark dataset to your OpenShift cluster using a PersistentVolumeClaim (PVC) and a temporary pod. Create a PVC named `my-pvc` to store your dataset. Run the following command in your CLI, replacing <MODEL_NAMESPACE> with the namespace of your language model:
 +	
 [source,bash]
 ----
@@ -75,14 +76,17 @@ spec:
       claimName: my-pvc
 EOF
 ----
-. Copy your locally stored task dataset to the pod to place it within the PVC. In this example, the dataset is named `example-dk-bench-input-bmo.jsonl` and it is copied to the `dataset-storage-pod` under the path `/data/upload_files/`. Replace <MODEL_NAMESPACE> with the namespace where the language model you wish to evaluate lives:
+. Copy your locally stored task dataset to the pod to place it within the PVC. In this example, the dataset is named `example-dk-bench-input-bmo.jsonl` locally and it is copied to the `dataset-storage-pod` under the path `/data/upload_files/`. 
 
 +
 [source,bash]
 ----
 oc cp example-dk-bench-input-bmo.jsonl dataset-storage-pod:/data/upload_files/example-dk-bench-input-bmo.jsonl -n <MODEL_NAMESPACE>
 ----
-. Once the custom dataset is uploaded to the PVC, register it as a benchmark for evaluations. At a minimum, provide the following metadata: The TrustyAI LM-Eval Tasks GitHub web address, your branch, the commit hash, and path of the custom task. Ensure that you replace the `DK_BENCH_DATASET_PATH` and any other metadata fields to match your specific configuration:
+. Once the custom dataset is uploaded to the PVC, register it as a benchmark for evaluations. At a minimum, provide the following metadata and replace the `DK_BENCH_DATASET_PATH` and any other metadata fields to match your specific configuration: 
+.. The TrustyAI LM-Eval Tasks GitHub web address
+.. Your branch
+.. The commit hash and path of the custom task. 
 +
 [source, bash]
 ----
@@ -114,7 +118,7 @@ client.benchmarks.register(
         "input": {"storage": {"pvc": "my-pvc"}}
     },
 )
-EOF
+
 ----
 . Run a benchmark evaluation on your model:
 +
