@@ -98,7 +98,7 @@ servingruntime.serving.kserve.io/nim-serving-runtime patched
 oc get servingruntime -n <namespace> <servingruntime-name> -o json | jq '.metadata.annotations'
 ----
 +
-The annotation that you added appears in the output:
+The annotation that you added is displayed in the output:
 +
 [source]
 ----
@@ -155,7 +155,7 @@ oc patch inferenceservice -n <namespace> <inference-name> --type json --patch \
  '[{"op": "add", "path": "/spec/predictor/annotations", "value": {"prometheus.io/path": "/metrics", "prometheus.io/port": "8000"}}]'
 ----
 +
-The annotation that you added appears in the output:
+The annotation that you added is displayed in the output:
 +
 [source]
 ----
@@ -170,7 +170,7 @@ oc patch inferenceservice -n <namespace> <inference-service-name> --type json --
  {"op": "add", "path": "/spec/predictor/annotations/prometheus.io~1port", "value": "8000"}]'
 ---- 
 +
-The annotations that you added appears in the output:
+The annotations that you added is displayed in the output:
 +
 [source]
 ----
