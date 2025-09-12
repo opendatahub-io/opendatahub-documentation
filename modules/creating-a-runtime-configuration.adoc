@@ -57,6 +57,11 @@ To obtain the data science pipelines API endpoint token, in the upper-right corn
 .. Define the connectivity information of your S3-compatible storage:
 ... In the *Cloud Object Storage Endpoint* field, enter the endpoint of your S3-compatible storage. For more information about Amazon s3 endpoints, see link:https://docs.aws.amazon.com/general/latest/gr/s3.html[Amazon Simple Storage Service endpoints and quotas].
 ... Optional: In the *Public Cloud Object Storage Endpoint* field, enter the URL of your S3-compatible storage.
++
+[IMPORTANT]
+====
+With Elyra, you can now use a service-based URL instead of the route-based URL by including the port number. Using the service-based URL allows your data science pipeline to access the service directly.
+====
 ... In the *Cloud Object Storage Bucket Name* field, enter the name of the bucket where your pipeline artifacts are stored. If the bucket name does not exist, it is created automatically.
 ... From the *Cloud Object Storage Authentication Type* list, select the authentication type required to access to your S3-compatible cloud storage. If you use AWS S3 buckets, select `KUBERNETES_SECRET` from the list.
 ... In the *Cloud Object Storage Credentials Secret* field, enter the secret that contains the storage user name and password. This secret is defined in the relevant user namespace, if applicable. In addition, it must be stored on the cluster that hosts your pipeline runtime.
