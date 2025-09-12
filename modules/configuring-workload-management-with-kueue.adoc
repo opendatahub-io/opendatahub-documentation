@@ -23,16 +23,16 @@ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 
 . Install the {rhbok-productname} Operator on your {openshift-platform} cluster as described in link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/latest/html/installing_on_openshift_container_platform/install-kueue[Installing Red Hat build of Kueue].
 
-. Activate the Kueue integration and optionally specify custom default names for the cluster queue and local queue.
+. Activate the Kueue integration. You can use the predefined names for the default cluster queue and default local queue, or specify custom names.  
 +
-* To activate Kueue with the default cluster queue and local queue names, use the following command. Replace `<operator-namespace>` with your operator namespace (the default is `pass:attributes[{operator-default-namespace}]`).
+* To use the predefined queue names (`default`), run the following command. Replace `<operator-namespace>` with your operator namespace (the default is `pass:attributes[{operator-default-namespace}]`).  
 +
 [source,terminal]
 ----
 oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"components":{"kueue":{"managementState":"Unmanaged"}}}}' -n <operator-namespace>
 ----
 +
-* To activate Kueue with custom default cluster queue and local queue names, use the following command. Replace `<example-cluster-queue>` and `<example-local-queue>` with your custom queue names, and replace `<operator-namespace>` with your operator namespace (the default is `pass:attributes[{operator-default-namespace}]`).
+* To specify custom queue names, run the following command. Replace `<example-cluster-queue>` and `<example-local-queue>` with your custom queue names, and replace `<operator-namespace>` with your operator namespace (the default is `pass:attributes[{operator-default-namespace}]`).  
 +
 [source,terminal]
 ----

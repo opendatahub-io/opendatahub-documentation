@@ -6,7 +6,9 @@
 [role="_abstract"]
 Enable Kueue in the {productname-short} dashboard so that users can select Kueue-enabled options when creating workloads. 
 
-When Kueue is enabled in the dashboard, {productname-short} automatically enables Kueue management for all new projects created from the dashboard. For these projects, {productname-short} applies the `kueue.openshift.io/managed=true` label to the namespace and creates default `ClusterQueue` and `LocalQueue` objects if they do not already exist. A validating webhook then enforces that new or updated workload resources include the `kueue.x-k8s.io/queue-name` label.
+When Kueue is enabled in the dashboard, {productname-short} automatically enables Kueue management for all new projects created from the dashboard. For these projects, {productname-short} applies the `kueue.openshift.io/managed=true` label to the namespace and creates default `ClusterQueue` and `LocalQueue` objects if they do not already exist. These default resources are created with the `opendatahub.io/managed=false` annotation, so they are not managed after creation and cluster administrators can change or delete them.  
+
+A validating webhook then enforces that new or updated workload resources include the `kueue.x-k8s.io/queue-name` label.
 
 [NOTE]
 ====
