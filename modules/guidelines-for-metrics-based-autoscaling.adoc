@@ -22,6 +22,7 @@ For latency-sensitive applications, choose scaling metrics depending on the char
 End-to-end (e2e) request latency depends on sequence length, posing challenges for use cases with high variance in input/output token counts. A 10 token completion and a 2000 token completion will have vastly different latencies even under identical system conditions. To maximize throughput without latency constraints, use the `vllm:num_requests_waiting > 0.1` metric (KEDA `scaledObject` does not support a threshold of 0) to scale your workloads. This metric scales up the system as soon as a request is queued, which maximizes utilization and prevents a backlog. This strategy works best when input and output sequence lengths are consistent.
 
 To build effective metrics-based autoscaling, follow these best practices:
+
 * Select the right metrics:
 ** Analyze your load patterns to determine sequence length variance.
 ** Choose TTFT/ITL for high-variance workloads, and E2E latency for uniform workloads.
