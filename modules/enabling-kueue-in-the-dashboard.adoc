@@ -1,0 +1,71 @@
+:_module-type: PROCEDURE
+
+[id="enabling-kueue-in-the-dashboard_{context}"]
+= Enabling Kueue in the dashboard
+
+[role="_abstract"]
+Enable Kueue in the {productname-short} dashboard so that users can select Kueue-enabled options when creating workloads. 
+
+When you enable Kueue in the dashboard, {productname-short} automatically enables Kueue management for all new projects created from the dashboard. For these projects, {productname-short} applies the `kueue.openshift.io/managed=true` label to the namespace and creates default `ClusterQueue` and `LocalQueue` objects if they do not already exist. These default resources are created with the `opendatahub.io/managed=false` annotation, so they are not managed after creation. Cluster administrators can change or delete them. A validating webhook then enforces that new or updated workload resources include the `kueue.x-k8s.io/queue-name` label.
+
+[NOTE]
+====
+For existing projects, or for projects created by using the command-line interface, you must enable Kueue management manually by applying the `kueue.openshift.io/managed=true` label to the project namespace.
+
+[source,terminal]
+----
+$ oc label namespace <project-namespace> kueue.openshift.io/managed=true --overwrite
+----
+====
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You are using {openshift-platform} 4.18 or later.
+* You have installed the {rhbok-productname} Operator and activated Kueue, as described in _Configuring workload management with Kueue_.
+* You have configured quotas, as described in the link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue[{rhbok-productname}] documentation.
+
+.Procedure
+
+. In a terminal window, log in to the OpenShift CLI as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+. Update the `odh-dashboard-config` custom resource in the {productname-short} applications namespace. Replace `<applications-namespace>` with your {productname-short} applications namespace. The default is `pass:attributes[{dbd-config-default-namespace}]`.
+
+[source,terminal,subs="+quotes"]
+----
+$ oc patch odhdashboardconfig odh-dashboard-config \
+  -n <applications-namespace> \
+  --type merge \
+  -p '{"spec":{"dashboardConfig":{"disableHardwareProfiles":false,"disableKueue":false}}}'
+----
+
+.Verification
+. From the {productname-short} dashboard, create a new project.
+. Verify that the project namespace is labeled for Kueue management:
++
+[source,terminal]
+----
+$ oc get ns <project-namespace> -o jsonpath='{.metadata.labels.kueue\.openshift\.io/managed}{"\n"}'
+----
+The output should be `true`.
+
+. Confirm that a default `LocalQueue` exists for the project namespace:
++
+[source,terminal]
+----
+$ oc get localqueues -n <project-namespace>
+----
+. Create a test workload (for example, a `Notebook`) and verify that it includes the `kueue.x-k8s.io/queue-name` label.
+
+.Next step
+* Cluster administrators and {productname-short} administrators can create hardware profiles so that users can submit workloads from the {productname-short} dashboard. 
+ifdef::upstream[]
+See link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles].
+endif::[]
+ifndef::upstream[]
+See link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles].
+endif::[]
