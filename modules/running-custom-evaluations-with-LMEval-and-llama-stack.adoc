@@ -1,0 +1,163 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="running-custom-evaluations-with-LMEval-and-llama-stack_{context}"]
+= Running custom evaluations with LM-Eval and Llama Stack 
+[role='_abstract']
+
+This example demonstrates how to use the link:https://github.com/trustyai-explainability/llama-stack-provider-lmeval[LM-Eval Llama Stack external eval provider] to evaluate a language model with a custom benchmark. Creating a custom benchmark is useful for evaluating specific model knowledge and behavior. 
+
+The process involves three steps:
+
+* Uploading the task dataset to your {productname-short} cluster 
+
+* Registering it as a custom benchmark dataset with Llama Stack 
+
+* Running a benchmark evaluation job on a language model
+
+.Prerequisites
+
+ifdef::upstream[]
+* You have installed {productname-long}, version 2.29 or later.
+endif::[]
+ifndef::upstream[]
+* You have installed {productname-long}, version 2.20 or later.
+endif::[]
+
+* You have cluster administrator privileges for your {productname-short} cluster.
+
+* You have downloaded and installed the {productname-short}  command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
+
+* You have a large language model (LLM) for chat generation or text classification, or both, deployed on vLLM Serving Runtime in your {productname-short} cluster.
+
+* You have installed TrustyAI Operator in your {productname-short} cluster.
+
+* You have set KServe to Raw Deployment mode in your cluster.
+
+.Procedure
+
+. Upload your custom benchmark dataset to your OpenShift cluster using a PersistentVolumeClaim (PVC) and a temporary pod. Create a PVC named `my-pvc` to store your dataset. Run the following command in your CLI, replacing <MODEL_NAMESPACE> with the namespace of your language model:
++	
+[source,bash]
+----
+oc apply -n <MODEL_NAMESPACE> -f - << EOF
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: my-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+EOF
+----
+. Create a pod object named `dataset-storage-pod` to download the task dataset into the PVC. This pod is used to copy your dataset from your local machine to the {productname-short} cluster:
++
+[source,bash]
+----
+oc apply -n <MODEL_NAMESPACE> -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dataset-storage-pod
+spec:
+  containers:
+  - name: dataset-container
+    image: 'quay.io/prometheus/busybox:latest'
+    command: ["/bin/sh", "-c", "sleep 3600"]
+    volumeMounts:
+    - mountPath: "/data/upload_files"
+      name: dataset-storage
+  volumes:
+  - name: dataset-storage
+    persistentVolumeClaim:
+      claimName: my-pvc
+EOF
+----
+. Copy your locally stored task dataset to the pod to place it within the PVC. In this example, the dataset is named `example-dk-bench-input-bmo.jsonl` locally and it is copied to the `dataset-storage-pod` under the path `/data/upload_files/`. 
+
++
+[source,bash]
+----
+oc cp example-dk-bench-input-bmo.jsonl dataset-storage-pod:/data/upload_files/example-dk-bench-input-bmo.jsonl -n <MODEL_NAMESPACE>
+----
+. Once the custom dataset is uploaded to the PVC, register it as a benchmark for evaluations. At a minimum, provide the following metadata and replace the `DK_BENCH_DATASET_PATH` and any other metadata fields to match your specific configuration: 
+.. The TrustyAI LM-Eval Tasks GitHub web address
+.. Your branch
+.. The commit hash and path of the custom task. 
++
+[source, bash]
+----
+client.benchmarks.register(
+    benchmark_id="trustyai_lmeval::dk-bench",
+    dataset_id="trustyai_lmeval::dk-bench",
+    scoring_functions=["accuracy"],
+    provider_benchmark_id="dk-bench",
+    provider_id="trustyai_lmeval",
+    metadata={
+        "custom_task": {
+            "git": {
+                "url": "https://github.com/trustyai-explainability/lm-eval-tasks.git",
+                "branch": "main",
+                "commit": "8220e2d73c187471acbe71659c98bccecfe77958",
+                "path": "tasks/",
+            }
+        },
+        "env": {
+            # Path of the dataset inside the PVC
+            "DK_BENCH_DATASET_PATH": "/opt/app-root/src/hf_home/example-dk-bench-input-bmo.jsonl",
+            "JUDGE_MODEL_URL": "http://phi-3-predictor:8080/v1/chat/completions",
+            # For simplicity, we use the same model as the one being evaluated
+            "JUDGE_MODEL_NAME": "phi-3",
+            "JUDGE_API_KEY": "",
+        },
+        "tokenized_requests": False,
+        "tokenizer": "google/flan-t5-small",
+        "input": {"storage": {"pvc": "my-pvc"}}
+    },
+)
+
+----
+. Run a benchmark evaluation on your model:
++
+[source,bash]
+----
+job = client.eval.run_eval(
+    benchmark_id="trustyai_lmeval::dk-bench",
+    benchmark_config={
+        "eval_candidate": {
+            "type": "model",
+            "model": "phi-3",
+            "provider_id": "trustyai_lmeval",
+            "sampling_params": {
+                "temperature": 0.7,
+                "top_p": 0.9,
+                "max_tokens": 256
+            },
+        },
+        "num_examples": 1000,
+     },
+)
+
+print(f"Starting job '{job.job_id}'")
+----
+. Monitor the status of the evaluation job. The job runs asynchronously, so you can check its status periodically:
++
+[source,python]
+----
+import time
+def get_job_status(job_id, benchmark_id):
+    return client.eval.jobs.status(job_id=job_id, benchmark_id=benchmark_id)
+
+while True:
+    job = get_job_status(job_id=job.job_id, benchmark_id="trustyai_lmeval::dk-bench")
+    print(job)
+
+    if job.status in ['failed', 'completed']:
+        print(f"Job ended with status: {job.status}")
+        break
+
+    time.sleep(20)
+----
