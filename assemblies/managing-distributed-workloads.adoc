@@ -6,16 +6,22 @@ ifdef::context[:parent-context: {context}]
 = Managing distributed workloads
 
 [role='_abstract']
+In {productname-short}, distributed workloads like `PyTorchJob`, `RayJob`, and `RayCluster` are created and managed by their respective workload operators. Kueue integrates with these operators to function as a scheduler, managing job queuing and deciding when workloads can run based on cluster-wide quotas.
 
-In {productname-short}, cluster administrators create Kueue resources to configure quota management for distributed workloads.
-Cluster administrators can optionally configure the CodeFlare Operator if they want to change its default behavior.
+You can perform advanced configuration for your distributed workloads environment, such as changing the default behavior of the CodeFlare Operator or setting up a cluster for RDMA.
 
-include::modules/overview-of-kueue-resources.adoc[leveloffset=+1]
-include::modules/ref-example-kueue-resource-configurations.adoc[leveloffset=+1]
+//include::modules/overview-of-kueue-resources.adoc[leveloffset=+1]
+
 include::modules/configuring-quota-management-for-distributed-workloads.adoc[leveloffset=+1]
-include::./enforcing-local-queues.adoc[leveloffset=+1]
+
+include::modules/ref-example-kueue-resource-configurations.adoc[leveloffset=+1]
+
+//include::./enforcing-local-queues.adoc[leveloffset=+1]
+
 include::modules/configuring-the-codeflare-operator.adoc[leveloffset=+1]
+
 include::modules/configuring-a-cluster-for-rdma.adoc[leveloffset=+1]
+
 include::modules/troubleshooting-common-problems-with-distributed-workloads-for-administrators.adoc[leveloffset=+1]
 
 ifdef::parent-context[:context: {parent-context}]
