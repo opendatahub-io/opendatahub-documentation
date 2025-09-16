@@ -10,16 +10,25 @@ ifdef::context[:parent-context: {context}]
 ifdef::preview[]
 include::../_artifacts/document-attributes-global.adoc[]
 endif::preview[]
+:upstream:
+//:preview:
+
+ifdef::preview[]
+include::../_artifacts/document-attributes-global.adoc[]
+endif::preview[]
 
 [role='_abstract']
 
+As a cluster administrator, you can manage AI and machine learning workloads at scale by integrating the {rhbok-productname} with {productname-long}. This integration provides capabilities for quota management, resource allocation, and prioritized job scheduling.
 As a cluster administrator, you can manage AI and machine learning workloads at scale by integrating the {rhbok-productname} with {productname-long}. This integration provides capabilities for quota management, resource allocation, and prioritized job scheduling.
 
 ifdef::upstream[]
 [IMPORTANT]
 ====
 The embedded Kueue component for managing distributed workloads is deprecated. Kueue is now provided through {rhbok-productname}, which is installed and managed by the {rhbok-productname} Operator. You cannot install both the embedded Kueue and the {rhbok-productname} Operator on the same cluster because this creates conflicting controllers that manage the same resources.
+The embedded Kueue component for managing distributed workloads is deprecated. Kueue is now provided through {rhbok-productname}, which is installed and managed by the {rhbok-productname} Operator. You cannot install both the embedded Kueue and the {rhbok-productname} Operator on the same cluster because this creates conflicting controllers that manage the same resources.
 
+{productname-short} does not automatically migrate existing workloads. To ensure your workloads continue using queue management after upgrading, cluster administrators must manually migrate from the embedded Kueue to the {rhbok-productname} Operator. For more information, see _Migrating to the {rhbok-productname} Operator_.
 {productname-short} does not automatically migrate existing workloads. To ensure your workloads continue using queue management after upgrading, cluster administrators must manually migrate from the embedded Kueue to the {rhbok-productname} Operator. For more information, see _Migrating to the {rhbok-productname} Operator_.
 ====
 endif::[]
@@ -28,10 +37,16 @@ ifndef::upstream[]
 ====
 ifdef::self-managed[]
 Starting with {productname-short} 2.24, the embedded Kueue component for managing distributed workloads is deprecated.
+Starting with {productname-short} 2.24, the embedded Kueue component for managing distributed workloads is deprecated.
 endif::[]
 ifdef::cloud-service[]
 The embedded Kueue component for managing distributed workloads is deprecated. 
+The embedded Kueue component for managing distributed workloads is deprecated. 
 endif::[]
+Kueue is now provided through {rhbok-productname}, which is installed and managed by the {rhbok-productname} Operator. You cannot install both the embedded Kueue and the {rhbok-productname} Operator on the same cluster because this creates conflicting controllers that manage the same resources.
+
+{productname-short} does not automatically migrate existing workloads. To ensure your workloads continue using queue management after upgrading, cluster administrators must manually migrate from the embedded Kueue to the {rhbok-productname} Operator. For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue_kueue#migrating-to-the-rhbok-operator_kueue[Migrating to the {rhbok-productname} Operator].
+====
 Kueue is now provided through {rhbok-productname}, which is installed and managed by the {rhbok-productname} Operator. You cannot install both the embedded Kueue and the {rhbok-productname} Operator on the same cluster because this creates conflicting controllers that manage the same resources.
 
 {productname-short} does not automatically migrate existing workloads. To ensure your workloads continue using queue management after upgrading, cluster administrators must manually migrate from the embedded Kueue to the {rhbok-productname} Operator. For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue_kueue#migrating-to-the-rhbok-operator_kueue[Migrating to the {rhbok-productname} Operator].
@@ -41,10 +56,15 @@ endif::[]
 include::modules/overview-of-managing-workloads-with-kueue.adoc[leveloffset=+1]
 
 include::modules/kueue-workflow.adoc[leveloffset=+2]
+include::modules/kueue-workflow.adoc[leveloffset=+2]
 
 include::modules/configuring-workload-management-with-kueue.adoc[leveloffset=+1]
 
 include::modules/enabling-kueue-in-the-dashboard.adoc[leveloffset=+2]
+
+include::./managing-distributed-workloads.adoc[leveloffset=+1]
+
+include::modules/troubleshooting-common-problems-with-Kueue.adoc[leveloffset=+1]
 
 include::modules/migrating-to-the-rhbok-operator.adoc[leveloffset=+1]
 
