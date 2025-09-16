@@ -18,8 +18,12 @@ The following procedure describes customizing the vLLM model-serving runtime to 
 
 
 .Procedure
-
-. Follow the steps to deploy a model as described in link:{rhoaidocshome}{default-format-url}/serving_models/serving-large-models_serving-large-models#deploying-models-on-the-single-model-serving-platform_serving-large-models[Deploying models on the single-model serving platform].
+ifndef::upstream[]
+. Follow the steps to deploy a model as described in link:{rhoaidocshome}{default-format-url}/deploying_models/rhoai-user_rhoai-user#deploying-models-on-the-single-model-serving-platform_rhoai-user[Deploying models on the single-model serving platform].
+endif::[]
+ifdef::upstream[]
+. Follow the steps to deploy a model as described in link:{odhdocshome}/deploying_models/#deploying-models-on-the-single-model-serving-platform_odh-user[Deploying models on the single-model serving platform].
+endif::[]
 . In the *Serving runtime* field, select *vLLM ServingRuntime for KServe*.
 . If you are deploying a meta-llama-3 model, add the following arguments under *Additional serving runtime arguments* in the *Configuration parameters* section:
 +
