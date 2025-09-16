@@ -17,7 +17,7 @@ The resource quota specified in the cluster queue configuration might be insuffi
 
 .Diagnosis
 The user's Ray cluster head pod or worker pods remain in a suspended state. 
-Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
+Check the status of the `Workload` resource that is created with the `RayCluster` resource.
 The `status.conditions.message` field provides the reason for the suspended state, as shown in the following example:
 
 [source,bash]
@@ -71,7 +71,7 @@ endif::[]
 . Click *Workloads -> Pods*.
 . Click the user's pod name to open the pod details page.
 . Click the *Events* tab, and review the pod events to identify the cause of the problem.
-. Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
+. Check the status of the `Workload` resource that is created with the `RayCluster` resource.
 The `status.conditions.message` field provides the reason for the failed state.
 
 == A user receives a "failed to call webhook" error message for the CodeFlare Operator
@@ -116,7 +116,7 @@ After the user runs the `cluster.up()` command, when they run either the `cluste
 No pods are created.
 
 .Diagnosis
-Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
+Check the status of the `Workload` resource that is created with the `RayCluster` resource.
 The `status.conditions.message` field provides the reason for remaining in the `Starting` state.
 Similarly, check the `status.conditions.message` field for the `RayCluster` resource. 
 

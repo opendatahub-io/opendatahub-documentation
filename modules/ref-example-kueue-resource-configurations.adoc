@@ -34,7 +34,7 @@ endif::[]
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ResourceFlavor
 metadata:
-  name: "A400-node"
+  name: "a400node"
 spec:
   nodeLabels:
     instance-type: nvidia-a400-node
@@ -51,7 +51,7 @@ spec:
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ResourceFlavor
 metadata:
-  name: "A1000-node"
+  name: "a1000node"
 spec:
   nodeLabels:
     instance-type: nvidia-a1000-node
@@ -68,12 +68,13 @@ spec:
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ClusterQueue
 metadata:
-  name: "A400-queue"
+  name: "a400queue"
 spec:
   namespaceSelector: {} # match all.
   resourceGroups:
   - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
-    - name: "A400-node"
+    flavors:
+    - name: "a400node"
       resources:
       - name: "cpu"
         nominalQuota: 16
@@ -90,13 +91,13 @@ spec:
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ClusterQueue
 metadata:
-  name: "A1000-queue"
+  name: "a1000queue"
 spec:
   namespaceSelector: {} # match all.
   resourceGroups:
   - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
     flavors:
-    - name: "A1000-node"
+    - name: "a1000node"
       resources:
       - name: "cpu"
         nominalQuota: 16
@@ -158,6 +159,7 @@ spec:
   namespaceSelector: {} # match all.
   resourceGroups:
   - coveredResources: ["cpu", "memory", "amd.com/gpu"]
+    flavors:
     - name: "amd-node"
       resources:
       - name: "cpu"
@@ -165,6 +167,7 @@ spec:
       - name: "memory"
         nominalQuota: 64Gi
       - name: "amd.com/gpu"
+        nominalQuota: 2
 ----
 
 
