@@ -60,15 +60,12 @@ $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 +
 [source, bash, subs="attributes+"]
 ----
-oc patch configmap trustyai-service-operator-config -n redhat-ods-applications  
-
+oc patch configmap trustyai-service-operator-config -n redhat-ods-applications  \
 --type merge -p '{"metadata": {"annotations": {"opendatahub.io/managed": "false"}}}'
 
-oc patch configmap trustyai-service-operator-config -n redhat-ods-applications 
-
+oc patch configmap trustyai-service-operator-config -n redhat-ods-applications \
 --type merge -p '{"data":{"lmes-allow-online":"true","lmes-allow-code-execution":"true"}}'
 ----
-
 . Apply the following manifest by using the `oc apply -f -` command. The YAML content defines a custom evaluation job (`LMEvalJob`), the namespace, and the location of the model you want to evaluate.
 The YAML contains the following instructions:
 .. Which model to evaluate.
@@ -76,7 +73,7 @@ The YAML contains the following instructions:
 .. How to format inputs and outputs.
 .. Which judge model to use.
 .. How to extract and log results.
-
++
 [NOTE]
 --
 You can also put the YAML manifest into a file using a text editor and then apply it by using the `oc apply -f file.yaml` command.
