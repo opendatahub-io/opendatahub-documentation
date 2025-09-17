@@ -37,6 +37,62 @@ ifndef::upstream[]
 For information about how to deploy Llama Stack in {productname-short}, see link:{rhoaidocshome}{default-format-url}/working_with_rag/deploying-a-rag-stack-in-a-data-science-project_rag[Deploying a RAG stack in a Data Science Project].
 endif::[]
 
+== The `LlamaStackDistribution` custom resource API providers
+
+The `LlamaStackDistribution` custom resource includes various API types and providers that you can use in {productname-short}. The following table displays the supported providers that are included in the distribution:
+
+[cols="1,1,1", options="header"]
+|===
+|*API type* |*Providers* |*Support Status*
+|Agents 
+|`inline::meta-reference` 
+|Developer Preview
+
+|Datasetio 
+|
+`inline::localfs` +
+`remote::huggingface` 
+|Developer Preview
+
+|Eval 
+|`remote::lmeval` 
+|Developer Preview
+
+|Inference 
+|
+`inline::sentence-transformers` +
+`remote::vllm` 
+|Developer Preview
+
+|Safety 
+|`remote::trustyai_fms` 
+|Developer Preview 
+
+|Scoring 
+|
+`inline::llm-as-a-judge` +
+`inline:basic` +
+`inline::braintrust` 
+|Developer Preview
+
+|Telemetry 
+|`inline::meta-reference` 
+|Developer Preview
+
+|Tool_runtime 
+|
+`inline::rag-runtime` +
+`remote::brave-search` +
+`remote::tavily-search` +
+`remote::model-context-protocol` 
+|Developer Preview
+
+|Vector_io 
+|`inline::milvus` 
+|Developer Preview
+|===
+
+
 [role="_additional-resources"]
 .Additional resources
 * link:https://github.com/opendatahub-io/llama-stack-demos[Llama Stack Demos repository^]
