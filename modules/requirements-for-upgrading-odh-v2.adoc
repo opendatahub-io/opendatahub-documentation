@@ -51,6 +51,12 @@ Data science pipelines 2.0 contains an installation of Argo Workflows. {org-name
 If you upgrade to {productname-short} 2.10.0 or later with data science pipelines enabled and an Argo Workflows instance that is not installed by data science pipelines exists on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable data science pipelines or remove the separate instance of Argo Workflows. The component upgrade will complete automatically.
 ====
 
+*Recreate model registries*
+
+When you upgrade from {productname-short} 2.19 or earlier, existing instances of the model registry component are not updated, which causes the instance pods to use older images than the ones referenced by the operator pods.
+
+To resolve this issue, after upgrading, create a new instance of each existing model registry, using the same database configuration, and delete the old model registry instance. The new model registry instance contains all existing registered models and their metadata.
+
 *Update workflows interacting with `OdhDashboardConfig` resource*
 
 Previously, cluster administrators used the `groupsConfig` option in the `OdhDashboardConfig` resource to manage the {openshift-platform} groups (both administrators and non-administrators) that can access the {productname-short} dashboard. Starting with {productname-short} 2.17, this functionality has moved to the `Auth` resource. If you have workflows (such as GitOps workflows) that interact with `OdhDashboardConfig`, you must update them to reference the `Auth` resource instead.
@@ -82,15 +88,8 @@ Previously, cluster administrators used the `groupsConfig` option in the `OdhDas
 
 |===
 
-*Transition embedded Kueue to {rhbok-productname}*
 
-The embedded Kueue component for managing distributed workloads is deprecated. {productname-short} now uses the {rhbok-productname} Operator to provide enhanced workload scheduling across distributed training, workbench, and model serving workloads. 
-
-To ensure workloads continue using queue management, you must migrate from the embedded Kueue component to the {rhbok-productname} Operator, which requires OpenShift Container Platform 4.18 or later.  For more information, see _Migrating to the {rhbok-productname} Operator_.
-
-*Update embedded Kueue*
-
-If you have not yet migrated to the {rhbok-productname} Operator, you must update the embedded Kueue component.  
+*Update Kueue*
 
 In {productname-short}, cluster administrators use Kueue to configure quota management for distributed workloads.
 
@@ -128,6 +127,8 @@ app.opendatahub.io/kueue: 'true'
 The {productname-long} Operator starts the Kueue Controller, and Kueue then automatically creates the `v1beta1` MultiKueue CRDs.
 In the `default-dsc` `DataScienceCluster` custom resource, the `kueueReady` condition changes to `True`. 
 For information about how to check that the *kueue-controller-manager-_<pod-id>_* pod is *Running*, see link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+
+
 
 *Check the status of certificate management*
 
