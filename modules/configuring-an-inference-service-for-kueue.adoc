@@ -1,0 +1,47 @@
+:_module-type: PROCEDURE
+
+[id="configuring-an-inference-service-for-kueue_{context}"]
+= Configuring an inference service for Kueue
+
+[role="_abstract"]
+
+To queue your inference service workloads and manage their resources, add the `kueue.x-k8s.io/queue-name` label to the service's metadata. This label directs the workload to a specific `LocalQueue` for management and is required only if your project is enabled for Kueue. For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue_kueue[Managing workloads with Kueue].
+
+.Prerequisites
+
+* You have permissions to edit resources in the project where the model is deployed.
+* As a cluster administrator, you have installed and activated the {rhbok-productname} Operator as described in _Configuring workload management with Kueue_.
+
+.Procedure
+
+To configure the inference service, complete the following steps:
+
+. Log in to the {openshift-platform} console.
+. In the Administrator perspective, navigate to your project and locate the `InferenceService` resource for your model.
+. Click the name of the InferenceService to view its details.
+. Select the *YAML* tab to open the editor.
+. In the `metadata` section, add the `kueue.x-k8s.io/queue-name` label under `labels`. Replace <local-queue-name> with the name of your target `LocalQueue`.
++
+[source]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: <model-name>
+  namespace: <project-namespace>
+  labels:
+    kueue.x-k8s.io/queue-name: <local-queue-name>
+...
+----
+. Click *Save*.
+
+.Verification
+
+* The workload is submitted to the `LocalQueue` specified in the `kueue.x-k8s.io/queue-name` label.  
+* The workload starts when the required cluster resources are available and admitted by the queue.  
+* Optional: To verify, run the following command and review the `Admitted Workloads` section:
++
+[source,terminal]
+----
+$ oc describe localqueue <local-queue-name> -n <project-namespace>
+----
