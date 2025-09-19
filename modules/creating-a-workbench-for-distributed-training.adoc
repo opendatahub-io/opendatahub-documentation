@@ -6,12 +6,43 @@
 [role='_abstract']
 Create a workbench with the appropriate resources to run a distributed training or tuning job.
 
+ifdef::upstream[]
+[IMPORTANT]
+====
+By default, hardware profiles, including Kueue-enabled profiles, are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles and Kueue functionality, set the `disableHardwareProfiles` and `disableKueue` values to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+
+For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
+====
+endif::[]
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+The hardware profiles feature is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+The hardware profiles feature is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+
+By default, hardware profiles, including Kueue-enabled profiles, are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles and Kueue functionality, set the `disableHardwareProfiles` and `disableKueue` values to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+
+For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
+====
+endif::[]
+
 .Prerequisites
 
 * You can access an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training or tuning job.
 
-
 * Your cluster administrator has configured the cluster as follows:
+
+** Installed the {rhbok-productname} Operator, as described in _Configuring workload management with Kueue_.
 
 ifdef::upstream[]
 ** Installed {productname-long} with the required distributed training components, as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
@@ -61,62 +92,13 @@ ifdef::upstream[]
 For example, to run the example fine-tuning job described in link:{odhdocshome}/working-with-distributed-workloads/#fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], select *PyTorch*.
 endif::[]
 
-.. In the *Deployment size* section, select one of the following options, depending on whether the hardware profiles feature is enabled.
-+
-ifndef::upstream[]
-[IMPORTANT]
-====
-ifdef::self-managed[]
-The hardware profiles feature is currently available in {productname-long} {vernum} as a Technology Preview feature.
-endif::[]
-ifdef::cloud-service[]
-The hardware profiles feature is currently available in {productname-long} as a Technology Preview feature.
-endif::[]
-Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
-{org-name} does not recommend using them in production.
-These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
-
-For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
-====
-endif::[]
-
-* If the hardware profiles feature is not enabled:
-
-... From the *Container size* list, select the appropriate size for the size of the model that you want to train or tune.
-+
-ifndef::upstream[]
-For example, to run the example fine-tuning job described in link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-kfto-based-distributed-training-workloads_distributed-workloads#fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], select *Medium*.
-endif::[]
-ifdef::upstream[]
-For example, to run the example fine-tuning job described in link:{odhdocshome}/working-with-distributed-workloads/#fine-tuning-a-model-by-using-kubeflow-training_distributed-workloads[Fine-tuning a model by using Kubeflow Training], select *Medium*.
-endif::[]
-
-... From the *Accelerator* list, select a suitable accelerator profile for your workbench.
-+
-If project-scoped accelerator profiles exist, the *Accelerator* list includes subheadings to distinguish between global accelerator profiles and project-scoped accelerator profiles.
-
-* If the hardware profiles feature is enabled:
-
-... From the *Hardware profile* list, select a suitable hardware profile for your workbench. 
+.. In the *Deployment size* section, from the *Hardware profile* list, select a suitable hardware profile for your workbench. 
 +
 If project-scoped hardware profiles exist, the *Hardware profile* list includes subheadings to distinguish between global hardware profiles and project-scoped hardware profiles.
 +
 The hardware profile specifies the number of CPUs and the amount of memory allocated to the container, setting the guaranteed minimum (request) and maximum (limit) for both. 
 
-... If you want to change the default values, click *Customize resource requests and limit* and enter new minimum (request) and maximum (limit) values.
-+
-[IMPORTANT]
-====
-By default, the hardware profiles feature is not enabled: hardware profiles are not shown in the dashboard navigation menu or elsewhere in the user interface. 
-In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. 
-To show the *Settings* -> *Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
-ifdef::upstream[]
-For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
-endif::[]
-ifndef::upstream[]
-For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
-endif::[] 
-==== 
+.. If you want to change the default values, click *Customize resource requests and limit* and enter new minimum (request) and maximum (limit) values.
 
 .. In the *Cluster storage* section, click either *Attach existing storage* or *Create storage* to specify the storage details so that you can share data between the workbench and the training or tuning runs.
 +
