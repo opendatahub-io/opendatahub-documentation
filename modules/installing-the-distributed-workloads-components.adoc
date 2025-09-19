@@ -195,26 +195,20 @@ After a short time, the components with a `Managed` state are ready.
 
 
 .Verification
-Check the status of the *codeflare-operator-manager*, *kubeflow-training-operator*, and *kuberay-operator* pods, as follows:
+Check the status of the *codeflare-operator-manager*, *kubeflow-training-operator*, *kuberay-operator*, *kueue-controller-manager*, and *openshift-kueue-operator* pods, as follows:
 
-ifdef::cloud-service[]
-. In the OpenShift console, from the *Project* list, select *redhat-ods-applications*.
-endif::[]
-ifdef::self-managed[]
-. In the {openshift-platform} console, from the *Project* list, select *redhat-ods-applications*.
-endif::[]
-ifdef::upstream[]
-. In the {openshift-platform} console, from the *Project* list, select *odh*.
-endif::[]
+. In the {openshift-platform} console, click *Workloads* -> *Deployments*.
+. Search for the following deployments:
++
+* In the `pass:attributes[{dbd-config-default-namespace}]` project, search for  *codeflare-operator-manager*, *kubeflow-training-operator*, and *kuberay-operator*.
+* In the `openshift-kueue-operator` project, search for *kueue-controller-manager* and *openshift-kueue-operator*.
 
-. Click *Workloads* -> *Deployments*.
-. Search for the *codeflare-operator-manager*, *kubeflow-training-operator*, and *kuberay-operator* deployments.
-In each case, check the status as follows:
+. In each case, check the status as follows:
 .. Click the deployment name to open the deployment details page.
 .. Click the *Pods* tab.
 .. Check the pod status.
 +
-When the status of the *codeflare-operator-manager-_<pod-id>_*, *kubeflow-training-operator-_<pod-id>_*, and *kuberay-operator-_<pod-id>_* pods is *Running*, the pods are ready to use.
+When the status of the pods is *Running*, the pods are ready to use.
 .. To see more information about each pod, click the pod name to open the pod details page, and then click the *Logs* tab.
 
 .Next Step
