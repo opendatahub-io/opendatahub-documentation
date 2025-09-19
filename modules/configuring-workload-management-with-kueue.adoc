@@ -41,18 +41,26 @@ $ oc patch datasciencecluster default-dsc --type='merge' -p '{"spec":{"component
 
 .Verification
 
+. Verify that the {rhbok-productname} pods are running:
++
+[source,terminal]
+----
+$ oc get pods -n openshift-kueue-operator
+----
++
+You should see output similar to the following example:
++
+[source,subs="+quotes"]
+----
+kueue-controller-manager-d9fc745df-ph77w    1/1     Running
+openshift-kueue-operator-69cfbf45cf-lwtpm   1/1     Running
+----
+
 . Verify that the default `ClusterQueue` was created:
 +
 [source,terminal]
 ----
 $ oc get clusterqueues
-----
-
-. Verify that a default `LocalQueue` exists in the {productname-short} applications namespace. The default namespace is `pass:attributes[{dbd-config-default-namespace}]`.
-+
-[source,terminal]
-----
-$ oc get localqueues -n <applications-namespace>
 ----
 
 .Next steps

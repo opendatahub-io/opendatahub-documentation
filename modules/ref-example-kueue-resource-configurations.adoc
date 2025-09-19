@@ -1,10 +1,13 @@
 :_module-type: REFERENCE
 
 [id='ref-example-kueue-resource-configurations_{context}']
-= Example Kueue resource configurations
+= Example Kueue resource configurations for distributed workloads
 
 [role='_abstract']
-These examples show how to configure Kueue resource flavors and cluster queues. 
+You can use these example configurations as a starting point for creating Kueue resources to manage your distributed training workloads. 
+
+These examples show how to configure Kueue resource flavors and cluster queues for common distributed training scenarios.
+
 
 ifndef::upstream[]
 ifdef::self-managed[]
@@ -31,7 +34,7 @@ endif::[]
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ResourceFlavor
 metadata:
-  name: "A400-node"
+  name: "a400node"
 spec:
   nodeLabels:
     instance-type: nvidia-a400-node
@@ -48,7 +51,7 @@ spec:
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ResourceFlavor
 metadata:
-  name: "A1000-node"
+  name: "a1000node"
 spec:
   nodeLabels:
     instance-type: nvidia-a1000-node
@@ -65,12 +68,13 @@ spec:
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ClusterQueue
 metadata:
-  name: "A400-queue"
+  name: "a400queue"
 spec:
   namespaceSelector: {} # match all.
   resourceGroups:
   - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
-    - name: "A400-node"
+    flavors:
+    - name: "a400node"
       resources:
       - name: "cpu"
         nominalQuota: 16
@@ -87,13 +91,13 @@ spec:
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ClusterQueue
 metadata:
-  name: "A1000-queue"
+  name: "a1000queue"
 spec:
   namespaceSelector: {} # match all.
   resourceGroups:
   - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
     flavors:
-    - name: "A1000-node"
+    - name: "a1000node"
       resources:
       - name: "cpu"
         nominalQuota: 16
@@ -155,6 +159,7 @@ spec:
   namespaceSelector: {} # match all.
   resourceGroups:
   - coveredResources: ["cpu", "memory", "amd.com/gpu"]
+    flavors:
     - name: "amd-node"
       resources:
       - name: "cpu"
@@ -162,6 +167,7 @@ spec:
       - name: "memory"
         nominalQuota: 64Gi
       - name: "amd.com/gpu"
+        nominalQuota: 2
 ----
 
 
@@ -191,5 +197,6 @@ spec:
 
 [role='_additional-resources']
 .Additional resources
+* link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue[{rhbok-productname} documentation]
 * link:https://kueue.sigs.k8s.io/docs/concepts/resource_flavor/[Resource Flavor] in the Kueue documentation
 * link:https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/[Cluster Queue] in the Kueue documentation
