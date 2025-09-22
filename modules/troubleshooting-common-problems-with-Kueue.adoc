@@ -125,13 +125,8 @@ If the pod image is very large and is still being pulled after the 5-minute wait
 
 .Diagnosis
 
-ifdef::upstream,self-managed[]
 . In the {openshift-platform} console, select the user's project from the *Project* list. 
-endif::[]
-ifdef::cloud-service[]
-. In the OpenShift console, select the user's project from the *Project* list.
-endif::[]
-. Click *Workloads -> Pods*.
+. Click *Workloads* -> *Pods*.
 . Click the user's pod name to open the pod details page.
 . Click the *Events* tab, and review the pod events to check whether the image pull completed successfully.
 
@@ -139,7 +134,8 @@ endif::[]
 If the pod takes more than 5 minutes to pull the image, resolve the problem in one of the following ways:
 
 * Add an `OnFailure` restart policy for resources that are managed by Kueue.
-* In the `redhat-ods-applications` namespace, edit the `kueue-manager-config` ConfigMap to set a custom timeout for the `waitForPodsReady` property.
+* Configure a custom timeout for the `waitForPodsReady` property in the `Kueue` custom resource (CR). The CR is installed in the `openshift-kueue-operator` namespace by the {rhbok-productname} Operator.
+
 For more information about this configuration option, see link:https://kueue.sigs.k8s.io/docs/tasks/manage/setup_wait_for_pods_ready/#enabling-waitforpodsready[Enabling waitForPodsReady] in the Kueue documentation.
 
 
