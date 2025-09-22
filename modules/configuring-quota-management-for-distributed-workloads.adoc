@@ -76,6 +76,44 @@ endif::[]
 $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
 
+. Verify that a resource flavor exists or create a custom one, as follows:
+.. Check whether a `ResourceFlavor` already exists:
++
+[source,terminal]
+----
+$ oc get resourceflavors
+----
+
+.. If a `ResourceFlavor` already exists and you need to modify it, edit it in place:
++
+[source,terminal]
+----
+$ oc edit resourceflavor <existing-resourceflavor-name>
+----
+
+.. If a `ResourceFlavor` does not exist or you want a custom one, create a file called `default_flavor.yaml` and populate it with the following content:
++
+.Empty Kueue resource flavor
+[source,yaml]
+----
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ResourceFlavor
+metadata:
+  name: <example-resource-flavor>
+----
++
+For more examples, see _Example Kueue resource configurations_.
+
+.. Perform one of the following actions:
++
+** If you are modifying the existing resource flavor, save the changes.
+** If you are creating a new resource flavor, apply the configuration to create the `ResourceFlavor` object:
++
+[source,terminal]
+----
+$ oc apply -f default_flavor.yaml
+----
+
 . Verify that a default cluster queue exists or create a custom one, as follows:
 +
 [NOTE]
@@ -141,44 +179,6 @@ You must specify a quota for each resource that the user can request, even if th
 [source,terminal]
 ----
 $ oc apply -f cluster_queue.yaml
-----
-
-. Verify that a resource flavor exists or create a custom one, as follows:
-.. Check whether a `ResourceFlavor` already exists:
-+
-[source,terminal]
-----
-$ oc get resourceflavors
-----
-
-.. If a `ResourceFlavor` already exists and you need to modify it, edit it in place:
-+
-[source,terminal]
-----
-$ oc edit resourceflavor <existing-resourceflavor-name>
-----
-
-.. If a `ResourceFlavor` does not exist or you want a custom one, create a file called `default_flavor.yaml` and populate it with the following content:
-+
-.Empty Kueue resource flavor
-[source,yaml]
-----
-apiVersion: kueue.x-k8s.io/v1beta1
-kind: ResourceFlavor
-metadata:
-  name: <example-resource-flavor>
-----
-+
-For more examples, see _Example Kueue resource configurations_.
-
-.. Perform one of the following actions:
-+
-** If you are modifying the existing resource flavor, save the changes.
-** If you are creating a new resource flavor, apply the configuration to create the `ResourceFlavor` object:
-+
-[source,terminal]
-----
-$ oc apply -f default_flavor.yaml
 ----
 
 . Verify that a local queue that points to your cluster queue exists for your project namespace, or create a custom one, as follows:
