@@ -20,7 +20,6 @@ After the user runs the `cluster.apply()` command, the following error is shown:
 ApiException: (500)
 Reason: Internal Server Error
 HTTP response body: {"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"Internal error occurred: failed calling webhook \"mraycluster.kb.io\": failed to call webhook: Post \"https://kueue-webhook-service.redhat-ods-applications.svc:443/mutate-ray-io-v1-raycluster?timeout=10s\": no endpoints available for service \"kueue-webhook-service\"","reason":"InternalError","details":{"causes":[{"message":"failed calling webhook \"mraycluster.kb.io\": failed to call webhook: Post \"https://kueue-webhook-service.redhat-ods-applications.svc:443/mutate-ray-io-v1-raycluster?timeout=10s\": no endpoints available for service \"kueue-webhook-service\""}]},"code":500}
-
 ----
 
 .Diagnosis
@@ -45,7 +44,7 @@ If necessary, restart the Kueue pod.
 {"level":"info","ts":"2024-06-24T14:36:24.255137871Z","logger":"controller-runtime.webhook","caller":"webhook/server.go:242","msg":"Serving webhook server","host":"","port":9443}
 ----
 
-== A user receives a *Default Local Queue ... not found* error message
+== A user receives a "Default Local Queue ... not found" error message
 
 .Problem
 After the user runs the `cluster.apply()` command, the following error is shown:
@@ -79,7 +78,7 @@ ifdef::upstream[]
 For information about creating a local queue and defining a default local queue, see _Configuring quota management for distributed workloads_.
 endif::[]
 
-== A user receives a *local_queue provided does not exist* error message
+== A user receives a "local_queue provided does not exist" error message
 
 .Problem
 After the user runs the `cluster.apply()` command, the following error is shown:
@@ -116,10 +115,10 @@ ifdef::upstream[]
 For information about creating a local queue and defining a default local queue, see _Configuring quota management for distributed workloads_.
 endif::[]
 
-== The user's pod provisioned by Kueue is terminated before the user's image is pulled
+== The pod provisioned by Kueue is terminated before the image is pulled
 
 .Problem
-Kueue waits for a period of time before marking a workload as ready, to enable all of the workload pods to become provisioned and running. 
+Kueue waits for a period of time before marking a workload as ready for all of the workload pods to become provisioned and running.
 By default, Kueue waits for 5 minutes. 
 If the pod image is very large and is still being pulled after the 5-minute waiting period elapses, Kueue fails the workload and terminates the related pods.
 
