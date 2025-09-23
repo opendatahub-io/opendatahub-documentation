@@ -76,7 +76,7 @@ endif::[]
 == I see a "failed to call webhook" error message for the CodeFlare Operator
 
 .Problem
-After you run the `cluster.up()` command, the following error is shown:
+After you run the `cluster.apply()` command, the following error is shown:
 
 [source,bash]
 ----
@@ -95,7 +95,7 @@ Contact your administrator to request assistance.
 == I see a "failed to call webhook" error message for Kueue
 
 .Problem
-After you run the `cluster.up()` command, the following error is shown:
+After you run the `cluster.apply()` command, the following error is shown:
 
 [source,bash]
 ----
@@ -115,7 +115,7 @@ Contact your administrator to request assistance.
 == My Ray cluster does not start
 
 .Problem
-After you run the `cluster.up()` command, when you run either the `cluster.details()` command or the `cluster.status()` command, the Ray Cluster remains in the `Starting` status instead of changing to the `Ready` status.
+After you run the `cluster.apply()` command, when you run either the `cluster.details()` command or the `cluster.status()` command, the Ray Cluster remains in the `Starting` status instead of changing to the `Ready` status.
 No pods are created.
 
 .Diagnosis
@@ -142,7 +142,7 @@ If you cannot resolve the problem, contact your administrator to request assista
 == I see a "Default Local Queue not found" error message 
 
 .Problem
-After you run the `cluster.up()` command, the following error is shown:
+After you run the `cluster.apply()` command, the following error is shown:
 
 [source,bash]
 ----
@@ -175,7 +175,7 @@ local_queue="_<local_queue_name>_"
 == I see a "local_queue provided does not exist" error message
 
 .Problem
-After you run the `cluster.up()` command, the following error is shown:
+After you run the `cluster.apply()` command, the following error is shown:
 
 [source,bash]
 ----
@@ -205,7 +205,7 @@ If you do not specify a `namespace` value in the cluster configuration, the Ray 
 == I cannot create a Ray cluster or submit jobs
 
 .Problem
-After you run the `cluster.up()` command, an error similar to the following error is shown:
+After you run the `cluster.apply()` command, an error similar to the following error is shown:
 
 [source,bash]
 ----
@@ -247,7 +247,7 @@ auth.login()
 == My pod provisioned by Kueue is terminated before my image is pulled
 
 .Problem
-Kueue waits for a period of time before marking a workload as ready, to enable all of the workload pods to become provisioned and running. 
+Kueue waits for a period of time before marking a workload as ready for all of the workload pods to become provisioned and running.
 By default, Kueue waits for 5 minutes. 
 If the pod image is very large and is still being pulled after the 5-minute waiting period elapses, Kueue fails the workload and terminates the related pods.
 
@@ -266,6 +266,7 @@ endif::[]
 If the pod takes more than 5 minutes to pull the image, contact your administrator to request assistance.
 
 
-// [role='_additional-resources']
-// == Additional resources
-// * TODO
+[role='_additional-resources']
+== Additional resources
+* _Troubleshooting common problems with distributed workloads for administrators_
+* _Troubleshooting common problems with Kueue_

@@ -17,7 +17,7 @@ The resource quota specified in the cluster queue configuration might be insuffi
 
 .Diagnosis
 The user's Ray cluster head pod or worker pods remain in a suspended state. 
-Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
+Check the status of the `Workload` resource that is created with the `RayCluster` resource.
 The `status.conditions.message` field provides the reason for the suspended state, as shown in the following example:
 
 [source,bash]
@@ -49,7 +49,6 @@ ifdef::upstream[]
 For information about configuring resource flavors and quotas, see link:{odhdocshome}/managing-odh/#configuring-quota-management-for-distributed-workloads_managing-odh[Configuring quota management for distributed workloads].
 endif::[]
 
-
 == A user's Ray cluster is in a failed state
 
 .Problem
@@ -72,14 +71,13 @@ endif::[]
 . Click *Workloads -> Pods*.
 . Click the user's pod name to open the pod details page.
 . Click the *Events* tab, and review the pod events to identify the cause of the problem.
-. Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
+. Check the status of the `Workload` resource that is created with the `RayCluster` resource.
 The `status.conditions.message` field provides the reason for the failed state.
-
 
 == A user receives a "failed to call webhook" error message for the CodeFlare Operator
 
 .Problem
-After the user runs the `cluster.up()` command, the following error is shown:
+After the user runs the `cluster.apply()` command, the following error is shown:
 
 [source,bash]
 ----
@@ -111,50 +109,14 @@ INFO	controller-runtime.webhook	  Serving webhook server	{"host": "", "port": 94
 ----
 
 
-== A user receives a "failed to call webhook" error message for Kueue
-
-.Problem
-After the user runs the `cluster.up()` command, the following error is shown:
-
-[source,bash]
-----
-ApiException: (500)
-Reason: Internal Server Error
-HTTP response body: {"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"Internal error occurred: failed calling webhook \"mraycluster.kb.io\": failed to call webhook: Post \"https://kueue-webhook-service.redhat-ods-applications.svc:443/mutate-ray-io-v1-raycluster?timeout=10s\": no endpoints available for service \"kueue-webhook-service\"","reason":"InternalError","details":{"causes":[{"message":"failed calling webhook \"mraycluster.kb.io\": failed to call webhook: Post \"https://kueue-webhook-service.redhat-ods-applications.svc:443/mutate-ray-io-v1-raycluster?timeout=10s\": no endpoints available for service \"kueue-webhook-service\""}]},"code":500}
-
-----
-
-.Diagnosis
-The Kueue pod might not be running.
-
-.Resolution
-
-ifdef::upstream,self-managed[]
-. In the {openshift-platform} console, select the user's project from the *Project* list. 
-endif::[]
-ifdef::cloud-service[]
-. In the OpenShift console, select the user's project from the *Project* list.
-endif::[]
-. Click *Workloads -> Pods*.
-. Verify that the Kueue pod is running.
-If necessary, restart the Kueue pod.
-
-. Review the logs for the Kueue pod to verify that the webhook server is serving, as shown in the following example:
-+
-[source,bash]
-----
-{"level":"info","ts":"2024-06-24T14:36:24.255137871Z","logger":"controller-runtime.webhook","caller":"webhook/server.go:242","msg":"Serving webhook server","host":"","port":9443}
-----
-
-
 == A user's Ray cluster does not start
 
 .Problem
-After the user runs the `cluster.up()` command, when they run either the `cluster.details()` command or the `cluster.status()` command, the Ray cluster status remains as `Starting` instead of changing to `Ready`.
+After the user runs the `cluster.apply()` command, when they run either the `cluster.details()` command or the `cluster.status()` command, the Ray cluster status remains as `Starting` instead of changing to `Ready`.
 No pods are created.
 
 .Diagnosis
-Check the status of the `Workloads` resource that is created with the `RayCluster` resource.
+Check the status of the `Workload` resource that is created with the `RayCluster` resource.
 The `status.conditions.message` field provides the reason for remaining in the `Starting` state.
 Similarly, check the `status.conditions.message` field for the `RayCluster` resource. 
 
@@ -173,84 +135,10 @@ If necessary, restart the KubeRay pod.
 . Review the logs for the KubeRay pod to identify errors.
 
 
-== A user receives a *Default Local Queue ... not found* error message
-
-.Problem
-After the user runs the `cluster.up()` command, the following error is shown:
-
-[source,bash]
-----
-Default Local Queue with kueue.x-k8s.io/default-queue: true annotation not found please create a default Local Queue or provide the local_queue name in Cluster Configuration.
-----
-
-.Diagnosis
-No default local queue is defined, and a local queue is not specified in the cluster configuration.
-
-.Resolution
-. Check whether a local queue exists in the user's project, as follows:
-ifdef::upstream,self-managed[]
-.. In the {openshift-platform} console, select the user's project from the *Project* list. 
-endif::[]
-ifdef::cloud-service[]
-..  In the OpenShift console, select the user's project from the *Project* list.
-endif::[]
-.. Click *Home -> Search*, and from the *Resources* list, select *LocalQueue*.
-.. If no local queues are found, create a local queue.
-.. Provide the user with the details of the local queues in their project, and advise them to add a local queue to their cluster configuration.
-
-. Define a default local queue.
-+
-ifndef::upstream[]
-For information about creating a local queue and defining a default local queue, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai#configuring-quota-management-for-distributed-workloads_managing-rhoai[Configuring quota management for distributed workloads].
-endif::[]
-ifdef::upstream[]
-For information about creating a local queue and defining a default local queue, see link:{odhdocshome}/managing-odh/#configuring-quota-management-for-distributed-workloads_managing-odh[Configuring quota management for distributed workloads].
-endif::[]
-
- 
-== A user receives a *local_queue provided does not exist* error message
-
-.Problem
-After the user runs the `cluster.up()` command, the following error is shown:
-
-[source,bash]
-----
-local_queue provided does not exist or is not in this namespace. Please provide the correct local_queue name in Cluster Configuration.
-----
-
-.Diagnosis
-An incorrect value is specified for the local queue in the cluster configuration, or an incorrect default local queue is defined.
-The specified local queue either does not exist, or exists in a different namespace.
-
-.Resolution
-ifdef::upstream,self-managed[]
-.. In the {openshift-platform} console, select the user's project from the *Project* list. 
-endif::[]
-ifdef::cloud-service[]
-..  In the OpenShift console, select the user's project from the *Project* list.
-endif::[]
-. Click *Search*, and from the *Resources* list, select *LocalQueue*.
-. Resolve the problem in one of the following ways:
-
-* If no local queues are found, create a local queue.
-* If one or more local queues are found, provide the user with the details of the local queues in their project.
-Advise the user to ensure that they spelled the local queue name correctly in their cluster configuration, and that the `namespace` value in the cluster configuration matches their project name.
-If the user does not specify a `namespace` value in the cluster configuration, the Ray cluster is created in the current project.
-
-. Define a default local queue.
-+
-ifndef::upstream[]
-For information about creating a local queue and defining a default local queue, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai#configuring-quota-management-for-distributed-workloads_managing-rhoai[Configuring quota management for distributed workloads].
-endif::[]
-ifdef::upstream[]
-For information about creating a local queue and defining a default local queue, see link:{odhdocshome}/managing-odh/#configuring-quota-management-for-distributed-workloads_managing-odh[Configuring quota management for distributed workloads].
-endif::[]
-
-
 == A user cannot create a Ray cluster or submit jobs
 
 .Problem
-After the user runs the `cluster.up()` command, an error similar to the following text is shown:
+After the user runs the `cluster.apply()` command, an error similar to the following text is shown:
 
 [source,bash]
 ----
@@ -290,34 +178,9 @@ auth.login()
 
 . Verify that the user has the correct permissions and is part of the {user-group} group.
 
+[role='_additional-resources']
+== Additional resources
+* _Troubleshooting common problems with distributed workloads for users_
+* _Troubleshooting common problems with Kueue_
 
-== The user's pod provisioned by Kueue is terminated before the user's image is pulled
-
-.Problem
-Kueue waits for a period of time before marking a workload as ready, to enable all of the workload pods to become provisioned and running. 
-By default, Kueue waits for 5 minutes. 
-If the pod image is very large and is still being pulled after the 5-minute waiting period elapses, Kueue fails the workload and terminates the related pods.
-
-.Diagnosis
-
-ifdef::upstream,self-managed[]
-. In the {openshift-platform} console, select the user's project from the *Project* list. 
-endif::[]
-ifdef::cloud-service[]
-. In the OpenShift console, select the user's project from the *Project* list.
-endif::[]
-. Click *Workloads -> Pods*.
-. Click the user's pod name to open the pod details page.
-. Click the *Events* tab, and review the pod events to check whether the image pull completed successfully.
-
-.Resolution
-If the pod takes more than 5 minutes to pull the image, resolve the problem in one of the following ways:
-
-* Add an `OnFailure` restart policy for resources that are managed by Kueue.
-* In the `redhat-ods-applications` namespace, edit the `kueue-manager-config` ConfigMap to set a custom timeout for the `waitForPodsReady` property.
-For more information about this configuration option, see link:https://kueue.sigs.k8s.io/docs/tasks/manage/setup_wait_for_pods_ready/#enabling-waitforpodsready[Enabling waitForPodsReady] in the Kueue documentation.
-
-
-// [role='_additional-resources']
-// == Additional resources
 // * TODO

@@ -4,7 +4,7 @@
 = Configuring quota management for distributed workloads
 
 [role='_abstract']
-Configure quotas for distributed workloads on a cluster, so that you can share resources between several data science projects.
+Configure quotas for distributed workloads by creating Kueue resources. Quotas ensure that you can share resources between several data science projects.
 
 .Prerequisites
 * You have logged in to {openshift-platform} with the `cluster-admin` role.
@@ -15,6 +15,8 @@ endif::[]
 ifdef::cloud-service[]
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI ({org-name} OpenShift Service on AWS)^].
 endif::[]
+
+* You have installed and activated the {rhbok-productname} Operator as described in _Configuring workload management with Kueue_.
 
 ifdef::upstream[]
 * You have installed the required distributed workloads components as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
@@ -38,15 +40,8 @@ endif::[]
 
 * You have sufficient resources. In addition to the base {productname-short} resources, you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
 
-ifndef::upstream[]
-* The resources are physically available in the cluster.
-For more information about Kueue resources, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai#overview-of-kueue-resources_managing-rhoai[Overview of Kueue resources].
-endif::[]
+* The resources are physically available in the cluster. For more information about Kueue resources, see link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/latest/html/quotas_and_workloads[Quotas and workloads] in the {rhbok-productname} documentation.
 
-ifdef::upstream[]
-* The resources are physically available in the cluster.
-For more information about Kueue resources, see link:{odhdocshome}/managing-odh/#overview-of-kueue-resources_managing-odh[Overview of Kueue resources].
-endif::[]
 
 ifndef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
@@ -81,41 +76,80 @@ endif::[]
 $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
 
-. Create an empty Kueue resource flavor, as follows:
-.. Create a file called `default_flavor.yaml` and populate it with the following content:
+. Verify that a resource flavor exists or create a custom one, as follows:
+.. Check whether a `ResourceFlavor` already exists:
++
+[source,terminal]
+----
+$ oc get resourceflavors
+----
+
+.. If a `ResourceFlavor` already exists and you need to modify it, edit it in place:
++
+[source,terminal]
+----
+$ oc edit resourceflavor <existing_resourceflavor_name>
+----
+
+.. If a `ResourceFlavor` does not exist or you want a custom one, create a file called `default_flavor.yaml` and populate it with the following content:
 +
 .Empty Kueue resource flavor
-[source,bash]
+[source,yaml]
 ----
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ResourceFlavor
 metadata:
-  name: default-flavor
+  name: <example_resource_flavor>
 ----
-.. Apply the configuration to create the `default-flavor` object:
 +
-[source,bash]
+For more examples, see _Example Kueue resource configurations_.
+
+.. Perform one of the following actions:
++
+** If you are modifying the existing resource flavor, save the changes.
+** If you are creating a new resource flavor, apply the configuration to create the `ResourceFlavor` object:
++
+[source,terminal]
 ----
 $ oc apply -f default_flavor.yaml
 ----
 
-. Create a cluster queue to manage the empty Kueue resource flavor, as follows:
-.. Create a file called `cluster_queue.yaml` and populate it with the following content:
+. Verify that a default cluster queue exists or create a custom one, as follows:
++
+[NOTE]
+====
+{productname-short} automatically created a default cluster queue when the Kueue integration was activated. You can verify and modify the default cluster queue, or create a custom one.
+====
+.. Check whether a `ClusterQueue` already exists:
++
+[source,terminal]
+----
+$ oc get clusterqueues
+----
+
+.. If a `ClusterQueue` already exists and you need to modify it (for example, to change the resources), edit it in place:
++
+[source,terminal]
+----
+$ oc edit clusterqueue <existing_clusterqueue_name>
+----
+
+.. If a `ClusterQueue` does not exist or you want a custom one, create a file called `cluster_queue.yaml` and populate it with the following content:
 +
 .Example cluster queue
-[source,bash]
+[source,YAML]
 ----
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ClusterQueue
 metadata:
-  name: "cluster-queue"
+  name: <example_cluster_queue>
 spec:
-  namespaceSelector: {}  # match all.
+  namespaceSelector: {}  <1>
   resourceGroups:
-  - coveredResources: ["cpu", "memory", "nvidia.com/gpu"] 
+  - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]  <2>
     flavors:
-    - name: "default-flavor"
-      resources:
+    - name: "<resource_flavor_name>"  <3>
+      resources:  <4>
       - name: "cpu"
         nominalQuota: 9
       - name: "memory"
@@ -124,61 +158,84 @@ spec:
         nominalQuota: 5
 ----
 +
+<1> Defines which namespaces can use the resources governed by this cluster queue. An empty `namespaceSelector` as shown in the example means that all namespaces can use these resources.
+<2> Defines the resource types governed by the cluster queue. This example `ClusterQueue` object governs CPU, memory, and GPU resources. If you use AMD GPUs, replace `nvidia.com/gpu` with `amd.com/gpu` in the example code.
+<3> Defines the resource flavor that is applied to the resource types listed. In this example, the <resource_flavor_name> resource flavor is applied to CPU, memory, and GPU resources.
+<4> Defines the resource requirements for admitting jobs. The cluster queue will start a distributed workload only if the total required resources are within these quota limits.
+
 .. Replace the example quota values (9 CPUs, 36 GiB memory, and 5 NVIDIA GPUs) with the appropriate values for your cluster queue.
-If you use AMD GPUs, replace `nvidia.com/gpu` with `amd.com/gpu` in the example code.
-The cluster queue will start a distributed workload only if the total required resources are within these quota limits.
+If you use AMD GPUs, replace `nvidia.com/gpu` with `amd.com/gpu` in the example code. For more examples, see _Example Kueue resource configurations_.
 +
 You must specify a quota for each resource that the user can request, even if the requested value is 0, by updating the `spec.resourceGroups` section as follows:
-
-* Include the resource name in the `coveredResources` list.
-* Specify the resource `name` and `nominalQuota` in the `flavors.resources` section, even if the `nominalQuota` value is 0.
-
-.. Apply the configuration to create the `cluster-queue` object:
 +
-[source,bash]
+** Include the resource name in the `coveredResources` list.
+** Specify the resource `name` and `nominalQuota` in the `flavors.resources` section, even if the `nominalQuota` value is 0.
+
+.. Perform one of the following actions:
++
+** If you are modifying the existing cluster queue, save the changes.
+** If you are creating a new cluster queue, apply the configuration to create the `ClusterQueue` object:
++
+[source,terminal]
 ----
 $ oc apply -f cluster_queue.yaml
 ----
 
-. Create a local queue that points to your cluster queue, as follows:
-.. Create a file called `local_queue.yaml` and populate it with the following content:
+. Verify that a local queue that points to your cluster queue exists for your project namespace, or create a custom one, as follows:
++
+[NOTE]
+====
+If Kueue is enabled in the {productname-short} dashboard, new projects created from the dashboard are automatically configured for Kueue management. In those namespaces, a default local queue might already exist. You can verify and modify the local queue, or create a custom one.
+====
+
+.. Check whether a `LocalQueue` already exists for your project namespace:
++
+[source,terminal]
+----
+$ oc get localqueues -n <project_namespace>
+----
+
+.. If a `LocalQueue` already exists and you need to modify it (for example, to point to a different `ClusterQueue`), edit it in place:
++
+[source,terminal]
+----
+$ oc edit localqueue <existing_localqueue_name> -n <project_namespace>
+----
+
+.. If a `LocalQueue` does not exist or you want a custom one, create a file called `local_queue.yaml` and populate it with the following content:
 +
 .Example local queue
-[source,bash]
+[source,YAML]
 ----
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: LocalQueue
 metadata:
-  namespace: test
-  name: local-queue-test
-  annotations:
-    kueue.x-k8s.io/default-queue: 'true'
+  name: <example_local_queue>
+  namespace: <project_namespace>
 spec:
-  clusterQueue: cluster-queue
+  clusterQueue: <cluster_queue_name>
 ----
-The `kueue.x-k8s.io/default-queue: 'true'` annotation defines this queue as the default queue.
-Distributed workloads are submitted to this queue if no `local_queue` value is specified in the `ClusterConfiguration` section of the data science pipeline or Jupyter notebook or Microsoft Visual Studio Code file.
-.. Update the `namespace` value to specify the same namespace as in the `ClusterConfiguration` section that creates the Ray cluster.
-.. Optional: Update the `name` value accordingly.
-.. Apply the configuration to create the local-queue object:
+.. Replace the `name`, `namespace`, and `clusterQueue` values accordingly.
+
+.. Perform one of the following actions:
 +
-[source,bash]
+** If you are modifying an existing local queue, save the changes.
+** If you are creating a new local queue, apply the configuration to create the `LocalQueue` object:
++
+[source,terminal]
 ----
 $ oc apply -f local_queue.yaml
 ----
-+
-The cluster queue allocates the resources to run distributed workloads in the local queue.
-
 
 .Verification
 Check the status of the local queue in a project, as follows:
 
-[source,subs="+quotes"]
+[source,terminal]
 ----
-$ oc get -n __<project-name>__ localqueues
+$ oc get localqueues -n <project_namespace>
 ----
-
 
 [role='_additional-resources']
 .Additional resources
+* link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/latest/html/quotas_and_workloads[Quotas and workloads] in the {rhbok-productname} documentation
 * link:https://kueue.sigs.k8s.io/docs/concepts/[Kueue documentation]
