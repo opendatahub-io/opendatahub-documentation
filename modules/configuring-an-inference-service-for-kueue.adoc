@@ -5,12 +5,17 @@
 
 [role="_abstract"]
 
-To queue your inference service workloads and manage their resources, add the `kueue.x-k8s.io/queue-name` label to the service's metadata. This label directs the workload to a specific `LocalQueue` for management and is required only if your project is enabled for Kueue. For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue_kueue[Managing workloads with Kueue].
+To queue your inference service workloads and manage their resources, add the `kueue.x-k8s.io/queue-name` label to the service's metadata. This label directs the workload to a specific `LocalQueue` for management and is required only if your project is enabled for Kueue. For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue[Managing workloads with Kueue].
 
 .Prerequisites
 
 * You have permissions to edit resources in the project where the model is deployed.
-* As a cluster administrator, you have installed and activated the {rhbok-productname} Operator as described in _Configuring workload management with Kueue_.
+ifdef::upstream[]
+* As a cluster administrator, you have installed and activated the {rhbok-productname} Operator as described in link:{odhdocshome}/managing-odh/#configuring-workload-management-with-kueue_kueue[Configuring workload management with Kueue].
+endif::[]
+ifndef::upstream[]
+* As a cluster administrator, you have installed and activated the {rhbok-productname} Operator as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue#configuring-workload-management-with-kueue_kueue[Configuring workload management with Kueue].
+endif::[]
 
 .Procedure
 

@@ -59,7 +59,7 @@ spec:
 * Go to *Workloads* → *Deployments*, select the project where {productname-short} is installed (for example, `redhat-ods-applications`), and confirm that Kueue-related deployments (for example, `kueue-controller-manager`) are no longer present.  
 
 . Install the {rhbok-productname} Operator on your {openshift-platform} cluster:
-.. Follow the steps in link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/latest/html/installing_on_openshift_container_platform/install-kueue[Installing Red Hat build of Kueue].  
+.. Follow the steps to install the {rhbok-productname} Operator, as described in the link:{rhbok-docs}[{rhbok-productname} documentation].
 .. Go to *Operators* -> *Installed Operators* and confirm that the {rhbok-productname} Operator is listed with *Status* as *Succeeded*.
 . Activate the {rhbok-productname} Operator in {productname-short}:
 .. In the web console, click *Operators* → *Installed Operators* and then click the {productname-long} Operator.  
@@ -110,7 +110,7 @@ Kueue validation and queue enforcement apply only to workloads in namespaces wit
 * Verify that existing workloads in the queue continue to be processed by the new operator-managed Kueue controllers. Submit a new test workload to confirm functionality.  
 
 .Next steps
-* Configure quotas by creating and modifying `ResourceFlavor`, `ClusterQueue`, and `LocalQueue` objects. For details, see the link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue[{rhbok-productname}] documentation.
+* Configure quotas by creating and modifying `ResourceFlavor`, `ClusterQueue`, and `LocalQueue` objects. For details, see the link:{rhbok-docs}[{rhbok-productname} documentation].
 * Enable Kueue in the dashboard so that users can select Kueue-enabled options when creating workloads. When you enable Kueue, you also enable Kueue management for all new projects created from the dashboard. See _Enabling Kueue in the dashboard_.
 * Cluster administrators and {productname-short} administrators can create hardware profiles so that users can submit workloads from the {productname-short} dashboard. 
 ifdef::upstream[]
