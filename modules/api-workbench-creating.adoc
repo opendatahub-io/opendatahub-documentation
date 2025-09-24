@@ -57,12 +57,14 @@ metadata:
     notebooks.kubeflow.org/last-activity: '2024-07-30T20:27:25Z'
   name: my-workbench # <5>
   namespace: my-data-science-project # <6>
+  labels:
+    kueue.x-k8s.io/queue-name: <local-queue-name> # <7>
 spec:
   template:
     spec:
       affinity: {}
       containers:
-        - resources: # <7>
+        - resources: # <8>
             limits:
               cpu: '2'
               memory: 8Gi
@@ -90,7 +92,7 @@ spec:
             periodSeconds: 5
             successThreshold: 1
             timeoutSeconds: 1
-          env: # <8>
+          env: # <9>
             - name: NOTEBOOK_ARGS
               value: |-
                 --ServerApp.port=8888
@@ -125,9 +127,9 @@ spec:
               name: trusted-ca
               readOnly: true
               subPath: ca-bundle.crt
-          image: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0' # <9>
+          image: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0' # <10>
           workingDir: /opt/app-root/src
-        - resources: # <10>
+        - resources: # <11>
             limits:
               cpu: 100m
               memory: 64Mi
@@ -220,10 +222,11 @@ The example YAML file includes the following information:
 <4> The workbench name that is displayed in the {productname-short} dashboard. In this example, the display name is `My Workbench`.
 <5> The name for the workbench. In this example, the workbench name is `my-workbench`.
 <6> The data science project for the workbench. In this example, the data science project name is `my-data-science-project`.
-<7> The deployment size for the container. You can set `limits` and `requests` values for CPU and memory.
-<8> Environment variables for configuring values, for example, for Jupyter Notebook arguments and SSL/TLS certificates.
-<9> The `Notebook` image. In this example, `image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0` is the `Notebook` image. You can select the image version based on the packages included in the image. 
-<10> The `inject-oauth` annotation configures the `oauth-proxy` container section of the `Notebook`.
+<7> To queue your workbench (Notebook) Pods and manage their resources, add the `kueue.x-k8s.io/queue-name` label to the `spec.template.metadata.labels` of the `Notebook` CR. Set the value to the name of an existing `LocalQueue` in your project. This is required only if your project is enabled for Kueue. For more information, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue[Managing workloads with Kueue].
+<8> The deployment size for the container. You can set `limits` and `requests` values for CPU and memory.
+<9> Environment variables for configuring values, for example, for Jupyter Notebook arguments and SSL/TLS certificates.
+<10> The `Notebook` image. In this example, `image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0` is the `Notebook` image. You can select the image version based on the packages included in the image. 
+<11> The `inject-oauth` annotation configures the `oauth-proxy` container section of the `Notebook`.
 
 . Edit the `notebooks.opendatahub.io/oauth-logout-url` field, annotated as *(1)* in the following example. Replace `my-data-science-project` with the name of the data science project that you created.
 + 
