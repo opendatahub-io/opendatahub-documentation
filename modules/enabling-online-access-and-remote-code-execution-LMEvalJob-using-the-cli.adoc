@@ -1,0 +1,64 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+
+[id="enabling-online-access-and-remote-code-execution-LMEvalJob-using-the-cli_{context}"]
+= Enabling online access and remote code execution for LMEval Jobs using the CLI
+
+[role='_abstract']
+You can enable online access using the CLI for LMEval jobs by setting the `allowOnline` specification to `true` in the `LMEvalJob` custom resource (CR). You can also enable remote code execution by setting the `allowCodeExecution` specification to `true`. Both modes can be used at the same time.
+
+[IMPORTANT]
+====
+Enabling online access or code execution involves a security risk. Only use these configurations if you trust the source(s).
+====
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {productname-long} cluster.
+* The `DataScienceCluster` resource specifications, `permitCodeExecution` and `permitOnline` are enabled with a value of `allow`.
+
+ifndef::upstream[]
+* You have downloaded and installed the {productname-short} command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+
+.Procedure
+
+* For new LMEval jobs, apply a YAML that includes the following fields: 
++
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: example-lmeval
+  namespace: <your-namespace>
+spec:
+  allowOnline: true
+  allowCodeExecution: true
+----
+
+The `allowOnline` and `allowCodeExecution` settings are disabled by default with a value of `false` in the `LMEvalJob` CR. In the `DataScienceCluster` resource specifications, the `permitCodeExecution` and `permitOnline` are also disabled by default with a value of `deny`. You must explicitly enable these settings in the `DataScienceCluster` resource for the `LMEvalJobs` specification to enable internet access or permission to run any externally downloaded code. An example of the `DataScienceCluster` resource, such as in the following example:
+
+.`DataScienceCluster` resource enabling online access and remote code execution
+[source,yaml]
+----
+apiVersion: datasciencecluster.opendatahub.io/v1
+kind: DataScienceCluster
+metadata:
+  name: default-dsc
+spec:
+  components:
+    trustyai:
+      managementState: Managed
+      eval:
+        lmeval:
+           permitOnline: allow
+           permitCodeExecution: allow
+----
+[NOTE]
+====
+If you upgrade to version 2.25, some TrustyAI `LMEvalJobs` CR configuration values might be overwritten. The new deployment prioritizes the value on the 2.25 version `DataScienceCluster`. Existing LMEval jobs are unaffected. Verify that all `DataScienceCluster` values are explicitly defined and validated during installation.
+====
+
+
