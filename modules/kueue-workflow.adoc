@@ -9,10 +9,20 @@ Managing workloads with Kueue in {productname-short} involves tasks for {openshi
 
 Installs and configures Kueue:
 
-. Installs the {rhbok-productname} Operator on the cluster, as described in link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/latest/html/installing_on_openshift_container_platform/install-kueue[Installing Red Hat build of Kueue].
-. Activates the Kueue integration by setting the `managementState` to `Unmanaged` in the `DataScienceCluster` custom resource, as described in _Configuring workload management with Kueue_.
-. Configures quotas to optimize resource allocation for user workloads, as described in the link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue[{rhbok-productname}] documentation.
-. Enables Kueue in the dashboard by setting `disableKueue` to `false` in the `OdhDashboardConfig` custom resource, as described in _Enabling Kueue in the dashboard_.
+. Installs the {rhbok-productname} Operator on the cluster, as described in the link:{rhbok-docs}[{rhbok-productname} documentation].
+ifdef::upstream[]
+. Activates the Kueue integration by setting the `managementState` to `Unmanaged` in the `DataScienceCluster` custom resource, as described in link:{odhdocshome}/managing-odh/#configuring-workload-management-with-kueue_kueue[Configuring workload management with Kueue].
+endif::[]
+ifndef::upstream[]
+. Activates the Kueue integration by setting the `managementState` to `Unmanaged` in the `DataScienceCluster` custom resource, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue#configuring-workload-management-with-kueue_kueue[Configuring workload management with Kueue].
+endif::[]
+. Configures quotas to optimize resource allocation for user workloads, as described in the link:{rhbok-docs}[{rhbok-productname} documentation].
+ifdef::upstream[]
+. Enables Kueue in the dashboard by setting `disableKueue` to `false` in the `OdhDashboardConfig` custom resource, as described in link:{odhdocshome}/managing-odh/#enabling-kueue-in-the-dashboard_managing-odh[Enabling Kueue in the dashboard].
+endif::[]
+ifndef::upstream[]
+. Enables Kueue in the dashboard by setting `disableKueue` to `false` in the `OdhDashboardConfig` custom resource, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue#enabling-kueue-in-the-dashboard_kueue[Enabling Kueue in the dashboard].
+endif::[]
 +
 [NOTE]
 ====

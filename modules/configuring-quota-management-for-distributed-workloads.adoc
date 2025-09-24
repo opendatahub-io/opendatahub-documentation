@@ -16,7 +16,12 @@ ifdef::cloud-service[]
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI ({org-name} OpenShift Service on AWS)^].
 endif::[]
 
-* You have installed and activated the {rhbok-productname} Operator as described in _Configuring workload management with Kueue_.
+ifdef::upstream[]
+* You have installed and activated the {rhbok-productname} Operator as described in link:{odhdocshome}/managing-odh/#configuring-workload-management-with-kueue_kueue[Configuring workload management with Kueue].
+endif::[]
+ifndef::upstream[]
+* You have installed and activated the {rhbok-productname} Operator as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue#configuring-workload-management-with-kueue_kueue[Configuring workload management with Kueue].
+endif::[]
 
 ifdef::upstream[]
 * You have installed the required distributed workloads components as described in link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
@@ -40,13 +45,13 @@ endif::[]
 
 * You have sufficient resources. In addition to the base {productname-short} resources, you need 1.6 vCPU and 2 GiB memory to deploy the distributed workloads infrastructure.
 
-* The resources are physically available in the cluster. For more information about Kueue resources, see link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/latest/html/quotas_and_workloads[Quotas and workloads] in the {rhbok-productname} documentation.
+* The resources are physically available in the cluster. For more information about Kueue resources, see the link:{rhbok-docs}[{rhbok-productname} documentation].
 
 
 ifndef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
-If you use NVIDIA GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]. 
-If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#amd-gpu-integration_managing-rhoai[AMD GPU integration^].
+If you use NVIDIA GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]. 
+If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#amd-gpu-integration_managing-rhoai[AMD GPU integration^].
 +
 ifdef::self-managed[]
 [NOTE]
@@ -237,5 +242,5 @@ $ oc get localqueues -n <project_namespace>
 
 [role='_additional-resources']
 .Additional resources
-* link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/latest/html/quotas_and_workloads[Quotas and workloads] in the {rhbok-productname} documentation
+* link:{rhbok-docs}[{rhbok-productname} documentation]
 * link:https://kueue.sigs.k8s.io/docs/concepts/[Kueue documentation]
