@@ -71,11 +71,11 @@ endif::[]
 
 . Define a default local queue.
 +
-ifndef::upstream[]
-For information about creating a local queue and defining a default local queue, see _Configuring quota management for distributed workloads_.
-endif::[]
 ifdef::upstream[]
-For information about creating a local queue and defining a default local queue, see _Configuring quota management for distributed workloads_.
+For information about creating a local queue and defining a default local queue, see link:{odhdocshome}/managing-odh/#configuring-quota-management-for-distributed-workloads_managing-odh[Configuring quota management for distributed workloads].
+endif::[]
+ifndef::upstream[]
+For information about creating a local queue and defining a default local queue, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue#configuring-quota-management-for-distributed-workloads_kueue[Configuring quota management for distributed workloads].
 endif::[]
 
 == A user receives a "local_queue provided does not exist" error message
@@ -108,11 +108,11 @@ Advise the user to ensure that they spelled the local queue name correctly in th
 
 . Define a default local queue.
 +
-ifndef::upstream[]
-For information about creating a local queue and defining a default local queue, see _Configuring quota management for distributed workloads_.
-endif::[]
 ifdef::upstream[]
-For information about creating a local queue and defining a default local queue, see _Configuring quota management for distributed workloads_.
+For information about creating a local queue and defining a default local queue, see link:{odhdocshome}/managing-odh/#configuring-quota-management-for-distributed-workloads_managing-odh[Configuring quota management for distributed workloads].
+endif::[]
+ifndef::upstream[]
+For information about creating a local queue and defining a default local queue, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai#configuring-quota-management-for-distributed-workloads_managing-rhoai[Configuring quota management for distributed workloads].
 endif::[]
 
 == The pod provisioned by Kueue is terminated before the image is pulled
@@ -140,5 +140,12 @@ For more information about this configuration option, see link:https://kueue.sig
 
 [role='_additional-resources']
 == Additional resources
-* _Troubleshooting common problems with distributed workloads for administrators_
-* _Troubleshooting common problems with distributed workloads for users_
+
+ifdef::upstream[]
+* link:{odhdocshome}/managing-odh/#troubleshooting-common-problems-with-distributed-workloads-for-administrators_managing-odh[Troubleshooting common problems with distributed workloads for administrators]
+* link:{odhdocshome}/working-with-distributed-workloads/#troubleshooting-common-problems-with-distributed-workloads-for-users_distributed-workloads[Troubleshooting common problems with distributed workloads for users]
+endif::[]
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai#troubleshooting-common-problems-with-distributed-workloads-for-administrators_managing-rhoai[Troubleshooting common problems with distributed workloads for administrators]
+* link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/troubleshooting-common-problems-with-distributed-workloads-for-users_distributed-workloads[Troubleshooting common problems with distributed workloads for users]
+endif::[]
