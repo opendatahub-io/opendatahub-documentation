@@ -21,8 +21,13 @@ $ oc label namespace <project-namespace> kueue.openshift.io/managed=true --overw
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You are using {openshift-platform} 4.18 or later.
-* You have installed the {rhbok-productname} Operator and activated Kueue, as described in _Configuring workload management with Kueue_.
-* You have configured quotas, as described in the link:https://docs.redhat.com/en/documentation/red_hat_build_of_kueue[{rhbok-productname}] documentation.
+ifdef::upstream[]
+* You have installed and activated the {rhbok-productname} Operator, as described in link:{odhdocshome}/managing-odh/#configuring-workload-management-with-kueue_kueue[Configuring workload management with Kueue].
+endif::[]
+ifndef::upstream[]
+* You have installed and activated the {rhbok-productname} Operator, as described in link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue#configuring-workload-management-with-kueue_kueue[Configuring workload management with Kueue].
+endif::[]
+* You have configured quotas, as described in the link:{rhbok-docs}[{rhbok-productname} documentation].
 
 .Procedure
 
@@ -34,11 +39,11 @@ $ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 ----
 
 . Update the `odh-dashboard-config` custom resource in the {productname-short} applications namespace. Replace `<applications-namespace>` with your {productname-short} applications namespace. The default is `pass:attributes[{dbd-config-default-namespace}]`.
-
++
 [source,terminal,subs="+quotes"]
 ----
 $ oc patch odhdashboardconfig odh-dashboard-config \
-  -n <applications-namespace> \
+  -n \<applications-namespace\> \
   --type merge \
   -p '{"spec":{"dashboardConfig":{"disableHardwareProfiles":false,"disableKueue":false}}}'
 ----
