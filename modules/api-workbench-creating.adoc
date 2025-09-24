@@ -57,12 +57,14 @@ metadata:
     notebooks.kubeflow.org/last-activity: '2024-07-30T20:27:25Z'
   name: my-workbench # <5>
   namespace: my-data-science-project # <6>
+  labels:
+    kueue.x-k8s.io/queue-name: <local-queue-name> # <7>
 spec:
   template:
     spec:
       affinity: {}
       containers:
-        - resources: # <7>
+        - resources: # <8>
             limits:
               cpu: '2'
               memory: 8Gi
@@ -90,7 +92,7 @@ spec:
             periodSeconds: 5
             successThreshold: 1
             timeoutSeconds: 1
-          env: # <8>
+          env: # <9>
             - name: NOTEBOOK_ARGS
               value: |-
                 --ServerApp.port=8888
@@ -125,9 +127,9 @@ spec:
               name: trusted-ca
               readOnly: true
               subPath: ca-bundle.crt
-          image: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0' # <9>
+          image: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0' # <10>
           workingDir: /opt/app-root/src
-        - resources: # <10>
+        - resources: # <11>
             limits:
               cpu: 100m
               memory: 64Mi
