@@ -13,7 +13,7 @@ ifndef::upstream[]
 For more information about deployment modes, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_single_model_serving_platform#about-kserve-deployment-modes_rhoai-user[About KServe deployment modes].
 endif::[]
 
-To use the TrustyAI service with *Knative Serverless* deployment mode, you must first update the KServe ConfigMap, then create another ConfigMap in your model's namespace to hold the Certificate Authority (CA) certificate. 
+To use the TrustyAI service with *KServe RawDeployment* deployment mode, you must first update the KServe ConfigMap, then create another ConfigMap in your model's namespace to hold the Certificate Authority (CA) certificate. 
 
 [NOTE]
 --
@@ -24,7 +24,7 @@ Advanced deployment mode does not require this additional setup.
 * You have installed {productname-long}.
 * You have cluster administrator privileges for your {productname-short} cluster.
 * You have access to a data science cluster that has TrustyAI enabled.
-* You have enabled the model serving platform in either *Knative Serveless* or *KServe RawDeployment* mode.
+* You have enabled the model serving platform in either *Knative Serverless* or *KServe RawDeployment* mode.
 
 .Procedure
 . Update the KServe ConfigMap (`inferenceservice-config`) in the {productname-short} UI:

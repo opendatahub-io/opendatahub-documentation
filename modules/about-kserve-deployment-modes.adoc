@@ -6,7 +6,12 @@
 
 KServe offers two deployment modes for serving models. The default mode, *Knative Serverless*, is based on the open-source Knative project and provides powerful autoscaling capabilities. It integrates with {org-name} OpenShift Serverless and {org-name} OpenShift Service Mesh. Alternatively, the *KServe RawDeployment* mode offers a more traditional deployment method with fewer dependencies.
 
-Your initial configuration has long-term implications: a setup for *Knative Serverless* allows you to use both modes, while a setup for only *KServe RawDeployment* limits you to that mode. Use the following comparison to choose the option that best fits your requirements.
+Before you choose an option, understand how your initial configuration affects future deployments:
+
+* *If you configure for `Knative Serverless`*: You can use both `Knative Serverless` and `KServe RawDeployment` modes.
+* *If you configure for `KServe RawDeployment` only*: You can only use the `KServe RawDeployment` mode.
+
+Use the following comparison to choose the option that best fits your requirements.
 
 .Comparison of deployment modes
 [options="header", cols="1,2,2"]
@@ -30,7 +35,7 @@ a|
 * Does not support scaling to zero by default, which might result in higher costs during periods of low traffic.
 
 |Dependencies
-|Requires the {org-name} OpenShift Serverless Operator, {org-name} OpenShift Service Mesh, and Authorino.
+|Requires the {org-name} OpenShift Serverless Operator and {org-name} OpenShift Service Mesh. Authorino is required only if you enable token authentication and external routes.
 |Does not require additional dependencies. Uses standard Kubernetes resources like `Deployment`, `Service`, and `Route`.
 
 |Configuration flexibility
@@ -44,6 +49,6 @@ a|
 |Setup complexity
 a|
 * Introduces additional complexity in setup and management.
-* Might require manual configuration if Serverless is already installed on the cluster.
+* Might require additional configuration; if Serverless is not already installed on the cluster, you must install and configure it.
 |Requires a simpler setup with fewer dependencies.
 |===
