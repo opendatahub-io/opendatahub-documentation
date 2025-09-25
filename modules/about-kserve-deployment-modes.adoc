@@ -1,52 +1,49 @@
 :_module-type: CONCEPT
 
 [id='about-kserve-deployment-modes_{context}']
+
 = About KServe deployment modes
 
-You can deploy models in either **advanced** or **standard** deployment mode.
+KServe offers two deployment modes for serving models. The default mode, `Knative Serverless`, is based on the open-source Knative project and provides powerful autoscaling capabilities. It integrates with {org-name} OpenShift Serverless and {org-name} OpenShift Service Mesh. Alternatively, the `KServe RawDeployment` mode offers a more traditional deployment method with fewer dependencies.
 
-Advanced deployment mode uses Knative Serverless. By default, KServe integrates with {org-name} OpenShift Serverless and Red Hat OpenShift Service Mesh to deploy models on the single-model serving platform. {org-name} Serverless is based on the open source link:https://knative.dev/docs/[Knative^] project and requires the {org-name} OpenShift Serverless Operator.
+Your initial configuration has long-term implications: a setup for `Knative Serverless` allows you to use both modes, while a setup for only `KServe RawDeployment` limits you to that mode. Use the following comparison to choose the option that best fits your requirements.
 
-Alternatively, you can use standard deployment mode, which uses KServe RawDeployment mode and does not require the {org-name} OpenShift Serverless Operator, {org-name} OpenShift Service Mesh, or Authorino. 
+.Comparison of deployment modes
+[options="header", cols="1,2,2"]
+|===
+|Criterion |`Knative Serverless` |`KServe RawDeployment`
 
-If you configure KServe for **advanced** deployment mode, you can set up your data science project to serve models in both **advanced** and **standard** deployment mode. However, if you configure KServe for only **standard** deployment mode, you can only use **standard** deployment mode.
+|Default mode
+|Yes
+|No
 
-There are both advantages and disadvantages to using each of these deployment modes:
+|Recommended use case
+|Most workloads.
+|Custom serving setups or models that must remain active.
 
-== Advanced mode
+|Autoscaling
+a|
+* Scales up automatically based on request volume.
+* Supports scaling down to zero when idle to save costs.
+a|
+* Does not support automatic scaling.
+* Does not support scaling down to zero, which might result in higher costs during periods of low traffic.
 
-Advantages:
+|Dependencies
+|Requires the {org-name} OpenShift Serverless Operator, {org-name} OpenShift Service Mesh, and Authorino.
+|Does not require additional dependencies. Uses standard Kubernetes resources like `Deployment`, `Service`, and `Route`.
 
-* Enables autoscaling based on request volume: 
-** Resources scale up automatically when receiving incoming requests.
-** Optimizes resource usage and maintains performance during peak times.
+|Configuration flexibility
+|Has customization limitations inherited from Knative, such as when mounting multiple volumes.
+|Enables traditional pod configurations, such as mounting multiple volumes, which is not available using Knative.
 
-* Supports scale down to and from zero using Knative:
-** Allows resources to scale down completely when there are no incoming requests.
-** Saves costs by not running idle resources.
+|Resource footprint
+|Larger, due to the additional dependencies required for serverless functionality.
+|Smaller resource footprint compared to `Knative Serverless` mode.
 
-Disadvantages:
-
-* Has customization limitations:
-** Serverless is backed by Knative and implicitly inherits the same design choices, such as when mounting multiple volumes.
-* Dependency on Knative for scaling:
-** Introduces additional complexity in setup and management compared to traditional scaling methods.
-* Cluster scoped component:
-** If the cluster already has Serverless configured, you must manually configure the cluster to make it work with {productname-short}.
-
-== Standard mode
-
-Advantages:
-
-* Enables deployment with Kubernetes resources, such as `Deployment`, `Service`, `Route`, and `Horizontal Pod Autoscaler`, without additional dependencies like {org-name} Serverless, {org-name} Service Mesh, and Authorino.
-** The resulting model deployment has a smaller resource footprint compared to advanced mode.
-
-* Enables traditional Deployment/Pod configurations, such as mounting multiple volumes, which is not available using Knative.
-** Beneficial for applications requiring complex configurations or multiple storage mounts.
-
-Disadvantages:
-
-* Does not support automatic scaling:
-** Does not support automatic scaling down to zero resources when idle.
-** Might result in higher costs during periods of low traffic.
-
+|Setup complexity
+a|
+* Introduces additional complexity in setup and management.
+* Might require manual configuration if Serverless is already installed on the cluster.
+|Requires a simpler setup with fewer dependencies.
+|===
