@@ -14,9 +14,15 @@ include::modules/using-oci-containers-for-model-storage.adoc[leveloffset=+1]
 include::modules/storing-a-model-in-oci-image.adoc[leveloffset=+1]
 
 = Deploying models on the single-model serving platform
-You can use the single-model serving platform to deploy large models, such as large language models (LLMs). This platform is based on the KServe component. You can deploy models in either **advanced** or **standard mode**. Advanced mode uses {org-name} {openshift-platform} Serverless for serverless deployments, while standard mode uses KServe Raw Deployment and does not require serverless dependencies.
 
-On the single-model serving platform, each model is deployed from its own dedicated model server. This helps you to deploy, monitor, scale, and maintain large models that require more resources.
+The single-model serving platform deploys each model from its own dedicated model server. This architecture is ideal for deploying, monitoring, scaling, and maintaining large models that require more resources, such as large language models (LLMs).
+
+The platform is based on the KServe component and offers two deployment modes:
+
+* *Knative Serverless*: Uses {org-name} OpenShift Serverless for deployments that can automatically scale based on demand.
+
+* *KServe RawDeployment*: Uses a standard deployment method that does not require serverless dependencies.
+
 
 include::modules/about-kserve-deployment-modes.adoc[leveloffset=+1] 
 include::modules/deploying-models-on-the-single-model-serving-platform.adoc[leveloffset=+1] 
