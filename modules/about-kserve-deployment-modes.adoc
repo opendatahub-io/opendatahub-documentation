@@ -4,9 +4,9 @@
 
 = About KServe deployment modes
 
-KServe offers two deployment modes for serving models. The default mode, `Knative Serverless`, is based on the open-source Knative project and provides powerful autoscaling capabilities. It integrates with {org-name} OpenShift Serverless and {org-name} OpenShift Service Mesh. Alternatively, the `KServe RawDeployment` mode offers a more traditional deployment method with fewer dependencies.
+KServe offers two deployment modes for serving models. The default mode, *Knative Serverless*, is based on the open-source Knative project and provides powerful autoscaling capabilities. It integrates with {org-name} OpenShift Serverless and {org-name} OpenShift Service Mesh. Alternatively, the *KServe RawDeployment* mode offers a more traditional deployment method with fewer dependencies.
 
-Your initial configuration has long-term implications: a setup for `Knative Serverless` allows you to use both modes, while a setup for only `KServe RawDeployment` limits you to that mode. Use the following comparison to choose the option that best fits your requirements.
+Your initial configuration has long-term implications: a setup for *Knative Serverless* allows you to use both modes, while a setup for only *KServe RawDeployment* limits you to that mode. Use the following comparison to choose the option that best fits your requirements.
 
 .Comparison of deployment modes
 [options="header", cols="1,2,2"]
@@ -26,8 +26,8 @@ a|
 * Scales up automatically based on request volume.
 * Supports scaling down to zero when idle to save costs.
 a|
-* Does not support automatic scaling.
-* Does not support scaling down to zero, which might result in higher costs during periods of low traffic.
+* No built-in autoscaling; you can configure Kubernetes Event-Driven Autoscaling (KEDA) or Horizontal Pod Autoscaler (HPA) on your deployment.
+* Does not support scaling to zero by default, which might result in higher costs during periods of low traffic.
 
 |Dependencies
 |Requires the {org-name} OpenShift Serverless Operator, {org-name} OpenShift Service Mesh, and Authorino.

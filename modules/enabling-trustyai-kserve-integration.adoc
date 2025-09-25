@@ -1,11 +1,11 @@
 :_module-type: PROCEDURE
 
 [id='enabling-trustyai-kserve-integration_{context}']
-= Enabling TrustyAI Integration with standard model deployment
+= Enabling TrustyAI Integration with KServe RawDeployment
 
 [role='_abstract']
-TrustyAI can be used with standard and advanced model deployments. 
-Standard deployment mode is based on KServe RawDeployment and advanced deployment mode is based on KServe Serverless. 
+TrustyAI can be used with *Knative Serverless* and *KServe RawDeployment* deployment modes. 
+
 ifdef::upstream[]
 For more information about deployment modes, see link:{odhdocshome}/deploying-models/#about-kserve-deployment-modes_odh-user[About KServe deployment modes].
 endif::[]
@@ -13,7 +13,7 @@ ifndef::upstream[]
 For more information about deployment modes, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_single_model_serving_platform#about-kserve-deployment-modes_rhoai-user[About KServe deployment modes].
 endif::[]
 
-To use the TrustyAI service with standard model deployments, you must first update the KServe ConfigMap, then create another ConfigMap in your model's namespace to hold the Certificate Authority (CA) certificate. 
+To use the TrustyAI service with *Knative Serverless* deployment mode, you must first update the KServe ConfigMap, then create another ConfigMap in your model's namespace to hold the Certificate Authority (CA) certificate. 
 
 [NOTE]
 --
@@ -24,7 +24,7 @@ Advanced deployment mode does not require this additional setup.
 * You have installed {productname-long}.
 * You have cluster administrator privileges for your {productname-short} cluster.
 * You have access to a data science cluster that has TrustyAI enabled.
-* You have enabled the model serving platform in either standard or advanced mode.
+* You have enabled the model serving platform in either *Knative Serveless* or *KServe RawDeployment* mode.
 
 .Procedure
 . Update the KServe ConfigMap (`inferenceservice-config`) in the {productname-short} UI:
