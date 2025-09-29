@@ -1,0 +1,42 @@
+[id='auto-configuration-guardrails-orchestrator-service_{context}']
+
+= Auto-configuring Guardrails
+
+[role='_abstract']
+Auto-configuration simplifies the guardrails setup process by automatically handling TLS configuration and authentication, ensuring seamless and secure communication between components. Use the `autoConfig` specification to integrate with detector services in your namespace, creating seamless and secure communication between components.
+For example, if any of the detector or generation services use HTTPS, their credentials are automatically discovered, mounted, and used. Additionally, the orchestrator is automatically configured to forward all necessary authentication token headers
+
+.Prerequisites
+* Each detector server you intend to use has an OpenShift label applied, such as _<label_name>_: true. Choose a descriptive name for the label as it is required for configuration
+
+.Procedure
+* Create a  `GuardrailsOrchestrator` custom resource (CR) with the with `autoConfig` configuration:
++
+[source,json]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: guardrails-orchestrator
+  annotations:
+    security.opendatahub.io/enable-auth: 'true'
+spec:
+  autoConfig:
+      inferenceServiceToGuardrail: $INFERENCE_SERVICE_NAME (1)
+      detectorServiceLabelToMatch: $LABEL_NAME (2)
+  enableBuiltInDetectors: true
+  enableGuardrailsGateway: true 
+  replicas: 
+----
++
+where:
+
+inferenceServiceToGuardrail:: specifies the name of the vLLM inference service to be guardrailed.
+detectorServiceLabelToMatch:: specifies the label that we chose to apply to each of our detector servers.
+
+.Verification
+After you create the GuardrailsOrchestrator CR, the system creates the following resources:
+
+* An automatically generated orchestrator configuration config map. This configuration automatically updates to reflect the state of detectors in your namespace
+
+* An automatically generated default gateway config map, if enableGuardrailsGateway is set to true. You can use this config map as a starting template to build a custom gateway configuration. To restore the default gateway configuration, delete the config map, and a new one is created automatically
