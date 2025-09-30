@@ -41,55 +41,32 @@ endif::[]
 
 The `LlamaStackDistribution` custom resource includes various API types and providers that you can use in {productname-short}. The following table displays the supported providers that are included in the distribution:
 
-[cols="1,1,1", options="header"]
+[cols="1,1,2,1", options="header"]
 |===
-|*API type* |*Providers* |*Support Status*
-|Agents 
-|`inline::meta-reference` 
-|Developer Preview
-
-|Datasetio 
-|
-`inline::localfs` +
-`remote::huggingface` 
-|Developer Preview
-
-|Eval 
-|`remote::lmeval` 
-|Developer Preview
-
-|Inference 
-|
-`inline::sentence-transformers` +
-`remote::vllm` 
-|Developer Preview
-
-|Safety 
-|`remote::trustyai_fms` 
-|Developer Preview 
-
-|Scoring 
-|
-`inline::llm-as-a-judge` +
-`inline:basic` +
-`inline::braintrust` 
-|Developer Preview
-
-|Telemetry 
-|`inline::meta-reference` 
-|Developer Preview
-
-|Tool_runtime 
-|
-`inline::rag-runtime` +
-`remote::brave-search` +
-`remote::tavily-search` +
-`remote::model-context-protocol` 
-|Developer Preview
-
-|Vector_io 
-|`inline::milvus` 
-|Developer Preview
+|*API type* |*Providers* |*How to Enable* |*Support status*
+|Agents |`inline::meta-reference` |Enabled by default |Technology Preview
+.2+|Datasetio |`inline::localfs` |Enabled by default |Technology Preview
+|`remote::huggingface` |Enabled by default |Technology Preview
+|Evaluation |`remote::trustyai_lmeval` |Set the `EMBEDDING_MODEL` environment variable |Technology Preview
+|Files |`inline::localfs` |Enabled by default |Technology Preview
+.7+|Inference |`inline::sentence-transformers` |Enabled by default |Technology Preview
+|`remote::vllm` |Set the `VLLM_URL` environment variable |Technology Preview
+|`remote::azure` |Set the `AZURE_API_KEY` environment variable |Technology Preview
+|`remote::bedrock` |Set the `AWS_ACCESS_KEY_ID` environment variable |Technology Preview
+|`remote::openai` |Set the `OPENAI_API_KEY` environment variable |Technology Preview
+|`remote::vertexai` |Set the `VERTEX_AI_PROJECT` environment variable |Technology Preview
+|`remote::watsonx` |Set the `WATSONX_API_KEY` environment variable |Technology Preview
+|Safety |`remote::trustyai_fms` |Enabled by default |Technology Preview
+.3+|Scoring |`inline::llm-as-a-judge` |Enabled by default |Technology Preview
+|`inline::basic` |Enabled by default |Technology Preview
+|`inline::braintrust` |Enabled by default |Technology Preview
+|Telemetry |`inline::meta-reference` |Enabled by default |Technology Preview
+.4+|Tool_runtime |`inline::rag-runtime` |Enabled by default |Technology Preview
+|`remote::brave-search` |Enabled by default |Technology Preview
+|`remote::tavily-search` |Enabled by default |Technology Preview
+|`remote::model-context-protocol` |Enabled by default |Technology Preview
+.2+|Vector_io |`inline::milvus` |Enabled by default |Technology Preview
+|`remote::milvus` |Enabled by default |Technology Preview
 |===
 
 
