@@ -35,8 +35,11 @@ a|
 * Does not support scaling to zero by default, which might result in higher costs during periods of low traffic.
 
 |Dependencies
-|Requires the {org-name} OpenShift Serverless Operator and {org-name} OpenShift Service Mesh. Authorino is required only if you enable token authentication and external routes.
-|Does not require additional dependencies. Uses standard Kubernetes resources like `Deployment`, `Service`, and `Horizontal Pod Scaler`.
+a| 
+* {org-name} OpenShift Serverless Operator
+* {org-name} OpenShift Service Mesh
+* Authorino. Only required only if you enable token authentication and external routes.
+a|None; uses standard Kubernetes resources such as `Deployment`, `Service`, and `Horizontal Pod Autoscaler`.
 
 |Configuration flexibility
 |Has some customization limitations inherited from Knative compared to raw Kubernetes deployments.
@@ -44,11 +47,9 @@ a|
 
 |Resource footprint
 |Larger, due to the additional dependencies required for serverless functionality.
-|Smaller resource footprint compared to `Knative Serverless` mode.
+|Smaller.
 
 |Setup complexity
-a|
-* Introduces additional complexity in setup and management.
-* Might require additional configuration; if Serverless is not already installed on the cluster, you must install and configure it.
+|Might require additional configuration in setup and management. If Serverless is not already installed on the cluster, you must install and configure it.
 |Requires a simpler setup with fewer dependencies.
 |===
