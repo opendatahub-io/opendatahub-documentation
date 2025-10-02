@@ -37,9 +37,11 @@ trustyai:
            permitOnline: allow
            permitCodeExecution: allow
 ----
-
 . Click *Save*.
-. Ensure that the following fields are set to `true` to enable online access and code execution for this job when writing your `LMEvalJob` custom resource:
+. From the *Project* drop-down list, select the project that contains the LMEval job you are working with.
+. From the *Resources* drop-down list, select the `LMEvalJob` instance that you are working with.
+. Click *Actions* -> *Edit YAML*
+. Ensure that the `allowOnline` and `allowCodeExecution` are set to `true` to enable online access and code execution for this job when writing your `LMEvalJob` custom resource:
 +
 [source,yaml]
 ----
@@ -51,7 +53,7 @@ spec:
   allowOnline: true
   allowCodeExecution: true
 ----
-
+. Click *Save*.
 
 .Configuration keys for LMEvalJob custom resource
 [cols="3,2,5", options="header"]
