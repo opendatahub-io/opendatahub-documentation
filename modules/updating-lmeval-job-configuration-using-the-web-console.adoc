@@ -17,39 +17,28 @@ Enabling online access or code execution involves a security risk. Only use thes
 * You have cluster administrator privileges for your {productname-long} cluster.
 
 .Procedure
-. Navigate to *Workloads → ConfigMaps*.
-
-. Select the *`pass:attributes[{dbd-config-default-namespace}]`* namespace.
-
-. Open the *`trustyai-service-operator-config`* ConfigMap.
-
-. Under *Annotations*, add:
+. In the {openshift-platform} console, click *Operators* -> *Installed Operators*.
+ifdef::self-managed,cloud-service[]
+. Search for the *Red Hat OpenShift AI* Operator, and then click the Operator name to open the Operator details page.
+endif::[]
+ifdef::upstream[]
+. Search for the *Open Data Hub Operator*, and then click the Operator name to open the Operator details page.
+endif::[]
+. Click the *Data Science Cluster* tab.
+. Click the default instance name (for example, *default-dsc*) to open the instance details page.
+. Click the *YAML* tab to show the instance specifications.
+. In the `spec:components` section, set the `permitCodeExecution` and `permitOnline` fields to a value of `allow`:
 +
-[source, yaml]
 ----
-opendatahub.io/managed: "false"
+trustyai:
+      managementState: Managed
+      eval:
+        lmeval:
+           permitOnline: allow
+           permitCodeExecution: allow
 ----
-. Under *Data*, add or update:
-+
-[source, yaml]
-----
-lmes-allow-online: "true"
-lmes-allow-code-execution: "true"
-----
-. Save the ConfigMap.
 
-. Navigate to *Workloads → Deployments*.
-
-. Select the *`pass:attributes[{dbd-config-default-namespace}]`* namespace.
-
-. Locate *`trustyai-service-operator-controller-manager`*.
-
-. Click the *Actions* menu and select *Restart rollout*.
-+
-[NOTE]
---
-Each LMEval job must explicitly be set to allow online access and code execution.
---
+. Click *Save*.
 . Ensure that the following fields are set to `true` to enable online access and code execution for this job when writing your `LMEvalJob` custom resource:
 +
 [source,yaml]
@@ -61,7 +50,6 @@ metadata:
 spec:
   allowOnline: true
   allowCodeExecution: true
-  
 ----
 
 
