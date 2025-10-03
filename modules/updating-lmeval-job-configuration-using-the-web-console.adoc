@@ -27,10 +27,12 @@ endif::[]
 . Click the *Data Science Cluster* tab.
 . Click the default instance name (for example, *default-dsc*) to open the instance details page.
 . Click the *YAML* tab to show the instance specifications.
-. In the `spec:components` section, set the `permitCodeExecution` and `permitOnline` fields to a value of `allow`:
+. In the `spec:components:trustyai:eval:lmeval` section, set the `permitCodeExecution` and `permitOnline` fields to a value of `allow`:
 +
 ----
-trustyai:
+spec:
+  components:
+    trustyai:
       managementState: Managed
       eval:
         lmeval:
