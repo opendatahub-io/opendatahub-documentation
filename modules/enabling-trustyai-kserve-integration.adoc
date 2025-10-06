@@ -4,7 +4,7 @@
 = Enabling TrustyAI Integration with KServe RawDeployment
 
 [role='_abstract']
-TrustyAI can be used with *KServe RawDeployment* and *Knative Serverless* deployment modes. 
+TrustyAI can be used with KServe RawDeployment and Knative Serverless deployment modes. 
 
 ifdef::upstream[]
 For more information about deployment modes, see link:{odhdocshome}/deploying-models/#about-kserve-deployment-modes_odh-user[About KServe deployment modes].
@@ -13,18 +13,18 @@ ifndef::upstream[]
 For more information about deployment modes, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_single_model_serving_platform#about-kserve-deployment-modes_rhoai-user[About KServe deployment modes].
 endif::[]
 
-To use the TrustyAI service with *KServe RawDeployment* deployment mode, you must first update the KServe ConfigMap, then create another ConfigMap in your model's namespace to hold the Certificate Authority (CA) certificate. 
+To use the TrustyAI service with KServe RawDeployment mode, you must first update the KServe ConfigMap, then create another ConfigMap in your model's namespace to hold the Certificate Authority (CA) certificate. 
 
 [NOTE]
 --
-*Knative Serverless* deployment mode does not require this additional setup. 
+Knative Serverless deployment mode does not require this additional setup. 
 --
 
 .Prerequisites
 * You have installed {productname-long}.
 * You have cluster administrator privileges for your {productname-short} cluster.
 * You have access to a data science cluster that has TrustyAI enabled.
-* You have enabled the model serving platform in either *KServe RawDeployment* or *Knative Serverless* mode.
+* You have enabled the model serving platform in either KServe RawDeployment or Knative Serverless mode.
 
 .Procedure
 . Update the KServe ConfigMap (`inferenceservice-config`) in the {productname-short} UI:

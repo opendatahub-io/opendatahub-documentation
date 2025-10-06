@@ -22,9 +22,9 @@ For more information about the support scope of {org-name} Technology Preview fe
 ====
 endif::[]
 
-Knative-based autoscaling is not available in *KServe RawDeployment* deployment mode. However, you can enable metrics-based autoscaling for an inference service in this mode. Metrics-based autoscaling helps you efficiently manage accelerator resources, lower operational costs, and ensure that your inference services meet performance requirements.
+Knative-based autoscaling is not available in KServe RawDeployment mode. However, you can enable metrics-based autoscaling for an inference service in this mode. Metrics-based autoscaling helps you efficiently manage accelerator resources, lower operational costs, and ensure that your inference services meet performance requirements.
 
-To set up autoscaling for your inference service in *KServe RawDeployment* deployments, install and configure the OpenShift Custom Metrics Autoscaler (CMA), which is based on Kubernetes Event-driven Autoscaling (KEDA). You can then use various model runtime metrics available in OpenShift Monitoring to trigger autoscaling of your inference service, such as KVCache utilization, Time to First Token (TTFT), and Concurrency. 
+To set up autoscaling for your inference service in KServe RawDeployment mode, install and configure the OpenShift Custom Metrics Autoscaler (CMA), which is based on Kubernetes Event-driven Autoscaling (KEDA). You can then use various model runtime metrics available in OpenShift Monitoring to trigger autoscaling of your inference service, such as KVCache utilization, Time to First Token (TTFT), and Concurrency. 
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -36,7 +36,7 @@ To set up autoscaling for your inference service in *KServe RawDeployment* deplo
 * The `odh-controller` automatically creates the `TriggerAuthentication`, `ServiceAccount`, `Role`, `RoleBinding`, and `Secret` resources to allow CMA access to OpenShift Monitoring metrics. 
 ====
 * You have enabled User Workload Monitoring (UWM) for your cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-user-workload-monitoring[Configuring user workload monitoring].
-* You have deployed a model on the single-model serving platform in *KServe RawDeployment* deployment mode.
+* You have deployed a model on the single-model serving platform in KServe RawDeployment mode.
 
 .Procedure
 
