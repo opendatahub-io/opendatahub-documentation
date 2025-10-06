@@ -30,7 +30,15 @@ endif::[]
 
 * You have created a self-signed certificate and saved the certificate to a file. For example, you have created a certificate using OpenSSL and saved it to a file named `example-ca.crt`.
 * You have cluster administrator access for the OpenShift cluster where {productname-long} is installed.
-* You have installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
 
 .Procedure
 
@@ -64,7 +72,7 @@ oc get configmaps --all-namespaces -l app.kubernetes.io/part-of=opendatahub-oper
 
 .Additional resources
 
-* https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/configuring-certificates[Configuring certificates] in the _Red Hat OpenShift Container Platform Security and compliance_ guide
-* https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html-single/operators/index#olm-inject-custom-ca_olm-configuring-proxy-support[Injecting a custom CA Bundle] section in the _Red Hat OpenShift Service on AWS Operators_ guide
-* https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/operators/administrator-tasks#olm-inject-custom-ca_olm-configuring-proxy-support[Injecting a custom CA Bundle] in the _Red Hat OpenShift Dedicated Operators_ guide
+* https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/configuring-certificates[Configuring certificates] in the OpenShift Container Platform documentation
+* https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html-single/operators/index#olm-inject-custom-ca_olm-configuring-proxy-support[Injecting a custom CA Bundle] in the {rosa-productname} documentation
+* https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/operators/administrator-tasks#olm-inject-custom-ca_olm-configuring-proxy-support[Injecting a custom CA Bundle] in the OpenShift Dedicated documentation
 

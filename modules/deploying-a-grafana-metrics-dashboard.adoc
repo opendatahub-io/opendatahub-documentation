@@ -18,11 +18,14 @@ endif::[]
 ifdef::self-managed[]
 * A cluster admin has enabled user workload monitoring (UWM) for user-defined projects on your OpenShift cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-user-workload-monitoring#enabling-monitoring-for-user-defined-projects-uwm_preparing-to-configure-the-monitoring-stack-uwm[Enabling monitoring for user-defined projects] and link:{rhoaidocshome}{default-format-url}/managing_and_monitoring_models/managing_and_monitoring_models_on_the_single_model_serving_platform#configuring-monitoring-for-the-single-model-serving-platform_cluster-admin[Configuring monitoring for the single-model serving platform].
 endif::[]
-ifdef::self-managed[]
-* You have installed the OpenShift command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
-endif::[] 
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
 ifdef::cloud-service[]
-* You have installed the OpenShift command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
 * You have created an overlay to deploy a Grafana instance, similar to link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app[this example].
 ** For vLLM deployments, see examples in link:https://docs.vllm.ai/en/latest/examples/online_serving/dashboards.html[Monitoring Dashboards].
@@ -34,7 +37,7 @@ To view GPU metrics, you must enable the NVIDIA GPU monitoring dashboard as desc
 
 .Procedure
 
-. In a terminal window, log in to the OpenShift CLI as a cluster administrator.
+. In a terminal window, log in to the {openshift-cli} as a cluster administrator.
 . If you have not already created the overlay to install the Grafana operator and metrics dashboards, refer to the link:https://github.com/rh-aiservices-bu/rhoai-uwm/tree/main/rhoai-uwm-grafana/overlays/rhoai-uwm-user-grafana-app[RHOAI UWM repository] to create it.
 . Install the Grafana instance and metrics dashboards on your OpenShift cluster with the overlay that you created. Replace `<overlay-name>` with the name of your overlay.
 +

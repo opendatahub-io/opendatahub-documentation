@@ -23,13 +23,15 @@ endif::[]
 
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 
-ifdef::self-managed,upstream[]
-* You have downloaded and installed the {openshift-platform} command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
 endif::[]
 ifdef::cloud-service[]
-* You have downloaded and installed the OpenShift command-line interface (CLI). For more information, see link:https://docs.openshift.com/dedicated/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI^] (Red Hat OpenShift Dedicated) or link:https://docs.openshift.com/rosa/cli_reference/openshift_cli/getting-started-cli.html#installing-openshift-cli[Installing the OpenShift CLI^] (Red Hat OpenShift Service on AWS).
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
-
 ifndef::upstream[]
 * You have enabled the operators for your GPU type, such as Node Feature Discovery Operator, NVIDIA GPU Operator. For more information about enabling accelerators, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators[Enabling accelerators^].
 endif::[]
@@ -151,7 +153,7 @@ ifndef::upstream[]
 <3> The value for `containers.image`, located in your `InferenceService`. To access this value, run the following command: `oc get configmap inferenceservice-config -n redhat-ods-operator -oyaml | grep kserve-storage-initializer:`
 endif::[]
 ifdef::upstream[]
-<3> The value for `containers.image`, located in your `donwload-model` container. To access this value, run the following command: `oc get configmap inferenceservice-config -n opendatahub -oyaml | grep kserve-storage-initializer:`
+<3> The value for `containers.image`, located in your `download-model` container. To access this value, run the following command: `oc get configmap inferenceservice-config -n opendatahub -oyaml | grep kserve-storage-initializer:`
 endif::[]
 <4> The access key ID to your S3 bucket.
 <5> The secret access key to your S3 bucket.

@@ -26,11 +26,14 @@ endif::[]
 * You have the correct inference model identifier, for example, llama-3-2-3b.
 * You have the model endpoint URL, ending with `/v1`, such as `https://llama-32-3b-instruct-predictor:8443/v1`.
 * You have the API token required to access the model endpoint.
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
-* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
 endif::[]
 ifdef::cloud-service[]
-* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
 
 .Procedure
@@ -39,7 +42,7 @@ endif::[]
 .. Log in to your {openshift-platform} cluster from the CLI:
 .. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
 .. After you have logged in, click *Display token*.
-.. Copy the *Log in with this token* command and paste it in the OpenShift command-line interface (CLI).
+.. Copy the *Log in with this token* command and paste it in the {openshift-cli}.
 +
 [source,subs="+quotes"]
 ----

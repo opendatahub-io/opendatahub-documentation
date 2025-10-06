@@ -9,11 +9,19 @@ You can define data science pipelines and pipeline versions by using the Kuberne
 
 .Prerequisites
 * You have previously created a data science project that is available and has a pipeline server (a `DataSciencePipelinesApplication` custom resource).
-* You have installed the OpenShift command-line interface (CLI).
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
 
 .Procedure
 
-. In a terminal window, run the following command to log in to the OpenShift CLI:
+. In a terminal window, run the following command to log in to the {openshift-cli}:
 +
 [source,subs="+quotes"]
 ----

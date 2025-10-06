@@ -8,15 +8,23 @@ Cluster administrators can use {openshift-platform} auditing to see changes made
 For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/audit-log-view#audit-log-view[Viewing audit logs^] in the {openshift-platform} documentation.
 
 ifdef::self-managed[]
-NOTE: In {org-name} OpenShift Service on Amazon Web Services with hosted control planes (ROSA HCP), audit logging is disabled by default because the Elasticsearch log store does not provide secure storage for audit logs. 
-To configure log forwarding, see the link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/logging/index[Logging] section in the {openshift-platform} documentation.
+NOTE: In {rosa-productname}, audit logging is disabled by default because the Elasticsearch log store does not provide secure storage for audit logs. 
+To configure log forwarding, see link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/logging/index[Logging] in the {rosa-productname} documentation.
 endif::[]
 
 The following example shows how to use the {openshift-platform} audit logs to see the history of changes made (by users) to the DSC and DSCI custom resources.
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
-* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
 
 .Procedure
 . In a terminal window, if you are not already logged in to your {openshift-platform} cluster as a cluster administrator, log in to the {openshift-platform} CLI as shown in the following example:

@@ -23,7 +23,15 @@ Logs that are set to `prod`, `production`, or which do not have a level set gene
 
 .Prerequisites
 * You have administrator access to the `DSCInitialization` resources in the {openshift-platform} cluster.
-* You installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
 
 .Procedure
 . Log in to the {openshift-platform} as a cluster administrator.
@@ -45,7 +53,7 @@ spec:
 ----
 . Click *Save*.
 
-You can also configure the log level from the OpenShift CLI by using the following command with the `logmode` value set to the log level that you want.
+You can also configure the log level from the {openshift-cli} by using the following command with the `logmode` value set to the log level that you want.
 
 [source]
 ----
@@ -60,7 +68,7 @@ oc patch dsci default-dsci -p '{"spec":{"devFlags":{"logmode":"development"}}}' 
 == Viewing the {productname-short} Operator logs
 
 ifdef::upstream[]
-. Log in to the OpenShift CLI.
+. Log in to the {openshift-cli}.
 . Run the following command to stream logs from all Operator pods:
 +
 [source]
@@ -76,7 +84,7 @@ TIP: Press `Ctrl+C` to stop viewing. To fully stop all log streams, run `kill $(
 endif::[]
 
 ifndef::upstream[]
-. Log in to the OpenShift CLI.
+. Log in to the {openshift-cli}.
 . Run the following command to stream logs from all Operator pods:
 +
 [source]
