@@ -4,7 +4,7 @@
 = Creating a Training Operator PyTorchJob resource by using the CLI
 
 [role='_abstract']
-You can use the OpenShift command-line interface (CLI) to create a `PyTorchJob` resource to run the Training Operator PyTorch training script.
+You can use the {openshift-cli} to create a `PyTorchJob` resource to run the Training Operator PyTorch training script.
 
 
 .Prerequisites
@@ -41,19 +41,21 @@ endif::[]
 ** If you created the project, you automatically have administrator access. 
 ** If you did not create the project, your cluster administrator must give you administrator access.
 
-ifdef::self-managed[]
-* You have downloaded and installed the OpenShift command-line interface (CLI), as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
 endif::[]
 ifdef::cloud-service[]
-* You have downloaded and installed the OpenShift command-line interface (CLI), as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI ({org-name} OpenShift Service on AWS)^].
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
-
 
 
 .Procedure
-. Log in to the OpenShift CLI, as follows:
+. Log in to the {openshift-cli}, as follows:
 +
-.Logging into the OpenShift CLI
+.Logging in to the {openshift-cli}
 [source,subs="+quotes"]
 ---- 
 oc login --token=__<token>__ --server=__<server>__

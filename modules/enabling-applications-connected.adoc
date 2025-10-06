@@ -9,7 +9,7 @@ You must enable SaaS-based applications before using them with {productname-long
 Typically, you can install, or enable applications connected to {productname-short} using one of the following methods:
 
 * Enabling the application from the *Explore* page on the {productname-short} dashboard, as documented in the following procedure.
-* Installing the Operator for the application from OperatorHub. OperatorHub is a web console for cluster administrators to discover and select Operators to install on their cluster. It is deployed by default in {openshift-platform} (link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-installing-from-operatorhub-using-web-console_olm-adding-operators-to-a-cluster[Installing from OperatorHub using the web console]).
+* Installing the Operator for the application from OperatorHub. OperatorHub is a web console for cluster administrators to discover and select Operators to install on their cluster. It is deployed by default in {openshift-platform}. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-installing-from-operatorhub-using-web-console_olm-adding-operators-to-a-cluster[Installing from OperatorHub using the web console].
 +
 ifndef::upstream[]
 [NOTE]
@@ -17,11 +17,13 @@ ifndef::upstream[]
 Deployments containing Operators installed from OperatorHub may not be fully supported by {org-name}.
 ====
 endif::[]
+
+* Installing the application as an {install-package} to your cluster. 
 ifdef::upstream,self-managed[]
-* Installing the application as an {install-package} to your {openshift-platform} cluster (link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster]).
+For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
 endif::[]
 ifdef::cloud-service[]
-* Installing the application as an {install-package} to your OpenShift Dedicated (link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to an OpenShift Dedicated cluster]) or ROSA cluster (link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a ROSA cluster]).
+For more information, see link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster for OpenShift Dedicated^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster for {rosa-classic-productname}^].
 endif::[]
 
 For some applications (such as Jupyter), the API endpoint is available on the tile for the application on the *Enabled* page of {productname-short}. Certain applications cannot be accessed directly from their tiles, for example, OpenVINO provides notebook images for use in Jupyter and does not provide an endpoint link from its tile. Additionally, it might be useful to store these endpoint URLs as environment variables for easy reference in a notebook environment.

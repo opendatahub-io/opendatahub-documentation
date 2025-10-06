@@ -7,20 +7,18 @@
 Before you can use Intel Gaudi AI accelerators in {productname-short}, you must install the required dependencies, deploy the Intel Gaudi Base Operator, and configure the environment.
 
 .Prerequisites
-ifdef::upstream,self-managed[]
 * You have logged in to {openshift-platform}.
 * You have the `cluster-admin` role in {openshift-platform}.
 * You have installed your Intel Gaudi accelerator and confirmed that it is detected in your environment.
 * Your OpenShift environment supports EC2 DL1 instances if you are running on Amazon Web Services (AWS).
-* You have installed the OpenShift command-line interface (CLI). 
-
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
 endif::[]
 ifdef::cloud-service[]
-* You have logged in to OpenShift.
-* You have the `cluster-admin` role in OpenShift.
-* You have installed your Intel Gaudi accelerator and confirmed that it is detected in your environment.
-* Your OpenShift environment supports EC2 DL1 instances if you are running on Amazon Web Services (AWS).
-* You have installed the OpenShift command-line interface (CLI). 
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
 
 .Procedure
