@@ -3,16 +3,17 @@
 = Auto-configuring Guardrails
 
 [role='_abstract']
-Auto-configuration simplifies the guardrails setup process by automatically handling TLS configuration and authentication, ensuring seamless and secure communication between components. Use the `autoConfig` specification to integrate with detector services in your namespace, creating seamless and secure communication between components.
-For example, if any of the detector or generation services use HTTPS, their credentials are automatically discovered, mounted, and used. Additionally, the orchestrator is automatically configured to forward all necessary authentication token headers
+Auto-configuration simplifies the guardrails setup process by automatically handling TLS configuration and authentication, ensuring seamless and secure communication between components. Use the `autoConfig` specification in the `GuardrailsOrchestrator` custom resource (CR) to integrate with detector services in your namespace, creating seamless and secure communication between components.
+For example, if any of the detector or generation services use HTTPS, their credentials are automatically discovered, mounted, and used. Additionally, the orchestrator is automatically configured to forward all necessary authentication token headers.
 
 .Prerequisites
-* Each detector server you intend to use has an OpenShift label applied, such as _<label_name>_: true. Choose a descriptive name for the label as it is required for configuration
+* Each detector server you intend to use has an OpenShift label applied, such as _<label_name>_: true. Choose a descriptive name for the label as it is required for configuration.
+* An inference service to which you intend to apply guardrails.
 
 .Procedure
-* Create a  `GuardrailsOrchestrator` custom resource (CR) with the with `autoConfig` configuration:
+* Create a  `GuardrailsOrchestrator` CR with the `autoConfig` configuration:
 +
-[source,json]
+[source,yaml]
 ----
 apiVersion: trustyai.opendatahub.io/v1alpha1
 kind: GuardrailsOrchestrator
@@ -26,7 +27,7 @@ spec:
       detectorServiceLabelToMatch: $LABEL_NAME (2)
   enableBuiltInDetectors: true
   enableGuardrailsGateway: true 
-  replicas: 
+  replicas: 1
 ----
 +
 where:
@@ -37,6 +38,6 @@ detectorServiceLabelToMatch:: specifies the label that we chose to apply to each
 .Verification
 After you create the GuardrailsOrchestrator CR, the system creates the following resources:
 
-* An automatically generated orchestrator configuration config map. This configuration automatically updates to reflect the state of detectors in your namespace
+* An automatically generated orchestrator configuration config map. This configuration automatically updates to reflect the state of detectors in your namespace.
 
-* An automatically generated default gateway config map, if enableGuardrailsGateway is set to true. You can use this config map as a starting template to build a custom gateway configuration. To restore the default gateway configuration, delete the config map, and a new one is created automatically
+* An automatically generated default gateway config map, if enableGuardrailsGateway is set to true. You can use this config map as a starting template to build a custom gateway configuration. To restore the default gateway configuration, delete the config map, and a new one is created automatically.
