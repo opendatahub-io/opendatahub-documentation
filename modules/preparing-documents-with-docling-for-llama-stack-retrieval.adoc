@@ -10,7 +10,7 @@ The pipeline registers a Milvus vector database and downloads the source PDFs, t
 
 .Prerequisites
 ifndef::upstream[]
-* You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery Operator and NVIDIA GPU Operator. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery Operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
+* You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
 endif::[]
 ifdef::upstream[]
 * You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
@@ -75,41 +75,57 @@ embedding_model_id = embedding_model.identifier
 embedding_dimension = embedding_model.metadata["embedding_dimension"]
 ----
 
-. In a new notebook cell, define the following parameters:
-* `vector_db_id`: a unique name that identifies your vector database, for example, `my_milvus_db`.  
-* `provider_id`: the connector key that your Llama Stack gateway has enabled. For the Milvus vector database, this connector key is `"milvus"`. You can also list the available connectors:
+. In a new notebook cell, register a vector database (choose one option):
 +
+.Option 1: Inline Milvus Lite (embedded)
+====
 [source,python]
 ----
-print(client.vector_dbs.list_providers()) # lists available connectors
+vector_db_id = "my_inline_db"
 
-vector_db_id = "<your vector database ID>"
-provider_id  = "<your provider ID>"
+_ = client.vector_dbs.register(
+    vector_db_id=vector_db_id,
+    embedding_model=embedding_model_id,
+    embedding_dimension=embedding_dimension,
+    provider_id="milvus",   # inline Milvus Lite
+)
+print(f"Registered inline Milvus Lite DB: {vector_db_id}")
 ----
+[NOTE]
+Inline Milvus Lite is best for development. Data durability and scale are limited compared to remote Milvus.
+====
+
+.Option 2: Remote Milvus (recommended for production)
+====
+[source,python]
+----
+vector_db_id = "my_remote_db"
+
+_ = client.vector_dbs.register(
+    vector_db_id=vector_db_id,
+    embedding_model=embedding_model_id,
+    embedding_dimension=embedding_dimension,
+    provider_id="milvus-remote",  # remote Milvus provider (v2.25+)
+)
+print(f"Registered remote Milvus DB: {vector_db_id}")
+----
+[NOTE]
+====
+* Ensure your `LlamaStackDistribution` includes `MILVUS_ENDPOINT` and `MILVUS_TOKEN`.
+* Aside from the provider ID, ingestion and query APIs are identical between inline and remote Milvus.
+====
+====
 +
-[IMPORTANT] 
+[IMPORTANT]
 ====
 If you are using the sample Docling pipeline from the RAG demo repository, the pipeline registers the database automatically and you can skip this step. However, if you are using your own pipeline, you must register the database yourself.
-==== 
-
-. In a new notebook cell, register or confirm your vector database to store embeddings:
-+
-[source,python]
-----
-_ = client.vector_dbs.register(
-vector_db_id=vector_db_id,
-embedding_model=embedding_model_id,
-embedding_dimension=embedding_dimension,
-provider_id=provider_id,
-)
-print(f"Registered vector DB: {vector_db_id}")
-----
+====
 
 ifndef::upstream[]
 . In the {openshift-platform} web console, import the YAML file containing your docling pipeline into your data science project, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#importing-a-data-science-pipeline_ds-pipelines[Importing a data science pipeline].
 endif::[]
 ifdef::upstream[]
-. In the {openshift-platform} web console, import your YAML file containing your docling pipeline into your data science project, as described in link:{odhdocshome}/working-with-data-science-pipelines/#importing-a-data-science-pipeline_ds-pipelines[Importing a pipeline version].
+. In the {openshift-platform} web console, import your YAML file containing your docling pipeline into your data science project, as described in link:{odhdocshome}/working-with-data-science-pipelines/#importing-a-pipeline-version[Importing a pipeline version].
 endif::[]
 
 ifndef::upstream[]
