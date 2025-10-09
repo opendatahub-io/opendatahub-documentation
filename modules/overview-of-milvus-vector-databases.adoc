@@ -1,0 +1,41 @@
+:_module-type: CONCEPT
+
+[id="overview-of-milvus-vector-databases_{context}"]
+= Overview of Milvus vector databases
+
+[role="_abstract"]
+Milvus is an open source vector database designed for high-performance similarity search across embedding data. In {productname-short}, Milvus is supported as a remote vector database provider for the Llama Stack Operator. Milvus enables retrieval-augmented generation (RAG) workloads that require persistence, scalability, and efficient search across large document collections.
+
+Milvus vector databases provide you with the following capabilities in {productname-short}: 
+* Similarity search using Approximate Nearest Neighbor (ANN) algorithms.
+* Persistent storage support for vectors.
+* Indexing and query optimizations for embedding-based search.
+* Integration with external metadata and APIs.
+
+In {productname-short}, you can use Milvus vector databases in the following operational modes:
+
+* *Inline Milvus Lite*, which runs embedded in the Llama Stack Distribution pod for testing or small-scale experiments.
+* *Remote Milvus*, which runs as a standalone service in your OpenShift project or as an external managed Milvus service. Remote Milvus is recommended for production workloads.
+
+When you deploy a remote Milvus vector database, you must run the following components in your {openshift-platform} project:
+
+* *Secret (`milvus-secret`)*:  Stores sensitive data such as the Milvus root password.
+* *PersistentVolumeClaim (`milvus-pvc`)*: Provides persistent storage for Milvus data.
+* *Deployment (`etcd-deployment`)*: Runs an etcd instance that Milvus uses for metadata storage and service coordination.
+* *Service (`etcd-service`)*: Exposes the etcd port for Milvus to connect to.
+* *Deployment (`milvus-standalone`)*: Runs Milvus in standalone mode and connects it to the etcd service and PVC.
+* *Service (`milvus-service`)*: Exposes Milvus gRPC (19530) and HTTP (9091 health check) ports for client access.
+
+Milvus requires an etcd service to manage metadata such as collections, indexes, and partitions, and to provide service discovery and coordination among Milvus components. Even when running in standalone mode, Milvus depends on etcd to operate correctly and maintain metadata consistency. For more information on using etcd services, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/etcd/index[Providing redundancy with etcd^].
+
+[IMPORTANT]
+====
+Do not use the OpenShift control plane etcd for Milvus. You must deploy a separate etcd instance inside your project or connect to an external etcd service.
+====
+
+Use Remote Milvus when you require a persistent, scalable, and production-ready vector database that integrates seamlessly with {productname-short}. Consider choosing a remote Milvus vector database if your deployment must cater for the following requirements:
+
+* Persistent vector storage across restarts or upgrades.
+* Scalable indexing and high-performance vector search.
+* A production-grade RAG architecture integrated with {productname-short}.
+
