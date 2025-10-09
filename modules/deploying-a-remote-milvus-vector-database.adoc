@@ -1,0 +1,214 @@
+:_module-type: PROCEDURE
+
+[id="deploying-a-remote-milvus-vector-database_{context}"]
+= Deploying a remote Milvus vector database 
+
+[role="_abstract"]
+To use Milvus as a remote vector database provider for Llama Stack in {productname-short}, you must deploy Milvus and its required etcd service in your OpenShift project. This procedure shows how to deploy Milvus in standalone mode without the Milvus Operator.
+
+.Prerequisites
+ifndef::upstream[]
+* You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
+endif::[]
+ifdef::upstream[]
+* You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
+Endif::[]
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You are logged in to {productname-long}.
+* You have a StorageClass available that can provision persistent volumes.
+* You created a root password to secure your Milvus service.
+* You have deployed an inference model with vLLM, for example, the llama-3.2-3b-instruct model, and you have selected *Make deployed models available through an external route* and *Require token authentication* during model deployment.
+* You have the correct inference model identifier, for example, llama-3-2-3b.
+* You have the model endpoint URL, ending with `/v1`, such as `https://llama-32-3b-instruct-predictor:8443/v1`.
+* You have the API token required to access the model endpoint.
+ifdef::upstream,self-managed[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+ifdef::cloud-service[]
+* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
+endif::[]
+
+.Procedure
+. In the  {openshift-platform}  console, click the *Quick Create* (image:images/quick-create-icon.png[]) icon and then click the *Import YAML* option.
+. Verify that your data science project is the selected project.
+. In the *Import YAML* editor, paste the following manifest and click *Create*:
++
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: milvus-secret
+type: Opaque
+stringData:
+  root-password: "MyStr0ngP@ssw0rd"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: milvus-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etcd-deployment
+  labels:
+    app: etcd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: etcd
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: etcd
+    spec:
+      containers:
+        - name: etcd
+          image: quay.io/coreos/etcd:v3.5.5
+          command:
+            - etcd
+            - --advertise-client-urls=http://127.0.0.1:2379
+            - --listen-client-urls=http://0.0.0.0:2379
+            - --data-dir=/etcd
+          ports:
+            - containerPort: 2379
+          volumeMounts:
+            - name: etcd-data
+              mountPath: /etcd
+          env:
+            - name: ETCD_AUTO_COMPACTION_MODE
+              value: revision
+            - name: ETCD_AUTO_COMPACTION_RETENTION
+              value: "1000"
+            - name: ETCD_QUOTA_BACKEND_BYTES
+              value: "4294967296"
+            - name: ETCD_SNAPSHOT_COUNT
+              value: "50000"
+      volumes:
+        - name: etcd-data
+          emptyDir: {}
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: etcd-service
+spec:
+  ports:
+    - port: 2379
+      targetPort: 2379
+  selector:
+    app: etcd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: milvus-standalone
+  name: milvus-standalone
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: milvus-standalone
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: milvus-standalone
+    spec:
+      containers:
+        - name: milvus-standalone
+          image: milvusdb/milvus:v2.6.0
+          args: ["milvus", "run", "standalone"]
+          env:
+            - name: DEPLOY_MODE
+              value: standalone
+            - name: ETCD_ENDPOINTS
+              value: etcd-service:2379
+            - name: COMMON_STORAGETYPE
+              value: local
+            - name: MILVUS_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: milvus-secret
+                  key: root-password
+          livenessProbe:
+            exec:
+              command: ["curl", "-f", "http://localhost:9091/healthz"]
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            timeoutSeconds: 20
+            failureThreshold: 5
+          ports:
+            - containerPort: 19530
+              protocol: TCP
+            - containerPort: 9091
+              protocol: TCP
+          volumeMounts:
+            - name: milvus-data
+              mountPath: /var/lib/milvus
+      restartPolicy: Always
+      volumes:
+        - name: milvus-data
+          persistentVolumeClaim:
+            claimName: milvus-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: milvus-service
+spec:
+  selector:
+    app: milvus-standalone
+  ports:
+    - name: grpc
+      port: 19530
+      targetPort: 19530
+    - name: http
+      port: 9091
+      targetPort: 9091
+----
++
+[NOTE]
+====
+* Use the gRPC port (`19530`) for the `MILVUS_ENDPOINT` setting in Llama Stack.
+* The HTTP port (`9091`) is reserved for health checks.
+* If you deploy Milvus in a different namespace, use the fully qualified service name in your Llama Stack configuration. For example:  
+  `http://milvus-service.<namespace>.svc.cluster.local:19530`
+====
+
+.Verification
+
+. In the {openshift-platform} web console, click *Workloads* → *Deployments*.
+. Verify that both `etcd-deployment` and `milvus-standalone` show a status of *1 of 1 pods available*.
+. Click *Pods* in the navigation panel and confirm that pods for both deployments are *Running*.
+. Click the `milvus-standalone` pod name, then select the *Logs* tab.
+. Verify that Milvus reports a healthy startup with output similar to:
++
+[source,log]
+----
+Milvus Standalone is ready to serve ...
+Listening on 0.0.0.0:19530 (gRPC)
+----
+. Click *Networking* → *Services* and confirm that the `milvus-service` and `etcd-service` resources exist and are exposed on ports `19530` and `2379`, respectively.
+. (Optional) Click *Pods* → *milvus-standalone* → *Terminal* and run the following health check:
++
+[source,terminal]
+----
+curl http://localhost:9091/healthz
+----
++
+A response of `{"status": "healthy"}` confirms that Milvus is running correctly.

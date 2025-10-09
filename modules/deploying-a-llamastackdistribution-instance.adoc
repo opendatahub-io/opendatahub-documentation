@@ -81,36 +81,50 @@ spec:
     containerSpec:
       resources:
         requests:
-          cpu: "250m"
-          memory: "500Mi"
+          cpu: 4
+          memory: "12Gi"
         limits:
-          cpu: "2"
+          cpu: 4
           memory: "12Gi"
       env:
         - name: INFERENCE_MODEL
           valueFrom:
             secretKeyRef:
-              key: INFERENCE_MODEL
               name: llama-stack-inference-model-secret
+              key: INFERENCE_MODEL
+              optional: true
+        - name: VLLM_MAX_TOKENS
+          value: "4096"
         - name: VLLM_URL
           valueFrom:
             secretKeyRef:
-              key: VLLM_URL
               name: llama-stack-inference-model-secret
+              key: VLLM_URL
+              optional: true
         - name: VLLM_TLS_VERIFY
           valueFrom:
             secretKeyRef:
-              key: VLLM_TLS_VERIFY
               name: llama-stack-inference-model-secret
+              key: VLLM_TLS_VERIFY
+              optional: true
         - name: VLLM_API_TOKEN
           valueFrom:
             secretKeyRef:
-              key: VLLM_API_TOKEN
               name: llama-stack-inference-model-secret
-        - name: MILVUS_DB_PATH
-          value: ~/.llama/milvus.db
+              key: VLLM_API_TOKEN
+              optional: true
         - name: FMS_ORCHESTRATOR_URL
           value: "http://localhost"
+        # --- Remote Milvus configuration (v2.25: no ConfigMap required) ---
+        - name: MILVUS_ENDPOINT
+          value: "http://milvus-service:19530" # --- Use the **gRPC** port (`19530`) for `MILVUS_ENDPOINT`. Port `9091` is for health checks.---
+        - name: MILVUS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: milvus-secret
+              key: root-password
+        - name: MILVUS_CONSISTENCY_LEVEL
+          value: "Bounded"
       name: llama-stack
       port: 8321
     distribution:

@@ -11,17 +11,17 @@ You can quickly customize and prototype your retrievable content by ingesting ra
 * You have created a project workbench within a data science project.
 * You have opened a Jupyter notebook and it is running in your workbench environment.
 * You have installed the `llama_stack_client` version 0.2.14 or later in your workbench environment. 
-* You have a created and configured a vector database instance and you know its identifier.
+* You have a vector database identifier (or you will create/register one in this procedure).
 ifdef::self-managed[]
 * Your environment has network access to the vector database service through {openshift-platform}.
 endif::[]
 
 .Procedure
-. In a new notebook cell, install the `llama_stack` client package:
+. In a new notebook cell, install the `llama_stack_client` package:
 +
 [source,python]
 ----
-%pip install llama_stack
+%pip install llama_stack_client
 ----
 
 . In a new notebook cell, import RAGDocument and LlamaStackClient:
@@ -62,38 +62,58 @@ model_id = next(m.identifier for m in models if m.model_type == "llm")
 
 embedding_model = next(m for m in models if m.model_type == "embedding")
 embedding_model_id = embedding_model.identifier
-embedding_dimension = embedding_model.metadata["embedding_dimension"]
+embedding_dimension = int(embedding_model.metadata["embedding_dimension"])
 ----
 
-. In a new notebook cell, define the following parameters:
-* `vector_db_id`: a unique name that identifies your vector database, for example, `my_milvus_db`.  
-* `provider_id`: the connector key that your Llama Stack gateway has enabled. For the Milvus vector database, this connector key is `"milvus"`. You can also list the available connectors:
+. (Optional) Register a vector database (choose one). Skip if you already have a vector DB ID.
 +
+.Option 1: Inline Milvus Lite (embedded)
+====
 [source,python]
 ----
-print(client.vector_dbs.list_providers()) # lists available connectors
+vector_db_id = "my_inline_db"
 
-vector_db_id = "<your vector database ID>"
-provider_id  = "<your provider ID>"
-----
-
-. In a new notebook cell, register or confirm your vector database to store embeddings:
-+
-[source,python]
-----
 _ = client.vector_dbs.register(
-vector_db_id=vector_db_id,
-embedding_model=embedding_model_id,
-embedding_dimension=embedding_dimension,
-provider_id=provider_id,
+    vector_db_id=vector_db_id,
+    embedding_model=embedding_model_id,
+    embedding_dimension=embedding_dimension,
+    provider_id="milvus",   # inline Milvus Lite
 )
-print(f"Registered vector DB: {vector_db_id}")
+print(f"Registered inline Milvus Lite DB: {vector_db_id}")
 ----
+[NOTE]
+Use inline Milvus Lite for development and small datasets. Persistence and scale are limited compared to remote Milvus.
+====
+
+.Option 2: Remote Milvus (recommended for production)
+====
+[source,python]
+----
+vector_db_id = "my_remote_db"
+
+_ = client.vector_dbs.register(
+    vector_db_id=vector_db_id,
+    embedding_model=embedding_model_id,
+    embedding_dimension=embedding_dimension,
+    provider_id="milvus-remote",  # remote Milvus provider (v2.25+)
+)
+print(f"Registered remote Milvus DB: {vector_db_id}")
+----
+[NOTE]
+====
+* Ensure your `LlamaStackDistribution` sets `MILVUS_ENDPOINT` (gRPC `:19530`) and `MILVUS_TOKEN`.
+* Aside from the provider ID, ingestion and query APIs are identical for inline and remote Milvus.
+====
+====
+
+. If you already have a vector database, set its identifier:
 +
-[IMPORTANT]
-====
-If you skip this step, and as a result, you do not register your vector database with your vector database ID, an error occurs if you attempt to ingest text into your vector database. 
-====
+[source,python]
+----
+# If a DB already exists, set it here instead of registering above
+# Example:
+# vector_db_id = "<your existing vector database ID>"
+----
 
 . In a new notebook cell, define the raw text that you want to ingest into the vector store: 
 + 
@@ -111,10 +131,10 @@ This example ingests a small passage for demonstration.
 [source,python]
 ----
 document = RAGDocument(
-document_id="raw_text_001",
-content=raw_text,
-mime_type="text/plain",
-metadata={"source": "example_passage"},
+    document_id="raw_text_001",
+    content=raw_text,
+    mime_type="text/plain",
+    metadata={"source": "example_passage"},
 )
 ----
 
