@@ -39,7 +39,7 @@ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
 .. Copy the following configuration and paste it in the `notebook-image-stream.yaml` file:
 +
 .Example `ImageStream`
-[source,yaml]
+[source,yaml,subs="attributes+"]
 ----
 kind: ImageStream
 apiVersion: image.openshift.io/v1
@@ -48,7 +48,7 @@ metadata:
     opendatahub.io/notebook-image-desc: A custom Jupyter Notebook image # <1>
     opendatahub.io/notebook-image-name: My Custom Notebook # <2>
   name: my-custom-notebook
-  namespace: redhat-ods-applications # <3>
+  namespace: {dbd-config-default-namespace} # <3>
   labels: # <4>
     app.kubernetes.io/created-by: byon
     opendatahub.io/dashboard: 'true'
