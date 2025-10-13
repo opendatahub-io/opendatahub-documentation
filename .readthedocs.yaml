@@ -1,0 +1,21 @@
+# Read the Docs configuration file
+# Docs: https://docs.readthedocs.com/platform/stable/config-file/v2.html
+
+version: 2
+
+# Custom build using AsciiDoctor
+build:
+  os: ubuntu-24.04
+  tools:
+    python: "3.12"
+  apt_packages:
+    - asciidoctor
+  jobs:
+    # Build AsciiDoc files and place the result where RTD serves HTML from
+    build:
+      html:
+        - bash scripts/build-docs-ci.sh
+        - mkdir -p "$READTHEDOCS_OUTPUT/html"
+        - cp -a out/. "$READTHEDOCS_OUTPUT/html/"
+
+# RTD indexes HTML placed under $READTHEDOCS_OUTPUT/html automatically.
