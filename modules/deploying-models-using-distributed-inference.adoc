@@ -30,9 +30,9 @@ Key features of Distributed Inference Server with llm-d include:
 * Integrates with standard Kubernetes tools and workflows, using components such as the Envoy proxy, NIXL, and vLLM.
 * Tested recipes and well-known presets reduce the complexity of deploying inference at scale, which allows users to focus on building applications rather than managing infrastructure.
 
-Serving models using Distributed Inference Server with llm-d on Red Hat Open Shift AI consists of the following steps:
+Serving models using Distributed Inference Server with llm-d on {productname-long} consists of the following steps:
 
-. Installing OpenShift AI.
+. Installing {productname-short}.
 . Enabling the single model serving platform.
 . Enabling Distributed Inference Server with llm-d on a Kubernetes cluster.
 . Creating an LLMInferenceService Custom Resource (CR).
@@ -45,7 +45,7 @@ This procedure describes how to create a custom resource (CR) for an `LLMInferen
 * You have enabled the single model-serving platform.
 * You have access to an {openshift-platform} cluster running version 4.19.9 or later.
 * {openshift-platform} Service Mesh v2 is not installed in the cluster.
-* You have created a `GatewayClass` and a `Gateway` named `openshift-ai-inference`in the `openshift-ingress` namespace as described in link:https://docs.okd.io/latest/networking/ingress_load_balancing/configuring_ingress_cluster_traffic/ingress-gateway-api.html#nw-ingress-gateway-api-enable_ingress-gateway-api[Getting started with Gateway API for the Ingress Operator]. 
+* You have created a `GatewayClass` and a `Gateway` named `openshift-ai-inference` in the `openshift-ingress` namespace as described in link:https://docs.okd.io/latest/networking/ingress_load_balancing/configuring_ingress_cluster_traffic/ingress-gateway-api.html#nw-ingress-gateway-api-enable_ingress-gateway-api[Getting started with Gateway API for the Ingress Operator]. 
 * You have installed the `LeaderWorkerSet` Operator in {openshift-platform}. For more information, see the {openshift-platform} documentation.
 
 ifndef::disconnected[]
@@ -95,7 +95,7 @@ spec:
     scheduler: {}
 ----
 
-Customize the following paramters in the spec section of the inference service:
+Customize the following parameters in the spec section of the inference service:
 
 * `replicas` - Specify the number of replicas.
 * `model` - Provide the URI to the model based on how the model is stored. 
