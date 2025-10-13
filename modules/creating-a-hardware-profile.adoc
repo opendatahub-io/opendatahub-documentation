@@ -4,7 +4,7 @@
 = Creating a hardware profile
 
 [role='_abstract']
-To configure specific hardware configurations for your data scientists to use in {productname-short}, you must create an associated hardware profile.
+To configure specific hardware configurations for your data scientists to use in {productname-short}, you must create an associated hardware profile. 
 
 .Prerequisites
 * You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
@@ -26,7 +26,12 @@ The *Create hardware profile* page opens.
 . Optional: Configure resource requests and limits:
 .. Click *Add resource*. 
 +
-The *Add resource* dialog opens.
+The *Add resource* dialog opens. 
++
+[NOTE]
+====
+For more information about CRD resources, see _Managing resources from custom resource definitions_ in the Additional Resources section.
+====
 .. In the *Resource label* field, enter a unique resource label. 
 .. In the *Resource identifier* field, enter a unique resource identifier. 
 .. From the *Resource type* field, select a resource type from the list. 
@@ -49,6 +54,11 @@ For globally scoped profiles, use a `LocalQueue` name that exists in all user pr
 .. Optional: From the *Workload priority* list, select a priority for jobs that use this profile. Higher-priority workloads are admitted before lower-priority workloads when resources are limited.
 Node selectors and tolerations::
 .. To manually add node selectors and tolerations, select *Node selectors and tolerations*.
++
+[NOTE]
+====
+For more information about taints and tolerations, see _Understanding taints and tolerations_ in the Additional Resources section.
+====
 .. Optional: Add a node selector to schedule pods on nodes with matching labels.
 ... Click *Add node selector*. 
 +
