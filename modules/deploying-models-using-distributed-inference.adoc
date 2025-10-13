@@ -96,18 +96,18 @@ spec:
     route: {}
     gateway: {}
     scheduler: {}
-      template:
-        containers:
-        - name: main
-          resources:
-            limits:
-              cpu: '4'
-              memory: 32Gi
-              nvidia.com/gpu: "1"
-            requests:
-              cpu: '2'
-              memory: 16Gi
-              nvidia.com/gpu: "1"
+    template:
+      containers:
+      - name: main
+        resources:
+          limits:
+            cpu: '4'
+            memory: 32Gi
+            nvidia.com/gpu: "1"
+          requests:
+            cpu: '2'
+            memory: 16Gi
+            nvidia.com/gpu: "1"
 ----
 
 Customize the following parameters in the spec section of the inference service:
