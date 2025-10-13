@@ -30,9 +30,9 @@ endif::[]
 
 . Add or set the `opendatahub.io/managed` annotation to `false` to allow user changes to the `trustyai-service-operator-config` ConfigMap: 
 +
-[source,sh]
+[source,sh, subs="attributes+"]
 ----
-oc patch configmap trustyai-service-operator-config -n redhat-ods-applications \
+oc patch configmap trustyai-service-operator-config -n {dbd-config-default-namespace} \
 --type merge -p '{"metadata": {"annotations": {"opendatahub.io/managed": "false"}}}'
 ----
 +
@@ -58,9 +58,9 @@ If the `opendatahub.io/managed` annotation does not exist, the default value is 
 |===
 . Update the settings for the TrustyAI operator to enable external connectivity or remote code execution, or both:
 +
-[source,sh]
+[source,sh, subs="attributes+"]
 ----
-oc patch configmap trustyai-service-operator-config -n redhat-ods-applications \
+oc patch configmap trustyai-service-operator-config -n {dbd-config-default-namespace} \
 --type merge -p '{"data":{"lmes-allow-online":"true","lmes-allow-code-execution":"true"}}'
 ----
 +

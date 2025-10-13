@@ -150,7 +150,7 @@ spec:
 <1> The `chmod` operation is permitted only if your pod is running as root. Remove`chmod -R 777` from the arguments if you are not running the pod as root.
 <2> Specify the path to the model.
 ifndef::upstream[]
-<3> The value for `containers.image`, located in your `InferenceService`. To access this value, run the following command: `oc get configmap inferenceservice-config -n redhat-ods-operator -oyaml | grep kserve-storage-initializer:`
+<3> The value for `containers.image`, located in your `InferenceService`. To access this value, run the following command: `oc get configmap inferenceservice-config -n pass:attributes[{operator-default-namespace}] -oyaml | grep kserve-storage-initializer:`
 endif::[]
 ifdef::upstream[]
 <3> The value for `containers.image`, located in your `download-model` container. To access this value, run the following command: `oc get configmap inferenceservice-config -n opendatahub -oyaml | grep kserve-storage-initializer:`

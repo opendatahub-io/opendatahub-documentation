@@ -39,9 +39,9 @@ oc new-project oci-model-example
 ifndef::upstream[]
 . Use the {productname-short} Applications project `kserve-ovms` template to create a `ServingRuntime` resource and configure the OpenVINO model server in the new project:
 +
-[source]
+[source, subs="attributes+"]
 ----
-oc process -n redhat-ods-applications -o yaml kserve-ovms | oc apply -f -
+oc process -n {dbd-config-default-namespace} -o yaml kserve-ovms | oc apply -f -
 ----
 endif::[]
 ifdef::upstream[]
