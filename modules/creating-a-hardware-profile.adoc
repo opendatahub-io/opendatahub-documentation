@@ -4,11 +4,17 @@
 = Creating a hardware profile
 
 [role='_abstract']
-To configure specific hardware configurations for your data scientists to use in {productname-short}, you must create an associated hardware profile.
+To configure specific hardware configurations for your data scientists to use in {productname-short}, you must create an associated hardware profile. 
 
 .Prerequisites
 * You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
-* The relevant hardware is installed and you have confirmed that it is detected in your environment.
++
+[NOTE]
+====
+If you need a hardware profile and do not have {productname-short} administrator privileges, contact your {productname-short} administrator to request assistance.
+====
+* You have installed the relevant hardware and confirmed that it is detected in your environment.
+* You have verified your desired GPU type and vRAM size.
 
 .Procedure
 . From the {productname-short} dashboard, click *Settings* -> *Hardware profiles*.
@@ -20,13 +26,13 @@ The *Create hardware profile* page opens.
 . In the *Name* field, enter a name for the hardware profile.
 . Optional: To change the default name of your Kubernetes resource, click *Edit resource name* and enter a name in the *Resource name* field. The resource name cannot be edited after creation.
 . Optional: In the *Description* field, enter a description for the hardware profile.
-. In the *Visibility* section, set the hardware profile visibility level:
+. In the *Visibility* section, set the hardware profile visibility level to indicate where the hardware profile can be used in workbenches and model deployment:
 * To access the hardware profile in all areas of {productname-short}, leave the *Visible everywhere* radio button selected.
 * To limit the areas of {productname-short} where your data scientists can use the hardware profile, select the *Limited visibility* radio button.
 . Optional: Configure resource requests and limits:
 .. Click *Add resource*. 
 +
-The *Add resource* dialog opens.
+The *Add resource* dialog opens. For more information about custom resources, see _Managing resources from custom resource definitions_ in the Additional Resources section.
 .. In the *Resource label* field, enter a unique resource label. 
 .. In the *Resource identifier* field, enter a unique resource identifier. 
 .. From the *Resource type* field, select a resource type from the list. 
@@ -48,7 +54,7 @@ For globally scoped profiles, use a `LocalQueue` name that exists in all user pr
 ====
 .. Optional: From the *Workload priority* list, select a priority for jobs that use this profile. Higher-priority workloads are admitted before lower-priority workloads when resources are limited.
 Node selectors and tolerations::
-.. To manually add node selectors and tolerations, select *Node selectors and tolerations*.
+.. To manually add node selectors and tolerations, select *Node selectors and tolerations*. For more information about taints and tolerations, see _Understanding taints and tolerations_ in the Additional Resources section.
 .. Optional: Add a node selector to schedule pods on nodes with matching labels.
 ... Click *Add node selector*. 
 +
