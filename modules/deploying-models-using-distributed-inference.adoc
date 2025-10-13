@@ -51,7 +51,6 @@ This procedure describes how to create a custom resource (CR) for an `LLMInferen
 * You have created a `GatewayClass` and a `Gateway` named `openshift-ai-inference` in the `openshift-ingress` namespace as described in link:https://docs.okd.io/latest/networking/ingress_load_balancing/configuring_ingress_cluster_traffic/ingress-gateway-api.html#nw-ingress-gateway-api-enable_ingress-gateway-api[Getting started with Gateway API for the Ingress Operator]. 
 * You have installed the `LeaderWorkerSet` Operator in {openshift-platform}. For more information, see the {openshift-platform} documentation.
 
-ifndef::disconnected[]
 .Procedure
 
 . Log in to the {openshift-platform} console as a cluster administrator.
@@ -91,17 +90,30 @@ metadata:
 spec:
   replicas: 2
   model:
-    uri: hf://meta-llama/Llama-4-Scout-17B-16E-Instruct
+    uri: RedHatAI/Qwen3-8B-FP8-dynamic
+    name: Qwen/Qwen3-8B-FP8-dynamic
   router: 
     route: {}
     gateway: {}
     scheduler: {}
+      template:
+        containers:
+        - name: main
+          resources:
+            limits:
+              cpu: '4'
+              memory: 32Gi
+              nvidia.com/gpu: "1"
+            requests:
+              cpu: '2'
+              memory: 16Gi
+              nvidia.com/gpu: "1"
 ----
 
 Customize the following parameters in the spec section of the inference service:
 
 * `replicas` - Specify the number of replicas.
-* `model` - Provide the URI to the model based on how the model is stored. 
+* `model` - Provide the URI to the model based on how the model is stored (`uri`) and the model name to use in chat completion requests (`name`).
 ** S3 bucket:  `s3://<bucket-name>/<object-key>`
 ** Persistent volume claim (PVC): `pvc://<claim-name>/<pvc-path>`
 ** OCI container image: `oci://<registry_host>/<org_or_username>/<repository_name><tag_or_digest>`
@@ -110,21 +122,3 @@ Customize the following parameters in the spec section of the inference service:
 --
 
 . Save the file.
-
-endif::[]
-
-ifdef::disconnected[]
-
-.Procedure
-
-. link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.23/html/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/deploying-openshift-ai-in-a-disconnected-environment_install[Install OpenShift AI in a disconnected environment].  
-. During the installation, modify the example image set configuration file. For more information, see step 4 of link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/deploying-openshift-ai-in-a-disconnected-environment_install#mirroring-images-to-a-private-registry-for-a-disconnected-installation_install[Mirroring images to a private registry for a disconnected installation].
-. In the list of additional images retrieved from the disconnected installer helper page, add the following image:
-+
-[source]
-----
-ghcr.io/llm-d/llm-d-dev@sha256:51855b55541b7b81b5f2030409c5894eaf2debd8146f716ee63973df82d97a0a
-----
-endif::[]
-
-
