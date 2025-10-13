@@ -1,0 +1,127 @@
+:_module-type: PROCEDURE
+
+[id="deploying-models-using-distributed-inference_{context}"]
+= Deploying models by using the Distributed Inference Server with llm-d
+
+[role='_abstract']
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+Distributed Inference Server with llm-d is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+Distributed Inference Server with llm-d is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+Distributed Inference Server with llm-d is a Kubernetes-native, open-source framework designed for serving large language models (LLMs) at scale. You can use Distributed Inference Server with llm-d to simplify the deployment of generative AI, focusing on high performance and cost-effectiveness across various hardware accelerators.
+
+Key features of Distributed Inference Server with llm-d include:
+
+* Efficiently handles large models using  optimizations such as prefix-cache aware routing and disaggregated serving.
+* Integrates with standard Kubernetes tools and workflows, using components such as the Envoy proxy, NIXL, and vLLM.
+* Tested recipes and well-known presets reduce the complexity of deploying inference at scale, which allows users to focus on building applications rather than managing infrastructure.
+
+Serving models using Distributed Inference Server with llm-d on Red Hat Open Shift AI consists of the following steps:
+
+. Installing OpenShift AI.
+. Enabling the single model serving platform.
+. Enabling Distributed Inference Server with llm-d on a Kubernetes cluster.
+. Creating an LLMInferenceService Custom Resource (CR).
+. Deploying a model.
+
+This procedure describes how to create a custom resource (CR) for an `LLMInferenceService` resource. You replace the default `InferenceService` with the `LLMInferenceService`.
+
+.Prerequisites
+
+* You have enabled the single model-serving platform.
+* You have access to an {openshift-platform} cluster running version 4.19.9 or later.
+* {openshift-platform} Service Mesh v2 is not installed in the cluster.
+* You have created a `GatewayClass` and a `Gateway` named `openshift-ai-inference`in the `openshift-ingress` namespace as described in link:https://docs.okd.io/latest/networking/ingress_load_balancing/configuring_ingress_cluster_traffic/ingress-gateway-api.html#nw-ingress-gateway-api-enable_ingress-gateway-api[Getting started with Gateway API for the Ingress Operator]. 
+* You have installed the `LeaderWorkerSet` Operator in {openshift-platform}. For more information, see the {openshift-platform} documentation.
+
+ifndef::disconnected[]
+.Procedure
+
+. Log in to the {openshift-platform} console as a cluster administrator.
+
+. Create a data science cluster initialization (DSCI) and set the `serviceMesh.managementState` to `removed`, as shown in the following example:
++
+[source]
+----
+serviceMesh:
+  ...
+  managementState: Removed
+----
+
+. Create a data science cluster (DSC) with the following information set in `kserve` and `serving`:
++
+[source]
+----
+kserve:
+  defaultDeploymentMode: RawDeployment
+  managementState: Managed
+  ...
+  serving:
+    ...
+    managementState: Removed
+    ...
+----
+
+. Create the `LLMInferenceService` CR with the following information:
++
+--
+[source]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: sample-llm-inference-service
+spec:
+  replicas: 2
+  model:
+    uri: hf://meta-llama/Llama-4-Scout-17B-16E-Instruct
+  router: 
+    route: {}
+    gateway: {}
+    scheduler: {}
+----
+
+Customize the following paramters in the spec section of the inference service:
+
+* `replicas` - Specify the number of replicas.
+* `model` - Provide the URI to the model based on how the model is stored. 
+** S3 bucket:  `s3://<bucket-name>/<object-key>`
+** Persistent volume claim (PVC): `pvc://<claim-name>/<pvc-path>`
+** OCI container image: `oci://<registry_host>/<org_or_username>/<repository_name><tag_or_digest>`
+** HuggingFace: `hf://<model>/<optional-hash>`
+* `router` - Provide an HTTPRoute and gateway, or leave blank to automatically create one.
+--
+
+. Save the file.
+
+endif::[]
+
+ifdef::disconnected[]
+
+.Procedure
+
+. link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.23/html/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/deploying-openshift-ai-in-a-disconnected-environment_install[Install OpenShift AI in a disconnected environment].  
+. During the installation, modify the example image set configuration file. For more information, see step 4 of link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/deploying-openshift-ai-in-a-disconnected-environment_install#mirroring-images-to-a-private-registry-for-a-disconnected-installation_install[Mirroring images to a private registry for a disconnected installation].
+. In the list of additional images retrieved from the disconnected installer helper page, add the following image:
++
+[source]
+----
+ghcr.io/llm-d/llm-d-dev@sha256:51855b55541b7b81b5f2030409c5894eaf2debd8146f716ee63973df82d97a0a
+----
+endif::[]
+
+
