@@ -14,7 +14,7 @@ Understanding storage classes and access modes can help you choose the right sto
 
 Storage classes in {productname-short} are available from the underlying OpenShift cluster. A storage class defines how persistent volumes are provisioned, including which storage backend is used and what access modes the provisioned volumes can support. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/storage/understanding-persistent-storage[Dynamic provisioning] in the OpenShift documentation.
 
-Cluster administrators create and configure storage classes in the OpenShift cluster. These storage classes provision persistent volumes that support one or more access modes, depending on the capabilities of the storage backend. {productname-short} administrators then enable specific storage classes and access modes for use in {productname-short}. With an open configuration model, administrators can also enable access modes that are not supported by Red Hat provisioners if the selected access mode is most suitable.    
+Cluster administrators create and configure storage classes in the OpenShift cluster. These storage classes provision persistent volumes that support one or more access modes, depending on the capabilities of the storage backend. {productname-short} administrators then enable specific storage classes and access modes for use in {productname-short}.    
 
 When adding cluster storage to your project or workbench, you can choose from any enabled storage classes and access modes.
 
@@ -39,7 +39,7 @@ Storage classes create persistent volumes that can support different access mode
 |The storage can be attached to a single pod on a single node with read-write permissions. `RWOP` is similar to `RWO` but includes additional node-level restrictions.
 |===
 
-You can enable access modes even if they are not supported by Red Hat provisioners. If you request an unsupported access mode, a warning is displayed, but you can continue to select *Save* to create the storage class with the selected access mode.
+You can enable access modes that are required. A warning is displayed if you request an unknown access mode, but you can continue to select *Save* to create the storage class with the selected access mode.
 
 === Using shared storage (RWX)
 
