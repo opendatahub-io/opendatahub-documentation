@@ -1,0 +1,53 @@
+:_module-type: PROCEDURE
+
+[id='auto-configuring-guardrails_{context}']
+
+= Auto-configuring Guardrails
+
+[role='_abstract']
+Auto-configuration simplifies the guardrails setup process by automatically handling TLS configuration and authentication, ensuring seamless and secure communication between components.  To integrate with detector services in your namespace, use the `autoConfig` specification in `GuardrailsOrchestrator` custom resource (CR).
+For example, if any of the detectors or generation services use HTTPS, their credentials are automatically discovered, mounted, and used. Additionally, the orchestrator is automatically configured to forward all necessary authentication token headers.
+
+.Prerequisites
+* Each detector server you intend to use has an OpenShift label applied in the resource metadata, For example, `metadata.labels.<label_name>: true`. Choose a descriptive name for the label as it is required for auto-configuration.
+*You have configured the inference service to which you intend to apply guardrails.
+* You have downloaded and installed the {productname-short} command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
+
+.Procedure
+. Create a  `GuardrailsOrchestrator` CR with the `autoConfig` configuration. For example, create a YAML file named `auto_orchestrator_cr.yaml` with the following contents:
++
+.Example `auto_orchestrator_cr.yaml` CR
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: guardrails-orchestrator
+  annotations:
+    security.opendatahub.io/enable-auth: 'true'
+spec:
+  autoConfig:
+      inferenceServiceToGuardrail: $INFERENCE_SERVICE_NAME
+      detectorServiceLabelToMatch: $LABEL_NAME
+  enableBuiltInDetectors: true
+  enableGuardrailsGateway: true 
+  replicas: 1
+----
++
+* `inferenceServiceToGuardrail`: specifies the name of the vLLM inference service to be guardrailed.
+* `detectorServiceLabelToMatch`: specifies the label that we chose to apply to each of our detector servers in the `metadata.labels` specification for the detector.
+
+
+. Deploy the orchestrator custom resource. This step creates a service account, deployment, service, and route object in your namespace.
++
+[source,terminal]
+----
+oc apply -f auto_orchestrator_cr.yaml -n <TEST_NAMESPACE>
+----
+
+.Verification
+* You can view the following resources after you create the `GuardrailsOrchestrator` CR:
+
+** An automatically generated orchestrator configuration config map. This configuration automatically updates to reflect the state of detectors in your namespace.
+
+** If `enableGuardrailsGateway` is set to `true`, an automatically generated default gateway config map is created. You can use this config map as a starting template to build a custom gateway configuration. To restore the default gateway configuration, delete the config map, and a new one is created automatically.
