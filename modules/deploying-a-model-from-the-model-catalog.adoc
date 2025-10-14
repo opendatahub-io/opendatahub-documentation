@@ -32,12 +32,13 @@ endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *Models* -> *Model catalog*.
-. From the *{org-name} models* section, click the name of the model that you want to deploy. 
+. In the drop-down list, select from the available catalog sources that have been configured by your administrator. The *Default Catalog* is displayed by default. 
 +
-The model details page opens.
-. Click *Deploy model*.
-+
-The *Deploy model* dialog opens.
+NOTE: OpenShift cluster administrators can configure additional model catalog sources. For more details, see the Kubeflow Model Registry community documentation on link:https://github.com/kubeflow/model-registry/tree/main/manifests/kustomize/options/catalog#configuring-catalog-sources[configuring catalog sources]. 
+
+. Use the search bar to find a model in the catalog. You can enter text to search by model name, description, or provider.
+. Click the name of a model to view the model details page.
+. Click *Deploy model* to display the *Deploy model* dialog.
 . From the *Project* drop-down list, select a project in which to deploy your model.
 +
 [NOTE]
@@ -45,10 +46,10 @@ The *Deploy model* dialog opens.
 Models using OCI storage can only be deployed on the single-model serving platform. Projects using the multi-model serving platform do not appear in the project list.
 ====
 . In the *Model deployment* section:
-.. Optional: In the *Model deployment name* field, enter a unique name for your model deployment. The *Model deployment name* is autofilled with a value that contains the model name by default. 
+.. Optional: In the *Model deployment name* field, enter a unique name for your model deployment. This field is autofilled with a value that contains the model name by default. 
 +
 This is the name of the inference service created when the model is deployed.
-.. Optional: Click *Edit resource name*, and then enter a specific resource name for the model deployment in the *Resource name* field. By default, the resource name will match the name of the model registry.
+.. Optional: Click *Edit resource name*, and then enter a specific resource name for the model deployment in the *Resource name* field. By default, the resource name matches the name of the model deployment.
 +
 [IMPORTANT]
 ====
@@ -94,7 +95,9 @@ endif::[]
 . Click *Deploy*.
 
 .Verification
-* The model is displayed on the *Deployments* tab for the model version.
+* The model deployment is displayed on the *Models* -> *Model Deployments* page.
+* The model deployment is displayed in the *Latest deployments* section of the model details page.
+* The model deployment is displayed on the *Deployments* tab for the model version.
 
 [role="_additional-resources"]
 .Additional resources
