@@ -15,32 +15,37 @@ Enabling online access or code execution involves a security risk. Only use thes
 
 .Prerequisites
 
-* You have cluster administrator privileges for your {productname-long} cluster.
-* The `DataScienceCluster` resource specifications, `permitCodeExecution` and `permitOnline` are enabled with a value of `allow`.
+* You have cluster administrator privileges for your {openshift-platform} cluster.
 
 ifndef::upstream[]
 * You have downloaded and installed the {productname-short} command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
 endif::[]
 
 .Procedure
-
-* For new LMEval jobs, apply a YAML that includes the following fields: 
+. Get the current `DataScienceCluster` resource, which is located in the `redhat-ods-operator` namespace:
 +
-[source,yaml]
+[source,terminal]
 ----
-apiVersion: trustyai.opendatahub.io/v1alpha1
-kind: LMEvalJob
-metadata:
-  name: example-lmeval
-  namespace: <your-namespace>
-spec:
-  allowOnline: true
-  allowCodeExecution: true
+$ oc get datasciencecluster -n redhat-ods-operator
+----
++
+.Example output
+[source,terminal]
+----
+NAME                 AGE
+default-dsc          10d
 ----
 
-The `allowOnline` and `allowCodeExecution` settings are disabled by default with a value of `false` in the `LMEvalJob` CR. In the `DataScienceCluster` resource specifications, the `permitCodeExecution` and `permitOnline` are also disabled by default with a value of `deny`. You must explicitly enable these settings in the `DataScienceCluster` resource for the `LMEvalJobs` specification to enable internet access or permission to run any externally downloaded code. An example of the `DataScienceCluster` resource, such as in the following example:
+. Edit the `DataScienceCluster` resource:
++
+[source,terminal]
+----
+$ oc edit datasciencecluster default-dsc -n redhat-ods-operator
+----
 
-.`DataScienceCluster` resource enabling online access and remote code execution
+. Enable online access and code execution for the cluster in the `DataScienceCluster` resource with the `permitOnline` and `permitCodeExecution` specifications:
++
+.Example `allow-online-code-exec-dsc.yaml` resource enabling online access and remote code execution
 [source,yaml]
 ----
 apiVersion: datasciencecluster.opendatahub.io/v1
@@ -56,7 +61,42 @@ spec:
            permitOnline: allow
            permitCodeExecution: allow
 ----
-[NOTE]
++
+The `permitCodeExecution` and `permitOnline` settings are disabled by default with a value of `deny`. You must explicitly enable these settings in the `DataScienceCluster` resource for the `LMEvalJobs` specification to enable internet access or permission to run any externally downloaded code.
+
+. Apply the updated `DataScienceCluster`:
++
+[source,yaml]
+----
+$ oc apply -f allow-online-code-exec-dsc.yaml -n redhat-ods-operator
+----
+
+. For new LMEval jobs, define the job in a YAML file as shown in the following example. This configuration requests both internet access, with `allowOnline: true`, and permission for remote code execution with, `allowCodeExecution: true`: 
++
+.Example lmeval-allow-online-code-exec.yaml
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: lmeval-allow-online-code-exec
+  namespace: <your_namespace>
+spec:
+  allowOnline: true
+  allowCodeExecution: true
+----
++
+The `allowOnline` and `allowCodeExecution` settings are disabled by default with a value of `false` in the `LMEvalJob` CR.
+
+. Deploy the LMEval Job:
++
+[source,yaml]
+----
+$ oc apply -f lmeval-allow-online-code-exec.yaml <your_namespace>
+----
+
+
+[IMPORTANT]
 ====
 If you upgrade to version 2.25, some TrustyAI `LMEvalJobs` CR configuration values might be overwritten. The new deployment prioritizes the value on the 2.25 version `DataScienceCluster`. Existing LMEval jobs are unaffected. Verify that all `DataScienceCluster` values are explicitly defined and validated during installation.
 ====
