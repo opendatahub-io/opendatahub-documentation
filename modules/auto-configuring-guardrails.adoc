@@ -10,13 +10,13 @@ For example, if any of the detectors or generation services use HTTPS, their cre
 
 .Prerequisites
 * Each detector server you intend to use has an OpenShift label applied in the resource metadata, For example, `metadata.labels.<label_name>: true`. Choose a descriptive name for the label as it is required for auto-configuration.
-*You have configured the inference service to which you intend to apply guardrails.
+* You have setup the inference service to which you intend to apply guardrails.
 * You have downloaded and installed the {productname-short} command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
 
 .Procedure
-. Create a  `GuardrailsOrchestrator` CR with the `autoConfig` configuration. For example, create a YAML file named `auto_orchestrator_cr.yaml` with the following contents:
+. Create a  `GuardrailsOrchestrator` CR with the `autoConfig` configuration. For example, create a YAML file named `guardrails_orchestrator_auto_cr.yaml` with the following contents:
 +
-.Example `auto_orchestrator_cr.yaml` CR
+.Example `guardrails_orchestrator_auto_cr.yaml` CR
 [source,yaml]
 ----
 apiVersion: trustyai.opendatahub.io/v1alpha1
@@ -42,12 +42,40 @@ spec:
 +
 [source,terminal]
 ----
-oc apply -f auto_orchestrator_cr.yaml -n <TEST_NAMESPACE>
+oc apply -f guardrails_orchestrator_auto_cr.yaml -n <TEST_NAMESPACE>
 ----
 
 .Verification
-* You can view the following resources after you create the `GuardrailsOrchestrator` CR:
+You can verify that the `GuardrailsOrchestrator` CR and corresponding automatically generated configuration objects were successfully created in your namespace by running the following commands:
 
-** An automatically generated orchestrator configuration config map. This configuration automatically updates to reflect the state of detectors in your namespace.
+. Confirm that the `GuardrailsOrchestrator` CR was created:
++
+[source,terminal]
+----
+$ oc get guardrailsorchestrator -n <your_namespace>
+----
 
-** If `enableGuardrailsGateway` is set to `true`, an automatically generated default gateway config map is created. You can use this config map as a starting template to build a custom gateway configuration. To restore the default gateway configuration, delete the config map, and a new one is created automatically.
+. View the automatically generated the Guardrails Orchestrator `ConfigMap`:
++
+[source,terminal]
+----
+$ oc get configmap -n <YOUR_NAMESPACE> | grep auto-config
+----
++
+[source,terminal]
+----
+$ oc get configmap guardrails-orchestrator-auto-config -n <your_namespace> -o yaml
+----
+
+. The  Guardrails Orchestrator `ConfigMap` automatically updates to reflect detectors in your namespace that match the label set in the `detectorServiceLabelToMatch` field. If you enabled the Guardrails Gateway by using `enableGuardrailsGateway: true`, verify the default gateway `ConfigMap`:
++
+[source,terminal]
+----
+$ oc get configmap guardrails-orchestrator-gateway-auto-config -n <your_namespace> -o yaml
+----
++
+This ConfigMap defines default routes such as the following:
++
+
+* all: uses all available detectors
+* passthrough: uses no detectors
