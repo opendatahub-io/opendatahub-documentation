@@ -36,14 +36,7 @@ NAME                 AGE
 default-dsc          10d
 ----
 
-. Edit the `DataScienceCluster` resource:
-+
-[source,terminal]
-----
-$ oc edit datasciencecluster default-dsc -n redhat-ods-operator
-----
-
-. Enable online access and code execution for the cluster in the `DataScienceCluster` resource with the `permitOnline` and `permitCodeExecution` specifications:
+. Enable online access and code execution for the cluster in the `DataScienceCluster` resource with the `permitOnline` and `permitCodeExecution` specifications. For example, create a file named `allow-online-code-exec-dsc.yaml` with the following contents:
 +
 .Example `allow-online-code-exec-dsc.yaml` resource enabling online access and remote code execution
 [source,yaml]
@@ -79,11 +72,13 @@ $ oc apply -f allow-online-code-exec-dsc.yaml -n redhat-ods-operator
 apiVersion: trustyai.opendatahub.io/v1alpha1
 kind: LMEvalJob
 metadata:
-  name: lmeval-allow-online-code-exec
+  name: lmevaljob-with-online-code-exec
   namespace: <your_namespace>
 spec:
+...
   allowOnline: true
   allowCodeExecution: true
+...
 ----
 +
 The `allowOnline` and `allowCodeExecution` settings are disabled by default with a value of `false` in the `LMEvalJob` CR.
@@ -92,7 +87,7 @@ The `allowOnline` and `allowCodeExecution` settings are disabled by default with
 +
 [source,yaml]
 ----
-$ oc apply -f lmeval-allow-online-code-exec.yaml <your_namespace>
+$ oc apply -f lmevaljob-with-online-code-exec.yaml -n <your_namespace>
 ----
 
 
@@ -102,3 +97,23 @@ If you upgrade to version 2.25, some TrustyAI `LMEvalJobs` CR configuration valu
 ====
 
 
+.Verification
+
+. Run the following command to verify that the `DataScienceCluster` has the updated fields:
++
+[source,terminal]
+----
+$ oc get datasciencecluster default-dsc -n redhat-ods-operator -o "jsonpath={.data}"
+----
+
+. Run the following command to verify that the `trustyai-dsc-config` ConfigMap has the same flag values set in the `DataScienceCluster`.
++
+[source,terminal]
+----
+$ oc get configmaps trustyai-dsc-config -n redhat-ods-applications -o "jsonpath={.data}"
+----
++
+.Example output
+[source,terminal]
+----
+{"eval.lmeval.permitCodeExecution":"false","eval.lmeval.permitOnline":"true"}
