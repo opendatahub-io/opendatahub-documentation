@@ -5,7 +5,7 @@
 = Auto-configuring Guardrails
 
 [role='_abstract']
-Auto-configuration simplifies the Guardrails setup process by automatically handling TLS configuration and authentication, ensuring seamless and secure communication between components.  To integrate with detector services in your namespace, use the `autoConfig` specification in the `GuardrailsOrchestrator` custom resource (CR).
+Auto-configuration simplifies the Guardrails setup process by automatically handling TLS configuration and authentication, ensuring seamless and secure communication between components. To integrate with detector services in your namespace, use the `autoConfig` specification in the `GuardrailsOrchestrator` custom resource (CR).
 For example, if any of the detectors or generation services use HTTPS, their credentials are automatically discovered, mounted, and used. Additionally, the orchestrator is automatically configured to forward all necessary authentication token headers.
 
 .Prerequisites
@@ -35,15 +35,15 @@ metadata:
     security.opendatahub.io/enable-auth: 'true'
 spec:
   autoConfig:
-      inferenceServiceToGuardrail: $INFERENCE_SERVICE_NAME
-      detectorServiceLabelToMatch: $LABEL_NAME
+    inferenceServiceToGuardrail: $INFERENCE_SERVICE_NAME
+    detectorServiceLabelToMatch: $LABEL_NAME
   enableBuiltInDetectors: true
   enableGuardrailsGateway: true 
   replicas: 1
 ----
 +
 * `inferenceServiceToGuardrail`: Specifies the name of the vLLM inference service to be guardrailed.
-* `detectorServiceLabelToMatch`: Specifies the label that you applied to each of your detector servers in the `metadata.labels` specification for the detector. The  Guardrails Orchestrator `ConfigMap` automatically updates to reflect detectors in your namespace that match the label set in the `detectorServiceLabelToMatch` field.
+* `detectorServiceLabelToMatch`: Specifies the label that you applied to each of your detector servers in the `metadata.labels` specification for the detector. The Guardrails Orchestrator `ConfigMap` automatically updates to reflect detectors in your namespace that match the label set in the `detectorServiceLabelToMatch` field.
 
 . Deploy the orchestrator custom resource. This step creates a service account, deployment, service, and route object in your namespace.
 +
