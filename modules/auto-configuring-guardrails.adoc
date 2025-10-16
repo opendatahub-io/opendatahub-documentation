@@ -9,7 +9,7 @@ Auto-configuration simplifies the Guardrails setup process by automatically hand
 For example, if any of the detectors or generation services use HTTPS, their credentials are automatically discovered, mounted, and used. Additionally, the orchestrator is automatically configured to forward all necessary authentication token headers.
 
 .Prerequisites
-* Each detector server you intend to use has an OpenShift label applied in the resource metadata. For example, `metadata.labels.<label_name>: true`. Choose a descriptive name for the label as it is required for auto-configuration.
+* Each detector service you intend to use has an OpenShift label applied in the resource metadata. For example, `metadata.labels.<label_name>: 'true'`. Choose a descriptive name for the label as it is required for auto-configuration.
 * You have set up the inference service to which you intend to apply guardrails.
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
@@ -22,7 +22,7 @@ ifdef::cloud-service[]
 endif::[]
 
 .Procedure
-. Create a  `GuardrailsOrchestrator` CR with the `autoConfig` configuration. For example, create a YAML file named `guardrails_orchestrator_auto_cr.yaml` with the following contents:
+. Create a `GuardrailsOrchestrator` CR with the `autoConfig` configuration. For example, create a YAML file named `guardrails_orchestrator_auto_cr.yaml` with the following contents:
 +
 .Example `guardrails_orchestrator_auto_cr.yaml` CR
 [source,yaml]
