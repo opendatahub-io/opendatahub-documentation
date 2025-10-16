@@ -4,35 +4,34 @@
 = Installing Open Data Hub components
 
 [role='_abstract']
-You can use the OpenShift web console to install specific components of Open Data Hub on your cluster when the Open Data Hub Operator is already installed on the cluster.
+You can use the OpenShift web console to install specific components of {productname-short} on your cluster when the {productname-short} Operator is already installed on the cluster.
 
 .Prerequisites
-* You have installed the Open Data Hub Operator.
+* You have installed the {productname-short} Operator.
 * You can log in as a user with `cluster-admin` privileges.
-ifdef::upstream[]
-* If you want to use the `trustyai` component, you must enable user workload monitoring as described in link:{odhdocshome}/monitoring-data-science-models/#configuring-monitoring-for-the-multi-model-serving-platform_monitor[Configuring monitoring for the multi-model serving platform].
-endif::[]
+* If you want to use the `trustyai` component, you must configure workload monitoring as described in link:{odhdocshome}/managing-and-monitoring-models/#_monitoring_models_on_the_single_model_serving_platform[Monitoring models on the single-model serving platform].
 * If you want to use the `RAG` component, your infrastructure supports GPU-enabled instance types, for example, `g4dn.xlarge` on AWS.
 * If you want to use the `kserve` or `modelmesh` components, you must have already installed the following Operator or Operators for the component. For information about installing an Operator, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
 +
-
 [IMPORTANT]
 ====
 The multi-model serving platform based on ModelMesh is deprecated. 
 You can continue to deploy models on the multi-model serving platform, but it is recommended that you migrate to the single-model serving platform.
 ====
-
-ifdef::upstream[]
 * If you want to use `kserve`, you have selected a deployment mode. For more information, see link:{odhdocshome}/serving-models/#about-kserve-deployment-modes_serving-large-models[About KServe deployment modes].
-endif::[]
+* If you want to use the `kueue` component to manage workloads, you must install the {rhbok-productname} Operator before activating the Kueue integration. For more information, see link:{odhdocshome}/managing-odh/#configuring-workload-management-with-kueue_kueue[Configuring workload management with Kueue].
 
 .Required Operators for components
-[cols="3]
+[cols="3"]
 |===
 | Component | Required Operators | Catalog
 
 | kserve
 | Red Hat OpenShift Serverless Operator, Red Hat OpenShift Service Mesh Operator, Red Hat Authorino Operator
+| Red Hat
+
+| kueue
+| {rhbok-productname} Operator
 | Red Hat
 
 | [Deprecated] modelmesh
@@ -46,39 +45,42 @@ endif::[]
 
 
 .Procedure
-. Log in to your {openshift-platform} as a user with `cluster-admin` privileges. If you are performing a developer installation on link:http://try.openshift.com[try.openshift.com], you can log in as the `kubeadmin` user.
-. Select *Operators* -> *Installed Operators*, and then click the *Open Data Hub Operator*.
+. Log in to your {openshift-platform} cluster as a user with `cluster-admin` privileges. If you are performing a developer installation on link:http://try.openshift.com[try.openshift.com], you can log in as the `kubeadmin` user.
+. Select *Operators* -> *Installed Operators*, and then click the *{productname-short} Operator*.
 . On the *Operator details* page, click the *DSC Initialization* tab, and then click *Create DSCInitialization*.
-. On the *Create DSCInitialization* page, configure by using *Form* view or *YAML* view. For general information about the supported components, see link:https://opendatahub.io/docs/tiered-components[Tiered Components].
-* Configure by using *Form* view:
-.. In the *Name* field, enter a value.
-.. If you are using a custom applications namespace, enter the namespace in the *Applications Namespace* field.
-.. In the *Components* section, expand each component and set the *managementState* to *Managed* or *Removed*.
-* Configure by using *YAML* view:
+. On the *Create DSCInitialization* page, configure by using the *YAML* view. 
+//For general information about the supported components, see link:https://opendatahub.io/docs/tiered-components[Tiered Components].
 .. If you are using a custom applications namespace, specify the namespace in the `spec.applicationsNamespace` field.
-.. In the `spec.components` section, for each component shown, set the value of the `managementState` field to either `Managed` or `Removed`.
 . Click *Create*.
 . Wait until the status of the DSCInitialization is *Ready*.
 . Click the *Data Science Cluster* tab, and then click *Create DataScienceCluster*.
-. On the *Create DataScienceCluster* page, configure the DataScienceCluster by using *Form* view or *YAML* view. For general information about the supported components, see link:https://opendatahub.io/docs/tiered-components[Tiered Components].
-* Configure by using *Form* view:
-.. In the *Name* field, enter a value.
-.. In the *Components* section, expand each component and set the *managementState* to *Managed* or *Removed*.
-.. If you are using a custom workbench namespace, enter the namespace in the *workbenchNamespace* field.
-* Configure by using *YAML* view:
-.. In the `spec.components` section, for each component shown, set the value of the `managementState` field to either `Managed` or `Removed`.
+. On the *Create DataScienceCluster* page, configure by using the *YAML* view. 
+//For general information about the supported components, see link:https://opendatahub.io/docs/tiered-components[Tiered Components].
+.. In the `spec.components` section, for each component shown, set the value of the `managementState` field to `Managed`, `Removed`, or `Unmanaged`.
 .. If you are using a custom workbench namespace, specify the namespace in the `spec.workbenches.workbenchNamespace` field.
+.. If you want to use the `datasciencepipelines` component with your own Argo Workflows instance, set the `spec.components.datasciencepipelines` component as shown:
++
+[source,YAML]
+----
+spec:
+  components:
+    datasciencepipelines:
+      argoWorkflowControllers:
+        managementState: Removed
+      managementState: Managed
+----
 . Click *Create*.
 
 
 .Verification
 . Select *Home* -> *Projects*, and then select the *opendatahub* project.
-. On the *Project details* page, click the *Workloads* tab and confirm that the Open Data Hub core components are running. For more information, see link:https://opendatahub.io/docs/tiered-components[Tiered Components].
+. On the *Project details* page, click the *Workloads* tab and confirm that the {productname-short} core components are running. 
+//For more information, see link:https://opendatahub.io/docs/tiered-components[Tiered Components].
 
 *Note:* In the {productname-long} dashboard, users can view the list of the installed {productname-short} components, their corresponding source (upstream) components, and the versions of the installed components, as described in link:{odhdocshome}/installing-open-data-hub/#viewing-installed-components_get-started[Viewing installed {productname-short} components].
 
 .Next step
-* link:{odhdocshome}/installing-open-data-hub/#accessing-the-odh-dashboard_installv2[Accessing the Open Data Hub dashboard].
+* link:{odhdocshome}/installing-open-data-hub/#accessing-the-odh-dashboard_installv2[Accessing the {productname-short} dashboard]
 
 [role="_additional-resources"]
 .Additional resources

@@ -10,7 +10,7 @@ When upgrading {productname-short} version 2.0 or 2.1 to version 2.2 or later, y
 
 When you upgrade to version {vernum}, the upgrade process automatically uses the values from the `DataScienceCluster` object in the previous version.
 
-After the upgrade, you should inspect the {vernum} `DataScienceCluster` object and optionally update the status of any components as described in link:{odhdocshome}/upgrading-open-data-hub/#installing-odh-components_upgradev1[Installing Open Data Hub components].
+After the upgrade, you should inspect the {vernum} `DataScienceCluster` object and optionally update the status of any components as described in link:{odhdocshome}/installing-open-data-hub/#installing-odh-components_installv2[Installing Open Data Hub components].
 
 [NOTE]
 ====
@@ -35,13 +35,6 @@ Note that Open Data Hub Operator versions 2.2 and later use an upgraded API vers
 |`.spec.components.[component_name].enabled: false`
 |`.spec.components.[component_name].managementState: Removed`
 |===
-
-[IMPORTANT]
-====
-Data science pipelines 2.0 contains an installation of Argo Workflows. {org-name} does not support direct use of this instance of Argo Workflows.
-
-If you upgrade to {productname-short} 2.10.0 or later with data science pipelines enabled and an Argo Workflows instance that is not installed by data science pipelines exists on your cluster, {productname-short} components will not be upgraded. To complete the component upgrade, disable data science pipelines or remove the separate instance of Argo Workflows. The component upgrade will complete automatically.
-====
 
 *Update workflows interacting with `OdhDashboardConfig` resource*
 
@@ -80,6 +73,7 @@ The embedded Kueue component for managing distributed workloads is deprecated. {
 
 To ensure workloads continue using queue management, you must migrate from the embedded Kueue component to the {rhbok-productname} Operator, which requires OpenShift Container Platform 4.18 or later. For more information, see link:{odhdocshome}/managing-odh/#migrating-to-the-rhbok-operator_kueue[Migrating to the {rhbok-productname} Operator].
 
+////
 *Update embedded Kueue*
 
 If you have not yet migrated to the {rhbok-productname} Operator, you must update the embedded Kueue component.  
@@ -120,7 +114,7 @@ app.opendatahub.io/kueue: 'true'
 The {productname-long} Operator starts the Kueue Controller, and Kueue then automatically creates the `v1beta1` MultiKueue CRDs.
 In the `default-dsc` `DataScienceCluster` custom resource, the `kueueReady` condition changes to `True`. 
 For information about how to check that the *kueue-controller-manager-_<pod-id>_* pod is *Running*, see link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
-
+////
 
 *Check the status of certificate management*
 
