@@ -5,13 +5,27 @@
 = Auto-configuring Guardrails
 
 [role='_abstract']
-Auto-configuration simplifies the guardrails setup process by automatically handling TLS configuration and authentication, ensuring seamless and secure communication between components.  To integrate with detector services in your namespace, use the `autoConfig` specification in `GuardrailsOrchestrator` custom resource (CR).
+Auto-configuration simplifies the Guardrails setup process by automatically handling TLS configuration and authentication, ensuring seamless and secure communication between components.  To integrate with detector services in your namespace, use the `autoConfig` specification in the `GuardrailsOrchestrator` custom resource (CR).
 For example, if any of the detectors or generation services use HTTPS, their credentials are automatically discovered, mounted, and used. Additionally, the orchestrator is automatically configured to forward all necessary authentication token headers.
 
 .Prerequisites
-* Each detector server you intend to use has an OpenShift label applied in the resource metadata, For example, `metadata.labels.<label_name>: true`. Choose a descriptive name for the label as it is required for auto-configuration.
-* You have setup the inference service to which you intend to apply guardrails.
-* You have downloaded and installed the {productname-short} command-line interface (CLI). For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc[Installing the OpenShift CLI^].
+* Each detector server you intend to use has an OpenShift label applied in the resource metadata. For example, `metadata.labels.<label_name>: true`. Choose a descriptive name for the label as it is required for auto-configuration.
+* You have set up the inference service to which you intend to apply guardrails.
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+ifdef::self-managed[]
+* You have link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/service_mesh/service-mesh-2-x#installing-ossm[installed^] the Red Hat OpenShift Service Mesh Operator and dependent Operators.
+endif::[]
+ifdef::cloud-service[]
+* You have link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/service_mesh/service-mesh-2-x#installing-ossm[installed^] the Red Hat OpenShift Service Mesh Operator and dependent Operators.
+endif::[]
 
 .Procedure
 . Create a  `GuardrailsOrchestrator` CR with the `autoConfig` configuration. For example, create a YAML file named `guardrails_orchestrator_auto_cr.yaml` with the following contents:
@@ -34,15 +48,14 @@ spec:
   replicas: 1
 ----
 +
-* `inferenceServiceToGuardrail`: specifies the name of the vLLM inference service to be guardrailed.
-* `detectorServiceLabelToMatch`: specifies the label that we chose to apply to each of our detector servers in the `metadata.labels` specification for the detector.
-
+* `inferenceServiceToGuardrail`: Specifies the name of the vLLM inference service to be guardrailed.
+* `detectorServiceLabelToMatch`: Specifies the label that you applied to each of your detector servers in the `metadata.labels` specification for the detector. The  Guardrails Orchestrator `ConfigMap` automatically updates to reflect detectors in your namespace that match the label set in the `detectorServiceLabelToMatch` field.
 
 . Deploy the orchestrator custom resource. This step creates a service account, deployment, service, and route object in your namespace.
 +
 [source,terminal]
 ----
-oc apply -f guardrails_orchestrator_auto_cr.yaml -n <TEST_NAMESPACE>
+oc apply -f guardrails_orchestrator_auto_cr.yaml -n <your_namespace>
 ----
 
 .Verification
@@ -55,11 +68,11 @@ You can verify that the `GuardrailsOrchestrator` CR and corresponding automatica
 $ oc get guardrailsorchestrator -n <your_namespace>
 ----
 
-. View the automatically generated the Guardrails Orchestrator `ConfigMap`:
+. View the automatically generated Guardrails Orchestrator `ConfigMap`:
 +
 [source,terminal]
 ----
-$ oc get configmap -n <YOUR_NAMESPACE> | grep auto-config
+$ oc get configmap -n <your_namespace> | grep auto-config
 ----
 +
 [source,terminal]
@@ -67,15 +80,15 @@ $ oc get configmap -n <YOUR_NAMESPACE> | grep auto-config
 $ oc get configmap guardrails-orchestrator-auto-config -n <your_namespace> -o yaml
 ----
 
-. The  Guardrails Orchestrator `ConfigMap` automatically updates to reflect detectors in your namespace that match the label set in the `detectorServiceLabelToMatch` field. If you enabled the Guardrails Gateway by using `enableGuardrailsGateway: true`, verify the default gateway `ConfigMap`:
+. If you enabled the Guardrails Gateway by using `enableGuardrailsGateway: true`, run the following command to verify the default gateway `ConfigMap`:
 +
 [source,terminal]
 ----
 $ oc get configmap guardrails-orchestrator-gateway-auto-config -n <your_namespace> -o yaml
 ----
 +
-This ConfigMap defines default routes such as the following:
+This ConfigMap defines default routes such as the following examples:
 +
 
-* all: uses all available detectors
-* passthrough: uses no detectors
+* `all`: Uses all available detectors
+* `passthrough`: Uses no detectors
