@@ -15,7 +15,7 @@ The model registry operator uses {openshift-platform} Role-Based Access Control 
 endif::[]
 
 ifdef::upstream[]
-The model registry operator uses {openshift-platform} Role-Based Access Control (RBAC), and creates various RBAC resources in the `odh-model-registries` namespace.
+The model registry operator uses {openshift-platform} Role-Based Access Control (RBAC), and creates various RBAC resources in the `pass:attributes[{mr-default-namespace}]` namespace.
 endif::[]
 
 For each model registry instance, the operator creates a `registry-users-<model registry instance name>` role and an {openshift-platform} group called `<model registry instance name>-users`. To grant an individual user, service account, or group access to a model registry instance, your cluster administrator must create a role binding to the `registry-users-<model registry instance name>` role for the instance.
