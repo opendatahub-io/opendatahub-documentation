@@ -40,23 +40,23 @@ endif::[]
 . Click the default instance name (for example, *default-dsc*) to open the instance details page.
 . Click the *YAML* tab to show the instance specifications.
 ifdef::upstream[]
-. Find the `spec.components` section, and then add or update it to include the following `modelregistry` component entry, with the `managementState` field set to `Managed`, and the `registriesNamespace` field set to `odh-model-registries`:
+. Find the `spec.components` section, and then add or update it to include the following `modelregistry` component entry, with the `managementState` field set to `Managed`, and the `registriesNamespace` field set to `pass:attributes[{mr-default-namespace}]`:
 +
-[source]
+[source, subs="attributes+"]
 ----
  modelregistry:
     managementState: Managed
-    registriesNamespace: odh-model-registries
+    registriesNamespace: {mr-default-namespace}
 ----
 endif::[]
 ifndef::upstream[]
-. Find the `spec.components` section, and then add or update it to include the following `modelregistry` component entry, with the `managementState` field set to `Managed`, and the `registriesNamespace` field set to `rhoai-model-registries`:
+. Find the `spec.components` section, and then add or update it to include the following `modelregistry` component entry, with the `managementState` field set to `Managed`, and the `registriesNamespace` field set to `pass:attributes[{mr-default-namespace}]`:
 +
-[source]
+[source, subs="attributes+"]
 ----
  modelregistry:
     managementState: Managed
-    registriesNamespace: rhoai-model-registries
+    registriesNamespace: {mr-default-namespace}
 ----
 endif::[]
 . Click *Save*.
@@ -65,10 +65,10 @@ endif::[]
 * Confirm that the model registry namespace was created successfully:
 .. In the OpenShift console, click *Home* → *Projects*.
 ifdef::upstream[]
-.. Confirm that the `odh-model-registries` namespace is displayed in the *Projects* drop-down list.
+.. Confirm that the `pass:attributes[{mr-default-namespace}]` namespace is displayed in the *Projects* drop-down list.
 endif::[]
 ifndef::upstream[]
-.. Confirm that the `rhoai-model-registries` namespace is displayed in the *Projects* drop-down list.
+.. Confirm that the `pass:attributes[{mr-default-namespace}]` namespace is displayed in the *Projects* drop-down list.
 endif::[]
 
 * Check the status of the *model-registry-operator-controller-manager* pod:

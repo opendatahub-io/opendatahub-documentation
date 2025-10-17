@@ -87,10 +87,10 @@ ifndef::upstream[]
 . Log in to the {openshift-cli}.
 . Run the following command to stream logs from all Operator pods:
 +
-[source]
+[source, subs="attributes+"]
 ----
-for pod in $(oc get pods -l name=rhods-operator -n redhat-ods-operator -o name); do
-  oc logs -f "$pod" -n redhat-ods-operator &
+for pod in $(oc get pods -l name=rhods-operator -n {operator-default-namespace} -o name); do
+  oc logs -f "$pod" -n {operator-default-namespace} &
 done
 ----
 +
@@ -98,5 +98,5 @@ The Operator pod logs open in your terminal.
 +
 TIP: Press `Ctrl+C` to stop viewing. To fully stop all log streams, run `kill $(jobs -p)`.
 
-You can also view each Operator pod log in the {openshift-platform} console by navigating to *Workloads* -> *Pods*, selecting the *redhat-ods-operator* project, clicking a pod name, and then clicking the *Logs* tab.
+You can also view each Operator pod log in the {openshift-platform} console by navigating to *Workloads* -> *Pods*, selecting the *`pass:attributes[{operator-default-namespace}]`* project, clicking a pod name, and then clicking the *Logs* tab.
 endif::[]
