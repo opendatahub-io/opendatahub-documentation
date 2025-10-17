@@ -15,11 +15,11 @@ ifndef::upstream[]
 You can use preinstalled model-serving runtimes to start serving models without modifying or defining the runtime yourself. For help adding a custom runtime, see link:{rhoaidocshome}{default-format-url}/configuring_your_model-serving_platform/configuring_model_servers_on_the_single_model_serving_platform#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_rhoai-admin[Adding a custom model-serving runtime for the single-model serving platform].
 endif::[]
 
+To successfully deploy a model, you must meet the following prerequisites.
 
-.Prerequisites
+.General prerequisites
 * You have logged in to {productname-long}.
-* You have installed KServe.
-* You have enabled the single-model serving platform.
+* You have installed KServe and enabled the single-model serving platform.
 ifdef::self-managed[]
 ifndef::disconnected[]
 * (Knative Serverless deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
@@ -34,76 +34,76 @@ endif::[]
 ifdef::upstream[]
 * (Knative Serverless deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider.
 endif::[]
-
 * You have created a data science project.
-* You have access to S3-compatible object storage.
-* For the model that you want to deploy, you know the associated URI in your S3-compatible object storage bucket or Open Container Initiative (OCI) container.
-* To use the Caikit-TGIS runtime, you have converted your model to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
+* You have access to S3-compatible object storage, URI-based repository, or OCI-compliant registry and have added a connection to your data science project. For more information about adding a connection, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
 ifndef::upstream[]
 * If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. If you use NVIDIA GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]. If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#amd-gpu-integration_managing-rhoai[AMD GPU integration^].
-* To use the vLLM runtime, you have enabled GPU support in {productname-short} and have installed and configured the Node Feature Discovery Operator on your cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery Operator] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
+endif::[]
+
+.Runtime-specific prerequisites
+
+Meet the requirements for the specific runtime you intend to use.
+
+* **Caikit-TGIS runtime**
+** To use the Caikit-TGIS runtime, you have converted your model to Caikit format. For an example, see link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/built-tip.md#bootstrap-process[Converting Hugging Face Hub models to Caikit format^] in the link:https://github.com/opendatahub-io/caikit-tgis-serving/tree/main[caikit-tgis-serving^] repository.
+
+* **vLLM NVIDIA GPU ServingRuntime for KServe**
+ifndef::upstream[]
+** To use the *vLLM NVIDIA GPU ServingRuntime for KServe* runtime, you have enabled GPU support in {productname-short} and have installed and configured the Node Feature Discovery Operator on your cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery Operator] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
 endif::[]
 ifdef::upstream[]
-* To use the *vLLM NVIDIA GPU ServingRuntime for KServe* runtime or use graphics processing units (GPUs) with your model server, you have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
+** To use the *vLLM NVIDIA GPU ServingRuntime for KServe* runtime or use graphics processing units (GPUs) with your model server, you have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
+** To deploy {rhelai-productname-short} models, use the *vLLM NVIDIA GPU ServingRuntime for KServe* runtime and ensure you have downloaded the model from the {org-name} container registry and uploaded it to S3-compatible object storage.
 endif::[]
+
 ifdef::self-managed[]
-* To use the VLLM runtime on IBM Z and IBM Power, use the *vLLM CPU ServingRuntime for KServe*. You cannot use GPU accelerators with IBM Z and IBM Power architectures.
+* **vLLM CPU ServingRuntime for KServe**
+** To use the VLLM runtime on IBM Z and IBM Power, use the *vLLM CPU ServingRuntime for KServe*. You cannot use GPU accelerators with IBM Z and IBM Power architectures.
 For more information, see link:https://access.redhat.com/solutions/7109527[Red{nbsp}Hat {openshift-platform} Multi Architecture Component Availability Matrix].
 endif::[]
 ifdef::upstream[]
-* To use the VLLM runtime on IBM Z and IBM Power, use the *vLLM CPU ServingRuntime for KServe*. For IBM Z and IBM Power, vLLM runtime is supported only on CPU.
+* **vLLM CPU ServingRuntime for KServe**
+** To use the VLLM runtime on IBM Z and IBM Power, use the *vLLM CPU ServingRuntime for KServe*. For IBM Z and IBM Power, vLLM runtime is supported only on CPU.
 endif::[]
+
+* **vLLM Intel Gaudi Accelerator ServingRuntime for KServe**
 ifndef::upstream[]
-* To use the *vLLM Intel Gaudi Accelerator ServingRuntime for KServe* runtime, you have enabled support for hybrid processing units (HPUs) in {productname-short}. This includes installing the Intel Gaudi Base Operator and configuring a hardware profile. For more information, see link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html#openshift-installation[Intel Gaudi Base Operator OpenShift installation^] in the AMD documentation and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
+** To use the *vLLM Intel Gaudi Accelerator ServingRuntime for KServe* runtime, you have enabled support for hybrid processing units (HPUs) in {productname-short}. This includes installing the Intel Gaudi Base Operator and configuring a hardware profile. For more information, see link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html#openshift-installation[Intel Gaudi Base Operator OpenShift installation^] in the AMD documentation and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
 ifdef::upstream[]
-* To use the *vLLM Intel Gaudi Accelerator ServingRuntime for KServe* runtime, you have enabled support for hybrid processing units (HPUs) in {productname-short}. This includes installing the Intel Gaudi Base Operator and configuring a hardware profile. For more information, see link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html#openshift-installation[Intel Gaudi Base Operator OpenShift installation^] and link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles^].
+** To use the *vLLM Intel Gaudi Accelerator ServingRuntime for KServe* runtime, you have enabled support for hybrid processing units (HPUs) in {productname-short}. This includes installing the Intel Gaudi Base Operator and configuring a hardware profile. For more information, see link:https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/OpenShift_Installation/index.html#openshift-installation[Intel Gaudi Base Operator OpenShift installation^] and link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
+
+* **vLLM AMD GPU ServingRuntime for KServe**
 ifndef::upstream[]
-* To use the *vLLM AMD GPU ServingRuntime for KServe* runtime, you have enabled support for AMD graphic processing units (GPUs) in {productname-short}. This includes installing the AMD GPU operator and configuring a hardware profile. For more information, see link:https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/openshift-olm.html[Deploying the AMD GPU operator on OpenShift^] and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
+** To use the *vLLM AMD GPU ServingRuntime for KServe* runtime, you have enabled support for AMD graphic processing units (GPUs) in {productname-short}. This includes installing the AMD GPU operator and configuring a hardware profile. For more information, see link:https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/openshift-olm.html[Deploying the AMD GPU operator on OpenShift^] and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
 ifdef::upstream[]
-* To use the *vLLM AMD GPU ServingRuntime for KServe* runtime, you have enabled support for AMD graphic processing units (GPUs) in {productname-short}. This includes installing the AMD GPU Operator and configuring a hardware profile. For more information, see link:https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/openshift-olm.html[Deploying the AMD GPU operator on OpenShift^] and link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles^].
+** To use the *vLLM AMD GPU ServingRuntime for KServe* runtime, you have enabled support for AMD graphic processing units (GPUs) in {productname-short}. This includes installing the AMD GPU Operator and configuring a hardware profile. For more information, see link:https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/openshift-olm.html[Deploying the AMD GPU operator on OpenShift^] and link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
-ifdef::self-managed[]
-+
-[NOTE]
-====
-In {productname-short} {vernum}, {org-name} supports NVIDIA GPU, Intel Gaudi, and AMD GPU accelerators for model serving.
-====
+
+* **vLLM Spyre AI Accelerator ServingRuntime for KServe**
+ifndef::upstream[]
+** To use the *vLLM Spyre AI Accelerator ServingRuntime for KServe* runtime on x86, you have installed the Spyre operator and configured a hardware profile. For more information, see link:https://catalog.redhat.com/en/software/containers/ibm-aiu/spyre-operator/688a1121575e62c686a471d4[Spyre operator image] and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
-ifdef::cloud-service[]
-+
-[NOTE]
-====
-In {productname-short}, {org-name} supports NVIDIA GPU, Intel Gaudi, and AMD GPU accelerators for model serving.
-====
+ifdef::upstream[]
+** To use the *vLLM Spyre AI Accelerator ServingRuntime for KServe* runtime on x86, you have installed the Spyre operator and configured a hardware profile. For more information, see link:https://catalog.redhat.com/en/software/containers/ibm-aiu/spyre-operator/688a1121575e62c686a471d4[Spyre operator image] and link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
-*  To deploy {rhelai-productname-short} models:
-** You have enabled the *vLLM NVIDIA GPU ServingRuntime for KServe* runtime.
-** You have downloaded the model from the {org-name} container registry and uploaded it to S3-compatible object storage.
 
 .Procedure
 . In the left menu, click *Data science projects*.
-+
-The *Data science projects* page opens.
 . Click the name of the project that you want to deploy a model in.
 +
 A project details page opens.
 . Click the *Models* tab.
-. Perform one of the following actions:
-+
---
-* If you see a *​​Single-model serving platform* tile, click *Deploy model* on the tile.
-* If you do not see any tiles, click the *Deploy model* button.
---
+. Click *Select single-model* to deploy your model using single-model serving.
+. Click the *Deploy model* button.
 +
 The *Deploy model* dialog opens.
-
 . In the *Model deployment name* field, enter a unique name for the model that you are deploying.
 . In the *Serving runtime* field, select an enabled runtime.
 If project-scoped runtimes exist, the *Serving runtime* list includes subheadings to distinguish between global runtimes and project-scoped runtimes.
-. From the *Model framework (name - version)* list, select a value.
+. From the *Model framework (name - version)* list, select a value if applicable.
 ifndef::upstream[]
 . From the **Deployment mode** list, select *KServe RawDeployment* or *Knative Serverless*. For more information about deployment modes, see link:{rhoaidocshome}{default-format-url}/deploying_models/rhoai-user_rhoai-user#about-kserve-deployment-modes_rhoai-user[About KServe deployment modes].
 endif::[]
@@ -125,43 +125,29 @@ ifndef::upstream[]
 For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
 endif::[] 
 ====
-
-.. Optional To change these default values, click *Customize resource requests and limit* and enter new minimum (request) and maximum (limit) values. The hardware profile specifies the number of CPUs and the amount of memory allocated to the container, setting the guaranteed minimum (request) and maximum (limit) for both. 
+.. Optional: To change these default values, click *Customize resource requests and limit* and enter new minimum (request) and maximum (limit) values. The hardware profile specifies the number of CPUs and the amount of memory allocated to the container, setting the guaranteed minimum (request) and maximum (limit) for both. 
 . Optional: In the *Model route* section, select the *Make deployed models available through an external route* checkbox to make your deployed models available to external clients.
 . To require token authentication for inference requests to the deployed model, perform the following actions:
 .. Select *Require token authentication*.
 .. In the *Service account name* field, enter the service account name that the token will be generated for.
 .. To add an additional service account, click *Add a service account* and enter another service account name.
-. To specify the location of your model, perform one of the following sets of actions:
-+
---
-* *To use an existing connection*
-.. Select *Existing connection*.
-.. From the *Name* list, select a connection that you previously defined.
-... *For S3-compatible object storage*: In the *Path* field, enter the folder path that contains the model in your specified data source.
+. To specify the location of your model, select a *Connection type* that you have added. The *OCI-compliant registry*, *S3 compatible object storage*, and *URI* options are pre-installed connection types. Additional options might be available if your {productname-short} administrator added them.
+.. *For S3-compatible object storage*: In the *Path* field, enter the folder path that contains the model in your specified data source.
 ifdef::self-managed,cloud-service[]
 +
 IMPORTANT: The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
 endif::[]
-... *For Open Container Image connections*: In the *OCI storage location* field, enter the model URI where the model is located.
+.. *For Open Container Image connections*: In the *OCI storage location* field, enter the model URI where the model is located.
 +
 [NOTE]
 ====
 If you are deploying a registered model version with an existing S3, URI, or OCI data connection, some of your connection details might be autofilled. This depends on the type of data connection and the number of matching connections available in your data science project. For example, if only one matching connection exists, fields like the path, URI, endpoint, model URI, bucket, and region might populate automatically. Matching connections will be labeled as **Recommended**.
 ====
-
-* *To use a new connection* 
-... To define a new connection that your model can access, select *New connection*.
-+
-. In the *Add connection* modal, select a *Connection type*. The *OCI-compliant registry*, *S3 compatible object storage*, and *URI* options are pre-installed connection types. Additional options might be available if your {productname-short} administrator added them.
-+
-The *Add connection* form opens with fields specific to the connection type that you selected.
-... Fill in the connection detail fields.
+.. Fill in the connection detail fields.
 ifdef::self-managed,cloud-service[]
 +
 IMPORTANT: If your connection type is an S3-compatible object storage, you must provide the folder path that contains your data file. The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
 endif::[]
---
 . (Optional) Customize the runtime parameters in the *Configuration parameters* section:
 .. Modify the values in *Additional serving runtime arguments* to define how the deployed model behaves.
 .. Modify the values in *Additional environment variables* to define variables in the model's environment.
@@ -169,11 +155,12 @@ endif::[]
 The *Configuration parameters* section shows predefined serving runtime parameters, if any are available.
 +
 NOTE: Do not modify the port or model serving runtime arguments, because they require specific values to be set. Overwriting these parameters can cause the deployment to fail.
-+
 . Click *Deploy*.
 
 .Verification
 * Confirm that the deployed model is shown on the *Models* tab for the project, and on the *Model deployments* page of the dashboard with a checkmark in the *Status* column.
 
-// [role="_additional-resources"]
-// .Additional resources
+[role="_additional-resources"]
+.Additional resources
+
+* link:{rhoaidocshome}{default-format-url}/configuring_your_model-serving_platform/configuring-your-model-serving-platform_rhoai-admin#model-serving-runtimes-for-accelerators_rhoai-admin[Model-serving runtimes for accelerators]
