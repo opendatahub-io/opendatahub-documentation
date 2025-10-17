@@ -81,7 +81,7 @@ The example YAML file includes the following information:
 +
 <1> A description of the image.
 <2> The image name that is displayed in the drop down menu when a user creates a workbench in the {productname-short} dashboard.
-<3> The `redhat-ods-applications` namespace is the default namespace in which the `ImageStream` CR is created.
+<3> The `pass:attributes[{dbd-config-default-namespace}]` namespace is the default namespace in which the `ImageStream` CR is created.
 <4> The labels that are required if you want the image to appear in the {productname-short} dashboard. The `app.kubernetes.io/created-by: byon` label identifies the origination of the image object.
 <5> Annotations that are required if you want to make the image available in the {productname-short} dashboard. 
 <6> The version for the image. You can configure multiple versions for the same image. For this example, the version is 1.0.
@@ -103,19 +103,19 @@ oc create -f notebook-image-stream.yaml
 
 . To verify that the `ImageStream` was successfully created, run the following command, where the name of the `ImageStream` is `my-custom-notebook`:
 +
-[source,terminal]
+[source,terminal, subs="attributes+"]
 ----
-oc describe imagestream my-custom-notebook -n redhat-ods-applications
+oc describe imagestream my-custom-notebook -n {dbd-config-default-namespace}
 ----
 +
 You should see output similar to the following example:
 +
 .Example output 
 
-[source,yaml]
+[source,yaml, subs="attributes+"]
 ----
 Name:                   my-custom-notebook
-Namespace:              redhat-ods-applications
+Namespace:              {dbd-config-default-namespace}
 Created:                6 minutes ago
 Labels:                 app.kubernetes.io/created-by=byon
                         opendatahub.io/dashboard=true
