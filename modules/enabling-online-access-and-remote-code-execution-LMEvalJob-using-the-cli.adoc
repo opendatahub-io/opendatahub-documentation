@@ -61,7 +61,7 @@ The `permitCodeExecution` and `permitOnline` settings are disabled by default wi
 
 . Apply the updated `DataScienceCluster`:
 +
-[source,yaml]
+[source,terminal]
 ----
 $ oc apply -f allow-online-code-exec-dsc.yaml -n redhat-ods-operator
 ----
@@ -82,7 +82,7 @@ default-dsc   True
 
 . For new LMEval jobs, define the job in a YAML file as shown in the following example. This configuration requests both internet access, with `allowOnline: true`, and permission for remote code execution with, `allowCodeExecution: true`: 
 +
-.Example lmeval-allow-online-code-exec.yaml
+.Example lmevaljob-with-online-code-exec.yaml
 [source,yaml]
 ----
 apiVersion: trustyai.opendatahub.io/v1alpha1
@@ -101,7 +101,7 @@ The `allowOnline` and `allowCodeExecution` settings are disabled by default with
 
 . Deploy the LMEval Job:
 +
-[source,yaml]
+[source,terminal]
 ----
 $ oc apply -f lmevaljob-with-online-code-exec.yaml -n <your_namespace>
 ----
@@ -133,3 +133,4 @@ $ oc get configmaps trustyai-dsc-config -n redhat-ods-applications -o "jsonpath=
 [source,terminal]
 ----
 {"eval.lmeval.permitCodeExecution":"false","eval.lmeval.permitOnline":"true"}
+----
