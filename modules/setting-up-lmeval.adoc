@@ -71,19 +71,6 @@ You can configure the following properties for LM-Eval:
 | 10s
 | The interval to check the job pod for an evaluation job.
 
-| `lmes-allow-online`
-| `false`
-| Whether LMEval jobs can set the online mode to `on` to access artifacts (models, datasets, tokenizers) from the internet. 
-
-| `lmes-allow-code-execution`
-| `false`
-| Determines whether LMEval jobs can set the `trust remote code` mode to `on`.
- 
 |===
 
 After updating the settings in the `ConfigMap`, restart the operator to apply the new values.
-
-[IMPORTANT]
---
-The `allowOnline` and `allowCodeExecution` settings are *disabled* by default at the operator level in {productname-long}. LMEval jobs do not allow internet access or permission to run any externally downloaded code unless explicitly enabled.
---
