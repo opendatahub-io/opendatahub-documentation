@@ -46,6 +46,7 @@ kind: DataScienceCluster
 metadata:
   name: default-dsc
 spec:
+# ...
   components:
     trustyai:
       managementState: Managed
@@ -53,6 +54,7 @@ spec:
         lmeval:
            permitOnline: allow
            permitCodeExecution: allow
+# ...
 ----
 +
 The `permitCodeExecution` and `permitOnline` settings are disabled by default with a value of `deny`. You must explicitly enable these settings in the `DataScienceCluster` resource for the `LMEvalJobs` specification to enable internet access or permission to run any externally downloaded code.
@@ -62,6 +64,20 @@ The `permitCodeExecution` and `permitOnline` settings are disabled by default wi
 [source,yaml]
 ----
 $ oc apply -f allow-online-code-exec-dsc.yaml -n redhat-ods-operator
+----
+
+.. Optional: Run the following command to check that the `DataScienceCluster` is in a healthy state:
++
+[source,terminal]
+----
+$ oc get datasciencecluster default-dsc
+----
++
+.Example output
+[source,terminal]
+----
+NAME          READY   REASON
+default-dsc   True
 ----
 
 . For new LMEval jobs, define the job in a YAML file as shown in the following example. This configuration requests both internet access, with `allowOnline: true`, and permission for remote code execution with, `allowCodeExecution: true`: 
@@ -75,10 +91,10 @@ metadata:
   name: lmevaljob-with-online-code-exec
   namespace: <your_namespace>
 spec:
-...
+# ...
   allowOnline: true
   allowCodeExecution: true
-...
+# ...
 ----
 +
 The `allowOnline` and `allowCodeExecution` settings are disabled by default with a value of `false` in the `LMEvalJob` CR.
