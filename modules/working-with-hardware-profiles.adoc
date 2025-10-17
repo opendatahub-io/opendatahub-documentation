@@ -13,7 +13,9 @@ For more information about the support scope of {org-name} Technology Preview fe
 ====
 endif::[]
 
-In {productname-long}, you can schedule user workloads on worker nodes that have specific hardware configurations, such as hardware accelerators, CPU-only nodes, or specialized memory allocations. With hardware profiles, you can define these hardware resources explicitly, enabling precise targeting of workloads to specific nodes and improving resource management efficiency.
+In {productname-long}, you can use *hardware profiles* to manage and allocate specific hardware resources, such as hardware accelerators, specialized memory, or CPU-only nodes for data science, machine learning, and generative AI workloads. 
+
+A hardware profile is a custom resource (CR) that you create in {productname-short} to specify a particular hardware configuration. You can create and manage these profiles by going to *Settings* -> *Hardware profiles* on the {productname-short} dashboard.
 
 [IMPORTANT]
 ====
@@ -26,13 +28,13 @@ For more information about setting dashboard configuration options, see link:{rh
 endif::[]
 ====
 
-You can use hardware profiles to create profiles with hardware identifiers, explicit resource allocation limits (CPU, memory, and accelerators), tolerations, and node selectors. These capabilities are particularly beneficial in environments with heterogeneous hardware, including multiple GPU types, CPU-only configurations, memory-intensive workloads, or even single-node deployments. This targeted scheduling significantly enhances resource utilization, reduces overhead, and optimizes costs, especially in complex environments, such as clusters with diverse hardware.
+After you create and enable a hardware profile, you can select it when you deploy resources such as workbenches and model-serving workloads. This capability enables precise targeting of your workloads to specific nodes that have the required hardware, which ultimately improves resource management efficiency.
+
+Hardware profiles offer comprehensive control over resource allocation by allowing you to define profiles with hardware identifiers, explicit resource limits (for CPU, memory, and accelerators), tolerations, and node selectors.
+
+This detailed control is extremely useful in heterogeneous environments (clusters with diverse hardware, like multiple GPU types, CPU-only nodes, or memory-intensive setups). By enabling this targeted scheduling, hardware profiles significantly enhance resource utilization, reduce overhead, and ultimately optimize costs.
 
 To get started, contact your cluster administrator to identify hardware resources available in your cluster. 
-
-To configure specific hardware configurations for your data scientists to use in {productname-short}, you must create an associated hardware profile. A hardware profile is a custom resource definition (CRD) on OpenShift that has a HardwareProfile resource, and defines the hardware specification. You can create and manage hardware profiles by selecting *Settings* -> *Hardware profiles* on the {productname-short} dashboard.
-
-After you create and enable a hardware profile, users can select the hardware profile in the user interface when deploying workbenches, model-serving workloads, and pipelines, where applicable.
 
 [role="_additional-resources"]
 .Additional resources
