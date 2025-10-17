@@ -1,0 +1,63 @@
+:_module-type: PROCEDURE
+
+[id="configuring-inference-service-for-spyre_{context}"]
+= Configuring an inference service for Spyre
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+Support for IBM Spyre AI Accelerators on x86 is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+Support for IBM Spyre AI Accelerators on x86 is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+[role="_abstract"]
+If you are deploying a model using a hardware profile that relies on Spyre schedulers, you must manually edit the `InferenceService` YAML after deployment to add the required scheduler name and tolerations. This step is necessary because the user interface does not currently provide an option to specify a custom scheduler.
+
+.Prerequisites
+
+* You have deployed a model on {openshift-platform} by using the **vLLM Spyre AI Accelerator ServingRuntime for KServe** runtime.
+* You have privileges to edit resources in the project where the model is deployed.
+
+.Procedure
+To configure the inference service, complete the following steps:
+
+. Log in to the {openshift-platform} console.
+. From the perspective dropdown menu, select **Administrator**. 
+. From the **Project** dropdown menu, select the project where your model is deployed. 
+. Navigate to **Home** > **Search**. 
+. From the **Resources** dropdown menu, select `InferenceService`. 
+. Click the name of the `InferenceService` resource associated with your model. 
+. Select the **YAML** tab. 
+. Edit the `spec.predictor` section to add the `schedulerName` and `tolerations` fields as shown in the following example:
++ 
+[source,yaml]
+
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService 
+spec:  
+  predictor:
+    schedulerName: spyre-scheduler
+    tolerations: 
+    - effect: NoSchedule 
+      key: ibm.com/spyre_pf 
+      operator: Exists
++
+. Click **Save**.
+
+.Verification
+
+After you save the YAML, the existing pod for the model is terminated and a new pod is created.
+
+. Navigate to **Workloads** > **Pods**.
+. Click the new pod for your model to view its details.
+. On the **Details** page, verify that the pod is running on a Spyre node by checking the **Node** information.
