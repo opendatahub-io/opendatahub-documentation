@@ -1,0 +1,87 @@
+:_module-type: REFERENCE
+[id="openai-compatible-apis-in-Llama-Stack_{context}"]
+= OpenAI-compatible APIs in Llama Stack
+
+[role="_abstract"]
+{productname-short} includes a Llama Stack component that exposes OpenAI-compatible APIs. These APIs enable you to reuse existing OpenAI SDKs, tools, and workflows directly within your {openshift-platform} environment, without changing your client code. This compatibility layer supports retrieval-augmented generation (RAG), inference, and embedding workloads by using the same endpoints, schemas, and authentication model as OpenAI.
+
+This compatibility layer has the following capabilities:
+
+* *Standardized endpoints*: REST API paths align with OpenAI specifications.  
+* *Schema parity:* Request and response fields follow OpenAI data structures.  
+* *Authentication:* OpenAI-formatted API keys managed through {productname-short}.  
+* *Error handling:* Consistent error codes and response messages.  
+* *Usage tracking:* Integrated rate-limit and quota monitoring in the platform.
+
+[NOTE]
+====
+When connecting OpenAI SDKs or third-party tools to {productname-short}, you must update the client configuration to use your deployment's Llama Stack route as the `base_url`. This ensures that API calls are sent to the OpenAI-compatible endpoints that run inside your {openshift-platform} cluster, rather than to the public OpenAI service.
+====
+
+== Supported OpenAI-compatible APIs in {productname-short}
+
+=== Chat Completions API
+* *Endpoint:* `/v1/chat/completions`.  
+* *Compatibility:* Full OpenAI API parity.
+* *Providers:* All inference back ends deployed through {productname-short}.
+
+The Chat Completions API enables conversational, message-based interactions with models served by Llama Stack in {productname-short}.
+
+---
+
+=== Completions API
+* *Endpoint:* `/v1/completions`.  
+* *Compatibility:* Full OpenAI API parity.  
+* *Providers:* All inference backends managed by {productname-short}.
+
+The Completions API supports single-turn text generation and prompt completion.
+
+---
+
+=== Embeddings API
+* *Endpoint:* `/v1/embeddings`.  
+* *Compatibility:* Full OpenAI API parity. 
+* *Providers:* All embedding models enabled in {productname-short}.
+
+The Embeddings API generates numerical embeddings for text or documents that can be used in downstream semantic search or RAG applications.
+
+---
+
+=== Files API
+* *Endpoint:* `/v1/files`  
+* *Compatibility:* Full OpenAI API parity 
+* *Providers:* Local filesystem and S3-compatible remote storage configured in {productname-short}
+
+The Files API manages file uploads, metadata, and storage for use in embedding and retrieval workflows.
+
+---
+
+=== Vector Store Files API
+* *Endpoint:* `/v1/vector_stores/{vector_store_id}/files`.  
+* *Compatibility:* Full OpenAI API parity. 
+* *Providers:* **Milvus (inline and remote)** configured within {productname-short}.
+
+The Vector Store Files API implements the OpenAI Vector Store Files interface and manages the link between document files and Milvus vector stores used for RAG. 
+
+---
+
+=== Batches API
+* *Endpoint:* `/v1/batches`.
+* *Compatibility:* OpenAI API compatibility (experimental).
+* *Providers:* Limited support.
+
+The Batches API enables OpenAI-compatible batch processing for large-scale operations.
+
+[NOTE]
+====
+*Experimental API*
+
+The Batches API is an experimental feature that is currently in active development and might have limited support or stability.  
+It is provided for evaluation and feedback purposes only and is **not recommended for production use** in {productname-short}.  
+Future releases of {productname-short} might introduce breaking changes or remove this API entirely.
+====
+
+---
+
+//[role="_additional-resources"]
+//.Additional resources
