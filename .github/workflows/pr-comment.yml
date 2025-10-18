@@ -1,0 +1,25 @@
+name: Add a Read the Docs preview URL comment
+
+on:
+  pull_request
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
+jobs:
+  comment_pr:
+    runs-on: ubuntu-latest
+    name: Comment with the build URL
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            🤖 Read the Docs PR docs build is available at:
+            https://opendatahub-documentation--${{ github.event.pull_request.number }}.org.readthedocs.build/en/${{ github.event.pull_request.number }}/
+          comment-tag: execution
