@@ -6,13 +6,18 @@
 [role="_abstract"]
 To use Milvus as a remote vector database provider for Llama Stack in {productname-short}, you must deploy Milvus and its required etcd service in your OpenShift project. This procedure shows how to deploy Milvus in standalone mode without the Milvus Operator.
 
+[NOTE]
+====
+The following example configuration is intended for testing or evaluation environments. For production-grade deployments, see link:https://milvus.io/docs[https://milvus.io/docs^] in the Milvus documentation.
+====
+
 .Prerequisites
 ifndef::upstream[]
 * You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling_accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
 endif::[]
 ifdef::upstream[]
 * You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
-Endif::[]
+endif::[]
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You are logged in to {productname-long}.
 * You have a StorageClass available that can provision persistent volumes.

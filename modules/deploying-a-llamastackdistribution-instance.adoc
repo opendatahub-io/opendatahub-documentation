@@ -1,10 +1,9 @@
 :_module-type: PROCEDURE
-
 [id="deploying-a-llamastackdistribution-instance_{context}"]
 = Deploying a LlamaStackDistribution instance
 
-[role='_abstract']
-You can integrate LlamaStack and its retrieval-augmented generation (RAG) capabilities with your deployed Llama 3.2 model served by vLLM. You can use this integration to build intelligent applications that combine large language models (LLMs) with real-time data retrieval, providing more accurate and contextually relevant responses for your AI workloads. When you create a `LlamaStackDistribution` custom resource (CR), specify `rh-dev` in the `spec.server.distribution.name` field. 
+[role="_abstract"]
+You can deploy Llama Stack with retrieval-augmented generation (RAG) by pairing it with a vLLM-served Llama 3.2 model. This module provides two deployment examples of the `LlamaStackDistribution` custom resource (CR): one configured for Inline Milvus (single-node, embedded) and one for Remote Milvus (external Milvus service). When you create the CR, specify `rh-dev` in the `spec.server.distribution.name` field.
 
 ifdef::self-managed[]
 ifdef::disconnected[]
@@ -20,11 +19,11 @@ ifdef::upstream[]
 * You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
 endif::[]
 * You have cluster administrator privileges for your {openshift-platform} cluster.
-* You have logged in to {productname-long}.
+* You are logged in to {productname-long}.
 * You have activated the Llama Stack Operator in {productname-short}.
-* You have deployed an inference model with vLLM, for example, the llama-3.2-3b-instruct model, and you have selected *Make deployed models available through an external route* and *Require token authentication* during model deployment.
-* You have the correct inference model identifier, for example, llama-3-2-3b.
-* You have the model endpoint URL, ending with `/v1`, such as `https://llama-32-3b-instruct-predictor:8443/v1`.
+* You have deployed an inference model with vLLM (for example, *llama-3.2-3b-instruct*) and selected *Make deployed models available through an external route* and *Require token authentication* during model deployment.
+* You have the correct inference model identifier, for example, `llama-3-2-3b`.
+* You have the model endpoint URL ending with `/v1`, for example, `https://llama-32-3b-instruct-predictor:8443/v1`.
 * You have the API token required to access the model endpoint.
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
@@ -38,51 +37,53 @@ endif::[]
 
 .Procedure
 
-. Open a new terminal window.
-.. Log in to your {openshift-platform} cluster from the CLI:
-.. In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*.
-.. After you have logged in, click *Display token*.
-.. Copy the *Log in with this token* command and paste it in the {openshift-cli}.
+. Open a new terminal window and log in to your {openshift-platform} cluster from the CLI:
++
+In the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*. After you have logged in, click *Display token*. Copy the *Log in with this token* command and paste it in the {openshift-cli}.
 +
 [source,subs="+quotes"]
 ----
 $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 ----
-. Create a secret containing the inference model environment variables:
+
+. Create a secret that contains the inference model environment variables:
 +
 [source,terminal]
 ----
 export INFERENCE_MODEL="llama-3-2-3b"
 export VLLM_URL="https://llama-32-3b-instruct-predictor:8443/v1"
-export VLLM_TLS_VERIFY="false" # Use "true" in production!
+export VLLM_TLS_VERIFY="false"   # Use "true" in production
 export VLLM_API_TOKEN="<token identifier>"
 
 oc create secret generic llama-stack-inference-model-secret \
-  --from-literal INFERENCE_MODEL="$INFERENCE_MODEL" \
-  --from-literal VLLM_URL="$VLLM_URL" \
-  --from-literal VLLM_TLS_VERIFY="$VLLM_TLS_VERIFY" \
-  --from-literal VLLM_API_TOKEN="$VLLM_API_TOKEN"
+  --from-literal=INFERENCE_MODEL="$INFERENCE_MODEL" \
+  --from-literal=VLLM_URL="$VLLM_URL" \
+  --from-literal=VLLM_TLS_VERIFY="$VLLM_TLS_VERIFY" \
+  --from-literal=VLLM_API_TOKEN="$VLLM_API_TOKEN"
 ----
 
-. Log in to the OpenShift web console.
-. From the left-hand navigation, select *Administrator* view.
-. Click the *Quick Create* (image:images/quick-create-icon.png[]) icon and then click the *Import YAML* option.
-. In the *YAML* editor that is displayed, create a custom resource definition (CRD) similar to the following example:
+. Choose **one** of the following deployment examples:
+
+== Example A: LlamaStackDistribution with *Inline Milvus*
+
+Use this example for development or small datasets where an embedded, single-node Milvus is sufficient. No `MILVUS_*` connection variables are required.
+
+. In the OpenShift web console, select *Administrator* → *Quick Create* (image:images/quick-create-icon.png[]) → *Import YAML*, and create a CR similar to the following:
 +
 [source,yaml]
 ----
 apiVersion: llamastack.io/v1alpha1
 kind: LlamaStackDistribution
 metadata:
-  name: lsd-llama-milvus
+  name: lsd-llama-milvus-inline
 spec:
   replicas: 1
   server:
     containerSpec:
       resources:
         requests:
-          cpu: 4
-          memory: "12Gi"
+          cpu: "250m"
+          memory: "500Mi"
         limits:
           cpu: 4
           memory: "12Gi"
@@ -92,7 +93,6 @@ spec:
             secretKeyRef:
               name: llama-stack-inference-model-secret
               key: INFERENCE_MODEL
-              optional: true
         - name: VLLM_MAX_TOKENS
           value: "4096"
         - name: VLLM_URL
@@ -100,31 +100,16 @@ spec:
             secretKeyRef:
               name: llama-stack-inference-model-secret
               key: VLLM_URL
-              optional: true
         - name: VLLM_TLS_VERIFY
           valueFrom:
             secretKeyRef:
               name: llama-stack-inference-model-secret
               key: VLLM_TLS_VERIFY
-              optional: true
         - name: VLLM_API_TOKEN
           valueFrom:
             secretKeyRef:
               name: llama-stack-inference-model-secret
               key: VLLM_API_TOKEN
-              optional: true
-        - name: FMS_ORCHESTRATOR_URL
-          value: "http://localhost"
-        # --- Remote Milvus configuration (v2.25: no ConfigMap required) ---
-        - name: MILVUS_ENDPOINT
-          value: "http://milvus-service:19530" # --- Use the **gRPC** port (`19530`) for `MILVUS_ENDPOINT`. Port `9091` is for health checks.---
-        - name: MILVUS_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: milvus-secret
-              key: root-password
-        - name: MILVUS_CONSISTENCY_LEVEL
-          value: "Bounded"
       name: llama-stack
       port: 8321
     distribution:
@@ -136,12 +121,100 @@ spec:
 The `rh-dev` value is an internal image reference. When you create the `LlamaStackDistribution` custom resource, the {productname-short} Operator automatically resolves `rh-dev` to the container image in the appropriate registry. This internal image reference allows the underlying image to update without requiring changes to your custom resource.
 ====
 
+== Example B: LlamaStackDistribution with *Remote Milvus*
+
+Use this example for production-grade or large datasets with an external Milvus service. This configuration reads both `MILVUS_ENDPOINT` **and** `MILVUS_TOKEN` from a dedicated secret.
+
+. Create the Milvus connection secret:
++
+[source,terminal]
+----
+# Required: gRPC endpoint on port 19530
+export MILVUS_ENDPOINT="tcp://milvus-service:19530"
+export MILVUS_TOKEN="<milvus-root-or-user-token>"
+export MILVUS_CONSISTENCY_LEVEL="Bounded"   # Optional; choose per your deployment
+
+oc create secret generic milvus-secret \
+  --from-literal=MILVUS_ENDPOINT="$MILVUS_ENDPOINT" \
+  --from-literal=MILVUS_TOKEN="$MILVUS_TOKEN" \
+  --from-literal=MILVUS_CONSISTENCY_LEVEL="$MILVUS_CONSISTENCY_LEVEL"
+----
++
+[IMPORTANT]
+====
+Use the **gRPC port `19530`** for `MILVUS_ENDPOINT`. Ports such as `9091` are typically used for health checks and are not valid for client traffic.
+====
+
+. In the OpenShift web console, select *Administrator* → *Quick Create* (image:images/quick-create-icon.png[]) → *Import YAML*, and create a CR similar to the following:
++
+[source,yaml]
+----
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: lsd-llama-milvus-remote
+spec:
+  replicas: 1
+  server:
+    containerSpec:
+      resources:
+        requests:
+          cpu: "250m"
+          memory: "500Mi"
+        limits:
+          cpu: 4
+          memory: "12Gi"
+      env:
+        - name: INFERENCE_MODEL
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: INFERENCE_MODEL
+        - name: VLLM_MAX_TOKENS
+          value: "4096"
+        - name: VLLM_URL
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: VLLM_URL
+        - name: VLLM_TLS_VERIFY
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: VLLM_TLS_VERIFY
+        - name: VLLM_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: VLLM_API_TOKEN
+        # --- Remote Milvus configuration from secret ---
+        - name: MILVUS_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: milvus-secret
+              key: MILVUS_ENDPOINT
+        - name: MILVUS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: milvus-secret
+              key: MILVUS_TOKEN
+        - name: MILVUS_CONSISTENCY_LEVEL
+          valueFrom:
+            secretKeyRef:
+              name: milvus-secret
+              key: MILVUS_CONSISTENCY_LEVEL
+      name: llama-stack
+      port: 8321
+    distribution:
+      name: rh-dev
+----
+
 . Click *Create*.
 
 .Verification
 
-* In the left-hand navigation, click *Workloads* → *Pods* and then verify that the LlamaStack pod is running in the correct namespace.
-* To verify that the LlamaStack server is running, click the pod name and select the *Logs* tab. Look for output similar to the following:
+* In the left-hand navigation, click *Workloads* → *Pods* and verify that the Llama Stack pod is running in the correct namespace.
+* To verify that the Llama Stack server is running, click the pod name and select the *Logs* tab. Look for output similar to the following:
 +
 [source,log]
 ----
@@ -152,4 +225,9 @@ INFO     2025-05-15 11:23:52,765 __main__:151 server: Starting up
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://['::', '0.0.0.0']:8321 (Press CTRL+C to quit)
 ----
-* Confirm that a Service resource for the LlamaStack backend is present in your namespace and points to the running pod. You can check this by clicking *Networking* → *Services* in the web console.
+* Confirm that a Service resource for the Llama Stack backend is present in your namespace and points to the running pod: *Networking* → *Services*.
+
+[TIP]
+====
+If you switch from Inline Milvus to Remote Milvus, delete the existing pod to ensure the new environment variables and backing store are picked up cleanly.
+====

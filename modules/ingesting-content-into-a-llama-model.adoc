@@ -10,18 +10,18 @@ You can quickly customize and prototype your retrievable content by ingesting ra
 * You have deployed a Llama 3.2 model with a vLLM model server and you have integrated LlamaStack.
 * You have created a project workbench within a data science project.
 * You have opened a Jupyter notebook and it is running in your workbench environment.
-* You have installed the `llama_stack_client` version 0.2.14 or later in your workbench environment. 
+* You have installed the `llama_stack_client` version 0.2.22 or later in your workbench environment. 
 * You have a vector database identifier (or you will create/register one in this procedure).
 ifdef::self-managed[]
 * Your environment has network access to the vector database service through {openshift-platform}.
 endif::[]
 
 .Procedure
-. In a new notebook cell, install the `llama_stack_client` package:
+. In a new notebook cell, install the `llama_stack_client` package and its dependencies:
 +
 [source,python]
 ----
-%pip install llama_stack_client
+%pip install llama_stack_client fire
 ----
 
 . In a new notebook cell, import RAGDocument and LlamaStackClient:
@@ -73,8 +73,8 @@ embedding_dimension = int(embedding_model.metadata["embedding_dimension"])
 ----
 vector_db_id = "my_inline_db"
 
-_ = client.vector_dbs.register(
-    vector_db_id=vector_db_id,
+vector_store = client.vector_stores.create(
+    name=vector_db_id,
     embedding_model=embedding_model_id,
     embedding_dimension=embedding_dimension,
     provider_id="milvus",   # inline Milvus Lite
@@ -91,8 +91,8 @@ Use inline Milvus Lite for development and small datasets. Persistence and scale
 ----
 vector_db_id = "my_remote_db"
 
-_ = client.vector_dbs.register(
-    vector_db_id=vector_db_id,
+vector_store = client.vector_stores.create(
+    name=vector_db_id,
     embedding_model=embedding_model_id,
     embedding_dimension=embedding_dimension,
     provider_id="milvus-remote",  # remote Milvus provider (v2.25+)
