@@ -9,9 +9,9 @@ This compatibility layer has the following capabilities:
 
 * *Standardized endpoints*: REST API paths align with OpenAI specifications.  
 * *Schema parity:* Request and response fields follow OpenAI data structures.  
-* *Authentication:* OpenAI-formatted API keys managed through {productname-short}.  
-* *Error handling:* Consistent error codes and response messages.  
-* *Usage tracking:* Integrated rate-limit and quota monitoring in the platform.
+//* *Authentication:* OpenAI-formatted API keys managed through {productname-short}.  These three capabilities might not be available, commenting out for now.
+//* *Error handling:* Consistent error codes and response messages.  
+//* *Usage tracking:* Integrated rate-limit and quota monitoring in the platform.
 
 [NOTE]
 ====
@@ -22,7 +22,6 @@ When connecting OpenAI SDKs or third-party tools to {productname-short}, you mus
 
 === Chat Completions API
 * *Endpoint:* `/v1/openai/vl/chat/completions`.  
-* *Compatibility:* Full OpenAI API parity.
 * *Providers:* All inference back ends deployed through {productname-short}.
 
 The Chat Completions API enables conversational, message-based interactions with models served by Llama Stack in {productname-short}.
@@ -31,7 +30,6 @@ The Chat Completions API enables conversational, message-based interactions with
 
 === Completions API
 * *Endpoint:* `/v1/openai/v1/completions`.  
-* *Compatibility:* Full OpenAI API parity.  
 * *Providers:* All inference backends managed by {productname-short}.
 
 The Completions API supports single-turn text generation and prompt completion.
@@ -40,7 +38,6 @@ The Completions API supports single-turn text generation and prompt completion.
 
 === Embeddings API
 * *Endpoint:* `/v1/openai/v1/embeddings`.  
-* *Compatibility:* Full OpenAI API parity. 
 * *Providers:* All embedding models enabled in {productname-short}.
 
 The Embeddings API generates numerical embeddings for text or documents that can be used in downstream semantic search or RAG applications.
@@ -49,17 +46,23 @@ The Embeddings API generates numerical embeddings for text or documents that can
 
 === Files API
 * *Endpoint:* `/v1/openai/v1/files`.  
-* *Compatibility:* Full OpenAI API parity. 
-* *Providers:* Your local machine's file system.
+* *Providers:* File system-based file storage provider for managing files and documents stored locally in your cluster.
 
 The Files API manages file uploads for use in embedding and retrieval workflows.
 
 ---
 
+=== Vector Stores API
+* *Endpoint:* `/v1/openai/v1/vector_stores/`.  
+* *Providers:* Inline and Remote Milvus configured in {productname-short}.
+
+The Vector Stores API manages the creation, configuration, and lifecycle of vector store resources in Llama Stack. Through this API, you can create new vector stores, list existing ones, delete unused stores, and query their metadata, all using OpenAI-compatible request and response formats.  
+
+---
+
 === Vector Store Files API
 * *Endpoint:* `/v1/openai/v1/vector_stores/{vector_store_id}/files`.  
-* *Compatibility:* Full OpenAI API parity. 
-* *Providers:* **Milvus (inline and remote)** configured within {productname-short}.
+* *Providers:* Local inline provider configured for file storage and retrieval.
 
 The Vector Store Files API implements the OpenAI Vector Store Files interface and manages the link between document files and Milvus vector stores used for RAG. 
 
@@ -67,7 +70,6 @@ The Vector Store Files API implements the OpenAI Vector Store Files interface an
 
 === Models API
 * *Endpoint:* `/v1/openai/v1/models`.  
-* *Compatibility:* Full OpenAI API parity.  
 * *Providers:* All model-serving back ends configured within {productname-short}.
 
 The Models API lists and retrieves available model resources from the Llama Stack deployment running on {productname-short}. By using the Models API, you can enumerate models, view their capabilities, and verify deployment status through a standardized OpenAI-compatible interface.
@@ -76,14 +78,13 @@ The Models API lists and retrieves available model resources from the Llama Stac
 
 === Responses API
 * *Endpoint:* `/v1/openai/v1/responses`.  
-* *Compatibility:* Experimental OpenAI API parity.  
 * *Providers:* All inference and retrieval providers configured in {productname-short}.
 
 The Responses API generates model outputs by combining inference, file search, and tool-calling capabilities through a single OpenAI-compatible endpoint. It is particularly useful for retrieval-augmented generation (RAG) workflows that rely on the `file_search` tool to retrieve context from vector stores.
 
 [NOTE]
 ====
-The Responses API is an experimental feature that is currently in active development and might have limited support or stability. It is provided for evaluation and feedback purposes only and is not recommended for production use in {productname-short}.
+The Responses API is an experimental feature that is still under active development in {productname-short}. While the API is already functional and suitable for evaluation, some endpoints and parameters remain under implementation and might change in future releases. This API is provided for testing and feedback purposes only and is not recommended for production use.
 ====
 
 ---
