@@ -1,0 +1,136 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+
+[id="enabling-online-access-and-remote-code-execution-LMEvalJob-using-the-cli_{context}"]
+= Enabling online access and remote code execution for LMEval Jobs using the CLI
+
+[role='_abstract']
+You can enable online access using the CLI for LMEval jobs by setting the `allowOnline` specification to `true` in the `LMEvalJob` custom resource (CR). You can also enable remote code execution by setting the `allowCodeExecution` specification to `true`. Both modes can be used at the same time.
+
+[IMPORTANT]
+====
+Enabling online access or code execution involves a security risk. Only use these configurations if you trust the source(s).
+====
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+ifndef::upstream[]
+* You have downloaded and installed the {productname-short} command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+
+.Procedure
+. Get the current `DataScienceCluster` resource, which is located in the `redhat-ods-operator` namespace:
++
+[source,terminal]
+----
+$ oc get datasciencecluster -n redhat-ods-operator
+----
++
+.Example output
+[source,terminal]
+----
+NAME                 AGE
+default-dsc          10d
+----
+
+. Enable online access and code execution for the cluster in the `DataScienceCluster` resource with the `permitOnline` and `permitCodeExecution` specifications. For example, create a file named `allow-online-code-exec-dsc.yaml` with the following contents:
++
+.Example `allow-online-code-exec-dsc.yaml` resource enabling online access and remote code execution
+[source,yaml]
+----
+apiVersion: datasciencecluster.opendatahub.io/v1
+kind: DataScienceCluster
+metadata:
+  name: default-dsc
+spec:
+# ...
+  components:
+    trustyai:
+      managementState: Managed
+      eval:
+        lmeval:
+           permitOnline: allow
+           permitCodeExecution: allow
+# ...
+----
++
+The `permitCodeExecution` and `permitOnline` settings are disabled by default with a value of `deny`. You must explicitly enable these settings in the `DataScienceCluster` resource for the `LMEvalJob` instance to enable internet access or permission to run any externally downloaded code.
+
+. Apply the updated `DataScienceCluster`:
++
+[source,terminal]
+----
+$ oc apply -f allow-online-code-exec-dsc.yaml -n redhat-ods-operator
+----
+
+.. Optional: Run the following command to check that the `DataScienceCluster` is in a healthy state:
++
+[source,terminal]
+----
+$ oc get datasciencecluster default-dsc
+----
++
+.Example output
+[source,terminal]
+----
+NAME          READY   REASON
+default-dsc   True
+----
+
+. For new LMEval jobs, define the job in a YAML file as shown in the following example. This configuration requests both internet access, with `allowOnline: true`, and permission for remote code execution with, `allowCodeExecution: true`: 
++
+.Example lmevaljob-with-online-code-exec.yaml
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: lmevaljob-with-online-code-exec
+  namespace: <your_namespace>
+spec:
+# ...
+  allowOnline: true
+  allowCodeExecution: true
+# ...
+----
++
+The `allowOnline` and `allowCodeExecution` settings are disabled by default with a value of `false` in the `LMEvalJob` CR.
+
+. Deploy the LMEval Job:
++
+[source,terminal]
+----
+$ oc apply -f lmevaljob-with-online-code-exec.yaml -n <your_namespace>
+----
+
+
+[IMPORTANT]
+====
+If you upgrade to version 2.25, some TrustyAI `LMEvalJob` CR configuration values might be overwritten. The new deployment prioritizes the value on the 2.25 version `DataScienceCluster`. Existing LMEval jobs are unaffected. Verify that all `DataScienceCluster` values are explicitly defined and validated during installation.
+====
+
+
+.Verification
+
+. Run the following command to verify that the `DataScienceCluster` has the updated fields:
++
+[source,terminal]
+----
+$ oc get datasciencecluster default-dsc -n redhat-ods-operator -o "jsonpath={.data}"
+----
+
+. Run the following command to verify that the `trustyai-dsc-config` ConfigMap has the same flag values set in the `DataScienceCluster`.
++
+[source,terminal]
+----
+$ oc get configmaps trustyai-dsc-config -n redhat-ods-applications -o "jsonpath={.spec.components.trustyai.eval.lmeval}"
+----
++
+.Example output
+[source,terminal]
+----
+{"eval.lmeval.permitCodeExecution":"true","eval.lmeval.permitOnline":"true"}
+----
