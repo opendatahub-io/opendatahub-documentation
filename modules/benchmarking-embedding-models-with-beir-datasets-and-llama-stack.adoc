@@ -1,0 +1,212 @@
+:_module-type: PROCEDURE
+
+[id="benchmarking-embedding-models-with-BEIR-datasets-and-Llama-Stack_{context}"]
+= Benchmarking embedding models with BEIR datasets and Llama Stack
+
+Embedding models are neural networks that convert text or other data into dense numerical vectors, called embeddings, which capture semantic meaning. In retrieval-augmented generation (RAG) systems, embeddings enable semantic search so that the system retrieves the documents most relevant to a query.
+
+Selecting an embedding model depends on several factors, such as the content type, accuracy requirements, performance needs, and model license. The `beir_benchmarks.py` script compares the retrieval accuracy of embedding models by using standardized information-retrieval benchmarks from the BEIR framework. The script is included in the link:https://github.com/opendatahub-io/rag[RAG] repository, which provides demonstrations, benchmarking scripts, and deployment guides for the RAG Stack on {openshift-platform}.
+
+This procedure explains how to set up, run, and verify embedding-model benchmarks by using the Llama Stack framework. The examples use the `sentence-transformers` inference provider, which you can replace with another provider if required.
+
+.Prerequisites
+
+* You have cloned the `https://github.com/opendatahub-io/rag` repository.
+* You have changed into the `/rag/benchmarks/beir-benchmarks` directory.
+* You have initialized and activated a virtual environment.
+* You have defined and installed the relevant script package dependencies to a `requirements.txt` file.
+* You have built the Llama Stack starter distribution to install all dependencies.
+* You have verified that your vector database is accessible and configured in the `run.yaml` file, and that any required embedding models were preloaded or registered with Llama Stack.
+
+[NOTE]
+====
+The default supported embedding models are `granite-embedding-30m` and `granite-embedding-125m`, served by the `sentence-transformers` framework. Ollama is not required for basic benchmarks but can be used to serve custom embedding models.
+
+To register an additional embedding model, such as `all-MiniLM-L6-v2`, perform the following steps:
+
+. Start the Llama Stack server:
++
+[subs=+quotes]
+....
+MILVUS_URL=milvus uv run llama stack run run.yaml
+....
+. Register the model by using the Llama Stack client. For example:
++
+[subs=+quotes]
+....
+llama-stack-client models register all-MiniLM-L6-v2 \
+  --provider-id sentence-transformers \
+  --provider-model-id all-minilm:latest \
+  --metadata '{"embedding_dimension": 384}' \
+  --model-type embedding
+....
+
+====
+* You have shut down the Llama Stack server before running the benchmark script.
+
+.Procedure
+
+. Run the `beir_benchmarks.py` benchmarking script:
+
+* Enter the following command to use the configuration from `run.yaml` and the default dataset (`scifact`):
++
+[subs=+quotes]
+....
+MILVUS_URL=milvus uv run python beir_benchmarks.py
+....
+
+* Alternatively, enter the following command to connect to a custom Llama Stack server:
++
+[subs=+quotes]
+....
+LLAMA_STACK_URL="http://localhost:8321" MILVUS_URL=milvus uv run python beir_benchmarks.py
+....
+
+. Use environment variables and command-line options to modify the benchmark run. For example, set the environment variable `ENABLE_MILVUS=milvus` before executing the script.
+
+* Enter the following command to benchmark with a specific LLM by using default settings:
++
+[subs=+quotes]
+....
+ENABLE_MILVUS=milvus uv run python beir_benchmarks.py
+....
+
+* Enter the following command to use a larger batch size for document ingestion:
++
+[subs=+quotes]
+....
+ENABLE_MILVUS=milvus uv run python beir_benchmarks.py --batch-size 300
+....
+
+* Enter the following command to benchmark multiple datasets (for example, `scifact` and `scidocs`):
++
+[subs=+quotes]
+....
+ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
+  --dataset-names scifact scidocs
+....
+
+* Enter the following command to compare embedding models (for example, `granite-embedding-30m` and `all-MiniLM-L6-v2`):
++
+[subs=+quotes]
+....
+ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
+  --embedding-models granite-embedding-30m all-MiniLM-L6-v2
+....
+
+* Enter the following command to use a custom BEIR-compatible dataset:
++
+[subs=+quotes]
+....
+ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
+  --dataset-names my-dataset \
+  --custom-datasets-urls https://example.com/my-beir-dataset.zip
+....
+
+
+* Enter the following command to change the vector database provider. The following example changes the vector database provider to remote Milvus:
++
+[subs=+quotes]
+....
+ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
+  --vector-db-provider-id remote-milvus
+....
+
+.Command-line options
+
+** `--vector-db-provider-id`  
+* *Description:* Specifies the vector database provider to use.  
+* *Type:* String.  
+* *Default:* `milvus`.
+* *Example:*
++
+[subs=+quotes]
+....
+--vector-db-provider-id remote-milvus
+....
+
+** `--dataset-names`  
+* *Description:* Specifies which BEIR datasets to use for benchmarking. Use this option together with `--custom-datasets-urls` when testing custom datasets. 
+* *Type:* List of strings.  
+* *Default:* `["scifact"]`.  
+* *Example:* 
++
+[subs=+quotes]
+....
+--dataset-names scifact scidocs nq
+....
+
+** `--embedding-models`  
+* *Description:* Specifies the embedding models to compare. Models must be defined in the `run.yaml` file.  
+* *Type:* List of strings.  
+* *Default:* `["granite-embedding-30m", "granite-embedding-125m"]`.  
+* *Example:* 
++
+[subs=+quotes]
+....
+--embedding-models all-MiniLM-L6-v2 granite-embedding-125m
+....
+
+** `--custom-datasets-urls`  
+* *Description:* Specifies URLs for custom BEIR-compatible datasets. Use this option with `--dataset-names`.  
+* *Type:* List of strings.  
+* *Default:* `[]`. 
+* *Example:* 
++
+[subs=+quotes]
+....
+--dataset-names my-custom-dataset \
+  --custom-datasets-urls https://example.com/my-dataset.zip
+....
+
+** `--batch-size`  
+* *Description*: Controls how many documents are processed per batch during ingestion. Larger batch sizes improve speed but use more memory.  
+* *Type:* Integer.  
+* *Default:* `150`.
+* *Example:*  
++
+[subs=+quotes]
+....
+--batch-size 50
+--batch-size 300
+....
+
+[NOTE]
+====
+Custom BEIR datasets must follow the required file structure and format:
+
+[subs=+quotes]
+....
+dataset-name.zip/
+├── qrels/
+│   └── test.tsv      # Maps query IDs to document IDs with relevance scores
+├── corpus.jsonl      # Document collection with document IDs, titles, and text
+└── queries.jsonl     # Test queries with query IDs and question text
+....
+====
+
+.Verification
+
+To verify that the benchmark completed successfully and to review the results, perform the following steps: 
+
+. Locate the `results` directory. All output files are saved to the following path:
++
+[subs=+quotes]
+`<path-to>/rag/benchmarks/embedding-models-with-beir/results`
+
+. Examine the output. Compare your results with the sample output structure. The report includes performance metrics such as *map@cut_k* and *ndcg@cut_k* for each dataset and embedding model pair. The script also calculates a statistical significance test (*p*-value).
++
+*Example output (for `scifact` and `map_cut_10`):*
++
+[subs=+quotes]
+....
+scifact map_cut_10
+ granite-embedding-125m : 0.6879
+ granite-embedding-30m  : 0.6578
+ p_value                : 0.0150
+
+ p_value < 0.05 indicates a statistically significant difference.
+ The granite-embedding-125m model performs better for this dataset and metric.
+....
+
+. Interpret the results. A *p*-value below `0.05` indicates that the performance difference between models is statistically significant. Use these results to identify which embedding model performs best for your dataset.
