@@ -26,12 +26,12 @@ The *Edit model registry* dialog opens.
 . Optional: In the *Connect to external MySQL database* section, edit the information for the external database where model data for the registry is stored.
 .. In the *Host* field, enter the database hostname.
 ifdef::upstream[]
-... If the database is running in the `odh-model-registries` namespace, enter only the hostname for the database.
-... If the database is running in a different namespace from `odh-model-registries`, enter the database hostname details in `<hostname>.<namespace>.svc.cluster.local` format.
+... If the database is running in the `pass:attributes[{mr-default-namespace}]` namespace, enter only the hostname for the database.
+... If the database is running in a different namespace from `pass:attributes[{mr-default-namespace}]`, enter the database hostname details in `<hostname>.<namespace>.svc.cluster.local` format.
 endif::[]
 ifndef::upstream[]
-... If the database is running in the `rhoai-model-registries` namespace, enter only the hostname for the database.
-... If the database is running in a different namespace from `rhoai-model-registries`, enter the database hostname details in `<hostname>.<namespace>.svc.cluster.local` format.
+... If the database is running in the `pass:attributes[{mr-default-namespace}]` namespace, enter only the hostname for the database.
+... If the database is running in a different namespace from `pass:attributes[{mr-default-namespace}]`, enter the database hostname details in `<hostname>.<namespace>.svc.cluster.local` format.
 endif::[]
 .. In the *Port* field, enter the port number for the database.
 .. In the *Username* field, enter the default user name that is connected to the database.
@@ -46,10 +46,10 @@ If your external database is configured to enforce Transport Layer Security (TLS
 .. Click *Use cluster-wide CA bundle* to use the `ca-bundle.crt` bundle in the `odh-trusted-ca-bundle` ConfigMap.
 .. Click *Use {productname-long} CA bundle* to use the `odh-ca-bundle.crt` bundle in the `odh-trusted-ca-bundle` ConfigMap.
 ifdef::upstream[]
-.. Click *Choose from existing certificates* to select an existing certificate. You can select the key of any ConfigMap or secret in the `odh-model-registries` namespace.
+.. Click *Choose from existing certificates* to select an existing certificate. You can select the key of any ConfigMap or secret in the `pass:attributes[{mr-default-namespace}]` namespace.
 endif::[]
 ifndef::upstream[]
-.. Click *Choose from existing certificates* to select an existing certificate. You can select the key of any ConfigMap or secret in the `rhoai-model-registries` namespace.
+.. Click *Choose from existing certificates* to select an existing certificate. You can select the key of any ConfigMap or secret in the `pass:attributes[{mr-default-namespace}]` namespace.
 endif::[]
 ... From the *Resource* list, select a ConfigMap or secret. 
 ... From the *Key* list, select a key.
@@ -61,12 +61,12 @@ endif::[]
 Uploading a certificate creates the `db-credential` ConfigMap with the `ca.crt` key. 
 
 ifdef::upstream[]
-To upload a certificate as a secret, you must create a secret in the {openshift-platform} `odh-model-registries` namespace, and then select it as an existing certificate when you create your model registry.
+To upload a certificate as a secret, you must create a secret in the {openshift-platform} `pass:attributes[{mr-default-namespace}]` namespace, and then select it as an existing certificate when you create your model registry.
 
 For more information about creating secrets in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-pods#nodes-pods-secrets[Providing sensitive data to pods by using secrets].
 endif::[]
 ifndef::upstream[]
-To upload a certificate as a secret, you must create a secret in the {openshift-platform} `rhoai-model-registries` namespace, and then select it as an existing certificate when you create your model registry.
+To upload a certificate as a secret, you must create a secret in the {openshift-platform} `pass:attributes[{mr-default-namespace}]` namespace, and then select it as an existing certificate when you create your model registry.
 
 ifdef::self-managed[]
 For more information about creating secrets, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-pods#nodes-pods-secrets[Providing sensitive data to pods by using secrets] in the OpenShift Container Platform documentation.
