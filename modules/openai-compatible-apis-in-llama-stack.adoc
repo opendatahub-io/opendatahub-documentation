@@ -21,7 +21,7 @@ When connecting OpenAI SDKs or third-party tools to {productname-short}, you mus
 == Supported OpenAI-compatible APIs in {productname-short}
 
 === Chat Completions API
-* *Endpoint:* `/v1/chat/completions`.  
+* *Endpoint:* `/v1/openai/vl/chat/completions`.  
 * *Compatibility:* Full OpenAI API parity.
 * *Providers:* All inference back ends deployed through {productname-short}.
 
@@ -30,7 +30,7 @@ The Chat Completions API enables conversational, message-based interactions with
 ---
 
 === Completions API
-* *Endpoint:* `/v1/completions`.  
+* *Endpoint:* `/v1/openai/v1/completions`.  
 * *Compatibility:* Full OpenAI API parity.  
 * *Providers:* All inference backends managed by {productname-short}.
 
@@ -39,7 +39,7 @@ The Completions API supports single-turn text generation and prompt completion.
 ---
 
 === Embeddings API
-* *Endpoint:* `/v1/embeddings`.  
+* *Endpoint:* `/v1/openai/v1/embeddings`.  
 * *Compatibility:* Full OpenAI API parity. 
 * *Providers:* All embedding models enabled in {productname-short}.
 
@@ -48,16 +48,16 @@ The Embeddings API generates numerical embeddings for text or documents that can
 ---
 
 === Files API
-* *Endpoint:* `/v1/files`.  
+* *Endpoint:* `/v1/openai/v1/files`.  
 * *Compatibility:* Full OpenAI API parity. 
-* *Providers:* Local filesystem and S3-compatible remote storage configured in {productname-short}.
+* *Providers:* Your local machine's file system.
 
-The Files API manages file uploads, metadata, and storage for use in embedding and retrieval workflows.
+The Files API manages file uploads for use in embedding and retrieval workflows.
 
 ---
 
 === Vector Store Files API
-* *Endpoint:* `/v1/vector_stores/{vector_store_id}/files`.  
+* *Endpoint:* `/v1/openai/v1/vector_stores/{vector_store_id}/files`.  
 * *Compatibility:* Full OpenAI API parity. 
 * *Providers:* **Milvus (inline and remote)** configured within {productname-short}.
 
@@ -65,23 +65,29 @@ The Vector Store Files API implements the OpenAI Vector Store Files interface an
 
 ---
 
-=== Batches API
-* *Endpoint:* `/v1/batches`.
-* *Compatibility:* OpenAI API compatibility (experimental).
-* *Providers:* This API is an experimental feature and therefore has limited support.
+=== Models API
+* *Endpoint:* `/v1/openai/v1/models`.  
+* *Compatibility:* Full OpenAI API parity.  
+* *Providers:* All model-serving back ends configured within {productname-short}.
 
-The Batches API enables OpenAI-compatible batch processing for large-scale operations.
+The Models API lists and retrieves available model resources from the Llama Stack deployment running on {productname-short}. By using the Models API, you can enumerate models, view their capabilities, and verify deployment status through a standardized OpenAI-compatible interface.
+
+---
+
+=== Responses API
+* *Endpoint:* `/v1/openai/v1/responses`.  
+* *Compatibility:* Experimental OpenAI API parity.  
+* *Providers:* All inference and retrieval providers configured in {productname-short}.
+
+The Responses API generates model outputs by combining inference, file search, and tool-calling capabilities through a single OpenAI-compatible endpoint. It is particularly useful for retrieval-augmented generation (RAG) workflows that rely on the `file_search` tool to retrieve context from vector stores.
 
 [NOTE]
 ====
-*Experimental API*
-
-The Batches API is an experimental feature that is currently in active development and might have limited support or stability.  
-It is provided for evaluation and feedback purposes only and is not recommended for production use in {productname-short}.  
-Future releases of {productname-short} might introduce breaking changes or remove this API entirely.
+The Responses API is an experimental feature that is currently in active development and might have limited support or stability. It is provided for evaluation and feedback purposes only and is not recommended for production use in {productname-short}.
 ====
 
 ---
 
-//[role="_additional-resources"]
-//.Additional resources
+[role="_additional-resources"]
+.Additional resources
+* link:https://llamastack.github.io/docs/providers/openai[OpenAI API Compatibility]
