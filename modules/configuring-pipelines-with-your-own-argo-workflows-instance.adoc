@@ -1,0 +1,40 @@
+:_module-type: PROCEDURE
+
+[id="configuring-pipelines-with-your-own-argo-workflows-instance_{context}"]
+= Configuring pipelines with your own Argo Workflows instance
+
+[role="_abstract"]
+You can use your own Argo Workflows instance with {productname-short} pipelines. This configuration disables the embedded Argo Workflows controllers that are managed by the {productname-short} Operator and enables your external Argo Workflows instance.
+
+You cannot enable both the embedded Argo Workflows instance and your own Argo Workflows instance on the same cluster.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have installed {productname-long}.
+
+.Procedure
+. Log in to the {openshift-platform} web console as a cluster administrator.
+. In the {openshift-platform} console, click *Operators* → *Installed Operators*.
+. Search for the *{productname-long}* Operator, and then click the Operator name to open the Operator details page.
+. Click the *Data Science Cluster* tab.
+. Click the default instance name (for example, *default-dsc*) to open the instance details page.
+. Click the *YAML* tab to show the instance specifications.
+. Disable the embedded Argo Workflows controllers that are managed by the {productname-short} Operator:
+.. In the `spec.components` section, set the `managementState` field for the `datasciencepipelines` component to `Managed`.
+.. In the `spec.components.datasciencepipelines` section, set the value of the `argoWorkflowControllers.managementState` field to `Removed`, as shown:
++
+[source,yaml]
+----
+spec:
+  components:
+    datasciencepipelines:
+      argoWorkflowsControllers:
+        managementState: Removed
+      managementState: Managed
+----
+. Click *Save* to apply your changes.
+. Install and configure a compatible version of Argo Workflows on your cluster. For compatable version information, see link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations]. For installation information, see the link:https://argo-workflows.readthedocs.io/en/stable/installation/[Argo Workflows Installation documentation^].
+
+.Verification
+* On the *Details* tab of the Data Science Cluster instance (for example, *default-dsc*), verify that `DataSciencePipelinesReady` has a *Status* of `True`.
+* Go to *Workloads* -> *Pods*, search for the *ds-pipeline-workflow-controller* pod, and verify that no pod with that name exists. The absence of this pod confirms that the embedded Argo Workflows controller has been disabled.
