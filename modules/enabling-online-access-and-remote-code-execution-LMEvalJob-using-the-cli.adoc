@@ -57,7 +57,7 @@ spec:
 # ...
 ----
 +
-The `permitCodeExecution` and `permitOnline` settings are disabled by default with a value of `deny`. You must explicitly enable these settings in the `DataScienceCluster` resource for the `LMEvalJobs` specification to enable internet access or permission to run any externally downloaded code.
+The `permitCodeExecution` and `permitOnline` settings are disabled by default with a value of `deny`. You must explicitly enable these settings in the `DataScienceCluster` resource for the `LMEvalJob` instance to enable internet access or permission to run any externally downloaded code.
 
 . Apply the updated `DataScienceCluster`:
 +
@@ -109,7 +109,7 @@ $ oc apply -f lmevaljob-with-online-code-exec.yaml -n <your_namespace>
 
 [IMPORTANT]
 ====
-If you upgrade to version 2.25, some TrustyAI `LMEvalJobs` CR configuration values might be overwritten. The new deployment prioritizes the value on the 2.25 version `DataScienceCluster`. Existing LMEval jobs are unaffected. Verify that all `DataScienceCluster` values are explicitly defined and validated during installation.
+If you upgrade to version 2.25, some TrustyAI `LMEvalJob` CR configuration values might be overwritten. The new deployment prioritizes the value on the 2.25 version `DataScienceCluster`. Existing LMEval jobs are unaffected. Verify that all `DataScienceCluster` values are explicitly defined and validated during installation.
 ====
 
 
@@ -126,11 +126,11 @@ $ oc get datasciencecluster default-dsc -n redhat-ods-operator -o "jsonpath={.da
 +
 [source,terminal]
 ----
-$ oc get configmaps trustyai-dsc-config -n redhat-ods-applications -o "jsonpath={.data}"
+$ oc get configmaps trustyai-dsc-config -n redhat-ods-applications -o "jsonpath={.spec.components.trustyai.eval.lmeval}"
 ----
 +
 .Example output
 [source,terminal]
 ----
-{"eval.lmeval.permitCodeExecution":"false","eval.lmeval.permitOnline":"true"}
+{"eval.lmeval.permitCodeExecution":"true","eval.lmeval.permitOnline":"true"}
 ----
