@@ -4,22 +4,27 @@
 
 = Uploading model files to a Persistent Volume Claim (PVC)
 
-When deploying a model, you can serve it from a preexisting Persistent Volume Claim (PVC) where your model files are stored. You can upload your local model files to a PVC by using a running Jupyter notebook workbench.
+When deploying a model, you can serve it from a preexisting Persistent Volume Claim (PVC) where your model files are stored. You can upload your local model files to a PVC by using a running workbench.
 
 .Prerequisites
 
 * You have access to the {productname-short} dashboard.
-* You have a running Jupyter notebook workbench.
-* The workbench is attached to a persistent volume (PVC).
+* You have a running workbench.
+ifndef::upstream[]
+* The workbench is attached to a persistent volume (PVC), as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a project workbench].
+endif::[]
+ifdef::upstream[]
+* The workbench is attached to a persistent volume (PVC), as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-workbench-select-ide_projects[Creating a project workbench].
+endif::[]
 * You have the model files saved on your local machine.
 
 .Procedure
 
 Follow these steps to upload your model files to the PVC:
 
-. From the {productname-short} dashboard, launch your running Jupyter notebook workbench.
-. In the JupyterLab interface, navigate to the *File Browser* pane on the left-hand side.
-. (Optional but recommended) Create a new folder to organize your models:
+. From the {productname-short} dashboard, launch your running workbench.
+. In the workbench interface, navigate to the *File Browser* pane on the left-hand side.
+. Optional: Create a new folder to organize your models:
 .. Click the **New Folder** icon.
 .. Name the folder (for example, `models`).
 .. Double-click the new `models` folder to enter it.
