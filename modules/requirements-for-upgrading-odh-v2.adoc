@@ -10,7 +10,7 @@ When upgrading {productname-short} version 2.0 or 2.1 to version 2.2 or later, y
 
 When you upgrade to version {vernum}, the upgrade process automatically uses the values from the `DataScienceCluster` object in the previous version.
 
-After the upgrade, you should inspect the {vernum} `DataScienceCluster` object and optionally update the status of any components as described in link:{odhdocshome}/installing-open-data-hub/#installing-odh-components_installv2[Installing Open Data Hub components].
+After the upgrade, you should inspect the {vernum} `DataScienceCluster` object and optionally update the status of any components as described in link:{odhdocshome}/upgrading-open-data-hub/#installing-odh-components_upgrade[Installing Open Data Hub components].
 
 [NOTE]
 ====
@@ -115,6 +115,11 @@ The {productname-long} Operator starts the Kueue Controller, and Kueue then auto
 In the `default-dsc` `DataScienceCluster` custom resource, the `kueueReady` condition changes to `True`. 
 For information about how to check that the *kueue-controller-manager-_<pod-id>_* pod is *Running*, see link:{odhdocshome}/installing-open-data-hub/#installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
 ////
+
+*Verify Argo Workflows compatibility*
+
+If you use your own Argo Workflows instance for pipelines, ensure that the version installed on your cluster is compatible with this release.
+For more information, see link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations].
 
 *Check the status of certificate management*
 
