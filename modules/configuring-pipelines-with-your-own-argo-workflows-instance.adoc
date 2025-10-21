@@ -24,7 +24,7 @@ You cannot enable both the embedded Argo Workflows instance and your own Argo Wo
 . Click the *YAML* tab to show the instance specifications.
 . Disable the embedded Argo Workflows controllers that are managed by the {productname-short} Operator:
 .. In the `spec.components` section, set the value of the `managementState` field for the `datasciencepipelines` component to `Managed`.
-.. In the `spec.components.datasciencepipelines` section, set the value of the `managementState` field for `argoWorkflowControllers` to `Removed`, as shown in the following example:
+.. In the `spec.components.datasciencepipelines` section, set the value of the `managementState` field for `argoWorkflowsControllers` to `Removed`, as shown in the following example:
 +
 .Example datasciencepipelines specification
 [source,yaml]
@@ -39,11 +39,11 @@ spec:
 # ...
 ----
 . Click *Save* to apply your changes.
-. Install and configure a compatible version of Argo Workflows on your cluster. For compatable version information, see link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations]. For installation information, see the link:https://argo-workflows.readthedocs.io/en/stable/installation/[Argo Workflows Installation documentation^].
+. Install and configure a compatible version of Argo Workflows on your cluster. For compatible version information, see link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations]. For installation information, see the link:https://argo-workflows.readthedocs.io/en/stable/installation/[Argo Workflows Installation documentation^].
 
 .Verification
-. On the *Details* tab of the Data Science Cluster instance (for example, *default-dsc*), verify that `DataSciencePipelinesReady` has a *Status* of `True`.
+. On the *Details* tab of the `DataScienceCluster` instance (for example, *default-dsc*), verify that `DataSciencePipelinesReady` has a *Status* of `True`.
 . Verify that the `ds-pipeline-workflow-controller` pod does not exist:
 .. Go to *Workloads* -> *Pods*.
 .. Search for the `ds-pipeline-workflow-controller` pod.
-.. Verify that this pod does not exist. The absence of this pod confirms that the embedded Argo Workflows controller has been disabled.
+.. Verify that this pod does not exist. The absence of this pod confirms that the embedded Argo Workflows controller is disabled.
