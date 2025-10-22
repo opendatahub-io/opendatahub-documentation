@@ -73,7 +73,7 @@ models = client.models.list()
 model_id = next(m.identifier for m in models if m.model_type == "llm")
 ----
 
-. (Optional) If you have *not* already created a vector store, select an embedding model (for registration in the next step):
+. If you have not already created a vector store, select an embedding model for registration in the next step:
 +
 [source,python]
 ----
@@ -82,7 +82,7 @@ embedding_model_id = embedding.identifier
 embedding_dimension = int(embedding.metadata["embedding_dimension"])
 ----
 
-. (Optional) Register a vector store (choose one). Skip this step if you already have a vector store ID.
+. If you do not already have a vector store ID, register a vector store of your choice:
 +
 .Option 1: Inline Milvus Lite (embedded)
 ====
@@ -119,7 +119,7 @@ print(f"Registered remote Milvus DB: {vector_db_id}")
 [NOTE]
 ====
 * Ensure your `LlamaStackDistribution` sets `MILVUS_ENDPOINT` (gRPC `:19530`) and `MILVUS_TOKEN`.
-* Aside from the provider ID, querying APIs are identical for inline and remote Milvus.
+* Aside from the `provide_id`, querying APIs are identical for inline and remote Milvus.
 ====
 ====
 
