@@ -9,9 +9,6 @@ This compatibility layer has the following capabilities:
 
 * *Standardized endpoints*: REST API paths align with OpenAI specifications.  
 * *Schema parity:* Request and response fields follow OpenAI data structures.  
-//* *Authentication:* OpenAI-formatted API keys managed through {productname-short}.  These three capabilities might not be available, commenting out for now.
-//* *Error handling:* Consistent error codes and response messages.  
-//* *Usage tracking:* Integrated rate-limit and quota monitoring in the platform.
 
 [NOTE]
 ====
@@ -21,7 +18,7 @@ When connecting OpenAI SDKs or third-party tools to {productname-short}, you mus
 == Supported OpenAI-compatible APIs in {productname-short}
 
 === Chat Completions API
-* *Endpoint:* `/v1/openai/vl/chat/completions`.  
+* *Endpoint:* `/v1/openai/v1/chat/completions`.  
 * *Providers:* All inference back ends deployed through {productname-short}.
 * *Support level:* Technology Preview. 
 
@@ -41,7 +38,6 @@ The Completions API supports single-turn text generation and prompt completion.
 === Embeddings API
 * *Endpoint:* `/v1/openai/v1/embeddings`.  
 * *Providers:* All embedding models enabled in {productname-short}.
-//* *Support level:*
 
 The Embeddings API generates numerical embeddings for text or documents that can be used in downstream semantic search or RAG applications.
 
@@ -99,4 +95,5 @@ The Responses API is an experimental feature that is still under active developm
 
 [role="_additional-resources"]
 .Additional resources
+
 * link:https://llamastack.github.io/docs/providers/openai[OpenAI API Compatibility]
