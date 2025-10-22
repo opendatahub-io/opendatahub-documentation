@@ -9,35 +9,45 @@ When deploying a model, you can serve it from a preexisting Persistent Volume Cl
 .Prerequisites
 
 * You have access to the {productname-short} dashboard.
-* You have a running workbench.
-* You have created a persistent volume claim (PVC) with a context type of model storage.
+* You have a running code-server or Jupyter workbench.
+* You have created a persistent volume claim (PVC) with a context type of *Model storage*.
+* The workbench is attached to the persistent volume (PVC).
 ifndef::upstream[]
-* The workbench is attached to the persistent volume (PVC), as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a project workbench].
+** For instructions on attaching a PVC, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a project workbench].
 endif::[]
 ifdef::upstream[]
-* The workbench is attached to the persistent volume (PVC), as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-workbench-select-ide_projects[Creating a project workbench].
+** For instructions on attaching a PVC, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-workbench-select-ide_projects[Creating a project workbench].
 endif::[]
 * You have the model files saved on your local machine.
 
 .Procedure
 
-Follow these steps to upload your model files to the PVC:
+Follow these steps to upload your model files to the PVC mount point (`/opt/app-root/src/`) within your workbench:
 
 . From the {productname-short} dashboard, click the open icon (image:images/open.png[The open icon]) to open your IDE in a new window.
 . In your IDE, navigate to the *File Browser* pane on the left-hand side.
+.. In Jupyter, this is usually labeled *Files*.
+.. In Code-Server, this is usually the *Explorer* view.
+. In the file browser, navigate to the `/opt/app-root/src/` directory. This directory represents the root of your attached PVC.
++
+NOTE: Any files or folders you create or upload here will persist in the PVC.
 . Optional: Create a new folder to organize your models:
-.. Click the **New Folder** icon.
+.. Right-click within the `/opt/app-root/src/` directory in the file browser and select *New Folder*, or click the *New Folder* icon if available in the toolbar.
 .. Name the folder (for example, `models`).
 .. Double-click the new `models` folder to enter it.
-. Upload your model files:
-.. Click the *Upload Files* icon in the *File Browser* toolbar.
-.. Select the model files from your local computer.
-.. Wait for the upload to complete. 
+. Upload your model files to the current directory (`/opt/app-root/src/` or `/opt/app-root/src/models/`):
+* *Using Jupyter:*
+.. Click the *Upload Files* icon (image:images/jupyterlab-upload.png[Upload files icon, title="Upload files icon"]) in the file browser toolbar above the directory listing.
+.. In the file selection dialog, navigate to and select the model files from your local computer. Click *Open*.
+.. Wait for the upload progress bars next to the filenames to complete.
+* *Using Code-Server:*
+.. Drag the model files directly from your local file explorer and drop them into the file browser pane in the desired directory within Code-Server.
+. Wait for the upload process to complete. You might see progress notifications.
 
 .Verification
 
-When you follow the procedure to deploy a model, you can now select this model:
+When you follow the procedure to deploy a model, you can access the model files from the specified path within your PVC:
 
 . In the *Deploy model* dialog, select *Existing cluster storage* under the *Source model location* section.
 . From the *Cluster storage* list, select the PVC associated with your workbench.
-. In the **Model path** field, enter the path to your model or the folder containing your model.
+. In the *Model path* field, enter the path to your model or the folder containing your model.
