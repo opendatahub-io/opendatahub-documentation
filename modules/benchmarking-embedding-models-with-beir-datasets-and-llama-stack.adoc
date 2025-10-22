@@ -3,11 +3,11 @@
 [id="benchmarking-embedding-models-with-BEIR-datasets-and-Llama-Stack_{context}"]
 = Benchmarking embedding models with BEIR datasets and Llama Stack
 
-Embedding models are neural networks that convert text or other data into dense numerical vectors, called embeddings, which capture semantic meaning. In retrieval-augmented generation (RAG) systems, embeddings enable semantic search so that the system retrieves the documents most relevant to a query.
+This procedure explains how to set up, run, and verify embedding-model benchmarks by using the Llama Stack framework. Embedding models are neural networks that convert text or other data into dense numerical vectors, called embeddings, which capture semantic meaning. In retrieval-augmented generation (RAG) systems, embeddings enable semantic search so that the system retrieves the documents most relevant to a query.
 
 Selecting an embedding model depends on several factors, such as the content type, accuracy requirements, performance needs, and model license. The `beir_benchmarks.py` script compares the retrieval accuracy of embedding models by using standardized information-retrieval benchmarks from the BEIR framework. The script is included in the link:https://github.com/opendatahub-io/rag[RAG] repository, which provides demonstrations, benchmarking scripts, and deployment guides for the RAG Stack on {openshift-platform}.
 
-This procedure explains how to set up, run, and verify embedding-model benchmarks by using the Llama Stack framework. The examples use the `sentence-transformers` inference provider, which you can replace with another provider if required.
+The examples use the `sentence-transformers` inference provider, which you can replace with another provider if required.
 
 .Prerequisites
 
@@ -147,18 +147,6 @@ ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
 --embedding-models all-MiniLM-L6-v2 granite-embedding-125m
 ....
 
-** `--custom-datasets-urls`  
-* *Description:* Specifies URLs for custom BEIR-compatible datasets. Use this option with `--dataset-names`.  
-* *Type:* List of strings.  
-* *Default:* `[]`. 
-* *Example:* 
-+
-[subs=+quotes]
-....
---dataset-names my-custom-dataset \
-  --custom-datasets-urls https://example.com/my-dataset.zip
-....
-
 ** `--batch-size`  
 * *Description*: Controls how many documents are processed per batch during ingestion. Larger batch sizes improve speed but use more memory.  
 * *Type:* Integer.  
@@ -169,6 +157,18 @@ ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
 ....
 --batch-size 50
 --batch-size 300
+....
+
+** `--custom-datasets-urls`  
+* *Description:* Specifies URLs for custom BEIR-compatible datasets. Use this option with `--dataset-names`.  
+* *Type:* List of strings.  
+* *Default:* `[]`. 
+* *Example:* 
++
+[subs=+quotes]
+....
+--dataset-names my-custom-dataset \
+  --custom-datasets-urls https://example.com/my-dataset.zip
 ....
 
 [NOTE]
