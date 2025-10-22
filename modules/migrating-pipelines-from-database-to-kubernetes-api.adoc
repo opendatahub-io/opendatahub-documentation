@@ -8,10 +8,12 @@ You can migrate existing pipelines and pipeline versions from the internal datab
 
 This procedure uses a community-supported Kubeflow Pipelines migration script to export pipelines from the Data Science Pipelines API and generate corresponding `Pipeline` and `PipelineVersion` custom resources for import into your cluster.
 
+ifndef::upstream[]
 [IMPORTANT]
 ====
 The migration script in this procedure is maintained by the Kubeflow Pipelines community and is not supported by {org-name}. Before you use the script, review the repository and validate it in a non-production environment.
 ====
+endif::[]
 
 [WARNING]
 ====
@@ -65,43 +67,47 @@ python3.11 -m venv .venv
 ./.venv/bin/pip install kfp requests PyYAML
 ----
 
-. Download and run the Kubeflow Pipelines community migration script to export pipelines to Kubernetes custom resources.
+. Download and run the Kubeflow Pipelines community migration script.
 +
-[NOTE]
-====
-If you plan to create new or updated `PipelineVersion` custom resources after migration, compile your pipeline code to YAML by using the KFP SDK.  
-For more information, see _Generating the pipeline YAML with the Kubeflow Pipelines SDK_.
-====
+The script connects to the Data Science Pipelines API, exports all pipelines and versions from the specified data science project, and generates one YAML file per pipeline in a local `kfp-exported-pipelines/` directory. Each file includes a `Pipeline` resource followed by all associated `PipelineVersion` resources.
+
+.. Run the following command:
 +
 [source,subs="+quotes"]
 ----
-echo "Downloading the migration script"
 curl -L https://raw.githubusercontent.com/kubeflow/pipelines/refs/heads/master/tools/k8s-native/migration.py -o migration.py
 ./.venv/bin/python migration.py --skip-tls-verify --kfp-server-host $API_URL --namespace $NAMESPACE --token "$(oc whoami --show-token)"
 ----
 +
-The script connects to the Data Science Pipelines API, exports all pipelines and versions from the specified data science project, and generates one YAML file per pipeline in the `kfp-exported-pipelines/` directory. Each file includes a `Pipeline` resource followed by all associated `PipelineVersion` resources.  
-+
-For more information, see the script help section:
-+
+[NOTE]
+====
+The `--skip-tls-verify` option disables certificate validation and should be used only in development environments or when connecting to a server with a self-signed certificate. In production environments, provide a valid certificate bundle instead.
+
+Additionally, passing the access token directly on the command line might expose it in shell history or process lists. To reduce this risk, store the token in an environment variable and reference it in your command:
+
 [source,subs="+quotes"]
+----
+export KFP_TOKEN=$(oc whoami --show-token)
+./.venv/bin/python migration.py --kfp-server-host $API_URL --namespace $NAMESPACE --token "$KFP_TOKEN"
+----
+
+Alternatively, use a prompt with `read -s` to input the token securely at runtime.
+====
+
+.. Optional: For more information about the script, run the following command:
++
+[source]
 ----
 ./.venv/bin/python migration.py --help
 ----
+
+.. If you plan to create new or updated `PipelineVersion` custom resources after migration, compile your pipeline code into YAML format by using the KFP SDK. For more information, see _Generating the pipeline YAML with the Kubeflow Pipelines SDK_.
 
 . Apply the exported Kubernetes custom resources to your cluster.
 +
 [source,subs="+quotes"]
 ----
 oc apply -f ./kfp-exported-pipelines
-----
-
-. Verify that the `Pipeline` and `PipelineVersion` resources are created in your project.
-+
-[source,subs="+quotes"]
-----
-oc -n $NAMESPACE get pipelines.pipelines.kubeflow.org
-oc -n $NAMESPACE get pipelineversions.pipelines.kubeflow.org
 ----
 
 . Switch the pipeline server to use Kubernetes API storage.

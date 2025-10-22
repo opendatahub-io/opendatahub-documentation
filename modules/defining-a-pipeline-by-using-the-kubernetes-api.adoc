@@ -24,7 +24,7 @@ ifdef::cloud-service[]
 ** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
 ** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
-* If you plan to create a `PipelineVersion` custom resource, you have compiled your Python pipeline into YAML by using the KFP SDK. For more information, see _Generating the pipeline YAML with the Kubeflow Pipelines SDK_.
+* If you plan to create a `PipelineVersion` custom resource, you have compiled your Python pipeline into YAML format by using the KFP SDK. For more information, see _Generating the pipeline YAML with the Kubeflow Pipelines SDK_.
 
 .Procedure
 
@@ -81,11 +81,6 @@ $ oc apply -f __<pipeline_yaml_file>__.yaml
 ----
 
 . Define a `PipelineVersion` custom resource in a YAML file with the following contents:
-+
-[NOTE]
-====
-Before creating the `PipelineVersion` resource, compile your Python pipeline by using the KFP SDK to produce the YAML required for the `pipelineSpec` field. For more information, see _Generating the pipeline YAML with the Kubeflow Pipelines SDK_.
-====
 +
 .Example pipeline version definition
 [source,yaml]
