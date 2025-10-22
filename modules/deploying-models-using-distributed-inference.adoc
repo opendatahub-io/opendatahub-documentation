@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
 [id="deploying-models-using-distributed-inference_{context}"]
-= Deploying models by using the Distributed Inference Server with llm-d
+= Deploying models by using {llmd}
 
 [role='_abstract']
 
@@ -9,10 +9,10 @@ ifndef::upstream[]
 [IMPORTANT]
 ====
 ifdef::self-managed[]
-Distributed Inference Server with llm-d is currently available in {productname-long} {vernum} as a Technology Preview feature.
+{llmd} is currently available in {productname-long} {vernum} as a Technology Preview feature.
 endif::[]
 ifdef::cloud-service[]
-Distributed Inference Server with llm-d is currently available in {productname-long} as a Technology Preview feature.
+{llmd} is currently available in {productname-long} as a Technology Preview feature.
 endif::[]
 Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
 {org-name} does not recommend using them in production.
@@ -22,22 +22,22 @@ For more information about the support scope of {org-name} Technology Preview fe
 ====
 endif::[]
 
-Distributed Inference Server with llm-d is a Kubernetes-native, open-source framework designed for serving large language models (LLMs) at scale. You can use Distributed Inference Server with llm-d to simplify the deployment of generative AI, focusing on high performance and cost-effectiveness across various hardware accelerators.
+{llmd} is a Kubernetes-native, open-source framework designed for serving large language models (LLMs) at scale. You can use {llmd} to simplify the deployment of generative AI, focusing on high performance and cost-effectiveness across various hardware accelerators.
 
-Key features of Distributed Inference Server with llm-d include:
+Key features of {llmd} include:
 
 * Efficiently handles large models using optimizations such as prefix-cache aware routing and disaggregated serving.
-* Integrates with standard Kubernetes tools and workflows, using components such as the Envoy proxy, NVIDIA Inference Transfer Library (NIXL), and vLLM.
+* Integrates into a standard Kubernetes environment, where it leverages specialized components like the Envoy proxy to handle networking and routing, and high-performance libraries such as vLLM and NVIDIA Inference Transfer Library (NIXL).
 * Tested recipes and well-known presets reduce the complexity of deploying inference at scale, so users can focus on building applications rather than managing infrastructure.
 
-Serving models using Distributed Inference Server with llm-d on {productname-long} consists of the following steps:
+Serving models using {llmd} on {productname-long} consists of the following steps:
 
 . Installing {productname-short}.
 +
-NOTE: Because KServe Serverless conflicts with the Gateway API used for Distributed Inference Server with llm-d, KServe Serverless is not supported on the same cluster. Instead, use KServe RawDeployment.
+NOTE: Because KServe Serverless conflicts with the Gateway API used for {llmd}, KServe Serverless is not supported on the same cluster. Instead, use KServe RawDeployment.
 
 . Enabling the single model serving platform.
-. Enabling Distributed Inference Server with llm-d on a Kubernetes cluster.
+. Enabling {llmd} on a Kubernetes cluster.
 . Creating an LLMInferenceService Custom Resource (CR).
 . Deploying a model.
 
