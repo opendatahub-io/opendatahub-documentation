@@ -5,11 +5,16 @@
 
 [role='_abstract']
 
-You can define data science pipelines and pipeline versions by using the Kubernetes API, which stores them as custom resources in the cluster instead of the internal database. This approach makes it easier to use OpenShift GitOps (Argo CD) or similar tools to manage pipelines and pipeline versions, while still allowing you to manage them through the {productname-short} user interface (UI), API, and the Kubeflow Pipelines (`kfp`) Software Development Kit (SDK).
+You can define data science pipelines and pipeline versions by using the Kubernetes API, which stores them as custom resources in the cluster instead of the internal database. This approach makes it easier to use OpenShift GitOps (Argo CD) or similar tools to manage pipelines and pipeline versions, while still allowing you to manage them through the {productname-short} dashboard, API, and the Kubeflow Pipelines (KFP) Software Development Kit (SDK).
+
+[NOTE]
+====
+If your pipeline server is already configured to use Kubernetes API storage, you can still use the {productname-short} dashboard and REST API to view pipeline details, run pipelines, and create schedules. In this mode, the Kubernetes API acts as the storage backend, so your existing tools continue to work as expected.
+====
 
 .Prerequisites
 * You have {productname-short} administrator privileges or you are the project owner.
-* You have previously created a data science project that is available and has a pipeline server (a `DataSciencePipelinesApplication` custom resource).
+* You have a data science project with a running pipeline server (a `DataSciencePipelinesApplication` custom resource).
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
 ** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
@@ -19,10 +24,11 @@ ifdef::cloud-service[]
 ** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
 ** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
+* If you plan to create a `PipelineVersion` custom resource, you have compiled your Python pipeline into YAML by using the KFP SDK. For more information, see _Generating the pipeline YAML with the Kubeflow Pipelines SDK_.
 
 .Procedure
 
-. In a terminal window, run the following command to log in to the {openshift-cli}:
+. In a terminal window, log in to your {openshift-platform} cluster by using the {openshift-cli}:
 +
 [source,subs="+quotes"]
 ----
@@ -30,7 +36,6 @@ $ oc login -u __<user_name>__
 ----
 +
 When prompted, enter the {openshift-platform} server URL, connection type, and your password.
-
 
 . To configure the pipeline server to use Kubernetes API storage instead of the default `database` option, set the `spec.apiServer.pipelineStore` field to `kubernetes` in your project's `DataSciencePipelinesApplication` (DSPA) custom resource.
 +
@@ -45,7 +50,7 @@ $ oc patch dspa __<dspa_name>__ -n __<namespace>__ \
 +
 [WARNING]
 ====
-After changing to Kubernetes API storage, existing pipelines stored in the internal database are no longer accessible through the {productname-short} UI or REST API. To restore access to those pipelines, change the `spec.apiServer.pipelineStore` field back to `database`.
+When you switch the pipeline server from database storage to Kubernetes API storage, existing pipelines that were stored in the internal database are no longer visible in the {productname-short} dashboard or REST API. To view or manage those pipelines again, change the `spec.apiServer.pipelineStore` field back to `database`.
 ====
 
 . Define a `Pipeline` custom resource in a YAML file with the following contents:
@@ -61,9 +66,9 @@ metadata:
 spec:
   displayName: <pipeline_display_name> <3>
 ----
-<1> Replace this value with the name of your pipeline.
-<2> Replace this value with name of your project.
-<3> Replace this value with the display name of your pipeline.
+<1> Replace this value with the immutable Kubernetes resource name of your pipeline.
+<2> Replace this value with the name of your project.
+<3> Replace this value with the user-friendly display name of your pipeline. This name is shown in the dashboard and REST API.
 
 . Apply the pipeline definition to create the `Pipeline` custom resource in your cluster.
 +
@@ -76,6 +81,11 @@ $ oc apply -f __<pipeline_yaml_file>__.yaml
 ----
 
 . Define a `PipelineVersion` custom resource in a YAML file with the following contents:
++
+[NOTE]
+====
+Before creating the `PipelineVersion` resource, compile your Python pipeline by using the KFP SDK to produce the YAML required for the `pipelineSpec` field. For more information, see _Generating the pipeline YAML with the Kubeflow Pipelines SDK_.
+====
 +
 .Example pipeline version definition
 [source,yaml]
@@ -90,13 +100,13 @@ spec:
   displayName: <pipeline_version_display_name> <4>
   description: This is the first version of the pipeline.
   pipelineSpec: <5>
-    # ... generated by kfp compile ...
+        # ... YAML generated by compiling Python pipeline with KFP SDK ...
 ----
 <1> Replace this value with the name of your pipeline version.
-<2> Replace this value with name of your project.
+<2> Replace this value with the name of your project.
 <3> Replace this value with the name of your pipeline. This value must match the `metadata.name` value in the `Pipeline` custom resource.
 <4> Replace this value with the display name of your pipeline version.
-<5> Replace the `spec.pipelineSpec` field with the YAML representation of your pipeline after compilation with the `kfp` SDK.
+<5> Add the YAML content that you generated by using the Kubeflow Pipelines (KFP) SDK under the `spec.pipelineSpec` field.
 
 . Apply the pipeline version definition to create the `PipelineVersion` custom resource in your cluster.
 +

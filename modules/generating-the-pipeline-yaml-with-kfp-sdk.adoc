@@ -1,0 +1,42 @@
+:_module-type: PROCEDURE
+
+[id="generating-the-pipeline-yaml-with-kfp-sdk_{context}"]
+= Generating the pipeline YAML with the Kubeflow Pipelines SDK
+
+[role="_abstract"]
+Before you can define your pipeline in the cluster, you must convert your Python-defined pipeline into YAML format. You can use the Kubeflow Pipelines (KFP) Software Development Kit (SDK) to compile your pipeline code into a deployable YAML file for declarative GitOps deployment.
+
+.Prerequisites
+* You have installed Python 3.11 or later in your local environment.
+* You have installed the KFP SDK package (`kfp`) version 2.x or later in your local environment.
+* You have a valid Python pipeline definition file.
+
+.Procedure
+
+* Compile your pipeline by using the KFP SDK to generate the pipeline YAML file.
++
+In the following example, replace __<pipeline_file>.py__ with the name of your pipeline file and specify an output file for the generated YAML:
++
+[source,subs="+quotes"]
+----
+$ python3 -m kfp.dsl.compiler_cli compile \
+    --py __<pipeline_file>.py__ \
+    --output __<compiled_pipeline_file>.yaml__
+----
++
+[NOTE]
+====
+The generated `<compiled_pipeline_file>.yaml` file contains the compiled pipeline specification in YAML format. You can use the resulting YAML content as the value of the `pipelineSpec` field when you create a `PipelineVersion` custom resource (CR). This file can also be stored in Git for declarative or GitOps-based deployment.
+====
+
+.Verification
+
+* Verify that the generated file includes a `pipelineSpec` key followed by the compiled pipeline definition:
++
+[source,subs="+quotes"]
+----
+$ head -n 10 __<compiled_pipeline_file>.yaml__
+----
+
+.Additional resources
+* link:https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/compile-a-pipeline/[Compiling a pipeline with the Kubeflow Pipelines SDK^]
