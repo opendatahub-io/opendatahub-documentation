@@ -31,13 +31,17 @@ endif::[]
 ifdef::cloud-service[]
 * (Knative Serverless deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-single-model-serving-platform_component-install#adding-an-authorization-provider_component-install[Adding an authorization provider for the single-model serving platform].
 endif::[]
-ifdef::upstream[]
+ifndef::upstream[]
 * (Knative Serverless deployments only) To enable token authentication and external model routes for deployed models, you have added Authorino as an authorization provider.
 endif::[]
 * You have created a data science project.
-* You have access to S3-compatible object storage, URI-based repository, or OCI-compliant registry and have added a connection to your data science project. For more information about adding a connection, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
 ifndef::upstream[]
+* You have access to S3-compatible object storage, a URI-based repository, an OCI-compliant registry or a persistent volume claim (PVC) and have added a connection to your data science project. For more information about adding a connection, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
 * If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. If you use NVIDIA GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^]. If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#amd-gpu-integration_managing-rhoai[AMD GPU integration^].
+endif::[]
+ifdef::upstream[]
+* You have access to S3-compatible object storage, a URI-based repository, an OCI-compliant registry or a persistent volume claim (PVC) and have added a connection to your data science project. For more information about adding a connection, see link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+* If you want to use graphics processing units (GPUs) with your model server, you have enabled GPU support in {productname-short}. If you use NVIDIA GPUs, see link:{odhdocshome}/managing-odh/#enabling-nvidia-gpus_managing-odh[Enabling NVIDIA GPUs^]. If you use AMD GPUs, see link:{odhdocshome}/managing-odh/#amd-gpu-integration_managing-odh[AMD GPU integration^].
 endif::[]
 
 .Runtime-specific prerequisites
@@ -160,7 +164,8 @@ endif::[]
 ====
 If you are deploying a registered model version with an existing S3, URI, or OCI data connection, some of your connection details might be autofilled. This depends on the type of data connection and the number of matching connections available in your data science project. For example, if only one matching connection exists, fields like the path, URI, endpoint, model URI, bucket, and region might populate automatically. Matching connections will be labeled as **Recommended**.
 ====
-.. Fill in the connection detail fields.
+.. Complete the connection detail fields.
+.. Optional: If you have uploaded model files to a persistent volume claim (PVC) and the PVC is attached to your workbench, use the *Existing cluster storage* option to select the PVC and specify the path to the model file.
 ifdef::self-managed,cloud-service[]
 +
 IMPORTANT: If your connection type is an S3-compatible object storage, you must provide the folder path that contains your data file. The OpenVINO Model Server runtime has specific requirements for how you specify the model path. For more information, see known issue link:{rhoaidocshome}html-single/release_notes/index#known-issues_RHOAIENG-3025_relnotes[RHOAIENG-3025] in the {productname-short} release notes.
