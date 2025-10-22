@@ -4,12 +4,12 @@
 
 = Uploading model files to a Persistent Volume Claim (PVC)
 
-When deploying a model, you can serve it from a preexisting Persistent Volume Claim (PVC) where your model files are stored. You can upload your local model files to a PVC by using a running workbench.
+When deploying a model, you can serve it from a preexisting Persistent Volume Claim (PVC) where your model files are stored. You can upload your local model files to a PVC in the IDE that you access from a running workbench.
 
 .Prerequisites
 
 * You have access to the {productname-short} dashboard.
-* You have a running code-server or Jupyter workbench.
+* You have access to a project that has a running workbench.
 * You have created a persistent volume claim (PVC) with a context type of *Model storage*.
 * The workbench is attached to the persistent volume (PVC).
 ifndef::upstream[]
@@ -26,27 +26,27 @@ Follow these steps to upload your model files to the PVC mount point (`/opt/app-
 
 . From the {productname-short} dashboard, click the open icon (image:images/open.png[The open icon]) to open your IDE in a new window.
 . In your IDE, navigate to the *File Browser* pane on the left-hand side.
-.. In Jupyter, this is usually labeled *Files*.
-.. In Code-Server, this is usually the *Explorer* view.
-. In the file browser, navigate to the `/opt/app-root/src/` directory. This directory represents the root of your attached PVC.
+.. In JupyterLab, this is usually labeled *Files*.
+.. In code-server, this is usually the *Explorer* view.
+. In the file browser, navigate to the `/opt/app-root/src/` folder. This folder represents the root of your attached PVC.
 +
-NOTE: Any files or folders you create or upload here will persist in the PVC.
+NOTE: Any files or folders that you create or upload to this folder persist in the PVC.
 . Optional: Create a new folder to organize your models:
-.. Right-click within the `/opt/app-root/src/` directory in the file browser and select *New Folder*, or click the *New Folder* icon if available in the toolbar.
+.. In the file browser, right-click within the `/opt/app-root/src/` folder in the file browser and select *New Folder*.
 .. Name the folder (for example, `models`).
 .. Double-click the new `models` folder to enter it.
 . Upload your model files to the current directory (`/opt/app-root/src/` or `/opt/app-root/src/models/`):
-* *Using Jupyter:*
+* *Using JupyterLab:*
 .. Click the *Upload Files* icon (image:images/jupyterlab-upload.png[Upload files icon, title="Upload files icon"]) in the file browser toolbar above the directory listing.
 .. In the file selection dialog, navigate to and select the model files from your local computer. Click *Open*.
 .. Wait for the upload progress bars next to the filenames to complete.
 * *Using Code-Server:*
 .. Drag the model files directly from your local file explorer and drop them into the file browser pane in the desired directory within Code-Server.
-. Wait for the upload process to complete. You might see progress notifications.
+. Wait for the upload process to complete.
 
 .Verification
 
-You can verify the upload was successful by confirming that your files appear in the file browser at the path where you uploaded them.
+. Confirm that your files appear in the file browser at the path where you uploaded them.
 
 .Next steps
 
