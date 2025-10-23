@@ -1,0 +1,64 @@
+:_module-type: PROCEDURE
+
+[id="exporting-metrics-to-external-observability-tools_{context}"]
+= Exporting metrics to external observability tools
+
+[role="_abstract"]
+You can export {productname-short} operational metrics to an external observability platform, such as Grafana, Prometheus, or any OpenTelemetry-compatible backend.  
+This allows you to visualize and monitor {productname-short} metrics alongside data from other systems in your existing observability environment.
+
+Metrics export is configured in the `DataScienceClusterInitialization` (DSCI) custom resource by populating the `.spec.monitoring.metrics.exporters` field.  
+When you define one or more exporters in this field, the OpenTelemetry Collector (OTC) deployed by {productname-short} automatically updates its configuration to include each exporter in its metrics pipeline. If this field is empty or undefined, metrics are collected only by the in-cluster Prometheus instance that is deployed with {productname-short}.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* The observability stack is enabled as described in _Enabling the observability stack_.
+* The external observability platform can receive metrics through a supported export protocol.
+* You know the URL of your external metrics receiver endpoint.
+
+.Procedure
+. Log in to the {openshift-platform} web console as a cluster administrator.
+. Click *Operators* → *Installed Operators*.
+. Select the *{productname-long}* Operator from the list.
+. Click the *DSCInitialization* tab.
+. Click the default DSCI instance, for example, *default-dsci*, to open its details page.
+. Click the *YAML* tab.
+. In the `spec.monitoring.metrics` section, add an `exporters` list that defines the external receiver configuration, as shown in the following example:
++
+[source,yaml]
+----
+spec:
+  monitoring:
+    metrics:
+      exporters:
+        - name: external-exporter
+          type: otlp
+          endpoint: https://example-otlp-receiver.example.com:4317
+----
++
+* `name`: A unique, descriptive name for the exporter configuration. Do not use reserved names such as `prometheus` or `otlp/tempo`.
+* `type`: The protocol used for export, for example:
+** `otlp`: For OpenTelemetry-compatible backends using gRPC or HTTP.
+** `prometheusremotewrite`: For Prometheus-compatible systems that use the remote write protocol.
+* `endpoint`: The full URL of your external metrics receiver. For OTLP, endpoints typically use port `4317` (gRPC) or `4318` (HTTP). For Prometheus remote write, endpoints typically end with `/api/v1/write`.
+
+. Click *Save*.
++
+The OpenTelemetry Collector automatically reloads its configuration and begins forwarding metrics to the specified external endpoint.
+
+.Verification
+. Verify that the OpenTelemetry Collector pods restart and apply the new configuration:
++
+[source,terminal]
+----
+$ oc get pods -n {monitoring-default-namespace}
+----
++
+The `data-science-collector-collector-*` pods should restart and display a *Running* status.
+
+. In your external observability platform, verify that new metrics from {productname-short} appear in the metrics list or dashboard.
+
+[NOTE]
+====
+If you remove the `.spec.monitoring.metrics.exporters` configuration from the DSCI, the OpenTelemetry Collector automatically reverts to collecting metrics only for the in-cluster Prometheus instance.  
+====

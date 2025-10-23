@@ -1,0 +1,65 @@
+:_module-type: PROCEDURE
+
+[id="collecting-metrics-from-user-workloads_{context}"]
+= Collecting metrics from user workloads
+
+[role="_abstract"]
+After a cluster administrator enables the observability stack in your cluster, metric collection becomes available but is not automatically active for all deployed workloads.  
+The monitoring system relies on a specific label to identify which pods Prometheus should scrape for metrics.
+
+To include a workload, such as a user-created workbench, training job, or inference service, in the centralized observability stack, add the label `monitoring.opendatahub.io/scrape=true` to the pod template in the workload's deployment configuration.  
+This ensures that all pods created by the deployment include the label and are automatically scraped by Prometheus.
+
+[NOTE]
+====
+Apply the `monitoring.opendatahub.io/scrape=true` label only to workloads that expose metrics and that you want the observability stack to monitor.  
+Do not add this label to operator-managed workloads, because the operator might overwrite or remove it during reconciliation.
+====
+
+.Prerequisites
+* A cluster administrator has enabled the observability stack as described in _Enabling the observability stack_.
+* You have {productname-short} administrator privileges or you are the project owner.
+* You have deployed a workload that exposes a `/metrics` endpoint, such as a workbench server or model service pod.
+* You have access to the project where the workload is running.
+
+.Procedure
+. Log in to the {openshift-platform} web console as a cluster administrator or project owner.
+. Click *Workloads* → *Deployments*.
+. In the *Project* list at the top of the page, select the project where your workload is deployed.
+. Identify the deployment that you want to collect metrics from and click its name.
+. On the *Deployment details* page, click the *Actions* menu (three vertical dots) in the top-right corner and select *Edit YAML*.
+. In the YAML editor, locate the pod template specification by navigating to the following path:
++
+[source,yaml]
+----
+spec:
+  template:
+    metadata:
+      labels:
+----
+. Add the required scrape label under the `labels` section, as shown in the following example:
++
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example_name
+  namespace: example_namespace
+spec:
+  template:
+    metadata:
+      labels:
+        monitoring.opendatahub.io/scrape: 'true'
+# ...
+----
+. Click *Save*.
++
+OpenShift automatically rolls out a new replica set and pods with the updated label. When the new pods start, the observability stack begins scraping their metrics.
+
+.Verification
+. In the {openshift-platform} web console, click *Observe* → *Metrics*.
+. Open the *Prometheus* view or go to *Developer* → *Monitoring* to query metrics.
+. In the query field, enter or select a metric that originates from your labeled workload.
++
+If the label is applied correctly and the workload exposes metrics, you can view live metrics collected by the centralized Prometheus instance.
