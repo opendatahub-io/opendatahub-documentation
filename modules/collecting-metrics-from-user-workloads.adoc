@@ -7,7 +7,7 @@
 After a cluster administrator enables the observability stack in your cluster, metric collection becomes available but is not automatically active for all deployed workloads.  
 The monitoring system relies on a specific label to identify which pods Prometheus should scrape for metrics.
 
-To include a workload, such as a user-created workbench, training job, or inference service, in the centralized observability stack, add the label `monitoring.opendatahub.io/scrape=true` to the pod template in the workload's deployment configuration.  
+To include a workload, such as a user-created workbench, training job, or inference service, in the centralized observability stack, add the label `monitoring.opendatahub.io/scrape=true` to the pod template in the workload’s deployment configuration.  
 This ensures that all pods created by the deployment include the label and are automatically scraped by Prometheus.
 
 [NOTE]
@@ -27,17 +27,8 @@ Do not add this label to operator-managed workloads, because the operator might 
 . Click *Workloads* → *Deployments*.
 . In the *Project* list at the top of the page, select the project where your workload is deployed.
 . Identify the deployment that you want to collect metrics from and click its name.
-. On the *Deployment details* page, click the *Actions* menu (three vertical dots) in the top-right corner and select *Edit YAML*.
-. In the YAML editor, locate the pod template specification by navigating to the following path:
-+
-[source,yaml]
-----
-spec:
-  template:
-    metadata:
-      labels:
-----
-. Add the required scrape label under the `labels` section, as shown in the following example:
+. On the *Deployment details* page, click the *YAML* tab.
+. In the YAML editor, add the required label under the `spec.template.metadata.labels` section, as shown in the following example:
 +
 [source,yaml]
 ----
@@ -55,7 +46,8 @@ spec:
 ----
 . Click *Save*.
 +
-OpenShift automatically rolls out a new replica set and pods with the updated label. When the new pods start, the observability stack begins scraping their metrics.
+OpenShift automatically rolls out a new ReplicaSet and pods with the updated label.  
+When the new pods start, the observability stack begins scraping their metrics.
 
 .Verification
 . In the {openshift-platform} web console, click *Observe* → *Metrics*.

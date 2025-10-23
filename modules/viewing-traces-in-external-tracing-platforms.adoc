@@ -1,0 +1,86 @@
+:_module-type: PROCEDURE
+
+[id="viewing-traces-in-external-tracing-platforms_{context}"]
+= Viewing traces in external tracing platforms
+
+[role="_abstract"]
+When tracing is enabled in the `DataScienceClusterInitialization` (DSCI) custom resource, {productname-short} deploys the Red Hat build of Tempo as the tracing backend and the Red Hat build of OpenTelemetry Collector (OTC) to receive and route trace data.
+
+To view and analyze traces outside of {productname-short}, complete the following tasks:
+
+* Configure your instrumented applications to send traces to the OpenTelemetry Collector.  
+* Connect your preferred visualization tool, such as Grafana or Jaeger, to the Tempo Query API.
+
+.Prerequisites
+* A cluster administrator has enabled tracing as part of the observability stack in the DSCI configuration.  
+* The monitoring namespace, for example `{monitoring-default-namespace}`, is accessible.  
+* You have network access or cluster administrator privileges to create a route or port forward from the cluster.  
+* Your application is instrumented with an OpenTelemetry SDK or library to generate and export trace data.  
+
+.Procedure
+. Find the OpenTelemetry Collector endpoint. 
++
+The OpenTelemetry Collector receives trace data from instrumented applications by using the OpenTelemetry Protocol (OTLP).
++
+.. In the {openshift-platform} web console, navigate to *Networking* → *Services*.  
+.. In the *Project* list, select the monitoring namespace, for example, `{monitoring-default-namespace}`.  
+.. Locate the Service named `data-science-collector` or a similar name associated with the OpenTelemetry Collector.  
+.. Use the Service name or ClusterIP as the OTLP endpoint in your application configuration.  
++
+Your application must export traces to one of the following ports on the collector service:
++
+* gRPC: `4317`  
+* HTTP: `4318`
++
+Example environment variable:
++
+[source,terminal,subs="+quotes"]
+----
+OTEL_EXPORTER_OTLP_ENDPOINT=http://data-science-collector.{monitoring-default-namespace}.svc.cluster.local:4318
+----
++
+[NOTE]
+====
+See the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/red_hat_build_of_opentelemetry/index[Red Hat build of OpenTelemetry documentation] for details about configuring application instrumentation.
+====
+
+. Connect your visualization tool to the Tempo query service.
++
+You can use a visualization tool, such as Grafana or Jaeger, to query and display traces from the Red Hat build of Tempo deployed by {productname-short}.  
++
+.. In the {openshift-platform} web console, navigate to *Networking* → *Services*.  
+.. In the *Project* list, select the monitoring namespace, for example, `{monitoring-default-namespace}`.
+.. Locate the Service named `tempo-query` or `tempo-query-frontend`.  
+.. To make the service accessible to external tools, a cluster administrator must perform one of the following actions:
++
+* Create a route: Expose the Tempo Query service externally by creating an OpenShift route.  
+* Use port forwarding: Temporarily forward a local port to the Tempo Query service by using the {openshift-cli}:  
++
+[source,terminal, subs="attributes+"]
+----
+$ oc port-forward svc/tempo-query-frontend 3200:3200 -n {monitoring-default-namespace}
+----
++
+After the port is forwarded, connect your visualization tool to the Tempo Query API endpoint, for example:  
++
+[source,terminal,subs="+quotes"]
+----
+http://localhost:3200
+----
++
+[NOTE]
+====
+See the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/distributed_tracing/distr-tracing-tempo-installing[Tempo Operator documentation] for details about connecting to Tempo.
+====
+
+.Verification
+. Confirm that your instrumented application is generating and exporting trace data.  
+. Verify that the OpenTelemetry Collector pod is running in the monitoring namespace:
++
+[source,terminal, subs="attributes+"]
+----
+$ oc get pods -n {monitoring-default-namespace} | grep collector
+----
++
+The `data-science-collector-collector-*` pod should display a *Running* status.  
+. Access your visualization tool and confirm that new traces appear in the trace list or search view.

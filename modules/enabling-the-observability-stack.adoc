@@ -4,13 +4,13 @@
 = Enabling the observability stack
 
 [role="_abstract"]
-The observability stack collects and correlates metrics, traces, and alerts for {productname-short} so that you can monitor, troubleshoot, and optimize the platform. This capability is disabled by default on self-managed deployments. A cluster administrator enables it by updating the `DataScienceClusterInitialization` (DSCI) custom resource.
+The observability stack collects and correlates metrics, traces, and alerts for {productname-short} so that you can monitor, troubleshoot, and optimize {productname-short} components. A cluster administrator must explicitly enable this capability in the `DataScienceClusterInitialization` (DSCI) custom resource.
 
 Once enabled, you can perform the following actions:
 
 * Accelerate troubleshooting by viewing metrics, traces, and alerts for {productname-short} components in one place.
-* Maintain platform stability by monitoring health and resource usage and receiving built-in alerts for critical issues.
-* Integrate with existing tools by exporting telemetry to third-party observability solutions through OpenTelemetry.
+* Maintain platform stability by monitoring health and resource usage and receiving alerts for critical issues.
+* Integrate with existing tools by exporting telemetry to third-party observability solutions through the Red Hat build of OpenTelemetry.
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -27,7 +27,7 @@ Once enabled, you can perform the following actions:
 . Click the *DSCInitialization* tab.
 . Click the default instance name (for example, *default-dsci*) to open the instance details page.
 . Click the *YAML* tab to show the instance specifications.
-. In the `spec.components`, set the value of the `managementState` field for `monitoring` to `Managed`, and configure metrics, alerting, and tracing components.
+. In the `spec.components`, set the value of the `managementState` field for `monitoring` to `Managed`, and configure metrics, alerting, and tracing components, as shown in the following example:
 +
 .Example monitoring configuration
 [source,yaml]
@@ -37,7 +37,7 @@ spec:
   monitoring:
     managementState: Managed                 # Required: Enables and manages the observability stack
     namespace: {monitoring-default-namespace}  # Required: Namespace where monitoring components are deployed
-    alerting: {}                              # Alertmanager configuration. Uses default settings if left empty.
+    alerting: {}                              # Alertmanager configuration, uses default settings if empty
     metrics:                                  # Prometheus configuration for metrics collection
       replicas: 1                             # Optional: Number of Prometheus instances
       resources:                              # CPU and memory requests and limits for Prometheus pods
@@ -61,7 +61,7 @@ spec:
 
 .Verification
 
-Verify that the monitoring workloads are running in the configured namespace:
+Verify that the observability stack components are running in the configured namespace:
 . In the {openshift-platform} web console, click *Workloads* → *Pods*.
 . From the project list, select *{monitoring-default-namespace}*.
 . Confirm that there are running pods for your configuration. The following pods indicate that the observability stack is active:
@@ -77,24 +77,5 @@ thanos-querier-data-science-thanos-querier-#     2/2   Running   0   1m
 
 . Optional: Verify that metrics are collected from instrumented components by confirming that their pods include the label `monitoring.opendatahub.io/scrape='true'`.
 
-
-metrics
-CRD > search for collector > OpenTelemetryCollector > looks for label on pod: monitoring.opendatahub.io/scrape=true 
-  (example trustyai pod YAML, labels: monitoring.opendatahub.io/scrape: 'true'
-
-
-* To collect metrics from your own workloads, you must label the pods that expose metrics endpoints:
-+
-[source,terminal]
-----
-oc label pod <pod_name> monitoring.opendatahub.io/scrape='true'
-----
-+
-Pods with this label are automatically scraped by the Prometheus instance in the centralized monitoring stack.
-
-[NOTE]
-====
-The `monitoring.opendatahub.io/scrape='true'` label is not added automatically when you enable the observability stack.  
-This label is a temporary mechanism used by the OpenTelemetry Collector to identify which pods to scrape.  
-Future releases are expected to replace this with automatic discovery based on ServiceMonitor and PodMonitor resources.
-====
+.Next step
+* __Collecting metrics from user workloads__
