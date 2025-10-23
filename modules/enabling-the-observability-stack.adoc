@@ -62,6 +62,7 @@ spec:
 .Verification
 
 Verify that the observability stack components are running in the configured namespace:
+
 . In the {openshift-platform} web console, click *Workloads* → *Pods*.
 . From the project list, select *{monitoring-default-namespace}*.
 . Confirm that there are running pods for your configuration. The following pods indicate that the observability stack is active:
@@ -77,5 +78,7 @@ thanos-querier-data-science-thanos-querier-#     2/2   Running   0   1m
 
 . Optional: Verify that metrics are collected from instrumented components by confirming that their pods include the label `monitoring.opendatahub.io/scrape='true'`.
 
+ifndef::upstream[]
 .Next step
 * __Collecting metrics from user workloads__
+endif::[]

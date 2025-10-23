@@ -31,8 +31,8 @@ spec:
   monitoring:
     metrics:
       exporters:
-        - name: external-exporter
-          type: otlp
+        - name: <external_exporter_name>
+          type: <type>
           endpoint: https://example-otlp-receiver.example.com:4317
 ----
 +
@@ -40,7 +40,9 @@ spec:
 * `type`: The protocol used for export, for example:
 ** `otlp`: For OpenTelemetry-compatible backends using gRPC or HTTP.
 ** `prometheusremotewrite`: For Prometheus-compatible systems that use the remote write protocol.
-* `endpoint`: The full URL of your external metrics receiver. For OTLP, endpoints typically use port `4317` (gRPC) or `4318` (HTTP). For Prometheus remote write, endpoints typically end with `/api/v1/write`.
+* `endpoint`: The full URL of your external metrics receiver. For OTLP, endpoints typically use port `4317` (gRPC) or `4318` (HTTP). For Prometheus remote write, endpoints typically end with `/api/v1/write`. For example:
+** `otlp`: `https://example-otlp-receiver.example.com:4317` (gRPC) or `https://example-otlp-receiver.example.com:4318` (HTTP)
+** `prometheusremotewrite`: `https://example-prometheus-remote.example.com/api/v1/write`
 
 . Click *Save*.
 +
