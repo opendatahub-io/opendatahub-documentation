@@ -1,0 +1,67 @@
+:_module-type: PROCEDURE
+
+[id="compiling-kubernetes-native-manifests-with-kfp-sdk_{context}"]
+= Compiling Kubernetes-native manifests with the Kubeflow Pipelines SDK
+
+[role="_abstract"]
+If your pipeline server uses the Kubernetes native API mode, you can compile your pipeline directly to Kubernetes manifests. The output includes `Pipeline` and `PipelineVersion` custom resources with `spec.pipelineSpec` and, when you use Kubernetes resource configuration, an optional `spec.platformSpec`.
+
+.Prerequisites
+* You have installed Python 3.11 or later in your local environment.
+* You have installed the Kubeflow Pipelines (KFP) SDK package (`kfp`) version 2.x or later.
+* You have a valid Python pipeline definition file.
+
+.Procedure
+
+. Save the following code as a new file named `compile.py` in your working directory.
++
+The example uses the `KubernetesManifestOptions` class from the `kfp.compiler.compiler_utils` module to define pipeline metadata such as the name, version, and namespace.
++
+.Example compile script
++
+[source,python,subs="+quotes"]
+----
+from kfp import dsl, compiler
+from kfp.compiler.compiler_utils import KubernetesManifestOptions
+
+@dsl.pipeline(name="__<pipeline_name>__")
+def my_pipeline():
+    pass  # define your tasks
+
+compiler.Compiler().compile(
+    pipeline_func=my_pipeline,
+    package_path="__<output_file>__.yaml",
+    kubernetes_manifest_format=True,
+    kubernetes_manifest_options=KubernetesManifestOptions(
+        pipeline_name="__<pipeline_name>__",
+        pipeline_version_name="__<version_name>__",
+        namespace="__<namespace>__",
+        include_pipeline_manifest=True,
+    ),
+)
+----
+
+. Run the script to compile your pipeline and generate the Kubernetes manifests:
++
+[source,subs="+quotes"]
+----
+$ python compile.py
+----
+
+.Verification
+Verify that the compiled output includes the expected resources:
+
+[source,yaml]
+----
+apiVersion: pipelines.kubeflow.org/v2beta1
+kind: Pipeline
+---
+apiVersion: pipelines.kubeflow.org/v2beta1
+kind: PipelineVersion
+spec:
+  pipelineSpec: ...
+  platformSpec: ...   # present when Kubernetes resource configuration is used
+----
+
+.Additional resources
+* link:https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/compile-a-pipeline/#compiling-for-kubernetes-native-api-mode[Compiling for Kubernetes native API mode^]
