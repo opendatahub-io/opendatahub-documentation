@@ -36,6 +36,14 @@ Note that Open Data Hub Operator versions 2.2 and later use an upgraded API vers
 |`.spec.components.[component_name].managementState: Removed`
 |===
 
+*Migrate from embedded Kueue to {rhbok-productname}*
+
+The embedded Kueue component for managing distributed workloads is deprecated. {productname-short} now uses the {rhbok-productname} Operator to provide enhanced workload scheduling for distributed training, workbench, and model serving workloads.
+
+Before upgrading {productname-short}, check if your environment is using the embedded Kueue component by verifying the `spec.components.kueue.managementState` field in the `DataScienceCluster` custom resource. If the field is set to `Managed`, you must complete the migration to the {rhbok-productname} Operator to avoid controller conflicts and ensure continued support for queue-based workloads.
+
+This migration requires {openshift-platform} 4.18 or later. For more information, see link:{odhdocshome}/managing-odh/#migrating-to-the-rhbok-operator_kueue[Migrating to the {rhbok-productname} Operator].
+
 *Update workflows interacting with `OdhDashboardConfig` resource*
 
 Previously, cluster administrators used the `groupsConfig` option in the `OdhDashboardConfig` resource to manage the {openshift-platform} groups (both administrators and non-administrators) that can access the {productname-short} dashboard. Starting with {productname-short} 2.17, this functionality has moved to the `Auth` resource. If you have workflows (such as GitOps workflows) that interact with `OdhDashboardConfig`, you must update them to reference the `Auth` resource instead.
@@ -67,11 +75,6 @@ Previously, cluster administrators used the `groupsConfig` option in the `OdhDas
 
 |===
 
-*Transition embedded Kueue to {rhbok-productname}*
-
-The embedded Kueue component for managing distributed workloads is deprecated. {productname-short} now uses the {rhbok-productname} Operator to provide enhanced workload scheduling across distributed training, workbench, and model serving workloads. 
-
-To ensure workloads continue using queue management, you must migrate from the embedded Kueue component to the {rhbok-productname} Operator, which requires OpenShift Container Platform 4.18 or later. For more information, see link:{odhdocshome}/managing-odh/#migrating-to-the-rhbok-operator_kueue[Migrating to the {rhbok-productname} Operator].
 
 ////
 *Update embedded Kueue*

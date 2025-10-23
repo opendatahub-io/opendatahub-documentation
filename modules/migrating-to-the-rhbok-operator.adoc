@@ -3,34 +3,34 @@
 [id="migrating-to-the-rhbok-operator_{context}"]
 = Migrating to the {rhbok-productname} Operator
 
-ifdef::upstream[]
-The embedded Kueue component for managing distributed workloads is deprecated. You must migrate to the {rhbok-productname} Operator. You cannot install both the embedded Kueue and the {rhbok-productname} Operator on the same cluster because this creates conflicting controllers that manage the same resources.
-
-{productname-short} does not automatically migrate existing workloads to {rhbok-productname}. Cluster administrators must manually migrate from the embedded Kueue to the {rhbok-productname} Operator to ensure workloads continue using queue management after upgrading.
-endif::[]
-
-ifndef::upstream[]
 ifdef::self-managed[]
-Starting with {productname-short} 2.24, the embedded Kueue component for managing distributed workloads is deprecated. 
+Starting with {productname-short} 2.24, the embedded Kueue component for managing distributed workloads is deprecated.
 endif::[]
-ifdef::cloud-service[]
-The embedded Kueue component for managing distributed workloads is deprecated. 
+ifdef::upstream,cloud-service[]
+The embedded Kueue component for managing distributed workloads is deprecated.
 endif::[]
-You must migrate to the {rhbok-productname} Operator. You cannot install both the embedded Kueue and the {rhbok-productname} Operator on the same cluster because this creates conflicting controllers that manage the same resources.
 
-{productname-short} does not automatically migrate existing workloads to {rhbok-productname}. Cluster administrators must manually migrate from the embedded Kueue to the {rhbok-productname} Operator to ensure workloads continue using queue management after upgrading.
-endif::[]
+{productname-short} now uses the {rhbok-productname} Operator to provide enhanced workload scheduling for distributed training, workbench, and model serving workloads.
+
+Check if your environment is using the embedded Kueue component by verifying the `spec.components.kueue.managementState` field in the `DataScienceCluster` custom resource. If the field is set to `Managed`, you must migrate to the {rhbok-productname} Operator before upgrading {productname-short} to avoid controller conflicts and ensure continued support for queue-based workloads. 
+
+{productname-short} does not automatically migrate workloads, and you cannot install both the embedded Kueue and the {rhbok-productname} Operator on the same cluster.
 
 .Prerequisites
+* Your environment is currently using the embedded Kueue component. That is, the `spec.components.kueue.managementState` field in the `DataScienceCluster` custom resource is set to `Managed`.
++
+[NOTE]
+====
+If `spec.components.kueue.managementState` is set to `Removed` or `Unmanaged`, skip this migration.
+====
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You are using {openshift-platform} 4.18 or later.
 * You have installed and configured the *cert-manager Operator for {org-name} OpenShift* for your cluster.
-* The embedded Kueue component is enabled (that is, the `spec.components.kueue.managementState` field in the `DataScienceCluster` object is set to `Managed`).
 
 .Procedure
 . Optional: When you migrate from the embedded Kueue to {rhbok-productname}, the {productname-short} Operator automatically moves your existing Kueue configuration from the `kueue-manager-config` ConfigMap to the `Kueue` custom resource (CR). 
 +
-To retain the `kueue-manager-config` ConfigMap, run the following command. Replace `<applications-namespace>` with your {productname-short} applications namespace. The default is `pass:attributes[{dbd-config-default-namespace}]`.
+If you want to keep the `kueue-manager-config` ConfigMap for reference, run the following command. Replace `<applications-namespace>` with your {productname-short} applications namespace. The default namespace is `pass:attributes[{dbd-config-default-namespace}]`.
 +
 [source,terminal]
 ----
@@ -39,8 +39,13 @@ $ oc annotate configmap kueue-manager-config -n <applications-namespace> opendat
 
 . Log in to the {openshift-platform} web console as a cluster administrator.
 
-. Optional (recommended): To avoid potential configuration conflicts, uninstall the embedded Kueue component before installing {rhbok-productname}.
-.. In the web console, click *Operators* → *Installed Operators* and then click the {productname-long} Operator.
+. Uninstall the embedded Kueue component to avoid potential configuration conflicts.
++
+[NOTE]
+====
+If you need to keep workloads running without interruption, you can skip this step. However, skipping it is not recommended because it might cause temporary configuration issues during the {productname-short} upgrade.
+====
+.. In the web console, click *Operators* -> *Installed Operators* and then click the {productname-long} Operator.
 .. Click the *Data Science Cluster* tab.  
 .. Click the *default-dsc* object.  
 .. Click the *YAML* tab.  
@@ -56,13 +61,14 @@ spec:
 .. Click *Save*.  
 .. Wait for the {productname-short} Operator to reconcile, and then verify that the embedded Kueue was removed:
 * On the *Details* tab of the `default-dsc` object, check that the *KueueReady* condition has a *Status* of `False` and a *Reason* of `Removed`.  
-* Go to *Workloads* → *Deployments*, select the project where {productname-short} is installed (for example, `redhat-ods-applications`), and confirm that Kueue-related deployments (for example, `kueue-controller-manager`) are no longer present.  
+* Go to *Workloads* -> *Deployments*, select the project where {productname-short} is installed (for example, `redhat-ods-applications`), and confirm that Kueue-related deployments (for example, `kueue-controller-manager`) are no longer present.  
 
 . Install the {rhbok-productname} Operator on your {openshift-platform} cluster:
 .. Follow the steps to install the {rhbok-productname} Operator, as described in the link:{rhbok-docs}[{rhbok-productname} documentation].
 .. Go to *Operators* -> *Installed Operators* and confirm that the {rhbok-productname} Operator is listed with *Status* as *Succeeded*.
+
 . Activate the {rhbok-productname} Operator in {productname-short}:
-.. In the web console, click *Operators* → *Installed Operators* and then click the {productname-long} Operator.  
+.. In the web console, click *Operators* -> *Installed Operators* and then click the {productname-long} Operator.  
 .. Click the *Data Science Cluster* tab.  
 .. Click the *default-dsc* object.  
 .. Click the *YAML* tab.
@@ -77,7 +83,6 @@ spec:
     kueue:
       managementState: Unmanaged
 ----
-+
 * To specify custom queue names, apply the following configuration, replacing `<example-cluster-queue>` and `<example-local-queue>` with your custom values:
 +
 [source,yaml]
@@ -101,24 +106,24 @@ Replace `<project-namespace>` with the name of your project.
 +
 [NOTE]
 ====
-Kueue validation and queue enforcement apply only to workloads in namespaces with the `kueue.openshift.io/managed=true` label.
+Kueue validation and queue enforcement apply only to workloads in namespaces labeled with `kueue.openshift.io/managed=true`.
 ====
 
 .Verification
-* Verify that the embedded Kueue is removed.  
+* Verify that the embedded Kueue component was removed.  
 * Verify that the `DataScienceCluster` resource shows a healthy `Unmanaged` status for Kueue.  
-* Verify that existing workloads in the queue continue to be processed by the new operator-managed Kueue controllers. Submit a new test workload to confirm functionality.  
+* Verify that existing workloads in the queue continue to be processed by the {rhbok-productname} controllers. Submit a new test workload to confirm functionality.  
 
 .Next steps
 * Configure quotas by creating and modifying `ResourceFlavor`, `ClusterQueue`, and `LocalQueue` objects. For details, see the link:{rhbok-docs}[{rhbok-productname} documentation].
-* Enable Kueue in the dashboard so that users can select Kueue-enabled options when creating workloads. When you enable Kueue, you also enable Kueue management for all new projects created from the dashboard. 
+* Enable Kueue in the dashboard so that users can select Kueue-enabled options when creating workloads. When enabled, Kueue management is automatically applied to all new projects created from the dashboard.
 ifdef::upstream[]
 See link:{odhdocshome}/managing-odh/#enabling-kueue-in-the-dashboard_kueue[Enabling Kueue in the dashboard].
 endif::[]
 ifndef::upstream[]
 See link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-workloads-with-kueue#enabling-kueue-in-the-dashboard_kueue[Enabling Kueue in the dashboard].
 endif::[]
-* Cluster administrators and {productname-short} administrators can create hardware profiles so that users can submit workloads from the {productname-short} dashboard. 
+* Cluster administrators and {productname-short} administrators can create hardware profiles so that users can submit workloads from the {productname-short} dashboard.
 ifdef::upstream[]
 See link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles].
 endif::[]
