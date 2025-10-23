@@ -22,8 +22,8 @@ The pipeline and pipeline version IDs change during migration, so existing pipel
 
 .Prerequisites
 * You have {productname-short} administrator privileges or you are the project owner.
-* You have a data science project with a running pipeline server (a `DataSciencePipelinesApplication` custom resource).
-* The pipeline server is currently configured with `spec.apiServer.pipelineStore: database`.
+* You have a data science project with a running pipeline server.
+* The pipeline server is configured with `spec.apiServer.pipelineStore: database`.
 * You have Python 3.11 installed in your local environment.
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
@@ -48,7 +48,7 @@ When prompted, enter the {openshift-platform} server URL, connection type, and y
 
 . Set environment variables for your data science project and get the pipeline API route.
 +
-In the following commands, replace __<namespace>__ with the name of your project:
+In the `export` command, replace __<namespace>__ with the name of your project:
 +
 [source,subs="+quotes"]
 ----
@@ -101,7 +101,7 @@ Alternatively, use a prompt with `read -s` to input the token securely at runtim
 ./.venv/bin/python migration.py --help
 ----
 
-.. If you plan to create new or updated `PipelineVersion` custom resources after migration, compile your pipeline code into YAML format by using the KFP SDK. For more information, see _Generating the pipeline YAML with the Kubeflow Pipelines SDK_.
+.. If you plan to create new or updated `PipelineVersion` custom resources after you migrate, compile your pipeline code into YAML format by using the KFP SDK. For more information, see _Generating the pipeline YAML with the Kubeflow Pipelines SDK_.
 
 . Apply the exported Kubernetes custom resources to your cluster.
 +
@@ -110,7 +110,7 @@ Alternatively, use a prompt with `read -s` to input the token securely at runtim
 oc apply -f ./kfp-exported-pipelines
 ----
 
-. Switch the pipeline server to use Kubernetes API storage.
+. Change the pipeline server to use Kubernetes API storage.
 +
 [source,subs="+quotes"]
 ----
@@ -119,7 +119,7 @@ oc -n "$NAMESPACE" patch dspa "$DSPA_NAME" --type=merge -p '{"spec":{"apiServer"
 +
 [NOTE]
 ====
-To view pipelines that were stored in the internal database and not migrated, you can temporarily switch the pipeline server back to `database` storage.
+To view pipelines that were stored in the internal database and not migrated, you can temporarily change the pipeline server back to `database` storage.
 
 [source,subs="+quotes"]
 ----
@@ -127,7 +127,7 @@ oc -n $NAMESPACE patch dspa $DSPA_NAME --type=merge -p '{"spec":{"apiServer":{"p
 ----
 ====
 
-. Repeat this procedure for each additional data science project that you want to migrate. Before each run, set `NAMESPACE` to the appropriate project name.
+. Repeat this procedure for each additional data science project that you want to migrate, changing `NAMESPACE` to the appropriate project name.
 
 . Optional: Clean up the local environment.
 +
@@ -145,7 +145,7 @@ $ oc -n __<namespace>__ get pipelines.pipelines.kubeflow.org
 $ oc -n __<namespace>__ get pipelineversions.pipelines.kubeflow.org
 ----
 
-. Verify that the pipeline server is now using Kubernetes API storage:
+. Verify that the pipeline server is using Kubernetes API storage:
 +
 [source,subs="+quotes"]
 ----
