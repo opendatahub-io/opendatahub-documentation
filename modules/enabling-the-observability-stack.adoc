@@ -30,13 +30,14 @@ Once enabled, you can perform the following actions:
 . In the `spec.monitoring` section, set the value of the `managementState` field to `Managed`, and configure metrics, alerting, and tracing settings as shown in the following example:
 +
 .Example monitoring configuration
-[source,yaml]
+[source,yaml,subs="attributes+"]
 ----
 # ...
 spec:
   monitoring:
     managementState: Managed                 # Required: Enables and manages the observability stack
-    namespace: {monitoring-default-namespace}  # Required: Namespace where monitoring components are deployed
+    namespace: {monitoring-default-namespace}
+  # Required: Namespace where monitoring components are deployed
     alerting: {}                              # Alertmanager configuration, uses default settings if empty
     metrics:                                  # Prometheus configuration for metrics collection
       replicas: 1                             # Optional: Number of Prometheus instances
@@ -54,7 +55,7 @@ spec:
       storage:                                # Storage configuration for trace data
         backend: pv                           # Required: Storage backend for Tempo traces (pv, s3, or gcs)
         retention: 2160h                      # Optional: Retention period for trace data in hours
-      exporters: {}                           # External trace exporters
+      exporters: {}                           # External traces exporters
 # ...
 ----
 . Click *Save* to apply your changes.
@@ -75,8 +76,6 @@ prometheus-data-science-monitoringstack-#        2/2   Running   0   1m
 tempo-data-science-tempomonolithic-#             1/1   Running   0   1m
 thanos-querier-data-science-thanos-querier-#     2/2   Running   0   1m
 ----
-
-. Optional: Verify that metrics are collected from instrumented components by confirming that their pods include the label `monitoring.opendatahub.io/scrape='true'`.
 
 ifndef::upstream[]
 .Next step

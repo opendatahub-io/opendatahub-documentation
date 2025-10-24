@@ -7,7 +7,7 @@
 After a cluster administrator enables the observability stack in your cluster, metric collection becomes available but is not automatically active for all deployed workloads.  
 The monitoring system relies on a specific label to identify which pods Prometheus should scrape for metrics.
 
-To include a workload, such as a user-created workbench, training job, or inference service, in the centralized observability stack, add the label `monitoring.opendatahub.io/scrape=true` to the pod template in the workload’s deployment configuration.  
+To include a workload, such as a user-created workbench, training job, or inference service, in the centralized observability stack, add the label `monitoring.opendatahub.io/scrape=true` to the pod template in the workload's deployment configuration.  
 This ensures that all pods created by the deployment include the label and are automatically scraped by Prometheus.
 
 [NOTE]
@@ -35,8 +35,8 @@ Do not add this label to operator-managed workloads, because the operator might 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: example_name
-  namespace: example_namespace
+  name: <example_name>
+  namespace: <example_namespace>
 spec:
   template:
     metadata:
@@ -50,8 +50,39 @@ OpenShift automatically rolls out a new ReplicaSet and pods with the updated lab
 When the new pods start, the observability stack begins scraping their metrics.
 
 .Verification
-. In the {openshift-platform} web console, click *Observe* → *Metrics*.
-. Open the *Prometheus* view or go to *Developer* → *Monitoring* to query metrics.
-. In the query field, enter or select a metric that originates from your labeled workload.
+
+Verify that metrics are being collected by accessing the Prometheus instance deployed by {productname-short}.
+
+. Access Prometheus by using a route:
 +
-If the label is applied correctly and the workload exposes metrics, you can view live metrics collected by the centralized Prometheus instance.
+.. In the {openshift-platform} web console, click *Networking* → *Routes*.
+.. From the project list, select *{monitoring-default-namespace}*.
+.. Locate the route associated with the Prometheus service, such as `data-science-prometheus-route`.
+.. Click the *Location* URL to open the Prometheus web console.
+
+. Alternatively, access Prometheus locally by using port forwarding:
++
+.. List the Prometheus pods:
++
+[source,terminal,subs="attributes+"]
+----
+$ oc get pods -n {monitoring-default-namespace} -l prometheus=k8s
+----
++
+.. Start port forwarding:
++
+[source,terminal,subs="attributes+"]
+----
+$ oc port-forward __<prometheus-pod-name>__ 9090:9090 -n {monitoring-default-namespace}
+----
++
+.. In a web browser, open the following URL:
++
+[source,terminal]
+----
+http://localhost:9090
+----
+
+. In the Prometheus web console, search for a metric exposed by your workload.  
++
+If the label is applied correctly and the workload exposes metrics, the metrics appear in the Prometheus instance deployed by {productname-short}.

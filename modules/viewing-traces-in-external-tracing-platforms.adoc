@@ -13,7 +13,7 @@ To view and analyze traces outside of {productname-short}, complete the followin
 
 .Prerequisites
 * A cluster administrator has enabled tracing as part of the observability stack in the DSCI configuration.  
-* The monitoring namespace, for example `{monitoring-default-namespace}`, is accessible.  
+* You have access to the monitoring namespace, for example `{monitoring-default-namespace}`.
 * You have network access or cluster administrator privileges to create a route or port forward from the cluster.  
 * Your application is instrumented with an OpenTelemetry SDK or library to generate and export trace data.  
 
@@ -34,7 +34,7 @@ Your application must export traces to one of the following ports on the collect
 +
 Example environment variable:
 +
-[source,terminal,subs="+quotes"]
+[source,terminal, subs="attributes+"]
 ----
 OTEL_EXPORTER_OTLP_ENDPOINT=http://data-science-collector.{monitoring-default-namespace}.svc.cluster.local:4318
 ----
