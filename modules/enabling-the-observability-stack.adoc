@@ -1,0 +1,99 @@
+:_module-type: PROCEDURE
+
+[id="enabling-the-observability-stack_{context}"]
+= Enabling the observability stack
+
+[role="_abstract"]
+The observability stack collects and correlates metrics, traces, and alerts for {productname-short} so that you can monitor, troubleshoot, and optimize {productname-short} components. A cluster administrator must explicitly enable this capability in the `DataScienceClusterInitialization` (DSCI) custom resource.
+
+Once enabled, you can perform the following actions:
+
+* Accelerate troubleshooting by viewing metrics, traces, and alerts for {productname-short} components in one place.
+* Maintain platform stability by monitoring health and resource usage and receiving alerts for critical issues.
+* Integrate with existing tools by exporting telemetry to third-party observability solutions through the Red Hat build of OpenTelemetry.
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+This feature is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+This feature is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have installed {productname-long}.
+* You have installed the following Operators, which provide the components of the observability stack:
+** *Cluster Observability Operator*: Deploys and manages Prometheus and Alertmanager for metrics and alerts.
+** *Tempo Operator*: Provides the Tempo backend for distributed tracing.
+** *Red Hat build of OpenTelemetry*: Deploys the OpenTelemetry Collector for collecting and exporting telemetry data.
+
+.Procedure
+. Log in to the {openshift-platform} web console as a cluster administrator.
+. In the {openshift-platform} console, click *Operators* → *Installed Operators*.
+. Search for the *{productname-long}* Operator, and then click the Operator name to open the Operator details page.
+. Click the *DSCInitialization* tab.
+. Click the default instance name (for example, *default-dsci*) to open the instance details page.
+. Click the *YAML* tab to show the instance specifications.
+. In the `spec.monitoring` section, set the value of the `managementState` field to `Managed`, and configure metrics, alerting, and tracing settings as shown in the following example:
++
+.Example monitoring configuration
+[source,yaml,subs="attributes+"]
+----
+# ...
+spec:
+  monitoring:
+    managementState: Managed                 # Required: Enables and manages the observability stack
+    namespace: {monitoring-default-namespace}    # Required: Namespace where monitoring components are deployed
+    alerting: {}                              # Alertmanager configuration, uses default settings if empty
+    metrics:                                  # Prometheus configuration for metrics collection
+      replicas: 1                             # Optional: Number of Prometheus instances
+      resources:                              # CPU and memory requests and limits for Prometheus pods
+        cpulimit: 500m                        # Optional: Maximum CPU allocation in millicores
+        cpurequest: 100m                      # Optional: Minimum CPU allocation in millicores
+        memorylimit: 512Mi                    # Optional: Maximum memory allocation in mebibytes
+        memoryrequest: 256Mi                  # Optional: Minimum memory allocation in mebibytes
+      storage:                                # Storage configuration for metrics data
+        size: 5Gi                             # Required: Storage size for Prometheus data
+        retention: 90d                        # Required: Retention period for metrics data in days
+      exporters: {}                           # External metrics exporters
+    traces:                                   # Tempo backend for distributed tracing
+      sampleRatio: '0.1'                      # Optional: Portion of traces to sample, expressed as a decimal
+      storage:                                # Storage configuration for trace data
+        backend: pv                           # Required: Storage backend for Tempo traces (pv, s3, or gcs)
+        retention: 2160h                      # Optional: Retention period for trace data in hours
+      exporters: {}                           # External traces exporters
+# ...
+----
+. Click *Save* to apply your changes.
+
+.Verification
+
+Verify that the observability stack components are running in the configured namespace:
+
+. In the {openshift-platform} web console, click *Workloads* → *Pods*.
+. From the project list, select *{monitoring-default-namespace}*.
+. Confirm that there are running pods for your configuration. The following pods indicate that the observability stack is active:
++
+[source,terminal]
+----
+alertmanager-data-science-monitoringstack-#      2/2   Running   0   1m
+data-science-collector-collector-#               1/1   Running   0   1m
+prometheus-data-science-monitoringstack-#        2/2   Running   0   1m
+tempo-data-science-tempomonolithic-#             1/1   Running   0   1m
+thanos-querier-data-science-thanos-querier-#     2/2   Running   0   1m
+----
+
+ifndef::upstream[]
+.Next step
+* __Collecting metrics from user workloads__
+endif::[]

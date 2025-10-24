@@ -1,0 +1,75 @@
+:_module-type: PROCEDURE
+
+[id="accessing-built-in-alerts_{context}"]
+= Accessing built-in alerts
+
+[role="_abstract"]
+The centralized observability stack deploys a Prometheus Alertmanager instance that provides a common set of built-in alerts for {productname-short} components.  
+These alerts monitor critical platform conditions, such as operator downtime, crashlooping pods, and unresponsive services.
+
+By default, the Alertmanager is internal to the cluster and is not exposed through a route.  
+You can access the Alertmanager web interface locally by using the {openshift-cli}.
+
+.Prerequisites
+* You have {productname-short} administrator privileges.
+* The observability stack is enabled as described in _Enabling the observability stack_.
+* You know the monitoring namespace, for example `{monitoring-default-namespace}`.
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+
+.Procedure
+. In a terminal window, log in to the {openshift-cli} as a cluster administrator:
++
+[source,terminal,subs="attributes+"]
+----
+$ oc login https://api.198.51.100.10:6443
+----
+. Verify that the Alertmanager pods are running in the monitoring namespace:
++
+[source,terminal,subs="attributes+"]
+----
+$ oc get pods -n {monitoring-default-namespace} | grep alertmanager
+----
++
+Example output:
++
+[source,terminal,subs="attributes+"]
+----
+alertmanager-data-science-monitoringstack-0   2/2   Running   0   2h
+alertmanager-data-science-monitoringstack-1   2/2   Running   0   2h
+----
+. Confirm that a ClusterIP service exposes the Alertmanager web interface on port 9093:
++
+[source,terminal,subs="attributes+"]
+----
+$ oc get svc -n {monitoring-default-namespace} | grep alertmanager
+----
++
+Example output:
++
+[source,terminal,subs="attributes+"]
+----
+data-science-monitoringstack-alertmanager     ClusterIP   198.51.100.5   <none>   9093/TCP
+----
+. Start a local port forward to the Alertmanager service:
++
+[source,terminal,subs="attributes+"]
+----
+$ oc port-forward svc/data-science-monitoringstack-alertmanager 9093:9093 -n {monitoring-default-namespace}
+----
+. In a web browser, open the following URL to access the Alertmanager web interface:
++
+[source,terminal]
+----
+http://localhost:9093
+----
+
+.Verification
+* Confirm that the Alertmanager web interface opens at `http://localhost:9093` and displays active alerts for {productname-short} components.

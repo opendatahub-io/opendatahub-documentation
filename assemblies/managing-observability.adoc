@@ -1,0 +1,48 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="managing-observability_{context}"]
+= Managing observability
+:upstream:
+//:preview:
+
+ifdef::preview[]
+include::../_artifacts/document-attributes-global.adoc[]
+endif::preview[]
+
+[role='_abstract']
+
+{productname-long} provides centralized platform observability: an integrated, out-of-the-box solution for monitoring the health and performance of your {productname-short} instance and user workloads.
+
+This centralized solution includes a dedicated, pre-configured observability stack, featuring the OpenTelemetry Collector (OTC) for standardized data ingestion, Prometheus for metrics, and the {org-name} build of Tempo for distributed tracing. This architecture enables a common set of health metrics and alerts for {productname-short} components and offers mechanisms to integrate with your existing external observability tools.
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+This feature is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+This feature is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+include::modules/enabling-the-observability-stack.adoc[leveloffset=+1]
+
+include::modules/collecting-metrics-from-user-workloads.adoc[leveloffset=+1]
+
+include::modules/exporting-metrics-to-external-observability-tools.adoc[leveloffset=+1]
+
+include::modules/viewing-traces-in-external-tracing-platforms.adoc[leveloffset=+1]
+
+include::modules/accessing-built-in-alerts.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
