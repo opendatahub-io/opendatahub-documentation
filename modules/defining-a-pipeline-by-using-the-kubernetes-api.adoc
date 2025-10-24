@@ -4,8 +4,7 @@
 = Defining a pipeline by using the Kubernetes API
 
 [role='_abstract']
-
-You can define data science pipelines and pipeline versions by using the Kubernetes API, which stores them as custom resources in the cluster instead of the internal database. This approach makes it easier to use OpenShift GitOps (Argo CD) or similar tools to manage pipelines and pipeline versions, while still allowing you to manage them through the {productname-short} dashboard, API, and the Kubeflow Pipelines (KFP) Software Development Kit (SDK).
+You can define data science pipelines and pipeline versions by using the Kubernetes API, which stores them as custom resources in the cluster instead of the internal database. This approach makes it easier to use OpenShift GitOps (Argo CD) or similar tools to manage pipelines and pipeline versions, while still allowing you to manage them through the {productname-short} dashboard, API, and the Kubeflow Pipelines (KFP) Software Development Kit (SDK). You can generate the required manifests by using the Kubeflow Pipelines SDK; see _Compiling the pipeline YAML with the Kubeflow Pipelines SDK_ or _Compiling Kubernetes-native manifests with the Kubeflow Pipelines SDK_.
 
 [NOTE]
 ====
@@ -24,7 +23,9 @@ ifdef::cloud-service[]
 ** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
 ** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
-* If you plan to create a `PipelineVersion` custom resource, you have compiled your Python pipeline into YAML format by using the KFP SDK. For more information, see _Generating the pipeline YAML with the Kubeflow Pipelines SDK_.
+* If you plan to create a `PipelineVersion` custom resource, you have either:
+** Compiled your Python pipeline to IR YAML by using the KFP SDK. See _Compiling the pipeline YAML with the Kubeflow Pipelines SDK_.
+** Compiled Kubernetes-native manifests by using the KFP SDK. See _Compiling Kubernetes-native manifests with the Kubeflow Pipelines SDK_.
 
 .Procedure
 
@@ -81,6 +82,15 @@ In the following command, replace __<pipeline_yaml_file>__ with the name of your
 $ oc apply -f __<pipeline_yaml_file>__.yaml
 ----
 
+. Alternatively, if you compiled Kubernetes-native manifests with the KFP SDK, you can apply the generated file directly without manually creating separate YAML files:
++
+[source,subs="+quotes"]
+----
+$ oc apply -f __<output_file>__.yaml
+----
++
+The generated file includes both `Pipeline` and `PipelineVersion` resources. You can skip the following manual definition steps and proceed to the verification step.
+
 . Define a `PipelineVersion` custom resource in a YAML file with the following contents:
 +
 .Example pipeline version definition
@@ -115,7 +125,7 @@ In the following command, replace __<pipeline_version_yaml_file>__ with the name
 $ oc apply -f __<pipeline_version_yaml_file>__.yaml
 ----
 +
-After creating the pipeline version, the system automatically applies the following labels to the pipeline version for easier filtering: 
+After creating the pipeline version, the system automatically applies the following labels to the pipeline version for easier filtering:
 +
 .Example automatic labels
 [source,yaml]
