@@ -8,15 +8,11 @@ After you install {productname-short}, log in to the {productname-short} dashboa
 
 .Prerequisites
 ifndef::upstream[]
-ifdef::disconnected[]
-{productname-short} is installed on your OpenShift cluster. For information on how to install {productname-short}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#installing-the-openshift-data-science-operator_operator-install[Chapter 2. Installing and deploying {productname-short}{productname-long}Self-Managed].
+* {productname-short} is installed on your OpenShift cluster. For information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-and-deploying-openshift-ai_install[Installing and deploying {productname-short}].
 endif::[]
-
-ifdef::disconnected[]
-{productname-short} is installed on your OpenShift cluster. For information on how to install {productname-short}, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/deploying-openshift-ai-in-a-disconnected-environment_install#installing-the-openshift-data-science-operator_operator-install[Chapter 2. Deploying {productname-short}in a disconnected environment {productname-long}Self-Managed].
+ifdef::upstream[]
+* {productname-short} is installed on your OpenShift cluster. For information, see link:{odhdocshome}/installing-open-data-hub[Installing {productname-short}].
 endif::[]
-endif::[]
-
 * You know the {productname-short} identity provider and your login credentials.
 
 ifdef::upstream[]
@@ -42,13 +38,7 @@ endif::[]
 
 . Browse to the {productname-short} instance URL and click *Log in with OpenShift*. 
 
-
-ifdef::upstream,self-managed[]
 ** If you have access to {openshift-platform}, you can browse to the {openshift-platform} web console and click the *Application Launcher* (image:images/osd-app-launcher.png[The application launcher]) -> *{productname-long}*.
-endif::[]
-ifdef::cloud-service[]
-** If you have access to OpenShift, you can browse to the OpenShift web console and click the *Application Launcher* (image:images/osd-app-launcher.png[The application launcher]) -> *{productname-long}*.
-endif::[] 
 
 . Click the name of your identity provider, for example, `GitHub`,`Google`, or your company's single sign-on method.
 
@@ -57,5 +47,3 @@ endif::[]
 
 .Verification
 * The {productname-short} dashboard opens on the *Home* page.
-
-

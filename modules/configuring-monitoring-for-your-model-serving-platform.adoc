@@ -5,27 +5,32 @@
 
 [role="_abstract"]
 
-{productname-short} provides single-model and multi-model serving platforms.
+{productname-short} provides single-model and multi-model serving platforms for deploying models.
 
+ifdef::cloud-service[]
+Monitoring of user-defined projects is enabled by default when you install {productname-short} on your {org-name} OpenShift Dedicated or {org-name} OpenShift Service on Amazon Web Services (ROSA classic) cluster.
+endif::[]
 
+ifndef::cloud-service[]
 Single-model serving platform::
-For deploying large models such as large language models (LLMs), {productname-short} includes a single-model serving platform.
+For deploying large models such as large language models (LLMs), use the single-model serving platform.
 +
 ifdef::upstream[]
-For more information, see: link:{odhdocshome}/managing-and-monitoring-models/#configuring-monitoring-for-the-single-model-serving-platform_cluster-admin[Configuring monitoring for the single-model serving platform].
+To configure monitoring for this platform, see link:{odhdocshome}/managing-and-monitoring-models/#configuring-monitoring-for-the-single-model-serving-platform_cluster-admin[Configuring monitoring for the single-model serving platform].
 endif::[]
 ifndef::upstream[]
-For more information, see: link:{rhoaidocshome}{default-format-url}/managing_and_monitoring_models_on_the_single_model_serving_platform#configuring-monitoring-for-the-single-model-serving-platform_cluster-admin[Configuring monitoring for the single-model serving platform].
+To configure monitoring for this platform, see link:{rhoaidocshome}{default-format-url}/managing_and_monitoring_models/managing_and_monitoring_models_on_the_single_model_serving_platform#configuring-monitoring-for-the-single-model-serving-platform_cluster-admin[Configuring monitoring for the single-model serving platform].
 endif::[]
 
 
 Multi-model serving platform::
-For deploying small and medium-sized models, {productname-short} includes a multi-model serving platform. 
+For deploying small and medium-sized models, use the multi-model serving platform.  
 +
 ifdef::upstream[]
-For more information, see link:{odhdocshome}/managing-and-monitoring-models/#configuring-monitoring-for-the-multi-model-serving-platform_cluster-admin[Configuring monitoring for the multi-model serving platform].
+To configure monitoring for this platform, see link:{odhdocshome}/managing-and-monitoring-models/#configuring-monitoring-for-the-multi-model-serving-platform_cluster-admin[Configuring monitoring for the multi-model serving platform].
 endif::[]
 ifndef::upstream[]
-For more information, see: link:{rhoaidocshome}{default-format-url}/managing_and_monitoring_models/managing_and_monitoring_models_on_the_multi_model_serving_platform#configuring-monitoring-for-the-multi-model-serving-platform_cluster-admin[Configuring monitoring for the multi-model serving platform].
+To configure monitoring for this platform, see link:{rhoaidocshome}{default-format-url}/managing_and_monitoring_models/managing_and_monitoring_models_on_the_multi_model_serving_platform#configuring-monitoring-for-the-multi-model-serving-platform_cluster-admin[Configuring monitoring for the multi-model serving platform].
+endif::[]
 endif::[]
 
