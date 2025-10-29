@@ -31,7 +31,7 @@ endif::[]
 
 
 .Procedure
-. From the {productname-short} dashboard, click *Models* -> *Model catalog*.
+. From the {productname-short} dashboard, click *AI hub* -> *Catalog*.
 . In the drop-down list, select from the available catalog sources that have been configured by your administrator. The *Default Catalog* is displayed by default. 
 +
 NOTE: OpenShift cluster administrators can configure additional model catalog sources. For more details, see the Kubeflow Model Registry community documentation on link:https://github.com/kubeflow/model-registry/tree/main/manifests/kustomize/options/catalog#configuring-catalog-sources[configuring catalog sources]. 
@@ -76,7 +76,7 @@ If project-scoped hardware profiles exist, the *Hardware profile* list includes 
 +
 [IMPORTANT]
 ====
-By default, hardware profiles are hidden from appearing in the dashboard navigation menu and user interface. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+By default, hardware profiles are hidden from appearing in the dashboard navigation menu and user interface. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Environment setup -> Hardware profiles* option in the dashboard navigation menu and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
 ifdef::upstream[]
 For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
 endif::[]
@@ -95,7 +95,7 @@ endif::[]
 . Click *Deploy*.
 
 .Verification
-* The model deployment is displayed on the *Models* -> *Model Deployments* page.
+* The model deployment is displayed on the *AI hub* -> *Deployments* page.
 * The model deployment is displayed in the *Latest deployments* section of the model details page.
 * The model deployment is displayed on the *Deployments* tab for the model version.
 
