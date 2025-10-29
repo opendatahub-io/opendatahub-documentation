@@ -1,0 +1,45 @@
+:_module-type: PROCEDURE
+
+[id="setting-up-feature-store-UI_{context}"]
+= Setting up the Feature Store User Interface for initial use
+
+[role='_abstract']
+You can use a web-based, graphical User Interface (UI), to simplify and accelerate the creation of model development features. This visual interface helps you explore and understand your feature store. 
+
+The UI simplifies feature discovery by providing a centralized catalog of features and their metadata. This metadata includes details like transformation logic and materialization job status. Materialization is the process of taking data that is in the offline store and passing it into the online store. You can view features and manage entities. Entities are collections of related features that can be mapped to a specific use case. The UI also offers lineage and search capabilities.
+
+You will need to make a few adjustments to use the Feature Store UI.
+
+.Prerequisites
+* You have Administrator access.
+* You have the Feast operator enabled.
+* You have created a Feature Store CRD, as described in _Creating a Feature Store instance in a data science project_. 						
+* Your REST API server is running. 
+
+.Procedure
+
+. Login to the **Red Hat OpenShift AI Dashboard** and click the **Feature store** tab on the left navigation. You will be on the **Overview** page. 
+. Click the **create FeatureStore** button.
+. Add YAML definitions so that the UI will be visible. Locate the **feastProject key** and name your project. You can use any naming convention you like. 
+. Add a key:value pair of label:
+.. `Label:`
+.. `feature-store-ui: enabled`
+.. This will create a pod and initiate the service registry.
+
+. Click the **options icon** (&#8942;) on the right side of the screen and choose **Start job.**
+. Click on the **Jobs** tab and then **Logs** on the left navigation, to confirm that the CronJob is running.
+. Navigate to the **Feature views** tab on the left navigation, and you will be able to see your new UI.
+
+.Verification step
+Click **Overview** on the left navigation. If your feature store creation was successful, you will see a the following cards:
+* Entities
+* Data sources
+* Datasets
+* Features
+* Feature views 
+* Feature services
+
+.Additional resources
+link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_cloud_service/1/html/working_with_machine_learning_features/configuring_feature_store#configuring-the-feature-registry_featurestore[Configuring the feature registry]
+
+link:https://yaml.org/[YAML official site]
