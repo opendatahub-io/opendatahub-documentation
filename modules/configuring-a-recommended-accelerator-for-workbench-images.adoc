@@ -33,7 +33,11 @@ If you have already configured an accelerator identifier for a workbench image, 
 +
 [IMPORTANT]
 ====
-By default, hardware profiles are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. If you enable hardware profiles, the *Hardware profiles* list is displayed instead of the *Accelerator profiles* list. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+By default, hardware profiles are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. If you enable hardware profiles, the *Hardware profiles* list is displayed instead of the *Accelerator profiles* list. 
+
+To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, as well as the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) of the  `redhat-odh-applications` namespace in {openshift-platform}. 
+
+If the `disableHardwareProfiles` key is not present, you must manually add the key and set the value to `false`. 
 ifdef::upstream[]
 For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
 endif::[]
