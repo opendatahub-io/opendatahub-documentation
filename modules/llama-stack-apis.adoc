@@ -1,0 +1,75 @@
+:_module-type: REFERENCE
+[id="llama-stack-apis_{context}"]
+= Llama Stack APIs 
+
+You can use the following APIs from Llama Stack for AI actions such as evaluation, scoring, and inference:
+
+== Supported Llama Stack APIs in {productname-short}
+
+=== Agents API
+* *Endpoint:* `/v1alpha/agents`.  
+* *Providers:* All agent backends deployed through OpenShift AI.
+* *Support level:* Developer Preview.
+
+The Agents API allows you to create and manage AI agents. 
+
+---
+
+=== Datasets_IO API 
+* *Endpoint:* `/v1beta/datasetio`.  
+* *Providers:* All dataset_io backends deployed through OpenShift AI.
+* *Support level:* Technology Preview.
+
+The Dataset_IO API manages the input and output of datasets and their content.
+
+---
+
+=== Evaluation API
+* *Endpoint:* `/v1beta/eval`.
+* *Providers:* All evaluation backends deployed through OpenShift AI.
+* *Support level:* Developer Preview.
+
+The Evaluation API defines an evaluation task for models and datasets
+
+---
+
+=== Inference API
+* *Endpoint:* `/v1alpha/inference`.
+* *Providers:* All inference backends deployed through OpenShift AI.
+* *Support level:* Developer Preview.
+
+[WARNING]
+====
+The majority of the Inference API is deprecated. The Inference providers use the Completions and Chat Completions APIs now.
+====
+
+The Inference API enables conversational, message-based interactions with models served by Llama Stack in OpenShift AI.
+
+---
+
+=== Safety API 
+* *Endpoint:* `/v1/safety`.
+* *Providers:* All safety backends deployed through OpenShift AI.
+* *Support level:* Technology Preview.
+
+The Safety API detects and prevents harmful content in model inputs and outputs.
+
+---
+
+=== Tool Runtime API
+* *Endpoint:* `/v1/tool-runtime`.
+* *Providers:* All tool runtime backends deployed through OpenShift AI.
+* *Support level:* Developer Preview.
+
+The Tool Runtime API allows a model to dynamically call a tool at runtime.
+
+---
+
+=== Vector_IO API
+* *Endpoint:* `/v1/vector-io`.
+* *Providers:* All vector_io backends deployed through OpenShift AI.
+* *Support level:* Developer Preview. 
+
+The Vector_IO API allows you to manage and query vector embeddings: numeric representations of data. 
+
+---
