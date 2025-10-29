@@ -1,0 +1,43 @@
+:_module-type: PROCEDURE
+
+[id="setting-up-feature-store-UI_{context}"]
+= Setting up the Feature Store user interface for initial use
+
+[role='_abstract']
+You can use a web-based user interface to simplify and accelerate the creation of model development features. This visual interface helps you explore and understand your Feature Store. 
+
+You can use the Feature Store UI to access a centralized catalog of features and metadata, such as transformation logic and materialization job status. You can also view features, manage entities, and use lineage and search capabilities.
+
+You must enable the Feature Store UI before you can use it.
+
+.Prerequisites
+* You have Administrator access.
+* You have enabled the Feast Operator.
+* You have created a Feature Store CRD, as described in _Creating a Feature Store instance in a data science project_. 						
+* Your REST API server is running. 
+
+.Procedure
+
+. Log in to the {productname-short} Dashboard and click the **Feature Store** tab on the left navigation.
+. On the **Overview** page, click the **create FeatureStore** button.
+. Add YAML definitions to enable the user interface. 
+. Edit the following label to enable the UI:
+.. `Label:`
+.. `feature-store-ui: enabled`
+.. This creates a pod and initiates the service registry.
+
+. Click the options icon (&#8942;) and choose **Start job**.
+. Click on the **Jobs** tab and then **Logs** on the left navigation, to confirm that the CronJob is running.
+. Navigate to the **Feature views** tab on the left navigation, and you will be able to see your new UI.
+
+.Verification
+Click **Overview**. If your Feature Store user interface was created, you see the following cards:
+* Entities
+* Data sources
+* Datasets
+* Features
+* Feature views 
+* Feature services
+
+.Additional resources
+link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_cloud_service/1/html/working_with_machine_learning_features/configuring_feature_store#configuring-the-feature-registry_featurestore[Configuring the feature registry]
