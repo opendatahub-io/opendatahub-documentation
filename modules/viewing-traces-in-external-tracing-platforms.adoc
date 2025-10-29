@@ -13,7 +13,7 @@ To view and analyze traces outside of {productname-short}, complete the followin
 
 .Prerequisites
 * A cluster administrator has enabled tracing as part of the observability stack in the DSCI configuration.  
-* You have access to the monitoring namespace, for example `{monitoring-default-namespace}`.
+* You have access to the monitoring namespace, for example `pass:attributes[{monitoring-default-namespace}]`.
 * You have network access or cluster administrator privileges to create a route or port forward from the cluster.  
 * Your application is instrumented with an OpenTelemetry SDK or library to generate and export trace data.  
 
@@ -23,7 +23,7 @@ To view and analyze traces outside of {productname-short}, complete the followin
 The OpenTelemetry Collector receives trace data from instrumented applications by using the OpenTelemetry Protocol (OTLP).
 +
 .. In the {openshift-platform} web console, navigate to *Networking* → *Services*.  
-.. In the *Project* list, select the monitoring namespace, for example, `{monitoring-default-namespace}`.  
+.. In the *Project* list, select the monitoring namespace, for example, `pass:attributes[{monitoring-default-namespace}]`.  
 .. Locate the Service named `data-science-collector` or a similar name associated with the OpenTelemetry Collector.  
 .. Use the Service name or ClusterIP as the OTLP endpoint in your application configuration.  
 +
@@ -49,7 +49,7 @@ See the link:https://docs.redhat.com/en/documentation/openshift_container_platfo
 You can use a visualization tool, such as Grafana or Jaeger, to query and display traces from the Red Hat build of Tempo deployed by {productname-short}.  
 +
 .. In the {openshift-platform} web console, navigate to *Networking* → *Services*.  
-.. In the *Project* list, select the monitoring namespace, for example, `{monitoring-default-namespace}`.
+.. In the *Project* list, select the monitoring namespace, for example, `pass:attributes[{monitoring-default-namespace}]`.
 .. Locate the Service named `tempo-query` or `tempo-query-frontend`.  
 .. To make the service accessible to external tools, a cluster administrator must perform one of the following actions:
 +
