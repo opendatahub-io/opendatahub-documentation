@@ -1,0 +1,38 @@
+= Llama Stack API provider support
+
+The `LlamaStackDistribution` custom resource allows you to enable various Provider APIs and providers that you can use in {productname-short}. The following table displays the supported providers that are included in the distribution:
+
+[WARNING]
+====
+Note that the support status of the Llama Stack API providers has shifted between Technology Preview and Developer Preview across {productname-short} versions.
+====
+
+[cols="1,1,2,2", options="header"]
+|===
+|*Provider API* |*Providers* |*How to Enable* |*Support status*
+|Agents |`inline::meta-reference` |Enabled by default |Developer Preview
+.2+|Dataset_IO |`inline::localfs` |Enabled by default |Technology Preview
+|`remote::huggingface` |Enabled by default |Technology Preview
+.3+|Evaluation |`inline::trustyai_ragas` |Set the `EMBEDDING_MODEL` environment variable |Developer Preview
+|`remote::trustyai_lmeval` |Enabled by default |Developer Preview
+|`remote::trustyai_ragas` |Set the `KUBEFLOW_LLAMA_STACK_URL` environment variable |Developer Preview
+|Files |`inline::localfs` |Enabled by default |Technology Preview
+|Safety |`remote::trustyai_fms` |Enabled by default |Technology Preview
+.3+|Scoring |`inline::basic` |Enabled by default |Technology Preview
+|`inline::braintrust` |Enabled by default |Technology Preview
+|`inline::llm-as-a-judge` |Enabled by default |Technology Preview
+.4+|Tool_Runtime |`inline::rag-runtime` |Enabled by default |Developer Preview
+|`remote::brave-search` |Enabled by default |Developer Preview
+|`remote::model-context-protocol` |Enabled by default |Developer Preview
+|`remote::tavily-search` |Enabled by default |Developer Preview
+.3+|Vector_IO | `inline::faiss` |Set the `ENABLE_FAISS` environment variable |Technology Preview
+|`inline::milvus` |Enabled by default |Technology Preview
+|`remote::milvus` |Set the `MILVUS_ENDPOINT` environment variable  |Technology Preview
+.7+|Inference |`inline::sentence-transformers` |Enabled by default |Technology Preview
+|`remote::vllm` |Set the `VLLM_URL` environment variable |Technology Preview
+|`remote::azure` |Set the `AZURE_API_KEY` environment variable |Technology Preview
+|`remote::bedrock` |Set the `AWS_ACCESS_KEY_ID` environment variable |Technology Preview
+|`remote::openai` |Set the `OPENAI_API_KEY` environment variable |Technology Preview
+|`remote::vertexai` |Set the `VERTEX_AI_PROJECT` environment variable |Technology Preview
+|`remote::watsonx` |Set the `WATSONX_API_KEY` environment variable |Technology Preview
+|===
