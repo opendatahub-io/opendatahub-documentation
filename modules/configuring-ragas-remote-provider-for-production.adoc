@@ -1,0 +1,319 @@
+:_module-type: PROCEDURE
+
+[id="configuring-ragas-remote-provider-for-production_{context}"]
+= Configuring the RAGAS remote provider for production
+
+[role='_abstract']
+You can configure the RAGAS remote provider to run evaluations as distributed jobs using {productname-short} pipelines. The remote provider enables production-scale evaluations by running RAGAS in a separate Kubeflow Pipelines environment, providing resource isolation, improved scalability, and integration with CI/CD workflows.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+
+* You have configured a data science pipeline server in your data science project.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-data-science-pipelines/#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+endif::[]
+
+* You have activated the Llama Stack Operator in {productname-short}.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-rag/#installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_rag/installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+endif::[]
+
+* You have deployed a Llama model with KServe.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-rag/#deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_rag/deploying-a-rag-stack-in-a-data-science-project_rag#Deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
+endif::[]
+
+* You have configured S3-compatible object storage for storing evaluation results.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+endif::[]
+
+* You have created a data science project.
+
+.Procedure
+. In a terminal window, if you are not already logged in to your OpenShift cluster, log in to the {openshift-cli} as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
+----
+
+. Navigate to your data science project:
++
+[source,subs="+quotes"]
+----
+$ oc project __<project_name>__
+----
+
+. Create a secret for storing S3 credentials:
++
+[source,subs="+quotes"]
+----
+$ oc create secret generic ragas-s3-credentials \
+  --from-literal=AWS_ACCESS_KEY_ID=__<your_access_key>__ \
+  --from-literal=AWS_SECRET_ACCESS_KEY=__<your_secret_key>__ \
+  --from-literal=AWS_DEFAULT_REGION=__<your_region>__
+----
++
+[NOTE]
+====
+Replace the placeholder values with your actual S3 credentials. The RAGAS remote provider uses these credentials to store evaluation results in S3-compatible storage.
+====
+
+. Create a secret for the Kubeflow Pipelines API token:
++
+[source,subs="+quotes"]
+----
+$ export PIPELINES_TOKEN=$(oc whoami -t)
+
+$ oc create secret generic kubeflow-pipelines-token \
+  --from-literal=KUBEFLOW_PIPELINES_TOKEN="$PIPELINES_TOKEN"
+----
++
+[IMPORTANT]
+====
+The Llama Stack distribution service account does not have privileges to create pipeline runs. This secret provides the necessary authentication token for creating and managing pipeline runs.
+====
+
+. Create a secret for storing your inference model information:
++
+[source,subs="+quotes"]
+----
+$ export INFERENCE_MODEL="llama-3-2-3b"
+$ export VLLM_URL="https://llama-32-3b-instruct-predictor:8443/v1"
+$ export VLLM_TLS_VERIFY="false"  # Use "true" in production
+$ export VLLM_API_TOKEN="__<token_identifier>__"
+
+$ oc create secret generic llama-stack-inference-model-secret \
+  --from-literal INFERENCE_MODEL="$INFERENCE_MODEL" \
+  --from-literal VLLM_URL="$VLLM_URL" \
+  --from-literal VLLM_TLS_VERIFY="$VLLM_TLS_VERIFY" \
+  --from-literal VLLM_API_TOKEN="$VLLM_API_TOKEN"
+----
+
+. Get the Kubeflow Pipelines endpoint URL:
++
+[source,subs="+quotes"]
+----
+$ export KFP_ENDPOINT=$(oc get route -n __<project_name>__ -l app=ds-pipeline-dspa -o jsonpath='{.items[0].spec.host}')
+
+$ echo "Kubeflow Pipelines endpoint: https://$KFP_ENDPOINT"
+----
+
+. Create an external route for the Llama Stack server:
++
+[NOTE]
+====
+The KUBEFLOW_LLAMA_STACK_URL must be an external route that is accessible from the Kubeflow Pipeline pods.
+====
++
+The route is automatically created when you deploy the LlamaStackDistribution. You can get the route URL with the following command:
++
+[source,subs="+quotes"]
+----
+$ export LLAMA_STACK_URL=$(oc get route llama-stack-ragas-remote -o jsonpath='{.spec.host}')
+
+$ echo "Llama Stack URL: https://$LLAMA_STACK_URL"
+----
+
+. Create a ConfigMap for the RAGAS remote provider configuration:
++
+[source,yaml,subs="+quotes"]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubeflow-ragas-config
+  namespace: __<project_name>__
+data:
+  EMBEDDING_MODEL: "all-MiniLM-L6-v2" <1>
+  KUBEFLOW_LLAMA_STACK_URL: "__<external_llama_stack_url>__" <2>
+  KUBEFLOW_PIPELINES_ENDPOINT: "https://__<kfp_endpoint>__" <3>
+  KUBEFLOW_NAMESPACE: "__<project_name>__" <4>
+  KUBEFLOW_BASE_IMAGE: "quay.io/trustyai/llama-stack-ragas:latest" <5>
+  KUBEFLOW_RESULTS_S3_PREFIX: "s3://__<bucket_name>__/ragas-results" <6>
+  KUBEFLOW_S3_CREDENTIALS_SECRET_NAME: "ragas-s3-credentials" <7>
+----
++
+<1> The embedding model used by RAGAS for semantic similarity calculations.
+<2> The external route URL for the Llama Stack server. This must be accessible from Kubeflow Pipeline pods.
+<3> The Kubeflow Pipelines API endpoint URL.
+<4> The namespace where pipeline runs will be executed.
+<5> The container image used for RAGAS evaluation pipeline components.
+<6> The S3 path prefix where evaluation results will be stored.
+<7> The name of the secret containing S3 credentials.
+
+. Apply the ConfigMap:
++
+[source,subs="+quotes"]
+----
+$ oc apply -f kubeflow-ragas-config.yaml
+----
+
+. Create a Llama Stack distribution configuration file with the RAGAS remote provider:
++
+[source,yaml,subs="+quotes"]
+----
+apiVersion: llamastack.trustyai.opendatahub.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: llama-stack-ragas-remote
+  namespace: __<project_name>__
+spec:
+  imageName: quay.io/trustyai/llama-stack-ragas:latest
+  providers:
+    inference:
+      - provider_id: vllm-inference
+        provider_type: remote::vllm
+        config:
+          url: ${env.VLLM_URL}
+          api_token: ${env.VLLM_API_TOKEN}
+    eval: <1>
+      - provider_id: trustyai_ragas_remote
+        provider_type: remote::trustyai_ragas
+        module: llama_stack_provider_ragas.remote
+        config:
+          embedding_model: ${env.EMBEDDING_MODEL}
+          kubeflow_config:
+            results_s3_prefix: ${env.KUBEFLOW_RESULTS_S3_PREFIX}
+            s3_credentials_secret_name: ${env.KUBEFLOW_S3_CREDENTIALS_SECRET_NAME}
+            pipelines_endpoint: ${env.KUBEFLOW_PIPELINES_ENDPOINT}
+            namespace: ${env.KUBEFLOW_NAMESPACE}
+            llama_stack_url: ${env.KUBEFLOW_LLAMA_STACK_URL}
+            base_image: ${env.KUBEFLOW_BASE_IMAGE}
+            pipelines_api_token: ${env.KUBEFLOW_PIPELINES_TOKEN}
+  envFrom:
+    - secretRef:
+        name: llama-stack-inference-model-secret
+    - secretRef:
+        name: kubeflow-pipelines-token
+    - configMapRef:
+        name: kubeflow-ragas-config
+----
++
+<1> The eval provider configuration specifies the RAGAS remote provider with Kubeflow Pipelines integration.
+
+. Deploy the Llama Stack distribution:
++
+[source,subs="+quotes"]
+----
+$ oc apply -f llama-stack-ragas-remote.yaml
+----
+
+. Wait for the deployment to complete:
++
+[source,subs="+quotes"]
+----
+$ oc get pods -w
+----
++
+Wait until the `llama-stack-ragas-remote` pod status shows `Running`.
+
+.Verification
+. Verify that the Llama Stack server is running:
++
+[source,subs="+quotes"]
+----
+$ oc get pods -l app=llama-stack-ragas-remote
+----
++
+You should see output similar to the following:
++
+[source,subs="+quotes"]
+----
+NAME                                       READY   STATUS    RESTARTS   AGE
+llama-stack-ragas-remote-7b8d9c5f-xyz12    1/1     Running   0          2m
+----
+
+. Verify that the remote provider can create pipeline runs:
++
+[source,python]
+----
+from llama_stack_client import LlamaStackClient
+
+client = LlamaStackClient(base_url="https://__<llama-stack-route-url>__")
+
+# List available eval providers
+providers = client.providers.list()
+print("Available eval providers:")
+for provider in providers.eval:
+    print(f"  - {provider.provider_id} ({provider.provider_type})")
+
+# Expected output should include:
+#   - trustyai_ragas_remote (remote::trustyai_ragas)
+----
+
+. Run a test evaluation to verify the pipeline integration:
++
+[source,python]
+----
+from datasets import Dataset
+
+# Create a small test dataset
+test_data = {
+    "question": ["What is 2+2?"],
+    "answer": ["The sum of 2 and 2 is 4."],
+    "contexts": [["Basic arithmetic: 2 + 2 = 4"]],
+    "ground_truth": ["4"]
+}
+
+dataset = Dataset.from_dict(test_data)
+
+# Register and run evaluation
+client.datasets.register(
+    dataset_id="ragas-test",
+    dataset_def=dataset,
+    provider_id="huggingface"
+)
+
+response = client.eval.evaluate_rows(
+    task_id="ragas-test-benchmark",
+    input_rows=dataset,
+    scoring_functions=["faithfulness", "answer_relevancy"]
+)
+
+print(f"Pipeline run created: {response.job_id}")
+----
+
+. Check that the pipeline run appears in the {productname-short} dashboard:
++
+.. Navigate to *Data Science Projects* in the {productname-short} dashboard.
+.. Click your project name.
+.. Click the *Pipelines* tab.
+.. Click *Runs*.
+.. Verify that a new pipeline run for the RAGAS evaluation appears in the list.
+
+.Next steps
+ifdef::upstream[]
+* link:{odhdocshome}/working-with-rag/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with RAGAS metrics]
+* link:{odhdocshome}/working-with-rag/#integrating-ragas-into-cicd-pipelines_rag[Integrating RAGAS into CI/CD pipelines]
+* link:{odhdocshome}/working-with-rag/#monitoring-ragas-evaluation-pipelines_rag[Monitoring RAGAS evaluation pipelines]
+endif::[]
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/working_with_rag/evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with RAGAS metrics]
+* link:{rhoaidocshome}{default-format-url}/working_with_rag/integrating-ragas-into-cicd-pipelines_rag[Integrating RAGAS into CI/CD pipelines]
+* link:{rhoaidocshome}{default-format-url}/working_with_rag/monitoring-ragas-evaluation-pipelines_rag[Monitoring RAGAS evaluation pipelines]
+endif::[]
