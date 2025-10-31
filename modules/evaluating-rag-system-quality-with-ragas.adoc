@@ -7,12 +7,12 @@
 You can use RAGAS (Retrieval-Augmented Generation Assessment) to measure the quality and reliability of your RAG system by evaluating retrieval quality, answer relevance, and factual consistency. RAGAS provides objective metrics that help you identify areas for improvement in your RAG pipeline.
 
 .Prerequisites
-* You have deployed a Llama Stack distribution with the RAGAS evaluation provider enabled.
+* You have deployed a Llama Stack distribution with the RAGAS evaluation provider enabled, either Inline or Remote provider.
 ifdef::upstream[]
-For more information, see link:{odhdocshome}/working-with-rag/#deploying-llama-stack-with-ragas-provider_rag[Deploying Llama Stack with RAGAS provider].
+For more information, see link:{odhdocshome}/evaluating-rag-systems/configuring-ragas-remote-provider-for-production[Configuring the RAGAS remote provider for production].
 endif::[]
 ifndef::upstream[]
-For more information, see link:{rhoaidocshome}{default-format-url}/working_with_rag/deploying-llama-stack-with-ragas-provider_rag[Deploying Llama Stack with RAGAS provider].
+For more information, see link:{rhoaidocshome}evaluating-rag-systems/setting-up-ragas-inline-provider[Setting up the RAGAS inline provider for development].
 endif::[]
 
 * You have a deployed RAG model that you want to evaluate.
@@ -23,73 +23,78 @@ ifndef::upstream[]
 For more information, see link:{rhoaidocshome}{default-format-url}/working_with_rag/deploying-a-rag-stack-in-a-data-science-project_rag#Deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
 endif::[]
 
-* You have prepared an evaluation dataset containing questions, generated answers, retrieved contexts, and optionally ground truth answers.
-
 * You have access to a workbench or notebook environment where you can run Python code.
 
 .Procedure
-. Create an evaluation dataset in the required format:
-+
-[source,python]
-----
-from datasets import Dataset
-
-# Prepare your evaluation data
-eval_data = {
-    "question": [
-        "What is the capital of France?",
-        "Who wrote Romeo and Juliet?",
-        "What is the boiling point of water?"
-    ],
-    "answer": [
-        "The capital of France is Paris, a major European city.",
-        "William Shakespeare wrote Romeo and Juliet in the 1590s.",
-        "Water boils at 100 degrees Celsius at sea level."
-    ],
-    "contexts": [
-        ["Paris is the capital and most populous city of France. It is located in northern France."],
-        ["William Shakespeare was an English playwright and poet. Romeo and Juliet is one of his most famous tragedies."],
-        ["The boiling point of water is 100°C (212°F) at standard atmospheric pressure."]
-    ],
-    "ground_truth": [
-        "Paris",
-        "William Shakespeare",
-        "100 degrees Celsius"
-    ]
-}
-
-# Create a dataset
-dataset = Dataset.from_dict(eval_data)
-----
-+
-[NOTE]
-====
-The `ground_truth` field is optional but recommended for metrics like Answer Correctness and Answer Similarity. If you do not have ground truth data, you can still use metrics like Faithfulness, Answer Relevancy, Context Precision, and Context Recall.
-====
-
-. Register your evaluation dataset with Llama Stack:
+. Initialize the Llama Stack client:
 +
 [source,python]
 ----
 from llama_stack_client import LlamaStackClient
 
-# Initialize the client
-client = LlamaStackClient(base_url="<your-llama-stack-url>")
-
-# Register the dataset
-client.datasets.register(
-    dataset_id="my-rag-evaluation",
-    dataset_def=dataset,
-    provider_id="huggingface",  # or your configured provider
-)
+client = LlamaStackClient(base_url="<your_llama_stack_url>")
 ----
 
-. Define a benchmark that specifies which RAGAS metrics to evaluate:
+. Create an evaluation dataset in the required format:
 +
 [source,python]
 ----
-# Register a benchmark with RAGAS metrics
-client.eval_tasks.register(
+evaluation_data = [
+    {
+        "user_input": "What is the capital of France?",
+        "response": "The capital of France is Paris, a major European city.",
+        "retrieved_contexts": [
+            "Paris is the capital and most populous city of France. It is located in northern France."
+        ],
+        "reference": "Paris"
+    },
+    {
+        "user_input": "Who wrote Romeo and Juliet?",
+        "response": "William Shakespeare wrote Romeo and Juliet in the 1590s.",
+        "retrieved_contexts": [
+            "William Shakespeare was an English playwright and poet. Romeo and Juliet is one of his most famous tragedies."
+          ],
+        "reference": "William Shakespeare"
+    },
+    {
+        "user_input": "What is the boiling point of water?",
+        "response": "Water boils at 100 degrees Celsius at sea level.",
+        "retrieved_contexts": [
+            "The boiling point of water is 100°C (212°F) at standard atmospheric pressure."
+        ],
+        "reference": "100 degrees Celsius"
+    }
+]
+----
++
+[NOTE]
+====
+The `reference` field is optional but recommended for metrics like `Answer Correctness` and `Answer Similarity`. If you do not have reference answers, you can omit this field and still use metrics like `Faithfulness`, `Answer Relevancy`, `Context Precision`, and `Context Recall`.
+====
+
+. Register your evaluation dataset with Llama Stack:
++
+[NOTE]
+====
+You must de-register a dataset if one already exists by running the following code:
+`client.datasets.unregister("my-rag-evaluation")
+    print(f"Dataset 'my-rag-evaluation' unregistered successfully")`
+====
++
+[source,python]
+----
+client.datasets.register(
+    dataset_id="my-rag-evaluation",
+    dataset_def=dataset,
+    provider_id="<your_configured_provider>",
+)
+----
+
+. Register a benchmark that specifies which RAGAS metrics to evaluate:
++
+[source,python]
+----
+client.benchmarks.register(
     task_id="rag-quality-benchmark",
     dataset_id="my-rag-evaluation",
     scoring_functions=[
@@ -112,93 +117,57 @@ You can select a subset of metrics based on your evaluation needs. For example, 
 +
 [source,python]
 ----
-# Execute the evaluation
-response = client.eval.evaluate_rows(
-    task_id="rag-quality-benchmark",
-    input_rows=dataset,
-    scoring_functions=[
-        "faithfulness",
-        "answer_relevancy",
-        "context_precision",
-        "context_recall",
-        "answer_correctness",
-        "answer_similarity"
-    ]
+job_response = client.eval.run_eval(
+    benchmark_id="rag-quality-benchmark",
+    benchmark_config={
+        "eval_candidate": {
+            "type": "model",
+            "model": "ollama/granite3.3:2b",
+            "sampling_params": {
+                "temperature": 0.1,
+                "max_tokens": 100
+            }
+        },
+        "scoring_params": {}
+    }
 )
 
-# The evaluation runs asynchronously
-print(f"Evaluation job started: {response.job_id}")
+print(f"Evaluation job started: {job_response.job_id}")
 ----
 
-. Monitor the evaluation progress:
+. Check the evaluation status:
 +
 [source,python]
 ----
-import time
+  job_status = client.eval.jobs.status(
+      benchmark_id="rag-quality-benchmark",
+      job_id=job_response.job_id
+  )
 
-# Poll for completion
-while True:
-    job_status = client.eval.job_status(job_id=response.job_id)
-
-    if job_status.status == "completed":
-        print("Evaluation completed successfully")
-        break
-    elif job_status.status == "failed":
-        print(f"Evaluation failed: {job_status.error}")
-        break
-    else:
-        print(f"Status: {job_status.status}, Progress: {job_status.progress}%")
-        time.sleep(5)
+  print(f"Job status: {job_status.status}")
 ----
 
 . Retrieve and analyze the results:
 +
 [source,python]
 ----
-# Get evaluation results
-results = client.eval.job_result(job_id=response.job_id)
+results = client.eval.jobs.retrieve(
+      benchmark_id="rag-quality-benchmark",
+      job_id=job_response.job_id
+  )
 
-# Display aggregate scores
-print("=== Aggregate RAGAS Metrics ===")
-for metric, score in results.aggregate_scores.items():
-    print(f"{metric}: {score:.3f}")
-
-# Example output:
-# faithfulness: 0.892
-# answer_relevancy: 0.845
-# context_precision: 0.778
-# context_recall: 0.823
-# answer_correctness: 0.867
-# answer_similarity: 0.901
+  print(results)
 ----
-
-. Analyze per-sample results to identify specific issues:
 +
-[source,python]
+.Example output
+[source,terminal]
 ----
-import pandas as pd
-
-# Convert results to DataFrame for analysis
-df = pd.DataFrame(results.generations_with_scores)
-
-# Find samples with low faithfulness scores
-low_faithfulness = df[df['faithfulness'] < 0.7].sort_values('faithfulness')
-
-print("=== Samples with Low Faithfulness (potential hallucinations) ===")
-for idx, row in low_faithfulness.iterrows():
-    print(f"\nQuestion: {row['question']}")
-    print(f"Answer: {row['answer']}")
-    print(f"Faithfulness: {row['faithfulness']:.3f}")
-    print(f"Context: {row['contexts'][0][:100]}...")
-
-# Find samples with low context precision
-low_precision = df[df['context_precision'] < 0.6].sort_values('context_precision')
-
-print("\n=== Samples with Low Context Precision (retrieval issues) ===")
-for idx, row in low_precision.iterrows():
-    print(f"\nQuestion: {row['question']}")
-    print(f"Context Precision: {row['context_precision']:.3f}")
-    print(f"Retrieved contexts: {len(row['contexts'])}")
+faithfulness: 0.892
+answer_relevancy: 0.845
+context_precision: 0.778
+context_recall: 0.823
+answer_correctness: 0.867
+answer_similarity: 0.901
 ----
 
 .Verification
@@ -231,15 +200,3 @@ All RAGAS metrics return scores between 0.0 and 1.0, where higher scores indicat
 ** *Answer Relevancy > 0.7*: Answers are relevant to questions
 ** *Context Precision > 0.6*: Retrieval is returning relevant documents
 ** *Context Recall > 0.6*: Retrieval is finding necessary information
-
-.Next steps
-ifdef::upstream[]
-* link:{odhdocshome}/working-with-rag/#interpreting-ragas-evaluation-results_rag[Interpreting RAGAS evaluation results]
-* link:{odhdocshome}/working-with-rag/#optimizing-rag-system-based-on-ragas-metrics_rag[Optimizing RAG system based on RAGAS metrics]
-* link:{odhdocshome}/working-with-rag/#integrating-ragas-into-cicd-pipelines_rag[Integrating RAGAS into CI/CD pipelines]
-endif::[]
-ifndef::upstream[]
-* link:{rhoaidocshome}{default-format-url}/working_with_rag/interpreting-ragas-evaluation-results_rag[Interpreting RAGAS evaluation results]
-* link:{rhoaidocshome}{default-format-url}/working_with_rag/optimizing-rag-system-based-on-ragas-metrics_rag[Optimizing RAG system based on RAGAS metrics]
-* link:{rhoaidocshome}{default-format-url}/working_with_rag/integrating-ragas-into-cicd-pipelines_rag[Integrating RAGAS into CI/CD pipelines]
-endif::[]

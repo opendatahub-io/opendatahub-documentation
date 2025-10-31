@@ -40,72 +40,52 @@ endif::[]
 .Procedure
 . In a terminal window, if you are not already logged in to your OpenShift cluster, log in to the {openshift-cli} as shown in the following example:
 +
-[source,subs="+quotes"]
+[source,terminal]
 ----
-$ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
+$ oc login <openshift_cluster_url> -u <username> -p <password>
 ----
 
 . Navigate to your data science project:
 +
-[source,subs="+quotes"]
+[source,terminal]
 ----
-$ oc project __<project_name>__
+$ oc project <project_name>
 ----
 
-. Create a secret for storing your inference model information:
+. Create a ConfigMap for the RAGAS inline provider configuration. For example, create a ragas-inline-config.yaml file as follows:
 +
-[source,subs="+quotes"]
-----
-$ export INFERENCE_MODEL="llama-3-2-3b"
-$ export VLLM_URL="https://llama-32-3b-instruct-predictor:8443/v1"
-$ export VLLM_TLS_VERIFY="false"  # Use "true" in production
-$ export VLLM_API_TOKEN="__<token_identifier>__"
-
-$ oc create secret generic llama-stack-inference-model-secret \
-  --from-literal INFERENCE_MODEL="$INFERENCE_MODEL" \
-  --from-literal VLLM_URL="$VLLM_URL" \
-  --from-literal VLLM_TLS_VERIFY="$VLLM_TLS_VERIFY" \
-  --from-literal VLLM_API_TOKEN="$VLLM_API_TOKEN"
-----
-+
-[NOTE]
-====
-Replace `__<token_identifier>__` with your actual model API token. In production environments, set `VLLM_TLS_VERIFY` to `true` to enable TLS certificate verification.
-====
-
-. Create a ConfigMap for the RAGAS inline provider configuration:
-+
-[source,yaml,subs="+quotes"]
+.Example ragas-inline-config.yaml
+[source,yaml]
 ----
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ragas-inline-config
-  namespace: __<project_name>__
+  namespace: <project_name>
 data:
-  EMBEDDING_MODEL: "all-MiniLM-L6-v2" <1>
+  EMBEDDING_MODEL: "all-MiniLM-L6-v2"
 ----
 +
-<1> The embedding model used by RAGAS for semantic similarity calculations. The `all-MiniLM-L6-v2` model is a lightweight, efficient option suitable for most use cases.
+* `EMBEDDING_MODEL`: Used by RAGAS for semantic similarity calculations. The `all-MiniLM-L6-v2` model is a lightweight, efficient option suitable for most use cases.
 
 . Apply the ConfigMap:
 +
-[source,subs="+quotes"]
+[source,terminal]
 ----
 $ oc apply -f ragas-inline-config.yaml
 ----
 
-. Create a Llama Stack distribution configuration file with the RAGAS inline provider:
+. Create a Llama Stack distribution configuration file with the RAGAS inline provider. For example, create a llama-stack-ragas-inline.yaml file as follows:
 +
-[source,yaml,subs="+quotes"]
+[source,yaml]
 ----
 apiVersion: llamastack.trustyai.opendatahub.io/v1alpha1
 kind: LlamaStackDistribution
 metadata:
   name: llama-stack-ragas-inline
-  namespace: __<project_name>__
+  namespace: <project_name>
 spec:
-  imageName: quay.io/trustyai/llama-stack-ragas:latest <1>
+  imageName: quay.io/trustyai/llama-stack-ragas:latest
   providers:
     inference:
       - provider_id: vllm-inference
@@ -113,7 +93,7 @@ spec:
         config:
           url: ${env.VLLM_URL}
           api_token: ${env.VLLM_API_TOKEN}
-    eval: <2>
+    eval:
       - provider_id: trustyai_ragas_inline
         provider_type: inline::trustyai_ragas
         module: llama_stack_provider_ragas.inline
@@ -126,8 +106,8 @@ spec:
         name: ragas-inline-config
 ----
 +
-<1> The container image that includes the RAGAS provider.
-<2> The eval provider configuration specifies the RAGAS inline provider and its embedding model.
+* `imageName`: The container image that includes the RAGAS provider.
+* `eval`: The eval provider configuration specifies the RAGAS inline provider and its embedding model.
 +
 [IMPORTANT]
 ====
@@ -184,7 +164,7 @@ from llama_stack_client import LlamaStackClient
 # Get the Llama Stack route URL
 # oc get route llama-stack-ragas-inline -o jsonpath='{.spec.host}'
 
-client = LlamaStackClient(base_url="https://__<llama-stack-route-url>__")
+client = LlamaStackClient(base_url="https://<llama-stack-route-url>")
 
 # List available providers
 providers = client.providers.list()
