@@ -77,16 +77,22 @@ The `reference` field is optional but recommended for metrics like `Answer Corre
 [NOTE]
 ====
 You must de-register a dataset if one already exists by running the following code:
-`client.datasets.unregister("my-rag-evaluation")
-    print(f"Dataset 'my-rag-evaluation' unregistered successfully")`
+`client.datasets.unregister("<my_rag_evaluation>")
+    print(f"Dataset '<my_rag_evaluation>' unregistered successfully")`
 ====
 +
 [source,python]
 ----
 client.datasets.register(
-    dataset_id="my-rag-evaluation",
-    dataset_def=dataset,
-    provider_id="<your_configured_provider>",
+    dataset_id="<my_rag_evaluation>",
+    purpose="eval/question-answer",
+    source={"type": "rows", "rows": evaluation_data},
+    metadata={
+        "provider_id": "localfs",
+        "description": "Sample RAG evaluation dataset for Ragas",
+        "size": len(evaluation_data),
+        "format": "ragas",
+    },
 )
 ----
 
@@ -95,8 +101,8 @@ client.datasets.register(
 [source,python]
 ----
 client.benchmarks.register(
-    task_id="rag-quality-benchmark",
-    dataset_id="my-rag-evaluation",
+    benchmark_id="<ragas_benchmark_inline/remote>",
+    dataset_id="<my_rag_evaluation>",
     scoring_functions=[
         "faithfulness",          # Factual consistency with context
         "answer_relevancy",      # Relevance to the question
@@ -104,7 +110,13 @@ client.benchmarks.register(
         "context_recall",        # Recall of retrieval
         "answer_correctness",    # Accuracy vs ground truth
         "answer_similarity"      # Semantic similarity to ground truth
-    ]
+    ],
+    provider_id="<trustyai_ragas_inline/remote>",
+        # metadata={
+        #     "provider": "ragas",
+        #     "version": "1.0",
+        #     "metrics_count": len(ragas_metrics),
+        # }
 )
 ----
 +
@@ -118,7 +130,7 @@ You can select a subset of metrics based on your evaluation needs. For example, 
 [source,python]
 ----
 job_response = client.eval.run_eval(
-    benchmark_id="rag-quality-benchmark",
+    benchmark_id="<ragas_benchmark_inline/remote>",
     benchmark_config={
         "eval_candidate": {
             "type": "model",
@@ -140,7 +152,7 @@ print(f"Evaluation job started: {job_response.job_id}")
 [source,python]
 ----
   job_status = client.eval.jobs.status(
-      benchmark_id="rag-quality-benchmark",
+      benchmark_id="<ragas_benchmark_inline/remote>",
       job_id=job_response.job_id
   )
 
@@ -152,7 +164,7 @@ print(f"Evaluation job started: {job_response.job_id}")
 [source,python]
 ----
 results = client.eval.jobs.retrieve(
-      benchmark_id="rag-quality-benchmark",
+      benchmark_id="<ragas_benchmark_inline/remote>",
       job_id=job_response.job_id
   )
 

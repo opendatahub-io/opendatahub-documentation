@@ -72,15 +72,21 @@ $ oc project <project_name>
 +
 [source,terminal]
 ----
-$ oc create secret generic ragas-s3-credentials \
+$ oc create secret generic "<ragas_s3_credentials>" \
   --from-literal=AWS_ACCESS_KEY_ID=<your_access_key> \
   --from-literal=AWS_SECRET_ACCESS_KEY=<your_secret_key> \
   --from-literal=AWS_DEFAULT_REGION=<your_region>
 ----
 +
-[NOTE]
+[IMPORTANT]
 ====
-Replace the placeholder values with your actual S3 credentials. The RAGAS remote provider uses these credentials to store evaluation results in S3-compatible storage.
+Replace the placeholder values with your actual S3 credentials. These AWS credentials are required in two locations:
+
+* In the Llama Stack server pod (as environment variables) - to access S3 when creating pipeline runs.
+* In the Kubeflow Pipeline pods (via the secret) - to store evaluation results to S3 during pipeline execution.
+
+The LlamaStackDistribution configuration loads these credentials from the 
+`"<ragas_s3_credentials>"` secret and makes them available to both locations.
 ====
 
 . Create a secret for the Kubeflow Pipelines API token:
@@ -95,13 +101,23 @@ $ export KUBEFLOW_PIPELINES_TOKEN=$(oc whoami -t)
 [source,terminal]
 ----
 $ oc create secret generic kubeflow-pipelines-token \
-  --from-literal=KUBEFLOW_PIPELINES_TOKEN="$PIPELINES_TOKEN"
+  --from-literal=KUBEFLOW_PIPELINES_TOKEN="$KUBEFLOW_PIPELINES_TOKEN"
 ----
 +
 [IMPORTANT]
 ====
 The Llama Stack distribution service account does not have privileges to create pipeline runs. This secret provides the necessary authentication token for creating and managing pipeline runs.
 ====
+
+. Verify that the Kubeflow Pipelines endpoint is accessible:
++
+[source,terminal]
+----
+$ curl -k -H "Authorization: Bearer $KUBEFLOW_PIPELINES_TOKEN" \
+ https://$KFP_ENDPOINT/apis/v1beta1/healthz
+----
++
+You should see a successful health check response confirming that the endpoint is accessible with your token.
 
 . Create a secret for storing your inference model information:
 +
@@ -130,9 +146,10 @@ $ echo "Kubeflow Pipelines endpoint: https://$KFP_ENDPOINT"
 
 . Create an external route for the Llama Stack server:
 +
-[NOTE]
+[IMPORTANT]
 ====
-The KUBEFLOW_LLAMA_STACK_URL must be an external route that is accessible from the Kubeflow Pipeline pods.
+The KUBEFLOW_LLAMA_STACK_URL must be an external route that is accessible from the Kubeflow Pipeline pods. Internal service URLs do not work for this 
+configuration. The Kubeflow Pipeline pods need to communicate with the Llama Stack server from within their execution environment, which requires an externally accessible route.
 ====
 +
 The route is automatically created when you deploy the LlamaStackDistribution. You can get the route URL with the following command:
@@ -156,20 +173,20 @@ metadata:
   namespace: <project_name>
 data:
   EMBEDDING_MODEL: "all-MiniLM-L6-v2"
-  KUBEFLOW_LLAMA_STACK_URL: "<external_llama_stack_url>"
+  KUBEFLOW_LLAMA_STACK_URL: "https://<external_llama_stack_url>"
   KUBEFLOW_PIPELINES_ENDPOINT: <https://<kfp_endpoint>
   KUBEFLOW_NAMESPACE: <project_name>
   KUBEFLOW_BASE_IMAGE: "quay.io/trustyai/llama-stack-ragas:latest"
   KUBEFLOW_RESULTS_S3_PREFIX: "s3://<bucket_name>/ragas-results"
-  KUBEFLOW_S3_CREDENTIALS_SECRET_NAME: <ragas_s3_credentials>
+  KUBEFLOW_S3_CREDENTIALS_SECRET_NAME: "<ragas_s3_credentials>"
 ----
 +
 * `EMBEDDING_MODEL`: used by RAGAS for semantic similarity calculations.
 * `KUBEFLOW_LLAMA_STACK_URL`: the external route URL for the Llama Stack server. This must be accessible from the Kubeflow Pipeline pods.
 * `KUBEFLOW_PIPELINES_ENDPOINT`: the Kubeflow Pipelines API endpoint URL.
-* `KUBEFLOW_NAMESPACE`: the namespace where pipeline runs is be executed.
-* `KUBEFLOW_BASE_IMAGE`: the container image used for RAGAS evaluation pipeline components.
-* `KUBEFLOW_RESULTS_S3_PREFIX`: the S3 path prefix where evaluation results will be stored.
+* `KUBEFLOW_NAMESPACE`: the namespace where pipeline runs are executed.  This should match your current data science project namespace.
+* `KUBEFLOW_BASE_IMAGE`: the container image used for RAGAS evaluation pipeline components.  This image contains the RAGAS provider package installed via pip.
+* `KUBEFLOW_RESULTS_S3_PREFIX`: the S3 path prefix where evaluation results will be stored.  For example: `s3://my-bucket/ragas-evaluation-results`.
 * `KUBEFLOW_S3_CREDENTIALS_SECRET_NAME`: name of the secret containing S3 credentials.
 
 . Apply the ConfigMap:
@@ -282,19 +299,19 @@ spec:
           valueFrom:
             secretKeyRef:
               key: AWS_ACCESS_KEY_ID
-              name: aws-credentials
+              name: "<ragas_s3_credentials>"
               optional: true
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
               key: AWS_SECRET_ACCESS_KEY
-              name: aws-credentials
+              name: "<ragas_s3_credentials>"
               optional: true
         - name: AWS_DEFAULT_REGION
           valueFrom:
             secretKeyRef:
               key: AWS_DEFAULT_REGION
-              name: aws-credentials
+              name: "<ragas_s3_credentials>"
               optional: true
       name: llama-stack
       port: 8321
