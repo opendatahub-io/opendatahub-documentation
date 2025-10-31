@@ -37,39 +37,6 @@ ifndef::upstream[]
 For information about how to deploy Llama Stack in {productname-short}, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/deploying-a-rag-stack-in-a-data-science-project_rag[Deploying a RAG stack in a data science project].
 endif::[]
 
-== The `LlamaStackDistribution` custom resource API providers
-
-The `LlamaStackDistribution` custom resource includes various API types and providers that you can use in {productname-short}. The following table displays the supported providers that are included in the distribution:
-
-[cols="1,1,2,1", options="header"]
-|===
-|*API type* |*Providers* |*How to Enable* |*Support status*
-|Agents |`inline::meta-reference` |Enabled by default |Technology Preview
-.2+|DatasetIO |`inline::localfs` |Enabled by default |Technology Preview
-|`remote::huggingface` |Enabled by default |Technology Preview
-|Evaluation |`remote::trustyai_lmeval` |Set the `EMBEDDING_MODEL` environment variable |Technology Preview
-|Files |`inline::localfs` |Enabled by default |Technology Preview
-.7+|Inference |`inline::sentence-transformers` |Enabled by default |Technology Preview
-|`remote::vllm` |Set the `VLLM_URL` environment variable |Technology Preview
-|`remote::azure` |Set the `AZURE_API_KEY` environment variable |Technology Preview
-|`remote::bedrock` |Set the `AWS_ACCESS_KEY_ID` environment variable |Technology Preview
-|`remote::openai` |Set the `OPENAI_API_KEY` environment variable |Technology Preview
-|`remote::vertexai` |Set the `VERTEX_AI_PROJECT` environment variable |Technology Preview
-|`remote::watsonx` |Set the `WATSONX_API_KEY` environment variable |Technology Preview
-|Safety |`remote::trustyai_fms` |Enabled by default |Technology Preview
-.3+|Scoring |`inline::llm-as-a-judge` |Enabled by default |Technology Preview
-|`inline::basic` |Enabled by default |Technology Preview
-|`inline::braintrust` |Enabled by default |Technology Preview
-|Telemetry |`inline::meta-reference` |Enabled by default |Technology Preview
-.4+|Tool_runtime |`inline::rag-runtime` |Enabled by default |Technology Preview
-|`remote::brave-search` |Enabled by default |Technology Preview
-|`remote::tavily-search` |Enabled by default |Technology Preview
-|`remote::model-context-protocol` |Enabled by default |Technology Preview
-.2+|VectorIO |`inline::milvus` |Enabled by default |Technology Preview
-|`remote::milvus` |Set the `MILVUS_ENDPOINT` environment variable  |Technology Preview
-|===
-
-
 [role="_additional-resources"]
 .Additional resources
 * link:https://github.com/opendatahub-io/llama-stack-demos[Llama Stack Demos repository^]
