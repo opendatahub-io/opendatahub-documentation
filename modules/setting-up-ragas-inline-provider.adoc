@@ -1,0 +1,207 @@
+:_module-type: PROCEDURE
+
+[id="setting-up-ragas-inline-provider_{context}"]
+= Setting up the RAGAS inline provider for development
+
+[role='_abstract']
+You can set up the RAGAS inline provider to run evaluations directly within the Llama Stack server process. The inline provider is ideal for development environments, rapid prototyping, and lightweight evaluation workloads where simplicity and quick iteration are priorities.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+
+* You have activated the Llama Stack Operator in {productname-short}.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-rag/#installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_rag/installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+endif::[]
+
+* You have deployed a Llama model with KServe.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-rag/#deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_rag/deploying-a-rag-stack-in-a-data-science-project_rag#Deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
+endif::[]
+
+* You have created a data science project.
+
+.Procedure
+. In a terminal window, if you are not already logged in to your OpenShift cluster, log in to the {openshift-cli} as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
+----
+
+. Navigate to your data science project:
++
+[source,subs="+quotes"]
+----
+$ oc project __<project_name>__
+----
+
+. Create a secret for storing your inference model information:
++
+[source,subs="+quotes"]
+----
+$ export INFERENCE_MODEL="llama-3-2-3b"
+$ export VLLM_URL="https://llama-32-3b-instruct-predictor:8443/v1"
+$ export VLLM_TLS_VERIFY="false"  # Use "true" in production
+$ export VLLM_API_TOKEN="__<token_identifier>__"
+
+$ oc create secret generic llama-stack-inference-model-secret \
+  --from-literal INFERENCE_MODEL="$INFERENCE_MODEL" \
+  --from-literal VLLM_URL="$VLLM_URL" \
+  --from-literal VLLM_TLS_VERIFY="$VLLM_TLS_VERIFY" \
+  --from-literal VLLM_API_TOKEN="$VLLM_API_TOKEN"
+----
++
+[NOTE]
+====
+Replace `__<token_identifier>__` with your actual model API token. In production environments, set `VLLM_TLS_VERIFY` to `true` to enable TLS certificate verification.
+====
+
+. Create a ConfigMap for the RAGAS inline provider configuration:
++
+[source,yaml,subs="+quotes"]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ragas-inline-config
+  namespace: __<project_name>__
+data:
+  EMBEDDING_MODEL: "all-MiniLM-L6-v2" <1>
+----
++
+<1> The embedding model used by RAGAS for semantic similarity calculations. The `all-MiniLM-L6-v2` model is a lightweight, efficient option suitable for most use cases.
+
+. Apply the ConfigMap:
++
+[source,subs="+quotes"]
+----
+$ oc apply -f ragas-inline-config.yaml
+----
+
+. Create a Llama Stack distribution configuration file with the RAGAS inline provider:
++
+[source,yaml,subs="+quotes"]
+----
+apiVersion: llamastack.trustyai.opendatahub.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: llama-stack-ragas-inline
+  namespace: __<project_name>__
+spec:
+  imageName: quay.io/trustyai/llama-stack-ragas:latest <1>
+  providers:
+    inference:
+      - provider_id: vllm-inference
+        provider_type: remote::vllm
+        config:
+          url: ${env.VLLM_URL}
+          api_token: ${env.VLLM_API_TOKEN}
+    eval: <2>
+      - provider_id: trustyai_ragas_inline
+        provider_type: inline::trustyai_ragas
+        module: llama_stack_provider_ragas.inline
+        config:
+          embedding_model: ${env.EMBEDDING_MODEL}
+  envFrom:
+    - secretRef:
+        name: llama-stack-inference-model-secret
+    - configMapRef:
+        name: ragas-inline-config
+----
++
+<1> The container image that includes the RAGAS provider.
+<2> The eval provider configuration specifies the RAGAS inline provider and its embedding model.
++
+[IMPORTANT]
+====
+The inline provider runs RAGAS evaluation in the same process as the Llama Stack server. This mode is suitable for development and testing, but for production deployments with large-scale evaluations, {org-name} recommends using the remote provider.
+====
+
+. Deploy the Llama Stack distribution:
++
+[source,subs="+quotes"]
+----
+$ oc apply -f llama-stack-ragas-inline.yaml
+----
+
+. Wait for the deployment to complete:
++
+[source,subs="+quotes"]
+----
+$ oc get pods -w
+----
++
+Wait until the `llama-stack-ragas-inline` pod status shows `Running`.
+
+.Verification
+. Verify that the Llama Stack server is running:
++
+[source,subs="+quotes"]
+----
+$ oc get pods -l app=llama-stack-ragas-inline
+----
++
+You should see output similar to the following:
++
+[source,subs="+quotes"]
+----
+NAME                                      READY   STATUS    RESTARTS   AGE
+llama-stack-ragas-inline-7b8d9c5f-xyz12   1/1     Running   0          2m
+----
+
+. Check the Llama Stack logs to confirm the RAGAS provider is loaded:
++
+[source,subs="+quotes"]
+----
+$ oc logs -l app=llama-stack-ragas-inline | grep -i ragas
+----
++
+You should see log messages indicating that the RAGAS inline provider is initialized.
+
+. Test the evaluation API endpoint:
++
+[source,python]
+----
+from llama_stack_client import LlamaStackClient
+
+# Get the Llama Stack route URL
+# oc get route llama-stack-ragas-inline -o jsonpath='{.spec.host}'
+
+client = LlamaStackClient(base_url="https://__<llama-stack-route-url>__")
+
+# List available providers
+providers = client.providers.list()
+print("Available eval providers:")
+for provider in providers.eval:
+    print(f"  - {provider.provider_id} ({provider.provider_type})")
+
+# Expected output should include:
+#   - trustyai_ragas_inline (inline::trustyai_ragas)
+----
+
+.Next steps
+ifdef::upstream[]
+* link:{odhdocshome}/working-with-rag/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with RAGAS metrics]
+* link:{odhdocshome}/working-with-rag/#configuring-ragas-remote-provider-for-production_rag[Configuring the RAGAS remote provider for production]
+endif::[]
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/working_with_rag/evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with RAGAS metrics]
+* link:{rhoaidocshome}{default-format-url}/working_with_rag/configuring-ragas-remote-provider-for-production_rag[Configuring the RAGAS remote provider for production]
+endif::[]
