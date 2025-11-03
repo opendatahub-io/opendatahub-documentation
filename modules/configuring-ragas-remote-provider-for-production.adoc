@@ -234,31 +234,31 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: KUBEFLOW_PIPELINES_ENDPOINT
-              name: "<https://<kfp_endpoint>"
+              name: kubeflow-ragas-config
               optional: true
         - name: KUBEFLOW_NAMESPACE
           valueFrom:
             configMapKeyRef:
               key: KUBEFLOW_NAMESPACE
-              name: "project_name"
+              name: kubeflow-ragas-config
               optional: true
         - name: KUBEFLOW_BASE_IMAGE
           valueFrom:
             configMapKeyRef:
               key: KUBEFLOW_BASE_IMAGE
-              name: <quay.io/trustyai/llama-stack-ragas:latest>
+              name: kubeflow-ragas-config
               optional: true
         - name: KUBEFLOW_LLAMA_STACK_URL
           valueFrom:
             configMapKeyRef:
               key: KUBEFLOW_LLAMA_STACK_URL
-              name: "http://$<distribution_name>-service.$<your_namespace>.svc.cluster.local:$<port>"
+              name: kubeflow-ragas-config
               optional: true
         - name: KUBEFLOW_RESULTS_S3_PREFIX
           valueFrom:
             configMapKeyRef:
               key: KUBEFLOW_RESULTS_S3_PREFIX
-              name: s3://<bucket_name>/ragas-results
+              name: kubeflow-ragas-config
               optional: true
         - name: KUBEFLOW_S3_CREDENTIALS_SECRET_NAME
           valueFrom:
@@ -395,3 +395,4 @@ print(f"Pipeline run created: {response.job_id}")
 .Next steps
 ifdef::upstream[]
 * link:{odhdocshome}/working-with-rag/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with Ragas metrics]
+endif::[]
