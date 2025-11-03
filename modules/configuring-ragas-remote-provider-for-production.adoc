@@ -152,14 +152,14 @@ The KUBEFLOW_LLAMA_STACK_URL must be an external route that is accessible from t
 configuration. The Kubeflow Pipeline pods need to communicate with the Llama Stack server from within their execution environment, which requires an externally accessible route.
 ====
 +
-The route is automatically created when you deploy the LlamaStackDistribution. You can get the route URL with the following command:
+The route is automatically created when you deploy the LlamaStackDistribution. You can create the route URL before crating the LlamaStack distribution with the following user-replaced values:
 +
 [source,subs="+quotes"]
 ----
-$ export LLAMA_STACK_URL=$(oc get route llama-stack-ragas-remote -o jsonpath='{.spec.host}')
-
-$ echo "Llama Stack URL: https://$LLAMA_STACK_URL"
+http://$<distribution_name>-service.$<your_namespace>.svc.cluster.local:$<port>
 ----
++
+The <distribution_name>, <namespace>, and <port> are replaced with the name of the LlamaStack distribution you are creating, the namespace where you are creating it, and the port. These 3 elements are present in the LlamaStack distribution yaml.
 
 . Create a ConfigMap for the RAGAS remote provider configuration. For example, create a kubeflow-ragas-config.yaml file as follows:
 +
