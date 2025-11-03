@@ -2,21 +2,21 @@
 
 ifdef::context[:parent-context: {context}]
 
-[id="evaluating-rag-systems-with-ragas_{context}"]
-= Evaluating RAG systems with RAGAS
+[id="evaluating-rag-systems-with-Ragas_{context}"]
+= Evaluating RAG systems with Ragas
 
 [role='_abstract']
-As an AI engineer, you can use RAGAS (Retrieval-Augmented Generation Assessment) to measure and improve the quality of your RAG systems in {productname-short}. RAGAS provides objective metrics that assess retrieval quality, answer relevance, and factual consistency, enabling you to identify issues, optimize configurations, and establish automated quality gates in your development workflows.
+As an AI engineer, you can use Ragas (Retrieval-Augmented Generation Assessment) to measure and improve the quality of your RAG systems in {productname-short}. Ragas provides objective metrics that assess retrieval quality, answer relevance, and factual consistency, enabling you to identify issues, optimize configurations, and establish automated quality gates in your development workflows.
 
-RAGAS is integrated with {productname-short} through the Llama Stack evaluation API and supports two deployment modes: an inline provider for development and testing, and a remote provider for production-scale evaluations using {productname-short} pipelines.
+Ragas is integrated with {productname-short} through the Llama Stack evaluation API and supports two deployment modes: an inline provider for development and testing, and a remote provider for production-scale evaluations using {productname-short} pipelines.
 
-== About RAGAS evaluation
+== About Ragas evaluation
 
-RAGAS addresses the unique challenges of evaluating RAG systems by providing metrics that assess both the retrieval and generation components of your application. Unlike traditional language model evaluation that focuses solely on output quality, RAGAS evaluates how well your system retrieves relevant context and generates responses grounded in that context.
+Ragas addresses the unique challenges of evaluating RAG systems by providing metrics that assess both the retrieval and generation components of your application. Unlike traditional language model evaluation that focuses solely on output quality, Ragas evaluates how well your system retrieves relevant context and generates responses grounded in that context.
 
-=== Key RAGAS metrics
+=== Key Ragas metrics
 
-RAGAS provides the following core metrics for evaluating RAG systems:
+Ragas provides the following core metrics for evaluating RAG systems:
 
 *Faithfulness*:: Measures how factually consistent the generated answer is with the retrieved context. A high faithfulness score indicates that the answer is well-grounded in the source documents, reducing the risk of hallucinations. This is critical for enterprise and regulated environments where accuracy and trustworthiness are paramount.
 
@@ -30,15 +30,15 @@ RAGAS provides the following core metrics for evaluating RAG systems:
 
 *Answer Similarity*:: Measures the semantic similarity between the generated answer and a reference answer, providing a more nuanced assessment than exact string matching.
 
-=== Use cases for RAGAS in AI engineering workflows
+=== Use cases for Ragas in AI engineering workflows
 
-RAGAS enables AI engineers to accomplish the following tasks:
+Ragas enables AI engineers to accomplish the following tasks:
 
 *Automate quality checks*::
 Create reproducible, objective evaluation jobs that can be automatically triggered after every code commit or model update. This establishes quality gates to prevent regressions and ensures that only high-quality RAG configurations are deployed to production.
 
 *Enable evaluation-driven development (EDD)*::
-Use RAGAS metrics to guide iterative optimization. For example, test different chunking strategies, embedding models, or retrieval algorithms against a defined benchmark to discover the optimal RAG configuration that maximizes performance metrics like faithfulness while minimizing computational cost.
+Use Ragas metrics to guide iterative optimization. For example, test different chunking strategies, embedding models, or retrieval algorithms against a defined benchmark to discover the optimal RAG configuration that maximizes performance metrics like faithfulness while minimizing computational cost.
 
 *Ensure factual consistency and trustworthiness*::
 Measure the reliability of your RAG system by setting thresholds on metrics like faithfulness. This ensures that responses are consistently grounded in source documents, which is critical for enterprise applications where hallucinations or factual errors are unacceptable.
@@ -49,12 +49,12 @@ Leverage the remote provider pattern with {productname-short} pipelines to execu
 *Compare model and configuration variants*::
 Run comparative evaluations across different models, retrieval strategies, or system configurations to make data-driven decisions about your RAG architecture. For example, compare the impact of different chunk sizes (512 vs 1024 tokens) or different embedding models on retrieval quality metrics.
 
-=== RAGAS deployment modes
+=== Ragas deployment modes
 
-{productname-short} supports two deployment modes for RAGAS evaluation:
+{productname-short} supports two deployment modes for Ragas evaluation:
 
 *Inline provider*::
-Runs RAGAS evaluation in the same process as the Llama Stack server. This mode is suitable for development environments and lightweight evaluation workloads where simplicity and quick iteration are priorities. The inline provider offers:
+Runs Ragas evaluation in the same process as the Llama Stack server. This mode is suitable for development environments and lightweight evaluation workloads where simplicity and quick iteration are priorities. The inline provider offers:
 +
 * Fastest processing with in-memory operations
 * Minimal configuration overhead
@@ -62,7 +62,7 @@ Runs RAGAS evaluation in the same process as the Llama Stack server. This mode i
 * Suitable for evaluating small to medium-sized datasets
 
 *Remote provider*::
-Runs RAGAS evaluation as distributed jobs using {productname-short} pipelines (powered by Kubeflow Pipelines). This mode enables production-scale evaluations by:
+Runs Ragas evaluation as distributed jobs using {productname-short} pipelines (powered by Kubeflow Pipelines). This mode enables production-scale evaluations by:
 +
 * Running evaluations in parallel across thousands of data points
 * Providing resource isolation and management
@@ -76,21 +76,11 @@ Runs RAGAS evaluation as distributed jobs using {productname-short} pipelines (p
 The inline provider is best used for development and rapid prototyping, and the remote provider is best for production deployments where scalability, resource management, and CI/CD integration are required.
 ====
 
-== Prerequisites for setting up RAGAS evaluation
+include::modules/setting-up-Ragas-inline-provider.adoc[leveloffset=+1]
 
-To use RAGAS for evaluating your RAG systems, complete the following tasks:
+include::modules/configuring-Ragas-remote-provider-for-production.adoc[leveloffset=+1]
 
-* Choose a deployment mode based on your use case (inline for development, remote for production)
-* Deploy the Llama Stack distribution with the appropriate RAGAS provider
-* Prepare an evaluation dataset with questions, generated answers, retrieved contexts, and optionally ground truth answers
-* Run RAGAS evaluations and analyze the results
-* Optionally, integrate RAGAS into your CI/CD pipelines for automated quality gates
-
-include::modules/setting-up-ragas-inline-provider.adoc[leveloffset=+1]
-
-include::modules/configuring-ragas-remote-provider-for-production.adoc[leveloffset=+1]
-
-include::modules/evaluating-rag-system-quality-with-ragas.adoc[leveloffset=+1]
+include::modules/evaluating-rag-system-quality-with-Ragas.adoc[leveloffset=+1]
 
 ifdef::parent-context[:context: {parent-context}]
 ifndef::parent-context[:!context:]

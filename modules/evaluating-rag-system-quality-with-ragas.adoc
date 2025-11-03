@@ -1,18 +1,18 @@
 :_module-type: PROCEDURE
 
-[id="evaluating-rag-system-quality-with-ragas_{context}"]
-= Evaluating RAG system quality with RAGAS metrics
+[id="evaluating-rag-system-quality-with-Ragas_{context}"]
+= Evaluating RAG system quality with Ragas metrics
 
 [role='_abstract']
-You can use RAGAS (Retrieval-Augmented Generation Assessment) to measure the quality and reliability of your RAG system by evaluating retrieval quality, answer relevance, and factual consistency. RAGAS provides objective metrics that help you identify areas for improvement in your RAG pipeline.
+You can use Ragas (Retrieval-Augmented Generation Assessment) to measure the quality and reliability of your RAG system by evaluating retrieval quality, answer relevance, and factual consistency. Ragas provides objective metrics that help you identify areas for improvement in your RAG pipeline.
 
 .Prerequisites
-* You have deployed a Llama Stack distribution with the RAGAS evaluation provider enabled, either Inline or Remote provider.
+* You have deployed a Llama Stack distribution with the Ragas evaluation provider enabled, either Inline or Remote provider.
 ifdef::upstream[]
-For more information, see link:{odhdocshome}/evaluating-rag-systems/configuring-ragas-remote-provider-for-production[Configuring the RAGAS remote provider for production].
+For more information, see link:{odhdocshome}/evaluating-rag-systems/configuring-Ragas-remote-provider-for-production[Configuring the Ragas remote provider for production].
 endif::[]
 ifndef::upstream[]
-For more information, see link:{rhoaidocshome}evaluating-rag-systems/setting-up-ragas-inline-provider[Setting up the RAGAS inline provider for development].
+For more information, see link:{rhoaidocshome}evaluating-rag-systems/setting-up-Ragas-inline-provider[Setting up the Ragas inline provider for development].
 endif::[]
 
 * You have a deployed RAG model that you want to evaluate.
@@ -91,17 +91,17 @@ client.datasets.register(
         "provider_id": "localfs",
         "description": "Sample RAG evaluation dataset for Ragas",
         "size": len(evaluation_data),
-        "format": "ragas",
+        "format": "Ragas",
     },
 )
 ----
 
-. Register a benchmark that specifies which RAGAS metrics to evaluate:
+. Register a benchmark that specifies which Ragas metrics to evaluate:
 +
 [source,python]
 ----
 client.benchmarks.register(
-    benchmark_id="<ragas_benchmark_inline/remote>",
+    benchmark_id="<Ragas_benchmark_inline/remote>",
     dataset_id="<my_rag_evaluation>",
     scoring_functions=[
         "faithfulness",          # Factual consistency with context
@@ -111,11 +111,11 @@ client.benchmarks.register(
         "answer_correctness",    # Accuracy vs ground truth
         "answer_similarity"      # Semantic similarity to ground truth
     ],
-    provider_id="<trustyai_ragas_inline/remote>",
+    provider_id="<trustyai_Ragas_inline/remote>",
         # metadata={
-        #     "provider": "ragas",
+        #     "provider": "Ragas",
         #     "version": "1.0",
-        #     "metrics_count": len(ragas_metrics),
+        #     "metrics_count": len(Ragas_metrics),
         # }
 )
 ----
@@ -130,7 +130,7 @@ You can select a subset of metrics based on your evaluation needs. For example, 
 [source,python]
 ----
 job_response = client.eval.run_eval(
-    benchmark_id="<ragas_benchmark_inline/remote>",
+    benchmark_id="<Ragas_benchmark_inline/remote>",
     benchmark_config={
         "eval_candidate": {
             "type": "model",
@@ -152,7 +152,7 @@ print(f"Evaluation job started: {job_response.job_id}")
 [source,python]
 ----
   job_status = client.eval.jobs.status(
-      benchmark_id="<ragas_benchmark_inline/remote>",
+      benchmark_id="<Ragas_benchmark_inline/remote>",
       job_id=job_response.job_id
   )
 
@@ -164,7 +164,7 @@ print(f"Evaluation job started: {job_response.job_id}")
 [source,python]
 ----
 results = client.eval.jobs.retrieve(
-      benchmark_id="<ragas_benchmark_inline/remote>",
+      benchmark_id="<Ragas_benchmark_inline/remote>",
       job_id=job_response.job_id
   )
 
@@ -187,7 +187,6 @@ answer_similarity: 0.901
 +
 [source,python]
 ----
-# Check that all expected metrics are present
 expected_metrics = [
     "faithfulness",
     "answer_relevancy",
@@ -206,7 +205,7 @@ for metric in expected_metrics:
 
 . Verify that scores are within expected ranges:
 +
-All RAGAS metrics return scores between 0.0 and 1.0, where higher scores indicate better performance. Use the following guidelines to interpret your results:
+All Ragas metrics return scores between 0.0 and 1.0, where higher scores indicate better performance. Use the following guidelines to interpret your results:
 +
 ** *Faithfulness > 0.8*: High factual consistency, low risk of hallucination
 ** *Answer Relevancy > 0.7*: Answers are relevant to questions

@@ -4,7 +4,7 @@
 = Setting up the RAGAS inline provider for development
 
 [role='_abstract']
-You can set up the RAGAS inline provider to run evaluations directly within the Llama Stack server process. The inline provider is ideal for development environments, rapid prototyping, and lightweight evaluation workloads where simplicity and quick iteration are priorities.
+You can set up the Ragas inline provider to run evaluations directly within the Llama Stack server process. The inline provider is ideal for development environments, rapid prototyping, and lightweight evaluation workloads where simplicity and quick iteration are priorities.
 
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
@@ -52,7 +52,7 @@ $ oc login <openshift_cluster_url> -u <username> -p <password>
 $ oc project <project_name>
 ----
 
-. Create a ConfigMap for the RAGAS inline provider configuration. For example, create a ragas-inline-config.yaml file as follows:
+. Create a ConfigMap for the Ragas inline provider configuration. For example, create a ragas-inline-config.yaml file as follows:
 +
 .Example ragas-inline-config.yaml
 [source,yaml]
@@ -66,7 +66,7 @@ data:
   EMBEDDING_MODEL: "all-MiniLM-L6-v2"
 ----
 +
-* `EMBEDDING_MODEL`: Used by RAGAS for semantic similarity calculations. The `all-MiniLM-L6-v2` model is a lightweight, efficient option suitable for most use cases.
+* `EMBEDDING_MODEL`: Used by Ragas for semantic similarity calculations. The `all-MiniLM-L6-v2` model is a lightweight, efficient option suitable for most use cases.
 
 . Apply the ConfigMap:
 +
@@ -75,7 +75,7 @@ data:
 $ oc apply -f ragas-inline-config.yaml
 ----
 
-. Create a Llama Stack distribution configuration file with the RAGAS inline provider. For example, create a llama-stack-ragas-inline.yaml file as follows:
+. Create a Llama Stack distribution configuration file with the Ragas inline provider. For example, create a llama-stack-ragas-inline.yaml file as follows:
 +
 [source,yaml]
 ----
@@ -106,12 +106,12 @@ spec:
         name: ragas-inline-config
 ----
 +
-* `imageName`: The container image that includes the RAGAS provider.
-* `eval`: The eval provider configuration specifies the RAGAS inline provider and its embedding model.
+* `imageName`: The container image that includes the Ragas provider.
+* `eval`: The eval provider configuration specifies the Ragas inline provider and its embedding model.
 +
 [IMPORTANT]
 ====
-The inline provider runs RAGAS evaluation in the same process as the Llama Stack server. This mode is suitable for development and testing, but for production deployments with large-scale evaluations, {org-name} recommends using the remote provider.
+The inline provider runs Ragas evaluation in the same process as the Llama Stack server. This mode is suitable for development and testing, but for production deployments with large-scale evaluations, {org-name} recommends using the remote provider.
 ====
 
 . Deploy the Llama Stack distribution:
@@ -178,10 +178,10 @@ for provider in providers.eval:
 
 .Next steps
 ifdef::upstream[]
-* link:{odhdocshome}/working-with-rag/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with RAGAS metrics]
-* link:{odhdocshome}/working-with-rag/#configuring-ragas-remote-provider-for-production_rag[Configuring the RAGAS remote provider for production]
+* link:{odhdocshome}/working-with-rag/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with Ragas metrics]
+* link:{odhdocshome}/working-with-rag/#configuring-ragas-remote-provider-for-production_rag[Configuring the Ragas remote provider for production]
 endif::[]
 ifndef::upstream[]
-* link:{rhoaidocshome}{default-format-url}/working_with_rag/evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with RAGAS metrics]
-* link:{rhoaidocshome}{default-format-url}/working_with_rag/configuring-ragas-remote-provider-for-production_rag[Configuring the RAGAS remote provider for production]
+* link:{rhoaidocshome}{default-format-url}/working_with_rag/evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with Ragas metrics]
+* link:{rhoaidocshome}{default-format-url}/working_with_rag/configuring-ragas-remote-provider-for-production_rag[Configuring the Ragas remote provider for production]
 endif::[]
