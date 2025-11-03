@@ -27,24 +27,15 @@ endif::[]
 
 Use single-GPU-per-replica deployment patterns for development, testing, or production deployments of smaller models, such as 7-billion-parameter models.
 
-You can use the following examples for single-node GPU deployments:
-
-* link:https://github.com/red-hat-data-services/kserve/blob/rhoai-2.25/docs/samples/llmisvc/single-node-gpu/README.md#1-basic-deployment-with-default-scheduler-[Basic deployment with default scheduler]
-
-* link:https://github.com/red-hat-data-services/kserve/blob/rhoai-2.25/docs/samples/llmisvc/single-node-gpu/README.md#2-deployment-without-scheduler-[Deployment without scheduler]
-
-* link:https://github.com/red-hat-data-services/kserve/blob/rhoai-2.25/docs/samples/llmisvc/single-node-gpu/README.md#3-prefill-decode-separation-[Prefill-decode separation]
+For examples using single-node GPU deployments, see link:https://github.com/red-hat-data-services/kserve/blob/main/docs/samples/llmisvc/single-node-gpu/README.md[Single-Node GPU Deployment Examples]. 
 
 == Multi-node deployment
 
-You can use the following examples for multi-node deployments:
-
-* link:https://github.com/red-hat-data-services/kserve/blob/rhoai-2.25/docs/samples/llmisvc/dp-ep/deepseek-r1-gpu-rdma-roce/README.md#1-basic-dpep-configuration-llm-inference-service-dp-ep-deepseek-r1-gpu-deepep-htyaml[Basic Data Parallelism (DP) and Expert Parallelism (EP) configuration]
-* link:https://github.com/red-hat-data-services/kserve/blob/rhoai-2.25/docs/samples/llmisvc/dp-ep/deepseek-r1-gpu-rdma-roce/README.md#2-prefill-decode-separation-with-high-throughput-backend-llm-inference-service-dp-ep-deepseek-r1-pd-gpu-p-deepep-ht-d-deepep-htyaml[Prefill-decode separation with a high-throughput backend]
-* link:https://github.com/red-hat-data-services/kserve/blob/rhoai-2.25/docs/samples/llmisvc/dp-ep/deepseek-r1-gpu-rdma-roce/README.md#3-prefill-decode-with-mixed-backend-llm-inference-service-dp-ep-deepseek-r1-pd-gpu-p-deepep-ht-d-pplxyaml[Prefill-decode separation with a mixed backend]
+For examples using multi-node deployments, see 
+You can use the following examples for multi-node deployments link:https://github.com/red-hat-data-services/kserve/blob/main/docs/samples/llmisvc/dp-ep/deepseek-r1-gpu-rdma-roce/README.md[DeepSeek-R1 Multi-Node Deployment Examples].
 
 == Intelligent inference scheduler with KV cache routing
 
 You can configure the scheduler to track key-value (KV) cache blocks across inference endpoints and route requests to the endpoint with the highest cache hit rate. This configuration improves throughput and reduces latency by maximizing cache reuse.
 
-For an example, see link:https://github.com/red-hat-data-services/kserve/blob/rhoai-2.25/docs/samples/llmisvc/precise-prefix-kv-cache-routing/README.md#precise-prefix-kv-cache-routing[Precise Prefix KV Cache Routing].
+For an example, see link:https://github.com/red-hat-data-services/kserve/blob/main/docs/samples/llmisvc/precise-prefix-kv-cache-routing/README.md[Precise Prefix KV Cache Routing].
