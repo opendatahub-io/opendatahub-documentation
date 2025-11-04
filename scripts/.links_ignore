@@ -1,0 +1,35 @@
+# URL patterns to ignore during link checking
+# Format: Extended regex patterns (one per line)
+# Comment lines starting with # are ignored
+
+# Local/testing URLs
+^https?://0\.0\.0\.0
+^https?://localhost
+^https?://127\.0\.0\.1
+^https?://.*\.local($|/)
+
+# Example/placeholder domains
+^https?://([^/]*\.)?example\.(com|org)
+^https?://github\.com/example/
+
+# Internal/cluster services
+^https?://.*\.svc($|/)
+^https?://.*\.openshiftapps\.com
+
+# External services that require authentication or are unreliable
+^https?://([^/]*\.)?google\.com
+^https?://docs\.google\.com
+^https?://fonts\.googleapis\.com
+^https?://issues\.redhat\.com
+^https?://registry\.redhat\.io
+^https?://ieeexplore\.ieee\.org/
+
+# Test-specific URLs
+^https?://ds-pipeline-dspa-robert-tests
+^https?://mixtral-my-project\.apps\.my-cluster\.com
+
+# API endpoints
+/v1/chat/completions$
+
+# Documentation URLs to ignore
+^https://docs\.redhat\.com/en/documentation/red_hat_openshift_ai_cloud_service/
