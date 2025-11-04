@@ -1,11 +1,11 @@
 :_module-type: PROCEDURE
 
 ifdef::context[:parent-context: {context}]
-[id="querying-using-guardrails-gateway_{context}"]
-= Querying using guardrails gateway
+[id="enforcing-configured-safety-pipelines-for-llm-inference-using-guardrails-gateway_{context}"]
+= Enforcing configured safety pipelines for LLM inference by using Guardrails Gateway
 [role='_abstract']
 
-Guardrails gateway is a sidecar image that you can use with the `GuardrailsOrchestrator` service. It provides the OpenAI `v1/chat/completions` API and allows you to specify which detectors and endpoints you want to use to access the service. 
+The Guardrails Gateway is a sidecar image that you can use with the `GuardrailsOrchestrator` service. When running your AI application in production, you can use the Guardrails Gateway to enforce a consistent, custom set of safety policies using a preset guardrail pipeline. For example, you can create a preset guardrail pipeline for PII detection and language moderation. You can then send chat completions requests to the preset pipeline endpoints without needing to alter existing inference API calls. It provides the OpenAI `v1/chat/completions` API and allows you to specify which detectors and endpoints you want to use to access the service. 
 
 .Prerequisites
 * You have configured the guardrails gateway image.
