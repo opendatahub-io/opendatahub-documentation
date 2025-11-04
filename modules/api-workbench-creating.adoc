@@ -23,7 +23,6 @@ ifdef::cloud-service[]
 endif::[]
 * You have created a data science project. In the example in this procedure, the project is named `my-data-science-project`.
 
-//will probably need to fix these links
 ifdef::upstream[]
 * You know the URL for the workbench image that you want to use in the workbench. The example in this procedure uses the custom image that you created in link:{odhdocshome}/api-workbench/#api-custom-image-creating_api-workbench[Creating a custom image by using the `ImageStream` CRD]. 
 endif::[]
@@ -54,7 +53,7 @@ metadata:
   annotations:
     notebooks.opendatahub.io/inject-oauth: 'true' # <1>
     opendatahub.io/image-display-name: My Custom Notebook # <2>
-    notebooks.opendatahub.io/oauth-logout-url: 'https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com/projects/my-data-science-project?notebookLogout=my-workbench'
+    notebooks.opendatahub.io/oauth-logout-url: 'https://<dashboard_URL>/projects/my-data-science-project?notebookLogout=my-workbench'
     opendatahub.io/accelerator-name: ''
     openshift.io/description: '' # <3>
     openshift.io/display-name: My Workbench # <4>
@@ -108,7 +107,7 @@ spec:
                 --ServerApp.password=''
                 --ServerApp.base_url=/notebook/my-data-science-project/my-workbench
                 --ServerApp.quit_button=False
-                --ServerApp.tornado_settings={"user":"kube-3aadmin","hub_host":"https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com", "hub_prefix":"/projects/my-data-science-project"}
+                --ServerApp.tornado_settings={"user":"<user>","hub_host":"<dashboard_URL>", "hub_prefix":"/projects/my-data-science-project"}
             - name: JUPYTER_IMAGE
               value: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0'
             - name: PIP_CERT
@@ -195,7 +194,7 @@ spec:
             - '--email-domain=*'
             - '--skip-provider-button'
             - '--openshift-sar={"verb":"get","resource":"notebooks","resourceAPIGroup":"kubeflow.org","resourceName":"my-workbench","namespace":"$(NAMESPACE)"}'
-            - '--logout-url=https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com/projects/my-data-science-project?notebookLogout=my-workbench'
+            - '--logout-url=<dashboard_URL>/projects/my-data-science-project?notebookLogout=my-workbench'
       enableServiceLinks: false
       serviceAccountName: my-workbench
       volumes:
@@ -246,7 +245,7 @@ kind: Notebook
 metadata:
   annotations:
     ...
-    notebooks.opendatahub.io/oauth-logout-url: 'https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com/projects/my-data-science-project?notebookLogout=my-workbench' # <1>
+    notebooks.opendatahub.io/oauth-logout-url: '<dashboard_URL>/projects/my-data-science-project?notebookLogout=my-workbench' # <1>
     ...
 ----
 
@@ -269,7 +268,7 @@ spec:
       - resources:
       ...
        args:
-       - '--logout-url=https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com/projects/my-data-science-project?notebookLogout=my-workbench' # <1>
+       - '--logout-url=<dashboard_URL>/projects/my-data-science-project?notebookLogout=my-workbench' # <1>
        ...
 ----
 
@@ -358,7 +357,7 @@ Annotations:  notebooks.kubeflow.org/last-activity: 2024-07-30T20:27:25Z
               notebooks.opendatahub.io/last-image-selection: my-custom-notebook:1.0
               notebooks.opendatahub.io/last-size-selection: Small
               notebooks.opendatahub.io/oauth-logout-url:
-                https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com/projects/my-data-science-project?notebookLogout=my-workbench
+                <dashboard_URL>/projects/my-data-science-project?notebookLogout=my-workbench
               opendatahub.io/accelerator-name:
               opendatahub.io/image-display-name: My Custom Notebook
               opendatahub.io/username: kube:admin
@@ -383,7 +382,7 @@ Spec:
 --ServerApp.password=''
 --ServerApp.base_url=/notebook/my-data-science-project/my-workbench
 --ServerApp.quit_button=False
---ServerApp.tornado_settings={"user":"kube-3aadmin","hub_host":"https://rhods-dashboard-redhat-ods-applications.apps.my-cluster.com", "hub_prefix":"/projects/my-data-science-project"}
+--ServerApp.tornado_settings={"user":"kube-3aadmin","hub_host":"<dashboard_URL>", "hub_prefix":"/projects/my-data-science-project"}
           Name:             JUPYTER_IMAGE
           Value:            image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/my-custom-notebook:1.0
           Name:             PIP_CERT
