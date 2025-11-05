@@ -4,9 +4,13 @@
 = Evaluating RAG system quality with Ragas metrics
 
 [role='_abstract']
-You can use Ragas (Retrieval-Augmented Generation Assessment) to measure the quality and reliability of your RAG system by evaluating retrieval quality, answer relevance, and factual consistency. Ragas provides objective metrics that help you identify areas for improvement in your RAG pipeline.
+You can use Ragas (Retrieval-Augmented Generation Assessment) to measure the quality and reliability of your RAG system by evaluating retrieval quality, answer relevance, and factual consistency. Ragas provides objective metrics that help you identify areas for improvement in your RAG pipeline. Run the following Ragas evaluation demo in a Jupyter notebook.
 
 .Prerequisites
+* You have logged in to {productname-long}.
+* You have created a data science project.
+* You have created a data science pipeline.
+* You have created a secret for your AWS credentials in your project namespace.
 * You have deployed a Llama Stack distribution with the Ragas evaluation provider enabled, either Inline or Remote provider.
 ifdef::upstream[]
 For more information, see link:{odhdocshome}/evaluating-rag-systems/configuring-Ragas-remote-provider-for-production[Configuring the Ragas remote provider for production].
@@ -14,200 +18,41 @@ endif::[]
 ifndef::upstream[]
 For more information, see link:{rhoaidocshome}evaluating-rag-systems/setting-up-Ragas-inline-provider[Setting up the Ragas inline provider for development].
 endif::[]
-
-* You have a deployed RAG model that you want to evaluate.
-ifdef::upstream[]
-For more information, see link:{odhdocshome}/working-with-rag/#deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
-endif::[]
-ifndef::upstream[]
-For more information, see link:{rhoaidocshome}{default-format-url}/working_with_rag/deploying-a-rag-stack-in-a-data-science-project_rag#Deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
-endif::[]
-
 * You have access to a workbench or notebook environment where you can run Python code.
 
 .Procedure
-. Initialize the Llama Stack client:
+. From the {productname-short} dashboard, click *Data science projects*.
+. Click the name of the project that contains the workbench.
+. Click the *Workbenches* tab.
+. If the status of the workbench is *Running*, skip to the next step. 
 +
-[source,python]
-----
-from llama_stack_client import LlamaStackClient
+If the status of the workbench is *Stopped*, in the *Status* column for the workbench, click *Start*. 
++
+The *Status* column changes from *Stopped* to *Starting* when the workbench server is starting, and then to *Running* when the workbench has successfully started.
+.  Click the open icon (image:images/open.png[The open icon]) next to the workbench.
++ 
+Your Jupyter environment window opens.
+. On the toolbar, click the *Git Clone* icon and then select *Clone a Repository*.
+. In the *Clone a repo* dialog, enter the following URL `https://github.com/trustyai-explainability/llama-stack-provider-ragas.git`                                                         
+. In the file browser, select the newly-created `/llama-stack-provider-ragas/demos` folder.
++ 
+You see a Jupyter notebook named `basic_demo.ipynb`.
+. Double-click the `basic_demo.ipynb` file to launch the Jupyter notebook.
++
+The Jupyter notebook opens. You see code examples for the following tasks: 
++
+** Run your Llama Stack distribution
+** Setup and Imports 
+** Llama Stack Client Setup
+** Dataset Preparation
+** Dataset Registration
+** Benchmark Registration
+** Evaluation Execution
+** Inline vs Remote Side-by-side
 
-client = LlamaStackClient(base_url="<your_llama_stack_url>")
-----
-
-. Create an evaluation dataset in the required format:
-+
-[source,python]
-----
-evaluation_data = [
-    {
-        "user_input": "What is the capital of France?",
-        "response": "The capital of France is Paris, a major European city.",
-        "retrieved_contexts": [
-            "Paris is the capital and most populous city of France. It is located in northern France."
-        ],
-        "reference": "Paris"
-    },
-    {
-        "user_input": "Who wrote Romeo and Juliet?",
-        "response": "William Shakespeare wrote Romeo and Juliet in the 1590s.",
-        "retrieved_contexts": [
-            "William Shakespeare was an English playwright and poet. Romeo and Juliet is one of his most famous tragedies."
-          ],
-        "reference": "William Shakespeare"
-    },
-    {
-        "user_input": "What is the boiling point of water?",
-        "response": "Water boils at 100 degrees Celsius at sea level.",
-        "retrieved_contexts": [
-            "The boiling point of water is 100°C (212°F) at standard atmospheric pressure."
-        ],
-        "reference": "100 degrees Celsius"
-    }
-]
-----
-+
-[NOTE]
-====
-The `reference` field is optional but recommended for metrics like `Answer Correctness` and `Answer Similarity`. If you do not have reference answers, you can omit this field and still use metrics like `Faithfulness`, `Answer Relevancy`, `Context Precision`, and `Context Recall`.
-====
-
-. Register your evaluation dataset with Llama Stack:
-+
-[NOTE]
-====
-You must de-register a dataset if one already exists by running the following code:
-`client.datasets.unregister("<my_rag_evaluation>")
-    print(f"Dataset '<my_rag_evaluation>' unregistered successfully")`
-====
-+
-[source,python]
-----
-client.datasets.register(
-    dataset_id="<my_rag_evaluation>",
-    purpose="eval/question-answer",
-    source={"type": "rows", "rows": evaluation_data},
-    metadata={
-        "provider_id": "localfs",
-        "description": "Sample RAG evaluation dataset for Ragas",
-        "size": len(evaluation_data),
-        "format": "Ragas",
-    },
-)
-----
-
-. Register a benchmark that specifies which Ragas metrics to evaluate:
-+
-[source,python]
-----
-client.benchmarks.register(
-    benchmark_id="<Ragas_benchmark_inline/remote>",
-    dataset_id="<my_rag_evaluation>",
-    scoring_functions=[
-        "faithfulness",          # Factual consistency with context
-        "answer_relevancy",      # Relevance to the question
-        "context_precision",     # Precision of retrieval
-        "context_recall",        # Recall of retrieval
-        "answer_correctness",    # Accuracy vs ground truth
-        "answer_similarity"      # Semantic similarity to ground truth
-    ],
-    provider_id="<trustyai_Ragas_inline/remote>",
-        # metadata={
-        #     "provider": "Ragas",
-        #     "version": "1.0",
-        #     "metrics_count": len(Ragas_metrics),
-        # }
-)
-----
-+
-[NOTE]
-====
-You can select a subset of metrics based on your evaluation needs. For example, if you are primarily concerned about hallucination prevention, focus on `faithfulness`. If you want to optimize retrieval, use `context_precision` and `context_recall`.
-====
-
-. Run the evaluation job:
-+
-[source,python]
-----
-job_response = client.eval.run_eval(
-    benchmark_id="<Ragas_benchmark_inline/remote>",
-    benchmark_config={
-        "eval_candidate": {
-            "type": "model",
-            "model": "ollama/granite3.3:2b",
-            "sampling_params": {
-                "temperature": 0.1,
-                "max_tokens": 100
-            }
-        },
-        "scoring_params": {}
-    }
-)
-
-print(f"Evaluation job started: {job_response.job_id}")
-----
-
-. Check the evaluation status:
-+
-[source,python]
-----
-  job_status = client.eval.jobs.status(
-      benchmark_id="<Ragas_benchmark_inline/remote>",
-      job_id=job_response.job_id
-  )
-
-  print(f"Job status: {job_status.status}")
-----
-
-. Retrieve and analyze the results:
-+
-[source,python]
-----
-results = client.eval.jobs.retrieve(
-      benchmark_id="<Ragas_benchmark_inline/remote>",
-      job_id=job_response.job_id
-  )
-
-  print(results)
-----
-+
-.Example output
-[source,terminal]
-----
-faithfulness: 0.892
-answer_relevancy: 0.845
-context_precision: 0.778
-context_recall: 0.823
-answer_correctness: 0.867
-answer_similarity: 0.901
-----
-
-.Verification
-. Verify that the evaluation completed successfully:
-+
-[source,python]
-----
-expected_metrics = [
-    "faithfulness",
-    "answer_relevancy",
-    "context_precision",
-    "context_recall",
-    "answer_correctness",
-    "answer_similarity"
-]
-
-for metric in expected_metrics:
-    if metric in results.aggregate_scores:
-        print(f"✓ {metric}: {results.aggregate_scores[metric]:.3f}")
-    else:
-        print(f"✗ {metric}: Not available")
-----
-
-. Verify that scores are within expected ranges:
-+
-All Ragas metrics return scores between 0.0 and 1.0, where higher scores indicate better performance. Use the following guidelines to interpret your results:
-+
-** *Faithfulness > 0.8*: High factual consistency, low risk of hallucination
-** *Answer Relevancy > 0.7*: Answers are relevant to questions
-** *Context Precision > 0.6*: Retrieval is returning relevant documents
-** *Context Recall > 0.6*: Retrieval is finding necessary information
+. In the Jupyter notebook, run the code cells sequentially through the *Evaluation Execution*.
+. Return to the {productname-short} dashboard.
+. Click *Data science pipelines*->*Runs*. You might need to refresh the page to see the new evaluation job running.
+. Wait for the job to show *Successful*. 
+. Return to the workbench and run the *Results Display* cell.
+. Inspect the results displayed.
