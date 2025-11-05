@@ -1,8 +1,8 @@
 :_module-type: ASSEMBLY
 
 ifdef::context[:parent-context: {context}]
-[id="enable-ai-safety-with-guardrails_{context}"]
-= Enabling AI safety with Guardrails
+[id="enabling-ai-safety_{context}"]
+= Enabling AI safety
 
 The TrustyAI Guardrails Orchestrator service is a tool to invoke detections on text generation inputs and outputs, as well as standalone detections.
 
@@ -14,7 +14,7 @@ Deploy a Guardrails Orchestrator instance::
 The guardrails orchestrator is the main networking layer of the guardrails ecosystem, and “orchestrates” the network requests between the user, generative models, and detector servers. 
 
 Configure and use the built-in detectors:: 
-The Guardrails framework provides a set of “built-in” detectors out-of-the-box, that provides a number of simple detection algorithms. You can use the following detector with trustyai_fms:
+The Guardrails framework provides a set of “built-in” detectors out-of-the-box, that provides a number of simple detection algorithms. You can use the following detector with `trustyai_fms` orchestrator server, which is an external provider for Llama Stack that allows you to configure and use the Guardrails Orchestrator and compatible detection models through the Llama Stack API.:
 +
 * *Regex Detectors*: Pattern-based content detection for structured rule enforcement. These are the built-in detectors in the Guardrails Orchestrator service. Learn more about the link:https://github.com/trustyai-explainability/guardrails-regex-detector[guardrails-regex-detector].
 
@@ -34,27 +34,23 @@ Enable a safer LLM by filtering hateful, profane, or toxic inputs.
 *Enable the OpenTelemetry exporter for metrics and tracing* 
 Provide observability for the security and governance mechanisms of AI applications.
 
-== Deploying and Configuring Guardrails components
+== Deploying and configuring Guardrails components
 Set up the Orchestrator, Detectors, and Gateway. 
 
 include::modules/deploying-the-guardrails-orchestrator-service.adoc[leveloffset=+1]
 include::modules/auto-configuring-guardrails.adoc[leveloffset=+1]
 include::modules/guardrails-orchestrator-parameters.adoc[leveloffset=+1]
 include::modules/guardrails-detectors.adoc[leveloffset=+1]
-include::modules/configuring-the-built-in-detector-and-guardrails-gateway.adoc[leveloffset=+2]
-include::modules/configuring-the-guardrails-detector-hugging-face-serving-runtime.adoc[leveloffset=+2]
-include::modules/using-hugging-face-models-with-guardrails-orchestrator.adoc[leveloffset=+2]
+include::modules/configuring-the-built-in-detector-and-guardrails-gateway.adoc[leveloffset=+1]
+[role='_additional-resources']
+.Additional resources
+ifndef::upstream[]
+* To learn how to use the built-in detectors with `trustyai_fms` orchestrator server external provider for Llama Stack to detect PII, see link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models#detecting-pii-by-using-guardrails-with-llama-stack_[Adding a model server to your data science project].
+endif::[]
+
+include::modules/configuring-the-guardrails-detector-hugging-face-serving-runtime.adoc[leveloffset=+1]
+include::modules/using-hugging-face-models-with-guardrails-orchestrator.adoc[leveloffset=+1]
 include::modules/configuring-the-opentelemetry-exporter.adoc[leveloffset=+1]
-
-== Using Guardrails for AI Safety
-Use the Guardrails tools to ensure the safety and security of your generative AI applications in production.
-
-include::modules/guardrails-orchestrator-hap-scenario.adoc[leveloffset=+1]
-include::modules/using-a-hugging-face-prompt-injection-detector-with-the-guardrails-orchestrator.adoc[leveloffset=+1]
-include::modules/filtering-flagged-content-by-sending-requests-to-the-regex-detector.adoc[leveloffset=+2]
-include::modules/enforcing-configured-safety-pipelines-for-llm-inference-using-guardrails-gateway.adoc[leveloffset=+1]
-
-
 
 
 ifdef::parent-context[:context: {parent-context}]
