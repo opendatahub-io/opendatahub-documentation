@@ -114,10 +114,8 @@ The Llama Stack distribution service account does not have privileges to create 
 [source,terminal]
 ----
 $ curl -k -H "Authorization: Bearer $KUBEFLOW_PIPELINES_TOKEN" \
- https://$KFP_ENDPOINT/apis/v1beta1/healthz
+ https://$KUBEFLOW_PIPELINES_ENDPOINT/apis/v1beta1/healthz
 ----
-+
-You should see a successful health check response confirming that the endpoint is accessible with your token.
 
 . Create a secret for storing your inference model information:
 +
@@ -139,12 +137,17 @@ $ oc create secret generic llama-stack-inference-model-secret \
 +
 [source,terminal]
 ----
-$ export KFP_ENDPOINT=$(oc get route -n <project_name> -l app=ds-pipeline-dspa -o jsonpath='{.items[0].spec.host}')
-
-$ echo "Kubeflow Pipelines endpoint: https://$KFP_ENDPOINT"
+$ export KUBEFLOW_PIPELINES_ENDPOINT=$(oc get route -n <project_name> -l app=ds-pipeline-dspa -o jsonpath='{.items[0].spec.host}')
+----
++
+Run the following command to verify that you can see the endpoint:
++
+[source,terminal]
+----
+$ oc get routes -A | grep -i pipeline
 ----
 
-. Create a ConfigMap for the Ragas remote provider configuration. For example, create a kubeflow-ragas-config.yaml file as follows:
+. Create a ConfigMap for the Ragas remote provider configuration. For example, create a `kubeflow-ragas-config.yaml` file as follows:
 +
 .Example kubeflow-ragas-config.yaml
 [source,yaml]
@@ -187,7 +190,7 @@ $ oc apply -f kubeflow-ragas-config.yaml
 apiVersion: llamastack.io/v1alpha1
 kind: LlamaStackDistribution
 metadata:
-  name: llama-stack-ragas-remote
+  name: llama-stack-pod
 spec:
   replicas: 1
   server:
@@ -317,80 +320,6 @@ $ oc get pods -w
 ----
 +
 Wait until the `llama-stack-ragas-remote` pod status shows `Running`.
-
-.Verification
-. Verify that the Llama Stack server is running:
-+
-[source,terminal]
-----
-$ oc get pods -l app=llama-stack-ragas-remote
-----
-+
-You should see output similar to the following:
-+
-[source,terminal]
-----
-NAME                                       READY   STATUS    RESTARTS   AGE
-llama-stack-ragas-remote-7b8d9c5f-xyz12    1/1     Running   0          2m
-----
-
-. Verify that the remote provider can create pipeline runs:
-+
-[source,python]
-----
-from llama_stack_client import LlamaStackClient
-
-client = LlamaStackClient(base_url="https://__<llama-stack-route-url>__")
-
-# List available eval providers
-providers = client.providers.list()
-print("Available eval providers:")
-for provider in providers.eval:
-    print(f"  - {provider.provider_id} ({provider.provider_type})")
-
-# Expected output should include:
-#   - trustyai_ragas_remote (remote::trustyai_ragas)
-----
-
-. Run a test evaluation to verify the pipeline integration:
-+
-[source,python]
-----
-from datasets import Dataset
-
-# Create a small test dataset
-test_data = {
-    "question": ["What is 2+2?"],
-    "answer": ["The sum of 2 and 2 is 4."],
-    "contexts": [["Basic arithmetic: 2 + 2 = 4"]],
-    "ground_truth": ["4"]
-}
-
-dataset = Dataset.from_dict(test_data)
-
-# Register and run evaluation
-client.datasets.register(
-    dataset_id="ragas-test",
-    dataset_def=dataset,
-    provider_id="huggingface"
-)
-
-response = client.eval.evaluate_rows(
-    task_id="ragas-test-benchmark",
-    input_rows=dataset,
-    scoring_functions=["faithfulness", "answer_relevancy"]
-)
-
-print(f"Pipeline run created: {response.job_id}")
-----
-
-. Check that the pipeline run appears in the {productname-short} dashboard:
-+
-.. Navigate to *Data Science Projects* in the {productname-short} dashboard.
-.. Click your project name.
-.. Click the *Pipelines* tab.
-.. Click *Runs*.
-.. Verify that a new pipeline run for the Ragas evaluation appears in the list.
 
 .Next steps
 ifdef::upstream[]
