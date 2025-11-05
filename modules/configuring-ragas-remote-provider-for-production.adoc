@@ -133,19 +133,14 @@ $ oc create secret generic llama-stack-inference-model-secret \
   --from-literal VLLM_API_TOKEN="$VLLM_API_TOKEN"
 ----
 
-. Get the Kubeflow Pipelines endpoint URL. This URL is used in a later step for creating a ConfigMap for the Ragas remote provider configuration:
-+
-[source,terminal]
-----
-$ export KUBEFLOW_PIPELINES_ENDPOINT=$(oc get route -n <project_name> -l app=ds-pipeline-dspa -o jsonpath='{.items[0].spec.host}')
-----
-+
-Run the following command to verify that you can see the endpoint:
+. Get the Kubeflow Pipelines endpoint by running the following command and searching for "pipeline" in the routes. This is used in a later step for creating a ConfigMap for the Ragas remote provider configuration:
 +
 [source,terminal]
 ----
 $ oc get routes -A | grep -i pipeline
 ----
++
+This output should show that the namespace, which is the namespace you specified for `KUBEFLOW_NAMESPACE`, has the pipeline server endpoint and the associated metadata one. The one to use is `ds-pipeline-dspa`.
 
 . Create a ConfigMap for the Ragas remote provider configuration. For example, create a `kubeflow-ragas-config.yaml` file as follows:
 +
