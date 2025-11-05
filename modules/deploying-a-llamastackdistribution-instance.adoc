@@ -65,6 +65,24 @@ oc create secret generic llama-stack-inference-model-secret \
 
 . Choose **one** of the following deployment examples:
 
+[IMPORTANT]
+====
+To enable Llama Stack in a disconnected environment, you need add the following parameters to your `LlamaStackDistribution` custom resource. 
+[source,yaml]
+----
+- name: SENTENCE_TRANSFORMERS_HOME
+  value: /opt/app-root/src/.cache/huggingface/hub
+- name: HF_HUB_OFFLINE
+  value: "1"
+- name: TRANSFORMERS_OFFLINE
+  value: "1"
+- name: HF_DATASETS_OFFLINE
+  value: "1" 
+----
+
+The built-in llama-stack tools `websearch` and `wolfram_alpha` are not currently available in disconnected. 
+====
+
 == Example A: LlamaStackDistribution with *Inline Milvus*
 
 Use this example for development or small datasets where an embedded, single-node Milvus is sufficient. No `MILVUS_*` connection variables are required.
