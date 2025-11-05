@@ -60,7 +60,7 @@ endif::[]
 These steps are only supported in {productname-short} versions 2.19 and later.
 ====
 
-. In the {productname-short} dashboard, navigate to the project details page and click the *Models* tab.
+. In the {productname-short} dashboard, navigate to the project details page and click the *Deployments* tab.
 . In the *Single-model serving platform* tile, click *Select single-model*.
 . Click the *Deploy model* button.
 +
@@ -180,7 +180,7 @@ INFO     2025-05-15 11:23:52,765 __main__:151 server: Starting up
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://['::', '0.0.0.0']:8321 (Press CTRL+C to quit)
 ----
-* The deployed model displays in the *Models* tab on the Data Science project details page for the project it was deployed under.
+* The deployed model displays in the *Deployments* tab on the Data Science project details page for the project it was deployed under.
 . If you see a `ConvertTritonGPUToLLVM` error in the pod logs when querying the `/v1/chat/completions` API, and the vLLM server restarts or returns a `500 Internal Server` error, apply the following workaround:
 +
 Before deploying the model, remove the `--enable-chunked-prefill` argument from the *Additional serving runtime arguments* field in the deployment dialog.
