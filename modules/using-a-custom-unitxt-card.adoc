@@ -114,3 +114,8 @@ spec:
 ----
 
 . (Optional) You can use other Unitxt loaders (found on the Unitxt website) that contain the `volumes` and `volumeMounts` parameters to mount the dataset from persistent volumes. For example, if you use the `LoadCSV` Unitxt command, mount the files to the container and make the dataset accessible for the evaluation process.
+
+[NOTE]
+--
+The provided scenario example will not work on s390x, as it uses a Parquet-type dataset, which is not supported on this architecture. To run the scenario on s390x, use a task with a non-Parquet dataset.
+--
