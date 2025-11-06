@@ -93,7 +93,12 @@ The command returns results similar to the following example:
 
 .Notes on the results
 
-* The `f1_micro`, `f1_macro`, and `accuracy` scores are 0.56, 0.36, and 0.56. 
-* The full results are stored in the `.status.results` of the `LMEvalJob` object as a JSON document. 
+* The `f1_micro`, `f1_macro`, and `accuracy` scores are 0.56, 0.36, and 0.56.
+* The full results are stored in the `.status.results` of the `LMEvalJob` object as a JSON document.
 * The command above only retrieves the results field of the JSON document.
+
+[NOTE]
+--
+The provided `LMEvalJob` uses a dataset from the `wnli` card, which is in Parquet format and not supported on s390x. To run on s390x, choose a task that uses a non-Parquet dataset.
+--
 
