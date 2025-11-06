@@ -155,7 +155,7 @@ metadata:
 data:
   EMBEDDING_MODEL: "all-MiniLM-L6-v2"
   KUBEFLOW_LLAMA_STACK_URL: "http://$<distribution_name>-service.$<your_namespace>.svc.cluster.local:$<port>"
-  KUBEFLOW_PIPELINES_ENDPOINT: "<https://<kfp_endpoint>"
+  KUBEFLOW_PIPELINES_ENDPOINT: "https://<kfp_endpoint>"
   KUBEFLOW_NAMESPACE: "<project_name>"
   KUBEFLOW_BASE_IMAGE: "quay.io/trustyai/llama-stack-ragas:latest"
   KUBEFLOW_RESULTS_S3_PREFIX: "s3://<bucket_name>/ragas-results"
@@ -314,7 +314,7 @@ $ oc apply -f llama-stack-ragas-remote.yaml
 $ oc get pods -w
 ----
 +
-Wait until the `llama-stack-ragas-remote` pod status shows `Running`.
+Wait until the `llama-stack-pod` pod status shows `Running`.
 
 .Next steps
 ifdef::upstream[]
