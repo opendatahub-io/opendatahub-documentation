@@ -162,13 +162,13 @@ data:
   KUBEFLOW_S3_CREDENTIALS_SECRET_NAME: "<ragas_s3_credentials>"
 ----
 +
-* `EMBEDDING_MODEL`: used by Ragas for semantic similarity calculations.
-* `KUBEFLOW_LLAMA_STACK_URL`: the URL for the Llama Stack server. This must be accessible from the Kubeflow Pipeline pods. The <distribution_name>, <namespace>, and <port> are replaced with the name of the LlamaStack distribution you are creating, the namespace where you are creating it, and the port. These 3 elements are present in the LlamaStack distribution yaml.
-* `KUBEFLOW_PIPELINES_ENDPOINT`: the Kubeflow Pipelines API endpoint URL.
-* `KUBEFLOW_NAMESPACE`: the namespace where pipeline runs are executed.  This should match your current data science project namespace.
-* `KUBEFLOW_BASE_IMAGE`: the container image used for Ragas evaluation pipeline components.  This image contains the Ragas provider package installed via pip.
-* `KUBEFLOW_RESULTS_S3_PREFIX`: the S3 path prefix where evaluation results will be stored.  For example: `s3://my-bucket/ragas-evaluation-results`.
-* `KUBEFLOW_S3_CREDENTIALS_SECRET_NAME`: name of the secret containing S3 credentials.
+* `EMBEDDING_MODEL`: Used by Ragas for semantic similarity calculations.
+* `KUBEFLOW_LLAMA_STACK_URL`: The URL for the Llama Stack server. This must be accessible from the Kubeflow Pipeline pods. The <distribution_name>, <namespace>, and <port> are replaced with the name of the LlamaStack distribution you are creating, the namespace where you are creating it, and the port. These 3 elements are present in the LlamaStack distribution YAML.
+* `KUBEFLOW_PIPELINES_ENDPOINT`: The Kubeflow Pipelines API endpoint URL.
+* `KUBEFLOW_NAMESPACE`: The namespace where pipeline runs are executed. This should match your current data science project namespace.
+* `KUBEFLOW_BASE_IMAGE`: The container image used for Ragas evaluation pipeline components. This image contains the Ragas provider package installed via pip.
+* `KUBEFLOW_RESULTS_S3_PREFIX`: The S3 path prefix where evaluation results are stored. For example: `s3://my-bucket/ragas-evaluation-results`.
+* `KUBEFLOW_S3_CREDENTIALS_SECRET_NAME`: The name of the secret containing S3 credentials.
 
 . Apply the ConfigMap:
 +
