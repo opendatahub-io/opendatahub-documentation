@@ -1,0 +1,57 @@
+:_module-type: CONCEPT
+
+[id='build-a-custom-container-image_{context}']
+= Build a custom container image
+
+To build advanced applications or workflows, or to use as runtime images for Kubeflow Pipelines, build a custom container image based on one of the base images listed in Table 1.
+
+When you use one of the images listed in Table 1 as a base image, both `pip` and `uv` commands are pre-configured to use the {org-name} Python index and system trust store for HTTPS.
+
+When you run a `pip install` command, it installs the package version referenced in the {org-name} Python index, ensuring that you are installing a version of the library that is secure and reliably accessible.
+
+For example, use the following commands to install the model customization libraries:
+
+* Install the data processing library:
++
+[source, bash]
+----
+pip install docling
+----
+* Install the synthetic data generation library:
++
+[source, bash]
+----
+pip install sdg-hub
+----
+* Install the model training library:
++
+[source, bash]
+----
+pip install training-hub
+----
+
+Use following example commands as guidelines for building your custom container image:
+
+[source, bash]
+----
+podman pull <link to registry.redhat>
+
+# Log in via `podman login registry.redhat.io`
+
+FROM <image name>
+
+# Install software
+
+# Install Python, pip, and then the docling library
+RUN pip3 install docling
+
+# Define the default command to run when the container starts
+CMD ["docling", "--help"]
+
+#Build the custom image
+podman build <new_image_name>
+----
+
+*Additional resources*
+
+* link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/managing_openshift_ai/creating-custom-workbench-images[Creating custom workbench images]

@@ -1,0 +1,29 @@
+:_module-type: CONCEPT
+
+[id='overview-of-the-model-customization-workflow_{context}']
+= Overview of the model customization workflow
+ 
+{org-name} AI model customization empowers you to tailor artificial intelligence models to your unique data and operational requirements. The model customization process involves the training or fine-tuning of pre-existing models with proprietary datasets, followed by their deployment with specific configurations on the {productname-long} platform. This comprehensive approach is facilitated by a powerful suite of integrated toolkits that streamline and accelerate the development of generative AI applications.
+
+The workflow for customizing models includes the following tasks:
+
+Set up your working environment:: Ensure reliable and secure access to supported libraries with the {org-name} Hosted Python index. For details, see xref:set-up-your-working-environment[Set up your working environment].
+
+Prepare your data for AI consumption:: To prepare your data, use Docling, a powerful Python library to transform unstructured data (such as text documents, images, and audio files) into structured formats that models can consume. 
+//For details, see xref:prepare-your-data-for-ai-consumption[Prepare your data for AI consumption].
++
+To automate data processing tasks, you can build Kubeflow Pipelines (KFP), see Automate data processing steps by building AI pipelines 
+
+Generate synthetic data to augment real data:: Create synthetic data based on the statistical properties and characteristics of real data.
++
+Synthetic data generation (SDG) is particularly valuable in scenarios where real-world data is scarce, sensitive, or challenging to acquire, enabling you to create artificial datasets that mirror the statistical properties of genuine data. SDG expands training possibilities and enhances model robustness without compromising data privacy or security. For details, see xref:generate-synthetic-data-to-augment-real-data[Generate synthetic data to augment real data].
+
+Train a model by using your prepared data:: After you prepare your data, use the {org-name} 3.0 TrainingHub to simplify and accelerate the process of fine-tuning and customizing a foundation model by using your own data.
++
+You can extend a base notebook to use distributed training across multiple nodes by using the KubeFlow Trainer Operator (KFTO). The KFTO, abstracts the underlying infrastructure complexity of distributed training and fine-tuning of models. The iterative process of fine-tuning significantly reduces the time and resources required compared to training models from scratch.
++
+For details, see xref:train-the-model-by-using-your-prepared-data[Train the model by using your prepared data].
+
+Serve and consume a customized model:: After you customize a model, you can serve your customized models as APIs (Application Programming Interfaces). Serving a model as an API enables seamless integration into existing or newly developed applications.
++
+Learn more about serving and consuming a customized model link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.24/html/deploying_models/deploying_models_on_the_single_model_serving_platform[Chapter 2: Deploying a model on the Single Model Serving platform] in the Deploying models guide.

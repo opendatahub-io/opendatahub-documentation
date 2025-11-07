@@ -1,0 +1,45 @@
+:_module-type: PROCEDURE
+
+[id='explore-the-sdg-hub-examples_{context}']
+=  Explore the SDG Hub examples
+
+To get started with SDG Hub, explore the provided examples.
+
+*Prerequisites*
+
+* Install the Synthetic Data Generation (SDG) Hub library, as described in xref:set-up-your-working-environment[Set up your working environment].
+
+*Procedure*
+
+. To access the SDG Hub examples, clone the `sdg_hub` Git repository:
++
+* To clone the repository from JupyterLab, follow the steps in  xref:clone-an-example-git-repository[Clone an example Git repository].
+* To create a local clone of the repository, run the following command:
++
+[source, bash]
+----
+git clone https://github.com/Red-Hat-AI-Innovation-Team/sdg_hub.git
+----
+
+. Go to the `examples` directory to view the notebooks and YAML files for these use cases:
++
+* *Knowledge tuning* - Generate data to fine-tune a model on enterprise documents so that the resulting trained model can accurately recall relevant content and facts in response to user queries. This example provides a complete walkthrough of data generation and preparation for training.
+
+* *Text analysis* - Generate data for teaching models to extract meaningful insights from text in structured format. Create custom blocks and extend existing flows for new applications.
++
+Each use case directory includes a README file that provides details for each use case — such as instructions, performance notes, and configuration tips.
+
+. When you run the example notebooks, consider the following information:
++
+* *Data generation time and statistics:* The total time to generate data depends on both the maximum concurrency supported by your endpoint and the complexity of the running flow. Longer flows, such as the flows in the Knowledge Generation notebooks, take more time to complete because they produce a large number of summaries and Q&A pairs, each of which undergoes verification within the pipeline.
+
+* *LLM endpoint requirements:* For running flows in the Knowledge Generation notebooks, {org-name} recommends that you set the following values:
+
+** Set `NUMBER_OF_SUMMARIES` to a minimum of 10.
+** To achieve reasonable data generation times and avoid timeouts, use an endpoint that supports a maximum concurrency of at least 50.
+** Extend LiteLLM’s request timeout by setting the environment variable `LITELLM_REQUEST_TIMEOUT`.
+
+*Additional resources*
+
+* Upstream documentation: link:https://github.com/instructlab/sdg/tree/main/docs[https://github.com/instructlab/sdg/tree/main/docs]
+* GitHub repository: link:https://github.com/instructlab/sdg[https://github.com/instructlab/sdg]

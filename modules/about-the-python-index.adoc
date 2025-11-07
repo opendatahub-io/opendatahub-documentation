@@ -1,0 +1,34 @@
+:_module-type: CONCEPT
+
+[id='about-the-python-index_{context}']
+= About the {org-name} Python Index
+ 
+{org-name} AI includes a maintained Python package index that provides secure and reliable access to supported libraries, with full support for disconnected environments. For details about {org-name} support for the Python package index, see Support philosophy: A secure platform.
+
+To ensure reliable and secure access to supported libraries, start your model customization workflow by setting up a workbench image that is based on a {org-name} base image that is configured to use the {org-name} Python index.
+
+.Images configured to use the {org-name} Python index
+|===
+|Accelerator UBi9 | List of packages | Base image name and tag for podman pull command
+
+|CPU
+|link:https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cpu-ubi9/simple/[https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cpu-ubi9/simple/]
+|`podman pull quay.io/aipcc/base-images/cpu:3.0-1761282924`
+
+|CUDA
+|link:https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cuda-ubi9/simple/[https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cuda-ubi9/simple/]
+|`podman pull quay.io/aipcc/base-images/cuda:3.0-1761250491`
+
+|ROC
+|link:https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/rocm-ubi9/simple/[https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/rocm-ubi9/simple/]
+|`podman pull quay.io/aipcc/base-images/rocm:3.0-1761249688`
+|===
+
+*Notes:*
+
+* NVIDIA CUDA, AMD GPU, and AMD ROCm repositories are configured, but disabled.
+* The images listed in Table 1 have RHEL RPM repositories enabled. A RHEL RPM is a package file used for the {org-name} Package Manager system on {org-name} Enterprise Linux (RHEL). An RPM file contains all the necessary components for an application, such as executable files, configuration files, and documentation. It simplifies the process of distributing, installing, and managing software by bundling everything into a single, standalone file.
++
+You can install additional RPMs, but you need a {org-name} subscription and you must run your container image in root mode (for example, `podman run --user 0`).
++
+For more information about {org-name} Package Manager, see link:https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/packaging_and_distributing_software/introduction-to-rpm_packaging-and-distributing-software[Introduction to RPM].
