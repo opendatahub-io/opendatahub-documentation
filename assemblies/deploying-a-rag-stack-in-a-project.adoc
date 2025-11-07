@@ -14,12 +14,17 @@ To deploy the RAG stack in a project, complete the following tasks:
 * Enable GPU support on the {openshift-platform} cluster. This task includes installing the required NVIDIA Operators.
 * Deploy an inference model, for example, the llama-3.2-3b-instruct model. This task includes creating a storage connection and configuring GPU allocation.
 * Create a `LlamaStackDistribution` instance to enable RAG functionality. This action deploys LlamaStack alongside a Milvus vector store and connects both components to the inference model.
+<<<<<<< HEAD:assemblies/deploying-a-rag-stack-in-a-project.adoc
 * Ingest domain data into Milvus by running Docling in an AI pipeline or Jupyter notebook. This process keeps the embeddings synchronized with the source data.
+=======
+* Ingest domain data into a vector database by running Docling in a data science pipeline or Jupyter notebook. This process keeps the embeddings synchronized with the source data.
+>>>>>>> 2657399 (RHAI-ENG-1550 - FAISS vector store integration docs):assemblies/deploying-a-rag-stack-in-a-data-science-project.adoc
 * Expose and secure the model endpoints.
 
 include::modules/overview-of-rag.adoc[leveloffset=+1]
 include::modules/overview-of-vector-databases.adoc[leveloffset=+1]
-include::modules/overview-of-milvus-vector-databases.adoc[leveloffset=+1]
+include::modules/overview-of-milvus-vector-databases.adoc[leveloffset=+2]
+include::modules/overview-of-faiss-vector-databases.adoc[leveloffset=+2]
 include::modules/deploying-a-llama-model-with-kserve.adoc[leveloffset=+1]
 include::modules/testing-your-vllm-model-endpoints.adoc[leveloffset=+1]
 include::modules/deploying-a-remote-milvus-vector-database.adoc[leveloffset=+1]

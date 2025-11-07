@@ -1,9 +1,8 @@
 :_module-type: PROCEDURE
-
 [id="querying-ingested-content-in-a-llama-model_{context}"]
 = Querying ingested content in a Llama model
 
-[role='_abstract']
+[role="_abstract"]
 You can use the LlamaStack SDK in your Jupyter notebook to query ingested content by running retrieval-augmented generation (RAG) queries on raw text or HTML sources stored in your vector database. When you query the ingested content, you can perform one-off lookups or start multi-turn conversational flows without setting up a separate retrieval service.
 
 .Prerequisites
@@ -15,9 +14,9 @@ ifdef::upstream[]
 * You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
 endif::[]
 * If you are using GPU acceleration, you have at least one NVIDIA GPU available.
-* You have logged in to {openshift-platform} web console.
+* You have logged in to the {openshift-platform} web console.
 * You have activated the Llama Stack Operator in {productname-short}.
-* You have deployed an inference model, for example, the llama-3.2-3b-instruct model. 
+* You have deployed an inference model, for example, the *llama-3.2-3b-instruct* model. 
 * You have configured a Llama Stack deployment by creating a `LlamaStackDistribution` instance to enable RAG functionality.
 * You have created a workbench within a project.
 * You have opened a Jupyter notebook and it is running in your workbench environment.
@@ -26,12 +25,12 @@ endif::[]
 
 [NOTE]
 ====
-This procedure does not require any specific type of content. It only requires that you have already ingested some text, HTML, or document data into your vector database, and that this content is available for retrieval. If you have previously ingested content, that content will be available to query. If you have not ingested any content yet, the queries in this procedure will return empty results or errors.
+This procedure does not require any specific type of content. It only requires that you have already ingested some text, HTML, or document data into your vector database, and that this content is available for retrieval. If you have not ingested any content yet, the queries in this procedure return empty results or errors.
 ====
 
 .Procedure
 
-. In a new notebook cell, install the `llama_stack` client package:
+. In a new notebook cell, install the `llama_stack_client` package:
 +
 [source,python]
 ----
@@ -45,11 +44,11 @@ This procedure does not require any specific type of content. It only requires t
 from llama_stack_client import Agent, AgentEventLogger, LlamaStackClient
 ----
 
-. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a `LlamaStackClient` instance. For example: 
+. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a `LlamaStackClient` instance. For example:
 +
 [source,python]
 ----
-client = LlamaStackClient(base_url="http://lsd-llama-milvus-service:8321/") 
+client = LlamaStackClient(base_url="http://lsd-llama-milvus-service:8321/")
 ----
 
 . In a new notebook cell, list the available models:
@@ -120,8 +119,24 @@ print(f"Registered remote Milvus DB: {vector_db_id}")
 [NOTE]
 ====
 * Ensure your `LlamaStackDistribution` sets `MILVUS_ENDPOINT` (gRPC `:19530`) and `MILVUS_TOKEN`.
-* Aside from the `provide_id`, querying APIs are identical for inline and remote Milvus.
+* Aside from the `provider_id`, querying APIs are identical for inline and remote Milvus.
 ====
+====
+
+.Option 3: Inline FAISS 
+====
+[source,python]
+----
+vector_db_id = "my_faiss_db"
+
+vector_store = client.vector_stores.create(
+    name=vector_db_id,
+    embedding_model=embedding_model_id,
+    embedding_dimension=embedding_dimension,
+    provider_id="faiss",   # inline FAISS provider
+)
+print(f"Registered inline FAISS DB: {vector_db_id}")
+----
 ====
 
 . If you already have a vector database, set its identifier:
@@ -133,7 +148,7 @@ print(f"Registered remote Milvus DB: {vector_db_id}")
 # vector_db_id = "<your existing vector database ID>"
 ----
 
-. In a new notebook cell, query the ingested content using the low-level RAG tool:
+. In a new notebook cell, query the ingested content by using the low-level RAG tool:
 +
 [source,python]
 ----

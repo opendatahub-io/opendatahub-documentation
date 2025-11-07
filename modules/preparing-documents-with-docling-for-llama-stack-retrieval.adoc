@@ -1,5 +1,4 @@
 :_module-type: PROCEDURE
-
 [id="preparing-documents-with-docling-for-llama-stack-retrieval_{context}"]
 = Preparing documents with Docling for Llama Stack retrieval
 
@@ -31,10 +30,16 @@ ifndef::upstream[]
 * You have installed the `llama_stack_client` version 0.2.22 or later in your workbench environment. 
 * You have installed local object storage buckets and created connections, as described in link:{rhoaidocshome}{default-format-url}/working_on_projects/using-connections_projects#adding-a-connection-to-your-project_projects[Adding a connection to your project].
 endif::[]
+<<<<<<< HEAD
 * You have compiled to YAML a pipeline that includes a Docling transform, either one of the RAG demo samples or your own custom pipeline.
 //* You have PDF documents ready for ingestion and know their storage location.
 * Your project quota allows between 500 millicores (0.5 CPU) and 4 CPU cores for the pipeline run.
 * Your project quota allows from 2 GiB up to 6 GiB of RAM for the pipeline run.
+=======
+* You have compiled to YAML a data science pipeline that includes a Docling transform, either one of the RAG demo samples or your own custom pipeline.
+* Your data science project quota allows between 500 millicores (0.5 CPU) and 4 CPU cores for the pipeline run.
+* Your data science project quota allows from 2 GiB up to 6 GiB of RAM for the pipeline run.
+>>>>>>> 2657399 (RHAI-ENG-1550 - FAISS vector store integration docs)
 * If you are using GPU acceleration, you have at least one NVIDIA GPU available.
 
 .Procedure
@@ -45,14 +50,14 @@ endif::[]
 %pip install llama_stack_client
 ----
 
-. In a new notebook cell, import Agent, AgentEventLogger, and LlamaStackClient:
+. In a new notebook cell, import `Agent`, `AgentEventLogger`, and `LlamaStackClient`:
 +
 [source,python]
 ----
 from llama_stack_client import Agent, AgentEventLogger, LlamaStackClient
 ----
 
-. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a LlamaStackClient instance:
+. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a `LlamaStackClient` instance:
 +
 [source,python]
 ----
@@ -116,10 +121,26 @@ print(f"Registered remote Milvus DB: {vector_db_id}")
 * Aside from the `provider_id`, ingestion and query APIs are identical between inline and remote Milvus.
 ====
 ====
-+
+
+.Option 3: Inline FAISS (SQLite backend)
+====
+[source,python]
+----
+vector_db_id = "my_faiss_db"
+
+vector_store = client.vector_stores.create(
+    name=vector_db_id,
+    embedding_model=embedding_model_id,
+    embedding_dimension=embedding_dimension,
+    provider_id="faiss",   # inline FAISS provider
+)
+print(f"Registered inline FAISS DB: {vector_db_id}")
+----
+
 [IMPORTANT]
 ====
 If you are using the sample Docling pipeline from the RAG demo repository, the pipeline registers the database automatically and you can skip this step. However, if you are using your own pipeline, you must register the database yourself.
+====
 ====
 
 ifndef::upstream[]
@@ -157,7 +178,7 @@ endif::[]
 
 .Verification
 
-. In your Jupyter notebook, query the LLM with a question that relates to the ingested content. For example:   
+. In your Jupyter notebook, query the LLM with a question that relates to the ingested content. For example:
 +
 [source,python]
 ----
@@ -201,4 +222,3 @@ query_result = client.vector_io.query(
 )
 print(query_result)
 ----
-
