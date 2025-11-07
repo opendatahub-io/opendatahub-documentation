@@ -85,34 +85,28 @@ metadata:
   name: llama-stack-ragas-inline
   namespace: <project_name>
 spec:
-  imageName: quay.io/trustyai/llama-stack-ragas:latest
-  providers:
-    inference:
-      - provider_id: vllm-inference
-        provider_type: remote::vllm
-        config:
-          url: ${env.VLLM_URL}
-          api_token: ${env.VLLM_API_TOKEN}
-    eval:
-      - provider_id: trustyai_ragas_inline
-        provider_type: inline::trustyai_ragas
-        module: llama_stack_provider_ragas.inline
-        config:
-          embedding_model: ${env.EMBEDDING_MODEL}
-  envFrom:
-    - secretRef:
-        name: llama-stack-inference-model-secret
-    - configMapRef:
-        name: ragas-inline-config
+  replicas: 1
+  server:
+    containerSpec:
+      env:
+# ...
+      - name: VLLM_URL
+        value: <model_url>
+      - name: VLLM_API_TOKEN
+        value: <model_api_token (if necessary)>
+      - name: INFERENCE_MODEL
+        value: <model_name>
+      - name: MILVUS_DB_PATH
+        value: ~/.llama/milvus.db
+      - name: VLLM_TLS_VERIFY
+        value: "false"
+      - name: FMS_ORCHESTRATOR_URL
+        value: http://localhost:123
+      - name: EMBEDDING_MODEL
+        value: granite-embedding-125m
+# ...
 ----
 +
-* `imageName`: The container image that includes the Ragas provider.
-* `eval`: The eval provider configuration specifies the Ragas inline provider and its embedding model.
-+
-[IMPORTANT]
-====
-The inline provider runs Ragas evaluation in the same process as the Llama Stack server. This mode is suitable for development and testing, but for production deployments with large-scale evaluations, {org-name} recommends using the remote provider.
-====
 
 . Deploy the Llama Stack distribution:
 +
@@ -130,58 +124,8 @@ $ oc get pods -w
 +
 Wait until the `llama-stack-ragas-inline` pod status shows `Running`.
 
-.Verification
-. Verify that the Llama Stack server is running:
-+
-[source,subs="+quotes"]
-----
-$ oc get pods -l app=llama-stack-ragas-inline
-----
-+
-You should see output similar to the following:
-+
-[source,subs="+quotes"]
-----
-NAME                                      READY   STATUS    RESTARTS   AGE
-llama-stack-ragas-inline-7b8d9c5f-xyz12   1/1     Running   0          2m
-----
-
-. Check the Llama Stack logs to confirm the RAGAS provider is loaded:
-+
-[source,subs="+quotes"]
-----
-$ oc logs -l app=llama-stack-ragas-inline | grep -i ragas
-----
-+
-You should see log messages indicating that the RAGAS inline provider is initialized.
-
-. Test the evaluation API endpoint:
-+
-[source,python]
-----
-from llama_stack_client import LlamaStackClient
-
-# Get the Llama Stack route URL
-# oc get route llama-stack-ragas-inline -o jsonpath='{.spec.host}'
-
-client = LlamaStackClient(base_url="https://<llama-stack-route-url>")
-
-# List available providers
-providers = client.providers.list()
-print("Available eval providers:")
-for provider in providers.eval:
-    print(f"  - {provider.provider_id} ({provider.provider_type})")
-
-# Expected output should include:
-#   - trustyai_ragas_inline (inline::trustyai_ragas)
-----
-
 .Next steps
 ifdef::upstream[]
-* link:{odhdocshome}/working-with-rag/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with Ragas metrics]
+* link:{odhdocshome}/working-with-rag/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with Ragas]
 * link:{odhdocshome}/working-with-rag/#configuring-ragas-remote-provider-for-production_rag[Configuring the Ragas remote provider for production]
-endif::[]
-ifndef::upstream[]
-* link:{rhoaidocshome}{default-format-url}/working_with_rag/evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with Ragas metrics]
-* link:{rhoaidocshome}{default-format-url}/working_with_rag/configuring-ragas-remote-provider-for-production_rag[Configuring the Ragas remote provider for production]
 endif::[]

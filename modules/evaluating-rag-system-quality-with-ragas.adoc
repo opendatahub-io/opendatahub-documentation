@@ -4,14 +4,22 @@
 = Evaluating RAG system quality with Ragas metrics
 
 [role='_abstract']
-You can use Ragas (Retrieval-Augmented Generation Assessment) to measure the quality and reliability of your RAG system by evaluating retrieval quality, answer relevance, and factual consistency. Ragas provides objective metrics that help you identify areas for improvement in your RAG pipeline. Run the following Ragas evaluation demo in a Jupyter notebook.
+Evaluate your RAG system quality by testing your setup, using the example provided in the link:https://github.com/trustyai-explainability/llama-stack-provider-ragas/blob/main/demos/basic_demo.ipynb[demo notebok], which outlines the basic steps for evaluating your RAG system with Ragas using the python client. You can execute the demo notebook steps from a Jupyter environment. 
+
+Alternatively, you can submit an evaluation by directly using the `http` methods of the link:{odhdocshome}/working_with_llama_stack/overview-of-llama-stack_rag#the_llamastackdistribution_custom_resource_api_providers[llama stack api]. 
+// (link to the llama stack 0.3.0 docs -- unknown at this time Sara to check with Kelly and Chris on this. Potentially this link? https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/working_with_llama_stack/overview-of-llama-stack_rag#the_llamastackdistribution_custom_resource_api_providers).
+
+[IMPORTANT]
+====
+The Llama Stack pod must be accessible from the Jupyter environment in the cluster, which may not be the case by default.
+====
 
 .Prerequisites
 * You have logged in to {productname-long}.
 * You have created a data science project.
-* You have created a data science pipeline.
+* You have created a data science pipeline server.
 * You have created a secret for your AWS credentials in your project namespace.
-* You have deployed a Llama Stack distribution with the Ragas evaluation provider enabled, either Inline or Remote provider.
+* You have deployed a Llama Stack distribution with the Ragas evaluation provider enabled (Inline or Remote).
 ifdef::upstream[]
 For more information, see link:{odhdocshome}/evaluating-rag-systems/configuring-Ragas-remote-provider-for-production[Configuring the Ragas remote provider for production].
 endif::[]

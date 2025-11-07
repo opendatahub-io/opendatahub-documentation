@@ -9,7 +9,7 @@ You can configure the Ragas remote provider to run evaluations as distributed jo
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have installed the {productname-short} Operator.
-* You have a DataScienceCluster custom resource in your environment; in the `spec.components` section the `llamastack` component is set to `enabled/true`.
+* You have a `DataScienceCluster` custom resource in your environment; in the `spec.components` section the `llamastackoperator.managementState` is enabled with a value of `Managed`.
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
 ** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
@@ -157,7 +157,7 @@ data:
   KUBEFLOW_LLAMA_STACK_URL: "http://$<distribution_name>-service.$<your_namespace>.svc.cluster.local:$<port>"
   KUBEFLOW_PIPELINES_ENDPOINT: "https://<kfp_endpoint>"
   KUBEFLOW_NAMESPACE: "<project_name>"
-  KUBEFLOW_BASE_IMAGE: "quay.io/trustyai/llama-stack-ragas:latest"
+  KUBEFLOW_BASE_IMAGE: "quay.io/rhoai/odh-trustyai-ragas-lls-provider-dsp-rhel9:rhoai-3.0"
   KUBEFLOW_RESULTS_S3_PREFIX: "s3://<bucket_name>/ragas-results"
   KUBEFLOW_S3_CREDENTIALS_SECRET_NAME: "<ragas_s3_credentials>"
 ----
