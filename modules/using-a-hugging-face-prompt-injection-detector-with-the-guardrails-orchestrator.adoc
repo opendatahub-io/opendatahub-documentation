@@ -399,6 +399,20 @@ curl -s -X POST \
 .. Carry out content filtering for a text generation LLM at the input lvel, output level, or both.
 .. Perform standalone detections with the Orchestrator API.
 
+[NOTE]
+--
+The following images are not supported on `s390x`:
+
+* `quay.io/rgeada/llm_downloader:latest`
+* `quay.io/trustyai/modelmesh-minio-examples:latest`
+* `quay.io/trustyai/guardrails-detector-huggingface-runtime:v0.2.0`
+
+As a workaround:
+
+* HAP and Prompt Injection models can be downloaded from Hugging Face, stored in S3-compatible storage, and deployed via the {productname-short} Dashboard.
+* A compatible image for Hugging Face `ServingRuntime` is available in the {productname-short} Dashboard under Serving Runtime Templates.
+--
+
 
 
 .Scenario 2: Using a Prompt Injection detector to perform standalone detections
