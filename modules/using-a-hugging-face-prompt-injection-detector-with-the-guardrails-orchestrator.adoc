@@ -87,134 +87,6 @@ roleRef:
 oc apply -f service_account.yaml
 ----
 
-. Create `detector_model_storage.yaml`:
-+
-[source,yaml]
-----
-apiVersion: v1
-kind: Service
-metadata:
-  name: minio-storage-guardrail-detectors
-spec:
-  ports:
-    - name: minio-client-port
-      port: 9000
-      protocol: TCP
-      targetPort: 9000
-  selector:
-    app: minio-storage-guardrail-detectors
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: minio-storage-guardrail-detectors-claim
-spec:
-  accessModes:
-    - ReadWriteOnce
-  volumeMode: Filesystem
-  # storageClassName: gp3-csi
-  resources:
-    requests:
-      storage: 10Gi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: minio-storage-guardrail-detectors # <--- change this
-labels:
-    app: minio-storage-guardrail-detectors # <--- change this to match label on the pod
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: minio-storage-guardrail-detectors  # <--- change this to match label on the pod
-  template: # => from here down copy and paste the pods metadata: and spec: sections
-    metadata:
-      labels:
-        app: minio-storage-guardrail-detectors
-        maistra.io/expose-route: 'true'
-      name: minio-storage-guardrail-detectors
-    spec:
-      volumes:
-      - name: model-volume
-        persistentVolumeClaim:
-          claimName: minio-storage-guardrail-detectors-claim
-      initContainers:
-        - name: download-model
-          image: quay.io/rgeada/llm_downloader:latest
-          securityContext:
-            fsGroup: 1001
-          command:
-            - bash
-            - -c
-            - |
-              models=(
-                ibm-granite/granite-guardian-hap-38m
-                protectai/deberta-v3-base-prompt-injection-v2
-              )
-              echo "Starting download"
-              mkdir /mnt/models/llms/
-              for model in "${models[@]}"; do
-                echo "Downloading $model"
-                /tmp/venv/bin/huggingface-cli download $model --local-dir /mnt/models/huggingface/$(basename $model)
-              done
-              
-              echo "Done!"
-          resources:
-            limits:
-              memory: "2Gi"
-              cpu: "1"
-          volumeMounts:
-            - mountPath: "/mnt/models/"
-              name: model-volume
-      containers:
-        - args:
-            - server
-            - /models
-          env:
-            - name: MINIO_ACCESS_KEY
-              value:  THEACCESSKEY
-            - name: MINIO_SECRET_KEY
-              value: THESECRETKEY
-          image: quay.io/trustyai/modelmesh-minio-examples:latest
-          name: minio
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-            seccompProfile:
-              type: RuntimeDefault
-          volumeMounts:
-            - mountPath: "/models/"
-              name: model-volume
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: aws-connection-minio-data-connection-detector-models
-  labels:
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/managed: 'true'
-  annotations:
-    opendatahub.io/connection-type: s3
-    openshift.io/display-name: Minio Data Connection - Guardrail Detector Models
-data: # these are just base64 encodings
-  AWS_ACCESS_KEY_ID: <access-key>> #THEACCESSKEY
-  AWS_DEFAULT_REGION: dXMtc291dGg= #us-south
-  AWS_S3_BUCKET: aHVnZ2luZ2ZhY2U= #huggingface
-  AWS_S3_ENDPOINT: aHR0cDovL21pbmlvLXN0b3JhZ2UtZ3VhcmRyYWlsLWRldGVjdG9yczo5MDAw #http://minio-storage-guardrail-detectors:9000
-  AWS_SECRET_ACCESS_KEY: <secret-access-key> #THESECRETKEY
-type: Opaque
-----
-
-. Apply `detector_model_storage.yaml` to download the required detector models from link:https://huggingface.co/models[Hugging Face Model Hub] and place it in a storage location:
-+
-[source,bash]
-----
-oc apply -f detector_model_storage.yaml
-----
-
 . Create `prompt_injection_detector.yaml`:
 +
 [source,yaml]
@@ -224,8 +96,9 @@ kind: ServingRuntime
 metadata:
   name: guardrails-detector-runtime-prompt-injection
   annotations:
-    openshift.io/display-name: Guardrails Detector ServingRuntime for KServe
+    openshift.io/display-name: guardrails-detector-runtime-prompt-injection
     opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
+    opendatahub.io/template-name: guardrails-detector-huggingface-runtime
   labels:
     opendatahub.io/dashboard: 'true'
 spec:
@@ -235,10 +108,10 @@ spec:
   multiModel: false
   supportedModelFormats:
     - autoSelect: true
-      name: guardrails-detector-huggingface
+      name: guardrails-detector-hf-runtime
   containers:
     - name: kserve-container
-      image: quay.io/trustyai/guardrails-detector-huggingface-runtime:v0.2.0
+      image: registry.redhat.io/rhoai/odh-guardrails-detector-huggingface-runtime-rhel9:v2.25
       command:
         - uvicorn
         - app:app
@@ -278,12 +151,10 @@ spec:
     minReplicas: 1
     model:
       modelFormat:
-        name: guardrails-detector-huggingface
+        name: guardrails-detector-hf-runtime
       name: ''
       runtime: guardrails-detector-runtime-prompt-injection
-      storage:
-        key: aws-connection-minio-data-connection-detector-models
-        path: deberta-v3-base-prompt-injection-v2
+      storageUri: 'oci://quay.io/trustyai_testing/detectors/deberta-v3-base-prompt-injection-v2@sha256:8737d6c7c09edf4c16dc87426624fd8ed7d118a12527a36b670be60f089da215'
       resources:
         limits:
           cpu: '1'
@@ -310,12 +181,109 @@ spec:
 ----
 oc apply -f prompt_injection_detector.yaml
 ----
+
+. Create `hap_detector.yaml`:
++
+[source,yaml]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  name: guardrails-detector-runtime-hap
+  annotations:
+    openshift.io/display-name: guardrails-detector-runtime-hap
+    opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
+    opendatahub.io/template-name: guardrails-detector-huggingface-runtime
+  labels:
+    opendatahub.io/dashboard: 'true'
+
+spec:
+  annotations:
+    prometheus.io/port: '8080'
+    prometheus.io/path: '/metrics'
+  multiModel: false
+  supportedModelFormats:
+    - autoSelect: true
+      name: guardrails-detector-hf-runtime
+  containers:
+    - name: kserve-container
+      image: registry.redhat.io/rhoai/odh-guardrails-detector-huggingface-runtime-rhel9:v2.25
+      command:
+        - uvicorn
+        - app:app
+      args:
+        - "--workers"
+        - "4"
+        - "--host"
+        - "0.0.0.0"
+        - "--port"
+        - "8000"
+        - "--log-config"
+        - "/common/log_conf.yaml"
+      env:
+        - name: MODEL_DIR
+          value: /mnt/models
+        - name: HF_HOME
+          value: /tmp/hf_home
+      ports:
+        - containerPort: 8000
+          protocol: TCP
+
+---
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: hap-detector
+  labels:
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/display-name: hap-detector
+    serving.knative.openshift.io/enablePassthrough: 'true'
+    sidecar.istio.io/inject: 'true'
+    sidecar.istio.io/rewriteAppHTTPProbers: 'true'
+    serving.kserve.io/deploymentMode: RawDeployment
+
+spec:
+  predictor:
+    maxReplicas: 1
+    minReplicas: 1
+    model:
+      modelFormat:
+        name: guardrails-detector-hf-runtime
+      name: ''
+      runtime: guardrails-detector-runtime-hap
+      storageUri: 'oci://quay.io/trustyai_testing/detectors/deberta-v3-base-prompt-injection-v2@sha256:8737d6c7c09edf4c16dc87426624fd8ed7d118a12527a36b670be60f089da215'
+    resources:
+      limits:
+        cpu: '1'
+        memory: 2Gi
+        nvidia.com/gpu: '0'
+      requests:
+        cpu: '1'
+        memory: 2Gi
+        nvidia.com/gpu: '0'
+
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: hap-detector-route
+spec:
+  to:
+    kind: Service
+    name: hap-detector-predictor
+----
+
+. Apply `hap_detector.yaml` to configure a serving runtime, inference service, and route for the HAP detector:
++
+[source,bash]
+----
+oc apply -f hap_detector.yaml
+----
 +
 [NOTE]
 --
-* For more details on customizing the serving runtime and the inference service, see the previous section on configuring the Guardrails Detector Hugging Face serving runtime.
-
-* You can configure the HAP detector in a similar way to the Prompt Injection detector. For more details, see the link:https://github.com/trustyai-explainability/trustyai-llm-demo/[TrustyAI LLM demos]. These demos show how to configure serving runtime and inference services for the HAP detector, along with how to deploy a text generation LLM. 
+For more information about configuring the HAP detector and deploying a text generation LLM, see the link:https://github.com/trustyai-explainability/trustyai-llm-demo/[TrustyAI LLM demos].
 --
 
 . Add the detector to the `ConfigMap` in the Guardrails Orchestrator:
