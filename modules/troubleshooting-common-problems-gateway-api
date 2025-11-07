@@ -1,0 +1,328 @@
+:_module-type: REFERENCE
+[id="troubleshooting-common-problems-gateway-api_{context}"]
+= Troubleshooting common problems with Gateway API configuration
+
+[role='_abstract']
+If your users are experiencing errors in {productname-long} relating to Gateway API configuration, read this section to understand what could be causing the problem, and how to resolve the problem.
+
+ifndef::upstream[]
+If the problem is not documented here or in the release notes, contact {org-name} Support.
+endif::[]
+
+== The `GatewayConfig` status shows as not ready
+
+.Problem
+While setting up the OIDC, the `GatewayConfig` status shows as not ready. You see error messages about missing OIDC configuration and the `GatewayConfig` resource shows its status as `Ready: False`.
+
+.Diagnosis
+. Check `GatewayConfig` status by running the following command.
++
+[source, bash]
+----
+oc get gatewayconfig default-gateway -o yaml
+----
+
+. Check for specific error messages by running the following command. 
++
+[source, bash]
+----
+oc describe gatewayconfig default-gateway
+----
+The expected output confirms the `GatewayConfig resource has been successfully provisioned by showing the OIDC configuration details under `Spec.Oidc` and displaying both the `Ready` and `ProvisioningSucceeded` status conditions with a `True` status.
+
+. Verify that the OIDC configuration is correct by running the following command. 
++
+[source, bash]
+----
+oc get gatewayconfig default-gateway -o jsonpath='{.spec.oidc}'
+----
+Expected output should look like the following example.
++
+[source, bash]
+----
+{"clientID":"your-client-id","clientSecretRef":{"key":"clientSecret","name":"keycloak-client-secret"},"issuerURL":"https://keycloak.example.com/realms/your-realm"}
+----
+
+.Resolution
+. Verify the OIDC secret exists and is correct by running the following command. 
++
+[source, bash]
+----
+oc get secret keycloak-client-secret -n openshift-ingress
+----
+
+. Check OIDC issuer URL accessibility by running the following command.  
++
+[source, bash]
+----
+curl -I https://your-keycloak-domain/realms/your-realm/.well-known/openid-configuration
+----
+The expected output confirms the OIDC issuer URL is accessible by returning the HTTP status code `HTTP/2 200` and the correct `content-type: application/json header`.
+
+. Ensure that the client Secret is correct. 
+
+== Authentication proxy fails to start
+.Problem
+The authentication proxy component fails to start after deploying `kube-auth-proxy`. The associated Pods are in a failing state, showing statuses such as `CrashLoopBackOff` or `Pending`, and the `kube-auth-proxy` Deployment is not ready.
+
+.Diagnosis
+. Check the `kube-auth-proxy` deployment status by running the following command.
++
+[source, bash]
+----
+oc get deployment kube-auth-proxy -n openshift-ingress
+----
+The expected output confirms that the deployment is successfully provisioned, showing `1/1` under the `READY` column.
+
+. Check the Pod logs by running the following command.
++
+[source, bash]
+----
+oc logs -l app=kube-auth-proxy -n openshift-ingress
+----
+The expected output confirms that the OAuth2 Proxy is configured and starting on the specified ports. 
++
+[source, bash]
+----
+# Expected output
+time="2024-01-15T10:30:00Z" level=info msg="OAuth2 Proxy configured"
+time="2024-01-15T10:30:00Z" level=info msg="OAuth2 Proxy starting on :4180"
+time="2024-01-15T10:30:00Z" level=info msg="OAuth2 Proxy starting on :8443"
+----
+
+. Check the Pod events for errors by running the following command.
++
+[source, bash]
+----
+oc describe pod -l app=kube-auth-proxy -n openshift-ingress
+----
+The expected output should look like the following example.
++
+[source, bash]
+----
+# Expected output
+Name:          kube-auth-proxy-7d4f8b9c6-xyz12
+Namespace:     openshift-ingress
+Status:        Running
+Containers:
+  kube-auth-proxy:
+    State:          Running
+    Ready:          True
+    Restart Count:  0
+Events:
+  Type    Reason       Age   From                 Message
+  ----    ------       ----  ----                 -------
+  Normal  Scheduled    5m    default-scheduler    Successfully assigned openshift-ingress/kube-auth-proxy-7d4f8b9c6-xyz12 to worker-node-1
+----
+
+.Resolution
+. Verify the authentication secret contains the correct client secret by running the following command.
++
+[source, bash]
+----
+oc get secret kube-auth-proxy-creds -n openshift-ingress -o yaml
+----
+The expected output should contain the keys `OAUTH2_PROXY_CLIENT_SECRET`, `OAUTH2_PROXY_COOKIE_SECRET`, and `OAUTH2_PROXY_CLIENT_ID`.
+
+. Check if the OIDC issuer URL is accessible from the cluster by running the following command.
++
+[source, bash]
+----
+curl -I https://your-keycloak-domain/realms/your-realm/.well-known/openid-configuration
+----
+The expected output should return the HTTP status code `HTTP/2 200`.
+
+. Ensure that the client ID exists in your OIDC provider.
+
+== The Gateway is inaccessible
+.Problem 
+After configuring OIDC, you cannot access the Gateway URL: https://data-science-gateway.$CLUSTER_DOMAIN. Attempts to access the URL return 502 (Bad Gateway) or 503 (Service Unavailable) errors, indicating a networking failure that prevents external access or traffic routing to the service endpoint.
+
+.Diagnosis
+. Check the Gateway status of `data-science-gateway` by running the following command.
++
+[source, bash]
+----
+oc get gateway data-science-gateway -n openshift-ingress
+----
+The expected output shows `PROGRAMMED` column as `True`, and a valid address is listed under the `ADDRESS` column.
+
+. Check the `HTTPRoute` status by running the following command.
++
+[source, bash]
+----
+oc get httproute -n openshift-ingress
+----
+The expected output shows that the `oauth-callback-route` is present.
+
+. Check the `EnvoyFilter` by running the following command.
++
+[source, bash]
+----
+oc get envoyfilter -n openshift-ingress
+----
+The expected output shows that the `authn-filter` is present.
+
+. Check the `kube-auth-proxy` Service by running the following command.
++
+[source, bash]
+----
+oc get service kube-auth-proxy -n openshift-ingress
+----
+The expected output shows that the Service and correct ports are present like the following example.
++
+[source, bash]
+----
+# Expected output 
+NAME              TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)           AGE
+kube-auth-proxy   ClusterIP   172.30.31.69   <none>        8443/TCP,9000/TCP   41h
+----
+
+.Resolution
+. Verify the Gateway has a valid address by running the following command.
++
+[source, bash]
+----
+oc get gateway data-science-gateway -o jsonpath='{.status.addresses}'
+----
+The expected output shows a valid IP address or hostname.
+
+. Check if the `HTTPRoute` is properly configured by running the following command.
++
+[source, bash]
+----
+oc describe httproute oauth-callback-route -n openshift-ingress
+----
+The expected output confirms proper parent references and backend services.
+
+. Ensure the `EnvoyFilter` is applied correctly by running the following command.
++
+[source, bash]
+----
+oc describe envoyfilter authn-filter -n openshift-ingress
+----
+The expected outputconfirms the proper configuration for `kube-auth-proxy`.
+
+== The OIDC authentication fails 
+.Problem 
+The OIDC authentication fails and you are unable to log in through the Gateway. You also experience symptoms such as redirect loops or explicit authentication errors after attempting to log in.
+
+.Diagnosis
+. Check the `kube-auth-proxy` logs for specific error messages by running the following command.
++
+[source, bash]
+----
+oc logs -l app=kube-auth-proxy -n openshift-ingress
+----
+The expected output confirms that the OAuth2 Proxy is configured and starting on the specified ports.
+
+. Verify the OIDC configuration in the `kube-auth-proxy` Secret by running the following command.
++
+[source, bash]
+----
+oc get secret kube-auth-proxy-creds -n openshift-ingress -o yaml
+----
+The expected output shows that the Secret contains the keys `OAUTH2_PROXY_CLIENT_ID`, `OAUTH2_PROXY_CLIENT_SECRET`, and `OAUTH2_PROXY_COOKIE_SECRET`. The output should look like the following example.
++
+[source, bash]
+----
+# Expected output
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kube-auth-proxy-creds
+  namespace: openshift-ingress
+type: Opaque
+data:
+  OAUTH2_PROXY_CLIENT_ID: b2RoLWNsaWVudA==  # base64 encoded "data-science"
+  OAUTH2_PROXY_CLIENT_SECRET: <base64-encoded-secret>
+  OAUTH2_PROXY_COOKIE_SECRET: <base64-encoded-cookie-secret>
+----
+
+. Test the OIDC discovery endpoint by running the following command.
++
+[source, bash]
+----
+curl -s https://your-keycloak-domain/realms/your-realm/.well-known/openid-configuration | jq .
+----
+The expected output returns the complete JSON configuration, including valid endpoints for `issuer`, `authorization_endpoint`, and `token_endpoint`.
+
+.Resolution
+
+. Log in to the OIDC provider (for example, Keycloak) and verify that the redirect URI registered for the client matches the expected endpoint on the Gateway: `https://data-science-gateway.$CLUSTER_DOMAIN/oauth2/callback``. Mismatches are a frequent cause of redirect loops.
+
+. Check if the client secret is properly set by running the following command.
++
+[source, bash]
+----
+echo $KEYCLOAK_CLIENT_SECRET | base64 -d
+----
+The expected output matches the secret in your OIDC provider.
+
+. Ensure that the issuer URL is accessible and correct by running the following command.
++
+[source, bash]
+----
+curl -I https://your-keycloak-domain/realms/your-realm/.well-known/openid-configuration
+----
+The expected output returns `HTTP/2 200`. 
+
+== The dashboard is not accessible after authentication
+.Problem 
+After successfully authenticating with OIDC, you experience an authorization failure that prevents access to the dashboard. The failure results in 403 Forbidden errors while accessing the dashboard.
+
+. Check the `odh-dashboard` Deployment status by running the following command.
++
+[source, bash]
+----
+oc get deployment odh-dashboard -n redhat-ods-applications
+----
+The expected outcome confirms that the Pods are running, similar to the following example.
++
+[source, bash]
+----
+NAME            READY   UP-TO-DATE   AVAILABLE   AGE
+odh-dashboard   2/2     2            2           41h
+----
+
+. Check the dashboard logs for any authorization errors by running the following command.
++
+[source, bash]
+----
+oc logs -l app=odh-dashboard -n redhat-ods-applications
+----
+In the expected output, the logs confirm the Dashboard is running and ready to serve requests.
+
+. Verify the user permissions by running the following command.
++
+[source, bash]
+----
+oc auth can-i get projects --as=your-username
+----
+The expected output confirms that the user has the required access.
+
+.Resolution
+. Ensure that you have cluster-level RBAC permissions by running the following command.
++
+[source, bash]
+----
+oc adm policy add-cluster-role-to-user view your-username
+----
+The expected output confirms that the view cluster role has been added to the user.
+
+. Verify that the `odh-dashboard` HTTPRoute is properly configured with correct parent references (linking it to the Gateway) by running the following command.
++
+[source, bash]
+----
+oc get httproute odh-dashboard -n redhat-ods-applications -o yaml
+----
+The expected output shows proper parent references to the Gateway.
+
+. Check if the user is in the expected groups that may have roles bound to them required by the dashboard.
++
+[source, bash]
+----
+oc get user your-username -o yaml
+----
+The expected output confirms that the user is in the `odh-users` group.
+
