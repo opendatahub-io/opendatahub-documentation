@@ -1,0 +1,197 @@
+:_module-type: CONCEPT
+
+[id="configuring-pipeline-run-workspaces_{context}"]
+= Configuring pipeline run workspaces
+
+[role='_abstract']
+The workspace feature in AI Pipelines (AIP) provides standardized ephemeral shared storage that lives for the duration of a pipeline run. This allows components within a pipeline to exchange large intermediate data without repeatedly uploading and downloading to and from object storage, improving performance and reducing object storage costs.
+
+== Understanding pipeline run workspaces
+
+A workspace is a standardized directory structure backed by a Persistent Volume Claim (PVC) that gets dynamically created for each pipeline run based on the DSPA workspace configuration. When the pipeline definition includes a workspace configuration, the DSPA automatically mounts the workspace PVC into each pipeline task pod that requires it at a path that is resolved at runtime by using the dsl.WORKSPACE_PATH_PLACEHOLDER variable as an input parameter to components.
+
+Pipelines opt in to workspace support at compile time. When the pipeline definition includes a workspace configuration, the pipeline compiler annotates the run so that the DSPA automatically creates the workspace PVC and mounts the volume into each task pod that needs it.
+
+== Configuring default workspace PVC settings in DSPA
+
+You can configure the default values for workspace PersistentVolumeClaims (PVCs) in your DataSciencePipelinesApplication (DSPA). This allows you to specify the storage class and access mode for workspace volumes used by pipeline runs. Workspace storage size must be provided when you define the pipeline run.
+
+.Prerequisites
+* You have logged in to Open Data Hub.
+* You have the appropriate roles and permissions to edit DSPAs in your projects.
+* You have a pipeline server configured in your data science project.
+
+.Procedure
+. Log in to the {openshift-platform} web console.
+. Navigate to your data science project namespace.
+. Click *Search* -> *Resources* and select *DataSciencePipelinesApplication* from the resource list.
+. Select your DSPA instance and click *YAML* to edit the configuration.
+. Add or modify the workspace configuration under the `spec.apiServer.workspace` field:
++
+[source,yaml]
+----
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1
+kind: DataSciencePipelinesApplication
+metadata:
+  name: sample-dspa
+  namespace: my-namespace
+spec:
+  dspVersion: v2
+  apiServer:
+    deploy: true
+    workspace:
+      volumeClaimTemplateSpec:
+        accessModes:
+        - ReadWriteOnce
+        storageClassName: standard-csi        
+  # ... other DSPA configuration
+----
++
+Where:
++
+* `apiServer.workspace.volumeClaimTemplateSpec`: Configures the PVC template for workspace volumes
+** `accessModes`: Specifies the access modes for workspace PVCs (options: `ReadWriteOnce`, `ReadWriteMany`, `ReadOnlyMany`)
+** `storageClassName`: Specifies the storage class to use for workspace PVCs
+
+. Click *Save* to apply the changes.
+
+.Verification
+To confirm your configuration, run the following sample pipeline. It writes a file into the workspace by using `dsl.WORKSPACE_PATH_PLACEHOLDER` and then reads the same file in a subsequent task:
+
+[source,python]
+----
+from kfp import dsl
+
+@dsl.component
+def write_to_workspace(workspace_path: str) -> str:
+    """Write a file to the workspace."""
+    import os
+
+    file_path = os.path.join(workspace_path, "data", "test_file.txt")
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+    with open(file_path, "w") as f:
+        f.write("Hello from workspace!")
+
+    print(f"Wrote file to: {file_path}")
+    return file_path
+
+@dsl.component
+def read_from_workspace(file_path: str) -> str:
+    """Read a file from the workspace using the provided file path."""
+    import os
+
+    if os.path.exists(file_path):
+        with open(file_path, "r") as f:
+            content = f.read()
+        print(f"Read content from: {file_path}")
+        print(f"Content: {content}")
+        assert content == "Hello from workspace!"
+        return content
+
+    print(f"File not found at: {file_path}")
+    return "File not found"
+
+@dsl.pipeline(
+    name="pipeline-with-workspace",
+    description="A pipeline that demonstrates workspace functionality",
+    pipeline_config=dsl.PipelineConfig(
+        workspace=dsl.WorkspaceConfig(
+            size='1Gi',
+        ),
+    ),
+)
+def pipeline_with_workspace() -> str:
+    """A pipeline using workspace functionality with write and read components."""
+
+    write_task = write_to_workspace(
+        workspace_path=dsl.WORKSPACE_PATH_PLACEHOLDER,
+    )
+
+    read_task = read_from_workspace(
+        file_path=write_task.output,
+    )
+
+    return read_task.output
+----
+
+When the pipeline completes, review the task logs to verify that both write and read operations succeeded.
+
+
+
+== Adding external artifacts to pipeline run workspaces
+
+When working with external artifacts such as Modelcar images stored in an OCI (Open Container Initiative) registry, you cannot directly reference them in your pipeline tasks. Instead, copy these artifacts into the workspace volume so that task pods can access them during execution.
+
+.Prerequisites
+* You have configured a pipeline server in your data science project with workspace support enabled.
+* You can reach the external location that stores your artifacts.
+* Your pipeline server has the credentials and network access required to pull from that location.
+
+.Procedure
+To use an external artifact in your pipeline, define a component that copies the artifact to the workspace, and then call this component in your pipeline.
+
+. Define a component that copies the imported artifact to the workspace:
++
+[source,python]
+----
+from kfp import dsl
+
+@dsl.component()
+def copy_model_to_workspace(input_model: dsl.Input[dsl.Model], workspace_path: str):
+    import os
+    import shutil
+    shutil.copytree(input_model.path, os.path.join(workspace_path, "my-model"))
+----
+
+. Define your pipeline with workspace configuration:
++
+[source,python]
+----
+@dsl.pipeline(
+    name="modelcar-to-workspace",
+    pipeline_config=dsl.PipelineConfig(
+        workspace=dsl.WorkspaceConfig(size='5Gi'),
+    ),
+)
+def modelcar_to_workspace_pipeline(
+    oci_uri: str = "oci://registry.redhat.io/rhelai1/modelcar-granite-3.1-8b-lab-v2.2:latest",
+):
+    # Import the model from the OCI registry
+    model_source = dsl.importer(
+        artifact_uri=oci_uri,
+        artifact_class=dsl.Model,
+    )
+    
+    # Copy the model to the workspace
+    copy_model_to_workspace(
+        input_model=model_source.output,
+        workspace_path=dsl.WORKSPACE_PATH_PLACEHOLDER,
+    )
+   
+----
++
+[NOTE]
+====
+The `pipeline_config` parameter with `workspace=dsl.WorkspaceConfig(size='5Gi')` is required to enable workspace support for the pipeline run.
+====
+
+. Compile and upload your pipeline to {productname-short}.
+
+.Verification
+When you execute the pipeline run:
+
+. Navigate to the run details page in the {productname-short} dashboard.
+. Verify that the `copy_model_to_workspace` task completes successfully.
+. Check the logs of subsequent tasks to confirm they can access the model files in the workspace at `/kfp-workspace/my-model`.
+
+[NOTE]
+====
+The model files are copied to a subdirectory in the workspace (in this example, `my-model`). Subsequent pipeline tasks can access these files at workspace mount path resolved at runtime.
+====
+
+[role='_additional-resources']
+.Additional resources
+* link:https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/persistent-volume/[Kubeflow Pipelines - Using Persistent Volumes]
+* link:https://www.kubeflow.org/docs/components/pipelines/user-guides/components/importer-component/[Special Case: Importer Components]
+
