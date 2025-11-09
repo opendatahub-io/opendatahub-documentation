@@ -61,15 +61,15 @@ ifndef::upstream[]
 You can serve models with AMD GPUs by using the *vLLM AMD GPU ServingRuntime for KServe* runtime. To use the runtime, you must enable support for AMD graphic processing units (GPUs) in {productname-short}. This includes installing the AMD GPU operator and configuring a hardware profile. For more information, see link:https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/openshift-olm.html[Deploying the AMD GPU operator on OpenShift^] in the AMD documentation and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
 
-== IBM Spyre AI accelerators on x86
+== IBM Spyre AI accelerators on x86 and IBM Z
 ifndef::upstream[]
 [IMPORTANT]
 ====
 ifdef::self-managed[]
-Support for IBM Spyre AI Accelerators on x86 is currently available in {productname-long} {vernum} as a Technology Preview feature.
+Support for IBM Spyre AI Accelerators on x86 and IBM Z is currently available in {productname-long} {vernum} as a Technology Preview feature.
 endif::[]
 ifdef::cloud-service[]
-Support for IBM Spyre AI Accelerators on x86 is currently available in {productname-long} as a Technology Preview feature.
+Support for IBM Spyre AI Accelerators on x86 and IBM Z is currently available in {productname-long} as a Technology Preview feature.
 endif::[]
 Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
 {org-name} does not recommend using them in production.
@@ -85,6 +85,14 @@ endif::[]
 
 ifndef::upstream[]
 You can serve models with IBM Spyre AI accelerators on x86 by using the *vLLM Spyre AI Accelerator ServingRuntime for KServe* runtime. To use the runtime, you must install the Spyre Operator and configure a hardware profile. For more information, see link:https://catalog.redhat.com/en/software/containers/ibm-aiu/spyre-operator/688a1121575e62c686a471d4[Spyre operator image^] and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
+endif::[]
+
+ifdef::upstream[]
+You can serve models with IBM Spyre AI accelerators on IBM Z by using the *vLLM Spyre s390x ServingRuntime for KServe* runtime. To use the runtime, you must install the Spyre Operator and configure a hardware profile. For more information, see link:https://catalog.redhat.com/en/software/containers/ibm-aiu/spyre-operator/688a1121575e62c686a471d4[Spyre operator image^] and link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles^].
+endif::[]
+
+ifndef::upstream[]
+You can serve models with IBM Spyre AI accelerators on IBM Z by using the *vLLM Spyre s390x ServingRuntime for KServe* runtime. To use the runtime, you must install the Spyre Operator and configure a hardware profile. For more information, see link:https://catalog.redhat.com/en/software/containers/ibm-aiu/spyre-operator/688a1121575e62c686a471d4[Spyre operator image^] and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
 
 

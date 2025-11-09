@@ -7,10 +7,10 @@ ifndef::upstream[]
 [IMPORTANT]
 ====
 ifdef::self-managed[]
-Support for IBM Spyre AI Accelerators on x86 is currently available in {productname-long} {vernum} as a Technology Preview feature.
+Support for IBM Spyre AI Accelerators on x86 and IBM Z is currently available in {productname-long} {vernum} as a Technology Preview feature.
 endif::[]
 ifdef::cloud-service[]
-Support for IBM Spyre AI Accelerators on x86 is currently available in {productname-long} as a Technology Preview feature.
+Support for IBM Spyre AI Accelerators on x86 and IBM Z is currently available in {productname-long} as a Technology Preview feature.
 endif::[]
 Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
 {org-name} does not recommend using them in production.
@@ -25,7 +25,9 @@ If you are deploying a model using a hardware profile that relies on Spyre sched
 
 .Prerequisites
 
-* You have deployed a model on {openshift-platform} by using the **vLLM Spyre AI Accelerator ServingRuntime for KServe** runtime.
+* You have deployed a model on {openshift-platform} by using vLLM ServingRuntime:
+** For X86 deployments, you have used the **vLLM Spyre AI Accelerator ServingRuntime for KServe** runtime.
+** For IBM Z (s390x) deployments, you have used the **vLLM Spyre s390x ServingRuntime for KServe** runtime.
 * You have privileges to edit resources in the project where the model is deployed.
 
 .Procedure
@@ -37,11 +39,27 @@ To configure the inference service, complete the following steps:
 . Navigate to **Home** > **Search**. 
 . From the **Resources** dropdown menu, select `InferenceService`. 
 . Click the name of the `InferenceService` resource associated with your model. 
-. Select the **YAML** tab. 
-. Edit the `spec.predictor` section to add the `schedulerName` and `tolerations` fields as shown in the following example:
+. Select the **YAML** tab.
 + 
-[source,yaml]
+[IMPORTANT]
+====
+If you are deploying to IBM Z (s390x) note the following platform-specific requirements:
 
+* IBM Z only supports continuous batching for this runtime. Ensure that you add the following runtime arguments in the `args` section: 
+** `--max_model_len`
+** `--max-num-seqs=4`
+** `--tensor-parallel-size`.
+* The toleration key differs by the following platforms:
+** For x86 nodes, use the toleration key `ibm.com/spyre_pf`.
+** For IBM Z (s390x), only Virtual Function (VF) mode is supported for IBM Spyre devices. Therefore, use the VF toleration key for IBM Z: `ibm.com/spyre_vf`.
+
+====
+. Edit the `spec.predictor` section to add the `schedulerName` and `tolerations` fields as shown in the following examples:
++
+** Example YAML code for the vLLM IBM Spyre AI Accelerator ServingRuntime on x86 platforms:
++
+[source,yaml]
+----
 apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService 
 spec:  
@@ -51,7 +69,30 @@ spec:
     - effect: NoSchedule 
       key: ibm.com/spyre_pf 
       operator: Exists
+----
+
+** Example YAML code for the vLLM IBM Spyre s390x ServingRuntime on IBM Z s390x platforms:
 +
+[source,yaml]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+spec:
+  predictor:
+    # Continuous batching arguments required for IBM Z
+    containers:
+    - name: kserve-container
+      args:
+      - "--max_model_len=2048"
+      - "--max-num-seqs=4"
+      - "--tensor-parallel-size=1"
+      # other container args and image config as required
+    schedulerName: spyre-scheduler
+    tolerations:
+    - effect: NoSchedule
+      key: ibm.com/spyre_vf
+      operator: Exists
+----
 . Click **Save**.
 
 .Verification
