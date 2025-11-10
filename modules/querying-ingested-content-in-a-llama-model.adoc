@@ -21,7 +21,7 @@ endif::[]
 * You have created a workbench within a project.
 * You have opened a Jupyter notebook and it is running in your workbench environment.
 * You have installed the `llama_stack_client` version 0.2.22 or later in your workbench environment. 
-* You have ingested content into your model. 
+* You have ingested content into a vector store. 
 
 [NOTE]
 ====
@@ -148,17 +148,25 @@ print(f"Registered inline FAISS DB: {vector_db_id}")
 # vector_db_id = "<your existing vector database ID>"
 ----
 
-. In a new notebook cell, query the ingested content by using the low-level RAG tool:
+. In a new notebook cell, query the ingested content by using the OpenAI-compatible Responses API with a vector store:
 +
 [source,python]
 ----
-# Example RAG query for one-off lookups
+# Example RAG query for one-off lookups using the Responses API and vector stores
 query = "What benefits do the ingested passages provide for retrieval?"
-result = client.tool_runtime.rag_tool.query(
-    vector_db_ids=[vector_db_id],
-    content=query,
+
+response = client.responses.create(
+    model=model_id,
+    input=query,
+    tools=[
+        {
+            "type": "file_search",
+            "vector_store_ids": [vector_db_id],
+        }
+    ],
 )
-print("Low-level query result:", result)
+
+print("Low-level query result:", response.output_text)
 ----
 
 . In a new notebook cell, query the ingested content by using the high-level Agent API:
@@ -173,7 +181,7 @@ agent = Agent(
     tools=[
         {
             "name": "builtin::rag/knowledge_search",
-            "args": {"vector_db_ids": [vector_db_id]},
+            "args": {"vector_store_ids": [vector_db_id]},
         }
     ],
 )
@@ -196,5 +204,5 @@ for log in AgentEventLogger().log(response):
 
 .Verification
 
-* The notebook prints query results for both the low-level RAG tool and the high-level Agent API.
-* No errors appear in the output, confirming the model can retrieve and respond to ingested content.
+* The notebook prints query results for both the low-level Responses API call and the high-level Agent API.
+* No errors appear in the output, confirming the model can retrieve and respond to ingested content from your vector store.

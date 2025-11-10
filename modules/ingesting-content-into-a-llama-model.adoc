@@ -3,8 +3,8 @@
 [id="ingesting-content-into-a-llama-model_{context}"]
 = Ingesting content into a Llama model
 
-[role='_abstract']
-You can quickly customize and prototype your retrievable content by ingesting raw text into your model from inside a Jupyter notebook. This approach voids requiring a separate ingestion pipeline. By using the LlamaStack SDK, you can embed and store text in your vector store in real-time, enabling immediate RAG workflows. 
+[role="_abstract"]
+You can quickly customize and prototype your retrievable content by ingesting raw text into your model from inside a Jupyter notebook. This approach avoids requiring a separate ingestion pipeline. By using the LlamaStack SDK, you can embed and store text in your vector store in real time, enabling immediate RAG workflows.
 
 .Prerequisites
 * You have installed {openshift-platform} {ocp-minimum-version} or newer. 
@@ -25,14 +25,14 @@ endif::[]
 %pip install llama_stack_client fire
 ----
 
-. In a new notebook cell, import RAGDocument and LlamaStackClient:
+. In a new notebook cell, import `RAGDocument` and `LlamaStackClient`:
 +
 [source,python]
 ----
 from llama_stack_client import RAGDocument, LlamaStackClient
 ----
 
-. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a LlamaStackClient instance:
+. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a `LlamaStackClient` instance:
 +
 [source,python]
 ----
@@ -145,7 +145,7 @@ This example ingests a small passage for demonstration.
 """
 ----
 
-. In a new notebook cell, create a RAGDocument object to contain the raw text:
+. In a new notebook cell, create a `RAGDocument` object to contain the raw text:
 +
 [source,python]
 ----
@@ -157,24 +157,24 @@ document = RAGDocument(
 )
 ----
 
-. In a new notebook cell, ingest the raw text:  
+. In a new notebook cell, ingest the raw text into the vector store by using the Vector Store Files API:
 +
 [source,python]
 ----
-client.tool_runtime.rag_tool.insert(
+client.vector_stores.files.create(
+    vector_store_id=vector_db_id,
     documents=[document],
-    vector_db_id=vector_db_id,
     chunk_size_in_tokens=100,
 )
 print("Raw text ingested successfully")
 ----
 
-. In a new notebook cell, create a RAGDocument from an HTML source and ingest it into the vector store:
+. In a new notebook cell, create a `RAGDocument` from an HTML source and ingest it into the vector store:
 +
 [source,python]
 ----
 source = "https://www.paulgraham.com/greatwork.html"
-print("rag_tool> Ingesting document:", source)
+print("Ingesting document:", source)
 
 document = RAGDocument(
     document_id="document_1",
@@ -188,12 +188,12 @@ document = RAGDocument(
 +
 [source,python]
 ----
-client.tool_runtime.rag_tool.insert(
+client.vector_stores.files.create(
+    vector_store_id=vector_db_id,
     documents=[document],
-    vector_db_id=vector_db_id,
     chunk_size_in_tokens=50,
 )
-print("Raw text ingested successfully")
+print("HTML document ingested successfully")
 ----
 
 .Verification
