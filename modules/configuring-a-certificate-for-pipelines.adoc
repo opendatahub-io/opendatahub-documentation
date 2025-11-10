@@ -1,11 +1,11 @@
 :_module-type: PROCEDURE
 
 [id='configuring-a-certificate-for-pipelines_{context}']
-= Configuring a certificate for data science pipelines 
+= Configuring a certificate for pipelines 
 
 By default, {productname-short} includes OpenShift cluster-wide certificates in the `odh-trusted-ca-bundle` ConfigMap. These cluster-wide certificates cover most components, such as workbenches and model servers. However, the pipeline server might require additional Certificate Authority (CA) configuration, especially when interacting with external systems that use self-signed or custom certificates.
 
-You have the following options for adding the certificate for data science pipelines:
+You have the following options for adding the certificate for AI pipelines:
 
 ifdef::upstream[]
 * Add them to the cluster-wide CA bundle, as described in link:{odhdocshome}/installing-open-data-hub/#adding-certificates-to-a-cluster-ca-bundle_certs[Adding certificates to a cluster-wide CA bundle].
@@ -28,17 +28,17 @@ ifdef::disconnected[]
 endif::[]
 endif::[]
 
-* Provide a CA bundle that is only used for data science pipelines, as described in the following procedure.
+* Provide a CA bundle that is only used for AI pipelines, as described in the following procedure.
 
 .Prerequisites
 
 * You have cluster administrator access for the OpenShift cluster where {productname-long} is installed.
 * You have created a self-signed certificate and saved the certificate to a file. For example, you have created a certificate using OpenSSL and saved it to a file named `example-ca.crt`.
-* You have configured a data science pipeline server.
+* You have configured an AI pipeline server.
 
 .Procedure
 . Log in to the OpenShift console.
-. From *Workloads* -> *ConfigMaps*, create a ConfigMap with the required bundle in the same data science project as the target data science pipeline:
+. From *Workloads* -> *ConfigMaps*, create a ConfigMap with the required bundle in the same project as the target AI pipeline:
 +
 [source]
 ----
@@ -50,7 +50,7 @@ data:
     ca-bundle.crt: |
     # contents of ca-bundle.crt
 ----
-. Add the following snippet to the `.spec.apiserver.caBundle` field of the underlying Data Science Pipelines Application (DSPA):
+. Add the following snippet to the `.spec.apiserver.caBundle` field of the underlying `DataSciencePipelinesApplication` (DSPA):
 +
 [source]
 ----
@@ -74,7 +74,7 @@ spec:
 Confirm that your CA bundle was successfully mounted:
 
 . Log in to the OpenShift console.
-. Go to the data science project that has the target data science pipeline.
+. Go to the project that has the target AI pipeline.
 . Click the *Pods* tab.
 . Click the pipeline server pod with the `ds-pipeline-dspa-<hash>` prefix.
 . Click *Terminal*.

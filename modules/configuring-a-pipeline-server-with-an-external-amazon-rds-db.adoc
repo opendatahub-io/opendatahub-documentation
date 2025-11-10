@@ -13,7 +13,7 @@ If you are configuring a pipeline server for production pipeline workloads, {org
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have logged in to {productname-long}.
-* You have created a data science project that you can add a pipeline server to.
+* You have created a project that you can add a pipeline server to.
 * You have an existing S3-compatible object storage bucket, and you have configured your storage account with write access to your S3 bucket.
 
 .Procedure
@@ -42,15 +42,15 @@ cat us-east-1-bundle.pem >> /tmp/my-custom-ca-bundles.crt
 oc patch dscinitialization default-dsci --type='json' -p='[{"op":"replace","path":"/spec/trustedCABundle/customCABundle","value":"'"$(awk '{printf "%s\\n", $0}' /tmp/my-custom-ca-bundles.crt)"'"}]'
 ----
 ifdef::upstream[]
-. Configure a pipeline server, as described in link:{odhdocshome}/working-with-data-science-pipelines/#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+. Configure a pipeline server, as described in link:{odhdocshome}/working-with-ai-pipelines/#configuring-a-pipeline-server_ai-pipelines[Configuring a pipeline server].
 endif::[]
 ifndef::upstream[]
-. Configure a pipeline server, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+. Configure a pipeline server, as described in link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-ai-pipelines_ai-pipelines#configuring-a-pipeline-server_ai-pipelines[Configuring a pipeline server].
 endif::[]
 
 .Verification
 * The pipeline server starts successfully.
-* You can import and run data science pipelines.
+* You can import and run AI pipelines.
 
 // [role="_additional-resources"]
 // .Additional resources

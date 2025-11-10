@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
-[id="running-distributed-data-science-workloads-from-ds-pipelines_{context}"]
-= Running distributed data science workloads from data science pipelines
+[id="running-distributed-data-science-workloads-from-ai-pipelines_{context}"]
+= Running distributed data science workloads from AI pipelines
 
 [role='_abstract']
 To run a distributed workload from a pipeline, you must first update the pipeline to include a link to your Ray cluster image.
@@ -46,13 +46,13 @@ ifdef::upstream[]
 endif::[]
 
 ifndef::upstream[]
-. Configure a pipeline server to use the connection, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+. Configure a pipeline server to use the connection, as described in link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-ai-pipelines_ai-pipelines#configuring-a-pipeline-server_ai-pipelines[Configuring a pipeline server].
 endif::[]
 ifdef::upstream[]
-. Configure a pipeline server to use the connection, as described in link:{odhdocshome}/working-with-data-science-pipelines/#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+. Configure a pipeline server to use the connection, as described in link:{odhdocshome}/working-with-ai-pipelines/#configuring-a-pipeline-server_ai-pipelines[Configuring a pipeline server].
 endif::[]
 
-. Create the data science pipeline as follows:
+. Create the pipeline as follows:
 
 .. Install the `kfp` Python package, which is required for all pipelines:
 +
@@ -61,7 +61,7 @@ endif::[]
 $ pip install kfp
 ----
 .. Install any other dependencies that are required for your pipeline.
-.. Build your data science pipeline in Python code.
+.. Build your AI pipeline in Python code.
 +
 For example, create a file named `compile_example.py` with the following content.
 ifdef::upstream[]
@@ -186,24 +186,24 @@ $ python compile_example.py
 This command creates a YAML file (in this example, `compiled-example.yaml`), which you can import in the next step.
 
 ifndef::upstream[]
-. Import your data science pipeline, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#importing-a-data-science-pipeline_ds-pipelines[Importing a data science pipeline].
+. Import your AI pipeline, as described in link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-ai-pipelines_ai-pipelines#importing-a-pipeline_ai-pipelines[Importing a pipeline].
 endif::[]
 ifdef::upstream[]
-. Import your data science pipeline, as described in link:{odhdocshome}/working-with-data-science-pipelines/#importing-a-data-science-pipeline_ds-pipelines[Importing a data science pipeline].
+. Import your AI pipeline, as described in link:{odhdocshome}/working-with-ai-pipelines/#importing-a-pipeline_ai-pipelines[Importing a pipeline].
 endif::[]
 
 ifndef::upstream[]
-. Schedule the pipeline run, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-pipeline-runs_ds-pipelines#scheduling-a-pipeline-run_ds-pipelines[Scheduling a pipeline run].
+. Schedule the pipeline run, as described in link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-pipeline-runs_ai-pipelines#scheduling-a-pipeline-run_ai-pipelines[Scheduling a pipeline run].
 endif::[]
 ifdef::upstream[]
-. Schedule the pipeline run, as described in link:{odhdocshome}/working-with-data-science-pipelines/#scheduling-a-pipeline-run_ds-pipelines[Scheduling a pipeline run].
+. Schedule the pipeline run, as described in link:{odhdocshome}/working-with-ai-pipelines/#scheduling-a-pipeline-run_ai-pipelines[Scheduling a pipeline run].
 endif::[]
 
 ifndef::upstream[]
-. When the pipeline run is complete, confirm that it is included in the list of triggered pipeline runs, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-pipeline-runs_ds-pipelines#viewing-the-details-of-a-pipeline-run_ds-pipelines[Viewing the details of a pipeline run].
+. When the pipeline run is complete, confirm that it is included in the list of triggered pipeline runs, as described in link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-pipeline-runs_ai-pipelines#viewing-the-details-of-a-pipeline-run_ai-pipelines[Viewing the details of a pipeline run].
 endif::[]
 ifdef::upstream[]
-. When the pipeline run is complete, confirm that it is included in the list of triggered pipeline runs, as described in link:{odhdocshome}/working-with-data-science-pipelines/#viewing-the-details-of-a-pipeline-run_ds-pipelines[Viewing the details of a pipeline run].
+. When the pipeline run is complete, confirm that it is included in the list of triggered pipeline runs, as described in link:{odhdocshome}/working-with-ai-pipelines/#viewing-the-details-of-a-pipeline-run_ai-pipelines[Viewing the details of a pipeline run].
 endif::[]
 
 
@@ -211,19 +211,19 @@ endif::[]
 The YAML file is created and the pipeline run completes without errors.
 
 ifndef::upstream[]
-You can view the run details, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-pipeline-runs_ds-pipelines#viewing-the-details-of-a-pipeline-run_ds-pipelines[Viewing the details of a pipeline run].
+You can view the run details, as described in link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-pipeline-runs_ai-pipelines#viewing-the-details-of-a-pipeline-run_ai-pipelines[Viewing the details of a pipeline run].
 endif::[]
 ifdef::upstream[]
-You can view the run details, as described in link:{odhdocshome}/working-with-data-science-pipelines/#viewing-the-details-of-a-pipeline-run_ds-pipelines[Viewing the details of a pipeline run].
+You can view the run details, as described in link:{odhdocshome}/working-with-ai-pipelines/#viewing-the-details-of-a-pipeline-run_ai-pipelines[Viewing the details of a pipeline run].
 endif::[]
 
 [role='_additional-resources']
 .Additional resources
 ifndef::upstream[]
-* link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/[Working with data science pipelines]
+* link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/[Working with AI pipelines]
 endif::[]
 ifdef::upstream[]
-* link:{odhdocshome}/working-with-data-science-pipelines/[Working with data science pipelines]
+* link:{odhdocshome}/working-with-ai-pipelines/[Working with AI pipelines]
 endif::[]
 
 * link:https://docs.ray.io/en/latest/cluster/getting-started.html[Ray Clusters documentation]

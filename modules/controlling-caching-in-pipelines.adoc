@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
-[id='controlling-caching-in-data-science-pipelines_{context}']
-= Controlling caching in data science pipelines
+[id='controlling-caching-in-pipelines_{context}']
+= Controlling caching in pipelines
 
 [role='_abstract']
 Caching is enabled by default in {productname-short} to improve performance. However, there are instances when disabling caching might be necessary for specific tasks, an entire pipeline, or all pipelines. For example, caching might not be beneficial for tasks that rely on frequently updated data or unique computational needs. In other cases, such as debugging, development, or when deterministic re-execution is required, you might want to disable caching for all pipelines.
@@ -11,7 +11,7 @@ Caching is enabled by default in {productname-short} to improve performance. How
 Disabling caching at the pipeline or pipeline server level causes all tasks to re-run, potentially increasing compute time and resource usage.
 ====
 
-You can control caching for data science pipelines in the following ways:
+You can control caching for AI pipelines in the following ways:
 
 * *Individual task*: Data scientists can disable caching for specific steps in a pipeline.
 * *Pipeline (submit time)*: Data scientists can disable caching when submitting a pipeline run.
@@ -80,13 +80,13 @@ To disable caching for all pipelines in the pipeline server and override all pip
 
 Pipeline server configuration::
 + 
-. From the {productname-short} dashboard, click *Data science pipelines* -> *Pipelines*.
-. On the *Pipelines* page, from the *Project* drop-down list, select the project that contains the pipeline server that you want to configure.
+. From the {productname-short} dashboard, click *Develop & train* -> *Pipelines* -> *Pipeline definitions*.
+. On the *Pipeline definitions* page, from the *Project* drop-down list, select the project that contains the pipeline server that you want to configure.
 . From the *Pipeline server actions* list, select *Manage pipeline server configuration*.
 . In the *Pipeline caching* section, clear the *Allow caching to be configured per pipeline and task* checkbox.
 . Click *Save*.
 
-Data Science Pipelines Application (cluster administrator)::
+DataSciencePipelinesApplication (cluster administrator)::
 +
 In the {openshift-platform} console or CLI, set the `cacheEnabled` field to `false` in the `DataSciencePipelinesApplication` (DSPA) custom resource for the project. 
 +
@@ -126,10 +126,10 @@ After configuring caching settings, you can verify its behavior by using one of 
 ====
 You can also disable caching for a single node or for your entire pipeline in JupyterLab using Elyra.
 ifdef::upstream[]
-For more information, see link:{odhdocshome}/working-with-data-science-pipelines/#disabling-node-caching-in-elyra_ds-pipelines[Disabling node caching in Elyra].
+For more information, see link:{odhdocshome}/working-with-ai-pipelines/#disabling-node-caching-in-elyra_ai-pipelines[Disabling node caching in Elyra].
 endif::[]
 ifndef::upstream[]
-For more information, see link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/working-with-pipelines-in-jupyterlab_ds-pipelines#disabling-node-caching-in-elyra_ds-pipelines[Disabling node caching in Elyra].
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/working-with-pipelines-in-jupyterlab_ai-pipelines#disabling-node-caching-in-elyra_ai-pipelines[Disabling node caching in Elyra].
 endif::[]
 ====
 

@@ -4,7 +4,7 @@
 = Troubleshooting DSPA component errors
 
 [role='_abstract']
-This table displays common errors found in DataSciencePipelinesApplication (DSPA) components, along with the associated status, message, and proposed solution. The **Ready** condition type accumulates errors from various DSPA components, providing a status view of the DSPA deployment.
+This table displays common errors found in `DataSciencePipelinesApplication` (DSPA) components, along with the associated status, message, and proposed solution. The **Ready** condition type accumulates errors from various DSPA components, providing a status view of the DSPA deployment.
 
 [cols="30%,10%,60%", options="header",]
 |===
@@ -18,7 +18,7 @@ Ready
 False
 |Error message: `Could not connect to Object Store: tls: failed to verify certificate: x509: certificate signed by unknown authority`
 
-Solution: This issue occurs in clusters that use self-signed certificates with {productname-short} version 2.9 or later. The data science pipelines manager cannot connect to the object storage because it does not trust the object storage SSL certificate. Therefore, the pipeline server cannot be created. Contact your IT operations administrator to add the relevant Certificate Authority bundle. 
+Solution: This issue occurs in clusters that use self-signed certificates with {productname-short} version 2.9 or later. The AI pipelines manager cannot connect to the object storage because it does not trust the object storage SSL certificate. Therefore, the pipeline server cannot be created. Contact your IT operations administrator to add the relevant Certificate Authority bundle. 
 
 ifdef::upstream[]
 For more information, see link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding how {productname-short} handles certificates].
@@ -44,7 +44,7 @@ Deployment for component "ds-pipeline-pipelines-definition" is missing - prerequ
 Deployment for component "ds-pipeline-persistenceagent-pipelines-definition" is missing - prerequisite component might not yet be available.
 Deployment for component "ds-pipeline-scheduledworkflow-pipelines-definition" is missing - prerequisite component might not yet be available.`
 
-Solution: In clusters running {productname-short} 2.8.x, the data science pipelines manager might fail to connect to the object storage, and the pipeline server might not be created. 
+Solution: The AI pipelines manager might fail to connect to the object storage, and the pipeline server might not be created. 
 
 Ensure that your object store credentials and connection information are accurate, and verify that the object store is accessible from within the data science project's associated {openshift-platform} namespace. One common issue is that the object storage SSL certificate is not trusted, particularly if self-signed certificates are used.
 
@@ -78,7 +78,7 @@ Ready
 False
 |Error message: `Unable to connect to external database: tls: failed to verify certificate: x509: certificate signed by unknown authority`
 
-Solution: This issue can occur when you use any external database, such as Amazon RDS. The data science pipelines manager cannot connect to the database because it does not trust the database SSL certificate, preventing the creation of the pipeline server.  Contact your IT operations administrator to add the relevant certificates.
+Solution: This issue can occur when you use any external database, such as Amazon RDS. The AI pipelines manager cannot connect to the database because it does not trust the database SSL certificate, preventing the creation of the pipeline server.  Contact your IT operations administrator to add the relevant certificates.
 
 ifdef::upstream[]
 For more information, see link:{odhdocshome}/installing-open-data-hub/#understanding-certificates_certs[Understanding how {productname-short} handles certificates].
@@ -157,7 +157,7 @@ Solution: Wait for DSPA startup to complete. If deployment fails after 25 second
 
 |===
 
-== Common errors across DSP components
+== Common errors across DSPA components
 
 The following table lists errors that might occur across multiple DSPA components:
 

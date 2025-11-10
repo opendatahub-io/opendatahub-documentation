@@ -4,7 +4,7 @@
 = Preparing documents with Docling for Llama Stack retrieval
 
 [role="_abstract"]
-You can transform your source documents with a Docling-enabled data science pipeline and ingest the output into a Llama Stack vector store by using the Llama Stack SDK. This modular approach separates document preparation from ingestion, yet still delivers an end-to-end, retrieval-augmented generation (RAG) workflow.
+You can transform your source documents with a Docling-enabled pipeline and ingest the output into a Llama Stack vector store by using the Llama Stack SDK. This modular approach separates document preparation from ingestion, yet still delivers an end-to-end, retrieval-augmented generation (RAG) workflow.
 
 The pipeline registers a Milvus vector database and downloads the source PDFs, then splits them for parallel processing and converts each batch to Markdown with Docling. It generates sentence-transformer embeddings from the Markdown and stores them in the vector store, making the documents instantly searchable in Llama Stack.
 
@@ -31,7 +31,7 @@ ifndef::upstream[]
 * You have installed the `llama_stack_client` version 0.2.22 or later in your workbench environment. 
 * You have installed local object storage buckets and created connections, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
 endif::[]
-* You have compiled to YAML a data science pipeline that includes a Docling transform, either one of the RAG demo samples or your own custom pipeline.
+* You have compiled to YAML a pipeline that includes a Docling transform, either one of the RAG demo samples or your own custom pipeline.
 //* You have PDF documents ready for ingestion and know their storage location.
 * Your data science project quota allows between 500 millicores (0.5 CPU) and 4 CPU cores for the pipeline run.
 * Your data science project quota allows from 2 GiB up to 6 GiB of RAM for the pipeline run.
@@ -123,14 +123,14 @@ If you are using the sample Docling pipeline from the RAG demo repository, the p
 ====
 
 ifndef::upstream[]
-. In the {openshift-platform} web console, import the YAML file containing your docling pipeline into your data science project, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#importing-a-data-science-pipeline_ds-pipelines[Importing a data science pipeline].
+. In the {openshift-platform} web console, import the YAML file containing your docling pipeline into your data science project, as described in link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-ai-pipelines_ai-pipelines#importing-a-pipeline_ai-pipelines[Importing a pipeline].
 endif::[]
 ifdef::upstream[]
-. In the {openshift-platform} web console, import your YAML file containing your docling pipeline into your data science project, as described in link:{odhdocshome}/working-with-data-science-pipelines/#importing-a-pipeline-version[Importing a pipeline version].
+. In the {openshift-platform} web console, import your YAML file containing your docling pipeline into your data science project, as described in link:{odhdocshome}/working-with-ai-pipelines/#importing-a-pipeline-version[Importing a pipeline version].
 endif::[]
 
 ifndef::upstream[]
-. Create a pipeline run to execute your Docling pipeline, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-pipeline-runs_ds-pipelines#executing-a-pipeline-run_ds-pipelines[Executing a pipeline run]. The pipeline run inserts your PDF documents into the vector database. If you run the Docling pipeline from the link:https://github.com/opendatahub-io/rag/tree/main/demos/kfp/docling/pdf-conversion[RAG demo samples repository], you can optionally customize the following parameters before starting the pipeline run:
+. Create a pipeline run to execute your Docling pipeline, as described in link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-pipeline-runs_ai-pipelines#executing-a-pipeline-run_ai-pipelines[Executing a pipeline run]. The pipeline run inserts your PDF documents into the vector database. If you run the Docling pipeline from the link:https://github.com/opendatahub-io/rag/tree/main/demos/kfp/docling/pdf-conversion[RAG demo samples repository], you can optionally customize the following parameters before starting the pipeline run:
 
 * `base_url`: The base URL to fetch PDF files from.
 * `pdf_filenames`: A comma-separated list of PDF filenames to download and convert.
@@ -143,7 +143,7 @@ ifndef::upstream[]
 endif::[]
 
 ifdef::upstream[]
-. Create a pipeline run to execute your Docling pipeline, as described in link:{odhdocshome}/working-with-data-science-pipelines/#executing-a-pipeline-run_ds-pipelines[Executing a pipeline run]. The pipeline run inserts your PDF documents into the vector database. If you run the Docling pipeline from the link:https://github.com/opendatahub-io/rag/tree/main/demos/kfp/docling/pdf-conversion[RAG demo samples repository], you can optionally customize the following parameters before starting the pipeline run:
+. Create a pipeline run to execute your Docling pipeline, as described in link:{odhdocshome}/working-with-ai-pipelines/#executing-a-pipeline-run_ai-pipelines[Executing a pipeline run]. The pipeline run inserts your PDF documents into the vector database. If you run the Docling pipeline from the link:https://github.com/opendatahub-io/rag/tree/main/demos/kfp/docling/pdf-conversion[RAG demo samples repository], you can optionally customize the following parameters before starting the pipeline run:
 
 * `base_url`: The base URL to fetch PDF files from.
 * `pdf_filenames`: A comma-separated list of PDF filenames to download and convert.

@@ -138,19 +138,4 @@ To enable CRB and EPEL on Centos Stream 9-based images, run the following comman
 
 ----
 
-*Adding Elyra compatibility*
-
-Support for data science pipelines V2 (provided with the `odh-elyra` package) is available in {productname-long} version 2.9 and later. Previous versions of {productname-short} support data science pipelines V1 (provided with the `elyra` package).
-
-If you want your custom image to support data science pipelines V2, you must address the following requirements:
-
-* Include the `odh-elyra` package for having support with Data Science pipeline V2 (not the `elyra` package), for example:
-+
-----
- USER 1001
- 
- RUN pip install odh-elyra
-----
-
-* If you want to include the data science pipeline configuration automatically, as a runtime configuration, add an annotation when you import a custom workbench image. 
 
