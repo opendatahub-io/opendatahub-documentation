@@ -85,7 +85,7 @@ curl -sk -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/data/upload  \
 +
 The message "1000 datapoints successfully added to gaussian-credit-model data" appears.
 
-. (Recommended) Label your model input and output fields with the actual column names of the data in your KServe payloads. The payload of the request is a simple set of `original-name` : `new-name pairs`, assigning new meaningful names to the input and output features of our model. The message "Feature and output name mapping successfully applied" appears if input correctly:
+. (Recommended) Label your model input and output fields with the actual column names of the data in your KServe payloads. Send a JSON payload containing a simple set of `original-name` : `new-name pairs`, assigning new meaningful names to the input and output features of your model. The message "Feature and output name mapping successfully applied" appears if the request is successful:
 +
 [source, bash]
 ----
