@@ -1,0 +1,31 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="prepare-your-data-for-ai-consumption_{context}"]
+= Prepare your data for AI consumption
+
+[role='_abstract']
+To prepare your data, use Docling to transform unstructured data (such as text documents, images, and audio files) into structured formats that models can consume. 
+
+To automate data processing tasks, you can build Kubeflow Pipelines (KFP). For examples of pre-built pipelines for unstructured data processing with Docling, visit link:https://github.com/opendatahub-io/data-processing[https://github.com/opendatahub-io/data-processing].
+
+== Processing data by using Docling
+
+Docling is the Python library that you use to prepare unstructured data (like PDFs and images) for consumption by large language models. 
+
+include::modules/explore-the-data-processing-examples.adoc[leveloffset=+1]
+
+== Automate data processing steps by building AI pipelines
+
+With Kubeflow Pipelines (KFP), you can automate complex, multi-step Docling data processing tasks into scalable workflows.
+
+With the KFP SDK (Software Development Kit), you can define custom components and stitch them together into a complete pipeline. This allows you to fully control and automate Docling conversion tasks with specific parameters.
+
+Note: You can build a custom runtime image to ensure that all required Docling dependencies are present for pipeline execution. For information on building a runtime image, as well as how to manage, run, and view artifacts for AI pipelines, see link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines[Managing data science pipelines].
+
+include::modules/explore-the-kubeflow-pipeline-examples.adoc[leveloffset=+1]
+
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
