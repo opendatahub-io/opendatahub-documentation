@@ -111,7 +111,7 @@ spec:
       name: guardrails-detector-hf-runtime
   containers:
     - name: kserve-container
-      image: registry.redhat.io/rhoai/odh-guardrails-detector-huggingface-runtime-rhel9:v2.25
+      image: registry.redhat.io/rhoai/odh-guardrails-detector-huggingface-runtime-rhel9:v<your_rhoai_version>
       command:
         - uvicorn
         - app:app
@@ -174,6 +174,8 @@ spec:
     kind: Service
     name: prompt-injection-detector-predictor
 ----
++
+* Replace `<your_rhoai_version>` with your {productname-short} version (for example, `v2.25`). This feature requires {productname-short} version 2.25 or later.
 
 . Apply `prompt_injection_detector.yaml` to configure a serving runtime, inference service, and route for the Prompt Injection detector you want to incorporate in your Guardrails orchestration service:
 +
@@ -207,7 +209,7 @@ spec:
       name: guardrails-detector-hf-runtime
   containers:
     - name: kserve-container
-      image: registry.redhat.io/rhoai/odh-guardrails-detector-huggingface-runtime-rhel9:v2.25
+      image: registry.redhat.io/rhoai/odh-guardrails-detector-huggingface-runtime-rhel9:v<your_rhoai_version>
       command:
         - uvicorn
         - app:app
@@ -252,7 +254,7 @@ spec:
         name: guardrails-detector-hf-runtime
       name: ''
       runtime: guardrails-detector-runtime-hap
-      storageUri: 'oci://quay.io/trustyai_testing/detectors/deberta-v3-base-prompt-injection-v2@sha256:8737d6c7c09edf4c16dc87426624fd8ed7d118a12527a36b670be60f089da215'
+      storageUri: 'oci://quay.io/trustyai_testing/detectors/granite-guardian-hap-38m@sha256:9dd129668cce86dac82bca9ed1cd5fd5dbad81cdd6db1b65be7e88bfca30f0a4'
     resources:
       limits:
         cpu: '1'
@@ -273,6 +275,8 @@ spec:
     kind: Service
     name: hap-detector-predictor
 ----
++
+* Replace `<your_rhoai_version>` with your {productname-short} version (for example, `v2.25`). This feature requires {productname-short} version 2.25 or later.
 
 . Apply `hap_detector.yaml` to configure a serving runtime, inference service, and route for the HAP detector:
 +
@@ -304,7 +308,7 @@ data:
       hap:
         type: text_contents
         service:
-          hostname: ibm-hap-38m-detector-predictor
+          hostname: hap-detector-predictor
           port: 8000
         chunker_id: whole_doc_chunker
         default_threshold: 0.5
@@ -364,12 +368,12 @@ curl -s -X POST \
 .Verification
 
 . Within the Orchestrator API, you can use these detectors (HAP and Prompt Injection) to:
-.. Carry out content filtering for a text generation LLM at the input lvel, output level, or both.
+.. Carry out content filtering for a text generation LLM at the input level, output level, or both.
 .. Perform standalone detections with the Orchestrator API.
 
 [NOTE]
 --
-The following images are not supported on `s390x`:
+The following images are not supported on `arm64`, `s390x`, and `ppc64le`:
 
 * `quay.io/rgeada/llm_downloader:latest`
 * `quay.io/trustyai/modelmesh-minio-examples:latest`
