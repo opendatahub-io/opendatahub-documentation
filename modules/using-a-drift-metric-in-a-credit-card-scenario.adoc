@@ -115,12 +115,13 @@ Define name mappings in TrustyAI to assign memorable names to input or output na
 +
 [source, bash]
 ----
-curl -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/info | jq '.["gaussian-credit-model"].data.inputSchema'. 
+curl -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/info | jq '.["gaussian-credit-model"].data.inputSchema'
+----
 
-
-The following output appears as a json file confirming that TrustyAI has successfully received the data:
-
-
+. The following output appears as a json file confirming that TrustyAI has successfully received the data:
++
+[source, bash]
+----
 {
   "items": {
     "Years of Education": {
@@ -205,7 +206,7 @@ for batch in {0..595..5}; do
   curl -sk \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
-  -d @data/data_batches/$batch.json \
+  -d @$DATA_PATH/$batch.json \
   "${MODEL_ROUTE}"
   sleep 1
 done
