@@ -1,9 +1,11 @@
 :_module-type: PROCEDURE
 
 [id="viewing-models-in-the-catalog_{context}"]
-= Viewing models in the model catalog
+= Discovering and evaluating models in the model catalog
 [role='_abstract']
-You can discover and evaluate the available generative AI models in the model catalog to find the best fit for your use cases.
+You can discover and evaluate the available gen AI models in the model catalog to find the best fit for your use cases. You can select from available model categories, search by text, and filter by labels. 
+
+For validated models, you can view performance benchmark data for specific hardware configurations to evaluate and compare options for deployment.
 
 .Prerequisites
 * You are logged in to {productname-long}.
@@ -16,20 +18,52 @@ endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *AI hub* -> *Catalog*.
-. The *Model Catalog* page provides a high-level view of available models, including the model name, description, and labels such as task, license, and provider.
+. The *Model Catalog* page provides a high-level view of available models, including the model category, name, description, and labels such as task, license, and provider. You can also view performance benchmarks for validated models from third parties.
 
-. In the drop-down list, select from the available catalog sources that have been configured by your administrator. The *Default Catalog* is displayed by default. 
+. In the menu bar, select from the available model categories:
+* *All models*: All models available in the model catalog.
+* *{org-name} AI models*: Models provided and supported by {org-name}.
+* *{org-name} AI validated models*: Third-party models benchmarked by {org-name} for performance and quality by using open-source evaluation datasets.  
+* *Community and custom models*: Additional third-party and community models configured by your administrator. This category is empty by default.
 +
-NOTE: OpenShift cluster administrators can configure additional model catalog sources. For more details, see the Kubeflow Model Registry community documentation on link:https://github.com/kubeflow/model-registry/tree/main/manifests/kustomize/options/catalog[Model Catalog Manifests].
+NOTE: OpenShift cluster administrators can configure additional model catalog sources. For more details, see the Kubeflow Model Registry community documentation on link:https://github.com/kubeflow/model-registry/tree/main/manifests/kustomize/options/catalog[configuring catalog sources].
 
-. Use the search bar to find a model in the catalog. You can enter text to search by model name, description, or provider.
+. You can use the search bar to find a model in the catalog. Enter text to search by model name, description, or provider.
+
+. You can use the filter menu to search and select filters by the following labels: 
+* *Task*: For example, `Text-generation`.
+* *Provider*: For example, `Meta`.
+* *License*: For example, `Apache 2.0`.
 
 . Click the name of a model to view the model details page. This page displays the model description and the *Model card* information supplied by the model provider. This includes details such as the model's intended use and potential limitations, training parameters and datasets, and evaluation results.  
 
-. You can click *Load more models* to scroll and view additional models available in the catalog. Repeat this step until all models are loaded.
+. For models in the *Red Hat AI validated models* category, click the *Performance Insights* tab to view performance benchmark data to compare performance metrics for specific hardware configurations and to determine the most suitable options for deployment.  
++
+You can filter the performance data by the following options: 
++
+* *Workload type*: Select a workload type to view performance under different token lengths, for example, `Chatbot`.
+* *Max latency*: Set your maximum acceptable latency. Hardware configurations that respond slower than this value are hidden. You can select a specific metric in the list: 
+
+** `E2E` (end-to-end request latency): The time taken from submitting the request to receiving the final response.  
+** `TTFT` (time to first token): The time that the user must wait before seeing output from the model. 
+** `TPS` (tokens per second): The total number of tokens that are output per second.
+** `ITL` (inter-token latency): The average time taken between consecutive tokens.
++
+You can also select a percentile value, for example, `P90`. 
++
+Use the slider to set the maximum acceptable latency value in milliseconds, and click *Apply filter*.
+* *Min RPS*: Set to only show models that can handle at least this number of requests. Hardware configurations that perform below this value are hidden.
++
+Use the slider to set the minimum requests per second value, and click *Apply filter*. 
+* *Hardware type*: Select one or more hardware types from the list, for example, `H200`.
++
+You can click *Clear all filters* to reset your filters and try again. 
+
+. For the *Red Hat AI validated models* category, you can click *Load more models* to scroll and view additional models available in the catalog. Repeat this step until all models are loaded.
 
 .Verification
-* You can view the information about a selected model on the model details page.
+* For all models, you can view the information about a selected model on the model details page.
+* For models in the *Red Hat AI validated models* category, you can view the benchmark information about a selected model on *Performance Insights* tab.
 
 //[role='_additional-resources']
 //.Additional resources
