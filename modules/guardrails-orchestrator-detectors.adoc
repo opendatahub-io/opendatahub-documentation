@@ -12,16 +12,16 @@ The Guardrails framework uses "detector" servers to contain guardrailing logic.
 Any server that provides the link:https://foundation-model-stack.github.io/fms-guardrails-orchestrator/?urls.primaryName=Detector+API[IBM /detectors API] is compatible
 with the Guardrails framework. The main endpoint for a detector server is the `/api/v1/text/contents`, whose payload looks like:
 
-
-```
-curl $ENDPOINT/api/v1/text/contents -d /
+[source,bash]
+----
+curl $ENDPOINT/api/v1/text/contents -d \
 "{
   'contents': [
     'Some message'
   ],
   'detector_params': {}
 }"
-```
+----
 
 == Built-in Detector
 The Guardrails framework provides a set of “built-in” detectors out-of-the-box which provides a number of detection algorithms. The built-in detector currently provides the following algorithms.
@@ -46,11 +46,13 @@ The Guardrails framework provides a set of “built-in” detectors out-of-the-b
 * `yaml-with-schema:$SCHEMA` - detect  whether the text content satisfies a provided XML schema. To specify a schema, replace $SCHEMA with a JSON schema (not a YAML schema)
 
 .`custom`
-* _(Dev-preview)_ Custom detectors defined via a `custom_detectors.py` file. See $release-note.
+* _(Dev-preview)_ Custom detectors defined via a `custom_detectors.py` file.
 
 The detector algorithm can be chosen via `detector_params`, by first choosing the top-level taxonomy (e.g., `regex` or `file_type`) and then providing a list of the desired algorithms from within
 that category, e.g.:
-```
+
+[source,json]
+----
 {
   "contents": [
     "Some message"
@@ -59,5 +61,6 @@ that category, e.g.:
     `regex`: [credit-card, email]
   }
 }
-```
-In the above example, both the `credit-card` and `email` algorithms with be run against the provided message.
+----
+
+In the above example, both the `credit-card` and `email` algorithms are run against the provided message.

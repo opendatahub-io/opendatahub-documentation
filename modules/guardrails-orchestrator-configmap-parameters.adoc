@@ -66,7 +66,7 @@ will communicate with this service via HTTPS.
 | *`detectors`* | The `detectors` section is where the detector servers available to the orchestrator are specified. Provide some unique name for the detector server as the key
 to each entry, and then the following values are required:
 
-* `type` - The kind of detector server. For now, the only supported kind within RHOAI is `text_contents`
+* `type` - The kind of detector server. For now, the only supported kind within {productname-short} is `text_contents`
 * `service` - The service configuration for the detector server, see the *`service`* section above for details. Note, if you want to use the built-in detector, the service configuration should always be
 
     service:
@@ -82,9 +82,9 @@ A TLS configuration consists of the following fields:
 
     * `cert_path` - The path to a `.crt` file inside the Guardrails Orchestrator container.
     * `key_path` - The path to a `.key` file inside the Guardrails Orchestrator container.
-    * `ca_path` - The path to CA certificate `.crt` file on the Guardrails Orchestrator container. The default Openshift Serving CA will be mounted at `/etc/tls/ca/service-ca.crt`, we recommend using this as your `ca_path`.
+    * `ca_path` - The path to CA certificate `.crt` file on the Guardrails Orchestrator container. The default {openshift-platform} Serving CA is mounted at `/etc/tls/ca/service-ca.crt`, which can be used as your `ca_path`.
 +
 See the <<tlsSecrets-param,`tlsSecrets`>> section of the GuardrailsOrchestrator Custom Resource to learn how to mount custom TLS files into the Guardrails Orchestrator container.
 | *`passthrough_headers`* |  Defines which headers from your requests to the Guardrails Orchestrator get sent onwards to
-the various services specified in this configuration. If you want to ensure that the Orchestrator can talk to authenticated services, we recommend specifying choosing `"authorization"` and `"content-type"` at minimum.
+the various services specified in this configuration. If you want to ensure that the Orchestrator can talk to authenticated services, specify `"authorization"` and `"content-type"`.
 |===

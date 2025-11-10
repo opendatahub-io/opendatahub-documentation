@@ -19,7 +19,7 @@ ifdef::cloud-service[]
 ** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
 ** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
-* You are familiar with how to create a `configMap` for monitoring a user-defined workflow. You perform similar steps in this procedure. See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-pods#nodes-pods-configmap-overview_configmaps[Understanding config maps].
+* You are familiar with how to create a `ConfigMap` for monitoring a user-defined workflow. You perform similar steps in this procedure. See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-pods#nodes-pods-configmap-overview_configmaps[Understanding ConfigMaps].
 ifdef::upstream[]
 * You have configured KServe to use `RawDeployment` mode. For more information, see link:{odhdocshome}/deploying_models/#deploying-models-on-the-single-model-serving-platform_odh-user[Deploying models on the single-model serving platform^].
 endif::[]
@@ -29,22 +29,21 @@ ifndef::upstream[]
 endif::[]
 
 * You have the TrustyAI component in your {productname-short} `DataScienceCluster` set to `Managed`.
-* You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace. 
+* You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace.
 
----
-
+.Procedure
 . Deploy your Orchestrator config map:
 +
 [source,terminal]
 ----
-$ oc apply -f <ORCHESTRATOR CONFIGMAP>.yaml -n <TEST_NAMESPACE>
+$ oc apply -f <orchestrator_configmap>.yaml -n <namespace>
 ----
 
 . (optionally) Deploy your Guardrails gateway config map:
 +
 [source,terminal]
 ----
-$ oc apply -f <GUARDRAILS GATEWAY CONFIGMAP>.yaml -n <TEST_NAMESPACE>
+$ oc apply -f <gateway_configmap>.yaml -n <namespace>
 ----
 . Create a Guardrails Orchestrator custom resource. Make sure that `orchestratorConfig` and `guardrailsGatewayConfig` matches the names of the resources you created in steps 1 and 2.
 +
@@ -81,10 +80,10 @@ To access this, include the `autoConfig` parameter inside your Custom Resource, 
 | Parameter |Description
 | *`orchestratorConfig`*  *(optional)*|The name of the `ConfigMap` object that contains generator, detector, and chunker arguments. If using `autoConfig`, this field can be omitted.
 |`guardrailsGatewayConfig` *(optional)*| The name of the ConfigMap object that specifies gateway configurations. This field can be omitted if you do not wish to use the Guardrails Gateway or are using `autoConfig`.
-|`customDetectorsConfig` *(optional)*| This feature is dev-preview, please see $RELEASE_NOTE for more information
+|`customDetectorsConfig` *(optional)*| This feature is in development preview.
 | `autoConfig` *(optional)* | A list of paired name and value arguments to define how the Guardrails AutoConfig. Any manually-specified configuration files in `orchestratorConfig` or `guardrailsGatewayConfig` will take precedence over the automatically-generated configuration files.
 
-* `inferenceServiceToGuardrail` - The name of the inference service you wish to guardrail. This should exactly match the model name provided when deploying the model. For ‹a list of valid names, you can run
+* `inferenceServiceToGuardrail` - The name of the inference service you wish to guardrail. This should exactly match the model name provided when deploying the model. For a list of valid names, you can run
 `oc get isvc -n $NAMESPACE`
 * `detectorServiceLabelToMatch` - A string label to use when searching for available detector servers. All inference services in your namespace with the label `$detectorServiceLabelToMatch: true` will be automatically configured as a detector.
 +
@@ -110,7 +109,7 @@ See <<guardrails-auto-config_{context}, Auto Configuring Guardrails>>for more in
 +
 [source,terminal]
 ----
-oc apply -f orchestrator_cr.yaml -n <TEST_NAMESPACE>
+oc apply -f orchestrator_cr.yaml -n <namespace>
 ----
 
 .Verification
@@ -118,7 +117,7 @@ oc apply -f orchestrator_cr.yaml -n <TEST_NAMESPACE>
 +
 [source,terminal]
 ----
-$ oc get pods -n <TEST_NAMESPACE>
+$ oc get pods -n <namespace>
 ----
 +
 .Example response
@@ -132,7 +131,7 @@ guardrails-orchestrator-sample             3/3     Running   0          3h53m
 +
 [source,terminal]
 ----
-$ GORCH_ROUTE_HEALTH=$(oc get routes guardrails-orchestrator-sample-health -o jsonpath='{.spec.host}' -n <TEST_NAMESPACE)
+$ GORCH_ROUTE_HEALTH=$(oc get routes guardrails-orchestrator-sample-health -o jsonpath='{.spec.host}' -n <namespace>)
 ----
 +
 [source,terminal]
@@ -161,3 +160,4 @@ $ curl -v https://$GORCH_ROUTE_HEALTH/health
 * Connection #0 to host localhost left intact
 {"fms-guardrails-orchestr8":"0.1.0"}
 ----
+

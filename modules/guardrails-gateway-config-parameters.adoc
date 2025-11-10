@@ -44,13 +44,13 @@ data:
 
 * *`name`* - The name of your detector server. This key is later used when defining your preset routes in the `route` section of the configuration. If no `server` value is provided, this name must match a detector server name given in your  <<detector-server-name-param,*Orchestrator Config*>>. If `server` is specified, the `name` field can be any string.
 * *`server`* *(optional)* - The server name from your <<detector-server-name-param,*Orchestrator Config*>> to use for this particular detector config.This field is useful if you want to create multiple detector parameter configurations that use the same underlying detector server, e.g., to use the built-in detector with different algorithms for different presets.
-* *`input`* -  Whether this detector should operator over user inputs (prompts). Available values are `true` or `false`
-* *`output`* - Whether this detector should operator over model outputs.  Available values are `true` or `false`
+* *`input`* -  Whether this detector should operate over user inputs (prompts). Available values are `true` or `false`
+* *`output`* - Whether this detector should operate over model outputs.  Available values are `true` or `false`
 * *`detector_params`* - The parameters that should be passed to the detector endpoint. See <<guardrails-detector-server-info, `detector server documentation`>> for more information.
 
 | *`routes`* | Define Guardrail pipeline presets according to combinations of available detectors. Each preset route requires the following fields:
 
-* *`name`` - The name of the route preset. A corresponding `/<name>/v1/chat/completions` endpoint will be available in the created Guardrails Gateway server. For example, in the example configuration above, `/passthrough/v1/chat/completions/` will be an available endpoint.
+* *`name`* - The name of the route preset. A corresponding `/<name>/v1/chat/completions` endpoint is available in the created Guardrails Gateway server. For example, in the example configuration above, `/passthrough/v1/chat/completions/` is an available endpoint.
 * *`detectors`* - The list of detectors that should be used in this particular pipeline preset. Please see the note below regarding using multiple detectors from the same underlying server.
 |===
 
