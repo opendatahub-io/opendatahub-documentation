@@ -4,7 +4,7 @@
 = Configuring pipelines with your own Argo Workflows instance
 
 [role="_abstract"]
-You can configure {productname-short} to use an existing Argo Workflows instance instead of the embedded one included with Data Science Pipelines. This configuration is useful if your {openshift-platform} cluster already includes a managed Argo Workflows instance and you want to integrate it with {productname-short} pipelines without conflicts. Disabling the embedded Argo Workflows controller allows cluster administrators to manage the lifecycles of {productname-short} and Argo Workflows independently.
+You can configure {productname-short} to use an existing Argo Workflows instance instead of the embedded one included with AI pipelines. This configuration is useful if your {openshift-platform} cluster already includes a managed Argo Workflows instance and you want to integrate it with {productname-short} pipelines without conflicts. Disabling the embedded Argo Workflows controller allows cluster administrators to manage the lifecycles of {productname-short} and Argo Workflows independently.
 
 [NOTE]
 ====
@@ -23,16 +23,16 @@ You cannot enable both the embedded Argo Workflows instance and your own Argo Wo
 . Click the default instance name (for example, *default-dsc*) to open the instance details page.
 . Click the *YAML* tab to show the instance specifications.
 . Disable the embedded Argo Workflows controllers that are managed by the {productname-short} Operator:
-.. In the `spec.components` section, set the value of the `managementState` field for the `datasciencepipelines` component to `Managed`.
-.. In the `spec.components.datasciencepipelines` section, set the value of the `managementState` field for `argoWorkflowsControllers` to `Removed`, as shown in the following example:
+.. In the `spec.components` section, set the value of the `managementState` field for the `aipipelines` component to `Managed`.
+.. In the `spec.components.aipipelines` section, set the value of the `managementState` field for `argoWorkflowsControllers` to `Removed`, as shown in the following example:
 +
-.Example datasciencepipelines specification
+.Example aipipelines specification
 [source,yaml]
 ----
 # ...
 spec:
   components:
-    datasciencepipelines:
+    aipipelines:
       argoWorkflowsControllers:
         managementState: Removed
       managementState: Managed
@@ -42,7 +42,7 @@ spec:
 . Install and configure a compatible version of Argo Workflows on your cluster. For compatible version information, see link:https://access.redhat.com/articles/rhoai-supported-configs[Supported Configurations]. For installation information, see the link:https://argo-workflows.readthedocs.io/en/stable/installation/[Argo Workflows Installation documentation^].
 
 .Verification
-. On the *Details* tab of the `DataScienceCluster` instance (for example, *default-dsc*), verify that `DataSciencePipelinesReady` has a *Status* of `True`.
+. On the *Details* tab of the `DataScienceCluster` instance (for example, *default-dsc*), verify that `AIPipelinesReady` has a *Status* of `True`.
 . Verify that the `ds-pipeline-workflow-controller` pod does not exist:
 .. Go to *Workloads* -> *Pods*.
 .. Search for the `ds-pipeline-workflow-controller` pod.

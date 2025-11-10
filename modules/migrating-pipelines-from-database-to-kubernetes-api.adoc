@@ -6,7 +6,7 @@
 [role="_abstract"]
 You can migrate existing pipelines and pipeline versions from the internal database to Kubernetes custom resources. This makes it easier to use OpenShift GitOps (Argo CD) or similar tools to manage pipelines and pipeline versions, while still allowing you to manage them through the {productname-short} dashboard, API, and the Kubeflow Pipelines (KFP) Software Development Kit (SDK).
 
-This procedure uses a community-supported Kubeflow Pipelines migration script to export pipelines from the Data Science Pipelines API and generate corresponding `Pipeline` and `PipelineVersion` custom resources for import into your cluster.
+This procedure uses a community-supported Kubeflow Pipelines migration script to export pipelines from the AI Pipelines API and generate corresponding `Pipeline` and `PipelineVersion` custom resources for import into your cluster.
 
 ifndef::upstream[]
 [IMPORTANT]
@@ -69,7 +69,7 @@ python3.11 -m venv .venv
 
 . Download and run the Kubeflow Pipelines community migration script.
 +
-The script connects to the Data Science Pipelines API, exports all pipelines and versions from the specified data science project, and generates one YAML file per pipeline in a local `kfp-exported-pipelines/` directory. Each file includes a `Pipeline` resource followed by all associated `PipelineVersion` resources.
+The script connects to the AI Pipelines API, exports all pipelines and versions from the specified data science project, and generates one YAML file per pipeline in a local `kfp-exported-pipelines/` directory. Each file includes a `Pipeline` resource followed by all associated `PipelineVersion` resources.
 
 .. Run the following command:
 +

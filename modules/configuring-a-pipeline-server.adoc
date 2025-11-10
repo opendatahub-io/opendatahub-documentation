@@ -4,7 +4,7 @@
 = Configuring a pipeline server
 
 [role='_abstract']
-Before you can successfully create a pipeline in {productname-short}, you must configure a pipeline server. This task includes configuring where your pipeline artifacts and data are stored.
+Before you can successfully create an AI pipeline in {productname-short}, you must configure a pipeline server. This task includes configuring where your pipeline artifacts and data are stored.
 
 [NOTE]
 ====
@@ -15,7 +15,7 @@ When you run a pipeline, the artifacts are stored in the `/pipeline-name` folder
 
 .Prerequisites
 * You have logged in to {productname-long}.
-* You have created a data science project that you can add a pipeline server to.
+* You have created a project that you can add a pipeline server to.
 * You have an existing S3-compatible object storage bucket and you have configured write access to your S3 bucket on your storage account.
 * If you are configuring a pipeline server for production pipeline workloads, you have an existing external MySQL or MariaDB database.
 * If you are configuring a pipeline server with an external MySQL database, your database must use at least MySQL version 5.x. However, {org-name} recommends that you use MySQL version 8.x. 
@@ -29,12 +29,10 @@ For more information about enabling the `mysql_native_password` plugin, see link
 * If you are configuring a pipeline server with a MariaDB database, your database must use MariaDB version 10.3 or later. However, {org-name} recommends that you use at least MariaDB version 10.5.
 
 .Procedure
-. From the {productname-short} dashboard, click *Data science projects*.
+. From the {productname-short} dashboard, click *Projects*.
+. On the *Projects* page, click the name of the project that you want to configure a pipeline server for.
 +
-The *Data science projects* page opens.
-. Click the name of the project that you want to configure a pipeline server for.
-+
-A project details page opens.
+The project details page opens.
 . Click the *Pipelines* tab.
 . Click *Configure pipeline server*.
 +
@@ -84,8 +82,8 @@ On the *Pipelines* tab for the project:
 [role='_additional-resources']
 .Additional resources
 ifndef::upstream[]
-* link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#overview-of-data-science-pipelines-caching_ds-pipelines[Overview of data science pipelines caching]
+* link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-ai-pipelines_ai-pipelines#overview-of-pipelines-caching_ai-pipelines[Overview of pipelines caching]
 endif::[]
 ifdef::upstream[]
-* link:{odhdocshome}/working-with-data-science-pipelines/#overview-of-data-science-pipelines-caching_ds-pipelines[Overview of data science pipelines caching]
+* link:{odhdocshome}/working-with-ai-pipelines/#overview-of-pipelines-caching_ai-pipelines[Overview of pipelines caching]
 endif::[]
