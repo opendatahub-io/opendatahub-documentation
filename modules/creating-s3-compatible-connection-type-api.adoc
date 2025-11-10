@@ -1,0 +1,59 @@
+:_module-type: PROCEDURE
+
+[id="creating-s3-compatible-connection-type-api_{context}"]
+= Creating an S3-compatible connection type using the connections API
+
+[role='_abstract']
+
+In {productname-short}, you can create an S-3 compatible connection type by using the connections API. In the following procedure, you define a Kubernetes Secret resource that holds the necessary credentials and configuration for an S3-compatible connection.
+
+.Prerequisites
+
+* You have access to a Kubernetes cluster where you have permissions to create Secrets.
+* You have the following details for your S3 storage: the S3 endpoint URL, bucket name, Access Key ID, and Secret Access Key. 
+
+.Procedure
+
+. Create a YAML file (e.g., s3-connection.yaml) that defines a Kubernetes `Secret` of type Opaque. This secret will contain the S3 connection parameters in the `stringData` section.
++
+[source,bash]
+----
+kind: Secret
+metadata:
+  name: <connection-name> # Choose a descriptive name for your connection
+  namespace: <your-namespace> # Specify the namespace where the connection is needed
+  annotations:
+    opendatahub.io/connection-type-protocol: "s3"
+type: Opaque
+stringData:
+  # --- REQUIRED FIELDS ---
+  AWS_S3_ENDPOINT: "<s3-endpoint-url>" # <1> 
+  AWS_S3_BUCKET: "<bucket-name>" # <2> 
+  AWS_ACCESS_KEY_ID: "<access-key-id>" # <3> 
+  AWS_SECRET_ACCESS_KEY: "<secret-access-key>" # <4> 
+  # -----------------------
+
+  # --- OPTIONAL FIELDS (Example) ---
+  # AWS_DEFAULT_REGION: "us-east-1" <5>
+----
++
+.. In the example YAML, replace the required fields by populating the placeholder values in the `stringData` section with your actual S3 connection details:
++
+
+<1> S3 endpoint URL: The full URL for your S3 compatible endpoint. 
+<2> Mandatory bucket name: The exact name of the S3 bucket you intend to connect to.
+<3> Access key ID: Your S3 account access key ID.
+<4> Secret access key: Your S3 account secret access key.
+<5> Optional region field: If your S3 provider requires a specific region or if you are using AWS, you may include this optional field. 
++
+
+NOTE:  The `opendatahub.io/connection-type-protocol: "s3"` annotation is required by applications to recognize this Secret as an S3 connection.
+
+. Apply the Secret to the cluster by using the `kubectl apply` command to create the Secret in your Kubernetes cluster. 
++
+[source,bash]
+----
+kubectl apply -f s3-connection.yaml
+----
+
+

@@ -1,0 +1,78 @@
+:_module-type: PROCEDURE
+
+[id="creating-oci-compatible-connection-type-api_{context}"]
+
+= Creating an OCI-compatible connection type using the connections API
+
+[role='_abstract']
+
+In {productname-short}, you can create a Uniform Resource Identifier (URI) compatible connection type by using the connections API. In the following procedure, you define a Kubernetes Secret for storing credentials to an OCI-compatible container registry (like Quay.io or a private registry). This allows applications to authenticate and pull container images.
+
+.Prerequisites
+* You have access to a Kubernetes cluster with permissions to create Secrets.
+* You have access to the Registry URL with the organization (e.g., http://quay.io/my-org).
+* You have the username and password/ or token for the container registry.
+* You have installed a tool for Base64 encoding (e.g., base64 command-line utility).
+
+.Procedure
+. Prepare the authentication data by using Base64 to encode the `username:password` string, the ``.dockerconfigjson` content, and the `OCI_HOST` URL. 
+.. Encode credentials by combining `username:password` and encode it to get the value for the `auth` field in the JSON structure.
++
+[source,bash]
+----
+echo -n 'myusername:mypassword' | base64
+# Result: <base64-encoded-username:password>
+----
++
+.. Generate and encode ``.dockerconfigjson` by creating the JSON structure and encoding the entire string with Base64.
++
+[source,bash]
+----
+{
+  "auths": {
+    "quay.io": {
+      "auth": "<base64-encoded-username:password>"
+    }
+  }
+}
+# The encoded result is: <base64-encoded-docker-config>
+----
++
+.. Encode the full registry URL including the organization.
++
+[source,bash]
+----
+echo -n 'http://quay.io/my-org' | base64
+# The encoded result is: <base64-encoded-registry-url>
+----
+
+. Create a YAML file (e.g., oci-connection.yaml) that defines a Kubernetes Secret of type `kubernetes.io/dockerconfigjson`. Use the encoded strings from the previous step in the `data` section.
++
+[source,bash]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <connection-name>
+  namespace: <your-namespace>
+  annotations:
+    opendatahub.io/connection-type-protocol: "oci" # Protocol identifier
+type: kubernetes.io/dockerconfigjson
+data:
+  # Required Field: Base64-encoded Docker config JSON
+  .dockerconfigjson: <base64-encoded-docker-config>
+
+  # Required Field: Base64-encoded registry host URL with organization
+  OCI_HOST: <base64-encoded-registry-url>
+----
+
+. Apply the secret to the cluster by using the `kubectl apply` command to create the Secret. 
++
+[source,yaml]
+----
+kubectl apply -f oci-connection.yaml
+----
+
+
+
+
