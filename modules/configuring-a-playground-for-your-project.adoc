@@ -1,0 +1,44 @@
+:_module-type: PROCEDURE
+
+[id="configuring-a-playground-for-your-project_{context}"]
+= Configuring a playground for your project
+
+[role="_abstract"]
+
+Configure a playground to interact with your deployed generative AI models and connect to backend servers, such as the Model Control Plane (MCP).
+
+.Prerequisites
+
+* The `spec.dashboardConfig.genAiStudio` dashboard configuration option is set to `true`. For more information, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options]. 
+* You have created a project.
+* You deployed a model in your project and added your model as an AI asset endpoint.
+* If your cluster administrator has configured  Model Control Plane (MCP) servers, they are accessible within your OpenShift environment.
+
+.Procedure
+
+Follow these steps to configure the playground:
+
+. Perform one of the following actions:
+.. From the {productname-short} dashboard side navigation menu, click *Gen AI studio* -> *Playground*.
+... Select the project containing your model deployment from the *Project* dropdown list.
+... Click *Create playground*.
++
+The *Configure playground* dialog opens.
+.. From the {productname-short} dashboard side navigation menu, click *Gen AI studio* -> *AI asset endpoints*.
+... Select the project containing your model deployment from the *Project* dropdown list.
+... Click the *Models* tab.
+... Locate the model that you want to create a playground for, and click *Add to playground*
++
+The *Configure playground* dialog opens.
+. Select the check box next to the model deployment you want to interact with in this playground instance.
+. Click *Create*.
++
+Wait for the playground interface to finish loading.
+. Expand the *MCP servers* section.
+. Select the check box for the appropriate MCP server instance to connect to.
+
+.Verification
+
+* The playground interface loads successfully.
+* The *Model details* section displays information about the selected model deployment.
+* The selected MCP server shows a successful connection status within the *MCP servers* section.

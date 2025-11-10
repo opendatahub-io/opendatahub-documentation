@@ -1,0 +1,41 @@
+:_module-type: CONCEPT
+
+[id="understanding-rag-settings_{context}"]
+== Understanding RAG settings
+
+[role="_abstract"]
+
+When you upload a document for Retrieval-Augmented Generation (RAG), you can configure the following settings to optimize how the text is processed.
+
+[horizontal]
+*Maximum chunk length*::
+The maximum word count for each text section ("chunk") created from your uploaded files.
+* *Smaller chunks* are recommended for precise data retrieval.
+* *Larger chunks* are recommended for tasks requiring broader context, such as summarization.
+
+*Chunk overlap*::
+The number of words from the end of one text section (chunk) that are repeated at the start of the next one. This overlap helps maintain continuous context across chunks, improving model responses.
++
+For example, the following sentence is chunked differently depending on the chunk overlap: "Chunk overlap can improve the quality of model responses."
++
+[options="compact"]
+--
+*Maximum chunk length = 4, Chunk overlap = 1*
+[literal]
+....
+Chunk overlap can improve
+improve the quality of
+of model responses.
+....
+
+*Maximum chunk length = 4, Chunk overlap = 0*
+[literal]
+....
+Chunk overlap can improve
+the quality of model
+responses.
+....
+--
+
+*Delimiter*::
+A character or string that specifies where a text chunk should end. This helps define text boundaries alongside maximum chunk length and overlap, ensuring sentences or paragraphs remain intact.
