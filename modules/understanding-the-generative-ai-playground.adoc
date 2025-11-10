@@ -1,0 +1,50 @@
+:_module-type: REFERENCE
+
+[id="understanding-generative-ai-playground_{context}"]
+= Understanding the Generative AI Playground
+
+[role="_abstract"]
+The Generative AI (GenAI) Playground in {productname-short} provides an integrated environment for prototyping and evaluating models. It enables AI engineers to interactively test prompts, evaluate model responses, and integrate Retrieval-Augmented Generation (RAG) and Model Control Protocol (MCP) servers from within the {productname-short} dashboard.
+
+AI engineers need an efficient way to validate prompt behavior and model interaction before selecting a model for integration into an application or MCP workflow. The GenAI Playground enables direct model testing, providing a streamlined transition from experimentation to application development.
+
+== Capabilities
+
+The GenAI Playground offers the following capabilities:
+
+* **Model interaction** — Interact with large language models (LLMs) to test prompt and response behavior.
+* **RAG experimentation** — Test document-based Retrieval-Augmented Generation by uploading files and interacting with their content.
+* **MCP integration** — Connect to approved MCP servers to test interactions with configured tools.
+* **Prompt export** — Export prompts and agent configurations as runnable code snippets for further iteration in a local IDE.
+
+== GenAI Playground interface overview
+
+The GenAI Playground is embedded in the {productname-short} Dashboard and consists of a chat interface with configuration panels on the right side of the page. The right-pane contains three configuration sections:
+
+=== Model details
+
+In the *Model details* section, you can select the model that you want to experiment with from the drop-down list. After selecting the model, you can:
+
+* Add system instructions in the *System instructions* text box to guide model behavior.
+* Adjust the *Temperature* slider (0–2) to control randomness in model output.  
+  A lower temperature produces more deterministic responses, while a higher temperature increases creativity and variability.
+* Enable or disable *Streaming* responses by toggling the *Streaming* switch.  
+  When enabled, the model output appears progressively in the chat window as it is generated.
+
+=== RAG configuration
+
+The *RAG* section enables document-based context retrieval for chat interactions. When you toggle *RAG* on, you can upload documents for ingestion. The following limits apply:
+
+* Up to 10 files
+* Supported formats: PDF, DOC, and CSV
+* Maximum file size: 10 MB per file
+
+Once uploaded, the GenAI Playground indexes the document content, enabling the model to retrieve relevant context during your chat session.
+
+=== MCP servers
+
+The *MCP servers* section allows integration with approved Model Control Protocol (MCP) servers for tool-based interactions.  
+
+* Authenticated users can view and interact with available tools within the connected MCP server.
+* Non-authenticated users cannot open or use the tools menu.
+

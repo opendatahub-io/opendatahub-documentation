@@ -1,0 +1,44 @@
+:_module-type: PROCEDURE
+
+[id="accessing-the-generative-ai-playground_{context}"]
+= Accessing the Generative AI Playground
+
+[role='_abstract']
+You can access the Generative AI (GenAI) Playground from the {productname-short} dashboard. The GenAI Playground interface provides a unified environment for testing prompts, interacting with deployed models, and experimenting with Retrieval-Augmented Generation (RAG) and Model Control Protocol (MCP) integrations.
+
+[IMPORTANT]
+====
+By default, the GenAI Playground interface is hidden from display in the {productname-short} dashboard. To show the user interface components for the GenAI Playground interface, set the `genAiStudio` value to `true` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}/html/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[]
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/managing-odh/#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[] 
+====
+
+.Prerequisites
+* You have installed {openshift-platform} 4.17 or newer. 
+* You have logged in to {productname-long}.
+* The `genAiStudio` feature flag value is set to `true` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+ifndef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
+endif::[]
+ifdef::upstream[]
+* If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
+endif::[]
+* You have access to a data science project where the models are deployed.
+* You have deployed the Llama Stack Operator.
+* You have configured a LlamaStackDistribution custom resource (CR) with a vLLM inference service and a vector store.
+* You have deployed a model that is served by a vLLM model server.
+* You have configured any MCP tools in your Llama Stack instance. 
+* Your environment has network access to the vector database service through {openshift-platform}.
+
+.Procedure
+. From the {productname-short} dashboard, click *Gen AI studio* -> *Playground*.
++
+The *Playground* page opens.
+. From the *Project* drop-down list at the top of the page, select the relevant project.
+
+.Verification
+* The GenAI Playground interface opens and displays the chat panel and configuration options for the selected project.
