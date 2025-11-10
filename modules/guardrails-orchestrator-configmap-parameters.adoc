@@ -1,0 +1,90 @@
+:_module-type: REFERENCE
+
+[id='guardrails-orchestrator-config-parameters_{context}']
+= Orchestrator Configuration Parameters
+
+The first step in deploying the Guardrails framework is to first define your orchestrator configuration via Config Map. This serves as a registry
+of the components in the system, namely by specifying the model-to-be-guardrailed and available detector servers.
+
+Here is an example version of an orchestrator configuration file:
++
+.Example `orchestrator_configmap.yaml`
+[source,yaml]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: orchestrator-config
+data:
+  config.yaml: |
+    chat_generation:
+      service:
+        hostname: <GENERATION HOSTNAME>
+        port: <GENERATION SERVICE PORT>
+        tls: <TLS CONFIG 1 NAME>
+    detectors:
+      <DETECTOR SERVER 1 NAME>:
+        type: text_contents
+        service:
+            hostname: "127.0.0.1"
+            port: 8080
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.5
+      <DETECTOR SERVER 2 NAME>:
+        type: text_contents
+        service:
+          hostname: <other detector hostname>
+          port: <detector server port>
+          tls: some-other-detector-tls
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.
+    tls:
+      - <TLS CONFIG 1 NAME>:
+          cert_path: /etc/tls/<PATH 1>/tls.crt
+          key_path: /etc/tls/<PATH 1>/tls.key
+          ca_path: /etc/tls/ca/service-ca.crt
+      - <TLS CONFIG 2 NAME>:
+          cert_path: /etc/tls/<PATH 2>/tls.crt
+          key_path: /etc/tls/<PATH 2>/tls.key
+          ca_path: /etc/tls/ca/service-ca.crt
+    passthrough_headers:
+      - "authorization"
+      - "content-type"
+----
+
+[cols="1,2a", options="header"]
+|===
+| Parameter | Description
+| *`chat_generation`* | Describes the generation model to be guardrailed. Requires a *`service`* configuration, see below.
+| *`service`* | A service configuration. Throughout the orchestrator config, all external services are described via the
+service configuration, which contains the following fields:
+
+* `hostname` - The hostname of the service
+* `port` - The port of the service
+* `tls` *(Optional)* - The name of the TLS configuration (specified later in the configuration) to use for this service. If provided, the orchestrator
+will communicate with this service via HTTPS.
+| *`detectors`* | The `detectors` section is where the detector servers available to the orchestrator are specified. Provide some unique name for the detector server as the key
+to each entry, and then the following values are required:
+
+* `type` - The kind of detector server. For now, the only supported kind within RHOAI is `text_contents`
+* `service` - The service configuration for the detector server, see the *`service`* section above for details. Note, if you want to use the built-in detector, the service configuration should always be
+
+    service:
+        hostname: "127.0.0.1"
+        port: 8080
+
+* `chunker_id`- The chunker to use for this detector server. For now, the only supported chunker is `whole_doc_chunker`
+* `default_threshold`- The threshold to pass to the detector server. The threshold can be used by the detector servers to determine their sensitivity, and recommended values
+will vary by detector algorithm. We recommend keeping this at `0.5` as a safe starting point.
+| *`<DETECTOR SERVER NAME>`*| [[detector-server-name-param]] Each key in the detector section will define the *name* of the detector server. This can be any string, but you'll need to reference these names later, so pick memorable and descriptive names.
+| *`tls`* | The `tls` section defines TLS configurations. The names of these configurations can then be used as values within `service.tls` in your service configurations (see the *`service`* section above).
+A TLS configuration consists of the following fields:
+
+    * `cert_path` - The path to a `.crt` file inside the Guardrails Orchestrator container.
+    * `key_path` - The path to a `.key` file inside the Guardrails Orchestrator container.
+    * `ca_path` - The path to CA certificate `.crt` file on the Guardrails Orchestrator container. The default Openshift Serving CA will be mounted at `/etc/tls/ca/service-ca.crt`, we recommend using this as your `ca_path`.
++
+See the <<tlsSecrets-param,`tlsSecrets`>> section of the GuardrailsOrchestrator Custom Resource to learn how to mount custom TLS files into the Guardrails Orchestrator container.
+| *`passthrough_headers`* |  Defines which headers from your requests to the Guardrails Orchestrator get sent onwards to
+the various services specified in this configuration. If you want to ensure that the Orchestrator can talk to authenticated services, we recommend specifying choosing `"authorization"` and `"content-type"` at minimum.
+|===

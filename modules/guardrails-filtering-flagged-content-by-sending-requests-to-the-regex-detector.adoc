@@ -8,10 +8,28 @@ ifdef::context[:parent-context: {context}]
 You can use the Guardrails Orchestrator API to send requests to the regex detector. The regex detector filters conversations by flagging content that matches specified regular expression patterns. 
 
 .Prerequisites
-* You have configured the regex detector image.
+You have deployed a Guardrails Orchestrator with the built-in-detector server, e.g.:
+
+.Example `guardrails_orchestrator_auto_cr.yaml` CR
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: guardrails-orchestrator
+  annotations:
+    security.opendatahub.io/enable-auth: 'true'
+spec:
+  autoConfig:
+    inferenceServiceToGuardrail: <inference_service_name>
+    detectorServiceLabelToMatch: <detector_service_label>
+  enableBuiltInDetectors: true
+  enableGuardrailsGateway: true
+  replicas: 1
+----
 
 .Procedure
-* Send a request to the regex detector that you configured. The following example sends a request to a regex detector named `regex` to flag personally identifying information.
+* Send a request to the built-in detector that you configured. The following example sends a request to a regex detector named `regex` to flag personally identifying information.
 +
 [source,terminal]
 ----
@@ -21,7 +39,7 @@ curl -X 'POST' "https://$GORCH_ROUTE/api/v2/text/detection/content" \
   -H 'Content-Type: application/json' \
   -d '{
   "detectors": {
-    "regex": {"regex": ["email"]}
+    "built-in-detector": {"regex": ["email"]}
   },
   "content": "my email is test@domain.com"
 }' | jq
