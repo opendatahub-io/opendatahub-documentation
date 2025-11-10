@@ -10,47 +10,44 @@ It is underpinned by the open-source project link:https://github.com/foundation-
 
 The following sections describe the Guardrails components, how to deploy them and provide example use cases of how to protect your AI applications using these tools:
 
-Deploy a Guardrails Orchestrator instance:: 
-The guardrails orchestrator is the main networking layer of the guardrails ecosystem, and “orchestrates” the network requests between the user, generative models, and detector servers. 
+Detectors::
+Explore the available detector types in the Guardrails framework. Currently supported detectors are:
+    - The built-in detector: Out-of-the-box guardrailing algorithms for quick setup and easy experimentation
+    - Hugging Face detectors: Text classification models for guardrailing, such as link:https://huggingface.co/ibm-granite/granite-guardian-hap-38m[ibm-granite/granite-guardian-hap-38m] or any other text classifier from Hugging Face.
+Orchestrator Configuration::
+Configure the orchestrator to communicate with available detectors and your generation model.
 
-Configure and use the built-in detectors:: 
-The Guardrails framework provides a set of “built-in” detectors out-of-the-box, that provides a number of simple detection algorithms. You can use the following detector with `trustyai_fms` orchestrator server, which is an external provider for Llama Stack that allows you to configure and use the Guardrails Orchestrator and compatible detection models through the Llama Stack API.:
-+
-* *Regex Detectors*: Pattern-based content detection for structured rule enforcement. These are the built-in detectors in the Guardrails Orchestrator service. Learn more about the link:https://github.com/trustyai-explainability/guardrails-regex-detector[guardrails-regex-detector].
+Guardrails Gateway Configuration::
+Define preset guardrail pipelines with corresponding unique endpoints
 
+Deploying the Orchestrator::
+Create a Guardrails Orchestrator to begin securing your LLM deployments
 
-Use Hugging Face models as detectors in Guardrails Orchestrator::
-Any text classification model from link:https://huggingface.co/ibm-granite/granite-guardian-hap-38m[Huggingface] can be used as a detector model within the Guardrails ecosystem.
-+
-* *Hugging Face Detectors*: Compatible with most Hugging Face `AutoModelForSequenceClassification` models, such as `granite-guardian-hap-38m` or `deberta-v3-base-prompt-injection-v2`. Learn more about the detector algorithms for the link:https://github.com/trustyai-explainability/guardrails-detectors[FMS Guardrails Orchestrator].
-* *vLLM Detector Adapter*: Content detection compatible with Hugging Face `AutoModelForCausalLM` models, for example `ibm-granite/granite-guardian-3.1-2b`. Learn more about link:https://github.com/foundation-model-stack/vllm-detector-adapter[vllm-detector-adapter].
+Guardrails AutoConfig::
+Automatically configure guardrails based on available resources in your namespace
 
-Configure and use the guardrails gateway:: 
-The optional Guardrails Gateway lets you create preset guardrailing pipelines that can be interacted with via /chat/completions endpoints.
-
-*Monitor user-inputs to your LLM* 
+Monitor user-inputs to your LLM::
 Enable a safer LLM by filtering hateful, profane, or toxic inputs.
 
-*Enable the OpenTelemetry exporter for metrics and tracing* 
+Enable the OpenTelemetry exporter for metrics and tracing::
 Provide observability for the security and governance mechanisms of AI applications.
 
-== Deploying and configuring Guardrails components
-Set up the Orchestrator, Detectors, and Gateway. 
+include::modules/guardrails-orchestrator-detectors.adoc[leveloffset=+1]
+include::modules/guardrails-configuring-the-hugging-face-detector-serving-runtime.adoc[leveloffset=+2]
+include::modules/guardrails-orchestrator-configmap-parameters.adoc[leveloffset=+1]
+include::modules/guardrails-gateway-config-parameters.adoc[leveloffset=+1]
+include::modules/guardrails-deploying-the-guardrails-orchestrator-service.adoc[leveloffset=+1]
+include::modules/guardrails-auto-config.adoc[leveloffset=+1]
 
-include::modules/deploying-the-guardrails-orchestrator-service.adoc[leveloffset=+1]
-include::modules/auto-configuring-guardrails.adoc[leveloffset=+1]
-include::modules/guardrails-orchestrator-parameters.adoc[leveloffset=+1]
-include::modules/guardrails-detectors.adoc[leveloffset=+1]
-include::modules/configuring-the-built-in-detector-and-guardrails-gateway.adoc[leveloffset=+1]
+
 [role='_additional-resources']
 .Additional resources
 ifndef::upstream[]
 * To learn how to use the built-in detectors with `trustyai_fms` orchestrator server external provider for Llama Stack to detect PII, see link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models#detecting-pii-by-using-guardrails-with-llama-stack_[Adding a model server to your data science project].
 endif::[]
-
-include::modules/configuring-the-guardrails-detector-hugging-face-serving-runtime.adoc[leveloffset=+1]
-include::modules/using-hugging-face-models-with-guardrails-orchestrator.adoc[leveloffset=+1]
-include::modules/configuring-the-opentelemetry-exporter.adoc[leveloffset=+1]
+include::modules/guardrails-filtering-flagged-content-by-sending-requests-to-the-regex-detector.adoc[]
+include::modules/guardrails-using-hugging-face-models-with-guardrails-orchestrator.adoc[leveloffset=+1]
+include::modules/guardrails-configuring-the-opentelemetry-exporter.adoc[leveloffset=+1]
 
 
 ifdef::parent-context[:context: {parent-context}]

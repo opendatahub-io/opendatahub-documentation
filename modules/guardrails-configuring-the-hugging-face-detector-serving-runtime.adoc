@@ -1,27 +1,27 @@
 :_module-type: REFERENCE
 
 ifdef::context[:parent-context: {context}]
-[id="configuring-the-guardrails-detector-hugging-face-serving-runtime_{context}"]
-= Configuring the Guardrails Detector Hugging Face serving runtime
+[id="guardrails-configuring-the-hugging-face-detector-serving-runtime_{context}"]
+= The Hugging Face Detector serving runtime
 
 [role='_abstract']
 
 
-To use the subset of link:https://huggingface.co/docs/transformers/model_doc/auto#transformers.AutoModelForSequenceClassification[Hugging Face models] called `AutoModelsForSequenceClassification` with the Guardrails Orchestrator, you need to first configure a Hugging Face serving runtime.
+To use link:https://huggingface.co/docs/transformers/model_doc/auto#transformers.AutoModelForSequenceClassification[Hugging Face] `AutoModelsForSequenceClassification` as detectors within the Guardrails Orchestrator, you need to first configure a Hugging Face serving runtime.
 
-The link:https://github.com/opendatahub-io/odh-model-controller/blob/incubating/config/runtimes/hf-detector-template.yaml[guardrails-detector-huggingface-runtime] is a KServe serving runtime for Hugging Face models that is used to detect and mitigate certain types of risks in text data, such as hateful speech.
-This runtime is compatible with most Hugging Face `AutoModelsForSequenceClassification` models and allows models such as the link:https://huggingface.co/ibm-granite/granite-guardian-hap-38m[ibm-granite/granite-guardian-hap-38m] to be used within the TrustyAI Guardrails ecosystem.
+The link:https://github.com/opendatahub-io/odh-model-controller/blob/incubating/config/runtimes/hf-detector-template.yaml[guardrails-detector-huggingface-runtime] is a KServe serving runtime for Hugging Face predictive text models. This
+allows models such as the link:https://huggingface.co/ibm-granite/granite-guardian-hap-38m[ibm-granite/granite-guardian-hap-38m] to be used within the TrustyAI Guardrails ecosystem.
 
 .Example custom serving runtime
 
-This YAML file contains an example of a custom serving runtime with four workers for the Prompt Injection detector:
+This YAML file contains an example of a custom serving Huggingface runtime:
 
 [source,YAML]
 ----
 apiVersion: serving.kserve.io/v1alpha1
 kind: ServingRuntime
 metadata:
-  name: guardrails-detector-runtime-prompt-injection
+  name: guardrails-detector-runtime
   annotations:
     openshift.io/display-name: Guardrails Detector ServingRuntime for KServe
     opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
@@ -42,7 +42,7 @@ spec:
         - uvicorn
         - app:app
       args:
-        - "--workers=4"  # Override default
+        - "--workers=1"
         - "--host=0.0.0.0"
         - "--port=8000"
         - "--log-config=/common/log_conf.yaml"
@@ -51,10 +51,18 @@ spec:
           value: /mnt/models
         - name: HF_HOME
           value: /tmp/hf_home
+        - name: SAFE_LABELS
+          value: [0]
       ports:
         - containerPort: 8000
           protocol: TCP
 ----
+The above serving runtime example matches the default template used with Red Hat OpenShift AI, and should suffice
+for the majority of use-cases. The main relevant configuration parameter is the `SAFE_LABELS` environment variable,
+which specifies which prediction label(s) from the `AutoModelForSequenceClassification`  constitute a "safe" response and thus
+ should not trigger guardrailing. For example, if `[0, 1]` is specified as `SAFE_LABELS`
+for a four-class model, a predicted label of `0` or `1` will be considered "safe", while a predicted label
+of `2` or `3` will trigger guardrailing. The default value is `[0]`.
 
 The following tables describe configuration values for the Guardrails Detector Hugging Face serving runtime:
 
@@ -122,9 +130,13 @@ The following tables describe configuration values for the Guardrails Detector H
 | `/tmp/hf_home`		
 | HuggingFace cache
 
+| `SAFE_LABELS`
+| `[0]`
+| A JSON-formatted list
+
 | `--workers`
 | 	`1`	
-| Uvicorn workers		
+| Number of Uvicorn workers
 
 | `--host`
 | `0.0.0.0`	
@@ -132,7 +144,7 @@ The following tables describe configuration values for the Guardrails Detector H
 
 | `--port`
 | `8000`
-| Server port		
+| Server port
 |===
 
 
