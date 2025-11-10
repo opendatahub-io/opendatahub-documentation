@@ -4,13 +4,13 @@
 = Creating a runtime configuration
 
 [role='_abstract']
-If you create a workbench as part of a data science project, a default runtime configuration is created automatically. However, if you create a workbench from the *Start basic workbench* tile in the {productname-short} dashboard, you must create a runtime configuration before you can run your pipeline in JupyterLab. This enables you to specify connectivity information for your pipeline instance and S3-compatible cloud storage.
+If you create a workbench as part of a project, a default runtime configuration is created automatically. However, if you create a workbench from the *Start basic workbench* tile in the {productname-short} dashboard, you must create a runtime configuration before you can run your pipeline in JupyterLab. This enables you to specify connectivity information for your pipeline instance and S3-compatible cloud storage.
 
 .Prerequisites
 * You have logged in to {productname-long}.
 * You have access to S3-compatible cloud storage.
-* You have created a data science project that contains a workbench.
-* You have created and configured a pipeline server within the data science project that contains your workbench.
+* You have created a project that contains a workbench.
+* You have created and configured a pipeline server within the project that contains your workbench.
 * You have created and launched a workbench from a workbench image that contains the Elyra extension (Standard Data Science, TensorFlow, TrustyAI, ROCm-PyTorch, ROCm-TensorFlow, or PyTorch).
 +
 [IMPORTANT]
@@ -22,42 +22,42 @@ The Elyra pipeline editor is available in specific workbench images only. To use
 . In the left sidebar of JupyterLab, click *Runtimes* (image:images/jupyter-runtimes-sidebar.png[The Runtimes icon]).
 . Click the *Create new runtime configuration* button (image:images/jupyter-create-runtime.png[Create new runtime configuration]).
 +
-The *Add new Data Science Pipelines runtime configuration* page opens.
+The *Add new Pipelines runtime configuration* page opens.
 . Complete the relevant fields to define your runtime configuration.
 .. In the *Display Name* field, enter a name for your runtime configuration.
 .. Optional: In the *Description* field, enter a description to define your runtime configuration.
 .. Optional: In the *Tags* field, click *Add Tag* to define a category for your pipeline instance. Enter a name for the tag and press Enter.
-.. Define the credentials of your data science pipeline:
-... In the *Data Science Pipelines API Endpoint* field, enter the API endpoint of your data science pipeline. Do not specify the pipelines namespace in this field.
+.. Define the credentials of your pipeline:
+... In the *API endpoint* field, enter the API endpoint of your pipeline. Do not specify the pipelines namespace in this field.
 +
 [IMPORTANT]
 ====
-With Elyra, you can now use a service-based URL instead of the route-based URL by including the port number. Using the service-based URL allows your data science pipeline to access the service directly.
+With Elyra, you can now use a service-based URL instead of the route-based URL by including the port number. Using the service-based URL allows your pipeline to access the service directly.
 ====
 //+
 //[IMPORTANT]
 //====
-//To obtain the data science pipelines API endpoint, x.
+//To obtain the pipeline API endpoint, x.
 //====
-... In the *Public Data Science Pipelines API Endpoint* field, enter the public API endpoint of your data science pipeline.
+... In the *Public API endpoint* field, enter the public API endpoint of your pipeline.
 +
 [IMPORTANT]
 ====
-You can obtain the data science pipelines API endpoint from the *Data science pipelines* -> *Runs* page in the dashboard. Copy the relevant endpoint and enter it in the *Public Data Science Pipelines API Endpoint* field.
+You can obtain the pipeline API endpoint from the *Develop & train* -> *Pipelines* -> *Runs* page in the dashboard. Copy the relevant endpoint and enter it in the *Public API endpoint* field.
 ====
-... Optional: In the *Data Science Pipelines User Namespace* field, enter the relevant user namespace to run pipelines.
+... Optional: In the *User namespace* field, enter the relevant user namespace to run pipelines.
 ... From the *Authentication Type* list, select the authentication type required to authenticate your pipeline.
 +
 [IMPORTANT]
 ====
 If you created a workbench directly from the *Start basic workbench* tile on the dashboard, select `EXISTING_BEARER_TOKEN` from the *Authentication Type* list.
 ====
-... In the *Data Science Pipelines API Endpoint Username* field, enter the user name required for the authentication type.
-... In the *Data Science Pipelines API Endpoint Password Or Token*, enter the password or token required for the authentication type.
+... In the *API endpoint username* field, enter the user name required for the authentication type.
+... In the *API endpoint password or token*, enter the password or token required for the authentication type.
 +
 [IMPORTANT]
 ====
-To obtain the data science pipelines API endpoint token, in the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*. After you have logged in, click *Display token* and copy the value of `--token=` from the *Log in with this token* command.
+To obtain the pipeline API endpoint token, in the upper-right corner of the {openshift-platform} web console, click your user name and select *Copy login command*. After you have logged in, click *Display token* and copy the value of `--token=` from the *Log in with this token* command.
 ====
 .. Define the connectivity information of your S3-compatible storage:
 ... In the *Cloud Object Storage Endpoint* field, enter the endpoint of your S3-compatible storage. For more information about Amazon s3 endpoints, see link:https://docs.aws.amazon.com/general/latest/gr/s3.html[Amazon Simple Storage Service endpoints and quotas].

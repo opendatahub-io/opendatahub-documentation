@@ -1,34 +1,34 @@
 ---
 layout: docs
-title: Working with data science pipelines
-permalink: /docs/working-with-data-science-pipelines
+title: Working with AI pipelines
+permalink: /docs/working-with-ai-pipelines
 custom_css: asciidoc.css
 ---
 
 :upstream:
 include::_artifacts/document-attributes-global.adoc[]
 
-= Working with data science pipelines
+= Working with AI pipelines
 :doctype: book
 :toc: left
 :compat-mode:
-:context: ds-pipelines
+:context: ai-pipelines
  
 [role='_abstract']
-As a data scientist, you can enhance your data science projects on {productname-short} by building portable machine learning (ML) workflows with data science pipelines, using Docker containers. This enables you to standardize and automate machine learning workflows to enable you to develop and deploy your data science models.
+As a data scientist, you can enhance your projects in {productname-short} by building portable machine learning (ML) workflows with AI pipelines, using Docker containers. This enables you to standardize and automate machine learning workflows to enable you to develop and deploy your data science models.
 
 For example, the steps in a machine learning workflow might include items such as data extraction, data processing, feature extraction, model training, model validation, and model serving. Automating these activities enables your organization to develop a continuous process of retraining and updating a model based on newly received data. This can help resolve challenges related to building an integrated machine learning deployment and continuously operating it in production.
 
 ifndef::upstream[]
-You can also use the Elyra JupyterLab extension to create and run data science pipelines within JupyterLab. For more information, see link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/working-with-pipelines-in-jupyterlab_ds-pipelines[Working with pipelines in JupyterLab].
+You can also use the Elyra JupyterLab extension to create and run AI pipelines within JupyterLab. For more information, see link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/working-with-pipelines-in-jupyterlab_ai-pipelines[Working with pipelines in JupyterLab].
 endif::[]
 ifdef::upstream[]
-You can also use the Elyra JupyterLab extension to create and run data science pipelines within JupyterLab. For more information, see link:{odhdocshome}/working-with-data-science-pipelines/#working-with-pipelines-in-jupyterlab_ds-pipelines[Working with pipelines in JupyterLab].
+You can also use the Elyra JupyterLab extension to create and run AI pipelines within JupyterLab. For more information, see link:{odhdocshome}/working-with-ai-pipelines/#working-with-pipelines-in-jupyterlab_ai-pipelines[Working with pipelines in JupyterLab].
 endif::[]
 
-To use a data science pipeline in {productname-short}, you need the following components:
+To use a pipeline in {productname-short}, you need the following components:
 
-* *Pipeline server*: A server that is attached to your data science project and hosts your data science pipeline.
+* *Pipeline server*: A server that is attached to your project and hosts your AI pipeline.
 * *Pipeline*: A pipeline defines the configuration of your machine learning workflow and the relationship between each component in the workflow.
 ** Pipeline code: A definition of your pipeline in a YAML file.
 ** Pipeline graph: A graphical illustration of the steps executed in a pipeline run and the relationship between them.
@@ -41,11 +41,11 @@ To use a data science pipeline in {productname-short}, you need the following co
 ** Scheduled run: A pipeline run that is scheduled to execute at least once.
 ** Archived run: An archived pipeline run. 
 
-This feature is based on Kubeflow Pipelines 2.0. Use the latest Kubeflow Pipelines 2.0 SDK to build your data science pipeline in Python code. After you have built your pipeline, use the SDK to compile it into an Intermediate Representation (IR) YAML file. The {productname-short} user interface enables you to track and manage pipelines, experiments, and pipeline runs. To view a record of previously executed, scheduled, and archived runs, you can go to *Data science pipelines* -> *Runs*, or you can select an experiment from the *Experiments* -> *Experiments and runs* to access all of its pipeline runs.
+This feature is based on Kubeflow Pipelines 2.0. Use the latest Kubeflow Pipelines 2.0 SDK to build your AI pipeline in Python code. After you have built your pipeline, use the SDK to compile it into an Intermediate Representation (IR) YAML file. The {productname-short} user interface enables you to track and manage pipelines, experiments, and pipeline runs. To view a record of previously executed, scheduled, and archived runs, you can go to *Develop & train* -> *Pipelines* -> *Runs*, or you can select an experiment from the *Experiments* -> *Experiments and runs* to access all of its pipeline runs.
 
 You can store your pipeline artifacts in an S3-compatible object storage bucket so that you do not consume local storage. To do this, you must first configure write access to your S3 bucket on your storage account.
 
-include::assemblies/managing-data-science-pipelines.adoc[leveloffset=+1]
+include::assemblies/managing-ai-pipelines.adoc[leveloffset=+1]
 
 include::assemblies/managing-pipeline-experiments.adoc[leveloffset=+1]
 

@@ -23,32 +23,32 @@ The Elyra pipeline editor is available in specific workbench images only. To use
 . In the left sidebar of JupyterLab, click *Runtimes* (image:images/jupyter-runtimes-sidebar.png[The Runtimes icon]).
 . Hover the cursor over the runtime configuration that you want to update and click the *Edit* button (image:images/jupyterlab-edit-icon.png[Edit runtime configuration, 25]).
 +
-The *Data Science Pipelines runtime configuration* page opens.
+The *Pipelines runtime configuration* page opens.
 . Fill in the relevant fields to update your runtime configuration.
 .. In the *Display Name* field, update name for your runtime configuration, if applicable.
 .. Optional: In the *Description* field, update the description of your runtime configuration, if applicable.
 .. Optional: In the *Tags* field, click *Add Tag* to define a category for your pipeline instance. Enter a name for the tag and press Enter.
-.. Define the credentials of your data science pipeline:
-... In the *Data Science Pipelines API Endpoint* field, update the API endpoint of your data science pipeline, if applicable. Do not specify the pipelines namespace in this field.
+.. Define the credentials of your pipeline:
+... In the *API Endpoint* field, update the API endpoint of your AI pipeline, if applicable. Do not specify the pipelines namespace in this field.
 +
 [IMPORTANT]
 ====
-With Elyra, you can now use a service-based URL instead of the route-based URL by including the port number. Using the service-based URL allows your data science pipeline to access the service directly.
+With Elyra, you can now use a service-based URL instead of the route-based URL by including the port number. Using the service-based URL allows your AI pipeline to access the service directly.
 ====
-... In the *Public Data Science Pipelines API Endpoint* field, update the API endpoint of your data science pipeline, if applicable.
-... Optional: In the *Data Science Pipelines User Namespace* field, update the relevant user namespace to run pipelines, if applicable.
+... In the *Public API endpoint* field, update the API endpoint of your AI pipeline, if applicable.
+... Optional: In the *User namespace* field, update the relevant user namespace to run pipelines, if applicable.
 ... From the *Authentication Type* list, select a new authentication type required to authenticate your pipeline, if applicable.
 +
 [IMPORTANT]
 ====
 If you created a workbench directly from the *Start basic workbench* tile on the dashboard, select `EXISTING_BEARER_TOKEN` from the *Authentication Type* list.
 ====
-... In the *Data Science Pipelines API Endpoint Username* field, update the user name required for the authentication type, if applicable.
-... In the *Data Science Pipelines API Endpoint Password Or Token*, update the password or token required for the authentication type, if applicable.
+... In the *API endpoint username* field, update the user name required for the authentication type, if applicable.
+... In the *API endpoint password or token*, update the password or token required for the authentication type, if applicable.
 +
 [IMPORTANT]
 ====
-To obtain the data science pipelines API endpoint token, in the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*. After you have logged in, click *Display token* and copy the value of `--token=` from the *Log in with this token* command.
+To obtain the pipelines API endpoint token, in the upper-right corner of the OpenShift web console, click your user name and select *Copy login command*. After you have logged in, click *Display token* and copy the value of `--token=` from the *Log in with this token* command.
 ====
 .. Define the connectivity information of your S3-compatible storage:
 ... In the *Cloud Object Storage Endpoint* field, update the endpoint of your S3-compatible storage, if applicable. For more information about Amazon s3 endpoints, see link:https://docs.aws.amazon.com/general/latest/gr/s3.html[Amazon Simple Storage Service endpoints and quotas].
