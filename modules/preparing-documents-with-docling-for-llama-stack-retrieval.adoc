@@ -192,7 +192,7 @@ rag_agent = Agent(
     tools=[
         {
             "name": "builtin::rag/knowledge_search",
-            "args": {"vector_db_ids": [vector_db_id]},
+            "args": {"vector_store_ids": [vector_db_id]},
         }
     ],
 )
@@ -222,3 +222,10 @@ query_result = client.vector_io.query(
 )
 print(query_result)
 ----
+
+.Verification
+
+* The pipeline run completes successfully in your data science project.
+* Document embeddings are stored in the vector store and are available for retrieval.
+* No errors or warnings appear in the pipeline logs or your notebook output.
+
