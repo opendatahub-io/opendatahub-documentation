@@ -1,0 +1,32 @@
+:_module-type: CONCEPT
+
+[id='compare-the-performance-of-osft-and-sft_{context}']
+=  Compare the performance of OSFT and SFT training algorithms
+
+You can use the OSFT (Orthogonal Subspace Fine-Tuning) and SFT (Supervised Fine-Tuning) algorithms in the Training Hub.
+
+Use SFT to fine-tune a model on supervised datasets with support for:
+
+* Single-node and multi-node distributed training
+* Configurable training parameters, for example, epochs, batch size, and learning rate.
+* InstructLab-Training backend integration
+
+Use OSFT to fine-tune a model while controlling how much of its existing behavior to preserve, with support for:
+
+* Single-node and multi-node distributed training
+* Configurable training parameters (epochs, batch size, learning rate, etc.)
+* RHAI Innovation Mini-Trainer backend integration
+
+The `examples/docs` directory contains information and examples for how to use each algorithm.
+
+Here is a performance comparison of using OSFT and SFT in the Training Hub:
+
+* *Memory scaling:* OSFT memory scales linearly with the unfreeze rank ratio (URR) which is a hyperparameter for OSFT that is a value between 0 and 1 representing the fraction of the matrix rank that is unfrozen and updated during fine-tuning. 
++
+A rough comparison can be expressed as OSFT Memory ~ 3r times SFT Memory where r is the URR unfreeze rank ratio — the fraction of the matrix being fine-tuned. At URR = 1/3, OSFT and SFT have similar memory usage. 
++
+In most post-training setups, URR values below 1/3 are sufficient for learning new tasks, making OSFT notably lighter in memory.
+
+* *Training time:* On datasets of equal size, OSFT typically takes about 2x longer per phase. However, because OSFT does not require replay buffers from past tasks (unlike SFT), the total training time across multiple phases or tasks is lower with clear benefits as the number of tasks grows. 
++
+OSFT supports continual learning without maintaining or reusing old data, enabling lighter, single-pass end-to-end runs.
