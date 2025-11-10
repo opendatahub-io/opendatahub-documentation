@@ -4,7 +4,6 @@
 == Understanding RAG settings
 
 [role="_abstract"]
-
 When you upload a document for Retrieval-Augmented Generation (RAG), you can configure the following settings to optimize how the text is processed.
 
 [horizontal]
@@ -39,3 +38,28 @@ responses.
 
 *Delimiter*::
 A character or string that specifies where a text chunk should end. This helps define text boundaries alongside maximum chunk length and overlap, ensuring sentences or paragraphs remain intact.
++
+Examples of delimiters:
+
+* `.` (period) — splits at sentence boundaries
+* `\n` (newline) — splits at paragraph boundaries
+* `;` (semicolon) — splits at clause boundaries
++
+For example, the following sentence is split as follows depending on the delimiter:  "This is the first sentence. This is the second sentence."
++
+[options="compact"]
+--
+*Maximum chunk length =4 *, *Chunk overlap = 0*
+[literal]
+....
+This is the first sentence.
+This is the second sentence.
+....
+
+*Maximum chunk length =4 *, *Chunk overlap = 0*, *Delimiter = 0*
+[literal]
+....
+This is the first sentence. 
+This is the second sentence.
+....
+--
