@@ -73,25 +73,6 @@ endif::[]
 . If you cannot resolve the problem, contact your administrator to request assistance.
 
 
-== I see a "failed to call webhook" error message for the CodeFlare Operator
-
-.Problem
-After you run the `cluster.apply()` command, the following error is shown:
-
-[source,bash]
-----
-ApiException: (500)
-Reason: Internal Server Error
-HTTP response body: {"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"Internal error occurred: failed calling webhook \"mraycluster.ray.openshift.ai\": failed to call webhook: Post \"https://codeflare-operator-webhook-service.redhat-ods-applications.svc:443/mutate-ray-io-v1-raycluster?timeout=10s\": no endpoints available for service \"codeflare-operator-webhook-service\"","reason":"InternalError","details":{"causes":[{"message":"failed calling webhook \"mraycluster.ray.openshift.ai\": failed to call webhook: Post \"https://codeflare-operator-webhook-service.redhat-ods-applications.svc:443/mutate-ray-io-v1-raycluster?timeout=10s\": no endpoints available for service \"codeflare-operator-webhook-service\""}]},"code":500}
-----
-
-.Diagnosis
-The CodeFlare Operator pod might not be running.
-
-.Resolution
-Contact your administrator to request assistance.
-
-
 == I see a "failed to call webhook" error message for Kueue
 
 .Problem

@@ -30,13 +30,6 @@ ifdef::upstream[]
 endif::[]
 
 ifndef::upstream[]
-* You have removed any previously installed instances of the CodeFlare Operator, as described in the Knowledgebase solution link:https://access.redhat.com/solutions/7043796[How to migrate from a separately installed CodeFlare Operator in your data science cluster].
-endif::[]
-ifdef::upstream[]
-* You have removed any previously installed instances of the CodeFlare Operator.
-endif::[]
-
-ifndef::upstream[]
 * If you want to use graphics processing units (GPUs), you have enabled GPU support in {productname-short}.
 If you use NVIDIA GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs].
 If you use AMD GPUs, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#amd-gpu-integration_managing-rhoai[AMD GPU integration^].
@@ -144,7 +137,7 @@ endif::[]
 In the `spec.components` section, set the `managementState` field correctly for the required components:
 +
 * Set `kueue` to `Unmanaged` to allow the {rhbok-productname} Operator to manage Kueue.
-* If you want to use the CodeFlare framework to tune models, set `codeflare` and `ray` to `Managed`.
+* If you want to use the Ray framework to tune models, set `ray` to `Managed`.
 * If you want to use the Kubeflow Training Operator to tune models, set `trainingoperator` to `Managed`.
 * The list of required components depends on whether the distributed workload is run from a pipeline or workbench or both, as shown in the following table.
 
@@ -154,11 +147,6 @@ In the `spec.components` section, set the `managementState` field correctly for 
 [cols="44,15,15,26"]
 |===
 |Component | Pipelines only | Workbenches only | Pipelines and workbenches
-
-|`codeflare`
-|`Managed`
-|`Managed`
-|`Managed`
 
 |`dashboard`
 |`Managed`
@@ -196,12 +184,12 @@ After a short time, the components with a `Managed` state are ready.
 
 
 .Verification
-Check the status of the *codeflare-operator-manager*, *kubeflow-training-operator*, *kuberay-operator*, *kueue-controller-manager*, and *openshift-kueue-operator* pods, as follows:
+Check the status of the *kubeflow-training-operator*, *kuberay-operator*, *kueue-controller-manager*, and *openshift-kueue-operator* pods, as follows:
 
 . In the {openshift-platform} console, click *Workloads* -> *Deployments*.
 . In the *Search by name* field, enter the following search strings:
 +
-* In the *pass:attributes[{dbd-config-default-namespace}]* project, search for *codeflare-operator-manager*, *kubeflow-training-operator*, and *kuberay-operator*.
+* In the *pass:attributes[{dbd-config-default-namespace}]* project, search for *kubeflow-training-operator* and *kuberay-operator*.
 * In the *openshift-kueue-operator* project, search for *kueue-controller-manager* and *openshift-kueue-operator*.
 
 . In each case, check the status as follows:
