@@ -71,8 +71,8 @@ wget https://github.com/trustyai-explainability/odh-trustyai-demos/blob/72f748da
 The four fields are:
 .. `model_name`: The name of the model that correlates to this data. The name should match that of the model provided in the model yaml, which is `gaussian-credit-model`.
 .. `data_tag`: A string tag to reference this particular set of data. Use the string "TRAINING"
-.. `request`: (Optional) This is a KServe inference request, as if you were sending this data directly to the model server's `/infer` endpoint.
-.. `response`: (Optional) The KServe inference response that is returned from sending the above request to the model.
+.. `request`: This is a KServe inference request, as if you were sending this data directly to the model server's `/infer` endpoint.
+.. `response`: The KServe inference response that is returned from sending the above request to the model.
 
 . Upload the model training data to the TrustyAI endpoint:
 +
@@ -182,7 +182,7 @@ BASE_ROUTE=$(oc get inferenceservice gaussian-credit-model -o jsonpath='{.status
 MODEL_ROUTE="${BASE_ROUTE}/v2/models/${MODEL}/infer"
 ----
 +
-.. Download the data batch: 
+.. Download the data batch and send data payloads to your model:
 +
 [source, bash]
 ----
@@ -195,20 +195,6 @@ for batch in {0..595..5}; do
   		-H "Content-Type: application/json" \
   		-d @$DATA_PATH/$batch.json
   	sleep 1
-done
-----
-+
-.. Send data payloads to your model. This script will download 492KB of model payloads to send to your credit model:
-+
-[source, bash]
-----
-for batch in {0..595..5}; do
-  curl -sk \
-  -H "Authorization: Bearer ${TOKEN}" \
-  -H "Content-Type: application/json" \
-  -d @$DATA_PATH/$batch.json \
-  "${MODEL_ROUTE}"
-  sleep 1
 done
 ----
 
