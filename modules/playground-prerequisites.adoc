@@ -3,7 +3,7 @@
 = Playground prerequisites
 
 [role="_abstract"]
-Before configuring a playground, you must complete the following tasks:
+Before configuring a GenAI Playground, you must complete the following tasks:
 
 . Create a project.
 ** The playground instance is tied to a project context. 
@@ -14,8 +14,22 @@ ifdef::upstream[]
 ** For more information, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project]. 
 endif::[]
 
-. Deploy a model as an AI asset in your project.
-** After a model is deployed, you must make it an available AI asset.
+. Add a connection to your project. 
+ifdef::upstream[]
+** For more information about creating connections, see link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+endif::[] 
+ifndef::upstream[]
+** For more information about creating connections, see link:{rhoaidocshome}/html/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project]. 
+endif::[]
+
+. Deploy a model in your project and make it available as an AI asset endpoint.
+ifdef::upstream[]
+** For more information, see link:{odhdocshome}/deploying_models/#deploying-models-on-the-single-model-serving-platform_odh-user[Deploying models on the single-model serving platform^].
+endif::[]
+ifndef::upstream[]
+* For more information, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_single_model_serving_platform#deploying-models-on-the-single-model-serving-platform_rhoai-user[Deploying models on the single-model serving platform^].
+endif::[]
+
 . Configure MCP server connections.
 ** To test models with external tools, you must configure any Model Control Protocol (MCP) servers.
 
