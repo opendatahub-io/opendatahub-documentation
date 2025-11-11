@@ -40,13 +40,13 @@ endif::[]
 $ oc apply -f <ORCHESTRATOR CONFIGMAP>.yaml -n <TEST_NAMESPACE>
 ----
 
-. (optionally) Deploy your Guardrails gateway config map:
+. Optional: Deploy your Guardrails gateway config map:
 +
 [source,terminal]
 ----
 $ oc apply -f <GUARDRAILS GATEWAY CONFIGMAP>.yaml -n <TEST_NAMESPACE>
 ----
-. Create a Guardrails Orchestrator custom resource. Make sure that `orchestratorConfig` and `guardrailsGatewayConfig` matches the names of the resources you created in steps 1 and 2.
+. Create a Guardrails Orchestrator custom resource. Make sure that the `orchestratorConfig` and `guardrailsGatewayConfig` match the names of the resources you created in steps 1 and 2.
 +
 .Example `orchestrator_cr.yaml` CR
 [source,yaml]
@@ -56,39 +56,40 @@ kind: GuardrailsOrchestrator
 metadata:
   name: guardrails-orchestrator-sample
 spec:
-  orchestratorConfig: <NAME OF ORCHESTRATOR CONFIGMAP>
-  guardrailsGatewayConfig: <NAME OF GUARDRAILS GATEWAY CONFIGMAP>
-  customDetectorsConfig:  <NAME OF CUSTOM DETECTORS CONFIG>
+  orchestratorConfig: <orchestrator_configmap>
+  guardrailsGatewayConfig: <guardrails_gateway_configmap>
+  customDetectorsConfig:  <custom_detectors_config>
   autoConfig:
-    - <AUTO CONFIG SETTINGS>
+    - <auto_config_settings>
   enableBuiltInDetectors: True
   enableGuardrailsGateway: True
   logLevel: INFO
   tlsSecrets:
-    - <TLS SECRET 1 TO MOUNT>
+    - <tls_secret_1_to_mount>
     - ...
-    - <TLS SECRET 2 TO MOUNT>
+    - <tls_secret_2_to_mount>
   otelExporter:
-    - <OPEN TELEMETRY CONFIG>
+    - <open_telemetry_config>
   replicas: 1
 ----
 +
-If desired, the TrustyAI controller can automatically generate an orchestratorConfig and guardrailsGatewayConfig based on the available resources in your namespace.
-To access this, include the `autoConfig` parameter inside your Custom Resource, and consult <<guardrails-auto-config_{context}, Auto Configuring Guardrails>> for documentation on its usage.
+If desired, the TrustyAI controller can automatically generate an `orchestratorConfig` and `guardrailsGatewayConfig` based on the available resources in your namespace.
+To access this, include the `autoConfig` parameter inside your Custom Resource, and see _Auto Configuring Guardrails_ for documentation on its usage.
 +
+.Parameters from example `orchestrator_cr.yaml` CR
 [cols="1,2a", options="header"]
 |===
 | Parameter |Description
 | *`orchestratorConfig`*  *(optional)*|The name of the `ConfigMap` object that contains generator, detector, and chunker arguments. If using `autoConfig`, this field can be omitted.
-|`guardrailsGatewayConfig` *(optional)*| The name of the ConfigMap object that specifies gateway configurations. This field can be omitted if you do not wish to use the Guardrails Gateway or are using `autoConfig`.
-|`customDetectorsConfig` *(optional)*| This feature is dev-preview, please see $RELEASE_NOTE for more information
-| `autoConfig` *(optional)* | A list of paired name and value arguments to define how the Guardrails AutoConfig. Any manually-specified configuration files in `orchestratorConfig` or `guardrailsGatewayConfig` will take precedence over the automatically-generated configuration files.
+|`guardrailsGatewayConfig` *(optional)*| The name of the ConfigMap object that specifies gateway configurations. This field can be omitted if you are not using the Guardrails Gateway or are using `autoConfig`.
+|`customDetectorsConfig` *(optional)*| This feature is in development preview.
+| `autoConfig` *(optional)* | A list of paired name and value arguments to define how the Guardrails AutoConfig. Any manually-specified configuration files in `orchestratorConfig` or `guardrailsGatewayConfig` takes precedence over the automatically-generated configuration files.
 
-* `inferenceServiceToGuardrail` - The name of the inference service you wish to guardrail. This should exactly match the model name provided when deploying the model. For ‹a list of valid names, you can run
+* `inferenceServiceToGuardrail` - The name of the inference service you want to guardrail. This should exactly match the model name provided when deploying the model. For a list of valid names, you can run
 `oc get isvc -n $NAMESPACE`
-* `detectorServiceLabelToMatch` - A string label to use when searching for available detector servers. All inference services in your namespace with the label `$detectorServiceLabelToMatch: true` will be automatically configured as a detector.
+* `detectorServiceLabelToMatch` - A string label to use when searching for available detector servers. All inference services in your namespace with the label `$detectorServiceLabelToMatch: true` is automatically configured as a detector.
 +
-See <<guardrails-auto-config_{context}, Auto Configuring Guardrails>>for more information.
+See _Auto Configuring Guardrails_ for more information.
 
 |`enableBuiltInDetectors` *(optional)*| A boolean value to inject the built-in detector sidecar container into the orchestrator pod. The built-in detector is a lightweight HTTP server containing a number of available guardrailing algorithms.
 |`enableGuardrailsGateway` *(optional)*| A boolean value to enable controlled interaction with the orchestrator service by enforcing stricter access to its exposed endpoints. It provides a mechanism of configuring detector pipelines, and then provides a unique `/v1/chat/completions` endpoint per configured detector pipeline.
@@ -102,8 +103,8 @@ See <<guardrails-auto-config_{context}, Auto Configuring Guardrails>>for more in
 +
 | `logLevel` *(optional)* | The log level to be used in the Guardrails Orchestrator- available values are `Error`, `Warn`, `Info` (default), `Debug`, and `Trace`.
 [[tlsSecrets-param]]
-| `tlsSecrets` *(optional)* | A list of names of `Secret` objects to mount to the Guardrails Orchestrator container. All secrets provided here will be mounted into the directory `/etc/tls/$SECRET_NAME` for use in your orchestrator config TLS configuration. We recommend that each secret contain a `tls.crt` and a `tls.key` field.
-|*`replicas`*| The number of orchestrator pods to create.
+| `tlsSecrets` *(optional)* | A list of names of `Secret` objects to mount to the Guardrails Orchestrator container. All secrets provided here are mounted into the directory `/etc/tls/$SECRET_NAME` for use in your orchestrator config TLS configuration. Each secret should contain a `tls.crt` and a `tls.key` field.
+|`replicas`| The number of orchestrator pods to create.
 |===
 
 . Deploy the orchestrator CR, which creates a service account, deployment, service, and route object in your namespace:

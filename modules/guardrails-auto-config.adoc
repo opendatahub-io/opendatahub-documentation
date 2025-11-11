@@ -43,15 +43,11 @@ spec:
 +
 * `inferenceServiceToGuardrail`: Specifies the name of the vLLM inference service to protect with Guardrails.
 * `detectorServiceLabelToMatch`: Specifies the label that you applied to each of your detector servers in the `metadata.labels` specification for the detector. The Guardrails Orchestrator `ConfigMap` automatically updates to reflect detectors in your namespace that match the label set in the `detectorServiceLabelToMatch` field.
-
-If `enableGuardrailsGateway` is true, a template Guardrails gateway config called `$(ORCHESTRATOR-NAME)-gateway-auto-config` will be generated. This file can be modified to tailor
-your Guardrails Gateway setup as desired, and the Guardrails Orchestrator will automatically deploy when changes are detected. Once modified, the label `trustyai/has-diverged-from-auto-config` will be applied.To revert the file back to the auto-generated starting point, simply delete it and the original auto-generate file will be recreated.
-
-If `enableBuiltInDetectors` is true, the built-in detector server is automatically added to your orchestrator configuration under the same `built-in-detector`, and a sample configuration will be included in the auto-generate guardrails gateway config if desired.
-
-
-
-
++
+If `enableGuardrailsGateway` is true, a template Guardrails gateway config called `<ORCHESTRATOR_NAME>-gateway-auto-config` is generated. You can modify this file to tailor
+your Guardrails Gateway setup as desired. The Guardrails Orchestrator automatically deploys when changes are detected. Once modified, the label `trustyai/has-diverged-from-auto-config` is applied. To revert the file back to the auto-generated starting point, simply delete it and the original auto-generated file is recreated.
++
+If `enableBuiltInDetectors` is true, the built-in detector server is automatically added to your orchestrator configuration under the same `built-in-detector`, and a sample configuration is included in the auto-generated guardrails gateway config if desired.
 
 . Deploy the orchestrator custom resource. This step creates a service account, deployment, service, and route object in your namespace.
 +
@@ -61,7 +57,7 @@ oc apply -f guardrails_orchestrator_auto_cr.yaml -n <your_namespace>
 ----
 
 .Verification
-You can verify that the `GuardrailsOrchestrator` CR and corresponding automatically generated configuration objects were successfully created in your namespace by running the following commands:
+You can verify that the `GuardrailsOrchestrator` CR and corresponding automatically-generated configuration objects were successfully created in your namespace by running the following commands:
 
 . Confirm that the `GuardrailsOrchestrator` CR was created:
 +
@@ -77,7 +73,7 @@ $ oc get guardrailsorchestrator -n <your_namespace>
 $ oc get configmap -n <your_namespace> | grep auto-config
 ----
 
-. You can then view the automatically generated config:
+. You can then view the automatically generated configmap:
 +
 [source,terminal]
 ----

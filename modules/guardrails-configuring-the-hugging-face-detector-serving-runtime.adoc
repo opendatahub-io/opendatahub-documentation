@@ -57,14 +57,12 @@ spec:
         - containerPort: 8000
           protocol: TCP
 ----
-The above serving runtime example matches the default template used with Red Hat OpenShift AI, and should suffice
-for the majority of use-cases. The main relevant configuration parameter is the `SAFE_LABELS` environment variable,
-which specifies which prediction label(s) from the `AutoModelForSequenceClassification`  constitute a "safe" response and thus
- should not trigger guardrailing. For example, if `[0, 1]` is specified as `SAFE_LABELS`
-for a four-class model, a predicted label of `0` or `1` will be considered "safe", while a predicted label
-of `2` or `3` will trigger guardrailing. The default value is `[0]`.
 
-The following tables describe configuration values for the Guardrails Detector Hugging Face serving runtime:
+The above serving runtime example matches the default template used with {productname-long}, and should suffice
+for the majority of use-cases. The main relevant configuration parameter is the `SAFE_LABELS` environment variable. This specifies which prediction label or labels from the `AutoModelForSequenceClassification`  constitute a "safe" response and therefore should not trigger guardrailing. For example, if `[0, 1]` is specified as `SAFE_LABELS`
+for a four-class model, a predicted label of `0` or `1` is considered "safe", while a predicted label of `2` or `3` triggers guardrailing. The default value is `[0]`.
+
+== Guardrails Detector Hugging Face serving runtime configuration values
 
 .Template configuration
 [cols="2,5"]
@@ -146,8 +144,6 @@ The following tables describe configuration values for the Guardrails Detector H
 | `8000`
 | Server port
 |===
-
-
 
 
 .Parameters for API endpoints
