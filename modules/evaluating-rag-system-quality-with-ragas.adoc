@@ -4,14 +4,13 @@
 = Evaluating RAG system quality with Ragas metrics
 
 [role='_abstract']
-Evaluate your RAG system quality by testing your setup, using the example provided in the link:https://github.com/trustyai-explainability/llama-stack-provider-ragas/blob/main/demos/basic_demo.ipynb[demo notebook], which outlines the basic steps for evaluating your RAG system with Ragas using the Python client. You can execute the demo notebook steps from a Jupyter environment. 
+Evaluate your RAG system quality by testing your setup, using the example provided in the link:https://github.com/trustyai-explainability/llama-stack-provider-ragas/blob/main/demos/basic_demo.ipynb[demo notebook]. This demo outlines the basic steps for evaluating your RAG system with Ragas using the Python client. You can execute the demo notebook steps from a Jupyter environment. 
 
-Alternatively, you can submit an evaluation by directly using the `http` methods of the link:{odhdocshome}/working_with_llama_stack/overview-of-llama-stack_rag#the_llamastackdistribution_custom_resource_api_providers[Llama Stack API]. 
-// (link to the llama stack 0.3.0 docs -- unknown at this time Sara to check with Kelly and Chris on this. Potentially this link? https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/working_with_llama_stack/overview-of-llama-stack_rag#the_llamastackdistribution_custom_resource_api_providers).
+Alternatively, you can submit an evaluation by directly using the `http` methods of the link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/overview-of-llama-stack_rag#llama_stack_providers_support[Llama Stack API]. 
 
 [IMPORTANT]
 ====
-The Llama Stack pod must be accessible from the Jupyter environment in the cluster, which may not be the case by default.
+The Llama Stack pod must be accessible from the Jupyter environment in the cluster, which may not be the case by default. To configure this setup, see link:{rhoaidocshome}{default-format-url}/working_with_rag/deploying-a-rag-stack-in-a-data-science-project_rag#ingesting-content-into-a-llama-model_rag[Ingesting content into a Llama model]
 ====
 
 .Prerequisites
@@ -21,10 +20,10 @@ The Llama Stack pod must be accessible from the Jupyter environment in the clust
 * You have created a secret for your AWS credentials in your project namespace.
 * You have deployed a Llama Stack distribution with the Ragas evaluation provider enabled (Inline or Remote).
 ifdef::upstream[]
-For more information, see link:{odhdocshome}/evaluating-rag-systems/configuring-Ragas-remote-provider-for-production[Configuring the Ragas remote provider for production].
+For more information, see link:{rhoaidocshome}{default-format-url}/evaluating-rag-systems/configuring-ragas-remote-provider-for-production[Configuring the Ragas remote provider for production].
 endif::[]
 ifndef::upstream[]
-For more information, see link:{rhoaidocshome}evaluating-rag-systems/setting-up-Ragas-inline-provider[Setting up the Ragas inline provider for development].
+For more information, see link:{rhoaidocshome}{default-format-url}evaluating-rag-systems/setting-up-ragas-inline-provider[Setting up the Ragas inline provider for development].
 endif::[]
 * You have access to a workbench or notebook environment where you can run Python code.
 
@@ -60,7 +59,7 @@ The Jupyter notebook opens. You see code examples for the following tasks:
 
 . In the Jupyter notebook, run the code cells sequentially through the *Evaluation Execution*.
 . Return to the {productname-short} dashboard.
-. Click *Data science pipelines*->*Runs*. You might need to refresh the page to see the new evaluation job running.
+. Click *Data science pipelines*->*Runs*. You might need to refresh the page to see that the new evaluation job running.
 . Wait for the job to show *Successful*. 
 . Return to the workbench and run the *Results Display* cell.
 . Inspect the results displayed.
