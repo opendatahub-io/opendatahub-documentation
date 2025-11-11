@@ -276,13 +276,13 @@ spec:
     name: hap-detector-predictor
 ----
 +
-* Replace `<your_rhoai_version>` with your {productname-short} version (for example, `v2.25`). This feature requires {productname-short} version 2.25 or later.
+* `image`: Replace `<your_rhoai_version>` with your {productname-short} version (for example, `v2.25`). This feature requires {productname-short} version 2.25 or later.
 
 . Apply `hap_detector.yaml` to configure a serving runtime, inference service, and route for the HAP detector:
 +
 [source,bash]
 ----
-oc apply -f hap_detector.yaml
+$ oc apply -f hap_detector.yaml
 ----
 +
 [NOTE]
@@ -291,7 +291,7 @@ For more information about configuring the HAP detector and deploying a text gen
 --
 
 . Add the detector to the `ConfigMap` in the Guardrails Orchestrator:
-
++
 [source, yaml]
 ----
 kind: ConfigMap
@@ -331,10 +331,11 @@ spec:
   replicas: 1
 ---
 ----
++
 [NOTE]
---
-The in-built detectors have been switched off by setting the `enableBuiltInDetectors` option to `false`.
---
+====
+The built-in detectors have been switched off by setting the `enableBuiltInDetectors` option to `false`.
+====
 
 . Use HAP and Prompt Injection detectors to perform detections on lists of messages comprising a conversation and/or completions from a model:
 +
