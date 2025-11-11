@@ -3,7 +3,7 @@
 [id='about-centralized-auth-oidc_{context}']
 = About centralized authentication Gateway API
 
-A Gateway API with centralized authentication centralizes ingress for all services behind a single domain, providing the following advanced capabilities:
+A Gateway API with centralized authentication centralizes ingress traffic for all services behind a single domain, providing the following advanced capabilities:
 
 * Centralized authentication: A single authentication service requiring only one client ID and secret from the external OIDC Identity Provider (IDP). 
 * Simplified backend services: Backend services assume all incoming traffic is authenticated and contains necessary user headers. 
@@ -12,7 +12,7 @@ A Gateway API with centralized authentication centralizes ingress for all servic
 
 The Gateway API is implemented via an Istio Gateway on {openshift-platform} (OCP) 4.19 and later. Since the Istio Gateway is built on the Envoy Proxy, it provides access to powerful Envoy-specific Custom Resource Definitions (CRDs), such as `EnvoyFilter`. The `opendatahub-operator` manages the deployment of `kube-auth-proxy`. The Operator then configures the Istio Gateway to use this service via an `EnvoyFilter` Custom Resource (CR).
 
-For more information on supported OpenID Connect (OIDC) identity providers, see OCP documentation on link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/external-auth#external-auth-providers_external-auth[Direct authentication identity providers]
+For more information on supported OpenID Connect (OIDC) identity providers, see {openshift-platform} documentation on link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/external-auth#external-auth-providers_external-auth[Direct authentication identity providers]
 
 == Security considerations
 * Secret Management: Store OIDC client secrets securely and rotate them regularly.

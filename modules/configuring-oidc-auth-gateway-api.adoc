@@ -8,33 +8,41 @@ As a {productname-short} administrator, you can configure an OpenID Connect (OID
 
 [IMPORTANT]
 ====
-You must configure the {openshift-platform} for direct authentication with an external OIDC identity provider before configuring the ODH Gateway for the Gateway to function properly.
+You must configure the {openshift-platform} for direct authentication with an external OIDC identity provider before configuring the {productname-short} Gateway for the Gateway to function properly.
 ====
 
-.Prerequisities
+.Prerequisites
 * You have configured the {openshift-platform} for direct authentication with an external OIDC identity provider. 
-** To configure OpenShift for direct authentication, follow the appropriate OCP documentation: link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/external-auth[Enabling direct authentication with an external OIDC identity provider]. 
-** To configure OpenShift for direct authentication using ROSA, follow the appropriate Red Hat OpenShift Service on AWS documentation: link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/introduction_to_rosa/rosa-oidc-overview#rosa-byo-odic-overview_rosa-oidc-overview[Creating an OpenID Connect Configuration]. 
+** To configure OpenShift for direct authentication, follow the appropriate {openshift-platform} documentation: link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/external-auth[Enabling direct authentication with an external OIDC identity provider]. 
+** To configure OpenShift for direct authentication using ROSA, follow the appropriate {rosa-productname} documentation: link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/introduction_to_rosa/rosa-oidc-overview#rosa-byo-odic-overview_rosa-oidc-overview[Creating an OpenID Connect Configuration]. 
 
-NOTE: You must configure OpenShift for direct authentication using the same OIDC provider that the Gateway will use.
+NOTE: You must configure OpenShift for direct authentication using the same OIDC provider that the Gateway uses.
 
 * You have successfully installed and deployed {productname-short}.
-** You have deployed the DataScienceCluster (DSC) and DSCInitialization. For more information, see {odhdocshome}/installing-open-data-hub/#installing-and-deploying-openshift-ai[Installing and deploying OpenShift].
-** You have deployed the OpenShift AI Operator in the `rhods-operator` namespace. 
-** You have enabled Gateway API support on OCP 4.19+ with Istio Gateway. 
+
+ifdef::upstream[]
+** You have deployed the DataScienceCluster (DSC) and DSCInitialization. For more information, see link:{odhdocshome}/installing-open-data-hub/#installing-the-odh-operator-v2_installv2[Installing {productname-short}].
+endif::[]
+
+ifdef::self-managed[]
+** You have deployed the DataScienceCluster (DSC) and DSCInitialization. For more information, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/#nstalling-and-deploying-openshift-ai_install[Installing and deploying {productname-short}].
+endif::[]
+
+** You have deployed the {productname-short} Operator in the `rhods-operator` namespace. 
+** You have enabled Gateway API support on OCP 4.19 or later with Istio Gateway. 
 ** You have the following external authentication provider details:
 *** Issuer URL
 *** Client ID
 *** Client Secret
 *** Realm name (for Keycloak)
-** You have cluster administrator access which is required to create Secrets and configure `GatewayConfig`. 
+** You have cluster administrator access which is required to create secrets and configure `GatewayConfig`. 
 
 For detailed step-by-step instructions, troubleshooting, and field definitions, refer to the {openshift-platform} documentation on link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/external-auth#external-auth-configuring_external-auth[Configuring an external OIDC identity provider].
 
 .Procedure
 . In the OpenShift CLI (`oc`), verify the OpenShift authentication type by running the following command: 
 +
-[source, bash]
+[source,bash]
 ----
 oc get authentication.config/cluster -o jsonpath='{.spec.type}'
 ----
@@ -42,15 +50,15 @@ If the authentication is successful, you will see the following output: `OIDC`
 
 . Verify that your OIDC provider is configured as expected by running the following command:
 +
-[source, bash]
+[source,bash]
 ----
-oc get authentication.config/cluster -o jsonpath='{.spec.type}'
+oc get authentication.config/cluster -o jsonpath='{.spec.oidcProviders[*].name}'
 ----
 If the OIDC configuration is successful, you will see your provider name (e.g., `keycloak`). 
 
 . Verify that the `kube-apiserver` has rolled out changes as expected. 
 +
-[source, bash]
+[source,bash]
 ----
 oc get co kube-apiserver
 ----
@@ -65,15 +73,15 @@ kube-apiserver    4.14.9    True        False         False      1d
 
 NOTE: The rollout can take 20 minutes or more. Wait until all nodes have the new revision before proceeding. You can proceed to Gateway configuration steps when `oc get authentication.config/cluster` shows `type: OIDC`, `oc get co kube-apiserver` shows the authentication rollout is complete, and you can successfully authenticate to OpenShift using OIDC credentials. 
 
-. Define the the following environment variables. You must replace the placeholder values with the actual details from your OIDC Identity Provider (IDP):
+. Define the the following environment variables. You must replace the placeholder values with the actual details from your OIDC Identity Provider (IdP):
 +
 [source,bash]
 ----
 # Replace with your actual values
-KEYCLOAK_DOMAIN="keycloak.example.com"
-KEYCLOAK_REALM="your-realm"
-KEYCLOAK_CLIENT_ID="your-client-id"
-KEYCLOAK_CLIENT_SECRET="your-client-secret"
+KEYCLOAK_DOMAIN="<keycloak.example.com>"
+KEYCLOAK_REALM="<your-realm>"
+KEYCLOAK_CLIENT_ID="<your-client-id>"
+KEYCLOAK_CLIENT_SECRET="<your-client-secret>"
 ----
 
 . Create the client secret in the `openshift-ingress` namespace:
@@ -85,7 +93,7 @@ oc create secret generic keycloak-client-secret \
     -n openshift-ingress
 ----
 
-. Update the `GatewayConfig` custom resource to enable OIDC authentication by patching it with the Secret reference and OIDC details:
+. Update the `GatewayConfig` custom resource to enable OIDC authentication by patching it with the secret reference and OIDC details:
 +
 [source,bash]
 ----
@@ -125,17 +133,17 @@ keycloak-client-secret   Opaque   1      2m
 . After configuring and authenticating the Gateway for your identity provider, you need to ensure that you can access your OpenShift console. 
 .. Access the gateway by accessing the Console link:
 +
-[source, bash]
+[source,bash]
 ----
 $ oc get consolelink
 ----
 .. Login with your OIDC credentials and verify the following:
 ... You are redirected to the OIDC provider login page. A successful authentication redirects back to the Gateway. 
-... The ODH components are accessible (dashboard, notebooks, etc.). 
+... Your {productname-short} components are accessible (for example: Dashboard, Notebooks). 
 
 . Check the `GatewayConfig` status to verify that the OIDC configuration was successfully provisioned:
 +
-[source, bash]
+[source,bash]
 ----
 oc get gatewayconfig default-gateway -o yaml
 ----
@@ -143,13 +151,13 @@ The expected output is the full YAML configuration of the `GatewayConfig` resour
 
 . Verify the `kube-auth-proxy` deployment is running successfully in the `openshift-ingress` namespace:
 +
-[source, bash]
+[source,bash]
 ----
 oc get deployment kube-auth-proxy -n openshift-ingress
 ----
-The expected output should look like the following example:
+The expected output looks like the following example:
 +
-[source, bash]
+[source,bash]
 ----
 NAME              READY   UP-TO-DATE   AVAILABLE   AGE
 kube-auth-proxy   1/1     1            1           5m
@@ -161,24 +169,24 @@ kube-auth-proxy   1/1     1            1           5m
 ----
 oc get gateway data-science-gateway -n openshift-ingress
 ----
-The expected output should look like the following example:
+The expected output looks like the following example:
 +
-[source, bash]
+[source,bash]
 ----
 NAME                   CLASS                        ADDRESS                                                                        PROGRAMMED   AGE
 data-science-gateway   data-science-gateway-class   aa87f5da7f0c748d5aa63b4916604108-107643684.us-east-1.elb.amazonaws.com         True         5m
 ----
 
-. Test the OpenID Connect (OIDC) discovery endpoint by running the following command:
+. Test the OIDC discovery endpoint by running the following command:
 +
-[source, bash]
+[source,bash]
 ----
 curl -s https://your-keycloak-domain/realms/your-realm/.well-known/openid-configuration
 ----
 The expected output is a JSON object containing the OIDC configuration endpoints (`issuer`, `authorization_endpoint`, `token_endpoint`, etc.) that confirm the OIDC provider is publicly discoverable.
 
 .Next steps
-Once the external OIDC is configured and authenticated, the Cluster Administrator must perform the necessary authorization by mapping external Identity Provider (IDP) groups to specific OpenShift `ClusterRoles` to grant access to projects and resources.
+Once the external OIDC is configured and authenticated, the Cluster Administrator must perform the necessary authorization by mapping external Identity Provider (IdP) groups to specific OpenShift `ClusterRoles` to grant access to projects and resources.
 
 . Create a `ClusterRole` that grants users read and list access to OpenShift projects in the console:
 +
@@ -194,14 +202,14 @@ rules:
   verbs: ["get","list"]
 ----
 
-. Bind the odh-projects-read ClusterRole to your Identity Provider (IDP) group (e.g., odh-users):
+. Bind the `odh-projects-read` ClusterRole to your IdP group (for example, `odh-users`).
 +
 [source,bash]
 ----
 oc adm policy add-cluster-role-to-group odh-projects-read odh-users
 ----
 
-. Grant the ability to create and manage new projects by assigning the built-in self-provisioner ClusterRole to your group:
+. Grant the ability to create and manage new projects by assigning the built-in self-provisioner ClusterRole to your group.
 +
 [source,bash]
 ----
