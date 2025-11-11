@@ -19,11 +19,11 @@ NOTE: The example code in the following procedure requires that you edit it with
 * You have enabled the Feature Store component, as described in _Enabling the Feature Store component_.
 
 ifndef::upstream[]
-* You have created a project, as described in link:{rhoaidocshome}{default-format-url}/working_on_projects/using-projects_projects#creating-a-project_projects[Creating a project]. In the following procedure, `my-ds-project` is the name of the project.
+* You have created a project, as described in link:{rhoaidocshome}{default-format-url}/working_on_projects/using-projects_projects#creating-a-project_projects[Creating a project]. In the following procedure, `my-project` is the name of the project.
 endif::[]
 
 ifdef::upstream[]
-* You have created a project, as described in link:{odhdocshome}/working-on-projects/#creating-a-project_projects[Creating a project]. In the following procedure, `my-ds-project` is the name of the project.
+* You have created a project, as described in link:{odhdocshome}/working-on-projects/#creating-a-project_projects[Creating a project]. In the following procedure, `my-project` is the name of the project.
 endif::[]
 
 * Your project includes an existing secret that provides credentials for accessing the database that you want to use for the offline store. The example in the following procedure requires that you have configured DuckDB.
@@ -57,6 +57,6 @@ spec:
 .Verification
 
 . In the {openshift-platform} console, select *Workloads* -> *Pods*.
-. Make sure that your project (for example, `my-ds-project`) is selected.
+. Make sure that your project (for example, `my-project`) is selected.
 . Find the pod that has the `feast-` prefix, followed by the metadata name that you specified in the CRD configuration, for example, `feast-sample-db-persistence`.
 . Verify that the status is *Running*.
