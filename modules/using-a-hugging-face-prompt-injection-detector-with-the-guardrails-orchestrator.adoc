@@ -87,7 +87,7 @@ roleRef:
 oc apply -f service_account.yaml
 ----
 
-. Create `prompt_injection_detector.yaml`:
+. Create the 'prompt_injection_detector.yaml'. In the following code example, replace <your_rhoai_version> with your {productname-short} version (for example, v2.25). This feature requires {productname-short} version 2.25 or later.
 +
 [source,yaml]
 ----
@@ -174,8 +174,6 @@ spec:
     kind: Service
     name: prompt-injection-detector-predictor
 ----
-+
-* Replace `<your_rhoai_version>` with your {productname-short} version (for example, `v2.25`). This feature requires {productname-short} version 2.25 or later.
 
 . Apply `prompt_injection_detector.yaml` to configure a serving runtime, inference service, and route for the Prompt Injection detector you want to incorporate in your Guardrails orchestration service:
 +
