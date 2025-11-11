@@ -23,16 +23,6 @@ NOTE: Changing the PVC setting restarts the workbench pod and makes it unavailab
 .Verification
 * New PVCs are created with the default storage size that you configured.
 
-When resizing a PVC backed by AWS EBS in {productname-short}, you might see the following error message:
-
-[source,terminal]
-----
-VolumeModificationRateExceeded: You've reached the maximum modification rate per volume limit. Wait at least 6 hours between modifications per EBS volume.
-----
-This is an AWS EBS service limit, not specific to NVIDIA NIM, KServe, or any application. 
-It applies to all workloads using EBS-backed PVCs. 
-If a PVC resize is attempted before the cooldown expires, the AWS EBS CSI driver (ebs.csi.aws.com) will fail the operation with this error.
-
 [role='_additional-resources']
 .Additional resources
 * link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/storage/understanding-persistent-storage[Understanding persistent storage]
