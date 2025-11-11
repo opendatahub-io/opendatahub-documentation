@@ -47,7 +47,7 @@ stringData:
 <5> Optional region field: If your S3 provider requires a specific region or if you are using AWS, you may include this optional field. 
 +
 
-NOTE:  The `opendatahub.io/connection-type-protocol: "s3"` annotation is required by applications to recognize this Secret as an S3 connection.
+NOTE:  The `opendatahub.io/connection-type-protocol: `s3`` annotation is required by applications to recognize this Secret as an S3 connection.
 
 . Apply the Secret to the cluster by using the `kubectl apply` command to create the Secret in your Kubernetes cluster. 
 +
@@ -91,9 +91,9 @@ spec:
 <1> In the `opendatahub.io/connections` field, reference the name of your S3 connection Secret. 
 <2> In the `opendatahub.io/connection-path` field, reference the folder path within the S3 bucket. This optional but highly recommended annotation specifies the path within the S3 bucket where your model files are located.
 
-NOTE: When used with an `InferenceService` custom resource, the `opendatahub.io/connections` annotation usually requires the Secret name (for example, `my-s3-connection``) if the Secret is in the same namespace as the `InferenceService`.
+NOTE: When used with an `InferenceService` custom resource, the `opendatahub.io/connections` annotation usually requires the Secret name (for example, `my-s3-connection`) if the Secret is in the same namespace as the `InferenceService`.
 
-== Using an Amazon S3 connection with `LLMInferenceService`custom resource
+== Using an Amazon S3 connection with `LLMInferenceService` custom resource
 You can use an Amazon S3-compatible connection type with the `LLMInferenceService` custom resource. In the following procedure, you define the storage location for your large language model (LLM) when deploying a KServe `LLMInferenceService` by using an S3 connection.
 
 .Prerequisites

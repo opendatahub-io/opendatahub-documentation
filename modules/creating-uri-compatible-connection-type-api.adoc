@@ -6,12 +6,12 @@
 
 [role='_abstract']
 
-In {productname-short}, you can create a URI-compatible connection type by using the connections API. In the following procedure, you define a Kubernetes Secret resource that holds a simple URI for connecting to an external resource, such as a model file hosted on an HTTP server or HuggingFace.
+In {productname-short}, you can create a URI-compatible connection type by using the connections API. In the following procedure, you define a Kubernetes Secret resource that holds a simple URI for connecting to an external resource, such as a model file hosted on an HTTP server or Hugging Face.
 
 .Prerequisites
 
 * You have access to a Kubernetes cluster where you have permissions to create Secrets.
-* You have access to the full HTTP/HTTPS URL or HuggingFace URI (`hf://`) for the target resource.
+* You have access to the full HTTP/HTTPS URL or Hugging Face URI (`hf://`) for the target resource.
 
 .Procedure
 
@@ -31,10 +31,10 @@ stringData:
   URI: "<uniform-resource-identifier>" # The full URI/URL of the external resource
 ----
 +
-.. In the example YAML, replace the required URI field by populating the placeholder value in  the `stringData` section to include complete URL to the resource. This can be an HTTP/HTTPS link, or a HuggingFace URI. 
+.. In the example YAML, replace the required URI field by populating the placeholder value in  the `stringData` section to include complete URL to the resource. This can be an HTTP/HTTPS link, or a Hugging Face URI. 
 +
 
-NOTE: The `opendatahub.io/connection-type-protocol: uri` annotation is used by certain Operators to identify the purpose of the Kubernetes Secret.
+NOTE: The `opendatahub.io/connection-type-protocol: uri` annotation is used by certain operators to identify the purpose of the Kubernetes Secret.
 
 . Apply the Secret to the cluster by using the `kubectl apply` command to create the Secret in your Kubernetes cluster. 
 +
