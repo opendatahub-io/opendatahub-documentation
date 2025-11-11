@@ -22,14 +22,15 @@ kind: GuardrailsOrchestrator
 metadata:
   name: gorch-test
 spec:
-  orchestratorConfig: "fms-orchestr8-config-nlp"    <1>
+  orchestratorConfig: "fms-orchestr8-config-nlp"
   replicas: 1
   otelExporter:
     protocol: "http"
     otlpEndpoint: "localhost:4318"
     otlpExport: "metrics"
 ----
-<1> This references the config map that was created in Step 1 of "Deploying the Guardrails Orchestrator service".
++
+* `orchestratorConfig`: This references the config map that was created in Step 1 of "Deploying the Guardrails Orchestrator service".
 
 . Deploy the orchestrator custom resource:
 +
