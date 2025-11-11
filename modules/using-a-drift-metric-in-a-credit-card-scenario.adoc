@@ -10,7 +10,7 @@ This example scenario deploys an XGBoost model into your cluster and reviews its
 
 Once the model is deployed and the data that we upload is formatted, we'll use the mean shift metric to monitor for data drift. This metric is useful for ensuring that a model remains accurate and reliable in a production environment.
 
-Mean shift compares a numeric test dataset against a numeric training dataset, and produces a P-Value measuring the probability that the test data came from the same numeric distribution as the training data. A p-value less than 0.05 indicates a statistically significant drift between the two. A p-value greater than 0.05 indicates that statistically significant drift has not occurred.
+Mean shift compares a numeric test dataset against a numeric training dataset, and produces a p-value measuring the probability that the test data came from the same numeric distribution as the training data. A p-value less than 0.05 indicates a statistically significant drift between the two. A p-value equal to or greater than 0.05 indicates no statistically significant evidence of drift.
 
 [NOTE]
 --
@@ -108,7 +108,7 @@ curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/in
 + 
 [TIP]
 ====
-Define name mappings in TrustyAI to assign memorable names to input or output names. These names can then be used in subsequent requests to the TrustyAI service..
+Define name mappings in TrustyAI to assign memorable names to input or output names. These names can then be used in subsequent requests to the TrustyAI service.
 ====
 
 . Verify that TrustyAI has received the data by querying the `/info` endpoint:
@@ -193,7 +193,7 @@ for batch in {0..595..5}; do
 	curl -sk "${MODEL_ROUTE}"\
   		-H "Authorization: Bearer ${TOKEN}" \
   		-H "Content-Type: application/json" \
-  		-d @$DATA_PATH/$batch.json \
+  		-d @$DATA_PATH/$batch.json
   	sleep 1
 done
 ----
@@ -215,26 +215,4 @@ done
 . Observe the updated drift metrics in the *Observe -> Metrics* section of the OpenShift console. The mean shift metric values for the various features change:
 .. The values for Credit Score, Age, and Acceptance Probability have all dropped to 0, indicating there is a statistically very high likelihood that the values of these fields in the inference data come from a different distribution than that of the training data. 
 .. The Years of Employment and Years of Education scores have dropped to 0.34 and 0.82 respectively, indicating that there is a little drift, but not enough to be particularly concerning.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
