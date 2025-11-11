@@ -7,9 +7,9 @@
 You can use the connections API to enable flexible connection management to external data sources and services in {productname-short}. Connections are stored as Kubernetes Secrets with standardized annotations that enable protocol-based validation and routing. Components use connections by referencing them in their resource specifications. The Operator and components use the `opendatahub.io/connections` annotation to establish the relationship between resources and connection Secrets.
 
 [IMPORTANT]
-----
+====
 For all new connection Secrets, use the annotation `opendatahub.io/connection-type-protocol`. The old annotation format, `opendatahub.io/connection-type-ref`, is deprecated. While both annotation formats are currently supported, `opendatahub.io/connection-type-protocol` takes precedence.
-----
+====
 
 The connection API supports the following connection types:  
 
@@ -41,7 +41,7 @@ data:
   # Protocol-specific fields (base64-encoded)
 ----
 
-NOTE: While the Operator does minimal validation of `s3` and `uri` secrets, the overall correctness of the connection secret is the responsibility of the user. We may add more robust validation in future releases.
+NOTE: While the Operator does minimal validation of `s3` and `uri` secrets, the overall correctness of the connection secret is the responsibility of the user. {productname-short} might add more robust validation in future releases.
 
 == Namespace isolation in connections API
 Connections are Kubernetes Secrets stored within user project namespaces. Cross-namespace access is not supported, which means that connections can only be used by resources within the same namespace where the connection Secret exists.
@@ -50,12 +50,12 @@ Connections are Kubernetes Secrets stored within user project namespaces. Cross-
 
 * You must have appropriate RBAC permissions to create, read, update, or delete Secrets in their project namespace.
 * Components using connections must have ServiceAccount permissions to read Secrets in the namespace.
-* Without access to a connection Secret, the using resource (workbench, model serving, etc.) fails to start or function.
+* Without access to a connection Secret, the using resource, for example, workbench or model serving, fails to start or function.
 
 For more information about managing RBAC in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/using-rbac[Using RBAC to define and apply permissions].
 
 == Validation scope
-You can create connection Secrets with maximum flexibility, as the webhook validation for the operator is advisory, not restrictive. With this flexibility, you can: 
+You can create connection Secrets with maximum flexibility, as the webhook validation for the Operator is advisory, not restrictive. With this flexibility, you can: 
 
 * Include the `opendatahub.io/connection-type-protocol` annotation to trigger validation of protocol-specific fields, which acts as helpful guidance.
 * Create the Secret, even if you omit required annotations or include invalid fields; the system will not block secret creation. 
@@ -66,7 +66,7 @@ NOTE: If your connection is invalid, it will cause workload failures at runtime.
 When configuring connections API, the format for referencing a connection Secret via the `opendatahub.io/connections` annotation changes based on the type of Kubernetes Custom Resource (CR) or workload being used. 
 
 * For a `Notebook` custom resource, multiple connections are supported. Use comma-separated values using the namespace/name format. For example: `opendatahub.io/connections: 'my-project/connection1,my-project/connection2'`.
-* For `InferenceService` and `LLMInferenceService` custom resources, the Connection name is a simple string (assumed to be in the same namespace as the service). Only a single connection is supported. For example: `opendatahub.io/connections: 'my-connection'`.
+* For `InferenceService` and `LLMInferenceService` custom resources, the Connection name is a simple string, assumed to be in the same namespace as the service. Only a single connection is supported. For example: `opendatahub.io/connections: 'my-connection'`.
 * For `InferenceService` and `LLMInferenceService` using *S3 connections*, the additional annotation `opendatahub.io/connection-path` is used to specify the exact location of the model within the bucket. For example: 
 +
 [source,bash]

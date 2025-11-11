@@ -6,16 +6,16 @@
 
 [role='_abstract']
 
-In {productname-short}, you can create a Uniform Resource Identifier (URI) compatible connection type by using the connections API. In the following procedure, you define a Kubernetes Secret for storing credentials to an OCI-compatible container registry (like Quay.io or a private registry). This allows applications to authenticate and pull container images.
+In {productname-short}, you can create an OCI-compatible connection type by using the connections API. In the following procedure, you define a Kubernetes Secret for storing credentials to an OCI-compatible container registry (like Quay.io or a private registry). This allows applications to authenticate and pull container images.
 
 .Prerequisites
 * You have access to a Kubernetes cluster with permissions to create Secrets.
-* You have access to the Registry URL with the organization (e.g., http://quay.io/my-org).
+* You have access to the Registry URL with the organization (for example, http://quay.io/my-org).
 * You have the username and password/ or token for the container registry.
-* You have installed a tool for Base64 encoding (e.g., base64 command-line utility).
+* You have installed a tool for Base64 encoding (for example, base64 command-line utility).
 
 .Procedure
-. Prepare the authentication data by using Base64 to encode the `username:password` string, the ``.dockerconfigjson` content, and the `OCI_HOST` URL. 
+. Prepare the authentication data by using Base64 to encode the `username:password` string, the `.dockerconfigjson` content, and the `OCI_HOST` URL. 
 .. Encode credentials by combining `username:password` and encode it to get the value for the `auth` field in the JSON structure.
 +
 [source,bash]
@@ -24,7 +24,7 @@ echo -n 'myusername:mypassword' | base64
 # Result: <base64-encoded-username:password>
 ----
 +
-.. Generate and encode ``.dockerconfigjson` by creating the JSON structure and encoding the entire string with Base64.
+.. Generate and encode `.dockerconfigjson` by creating the JSON structure and encoding the entire string with Base64.
 +
 [source,bash]
 ----
@@ -46,7 +46,7 @@ echo -n 'http://quay.io/my-org' | base64
 # The encoded result is: <base64-encoded-registry-url>
 ----
 
-. Create a YAML file (e.g., oci-connection.yaml) that defines a Kubernetes Secret of type `kubernetes.io/dockerconfigjson`. Use the encoded strings from the previous step in the `data` section.
+. Create a YAML file (for example, oci-connection.yaml) that defines a Kubernetes Secret of type `kubernetes.io/dockerconfigjson`. Use the encoded strings from the previous step in the `data` section.
 +
 [source,bash]
 ----
@@ -73,6 +73,75 @@ data:
 kubectl apply -f oci-connection.yaml
 ----
 
+== Using an OCI connection with `InferenceService` custom resource
+You can use an OCI-compatible connection type with an `InferenceService` custom resource. In the following procedure, you define the private image registry location for your model by using an OCI connection when deploying a KServe `InferenceService` custom resource.
 
+.Prerequisites
+* You have created an OCI connection Secret in the `project` namespace.
+* You have deployed a KServe Operator in your cluster.
+
+.Procedure
+. Create a YAML file (for example, `oci-inferenceservice.yaml`) that defines the KServe `InferenceService` custom resource.
+. Specify the OCI connection annotation in the `metadata.annotations` section. Add the `opendatahub.io/connections` annotation and set its value to reference the OCI Secret name, `my-oci-connection`.
+. Define the model format by configuring the ``.spec.predictor.model.modelFormat` field to specify the framework of the model (for example, `pytorch`).
++
+[source,bash]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: my-model                   # Name of the service
+  namespace: my-project
+  annotations:
+    opendatahub.io/connections: 'my-oci-connection'      # Reference to the OCI Connection Secret
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: pytorch             # Specify the framework format (for example, pytorch)
+      # NOTE: The operator webhook creates and injects .spec.predictor.imagePullSecrets
+      # for OCI authentication based on the Secret.
+----
+
+. Apply the `InferenceService` custom reource by using the `kubectl apply` command to create the resource.
++
+[source,bash]
+----
+kubectl apply -f oci-inferenceservice.yaml
+----
+
+== Using an OCI connection with `LLMInferenceService` custom resource
+You can use an OCI-compatible connection type with the `LLMInferenceService` custom resource. In the following procedure, you define the private image registry location for your Large Language Model (LLM) container image by using an OCI connection when deploying a KServe `LLMInferenceService`.
+
+.Prerequisites
+* You have created an OCI connection Secret in the `project` namespace. For more information, see _Creating an OCI connection type using the Connections API_.
+* You have a KServe Operator deployed that supports the `LLMInferenceService` custom resource.
+
+.Procedure
+. Create a YAML file (for example, `oci-llm-service.yaml`) that defines the KServe `LLMInferenceService` custom resource.
+. Specify the OCI connection annotation in the `metadata.annotations` section. Add the `opendatahub.io/connections` annotation and set its value to reference the OCI Secret name, `my-oci-connection`. 
++
+[source,yaml]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: my-llm-model                   # Name of the LLM serving instance
+  namespace: my-project
+  annotations:
+    opendatahub.io/connections: 'my-oci-connection'      # Reference to the OCI Connection Secret
+spec:
+  model:
+    # Define the container image path here, if required.
+    # NOTE: The operator webhook automatically injects imagePullSecrets
+    # for OCI authentication based on this connection.
+    # The imagePullSecrets field will be set to the connection secret name.
+----
+. Apply the `LLMInferenceService` custom resource by using the `kubectl apply` command. 
++
+[source,yaml]
+----
+kubectl apply -f oci-llm-service.yaml
+----
 
 
