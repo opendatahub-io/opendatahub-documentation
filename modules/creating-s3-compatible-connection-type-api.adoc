@@ -57,7 +57,7 @@ kubectl apply -f s3-connection.yaml
 ----
 
 == Using an Amazon S3 connection with `InferenceService` custom resource 
-You can use an Amazon S3-compatible connection type with an `InferenceService` custom resource. In the following procedure, you define a define the storage location for your model when deploying a KServe InferenceService custom resource.
+You can use an Amazon S3-compatible connection type with an `InferenceService` custom resource. In the following procedure, you define the storage location for your model when deploying a KServe `InferenceService` custom resource.
 
 .Prerequisites
 * You have created an S3 connection Secret in the `project` namespace.
@@ -77,7 +77,7 @@ metadata:
   namespace: my-project
   annotations:
     opendatahub.io/connections: 'my-s3-connection'    # <1> 
-    opendatahub.io/connection-path: 'my-bucket-path'  # <2> The folder path *within* the S3 bucket
+    opendatahub.io/connection-path: 'my-bucket-path'  # <2> 
 spec:
   predictor:
     model:
@@ -91,7 +91,7 @@ spec:
 <1> In the `opendatahub.io/connections` field, reference the name of your S3 connection Secret. 
 <2> In the `opendatahub.io/connection-path` field, reference the folder path within the S3 bucket. This optional but highly recommended annotation specifies the path within the S3 bucket where your model files are located.
 
-NOTE: When used with an `InferenceService` custom resource, the annotation usually requires the Secret name (for example, 'my-s3-connection') if the Secret is in the same namespace as the `InferenceService`.
+NOTE: When used with an `InferenceService` custom resource, the `opendatahub.io/connections` annotation usually requires the Secret name (for example, `my-s3-connection``) if the Secret is in the same namespace as the `InferenceService`.
 
 == Using an Amazon S3 connection with `LLMInferenceService`custom resource
 You can use an Amazon S3-compatible connection type with the `LLMInferenceService` custom resource. In the following procedure, you define the storage location for your large language model (LLM) when deploying a KServe `LLMInferenceService` by using an S3 connection.
@@ -103,7 +103,7 @@ You can use an Amazon S3-compatible connection type with the `LLMInferenceServic
 
 .Procedure
 . Create a YAML file (for example, `llm-service.yaml`) that defines the KServe `LLMInferenceService` custom resource. This resource is specialized for serving large language models.
-. Specify the connection and path annotations in the metadata.annotations section to link the service to your S3 storage.
+. Specify the connection and path annotations in the `metadata.annotations` section to link the service to your S3 storage.
 +
 [source,bash]
 ----
@@ -114,7 +114,7 @@ metadata:
   namespace: my-project
   annotations:
     opendatahub.io/connections: 'my-s3-connection'      # <1> 
-    opendatahub.io/connection-path: 'my-bucket-path'    # <2> The folder path *within* the S3 bucket
+    opendatahub.io/connection-path: 'my-bucket-path'    # <2> 
 spec:
   model:
     # NOTE: The .spec.model.uri field is automatically injected by the operator
@@ -124,6 +124,6 @@ spec:
 ----
 +
 
-<1> In the `opendatahub.io/connections` field, reference the name of your S3 connection Secret. For example, 'my-s3-connection'. 
-<2> In the `opendatahub.io/connection-path` field, specify the path within the S3 bucket where your LLM model files are stored. For example, 'my-bucket-path'. 
+<1> In the `opendatahub.io/connections` field, reference the name of your S3 connection Secret. For example, `my-s3-connection`. 
+<2> In the `opendatahub.io/connection-path` field, specify the path within the S3 bucket where your LLM model files are stored. For example, `my-bucket-path`. 
 
