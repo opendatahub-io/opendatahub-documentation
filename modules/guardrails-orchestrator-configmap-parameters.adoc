@@ -20,9 +20,9 @@ data:
       service:
         hostname: <generation_hostname>
         port: <generation_service_port>
-        tls: <TLS CONFIG 1 NAME>
+        tls: <tls_config_1_name>
     detectors:
-      <detector_server_1_name:
+      <detector_server_1_name>:
         type: text_contents
         service:
             hostname: "127.0.0.1"
@@ -32,11 +32,11 @@ data:
       <detector_server_2_name>:
         type: text_contents
         service:
-          hostname: <other detector hostname>
-          port: <detector server port>
-          tls: some-other-detector-tls
+          hostname: <other_detector_hostname>
+          port: <detector_server_port>
+          tls: <some_other_detector_tls>
         chunker_id: whole_doc_chunker
-        default_threshold: 0.
+        default_threshold: 0.5
     tls:
       - <tls_config_1_name>:
           cert_path: /etc/tls/<path_1>/tls.crt
@@ -83,5 +83,5 @@ A TLS configuration consists of the following fields:
 +
 See the <<tlsSecrets-param,`tlsSecrets`>> section of the GuardrailsOrchestrator Custom Resource to learn how to mount custom TLS files into the Guardrails Orchestrator container.
 | *`passthrough_headers`* |  Defines which headers from your requests to the Guardrails Orchestrator get sent onwards to
-the various services specified in this configuration. If you want to ensure that the Orchestrator can talk to authenticated services, we recommend specifying choosing `"authorization"` and `"content-type"` at minimum.
+the various services specified in this configuration. If you want to ensure that the Orchestrator can talk to authenticated services,  include "authorization" and "content-type" in your passthrough header list.
 |===
