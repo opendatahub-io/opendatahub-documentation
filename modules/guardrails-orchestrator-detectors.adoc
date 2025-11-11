@@ -10,7 +10,7 @@ ifdef::context[:parent-context: {context}]
 [[guardrails-detector-server-info]]
 The Guardrails framework uses "detector" servers to contain guardrailing logic.
 Any server that provides the link:https://foundation-model-stack.github.io/fms-guardrails-orchestrator/?urls.primaryName=Detector+API[IBM /detectors API] is compatible
-with the Guardrails framework. The main endpoint for a detector server is the `/api/v1/text/contents`, whose payload looks like:
+with the Guardrails framework. The main endpoint for a detector server is the `/api/v1/text/contents`, and the payload looks like the following:
 
 
 ```
@@ -24,10 +24,10 @@ curl $ENDPOINT/api/v1/text/contents -d /
 ```
 
 == Built-in Detector
-The Guardrails framework provides a set of “built-in” detectors out-of-the-box which provides a number of detection algorithms. The built-in detector currently provides the following algorithms.
+The Guardrails framework provides a set of “built-in” detectors out-of-the-box, which provides a number of detection algorithms. The built-in detector currently provides the following algorithms:
 
 
-.`regex`
+`regex`::
 * `us-social-security-number` - detect US social security numbers
 * `credit-card` - detect credit card numbers
 * `email` - detect email addresses
@@ -37,7 +37,7 @@ The Guardrails framework provides a set of “built-in” detectors out-of-the-b
 * `uk-post-code` - detect UK post codes
 * `$CUSTOM_REGEX` - use a custom regex to define your own detector
 
-.`file_type`
+`file_type`::
 * `json` - detect valid JSON
 * `xml` - detect valid XML
 * `yaml` - detect valid YAML
@@ -45,12 +45,15 @@ The Guardrails framework provides a set of “built-in” detectors out-of-the-b
 * `xml-with-schema:$SCHEMA` - detect whether the text content satisfies a provided XML schema. To specify a schema, replace $SCHEMA with an XML Schema Definition (XSD)
 * `yaml-with-schema:$SCHEMA` - detect  whether the text content satisfies a provided XML schema. To specify a schema, replace $SCHEMA with a JSON schema (not a YAML schema)
 
-.`custom`
-* _(Dev-preview)_ Custom detectors defined via a `custom_detectors.py` file. See $release-note.
+`custom`::
+_Developer preview_
+* Custom detectors defined via a `custom_detectors.py` file.
 
-The detector algorithm can be chosen via `detector_params`, by first choosing the top-level taxonomy (e.g., `regex` or `file_type`) and then providing a list of the desired algorithms from within
-that category, e.g.:
-```
+The detector algorithm can be chosen with `detector_params`, by first choosing the top-level taxonomy (e.g., `regex` or `file_type`) and then providing a list of the desired algorithms from within
+that category. In the following example, both the `credit-card` and `email` algorithms are run against the provided message.:
+
+[source,json]
+----
 {
   "contents": [
     "Some message"
@@ -59,5 +62,4 @@ that category, e.g.:
     `regex`: [credit-card, email]
   }
 }
-```
-In the above example, both the `credit-card` and `email` algorithms with be run against the provided message.
+----

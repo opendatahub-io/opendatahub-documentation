@@ -3,11 +3,10 @@
 [id='guardrails-orchestrator-config-parameters_{context}']
 = Orchestrator Configuration Parameters
 
-The first step in deploying the Guardrails framework is to first define your orchestrator configuration via Config Map. This serves as a registry
-of the components in the system, namely by specifying the model-to-be-guardrailed and available detector servers.
+The first step in deploying the Guardrails framework is to first define your orchestrator configuration with a Config Map. This serves as a registry of the components in the system, namely by specifying the model-to-be-guardrailed and the available detector servers.
 
 Here is an example version of an orchestrator configuration file:
-+
+
 .Example `orchestrator_configmap.yaml`
 [source,yaml]
 ----
@@ -19,18 +18,18 @@ data:
   config.yaml: |
     chat_generation:
       service:
-        hostname: <GENERATION HOSTNAME>
-        port: <GENERATION SERVICE PORT>
+        hostname: <generation_hostname>
+        port: <generation_service_port>
         tls: <TLS CONFIG 1 NAME>
     detectors:
-      <DETECTOR SERVER 1 NAME>:
+      <detector_server_1_name:
         type: text_contents
         service:
             hostname: "127.0.0.1"
             port: 8080
         chunker_id: whole_doc_chunker
         default_threshold: 0.5
-      <DETECTOR SERVER 2 NAME>:
+      <detector_server_2_name>:
         type: text_contents
         service:
           hostname: <other detector hostname>
@@ -39,30 +38,29 @@ data:
         chunker_id: whole_doc_chunker
         default_threshold: 0.
     tls:
-      - <TLS CONFIG 1 NAME>:
-          cert_path: /etc/tls/<PATH 1>/tls.crt
-          key_path: /etc/tls/<PATH 1>/tls.key
+      - <tls_config_1_name>:
+          cert_path: /etc/tls/<path_1>/tls.crt
+          key_path: /etc/tls/<path_1>/tls.key
           ca_path: /etc/tls/ca/service-ca.crt
-      - <TLS CONFIG 2 NAME>:
-          cert_path: /etc/tls/<PATH 2>/tls.crt
-          key_path: /etc/tls/<PATH 2>/tls.key
+      - <tls_config_2_name>:
+          cert_path: /etc/tls/<path_2>/tls.crt
+          key_path: /etc/tls/<path_2>/tls.key
           ca_path: /etc/tls/ca/service-ca.crt
     passthrough_headers:
       - "authorization"
       - "content-type"
 ----
-
+.Orchestrator configuration parameters
 [cols="1,2a", options="header"]
 |===
 | Parameter | Description
 | *`chat_generation`* | Describes the generation model to be guardrailed. Requires a *`service`* configuration, see below.
-| *`service`* | A service configuration. Throughout the orchestrator config, all external services are described via the
+| *`service`* | A service configuration. Throughout the orchestrator config, all external services are described using the
 service configuration, which contains the following fields:
 
 * `hostname` - The hostname of the service
 * `port` - The port of the service
-* `tls` *(Optional)* - The name of the TLS configuration (specified later in the configuration) to use for this service. If provided, the orchestrator
-will communicate with this service via HTTPS.
+* `tls` *(Optional)* - The name of the TLS configuration (specified later in the configuration) to use for this service. If provided, the orchestrator communicates with this service with HTTPS.
 | *`detectors`* | The `detectors` section is where the detector servers available to the orchestrator are specified. Provide some unique name for the detector server as the key
 to each entry, and then the following values are required:
 
@@ -74,9 +72,8 @@ to each entry, and then the following values are required:
         port: 8080
 
 * `chunker_id`- The chunker to use for this detector server. For now, the only supported chunker is `whole_doc_chunker`
-* `default_threshold`- The threshold to pass to the detector server. The threshold can be used by the detector servers to determine their sensitivity, and recommended values
-will vary by detector algorithm. We recommend keeping this at `0.5` as a safe starting point.
-| *`<DETECTOR SERVER NAME>`*| [[detector-server-name-param]] Each key in the detector section will define the *name* of the detector server. This can be any string, but you'll need to reference these names later, so pick memorable and descriptive names.
+* `default_threshold`- The threshold to pass to the detector server. The threshold can be used by the detector servers to determine their sensitivity, and recommended values vary by detector algorithm. A safe starting point for this is a value of `0.5`.
+| *`<detector_server_name>`*| [[detector-server-name-param]] Each key in the detector section defines the *name* of the detector server. This can be any string, but you'll need to reference these names later, so pick memorable and descriptive names.
 | *`tls`* | The `tls` section defines TLS configurations. The names of these configurations can then be used as values within `service.tls` in your service configurations (see the *`service`* section above).
 A TLS configuration consists of the following fields:
 
