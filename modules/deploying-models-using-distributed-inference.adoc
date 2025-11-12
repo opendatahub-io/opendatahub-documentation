@@ -46,7 +46,12 @@ This procedure describes how to create a custom resource (CR) for an `LLMInferen
 * You have access to an {openshift-platform} cluster running version 4.19.9 or later.
 * {openshift-platform} Service Mesh v2 is not installed in the cluster.
 * Your cluster administrator has created a `GatewayClass` and a `Gateway` named `openshift-ai-inference` in the `openshift-ingress` namespace as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ingress_and_load_balancing/configuring-ingress-cluster-traffic#ingress-gateway-api[Gateway API with {openshift-platform} Container Platform Networking]. 
-** [IMPORTANT] Review the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ingress_and_load_balancing/configuring-ingress-cluster-traffic#nw-ingress-gateway-api-deployment_ingress-gateway-api[Gateway API deployment topologies]. Only use shared Gateways across trusted namespaces.
++
+[IMPORTANT] 
+====
+Review the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ingress_and_load_balancing/configuring-ingress-cluster-traffic#nw-ingress-gateway-api-deployment_ingress-gateway-api[Gateway API deployment topologies]. Only use shared Gateways across trusted namespaces.
+====
+
 * You have installed the `LeaderWorkerSet` Operator in {openshift-platform}. For more information, see the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ai_workloads/leader-worker-set-operator[Leader Worker Set Operator documentation].
 
 .Procedure
