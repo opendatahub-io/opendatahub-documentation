@@ -52,8 +52,8 @@ This procedure describes how to create a custom resource (CR) for an `LLMInferen
 Review the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ingress_and_load_balancing/configuring-ingress-cluster-traffic#nw-ingress-gateway-api-deployment_ingress-gateway-api[Gateway API deployment topologies]. Only use shared Gateways across trusted namespaces.
 ====
 
-* You have installed the `LeaderWorkerSet` Operator in {openshift-platform}. For more information, see the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ai_workloads/leader-worker-set-operator[Leader Worker Set Operator documentation].
-* If you are running {openshift-platform} on a bare metal cluster: You have set up the MetalLB Operator to provision an external IP address for the `llm-d` Gateway service with the type `LoadBalancer`. For more infomation, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ingress_and_load_balancing/load-balancing-with-metallb(Load balancing with MetalLB). Ensure that the Operator is configured as follows:
+* Your cluster administrator has installed the `LeaderWorkerSet` Operator in {openshift-platform}. For more information, see the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ai_workloads/leader-worker-set-operator[Leader Worker Set Operator documentation].
+* If you are running {openshift-platform} on a bare metal cluster: Your cluster administrator has set up the MetalLB Operator to provision an external IP address for the `openshift-ai-inference` Gateway service with the type `LoadBalancer`. For more infomation, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ingress_and_load_balancing/load-balancing-with-metallb(Load balancing with MetalLB). Ensure that the Operator is configured as follows:
 ** Has a standard Kubernetes Service manifest.
 ** Has `type:LoadBalancer` in the `spec` section.
 
