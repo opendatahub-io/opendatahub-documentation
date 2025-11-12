@@ -19,7 +19,7 @@ include::modules/compare-the-performance-of-osft-and-sft.adoc[leveloffset=+1]
 
 == Distribute training jobs by using the KubeFlow Trainer Operator
 
-If you want to implement distributed training across multiple nodes to meet the needs of your training workloads, you can use the KubeFlow Trainer Operator (KFTO). The KFTO abstracts the underlying infrastructure complexity of distributed training and fine-tuning of models. The iterative process of fine-tuning significantly reduces the time and resources required compared to training models from scratch.
+If you want to implement distributed training across multiple nodes to meet the needs of your training workloads, you can use the KubeFlow Trainer Operator (KFTO). KFTO abstracts the underlying infrastructure complexity of distributed training and fine-tuning of models. The iterative process of fine-tuning significantly reduces the time and resources required compared to training models from scratch.
 
 Learn more about the KubeFlow Trainer Operator in the following resources:
 
@@ -37,6 +37,15 @@ endif::[]
 
 ** link:{rhoaidocshome}{default-format-url}/openshift_ai_tutorial_-_fraud_detection_example/running-a-distributed-workload#distributing-training-jobs-with-kfto[Distributing training jobs with the Training Operator]
 //in the _Red Hat OpenShift AI tutorial: Fraud Detection example_.
+
+== Distributed fine-tuning with Training Hub and Kubeflow Trainer 
+
+The KubeFlow Trainer Operator supports distributed fine-tuning by using Training Hub, abstracting the complexity of distributed training. It seamlessly manages scaling and orchestration for you, allowing you to focus on your domain-specific fine-tuning logic by using the simplified Training Hub APIs.
+
+For a comprehensive tutorial on Fine Tuning with Training Hub leveraging distributed nodes with Kubeflow Trainer, follow these guided examples: 
+
+* link:https://github.com/red-hat-data-services/red-hat-ai-examples/tree/main/examples/fine-tuning/training-hub/sft[Example of Supervised Fine Tuning (SFT) with Training Hub and Kubeflow Trainer]
+* link:https://github.com/red-hat-data-services/red-hat-ai-examples/tree/main/examples/fine-tuning/osft[Example of Orthogonal Subspace Fine-Tuning (OSFT) with Training Hub and Kubeflow Trainer]
 
 
 ifdef::parent-context[:context: {parent-context}]
