@@ -8,7 +8,7 @@ This example scenario deploys an XGBoost model into your cluster and reviews its
 
 The XGBoost model was created for the purpose of this demonstration and predicts credit card approval based on the following features: age, credit score, years of education, and years in employment. 
 
-Once the model is deployed and the data that you upload is formatted, use the mean shift metric to monitor for data drift. This metric is useful for ensuring that a model remains accurate and reliable in a production environment.
+When the model is deployed and the data that you upload is formatted, use the mean shift metric to monitor for data drift. This metric is useful for ensuring that a model remains accurate and reliable in a production environment.
 
 Mean shift compares a numeric test dataset against a numeric training dataset. It produces a p-value that measures the probability the test data has originated from the same numeric distribution as the training data. A p-value less than 0.05 indicates a statistically significant drift between the two datasets. A p-value equal to or greater than 0.05 indicates no statistically significant evidence of drift.
 
@@ -66,9 +66,9 @@ TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
 wget https://github.com/trustyai-explainability/odh-trustyai-demos/blob/72f748da9410f92a60bea73ce5e3f47c10ad1cea/3-DataDrift/kserve-demo/data/training_data.json -O training_data.json 
 ----
 
-. Label your model training data. This data has four main fields. The `model_name` and `data_tag` fields require a label because they are directly referenced in the Metrics dashboard later in the scenario. In addition to the required fields, it is recommended to also label response and request fields. The four fields are:
-.. `model_name`: The name of the model that correlates to this data. The name should match that of the model provided in the model yaml, which is `gaussian-credit-model`.
-.. `data_tag`: A string tag to reference this particular set of data. Use the string "TRAINING"
+. Label your model training data. This data has four main fields. The `model_name` and `data_tag` fields require a label because they are directly referenced in the Metrics dashboard later in the scenario. In addition to the required fields, it is best to also label response and request fields. The four fields are:
+.. `model_name`: The name of the model that correlates to this data. The name should match that of the model provided in the model YAML, which is `gaussian-credit-model`.
+.. `data_tag`: A string tag to reference this particular set of data. Use the string `"TRAINING"`.
 .. `request`: This is a KServe inference request, as if you were sending this data directly to the model server's `/infer` endpoint.
 .. `response`: The KServe inference response that is returned from sending the above request to the model.
 
@@ -81,9 +81,9 @@ curl -sk -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/data/upload  \
  -d @training_data.json 
 ----
 +
-The following message appears confirming the data upload: "1000 datapoints successfully added to gaussian-credit-model data".
+The following message appears confirming the data upload: `1000 datapoints successfully added to gaussian-credit-model data`.
 
-. (Recommended) Label your model input and output fields with the actual column names of the data in your KServe payloads. Send a JSON payload containing a simple set of `original-name` : `new-name pairs`, assigning new meaningful names to the input and output features of your model. A message that says "Feature and output name mapping successfully applied" appears if the request is successful:
+. Label your model input and output fields with the actual column names of the data in your KServe payloads. Send a JSON payload containing a simple set of `original-name` : `new-name pairs`, assigning new meaningful names to the input and output features of your model. A message that says "Feature and output name mapping successfully applied" appears if the request is successful:
 +
 [source, bash]
 ----
@@ -174,7 +174,7 @@ It may take a few seconds before the cluster monitoring stacks picks up the new 
 
 . Observe in the Metric Chart onscreen that a metric is emitted for each of the four features and the single output, making for five measurements in total. All metric values should equal 1 (no drift), because we only have the training data, which can't drift from itself.
 
-. Collect some simulated "real-world" inferences to observe the drift monitoring. To do this, send small batches of data to the model, mimicking a real-world deployment:
+. Collect some simulated real-world inferences to observe the drift monitoring. To do this, send small batches of data to the model, mimicking a real-world deployment:
 
 .. Get the route to the model:
 +
