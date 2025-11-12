@@ -81,7 +81,7 @@ A TLS configuration consists of the following fields:
     * `key_path` - The path to a `.key` file inside the Guardrails Orchestrator container.
     * `ca_path` - The path to CA certificate `.crt` file on the Guardrails Orchestrator container. The default Openshift Serving CA will be mounted at `/etc/tls/ca/service-ca.crt`, we recommend using this as your `ca_path`.
 +
-See the <<tlsSecrets-param,`tlsSecrets`>> section of the GuardrailsOrchestrator Custom Resource to learn how to mount custom TLS files into the Guardrails Orchestrator container.
+See the `tlsSecrets` section of the GuardrailsOrchestrator Custom Resource in _Deploying the Guardrails Orchestrator_ to learn how to mount custom TLS files into the Guardrails Orchestrator container.
 | *`passthrough_headers`* |  Defines which headers from your requests to the Guardrails Orchestrator get sent onwards to
 the various services specified in this configuration. If you want to ensure that the Orchestrator can talk to authenticated services,  include "authorization" and "content-type" in your passthrough header list.
 |===
