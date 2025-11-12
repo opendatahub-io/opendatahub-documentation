@@ -6,36 +6,6 @@
 [role="_abstract"]
 You can run a workbench or deploy a model from the {productname-short} dashboard using a hardware profile that submits workloads to Kueue.
 
-ifdef::upstream[]
-[IMPORTANT]
-====
-By default, hardware profiles, including Kueue-enabled profiles, are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles and Kueue functionality, set the `disableHardwareProfiles` and `disableKueue` values to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
-
-For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
-====
-endif::[]
-
-ifndef::upstream[]
-[IMPORTANT]
-====
-ifdef::self-managed[]
-The hardware profiles feature is currently available in {productname-long} {vernum} as a Technology Preview feature.
-endif::[]
-ifdef::cloud-service[]
-The hardware profiles feature is currently available in {productname-long} as a Technology Preview feature.
-endif::[]
-Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
-{org-name} does not recommend using them in production.
-These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
-
-For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
-
-By default, hardware profiles, including Kueue-enabled profiles, are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles and Kueue functionality, set the `disableHardwareProfiles` and `disableKueue` values to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
-
-For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
-====
-endif::[]
-
 .Prerequisites
 * A hardware profile configured for Kueue-based scheduling is available.
 * You are working in a project that is opted in to Kueue management.
