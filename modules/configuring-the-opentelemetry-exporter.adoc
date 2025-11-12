@@ -8,10 +8,46 @@
 Enable traces and metrics that are provided for the observability of the `GuardrailsOrchestrator` service with the OpenTelemetry exporter.
 
 .Prerequisites
-* You have installed the {productname-long} distributed tracing platform from the link:https://operatorhub.io/[OperatorHub] and created a Jaeger instance using the default settings.
-* You have installed the {org-name} build of OpenTelemetry from the OperatorHub and created an OpenTelemetry instance.
+* You have installed the Tempo Operator from the link:https://operatorhub.io/[OperatorHub].
+* You have installed the {org-name} build of OpenTelemetry from the OperatorHub.
 
 .Procedure
+. Enable user workload monitoring to observe telemetry data in {openshift-platform}:
++
+[source,terminal]
+----
+$ oc -n openshift-monitoring patch configmap cluster-monitoring-config --type merge -p '{"data":{"config.yaml":"enableUserWorkload: true\n"}}'
+----
+
+. Deploy a MinIO instance to serve as the storage backend for Tempo:
++
+[source,terminal]
+----
+$ oc apply -f minio.yaml
+----
++
+Wait for the `minio-xxx` pod to be running.
+
+. Create a TempoStack instance:
++
+[source,terminal]
+----
+$ oc apply -f tempo.yaml
+----
++
+Wait for the `<tempo_stack_name>-xxx` pods to be running.
+
+. Configure the OpenTelemetry instance to send telemetry data to the Tempo distributor:
++
+[source,terminal]
+----
+$ oc apply -f opentelemetry.yaml
+----
++
+The OpenTelemetry collector configuration defines the Tempo distributor and Prometheus services as exporters, which means that the OpenTelemetry collector sends telemetry data to these backends.
++
+Wait for the `<otelcol_name>-collector-xxx` pod to be running.
+
 . Define a `GuardrailsOrchestrator` custom resource object to specify the `otelExporter` configurations in a YAML file named `orchestrator_otel_cr.yaml`:
 +
 .Example of a `orchestrator_otel_cr.yaml` object that has OpenTelemetry configured:
@@ -38,7 +74,12 @@ spec:
 $ oc apply -f orchestrator_otel_cr.yaml
 ----
 
-. Observe Jaeger traces:
-.. In the {openshift-platform} web console, change your perspective from *Administrator* to *Developer*.
-.. Navigate to *Topology* and click on the Jaeger url.
-.. Under *Service*, select *jaeger-all-in-one* and click on the *Find Traces* button.
+. Observe traces using the Jaeger UI:
+.. Access the Jaeger UI by port-forwarding the Tempo traces service:
++
+[source,terminal]
+----
+$ oc port-forward svc/tempo-<tempo_stack_name>-query-frontend 16686:16686
+----
+.. In a separate browser window, navigate to `http://localhost:16686` to access the Jaeger UI.
+.. Under *Service*, select *fms_guardrails_orchestr8* and click on the *Find Traces* button.
