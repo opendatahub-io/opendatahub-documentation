@@ -33,9 +33,6 @@ Key features of {llmd} include:
 Serving models using {llmd} on {productname-long} consists of the following steps:
 
 . Installing {productname-short}.
-+
-NOTE: Because KServe Serverless conflicts with the Gateway API used for {llmd}, KServe Serverless is not supported on the same cluster. Instead, use KServe RawDeployment.
-
 . Enabling the single model serving platform.
 . Enabling {llmd} on a Kubernetes cluster.
 . Creating an LLMInferenceService Custom Resource (CR).
@@ -49,34 +46,12 @@ This procedure describes how to create a custom resource (CR) for an `LLMInferen
 * You have access to an {openshift-platform} cluster running version 4.19.9 or later.
 * {openshift-platform} Service Mesh v2 is not installed in the cluster.
 * Your cluster administrator has created a `GatewayClass` and a `Gateway` named `openshift-ai-inference` in the `openshift-ingress` namespace as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ingress_and_load_balancing/configuring-ingress-cluster-traffic#ingress-gateway-api[Gateway API with {openshift-platform} Container Platform Networking]. 
-* You have installed the `LeaderWorkerSet` Operator in {openshift-platform}. For more information, see the {openshift-platform} documentation.
+** [IMPORTANT] Review the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ingress_and_load_balancing/configuring-ingress-cluster-traffic#nw-ingress-gateway-api-deployment_ingress-gateway-api[Gateway API deployment topologies]. Only use shared Gateways across trusted namespaces.
+* You have installed the `LeaderWorkerSet` Operator in {openshift-platform}. For more information, see the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ai_workloads/leader-worker-set-operator[Leader Worker Set Operator documentation].
 
 .Procedure
 
-. Log in to the {openshift-platform} console as a cluster administrator.
-
-. Create a data science cluster initialization (DSCI) and set the `serviceMesh.managementState` to `removed`, as shown in the following example:
-+
-[source]
-----
-serviceMesh:
-  ...
-  managementState: Removed
-----
-
-. Create a data science cluster (DSC) with the following information set in `kserve` and `serving`:
-+
-[source]
-----
-kserve:
-  defaultDeploymentMode: RawDeployment
-  managementState: Managed
-  ...
-  serving:
-    ...
-    managementState: Removed
-    ...
-----
+. Log in to the {openshift-platform} console as a developer.
 
 . Create the `LLMInferenceService` CR with the following information:
 +
