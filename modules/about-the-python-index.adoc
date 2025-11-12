@@ -13,20 +13,21 @@ To ensure reliable and secure access to supported libraries, start your model cu
 
 |CPU
 |link:https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cpu-ubi9/simple/[https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cpu-ubi9/simple/]
-|`podman pull quay.io/aipcc/base-images/cpu:3.0-1761282924`
+|`podman pull quay.io/aipcc/base-images/cpu:3.0-1761652019`
+
 
 |CUDA
 |link:https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cuda-ubi9/simple/[https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cuda-ubi9/simple/]
-|`podman pull quay.io/aipcc/base-images/cuda:3.0-1761250491`
+|`podman pull quay.io/aipcc/base-images/cuda:3.0-1761652019`
 
-|ROC
+|ROCm
 |link:https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/rocm-ubi9/simple/[https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/rocm-ubi9/simple/]
-|`podman pull quay.io/aipcc/base-images/rocm:3.0-1761249688`
+|`podman pull quay.io/aipcc/base-images/rocm:3.0-1761651754`
 |===
 
 *Notes:*
 
-* NVIDIA CUDA, AMD GPU, and AMD ROCm repositories are configured, but disabled.
+* NVIDIA CUDA, AMD GPU, and AMD ROCm RPM repositories are configured, but disabled.
 * The images listed in Table 1 have RHEL RPM repositories enabled. A RHEL RPM is a package file used for the {org-name} Package Manager system on {org-name} Enterprise Linux (RHEL). An RPM file contains all the necessary components for an application, such as executable files, configuration files, and documentation. It simplifies the process of distributing, installing, and managing software by bundling everything into a single, standalone file.
 +
 You can install additional RPMs, but you need a {org-name} subscription and you must run your container image in root mode (for example, `podman run --user 0`).

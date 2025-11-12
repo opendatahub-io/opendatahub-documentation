@@ -3,7 +3,10 @@
 [id='explore-the-training-hub-examples_{context}']
 =  Explore the Training Hub examples
 
+The Training Hub repository hosts multiple cookbooks for using different LLM algorithms such as supervised fine tuning (SFT) and Orthogonal Subspace Fine Tuning (OSFT)/Continual Learning. OSFT is a training algorithm built by the {org-name} AI Innovation team. With OSFT, you can continually post-train a fine-tuned model to expand its knowledge on new data. You can tinker with the Training Hub cookbooks from a workbench within your {productname-short} project. 
+
 To get started with the Training Hub, explore the provided examples.
+
 
 *Prerequisites*
 
@@ -12,8 +15,14 @@ To get started with the Training Hub, explore the provided examples.
 *Procedure*
 
 . To access the Training Hub examples, clone the Git repository:
++
+ifdef::upstream[]
+* To clone the `https://github.com/Red-Hat-AI-Innovation-Team/training_hub.git` repository from JupyterLab, follow the steps in link:{odhdocshome}/customize-models-to-build-gen-ai-applications/#clone-an-example-git-repository_custom-models[Clone an example Git repository].
+endif::[]
+ifndef::upstream[]
+* To clone the `https://github.com/Red-Hat-AI-Innovation-Team/training_hub.git` repository from JupyterLab, follow the steps in link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_applications/clone-an-example-git-repository_custom-models[Clone an example Git repository].
+endif::[]
 
-** To clone the `https://github.com/Red-Hat-AI-Innovation-Team/training_hub.git` repository from JupyterLab, follow the steps in _Clone an example Git repository_.
 
 ** To create a local clone of the repository, run the following command:
 +
@@ -22,16 +31,9 @@ To get started with the Training Hub, explore the provided examples.
 git clone https://github.com/Red-Hat-AI-Innovation-Team/training_hub
 ----
 
-. Go to the `examples` directory to view the Training Hub notebooks, python scripts and documentation.
+. Go to the link:https://github.com/Red-Hat-AI-Innovation-Team/training_hub/tree/main/examples[`examples`] directory to view the Training Hub notebooks, python scripts and documentation.
 +
 * For a quick overview and descriptions of the supported algorithms and features, with links to examples and getting started code, see the top-level `README` file.
 * For detailed parameter documentation, see the `docs` directory.
 * For hands-on learning with the interactive notebooks, see the `notebooks` directory.
 * For pre-written, configurable python scripts to run training algorithms with various language models, see the `scripts` directory.
-
-*Additional resources*
-
-* GitHub repositories:
-+
-** link:https://red.ht/training_hub[red.ht/training_hub]
-** link:https://github.com/red-hat-data-services/red-hat-ai-examples[https://github.com/red-hat-data-services/red-hat-ai-examples]

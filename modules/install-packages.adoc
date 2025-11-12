@@ -1,9 +1,7 @@
 :_module-type: CONCEPT
 
-[id='build-a-custom-container-image_{context}']
-= Build a custom container image
-
-To build advanced applications or workflows, or to use as runtime images for Kubeflow Pipelines, build a custom container image based on one of the base images listed in Table 1.
+[id='install-packages_{context}']
+= Install packages
 
 When you use one of the images listed in Table 1 as a base image, both `pip` and `uv` commands are pre-configured to use the {org-name} Python index and system trust store for HTTPS.
 
@@ -29,29 +27,22 @@ pip install sdg-hub
 ----
 pip install training-hub
 ----
-
-Use following example commands as guidelines for building your custom container image:
-
++
+Install the model training library with CUDA support:
++
 [source, bash]
 ----
-podman pull <link to registry.redhat>
-
-# Log in via `podman login registry.redhat.io`
-
-FROM <image name>
-
-# Install software
-
-# Install Python, pip, and then the docling library
-RUN pip3 install docling
-
-# Define the default command to run when the container starts
-CMD ["docling", "--help"]
-
-#Build the custom image
-podman build <new_image_name>
+pip install training-hub[cuda]
 ----
++
+*Note:* For additional options and details for installing the model training library, see link:https://github.com/Red-Hat-AI-Innovation-Team/training_hub?tab=readme-ov-file#installation[Training Hub installation guidelines]. 
 
 *Additional resources*
 
+ifdef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/managing-openshift-ai/#creating-custom-workbench-images[Creating custom workbench images]
+endif::[]
+
+ifndef::upstream[]
 * link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/creating-custom-workbench-images[Creating custom workbench images]
+endif::[]

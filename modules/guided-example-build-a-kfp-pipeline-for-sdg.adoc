@@ -1,0 +1,31 @@
+:_module-type: PROCEDURE
+
+[id='guided-example-build-a-kfp-pipeline-for-sdg_{context}']
+= Guided example - Build a KFP pipeline for SDG
+
+You can generate synthetic data for domain-specific model customization by using a Kubeflow Pipeline (KFP) on {productname-long}. The link:https://github.com/red-hat-data-services/red-hat-ai-examples/tree/main/examples/domain_customization_kfp_pipeline[Domain Customization Data Generation using Kubeflow Pipelines (KFP)] is a guided example.
+
+.Prerequisites
+
+* Install the data processing and Synthetic Data Generation (SDG) Hub libraries, as described in _Set up your working environment_.
+
+.Procedure
+
+. Run the following command to clone the (org-name) AI examples repository that includes the KFP pipeline for knowledge tuning example.
++
+[source, bash]
+----
+git clone https://github.com/red-hat-data-services/red-hat-ai-examples
+----
+
+. Navigate to the `examples/domain_customization_kfp_pipeline` directory.
+
+. Follow the instructions in the README file to run the example:
+.. Configure an environment variable (`.env`) file, provide your model endpoint, and store the file as a Kubernetes secret. The KFP pipeline consumes the secret as environment variables.
+.. Generate the KFP pipeline YAML file.
+.. Upload the YAML file to OpenShift AI and deploy the pipeline.
+
+
+.Verification
+
+The example pipeline generates three types of document augmentations and four types of QA on top of 3 augmentation and 1 original document. It stores the generated data in the Cloud Object Storage (COS) bucket that is linked through the pipeline server.
