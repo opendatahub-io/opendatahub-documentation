@@ -34,19 +34,6 @@ sum(increase(vllm:request_success_total{namespace='${namespace}',model_name='${m
 --
 Certain vLLM metrics are available only after an inference request is processed by a deployed model. To generate and view these metrics, you must first make an inference request to the model.
 --
-.. The following query displays the number of successful inference requests over a period of time for a model deployed with the standalone TGIS runtime:
-+
-[source,subs="+quotes"]
-----
-sum(increase(tgi_request_success{namespace=${namespace}, pod=~'${model_name}-predictor-.*'}[${rate_interval}]))
-----
-
-.. The following query displays the number of successful inference requests over a period of time for a model deployed with the Caikit Standalone runtime:
-+
-[source,subs="+quotes"]
-----
-sum(increase(predict_rpc_count_total{namespace='${namespace}',code='OK',model_id='${model_name}'}[${rate_interval}]))
-----
 
 .. The following query displays the number of successful inference requests over a period of time for a model deployed with the OpenVINO Model Server runtime:
 +
@@ -57,26 +44,12 @@ sum(increase(ovms_requests_success{namespace='${namespace}',name='${model_name}'
 
 endif::[]
 ifdef::cloud-service[]
-. As described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/building_applications/odc-monitoring-project-and-application-metrics-using-developer-perspective#odc-monitoring-your-project-metrics_monitoring-project-and-application-metrics-using-developer-perspective[Monitoring your project metrics in Red Hat OpenShift Dedicated^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/building_applications/odc-monitoring-project-and-application-metrics-using-developer-perspective#odc-monitoring-your-project-metrics_monitoring-project-and-application-metrics-using-developer-perspective[Monitoring your project metrics in {rosa-classic-productname}^], use the web console to run queries for `caikit_*`, `tgi_*`, `ovms_*` and `vllm:*` model-serving runtime metrics. You can also run queries for `istio_*` metrics that are related to OpenShift Service Mesh. Some examples are shown.
+. As described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/building_applications/odc-monitoring-project-and-application-metrics-using-developer-perspective#odc-monitoring-your-project-metrics_monitoring-project-and-application-metrics-using-developer-perspective[Monitoring your project metrics in Red Hat OpenShift Dedicated^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/building_applications/odc-monitoring-project-and-application-metrics-using-developer-perspective#odc-monitoring-your-project-metrics_monitoring-project-and-application-metrics-using-developer-perspective[Monitoring your project metrics in {rosa-classic-productname}^], use the web console to run queries for `ovms_*` and `vllm:*` model-serving runtime metrics. You can also run queries for `istio_*` metrics that are related to OpenShift Service Mesh. Some examples are shown.
 .. The following query displays the number of successful inference requests over a period of time for a model deployed with the vLLM runtime:
 +
 [source,subs="+quotes"]
 ----
 sum(increase(vllm:request_success_total{namespace='${namespace}',model_name='${model_name}'}[${rate_interval}]))
-----
-
-.. The following query displays the number of successful inference requests over a period of time for a model deployed with the standalone TGIS runtime:
-+
-[source,subs="+quotes"]
-----
-sum(increase(tgi_request_success{namespace=${namespace}, pod=~'${model_name}-predictor-.*'}[${rate_interval}]))
-----
-
-.. The following query displays the number of successful inference requests over a period of time for a model deployed with the Caikit Standalone runtime:
-+
-[source,subs="+quotes"]
-----
-sum(increase(predict_rpc_count_total{namespace='${namespace}',code='OK',model_id='${model_name}'}[${rate_interval}]))
 ----
 
 .. The following query displays the number of successful inference requests over a period of time for a model deployed with the OpenVINO Model Server runtime:
@@ -91,5 +64,4 @@ endif::[]
 [role="_additional-resources"]
 .Additional resources
 * link:https://docs.openvino.ai/2024/ovms_docs_metrics.html#available-metrics-families[OVMS metrics^]
-* link:https://github.com/IBM/text-generation-inference?tab=readme-ov-file#metrics[TGIS metrics^]
 * link:https://docs.vllm.ai/en/stable/design/v1/metrics.html[vLLM metrics^]
