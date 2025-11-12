@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
-[id="creating-a-feature-store-instance-in-a-data-science-project_{context}"]
-= Creating a Feature Store instance in a data science project
+[id="creating-a-feature-store-instance-in-a-project_{context}"]
+= Creating a Feature Store instance in a project
 
 [role='_abstract']
-You can add an instance of Feature Store to a data science project by creating a custom resource definition (CRD) in the OpenShift console.
+You can add an instance of Feature Store to a project by creating a custom resource definition (CRD) in the OpenShift console.
 
 The following example shows the minimum requirements for a Feature Store CR YAML file:
 
@@ -32,18 +32,18 @@ For an example of setting up and running PostgreSQL (for the registry) and Redis
 
 
 ifndef::upstream[]
-* You have created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project]. In the following procedure, `my-ds-project` is the name of the data science project.
+* You have created a project, as described in link:{rhoaidocshome}{default-format-url}/working_on_projects/using-projects_projects#creating-a-project_projects[Creating a project]. In the following procedure, `my-project` is the name of the project.
 endif::[]
 
 ifdef::upstream[]
-* You have created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project]. In the following procedure, `my-ds-project` is the name of the data science project.
+* You have created a project, as described in link:{odhdocshome}/working-on-projects/#creating-a-project_projects[Creating a project]. In the following procedure, `my-project` is the name of the project.
 endif::[]
 
 .Procedure
 
 . In the OpenShift console, click the *Quick Create* (image:images/quick-create-icon.png[]) icon and then click the *Import YAML* option.
 
-. Verify that your data science project is the selected project.
+. Verify that your project is the selected project.
 
 . Copy the following code and paste it into the YAML editor:
 +
@@ -66,7 +66,7 @@ spec:
 The `spec.feastProjectDir` references a Feature Store project that is in the Git repository for a Credit Store tutorial.
 
 . Optionally, change the `metadata.name` for the Feature Store instance.
-. Optionally, edit `feastProject`, which is the namespace for organizing your Feature Store instance. Note that this project is not the {productname-short} data science project.
+. Optionally, edit `feastProject`, which is the namespace for organizing your Feature Store instance. Note that this project is not the {productname-short} project.
 
 . Click *Create*.
 
@@ -81,7 +81,7 @@ A _provider_ is a customizable interface that provides default Feature Store com
 .Verification
 
 . In the {openshift-platform} console, select *Workloads* -> *Pods*.
-. Make sure that your data science project (for example, my-ds-project) is selected.
+. Make sure that your project (for example, my-project) is selected.
 . Find the pod that has the `feast-` prefix, followed by the `metadata.name` that you specified in the CRD configuration, for example, `sample-git`. 
 . Verify that the pod status is *Running*.
 . Click the `feast` pod and then select *Pod details*. 
@@ -142,7 +142,7 @@ entity_key_serialization_version: 3
 
 The `feature_store.yaml` file defines the following components:
 
-* *project* — The namespace for the Feature Store instance. Note that this project refers to the feature project rather than the {productname-short} data science project.
+* *project* — The namespace for the Feature Store instance. Note that this project refers to the feature project rather than the {productname-short} project.
 
 * *provider* — The environment in which Feature Store deploys and operates.
 
@@ -160,4 +160,4 @@ The `feature_store.yaml` file defines the following components:
 
 * Optionally, you can customize the default configurations for the offline store, online store, or registry by editing the YAML configuration for the Feature Store CR, as described in _Customizing your Feature Store configuration_.
 
-* Give your ML engineers and data scientists access to the data science project so that they can create a workbench. and provide them with a copy of the `feature_store.yaml` file so that they can add it to their workbench IDE, such as Jupyter.
+* Give your ML engineers and data scientists access to the project so that they can create a workbench. and provide them with a copy of the `feature_store.yaml` file so that they can add it to their workbench IDE, such as Jupyter.
