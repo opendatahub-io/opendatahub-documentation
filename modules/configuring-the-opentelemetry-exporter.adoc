@@ -50,7 +50,7 @@ Wait for the `<otelcol_name>-collector-xxx` pod to be running.
 
 . Define a `GuardrailsOrchestrator` custom resource object to specify the `otelExporter` configurations in a YAML file named `orchestrator_otel_cr.yaml`:
 +
-.Example of a `orchestrator_otel_cr.yaml` object that has OpenTelemetry configured:
+.Example `orchestrator_otel_cr.yaml` object with OpenTelemetry configured
 [source,yaml]
 ----
 apiVersion: trustyai.opendatahub.io/v1alpha1
@@ -65,7 +65,7 @@ spec:
     otlpEndpoint: "localhost:4318"
     otlpExport: "metrics"
 ----
-<1> This references the config map that was created in Step 1 of "Deploying the Guardrails Orchestrator service".
+<1> This references the config map that you created when deploying the Guardrails Orchestrator service.
 
 . Deploy the orchestrator custom resource:
 +
