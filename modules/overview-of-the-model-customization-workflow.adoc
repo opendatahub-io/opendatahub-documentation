@@ -7,19 +7,47 @@
 
 The workflow for customizing models includes the following tasks:
 
-Set up your working environment:: Ensure reliable and secure access to supported libraries with the {org-name} Hosted Python index. For details, see _Set up your working environment_.
+Set up your working environment:: Ensure reliable and secure access to supported libraries with the {org-name} Hosted Python index. 
+ifdef::upstream[]
+For details, see link:{odhdocshome}/customize-models-to-build-gen-ai-applications/#set-up-your-working-environment_custom-models[Set up your working environment].
+endif::[]
+ifndef::upstream[]
+For details, see link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_applications/set-up-your-working-environment_custom-models[Set up your working environment].
+endif::[]
 
-Prepare your data for AI consumption:: To prepare your data, use Docling, a powerful Python library to transform unstructured data (such as text documents, images, and audio files) into structured formats that models can consume. For details, see _Prepare your data for AI consumption_.
+Prepare your data for AI consumption:: To prepare your data, use Docling, a powerful Python library to transform unstructured data (such as text documents, images, and audio files) into structured formats that models can consume. 
+ifdef::upstream[]
+For details, see link:{odhdocshome}/customize-models-to-build-gen-ai-applications/#prepare-your-data-for-ai-consumption_custom-models[Prepare your data for AI consumption].
+endif::[]
+ifdef::upstream[]
+For details, see link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_applications/prepare-your-data-for-ai-consumption_custom-models[Prepare your data for AI consumption].
+endif::[]
++
+ifndef::upstream[]
+To automate data processing tasks, you can build Kubeflow Pipelines (KFP), see link:{odhdocshome}/customize-models-to-build-gen-ai-applications/#automate_data_processing_steps_by_building_ai_pipelines[Automate data processing steps by building AI pipelines].
+endif::[]
+ifdef::upstream[]
+To automate data processing tasks, you can build Kubeflow Pipelines (KFP), see link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_applications/automate_data_processing_steps_by_building_ai_pipelines[Automate data processing steps by building AI pipelines].
+endif::[]
 
-To automate data processing tasks, you can build Kubeflow Pipelines (KFP), see _Automate data processing steps by building AI pipelines_.
-
-Generate synthetic data:: Use the {org-name} AI Synthetic Data Generation (SDG) Hub framework to build, compose, and scale synthetic data pipelines with modular blocks. With the SDG Hub, you can extend your synthetic data pipelines with custom blocks to fit your domain, replace ad hoc scripts with the SDG Hub repeatable framework, and scale data generation with asynchronous execution and monitoring. For details, see _Generate synthetic data_.
+Generate synthetic data:: Use the {org-name} AI Synthetic Data Generation (SDG) Hub framework to build, compose, and scale synthetic data pipelines with modular blocks. With the SDG Hub, you can extend your synthetic data pipelines with custom blocks to fit your domain, replace ad hoc scripts with the SDG Hub repeatable framework, and scale data generation with asynchronous execution and monitoring. 
+ifdef::upstream[]
+For details, see link:{{odhdocshome}/customize-models-to-build-gen-ai-applications/#generate-synthetic-data_custom-models[Generate synthetic data].
+endif::[]
+ifndef::upstream[]
+For details, see link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_application/generate-synthetic-data_custom-models[Generate synthetic data].
+endif::[]
 
 Train a model by using your prepared data:: After you prepare your data, use the {org-name} AI Training Hub to simplify and accelerate the process of fine-tuning and customizing a foundation model by using your own data.
 +
 You can extend a base notebook to use distributed training across multiple nodes by using the KubeFlow Trainer Operator (KFTO). The KFTO, abstracts the underlying infrastructure complexity of distributed training and fine-tuning of models. The iterative process of fine-tuning significantly reduces the time and resources required compared to training models from scratch.
 +
-For details, see _Train the model by using your prepared data_.
+ifndef::upstream[]
+For details, see link:{odhdocshome}/customize-models-to-build-gen-ai-applications/#train-the-model-by-using-your-prepared-data_custom-models[Train a model by using your prepared data].
+endif::[]
+ifdef::upstream[]
+For details, see link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_applications/train-the-model-by-using-your-prepared-data_custom-models[Train a model by using your prepared data].
+endif::[]
 
 Serve and consume a customized model:: After you customize a model, you can serve your customized models as APIs (Application Programming Interfaces). Serving a model as an API enables seamless integration into existing or newly developed applications.
 +
