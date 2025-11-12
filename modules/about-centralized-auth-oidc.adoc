@@ -13,10 +13,4 @@ A Gateway API with centralized authentication centralizes ingress traffic for al
 The Gateway API is implemented via an Istio Gateway on {openshift-platform} (OCP) 4.19 and later. Since the Istio Gateway is built on the Envoy Proxy, it provides access to powerful Envoy-specific Custom Resource Definitions (CRDs), such as `EnvoyFilter`. The `opendatahub-operator` manages the deployment of `kube-auth-proxy`. The Operator then configures the Istio Gateway to use this service via an `EnvoyFilter` Custom Resource (CR).
 
 For more information on supported OpenID Connect (OIDC) identity providers, see {openshift-platform} documentation on link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/authentication_and_authorization/external-auth#external-auth-providers_external-auth[Direct authentication identity providers]
-
-== Security considerations
-* Secret Management: Store OIDC client secrets securely and rotate them regularly.
-* Network Policies: Consider implementing network policies to restrict access to the authentication proxy.
-* TLS Configuration: Ensure all OIDC communication uses Transport Layer Security (TLS).
-* Token Validation: While `kube-auth-proxy` validates tokens, ensure your OIDC provider is configured with appropriate token lifetimes.
-* Audit Logging: Enable audit logging for authentication events. 
+ 

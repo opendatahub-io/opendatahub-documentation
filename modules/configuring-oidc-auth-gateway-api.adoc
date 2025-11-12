@@ -44,7 +44,7 @@ For detailed step-by-step instructions, troubleshooting, and field definitions, 
 +
 [source,bash]
 ----
-oc get authentication.config/cluster -o jsonpath='{.spec.type}'
+$ oc get authentication.config/cluster -o jsonpath='{.spec.type}'
 ----
 If the authentication is successful, you will see the following output: `OIDC`
 
@@ -52,7 +52,7 @@ If the authentication is successful, you will see the following output: `OIDC`
 +
 [source,bash]
 ----
-oc get authentication.config/cluster -o jsonpath='{.spec.oidcProviders[*].name}'
+$ oc get authentication.config/cluster -o jsonpath='{.spec.oidcProviders[*].name}'
 ----
 If the OIDC configuration is successful, you will see your provider name (e.g., `keycloak`). 
 
@@ -60,7 +60,7 @@ If the OIDC configuration is successful, you will see your provider name (e.g., 
 +
 [source,bash]
 ----
-oc get co kube-apiserver
+$ oc get co kube-apiserver
 ----
 If success is indicated, the expected output should look like the following example:
 +
@@ -88,7 +88,7 @@ KEYCLOAK_CLIENT_SECRET="<your-client-secret>"
 +
 [source,bash]
 ----
-oc create secret generic keycloak-client-secret \
+$ oc create secret generic keycloak-client-secret \
     --from-literal=clientSecret=$KEYCLOAK_CLIENT_SECRET \
     -n openshift-ingress
 ----
@@ -97,7 +97,7 @@ oc create secret generic keycloak-client-secret \
 +
 [source,bash]
 ----
-oc patch gatewayconfig default-gateway --type='merge' -p='{
+$ oc patch gatewayconfig default-gateway --type='merge' -p='{
     "spec": {
       "oidc": {
         "issuerURL": "https://'$KEYCLOAK_DOMAIN'/realms/'$KEYCLOAK_REALM'",
@@ -115,8 +115,8 @@ oc patch gatewayconfig default-gateway --type='merge' -p='{
 +
 [source,bash]
 ----
-oc get secret keycloak-client-secret -n openshift-ingress
-oc get gatewayconfig default-gateway -o jsonpath='{.spec.oidc}'
+$ oc get secret keycloak-client-secret -n openshift-ingress
+$ oc get gatewayconfig default-gateway -o jsonpath='{.spec.oidc}'
 ----
 Expected output for secret and `GatewayConfig` should look like the following example:
 +
@@ -145,7 +145,7 @@ $ oc get consolelink
 +
 [source,bash]
 ----
-oc get gatewayconfig default-gateway -o yaml
+$ oc get gatewayconfig default-gateway -o yaml
 ----
 The expected output is the full YAML configuration of the `GatewayConfig` resource, showing the OIDC configuration details under `spec.oidc` and confirming successful deployment by displaying both the `Ready` and `ProvisioningSucceeded` conditions with a `status: "True"` value.
 
@@ -153,7 +153,7 @@ The expected output is the full YAML configuration of the `GatewayConfig` resour
 +
 [source,bash]
 ----
-oc get deployment kube-auth-proxy -n openshift-ingress
+$ oc get deployment kube-auth-proxy -n openshift-ingress
 ----
 The expected output looks like the following example:
 +
@@ -167,7 +167,7 @@ kube-auth-proxy   1/1     1            1           5m
 +
 [source,bash]
 ----
-oc get gateway data-science-gateway -n openshift-ingress
+$ oc get gateway data-science-gateway -n openshift-ingress
 ----
 The expected output looks like the following example:
 +
@@ -206,13 +206,19 @@ rules:
 +
 [source,bash]
 ----
-oc adm policy add-cluster-role-to-group odh-projects-read odh-users
+$ oc adm policy add-cluster-role-to-group odh-projects-read odh-users
 ----
 
 . Grant the ability to create and manage new projects by assigning the built-in self-provisioner ClusterRole to your group.
 +
 [source,bash]
 ----
-oc adm policy add-cluster-role-to-group self-provisioner odh-users
+$ oc adm policy add-cluster-role-to-group self-provisioner odh-users
 ----
 
+== Security considerations
+* Secret Management: Store OIDC client secrets securely and rotate them regularly.
+* Network Policies: Consider implementing network policies to restrict access to the authentication proxy.
+* TLS Configuration: Ensure all OIDC communication uses Transport Layer Security (TLS).
+* Token Validation: While `kube-auth-proxy` validates tokens, ensure your OIDC provider is configured with appropriate token lifetimes.
+* Audit Logging: Enable audit logging for authentication events.
