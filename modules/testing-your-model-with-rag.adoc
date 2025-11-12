@@ -1,0 +1,37 @@
+:_module-type: PROCEDURE
+
+[id="testing-your-model-with-rag_{context}"]
+= Testing your model with Retrieval-Augmented Generation (RAG)
+
+[role="_abstract"]
+You can enhance your model's responses by providing it with contextual information from your own documents using Retrieval-Augmented Generation (RAG). You can upload documents to the vector database associated with the playground to provide context for your model's responses.
+
+[IMPORTANT]
+=====
+The RAG feature of the GenAI playground is currently configured to work only with an inline vector database. There is currently no mechanism to configure the playground to connect this RAG feature to an external or remote vector database.
+=====
+ 
+.Prerequisites
+
+* You have configured a playground for your project.
+* You have the document files ready to upload. The supported file formats are PDF, DOC, or CSV. You can upload up to 10 files, with a maximum size of 10MB per file.
+
+.Procedure
+
+. From the {productname-short} dashboard, click *Gen AI studio* -> *Playground*.
+. In the *Playground* interface, click the toggle in the *RAG* section and then expand the section.
+. Click *Upload*.
++
+The *Upload files* dialog opens.
+. Drag and drop your file or click to browse and select a file from your local system.
+. Optional: Adjust the *Maximum chunk length* and *Chunk overlap* and *Delimiter* values as needed for your document type. For more information about these settings, see _Understanding RAG settings_.
+. Click *Upload*.
++
+Wait for the file to finish processing. A *Source uploaded* notification appears, and the file is listed under *Uploaded files*.
+. Repeat these steps to upload additional files if needed.
+. In the chat input field, ask a question related to your documents that the model would not know otherwise.
+. Observe the model's response.
+
+.Verification
+
+* The model retrieves information from the uploaded documents to answer the question.

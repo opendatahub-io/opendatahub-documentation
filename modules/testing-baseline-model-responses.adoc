@@ -1,0 +1,30 @@
+:_module-type: PROCEDURE
+
+[id="testing-baseline-model-responses_{context}"]
+= Testing baseline model responses
+
+[role="_abstract"]
+
+Use the playground to test and evaluate your model's baseline responses.
+
+.Prerequisites
+
+* You have created a playground for your deployed model.
+
+.Procedure
+
+To test your model, follow these steps:
+
+. From the {productname-short} dashboard, click *Gen AI studio* -> *Playground*.
+. From the model list, select the model that you want to test.
+. Adjust the following model parameters as needed:
+.. *Temperature*: Control the randomness of the model's output. Use values between 0 and 1, where 0 produces deterministic responses and higher values increase creativity. Values above 1 (such as 2) typically produce incoherent output. A common default is around 0.7. Start with lower values (0–0.3) for factual tasks and higher values (0.7–1) for creative tasks.
+.. *Streaming*: Show the LLM's response as it is being generated. This is helpful for testing model latency and seeing the model's progress in real time. When streaming is off, the full response will not render until it is complete.
+.. *System instructions*: Review or edit the text to define the context, persona, or instructions for the model. The playground provides a default prompt. 
+. In the chat input field, type a query.
+. Click *Send*.
+. Observe the model's response.
+
+.Verification
+
+* The model provides a response based on its general knowledge or pre-trained data.

@@ -1,0 +1,58 @@
+:_module-type: PROCEDURE
+[id="playground-prerequisites_{context}"]
+= Playground prerequisites
+
+[role="_abstract"]
+Before you can configure and use the GenAI playground feature, you must meet prerequisites at both the cluster and user levels.
+
+== Cluster administrator prerequisites
+
+Before a user can configure a playground instance, a cluster administrator must complete the following setup tasks:
+
+* Ensure that {productname-short} is installed on an OpenShift cluster running version 4.17 or later.
+ifndef::upstream[]
+* Set the value of the `spec.dashboardConfig.genAiStudio` dashboard configuration option to `true`. For more information, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].  
+endif::[]
+ifdef::upstream[]
+* Set the value of the `spec.dashboardConfig.genAiStudio` dashboard configuration option to `true`. For more information, see link:{odhdocshome}/managing-resources/#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
+endif::[]
+* If using {productname-short} groups, add users to the  {user-group} and {admin-group} OpenShift group.
+* Install the Llama Stack Operator.
+* Configure a `LlamaStackDistribution` custom resource (CR) with a vLLM inference service and a vector store.
+* Configure network access to the vector database service within the {productname-short) environment using the OpenShift console.
+
+== User prerequisites
+
+After the cluster administrator completes the setup, you must complete the following tasks before you can configure your playground instance:
+
+* You are logged in to {productname-short}.
+* If you are using {productname-short} groups, you are a member of the appropriate user or admin group.
+* Create a project. The playground instance is tied to a project context.
+ifndef::upstream[]
+** For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project].
+endif::[]
+ifdef::upstream[]
+** For more information, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project].
+endif::[]
+
+* Add a connection to your project.
+ifdef::upstream[]
+** For more information about creating connections, see link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+endif::[]
+ifndef::upstream[]
+** For more information about creating connections, see link:{rhoaidocshome}/html/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+endif::[]
+
+* Deploy a model in your project and make it available as an AI asset endpoint.
+ifdef::upstream[]
+** For more information, see link:{odhdocshome}/deploying_models/#deploying-models-on-the-single-model-serving-platform_odh-user[Deploying models on the single-model serving platform^].
+endif::[]
+ifndef::upstream[]
+* For more information, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_single_model_serving_platform#deploying-models-on-the-single-model-serving-platform_rhoai-user[Deploying models on the single-model serving platform^].
+endif::[]
+
+* Configure MCP server connections.
+** To test models with external tools, you must configure any Model Control Protocol (MCP) servers.
+
+After you complete these tasks, the project is ready for you to configure your playground instance.
+
