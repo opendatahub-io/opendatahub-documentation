@@ -3,9 +3,9 @@
 [id="auth-on-llama-stack_{context}"]
 = Configuring Llama Stack with OAuth Authentication
 
-You can configure Llama Stack to enable Role-Based Access Control (RBAC) for model access using OAuth authentication on {productname-short}. The following example shows how to configure Llama Stack so that a vLLM model can be accessed by all authenticated users, while an OpenAI model is restricted to specific users. This is example uses keycloak to issue and validate tokens.
+You can configure Llama Stack to enable Role-Based Access Control (RBAC) for model access using OAuth authentication on {productname-short}. The following example shows how to configure Llama Stack so that a vLLM model can be accessed by all authenticated users, while an OpenAI model is restricted to specific users. This example uses Keycloak to issue and validate tokens.
 
-Before starting, you must already have KeyCloak set up with the following parameters:
+Before you begin, you must already have Keycloak set up with the following parameters:
 
 * Realm: `llamastack-demo`
 * Client: `llamastack` with direct access grants enabled
@@ -37,7 +37,7 @@ endif::[]
 
 . To configure Llama Stack to use Role-Based Access Control (RBAC) to access models, you need to view and verify the OAuth provider token structure.
 
-.. Generate a KeyCloak test token to view the structure with the following command:
+.. Generate a Keycloak test token to view the structure with the following command:
 +
 [source,terminal]
 ----
@@ -51,7 +51,7 @@ $ curl -d client_id=llamastack -d client_secret=YOUR_CLIENT_SECRET -d username=u
 $ cat test.token | cut -d . -f 2 | base64 -d 2>/dev/null | jq .
 ----
 +
-.Example token structure from KeyCloak
+.Example token structure from Keycloak
 [source,terminal]
 ----
 $ {
@@ -60,12 +60,12 @@ $ {
   "sub": "761cdc99-80e5-4506-9b9e-26a67a8566f7",
   "preferred_username": "user1",
   "llamastack_roles": [
-    "inference_max",
+    "inference_max"
   ],
 }
 ----
 
-. You need to then create a `run.yaml` file that defines the necessary configurations for OAuth.
+. Create a `run.yaml` file that defines the necessary configurations for OAuth.
 
 .. Define a configuration with two inference providers and OAuth authentication with the following `run.yaml` example:
 +
@@ -98,7 +98,7 @@ providers:
   - provider_id: meta-reference
     provider_type: inline::meta-reference
     config:
-      service_name: "${env.OTEL_SERVICE_NAME:=​}"
+      service_name: "${env.OTEL_SERVICE_NAME:=}"
       sinks: ${env.TELEMETRY_SINKS:=console}
       sqlite_db_path: /opt/app-root/src/.llama/distributions/rh/trace_store.db
       otel_exporter_otlp_endpoint: ${env.OTEL_EXPORTER_OTLP_ENDPOINT:=}
@@ -158,7 +158,7 @@ server:
         description: Allow only users with inference_max role to access OpenAI models
 ----
 +
-<1> Specify your KeyCloak host and Realm in the URL.
+<1> Specify your Keycloak host and Realm in the URL.
 <2> Maps the `llamastack_roles` path from the token to the `roles` field.
 <3> Policy 1: Allow all authenticated users to access vLLM models.
 <4> Policy 2: Restrict OpenAI models to users with the `inference_max` role.
@@ -221,7 +221,7 @@ oc wait --for=jsonpath='{.status.phase}'=Ready llamastackdistribution/llamastack
 
 . Generate the OAuth tokens for each user account to authenticate API requests.
 
-.. To request a basic access token and add it to a `user1.token` file, run the following command
+.. To request a basic access token, and to add the token to a `user1.token` file, run the following command:
 +
 [source,terminal]
 ----
@@ -234,7 +234,7 @@ $ curl -d client_id=llamastack \
   | jq -r .access_token > user1.token
 ----
 
-.. To request full access token and add it to a `user2.token` file, run the following command
+.. To request full access token and add it to a `user2.token` file, run the following command:
 +
 [source,terminal]
 ----
@@ -247,7 +247,7 @@ $ curl -d client_id=llamastack \
   | jq -r .access_token > user2.token
 ----
 
-.. You can verify the credentials by running the following command:
+.. Verify the credentials by running the following command:
 +
 [source,terminal]
 ----
@@ -266,7 +266,7 @@ $ cat user2.token | cut -d . -f 2 | base64 -d 2>/dev/null | jq .
 }
 ----
 
-. Lastly, you need test Llama Stack URLs by creating a route called `route.yaml` with the following example parameters:
+. To test the Llama Stack URLs, create a route called `route.yaml` with the following example parameters:
 +
 [source,yaml]
 ----
@@ -296,7 +296,7 @@ spec:
 oc apply -f route.yaml
 ----
 
-. You can verify that this route is active with the following command:
+. Verify that this route is active with the following command:
 +
 [source,terminal]
 ----
@@ -321,7 +321,7 @@ USER1_TOKEN=$(cat user1.token)
 curl -X POST ${LLAMASTACK_URL}/v1/openai/v1/chat/completions -H "Content-Type: application/json" -H "Authorization: Bearer ${USER1_TOKEN}" -d '{"model": "vllm-inference/llama-3-2-3b", "messages": [{"role": "user", "content": "Hello!"}], "max_tokens": 50}'
 ----
 
-. If you attempt to access the OpenAI models with these permissions, you will see an error due to access restrictions;
+. If you attempt to access the OpenAI models without these permissions, you will see an error due to access restrictions:
 +
 [source, terminal]
 ----
@@ -384,5 +384,5 @@ $ curl -X POST ${LLAMASTACK_URL}/v1/openai/v1/chat/completions \
 +
 [source,terminal]
 ----
-{"error": {"message": "Authentication required. Please provide a valid OAuth2 Bearer token from https://my-keycloak-server.com/realms/llamastack-demo"}}(base) derekh@laptop:~/workarea/rhoai-auth-demo$
+{"error": {"message": "Authentication required. Please provide a valid OAuth2 Bearer token from https://my-keycloak-server.com/realms/llamastack-demo"}}
 ----
