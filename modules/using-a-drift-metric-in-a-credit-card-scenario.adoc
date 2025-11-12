@@ -1,0 +1,207 @@
+:_module-type: PROCEDURE
+
+[id='using-a-drift-metric-in-a-credit-card-scenario_{context}']
+= Using a drift metric in a credit card scenario
+
+[role='_abstract']
+This example scenario deploys an XGBoost model into your cluster and reviews its output using a drift metric.
+
+The XGBoost model was created for the purpose of this demonstration and predicts credit card approval based on the following features: age, credit score, years of education, and years in employment. 
+
+When the model is deployed and the data that you upload is formatted, use the mean shift metric to monitor for data drift. This metric is useful for ensuring that a model remains accurate and reliable in a production environment.
+
+Mean shift compares a numeric test dataset against a numeric training dataset. It produces a p-value that measures the probability the test data has originated from the same numeric distribution as the training data. A p-value less than 0.05 indicates a statistically significant drift between the two datasets. A p-value equal to or greater than 0.05 indicates no statistically significant evidence of drift.
+
+[NOTE]
+====
+Mean shift performs best when each feature in the data is normally distributed. Choose a different metric for working with different or unknown data distributions.
+====
+
+.Prerequisites
+
+ifdef::upstream[]
+* Your cluster administrator added you as a user to the cluster and link:{odhdocshome}/monitoring-data-science-models/#configuring-trustyai_monitor[configured TrustyAI] for use in the project that contains the deployed models.
+
+* You set up TrustyAI for your project, as described in link:{odhdocshome}/monitoring-data-science-models/#setting-up-trustyai-for-your-project_monitor[Setting up TrustyAI for your project].
+endif::[]
+//downstream
+ifndef::upstream[]
+* Your cluster administrator added you as a user to the cluster and link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-trustyai_monitor[configured TrustyAI^] for use in the project that contains the deployed models.
+
+* You set up TrustyAI for your project, as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/setting-up-trustyai-for-your-project_monitor[Setting up TrustyAI for your project^].
+endif::[]
+
+
+.Procedure
+
+. Obtain a bearer token to authenticate your external endpoints by running the following command:
++
+[source, bash]
+----
+$ oc apply -f resources/service_account.yaml
+export TOKEN=$(oc create token user-one)
+----
+
+. In your model namespace, deploy the storage container, serving runtime, and the credit model: 
++
+[source, bash]
+----
+$ oc project model-namespace || true
+$ oc apply -f resources/model_storage_container.yaml
+$ oc apply -f resources/odh-mlserver-1.x.yaml
+$ oc apply -f resources/model_gaussian_credit.yaml
+----
+
+. Set the route for your data upload:
++
+[source, bash]
+----
+TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
+----
+
+. Download the training data payload (file size 472 KB):
++
+[source, bash]
+----
+wget https://github.com/trustyai-explainability/odh-trustyai-demos/blob/72f748da9410f92a60bea73ce5e3f47c10ad1cea/3-DataDrift/kserve-demo/data/training_data.json -O training_data.json 
+----
+
+. Label your model training data. This data has four main fields. The `model_name` and `data_tag` fields require a label because they are directly referenced in the Metrics dashboard later in the scenario. In addition to the required fields, it is best to also label response and request fields. The four fields are:
+.. `model_name`: The name of the model that correlates to this data. The name should match that of the model provided in the model YAML, which is `gaussian-credit-model`.
+.. `data_tag`: A string tag to reference this particular set of data. Use the string `"TRAINING"`.
+.. `request`: This is a KServe inference request, as if you were sending this data directly to the model server's `/infer` endpoint.
+.. `response`: The KServe inference response that is returned from sending the above request to the model.
+
+. Upload the model training data to the TrustyAI endpoint:
++
+[source, bash]
+----
+curl -sk -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/data/upload  \
+ --header 'Content-Type: application/json' \  
+ -d @training_data.json 
+----
++
+The following message appears confirming the data upload: `1000 datapoints successfully added to gaussian-credit-model data`.
+
+. Label your model input and output fields with the actual column names of the data in your KServe payloads. Send a JSON payload containing a simple set of `original-name` : `new-name pairs`, assigning new meaningful names to the input and output features of your model. A message that says "Feature and output name mapping successfully applied" appears if the request is successful:
++
+[source, bash]
+----
+curl -sk -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/info/names \
+  -H "Content-Type: application/json"   \
+  -d "{
+    \"modelId\": \"gaussian-credit-model\",
+    \"inputMapping\":
+      {
+        \"credit_inputs-0\": \"Age\",
+        \"credit_inputs-1\": \"Credit Score\",
+        \"credit_inputs-2\": \"Years of Education\",
+        \"credit_inputs-3\": \"Years of Employment\"
+      },
+    \"outputMapping\": {
+      \"predict-0\": \"Acceptance Probability\"
+    }
+  }"
+----
++ 
+[TIP]
+====
+Define name mappings in TrustyAI to assign memorable names to input or output names. These names can then be used in subsequent requests to the TrustyAI service.
+====
+
+. Verify that TrustyAI has received the data by querying the `/info` endpoint:
++
+[source, bash]
+----
+curl -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/info | jq '.["gaussian-credit-model"].data.inputSchema'
+----
+
+. The following output appears as a JSON file confirming that TrustyAI has successfully received the data:
++
+[source, bash]
+----
+{
+  "items": {
+    "Years of Education": {
+      "type": "DOUBLE",
+      "name": "credit_inputs-2",
+      "columnIndex": 2
+    },
+    "Years of Employment": {
+      "type": "DOUBLE",
+      "name": "credit_inputs-3",
+      "columnIndex": 3
+    },
+    "Age": {
+      "type": "DOUBLE",
+      "name": "credit_inputs-0",
+      "columnIndex": 0
+    },
+    "Credit Score": {
+      "type": "DOUBLE",
+      "name": "credit_inputs-1",
+      "columnIndex": 1
+    }
+  },
+  "nameMapping": {
+    "credit_inputs-0": "Age",
+    "credit_inputs-1": "Credit Score",
+    "credit_inputs-2": "Years of Education",
+    "credit_inputs-3": "Years of Employment"
+  }
+}
+----
+
+. Create a recurring drift monitoring metric using `/metrics/drift/meanshift/request`. This will measure the drift of all recorded inference data against the reference distribution. The body of the payload requires a `modelId` that sets which model to monitor and a referenceTag that determines which data to use as the reference distribution. The values of these fields should match the `modelId` and `referenceTag` inside your data upload payload:
++
+[source, bash]
+----
+curl -k -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/metrics/drift/meanshift/request -H "Content-Type: application/json" \
+  -d "{
+        \"modelId\": \"gaussian-credit-model\",
+        \"referenceTag\": \"TRAINING\"
+      }"
+----
+
+. Check the metrics in the OpenShift console under *Observe -> Metrics*:
+.. Set the time window to 5 minutes and the refresh interval to 15 seconds.
+.. In the *Expression* field, enter `trustyai_meanshift`.
++
+[NOTE]
+====
+It may take a few seconds before the cluster monitoring stacks picks up the new metric. You may need to refresh before the new metrics appear, if you're already in the section of the OpenShift console.
+====
+
+. Observe in the Metric Chart onscreen that a metric is emitted for each of the four features and the single output, making for five measurements in total. All metric values should equal 1 (no drift), because we only have the training data, which can't drift from itself.
+
+. Collect some simulated real-world inferences to observe the drift monitoring. To do this, send small batches of data to the model, mimicking a real-world deployment:
+
+.. Get the route to the model:
++
+[source, bash]
+----
+MODEL=gaussian-credit-model
+BASE_ROUTE=$(oc get inferenceservice gaussian-credit-model -o jsonpath='{.status.url}')
+MODEL_ROUTE="${BASE_ROUTE}/v2/models/${MODEL}/infer"
+----
++
+.. Download the data batch and send data payloads to your model:
++
+[source, bash]
+----
+DATA_PATH=sample_trustyai_model_data
+mkdir $DATA_PATH
+for batch in {0..595..5}; do
+	wget https://github.com/trustyai-explainability/odh-trustyai-demos/blob/72f748da9410f92a60bea73ce5e3f47c10ad1cea/3-DataDrift/kserve-demo/data/data_batches/$batch.json -O $DATA_PATH/$batch.json
+	curl -sk "${MODEL_ROUTE}"\
+  		-H "Authorization: Bearer ${TOKEN}" \
+  		-H "Content-Type: application/json" \
+  		-d @$DATA_PATH/$batch.json
+  	sleep 1
+done
+----
+
+. Observe the updated drift metrics in the *Observe -> Metrics* section of the OpenShift console. The mean shift metric values for the various features change:
+.. The values for Credit Score, Age, and Acceptance Probability have all dropped to 0, indicating there is a statistically very high likelihood that the values of these fields in the inference data come from a different distribution than that of the training data. 
+.. The Years of Employment and Years of Education scores have dropped to 0.34 and 0.82 respectively, indicating that there is a little drift, but not enough to be particularly concerning.
+
