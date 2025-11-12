@@ -184,7 +184,7 @@ kube-auth-proxy   ClusterIP   172.30.31.69   <none>        8443/TCP,9000/TCP   4
 +
 [source,bash]
 ----
-$ oc get gateway data-science-gateway -o jsonpath='{.status.addresses}'
+$ oc get gateway data-science-gateway -n openshift-ingress -o jsonpath='{.status.addresses}'
 ----
 The expected output shows a valid IP address or hostname.
 
@@ -276,21 +276,21 @@ After successfully authenticating with OIDC, you experience an authorization fai
 +
 [source,bash]
 ----
-$ oc get deployment odh-dashboard -n redhat-ods-applications
+$ oc get deployment -n opendatahub odh-dashboard
 ----
 The expected outcome confirms that the Pods are running, similar to the following example.
 +
 [source,bash]
 ----
 NAME            READY   UP-TO-DATE   AVAILABLE   AGE
-odh-dashboard   2/2     2            2           41h
+odh-dashboard   2/2     2            2           7d5h
 ----
 
 . Check the dashboard logs for any authorization errors by running the following command.
 +
 [source,bash]
 ----
-$ oc logs -l app=odh-dashboard -n redhat-ods-applications
+$ oc logs -l app=odh-dashboard -n opendatahub
 ----
 In the expected output, the logs confirm the Dashboard is running and ready to serve requests.
 
@@ -315,7 +315,7 @@ The expected output confirms that the view cluster role has been added to the us
 +
 [source, bash]
 ----
-$ oc get httproute odh-dashboard -n redhat-ods-applications -o yaml
+$ oc get httproute odh-dashboard -n opendatahub -o yaml
 ----
 The expected output shows proper parent references to the Gateway.
 
