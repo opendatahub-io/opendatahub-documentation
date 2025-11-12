@@ -10,12 +10,12 @@ This example scenario deploys an XGBoost model into your cluster and reviews its
 
 Once the model is deployed and the data that we upload is formatted, we'll use the mean shift metric to monitor for data drift. This metric is useful for ensuring that a model remains accurate and reliable in a production environment.
 
-Mean shift compares a numeric test dataset against a numeric training dataset, and produces a p-value measuring the probability that the test data came from the same numeric distribution as the training data. A p-value less than 0.05 indicates a statistically significant drift between the two. A p-value equal to or greater than 0.05 indicates no statistically significant evidence of drift.
+Mean shift compares a numeric test dataset against a numeric training dataset. It produces a p-value that measures the probability the test data has originated from the same numeric distribution as the training data. A p-value less than 0.05 indicates a statistically significant drift between the two datasets. A p-value equal to or greater than 0.05 indicates no statistically significant evidence of drift.
 
 [NOTE]
---
+====
 Mean shift performs best when each feature in the data is normally distributed. Choose a different metric for working with different or unknown data distributions.
---
+====
 
 .Prerequisites
 
@@ -38,7 +38,7 @@ endif::[]
 +
 [source, bash]
 ----
-oc apply -f resources/service_account.yaml
+$ oc apply -f resources/service_account.yaml
 export TOKEN=$(oc create token user-one)
 ----
 
@@ -46,10 +46,10 @@ export TOKEN=$(oc create token user-one)
 +
 [source, bash]
 ----
-oc project model-namespace || true
-oc apply -f resources/model_storage_container.yaml
-oc apply -f resources/odh-mlserver-1.x.yaml
-oc apply -f resources/model_gaussian_credit.yaml
+$ oc project model-namespace || true
+$ oc apply -f resources/model_storage_container.yaml
+$ oc apply -f resources/odh-mlserver-1.x.yaml
+$ oc apply -f resources/model_gaussian_credit.yaml
 ----
 
 . Set the route for your data upload:
@@ -59,16 +59,14 @@ oc apply -f resources/model_gaussian_credit.yaml
 TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
 ----
 
-. Download the training data payload (472 KB):
+. Download the training data payload (file size 472 KB):
 +
 [source, bash]
 ----
 wget https://github.com/trustyai-explainability/odh-trustyai-demos/blob/72f748da9410f92a60bea73ce5e3f47c10ad1cea/3-DataDrift/kserve-demo/data/training_data.json -O training_data.json 
 ----
 
-. Label your model training data. This data has four main fields. Two of these require a label(`model_name` and `data_tag`) because these fields will be directly referenced in the Metrics dashboard's output later in the scenario. We recommend that you also label the other two main fields.
-+
-The four fields are:
+. Label your model training data. This data has four main fields. The `model_name` and `data_tag` fields require a label because they are directly referenced in the Metrics dashboard later in the scenario. In addition to the required fields, it is recommended to also label response and request fields. The four fields are:
 .. `model_name`: The name of the model that correlates to this data. The name should match that of the model provided in the model yaml, which is `gaussian-credit-model`.
 .. `data_tag`: A string tag to reference this particular set of data. Use the string "TRAINING"
 .. `request`: This is a KServe inference request, as if you were sending this data directly to the model server's `/infer` endpoint.
@@ -83,9 +81,9 @@ curl -sk -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/data/upload  \
  -d @training_data.json 
 ----
 +
-The message "1000 datapoints successfully added to gaussian-credit-model data" appears.
+The following message appears confirming the data upload: "1000 datapoints successfully added to gaussian-credit-model data".
 
-. (Recommended) Label your model input and output fields with the actual column names of the data in your KServe payloads. Send a JSON payload containing a simple set of `original-name` : `new-name pairs`, assigning new meaningful names to the input and output features of your model. The message "Feature and output name mapping successfully applied" appears if the request is successful:
+. (Recommended) Label your model input and output fields with the actual column names of the data in your KServe payloads. Send a JSON payload containing a simple set of `original-name` : `new-name pairs`, assigning new meaningful names to the input and output features of your model. A message that says "Feature and output name mapping successfully applied" appears if the request is successful:
 +
 [source, bash]
 ----
@@ -118,7 +116,7 @@ Define name mappings in TrustyAI to assign memorable names to input or output na
 curl -H "Authorization: Bearer ${TOKEN}" $TRUSTY_ROUTE/info | jq '.["gaussian-credit-model"].data.inputSchema'
 ----
 
-. The following output appears as a json file confirming that TrustyAI has successfully received the data:
+. The following output appears as a JSON file confirming that TrustyAI has successfully received the data:
 +
 [source, bash]
 ----
@@ -167,11 +165,16 @@ curl -k -H "Authorization: Bearer ${TOKEN}" -X POST --location $TRUSTY_ROUTE/met
 
 . Check the metrics in the OpenShift console under *Observe -> Metrics*:
 .. Set the time window to 5 minutes and the refresh interval to 15 seconds.
-.. In the *Expression* field, enter `trustyai_meanshift`. It may take a few seconds before the cluster monitoring stacks picks up the new metric. You may need to refresh before the new metrics appear, if you're already in the section of the OpenShift console.
+.. In the *Expression* field, enter `trustyai_meanshift`.
++
+[NOTE]
+====
+It may take a few seconds before the cluster monitoring stacks picks up the new metric. You may need to refresh before the new metrics appear, if you're already in the section of the OpenShift console.
+====
 
-. Observe in the Metric Chart onscreen that a metric is emitted for each of the four features and the single output, making for five measurements in total. All metric values should equal 1 (no drift), which makes sense because we only have the training data, which can't drift from itself.
+. Observe in the Metric Chart onscreen that a metric is emitted for each of the four features and the single output, making for five measurements in total. All metric values should equal 1 (no drift), because we only have the training data, which can't drift from itself.
 
-. Collect some simulated "real-world" inferences to observe the drift monitoring. To do this, we'll send small batches of data to the model, mimicking a real-world deployment:
+. Collect some simulated "real-world" inferences to observe the drift monitoring. To do this, send small batches of data to the model, mimicking a real-world deployment:
 
 .. Get the route to the model:
 +
