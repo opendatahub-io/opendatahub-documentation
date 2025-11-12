@@ -5,7 +5,7 @@
 
 [role='_abstract']
 
-You can deploy generative AI (gen AI) or Predictive AI models on the single-model serving platform by using the *Deploy a model* wizard. The wizard allows you to configure your model, including specifying its location and type, selecting a serving runtime, assigning a hardware profile, and setting advanced configurations like external routes and token authentication.
+You can deploy Generative AI (GenAI) or Predictive AI models on the single-model serving platform by using the *Deploy a model* wizard. The wizard allows you to configure your model, including specifying its location and type, selecting a serving runtime, assigning a hardware profile, and setting advanced configurations like external routes and token authentication.
 
 To successfully deploy a model, you must meet the following prerequisites.
 
@@ -107,7 +107,7 @@ The *Deploy a model* wizard opens.
 * The *OCI-compliant registry*, *S3 compatible object storage*, and *URI* options are pre-installed connection types. Additional options might be available if your {productname-short} administrator added them.
 * If you have uploaded model files to a persistent volume claim (PVC) and the PVC is attached to your workbench, the *Cluster storage* option becomes available in the *Model location* list. Use this option to select the PVC and specify the path to the model file.
 ====
-.. From the *Model type* list, select the type of model that you are deploying, *Predictive* or *generative AI model*.
+.. From the *Model type* list, select the type of model that you are deploying, *Predictive* or *Generative AI model*.
 .. Click *Next*.
 . In the *Model deployment* section, configure the deployment:
 .. In the *Model deployment name* field, enter a unique name for your model deployment.
@@ -120,16 +120,16 @@ The *Deploy a model* wizard opens.
 ====
 If project-scoped runtimes exist, the *Serving runtime* list includes subheadings to distinguish between global runtimes and project-scoped runtimes.
 ====
-.. Optional: If you selected a *Predictive model* type, select a framework from the *Model framework (name - version)* list. This field is hidden for generative AI models.  
+.. Optional: If you selected a *Predictive model* type, select a framework from the *Model framework (name - version)* list. This field is hidden for Generative AI models.  
 .. In the *Number of model server replicas to deploy* field, specify a value.
 .. Click *Next*.
 . In the *Advanced settings* section, configure advanced options:
-.. Optional: (generative AI models only) Select the *Add as AI asset endpoint* checkbox if you want to add your model's endpoint to the *AI asset endpoints* page. 
+.. Optional: (Generative AI models only) Select the *Add as AI asset endpoint* checkbox if you want to add your model's endpoint to the *AI asset endpoints* page. 
 ... In the *Use case* field, enter the types of tasks that your model performs, such as chat, multimodal, or natural language processing.
 +
 [NOTE]
 ====
-You must add your model as an AI asset endpoint to test your model in the gen AI playground.
+You must add your model as an AI asset endpoint to test your model in the GenAI playground.
 ====
 .. Optional: Select the *Model access* checkbox to make your model deployment available through an external route.
 .. Optional: To require token authentication for inference requests to the deployed model, select *Require token authentication*.
