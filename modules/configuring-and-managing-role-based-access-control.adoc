@@ -17,14 +17,14 @@ For more information, see link:https://www.redhat.com/en/topics/containers/what-
 
 .Procedure
 . Open your command line interface (CLI). Deploy the Feature store custom resource by running the following command:
-
++
 [source] 
 ----
-`kubectl apply -f feature-store-cr.yaml`
+kubectl apply -f feature-store-cr.yaml
 ----
 
 .. Locate the **Feature Store Custom Resource (CR) YAML file**, which is named feature-store-cr.yaml. You will see key value pairs. Change the key **type**: to Kubernetes:
-
++
 [source, YAML] 
 ----
 apiVersion: feast.dev/v1alpha1 
@@ -35,8 +35,9 @@ spec: # ... other configurations ...
 authz: 
 type: Kubernetes 
 ----
-. Verify that your Feature Store projects were created.
 
+. Verify that your Feature Store projects were created.
++
 [source, kubectl] 
 ----
 kubectl get feast
@@ -48,19 +49,22 @@ kubectl get configmaps -l feast.dev/service-type=client
 ----
 
 . Configure data science project permissions. You must create a `permissions.py` file in the Feature Store pod terminal. This file must reside in the `feature_store directory.` You can use a role based policy, a group based policy, combined group namespace policy or read and write permissions.
-
-NOTE: For an example of a `permission.py` file, see the following:
-link: https://github.com/feast-dev/feast/tree/master/examples/operator-rbac-openshift-tls[Feast Operator RBAC with TLS]. 
++
+[NOTE]
+====
+For an example of a `permission.py` file, see the 
+link:https://github.com/feast-dev/feast/tree/master/examples/operator-rbac-openshift-tls[Feast Operator RBAC with TLS]. 
+====
 
 . Transfer your local `permissions.py` file to the remote container filesystem. In a Kubernetes/{openshift-platform} environment, you use a command-line tool such as  oc {openshift-platform} Command Line Interface or kubectl:
-
++
 [source] 
 ----
 `oc/kubectl cp <local-file> <remote-pod>:<remote-path>.`
 ----
 
 . Configure and set up the Feature Store Server. If a cron job has been run previously, run feast apply on the online container. Open your command line interface (CLI) and run the following command:
-
++
 [source]
 ---- 
 `oc create job --from=cronjob/feast-project-name cronjob-manual-$(date +%s) -n <project name>`
@@ -76,7 +80,7 @@ link: https://github.com/feast-dev/feast/tree/master/examples/operator-rbac-open
 .. Name your group.
 .. Under **Permissions**, choose a predefined role, add permissions, and click **Save**. 
 
-[NOTE] 
+[NOTE]
 ====
 The name of your group must exist in your identity provider. The identity provider is configured at the {openshift-platform} cluster level, outside of the specific Data Science Project (DSP) you are working in.
 ====
