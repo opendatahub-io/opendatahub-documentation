@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
 [id="testing-your-model-with-rag_{context}"]
-= Testing your model with Retrieval-Augmented Generation (RAG)
+= Testing your model with retrieval augmented generation (RAG)
 
 [role="_abstract"]
-You can enhance your model's responses by providing it with contextual information from your own documents using Retrieval-Augmented Generation (RAG). You can upload documents to the vector database associated with the playground to provide context for your model's responses.
+You can enhance your model's responses by providing it with contextual information from your own documents using retrieval augmented generation (RAG). You can upload documents to the vector database associated with the playground to provide context for your model's responses.
 
 [IMPORTANT]
 =====
@@ -24,7 +24,12 @@ The RAG feature of the gen AI playground is currently configured to work only wi
 +
 The *Upload files* dialog opens.
 . Drag and drop your file or click to browse and select a file from your local system.
-. Optional: Adjust the *Maximum chunk length* and *Chunk overlap* and *Delimiter* values as needed for your document type. For more information about these settings, see _Understanding RAG settings_.
+ifdef::upstream[]
+. Optional: Adjust the *Maximum chunk length* and *Chunk overlap* and *Delimiter* values as needed for your document type. For more information about these settings, see link:{odhdocshome}/experimenting-with-models-in-the-gen-ai-playground/#testing-your-model-with-rag_rhoai-user[Understanding RAG settings].
+endif::[]
+ifndef::upstream[]
+. Optional: Adjust the *Maximum chunk length* and *Chunk overlap* and *Delimiter* values as needed for your document type. For more information about these settings, see link:{rhoaidocshome}{default-format-url}/experimenting_with_models_in_the_gen_ai_playground/testing-your-model-with-rag_rhoai-user#understanding-rag-settings_rhoai-user[Understanding RAG settings].
+endif::[]
 . Click *Upload*.
 +
 Wait for the file to finish processing. A *Source uploaded* notification appears, and the file is listed under *Uploaded files*.
