@@ -3,9 +3,9 @@
 [id='guardrails-orchestrator-config-parameters_{context}']
 = Orchestrator Configuration Parameters
 
-The first step in deploying the Guardrails framework is to first define your orchestrator configuration with a Config Map. This serves as a registry of the components in the system, namely by specifying the model-to-be-guardrailed and the available detector servers.
+The first step in deploying the Guardrails framework is to first define your Orchestrator configuration with a Config Map. This serves as a registry of the components in the system, namely by specifying the model-to-be-guardrailed and the available detector servers.
 
-Here is an example version of an orchestrator configuration file:
+Here is an example version of an Orchestrator configuration file:
 
 .Example `orchestrator_configmap.yaml`
 [source,yaml]
@@ -55,13 +55,13 @@ data:
 |===
 | Parameter | Description
 | *`chat_generation`* | Describes the generation model to be guardrailed. Requires a *`service`* configuration, see below.
-| *`service`* | A service configuration. Throughout the orchestrator config, all external services are described using the
+| *`service`* | A service configuration. Throughout the Orchestrator config, all external services are described using the
 service configuration, which contains the following fields:
 
 * `hostname` - The hostname of the service
 * `port` - The port of the service
-* `tls` *(Optional)* - The name of the TLS configuration (specified later in the configuration) to use for this service. If provided, the orchestrator communicates with this service with HTTPS.
-| *`detectors`* | The `detectors` section is where the detector servers available to the orchestrator are specified. Provide some unique name for the detector server as the key
+* `tls` *(Optional)* - The name of the TLS configuration (specified later in the configuration) to use for this service. If provided, the Orchestrator communicates with this service with HTTPS.
+| *`detectors`* | The `detectors` section is where the detector servers available to the Orchestrator are specified. Provide some unique name for the detector server as the key
 to each entry, and then the following values are required:
 
 * `type` - The kind of detector server. For now, the only supported kind within RHOAI is `text_contents`
