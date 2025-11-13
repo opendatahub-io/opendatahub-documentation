@@ -70,23 +70,12 @@ ifdef::upstream[]
 endif::[]
 //downstream - all
 ifndef::upstream[]
-. After installing the Intel Gaudi Base Operator, create an accelerator profile, as described in link:{rhoaidocshome}{default-format-url}/working_with_accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+. After installing the Intel Gaudi Base Operator, create a hardware profile, as described in link:{rhoaidocshome}{default-format-url}/working_with_accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles].
 endif::[]
 //upstream only
 ifdef::upstream[]
-. After installing the Intel Gaudi Base Operator, create an accelerator profile, as described in link:{odhdocshome}/working-with-accelerators/#working-with-accelerator-profiles_accelerators[Working with accelerator profiles].
+. After installing the Intel Gaudi Base Operator, create a hardware profile, as described in link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles].
 endif::[]
-+
-[IMPORTANT]
-====
-By default, hardware profiles are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
-ifdef::upstream[]
-For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
-endif::[]
-ifndef::upstream[]
-For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
-endif::[]
-==== 
 
 .Verification
 From the *Administrator* perspective, go to the *Operators* -> *Installed Operators* page. Confirm that the following Operators appear:
@@ -97,4 +86,3 @@ From the *Administrator* perspective, go to the *Operators* -> *Installed Operat
 
 //[role='_additional-resources']
 //.Additional resources
-
