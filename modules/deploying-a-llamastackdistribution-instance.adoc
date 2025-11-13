@@ -26,7 +26,7 @@ endif::[]
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You are logged in to {productname-long}.
 * You have activated the Llama Stack Operator in {productname-short}.
-* You have deployed an inference model with vLLM (for example, *llama-3.2-3b-instruct*) and selected *Make deployed models available through an external route* and *Require token authentication* during model deployment.
+* You have deployed an inference model with vLLM (for example, *llama-3.2-3b-instruct*) and selected *Make deployed models available through an external route* and *Require token authentication* during model deployment. In addition, in *Add custom runtime arguments*, you have added *--enable-auto-tool-choice*.
 * You have the correct inference model identifier, for example, `llama-3-2-3b`.
 * You have the model endpoint URL ending with `/v1`, for example, `https://llama-32-3b-instruct-predictor:8443/v1`.
 * You have the API token required to access the model endpoint.
@@ -84,7 +84,7 @@ To enable Llama Stack in a disconnected environment, you need add the following 
   value: "1" 
 ----
 
-The built-in llama-stack tools `websearch` and `wolfram_alpha` are not currently available in disconnected. 
+The built-in Llama Stack tool `websearch` is not available in the {org-name} Llama Stack Distribution in disconnected environments. In addition, the built-in Llama Stack tool `wolfram_alpha` tool is not available in the {org-name} Llama Stack Distribution in all clusters.
 ====
 
 == Example A: LlamaStackDistribution with *Inline Milvus*
@@ -287,8 +287,6 @@ spec:
         # Recommended workarounds for SQLite accessibility and version check
         - name: LLAMA_STACK_CONFIG_DIR
           value: /opt/app-root/src/.llama/distributions/rh
-        - name: LLAMA_STACK_DISABLE_VERSION_CHECK
-          value: "true"
       name: llama-stack
       port: 8321
     distribution:
