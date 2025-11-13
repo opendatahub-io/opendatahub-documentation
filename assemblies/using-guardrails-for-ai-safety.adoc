@@ -6,13 +6,19 @@ ifdef::context[:parent-context: {context}]
 Use the Guardrails tools to ensure the safety and security of your generative AI applications in production.
 
 == Detecting PII and sensitive data
+Protect user privacy by identifying and filtering personally identifiable information (PII) in LLM inputs and outputs using built-in regex detectors or custom detection models.
+
 include::modules/detecting-pii-by-using-guardrails-with-llama-stack.adoc[leveloffset=+1]
 include::modules/guardrails-filtering-flagged-content-by-sending-requests-to-the-regex-detector.adoc[leveloffset=+1]
 
 == Securing prompts
+Prevent malicious prompt injection attacks by using specialized detectors to identify and block potentially harmful prompts before they reach your model.
+
 include::modules/mitigating-prompt-injection-by-using-a-hugging-face-prompt-injection-detector.adoc[leveloffset=+1]
 
 == Moderating and safeguarding content
+Filter toxic, hateful, or profane content from user inputs and model outputs to maintain safe and appropriate AI interactions.
+
 include::modules/detecting-hateful-and-profane-language.adoc[leveloffset=+1]
 include::modules/guardrails-enforcing-configured-safety-pipelines-for-llm-inference-using-guardrails-gateway.adoc[leveloffset=+1]
 
