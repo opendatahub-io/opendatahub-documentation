@@ -21,7 +21,7 @@ The distributed workloads infrastructure includes the following components:
 
 
 CodeFlare SDK::
-Defines and controls the remote distributed compute jobs and infrastructure for any Python-based environment 
+Defines and controls the remote distributed compute jobs and infrastructure for any Python-based environment. 
 +
 [NOTE]
 ====
@@ -29,20 +29,21 @@ The CodeFlare SDK is not installed as part of {productname-short}, but it is inc
 ====
 
 Kubeflow Training Operator::
-Provides fine-tuning and scalable distributed training of ML models created with different ML frameworks such as PyTorch
+Provides fine-tuning and scalable distributed training of ML models created with different ML frameworks such as PyTorch.
 
 Kubeflow Training Operator Python Software Development Kit (Training Operator SDK)::
-Simplifies the creation of distributed training and fine-tuning jobs
+Simplifies the creation of distributed training and fine-tuning jobs.
++
 [NOTE]
 ====
 The Training Operator SDK is not installed as part of {productname-short}, but it is included in some of the workbench images provided by {productname-short}.
 ====
 
 KubeRay Operator::
-Manages and secures remote Ray clusters on OpenShift for running distributed compute workloads, which enforces a controlled-network environment
+Manages and secures remote Ray clusters on OpenShift for running distributed compute workloads, and enforces a controlled-network environment.
 
 {rhbok-productname} Operator::
-Manages quotas and how distributed workloads consume them, and manages the queueing of distributed workloads with respect to quotas
+Manages quotas and how distributed workloads consume them, and manages the queueing of distributed workloads with respect to quotas.
 
 cert-manager Operator::
 Enables integration with external certificate authorities and provides certificate provisioning, renewal, and retirement.
@@ -52,7 +53,7 @@ For information about installing these components, see link:{odhdocshome}/instal
 endif::[]
 
 ifdef::self-managed[]
-For information about installing these components, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+For information about installing these components, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]. For disconnected environments, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_{url-productname-short}_in_a_disconnected_environment/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
 endif::[]
 
 ifdef::cloud-service[]
@@ -65,9 +66,8 @@ endif::[]
 
 Depending on which type of distributed workloads you want to run, you must use different {productname-short} components:
 
-* Ray-based distributed workloads: Use the `codeflare`, `kueue`, and `ray` components.
+* Ray-based distributed workloads: Use the `kueue` and `ray` components.
 * Training Operator-based distributed workloads: Use the `trainingoperator` and `kueue` components.
-
 
 For both Ray-based and Training Operator-based distributed workloads, you can use Kueue and supported accelerators:
 
@@ -75,9 +75,8 @@ For both Ray-based and Training Operator-based distributed workloads, you can us
 * Use CUDA training images for NVIDIA GPUs, and ROCm-based training images for AMD GPUs.
 
 ifndef::upstream[]
-For more information about supported accelerators, see the link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations] Knowledgebase article
+For more information about supported accelerators, see the link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations] Knowledgebase article.
 endif::[]
-
 
 You can run distributed workloads from AI pipelines, from Jupyter notebooks, or from Microsoft Visual Studio Code files.
 
