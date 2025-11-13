@@ -19,39 +19,39 @@ ifdef::cloud-service[]
 ** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated
 ** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
-* You have configured a data science pipeline server in your data science project.
+* You have configured a pipeline server in your project.
 ifdef::upstream[]
-For more information, see link:{odhdocshome}/working-with-data-science-pipelines/#configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+For more information, see link:{odhdocshome}/working-with-ai-pipelines/#configuring-a-pipeline-server_ai-pipelines[Configuring a pipeline server].
 endif::[]
 ifndef::upstream[]
-For more information, see link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/configuring-a-pipeline-server_ds-pipelines[Configuring a pipeline server].
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-ai-pipelines_ai-pipelines#configuring-a-pipeline-server_ai-pipelines[Configuring a pipeline server].
 endif::[]
 
 * You have activated the Llama Stack Operator in {productname-short}.
 ifdef::upstream[]
-For more information, see link:{odhdocshome}/working-with-rag/#installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+For more information, see link:{odhdocshome}/working-with-llama-stack/#installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
 endif::[]
 ifndef::upstream[]
-For more information, see link:{rhoaidocshome}{default-format-url}/working_with_rag/installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
 endif::[]
 
 * You have deployed a Large Language Model with KServe.
 ifdef::upstream[]
-For more information, see link:{odhdocshome}/working-with-rag/#deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
+For more information, see link:{odhdocshome}/working-with-llama-stack/#deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
 endif::[]
 ifndef::upstream[]
-For more information, see link:{rhoaidocshome}{default-format-url}/working_with_rag/deploying-a-rag-stack-in-a-data-science-project_rag#Deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/deploying-a-rag-stack-in-a-project_rag#Deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
 endif::[]
 
 * You have configured S3-compatible object storage for storing evaluation results and you know your S3 credentials: AWS access key, AWS secret access key, and AWS default region.
 ifdef::upstream[]
-For more information, see link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+For more information, see link:{odhdocshome}/working-on-projects/#adding-a-connection-to-your-project_projects[Adding a connection to your project].
 endif::[]
 ifndef::upstream[]
-For more information, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+For more information, see link:{rhoaidocshome}{default-format-url}/working_on_projects/using-connections_projects#adding-a-connection-to-your-project_projects[Adding a connection to your project].
 endif::[]
 
-* You have created a data science project.
+* You have created a project.
 
 .Procedure
 . In a terminal window, if you are not already logged in to your OpenShift cluster, log in to the {openshift-cli} as shown in the following example:
@@ -61,7 +61,7 @@ endif::[]
 $ oc login <openshift_cluster_url> -u <username> -p <password>
 ----
 
-. Navigate to your data science project:
+. Navigate to your project:
 +
 [source,terminal]
 ----
@@ -165,7 +165,7 @@ data:
 * `EMBEDDING_MODEL`: Used by Ragas for semantic similarity calculations.
 * `KUBEFLOW_LLAMA_STACK_URL`: The URL for the Llama Stack server. This must be accessible from the Kubeflow Pipeline pods. The <distribution_name>, <namespace>, and <port> are replaced with the name of the LlamaStack distribution you are creating, the namespace where you are creating it, and the port. These 3 elements are present in the LlamaStack distribution YAML.
 * `KUBEFLOW_PIPELINES_ENDPOINT`: The Kubeflow Pipelines API endpoint URL.
-* `KUBEFLOW_NAMESPACE`: The namespace where pipeline runs are executed. This should match your current data science project namespace.
+* `KUBEFLOW_NAMESPACE`: The namespace where pipeline runs are executed. This should match your current project namespace.
 * `KUBEFLOW_BASE_IMAGE`: The container image used for Ragas evaluation pipeline components. This image contains the Ragas provider package installed via pip.
 * `KUBEFLOW_RESULTS_S3_PREFIX`: The S3 path prefix where evaluation results are stored. For example: `s3://my-bucket/ragas-evaluation-results`.
 * `KUBEFLOW_S3_CREDENTIALS_SECRET_NAME`: The name of the secret containing S3 credentials.
@@ -318,5 +318,5 @@ Wait until the `llama-stack-pod` pod status shows `Running`.
 
 .Next steps
 ifdef::upstream[]
-* link:{odhdocshome}/working-with-rag/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with Ragas metrics]
+* link:{odhdocshome}/working-with-llama-stack/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with Ragas metrics]
 endif::[]
