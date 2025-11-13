@@ -74,41 +74,6 @@ endif::[]
 . Check the status of the `Workload` resource that is created with the `RayCluster` resource.
 The `status.conditions.message` field provides the reason for the failed state.
 
-== A user receives a "failed to call webhook" error message for the CodeFlare Operator
-
-.Problem
-After the user runs the `cluster.apply()` command, the following error is shown:
-
-[source,bash]
-----
-ApiException: (500)
-Reason: Internal Server Error
-HTTP response body: {"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"Internal error occurred: failed calling webhook \"mraycluster.ray.openshift.ai\": failed to call webhook: Post \"https://codeflare-operator-webhook-service.redhat-ods-applications.svc:443/mutate-ray-io-v1-raycluster?timeout=10s\": no endpoints available for service \"codeflare-operator-webhook-service\"","reason":"InternalError","details":{"causes":[{"message":"failed calling webhook \"mraycluster.ray.openshift.ai\": failed to call webhook: Post \"https://codeflare-operator-webhook-service.redhat-ods-applications.svc:443/mutate-ray-io-v1-raycluster?timeout=10s\": no endpoints available for service \"codeflare-operator-webhook-service\""}]},"code":500}
-----
-
-.Diagnosis
-The CodeFlare Operator pod might not be running.
-
-.Resolution
-
-ifdef::upstream,self-managed[]
-. In the {openshift-platform} console, select the user's project from the *Project* list. 
-endif::[]
-ifdef::cloud-service[]
-. In the OpenShift console, select the user's project from the *Project* list.
-endif::[]
-. Click *Workloads -> Pods*.
-. Verify that the CodeFlare Operator pod is running.
-If necessary, restart the CodeFlare Operator pod.
-
-. Review the logs for the CodeFlare Operator pod to verify that the webhook server is serving, as shown in the following example:
-+
-[source,bash]
-----
-INFO	controller-runtime.webhook	  Serving webhook server	{"host": "", "port": 9443}
-----
-
-
 == A user's Ray cluster does not start
 
 .Problem
