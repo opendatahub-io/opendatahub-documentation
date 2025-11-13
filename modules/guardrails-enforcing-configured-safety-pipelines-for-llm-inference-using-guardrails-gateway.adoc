@@ -8,7 +8,7 @@ ifdef::context[:parent-context: {context}]
 The Guardrails Gateway is a sidecar image that you can use with the `GuardrailsOrchestrator` service. When running your AI application in production, you can use the Guardrails Gateway to enforce a consistent, custom set of safety policies using a preset guardrail pipeline. For example, you can create a preset guardrail pipeline for PII detection and language moderation. You can then send chat completions requests to the preset pipeline endpoints without needing to alter existing inference API calls. It provides the OpenAI `v1/chat/completions` API and allows you to specify which detectors and endpoints you want to use to access the service. 
 
 .Prerequisites
-* You have configured the guardrails gateway image.
+* You have configured the Guardrails gateway image.
 
 .Procedure
 . Set up the endpoint for the detectors:
@@ -19,14 +19,14 @@ GUARDRAILS_GATEWAY=https://$(oc get routes guardrails-gateway -o jsonpath='{.spe
 ----
 +
 ifdef::upstream[]
-Based on the example configurations provided in link:{odhdocshome}/monitoring-data-science-models/#configuring-the-built-in-detector-and-guardrails-gateway_monitor[Configuring the built-in detector and guardrails gateway], the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
+Based on the example configurations provided in link:{odhdocshome}/monitoring-data-science-models/#configuring-the-built-in-detector-and-guardrails-gateway_monitor[Configuring the built-in detector and Guardrails gateway], the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
 endif::[]
 
 ifndef::upstream[]
-Based on the example configurations provided in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-the-guardrails-orchestrator-service_monitor#configuring-the-built-in-detector-and-guardrails-gateway_monitor[Configuring the built-in detector and guardrails gateway], the available endpoint for the model with guardrails is `$GUARDRAILS_GATEWAY/pii`.
+Based on the example configurations provided in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-the-guardrails-orchestrator-service_monitor#configuring-the-built-in-detector-and-guardrails-gateway_monitor[Configuring the built-in detector and Guardrails gateway], the available endpoint for the model with Guardrails is `$GUARDRAILS_GATEWAY/pii`.
 endif::[]
 
-. Query the model with guardrails `pii` endpoint:
+. Query the model with Guardrails `pii` endpoint:
 +
 [source,terminal]
 ----

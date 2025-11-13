@@ -91,8 +91,8 @@ To access this, include the `autoConfig` parameter inside your Custom Resource, 
 +
 See _Auto Configuring Guardrails_ for more information.
 
-|`enableBuiltInDetectors` *(optional)*| A boolean value to inject the built-in detector sidecar container into the orchestrator pod. The built-in detector is a lightweight HTTP server containing a number of available guardrailing algorithms.
-|`enableGuardrailsGateway` *(optional)*| A boolean value to enable controlled interaction with the orchestrator service by enforcing stricter access to its exposed endpoints. It provides a mechanism of configuring detector pipelines, and then provides a unique `/v1/chat/completions` endpoint per configured detector pipeline.
+|`enableBuiltInDetectors` *(optional)*| A boolean value to inject the built-in detector sidecar container into the Orchestrator pod. The built-in detector is a lightweight HTTP server containing a number of available guardrailing algorithms.
+|`enableGuardrailsGateway` *(optional)*| A boolean value to enable controlled interaction with the Orchestrator service by enforcing stricter access to its exposed endpoints. It provides a mechanism of configuring detector pipelines, and then provides a unique `/v1/chat/completions` endpoint per configured detector pipeline.
 |`otelExporter` *(optional)*| A list of paired name and value arguments for configuring OpenTelemetry traces or metrics, or both:
 
 * `otlpProtocol` - Sets the protocol for all the OpenTelemetry protocol (OTLP) endpoints. Valid values are `grpc` (default) or `http`
@@ -103,11 +103,11 @@ See _Auto Configuring Guardrails_ for more information.
 +
 | `logLevel` *(optional)* | The log level to be used in the Guardrails Orchestrator- available values are `Error`, `Warn`, `Info` (default), `Debug`, and `Trace`.
 [[tlsSecrets-param]]
-| `tlsSecrets` *(optional)* | A list of names of `Secret` objects to mount to the Guardrails Orchestrator container. All secrets provided here are mounted into the directory `/etc/tls/$SECRET_NAME` for use in your orchestrator config TLS configuration. Each secret should contain a `tls.crt` and a `tls.key` field.
-|`replicas`| The number of orchestrator pods to create.
+| `tlsSecrets` *(optional)* | A list of names of `Secret` objects to mount to the Guardrails Orchestrator container. All secrets provided here are mounted into the directory `/etc/tls/$SECRET_NAME` for use in your Orchestrator config TLS configuration. Each secret should contain a `tls.crt` and a `tls.key` field.
+|`replicas`| The number of Orchestrator pods to create.
 |===
 
-. Deploy the orchestrator CR, which creates a service account, deployment, service, and route object in your namespace:
+. Deploy the Orchestrator CR, which creates a service account, deployment, service, and route object in your namespace:
 +
 [source,terminal]
 ----
@@ -115,7 +115,7 @@ oc apply -f orchestrator_cr.yaml -n <TEST_NAMESPACE>
 ----
 
 .Verification
-. Confirm that the orchestrator and LLM pods are running:
+. Confirm that the Orchestrator and LLM pods are running:
 +
 [source,terminal]
 ----
@@ -129,7 +129,7 @@ NAME                                       READY   STATUS    RESTARTS   AGE
 guardrails-orchestrator-sample             3/3     Running   0          3h53m
 ----
 
-. Query the `/health` endpoint of the orchestrator route to check the current status of the detector and generator services. If a `200 OK` response is returned, the services are functioning normally:
+. Query the `/health` endpoint of the Orchestrator route to check the current status of the detector and generator services. If a `200 OK` response is returned, the services are functioning normally:
 +
 [source,terminal]
 ----

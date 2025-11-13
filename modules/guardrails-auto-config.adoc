@@ -5,11 +5,11 @@
 = Auto-configuring Guardrails
 
 [role='_abstract']
-Auto-configuration simplifies the Guardrails setup process by automatically identifying available detector servers in your namespace, handling TLS configuration, and generating configuration files for a Guardrails Orchestrator deployment. For example, if any of the detectors or generation services use HTTPS, their credentials are automatically discovered, mounted, and used. Additionally, the orchestrator is automatically configured to forward all necessary authentication token headers.
+Auto-configuration simplifies the Guardrails setup process by automatically identifying available detector servers in your namespace, handling TLS configuration, and generating configuration files for a Guardrails Orchestrator deployment. For example, if any of the detectors or generation services use HTTPS, their credentials are automatically discovered, mounted, and used. Additionally, the Orchestrator is automatically configured to forward all necessary authentication token headers.
 
 .Prerequisites
 * Each detector service you intend to use has an OpenShift label applied in the resource metadata. For example, `metadata.labels.<label_name>: 'true'`. Choose a descriptive name for the label as it is required for auto-configuration.
-* You have set up the inference service to which you intend to apply guardrails.
+* You have set up the inference service to which you intend to apply Guardrails.
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
 ** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
@@ -47,9 +47,9 @@ spec:
 If `enableGuardrailsGateway` is true, a template Guardrails gateway config called `<ORCHESTRATOR_NAME>-gateway-auto-config` is generated. You can modify this file to tailor
 your Guardrails Gateway setup as desired. The Guardrails Orchestrator automatically deploys when changes are detected. Once modified, the label `trustyai/has-diverged-from-auto-config` is applied. To revert the file back to the auto-generated starting point, simply delete it and the original auto-generated file is recreated.
 +
-If `enableBuiltInDetectors` is true, the built-in detector server is automatically added to your orchestrator configuration under the same `built-in-detector`, and a sample configuration is included in the auto-generated guardrails gateway config if desired.
+If `enableBuiltInDetectors` is true, the built-in detector server is automatically added to your Orchestrator configuration under the same `built-in-detector`, and a sample configuration is included in the auto-generated Guardrails gateway config if desired.
 
-. Deploy the orchestrator custom resource. This step creates a service account, deployment, service, and route object in your namespace.
+. Deploy the Orchestrator custom resource. This step creates a service account, deployment, service, and route object in your namespace.
 +
 [source,terminal]
 ----
