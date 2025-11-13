@@ -76,7 +76,13 @@ When a user launches a workbench from the {productname-short} *Applications* →
 chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
    fix-permissions /opt/app-root -P
 ----
++
+[IMPORTANT]
+====
+Your workbench image needs to serve all of its content from the base path `/${NB_PREFIX}` because the routing, handled by the Gateway API, is path-based and uses the same value as the environment variable `NB_PREFIX`. 
 
+The `NB_PREFIX` environment variable is injected in the workbench at runtime. Any call from a browser to a different path, for example `/index.html`, `/api/my-endpoint`, or simply `/`, will not be routed to the workbench container. 
+====
 * A service within your workbench image must answer at `${NB_PREFIX}/api`, otherwise the OpenShift liveness/readiness probes fail and delete the pod for the workbench image.
 +
 The `NB_PREFIX` environment variable specifies the URL path where the container is expected to be listening.
