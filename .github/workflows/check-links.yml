@@ -12,6 +12,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fetch base branch
+        run: |
+          git fetch origin main:main
+
       - name: Install Asciidoctor
         run: |
           sudo apt-get update
@@ -23,8 +27,8 @@ jobs:
 
       - name: Check links in updated books
         shell: bash
+        # check-updated-books.sh finds master.adoc files that are directly
+        # or indirectly updated by the current PR and checks for 404s 
+        # in that book by passing the book to check-book-links.sh
         run: |
-          # check-updated-books.sh finds master.adoc files that are directly
-          # or indirectly updated by the current PR and checks for 404s 
-          # in that book by passing the book to check-book-links.sh
           scripts/check-updated-books.sh
