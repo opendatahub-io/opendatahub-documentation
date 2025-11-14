@@ -20,7 +20,7 @@ if [ -n "$MODULES" ]; then
   # Check for books that include modified modules (directly or via assemblies)
   while IFS= read -r module; do
     # Find root adoc books that directly include the module
-    mapfile -t files < <(find . -maxdepth 1 -name "*.adoc" -type f -print0 2>/dev/null || true)
+    mapfile -t files < <(find . -maxdepth 1 -name "*.adoc" -type f 2>/dev/null || true)
     if [ ${#files[@]} -gt 0 ]; then
       mapfile -t updated_books < <(grep -l "include::.*$(basename "$module")" "${files[@]}" 2>/dev/null || true)
       UPDATED_BOOKS+=( "${updated_books[@]}" )
@@ -28,11 +28,11 @@ if [ -n "$MODULES" ]; then
 
     # Find assemblies that include the module, then find root adoc books that include those assemblies
     if [ -d assemblies ]; then
-      mapfile -t assembly_files < <(find assemblies -name "*.adoc" -type f -print0 2>/dev/null)
+      mapfile -t assembly_files < <(find assemblies -name "*.adoc" -type f 2>/dev/null)
       if [ ${#assembly_files[@]} -gt 0 ]; then
         mapfile -t updated_assemblies < <(grep -l "include::.*$(basename "$module")" "${assembly_files[@]}" 2>/dev/null || true)
         for assembly in "${updated_assemblies[@]}"; do
-          mapfile -t book_files < <(find . -maxdepth 1 -name "*.adoc" -type f -print0 2>/dev/null)
+          mapfile -t book_files < <(find . -maxdepth 1 -name "*.adoc" -type f 2>/dev/null)
           if [ ${#book_files[@]} -gt 0 ]; then
             mapfile -t books_with_assembly < <(grep -l "$(basename "$assembly")" "${book_files[@]}" 2>/dev/null || true)
             UPDATED_BOOKS+=( "${books_with_assembly[@]}" )
@@ -46,7 +46,7 @@ fi
 # Check for books that include modified assemblies
 if [ -n "$ASSEMBLIES" ]; then
   while IFS= read -r assembly; do
-    mapfile -t book_files < <(find . -maxdepth 1 -name "*.adoc" -type f -print0 2>/dev/null || true)
+    mapfile -t book_files < <(find . -maxdepth 1 -name "*.adoc" -type f 2>/dev/null || true)
     if [ ${#book_files[@]} -gt 0 ]; then
       mapfile -t books_with_modified_assembly < <(grep -l "$(basename "$assembly")" "${book_files[@]}" 2>/dev/null || true)
       UPDATED_BOOKS+=( "${books_with_modified_assembly[@]}" )
