@@ -23,8 +23,8 @@ jobs:
 
       - name: Check links in updated books
         shell: bash
+        # Find book files that are directly or indirectly
+        # updated by the current PR and checks for 404s 
+        # passing the book to check-book-links.sh
         run: |
-          # check-updated-books.sh finds master.adoc files that are directly
-          # or indirectly updated by the current PR and checks for 404s 
-          # in that book by passing the book to check-book-links.sh
           scripts/check-updated-books.sh
