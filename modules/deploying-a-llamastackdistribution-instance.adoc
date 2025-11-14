@@ -3,7 +3,11 @@
 = Deploying a LlamaStackDistribution instance
 
 [role="_abstract"]
-You can deploy Llama Stack with retrieval-augmented generation (RAG) by pairing it with a vLLM-served Llama 3.2 model. This module provides two deployment examples of the `LlamaStackDistribution` custom resource (CR): one configured for Inline Milvus (single-node, embedded) and one for Remote Milvus (external Milvus service). When you create the CR, specify `rh-dev` in the `spec.server.distribution.name` field.
+You can deploy Llama Stack with retrieval-augmented generation (RAG) by pairing it with a vLLM-served Llama 3.2 model. This module provides the following deployment examples of the `LlamaStackDistribution` custom resource (CR): 
+
+* *Example A:* Inline Milvus (embedded, single-node)  
+* *Example B:* Remote Milvus (external service)  
+* *Example C:* Inline FAISS (SQLite backend)  
 
 ifdef::self-managed[]
 ifdef::disconnected[]
@@ -22,7 +26,7 @@ endif::[]
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You are logged in to {productname-long}.
 * You have activated the Llama Stack Operator in {productname-short}.
-* You have deployed an inference model with vLLM (for example, *llama-3.2-3b-instruct*) and selected *Make deployed models available through an external route* and *Require token authentication* during model deployment.
+* You have deployed an inference model with vLLM (for example, *llama-3.2-3b-instruct*) and selected *Make deployed models available through an external route* and *Require token authentication* during model deployment. In addition, in *Add custom runtime arguments*, you have added *--enable-auto-tool-choice*.
 * You have the correct inference model identifier, for example, `llama-3-2-3b`.
 * You have the model endpoint URL ending with `/v1`, for example, `https://llama-32-3b-instruct-predictor:8443/v1`.
 * You have the API token required to access the model endpoint.
@@ -80,7 +84,7 @@ To enable Llama Stack in a disconnected environment, you need add the following 
   value: "1" 
 ----
 
-The built-in llama-stack tools `websearch` and `wolfram_alpha` are not currently available in disconnected. 
+The built-in Llama Stack tool `websearch` is not available in the {org-name} Llama Stack Distribution in disconnected environments. In addition, the built-in Llama Stack tool `wolfram_alpha` tool is not available in the {org-name} Llama Stack Distribution in all clusters.
 ====
 
 == Example A: LlamaStackDistribution with *Inline Milvus*
@@ -227,6 +231,72 @@ spec:
     distribution:
       name: rh-dev
 ----
+
+== Example C: LlamaStackDistribution with *Inline FAISS*
+
+Use this example to enable the inline FAISS vector store. This configuration stores vector data locally within the Llama Stack container using an embedded SQLite database.
+
+. In the OpenShift web console, select *Administrator* → *Quick Create* (image:images/quick-create-icon.png[]) → *Import YAML*, and create a CR similar to the following:
++
+[source,yaml]
+----
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: lsd-llama-faiss-inline
+spec:
+  replicas: 1
+  server:
+    containerSpec:
+      resources:
+        requests:
+          cpu: "250m"
+          memory: "500Mi"
+        limits:
+          cpu: "8"
+          memory: "12Gi"
+      env:
+        # vLLM inference model configuration
+        - name: INFERENCE_MODEL
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: INFERENCE_MODEL
+        - name: VLLM_URL
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: VLLM_URL
+        - name: VLLM_TLS_VERIFY
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: VLLM_TLS_VERIFY
+        - name: VLLM_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: VLLM_API_TOKEN
+
+        # Enable inline FAISS with SQLite backend
+        - name: ENABLE_FAISS
+          value: faiss
+        - name: FAISS_KVSTORE_DB_PATH
+          value: /opt/app-root/src/.llama/distributions/rh/sqlite_vec.db
+
+        # Recommended workarounds for SQLite accessibility and version check
+        - name: LLAMA_STACK_CONFIG_DIR
+          value: /opt/app-root/src/.llama/distributions/rh
+      name: llama-stack
+      port: 8321
+    distribution:
+      name: rh-dev
+----
+
+[NOTE]
+====
+The `FAISS_KVSTORE_DB_PATH` environment variable defines the local path where the FAISS SQLite backend stores its index data. Ensure that this directory exists and is writable inside the container. Inline FAISS is only suitable for experimental or testing use cases. 
+====
 
 . Click *Create*.
 
