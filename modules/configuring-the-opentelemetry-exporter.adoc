@@ -20,6 +20,79 @@ $ oc -n openshift-monitoring patch configmap cluster-monitoring-config --type me
 ----
 
 . Deploy a MinIO instance to serve as the storage backend for Tempo:
+.. Create a YAML file named `minio.yaml` with the following content:
++
+.Example `minio.yaml` configuration
+[source,yaml]
+----
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+      - name: minio
+        image: quay.io/minio/minio:latest
+        args:
+        - server
+        - /data
+        - --console-address
+        - :9001
+        env:
+        - name: MINIO_ROOT_USER
+          value: "minio"
+        - name: MINIO_ROOT_PASSWORD
+          value: "minio123"
+        ports:
+        - containerPort: 9000
+          name: api
+        - containerPort: 9001
+          name: console
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: minio-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+spec:
+  ports:
+  - port: 9000
+    targetPort: 9000
+    name: api
+  - port: 9001
+    targetPort: 9001
+    name: console
+  selector:
+    app: minio
+----
+
+.. Apply the MinIO configuration:
 +
 [source,terminal]
 ----
@@ -29,6 +102,52 @@ $ oc apply -f minio.yaml
 Wait for the `minio-xxx` pod to be running.
 
 . Create a TempoStack instance:
+.. Create a secret for MinIO credentials:
++
+[source,terminal]
+----
+$ oc create secret generic tempo-s3-secret \
+  --from-literal=endpoint=http://minio:9000 \
+  --from-literal=bucket=tempo \
+  --from-literal=access_key_id=minio \
+  --from-literal=access_key_secret=minio123
+----
+
+.. Create a bucket in MinIO for Tempo storage:
++
+[source,terminal]
+----
+$ oc run -i --tty --rm minio-client --image=quay.io/minio/mc:latest --restart=Never -- \
+  sh -c "mc alias set minio http://minio:9000 minio minio123 && mc mb minio/tempo"
+----
+
+.. Create a YAML file named `tempo.yaml` with the following content:
++
+.Example `tempo.yaml` configuration
+[source,yaml]
+----
+apiVersion: tempo.grafana.com/v1alpha1
+kind: TempoStack
+metadata:
+  name: tempo-sample
+spec:
+  storage:
+    secret:
+      name: tempo-s3-secret
+      type: s3
+  storageSize: 1Gi
+  resources:
+    total:
+      limits:
+        memory: 2Gi
+        cpu: 2000m
+  template:
+    queryFrontend:
+      jaegerQuery:
+        enabled: true
+----
+
+.. Apply the Tempo configuration:
 +
 [source,terminal]
 ----
@@ -132,11 +251,18 @@ spec:
   orchestratorConfig: "fms-orchestr8-config-nlp"    <1>
   replicas: 1
   otelExporter:
-    protocol: "http"
-    otlpEndpoint: "localhost:4318"
-    otlpExport: "metrics"
+    otlpProtocol: grpc    <2>
+    otlpTracesEndpoint: https://localhost:4317    <3>
+    otlpMetricsEndpoint: https://localhost:4317    <4>
+    enableMetrics: true    <5>
+    enableTracing: true    <6>
 ----
 <1> This references the config map that you created when deploying the Guardrails Orchestrator service.
+<2> The protocol for sending traces and metrics data. Valid values are `grpc` or `http`.
+<3> The hostname and port for exporting trace data to the OpenTelemetry collector.
+<4> The hostname and port for exporting metrics data to the OpenTelemetry collector.
+<5> Set to `true` to enable exporting metrics data.
+<6> Set to `true` to enable exporting trace data.
 
 . Deploy the orchestrator custom resource:
 +
