@@ -7,28 +7,29 @@
 You can upload documents to the Generative AI (GenAI) Playground to enable Retrieval-Augmented Generation (RAG). Uploaded files are converted into text chunks and stored in a vector database unique to your GenAI Playground session, allowing the model to reference document content during chat interactions.
 
 .Prerequisites
-* You have installed {openshift-platform} 4.17 or newer. 
+* You have installed {openshift-platform} {ocp-minimum-version} or newer. 
 * You have logged in to {productname-long}.
-* The `genAiStudio` feature flag value is set to `true` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+* The `spec.OdhDashboardConfig.genAiStudio` feature flag value is set to `true` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
 ifndef::upstream[]
 * If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
 endif::[]
 ifdef::upstream[]
 * If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
-* You have access to a data science project where the models are deployed.
-* You have deployed the Llama Stack Operator.
+* You have access to a project where the models are deployed.
+* You have activated the Llama Stack Operator.
 * You have configured a LlamaStackDistribution custom resource (CR) with a vLLM inference service and a vector store.
 * You have deployed one or more models that are served by a vLLM model server.
 * You have configured any MCP tools in your Llama Stack instance. 
 * Your environment has network access to the vector database service through {openshift-platform}.
-* You have local access to the files that you want to upload.  
+* You have local access to the files that you want to upload.
+* You have designated your deployed model as an AI asset.
 
 .Procedure
 . In the {productname-short} dashboard, click *Gen AI studio* → *Playground*.
 +
 The *Playground* page opens.
-. From the *Project* drop-down list at the top of the page, select the data science project that contains your deployed model.
+. From the *Project* drop-down list at the top of the page, select the project that contains your deployed model.
 . In the right pane, locate the *RAG* section.
 . Toggle *RAG* on to enable document ingestion.
 . Click *Upload*.  
@@ -43,10 +44,10 @@ The *Upload files* dialog opens, displaying the list of selected files and embed
 ** *Vector database* (read-only) — Displays the default vector database assigned to your Playground session.  
    This database securely stores uploaded document embeddings within your {openshift-platform} cluster.
 . Under *Chunk settings*, configure how the uploaded files are divided into text sections (chunks):
-.. In the *Maximum chunk length* field, enter the maximum number of words per chunk.  
+.. In the *Maximum chunk length* field, enter the maximum number of tokens per chunk.  
 +
 Smaller chunks improve precision in document retrieval. Larger chunks are better for broader-context tasks, such as summarization.
-.. In the *Chunk overlap* field, enter the number of words repeated between consecutive chunks.  
+.. In the *Chunk overlap* field, enter the number of tokens that overlap between chunks.  
 +
 Overlap helps maintain context across sections, improving the continuity of model responses.
 

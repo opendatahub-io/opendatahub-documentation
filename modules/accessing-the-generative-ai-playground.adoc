@@ -8,7 +8,7 @@ You can access the Generative AI (GenAI) Playground from the {productname-short}
 
 [IMPORTANT]
 ====
-By default, the GenAI Playground interface is hidden from display in the {productname-short} dashboard. To show the user interface components for the GenAI Playground interface, set the `genAiStudio` value to `true` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+By default, the GenAI Playground interface is hidden from display in the {productname-short} dashboard. To show the user interface components for the GenAI Playground interface, set the `spec.OdhDashboardConfig.genAiStudio` value to `true` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
 ifndef::upstream[]
 For more information, see link:{rhoaidocshome}/html/managing_openshift_ai/customizing-the-dashboard#ref-dashboard-configuration-options_dashboard[Dashboard configuration options].
 endif::[]
@@ -18,21 +18,22 @@ endif::[]
 ====
 
 .Prerequisites
-* You have installed {openshift-platform} 4.17 or newer. 
+* You have installed {openshift-platform} {ocp-minimum-version} or newer. 
 * You have logged in to {productname-long}.
-* The `genAiStudio` feature flag value is set to `true` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
+* The `spec.OdhDashboardConfig.genAiStudio` feature flag value is set to `true` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
 ifndef::upstream[]
 * If you are using {productname-short} groups, you are part of the user group or admin group (for example, {oai-user-group} or {oai-admin-group}) in OpenShift.
 endif::[]
 ifdef::upstream[]
 * If you are using {productname-short} groups, you are part of the user group or admin group (for example, {odh-user-group} or {odh-admin-group}) in OpenShift.
 endif::[]
-* You have access to a data science project where the models are deployed.
-* You have deployed the Llama Stack Operator.
+* You have access to a project where the models are deployed.
+* You have activated the Llama Stack Operator.
 * You have configured a LlamaStackDistribution custom resource (CR) with a vLLM inference service and a vector store.
 * You have deployed a model that is served by a vLLM model server.
 * You have configured any MCP tools in your Llama Stack instance. 
 * Your environment has network access to the vector database service through {openshift-platform}.
+* You have designated your deployed model as an AI asset.
 
 .Procedure
 . From the {productname-short} dashboard, click *Gen AI studio* -> *Playground*.
