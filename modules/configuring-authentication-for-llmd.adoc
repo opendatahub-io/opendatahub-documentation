@@ -124,9 +124,7 @@ curl -v $(kubectl get llmisvc -n $TEST_NS -o=jsonpath='{.items[0].status.address
 "prompt": "Hello!"
 }'
 ----
-
 The request should fail with `HTTP 401: Unauthorized`.
-
 . *Testing the endpoint with a token:*
 +
 [source,bash]
@@ -138,5 +136,4 @@ curl -v $(kubectl get llmisvc -n $TEST_NS -o=jsonpath='{.items[0].status.address
 "model": "facebook/opt-125m",
 "prompt": "Hello!
 ----
-
 The request should succeed with `HTTP 200 OK`.
