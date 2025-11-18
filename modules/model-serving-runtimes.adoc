@@ -4,7 +4,7 @@
 = Model-serving runtimes
 
 [role='_abstract']
-You can serve models on the single-model serving platform by using model-serving runtimes. The configuration of a model-serving runtime is defined by the *ServingRuntime* and *InferenceService* custom resource definitions (CRDs).
+You can serve models on the model serving platform by using model-serving runtimes. The configuration of a model-serving runtime is defined by the *ServingRuntime* and *InferenceService* custom resource definitions (CRDs).
 
 == ServingRuntime
 
@@ -57,7 +57,7 @@ spec:
 <6> Passes the model name that is specified by the `{{.Name}}` template variable inside the runtime container specification to the runtime environment. The `{{.Name}}` variable maps to the `spec.predictor.name` field in the `InferenceService` metadata object.
 <7> The entrypoint command that starts the runtime container.
 <8> The runtime container image used by the serving runtime. This image differs depending on the type of accelerator used.
-<9> Specifies that the runtime is used for single-model serving. 
+<9> Specifies that the runtime is used for model serving. 
 <10> Specifies the model formats supported by the runtime.
 
 == InferenceService
