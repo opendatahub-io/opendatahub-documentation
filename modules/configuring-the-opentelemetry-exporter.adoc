@@ -129,7 +129,7 @@ $ oc run -i --tty --rm minio-client --image=quay.io/minio/mc:latest --restart=Ne
 apiVersion: tempo.grafana.com/v1alpha1
 kind: TempoStack
 metadata:
-  name: tempo-sample
+  name: <tempo_stack_name>
 spec:
   storage:
     secret:
@@ -252,8 +252,8 @@ spec:
   replicas: 1
   otelExporter:
     otlpProtocol: grpc    <2>
-    otlpTracesEndpoint: https://localhost:4317    <3>
-    otlpMetricsEndpoint: https://localhost:4317    <4>
+    otlpTracesEndpoint: http://<otelcol_name>-collector.<namespace>.svc.cluster.local:4317    <3>
+    otlpMetricsEndpoint: http://<otelcol_name>-collector.<namespace>.svc.cluster.local:4317    <4>
     enableMetrics: true    <5>
     enableTracing: true    <6>
 ----
