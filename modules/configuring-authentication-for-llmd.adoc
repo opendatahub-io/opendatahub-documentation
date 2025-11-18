@@ -1,0 +1,141 @@
+:_module-type: PROCEDURE
+
+[id="configuring-authentication-for-llmd_{context}"]
+= Configuring authentication for {llmd} using {org-name} Connectivity Link
+
+[role='_abstract']
+
+Red Hat Connectivity Link (RHCL) is used for authentication and authorization.
+
+.Prerequisites
+
+* You have installed {org-name} Connectivity Link (RHCL) version 1.1.1 or later. For more information, see link:https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2/html/installing_connectivity_link_on_openshift[Installing Connectivity Link on OpenShift].
+* You have access to the OpenShift CLI (`oc`).
+* The ServiceAccount has permission to get the corresponding `LLMInferenceService` and you have generated a JSON web token (JWT).\
+* Authorino is installed. If Authorino is not installed before the `odh-model-controller` and KServe controller start, authentication is opted in by default, and your inference service requests will fail.
+
+.Procedure
+
+. Create the Kuadrant custom resource (CR) to set up required objects:
++
+[source,bash]
+----
+oc apply -f - <<EOF
+apiVersion: kuadrant.io/v1beta1
+kind: Kuadrant
+metadata:
+name: kuadrant
+namespace: kuadrant-system
+EOF
+----
+
+. Wait for Kuadrant to become ready:
++
+[source,bash]
+----
+oc wait Kuadrant -n kuadrant-system kuadrant --for=condition=Ready --timeout=10m
+----
+
+. Add the `ServingCert` annotation to the Authorino Service:
++
+[source,bash]
+----
+oc annotate svc/authorino-authorino-authorization  service.beta.openshift.io/serving-cert-secret-name=authorino-server-cert -n kuadrant-system
+----
+
+. Wait for the secret to be created:
++
+[source,bash]
+----
+sleep 2
+----
+
+. Update Authorino to enable SSL:
++
+[source,bash]
+----
+oc apply -f - <<EOF
+apiVersion: operator.authorino.kuadrant.io/v1beta1
+kind: Authorino
+metadata:
+name: authorino
+namespace: kuadrant-system
+spec:
+replicas: 1
+clusterWide: true
+listener:
+tls:
+enabled: true
+certSecretRef:
+name: authorino-server-cert
+oidcServer:
+tls:
+enabled: false
+EOF
+----
+
+. Verify that the Authorino pods are ready:
++
+[source,bash]
+----
+oc wait --for=condition=ready pod -l authorino-resource=authorino -n kuadrant-system --timeout 150s
+----
+
+. Restart the controllers:
++
+[source,bash]
+----
+oc delete pod -n redhat-ods-applications -l app=odh-model-controller
+oc delete pod -n redhat-ods-applications -l control-plane=kserve-controller-manager
+----
+
+. Verify that the global `authPolicy` is created:
++
+[source,bash]
+----
+oc get authPolicy -n openshift-ingress
+----
+
+. (Optional) To disable authentication and allow anonymous access to the `LLMInferenceService`, add the following annotation:
++
+[source,bash]
+----
+oc annotate llmisvc/facebook-opt-125m-single security.opendatahub.io/enable-auth=false -n $TEST_NS
+----
+
+.. Verify that the anonymous `AuthPolicy` was created:
++
+[source,bash]
+----
+oc get authpolicy -n $TEST_NS
+----
+
+.Verification
+You can verify the security setup by performing inference requests with and without the generated token.
+. *Testing the endpoint without a token:*
++
+[source,bash]
+----
+curl -v $(kubectl get llmisvc -n $TEST_NS -o=jsonpath='{.items[0].status.addresses[0].url}')/v1/completions \
+-H "Content-Type: application/json" \
+-d '{
+"model": "facebook/opt-125m",
+"prompt": "Hello!"
+}'
+----
++
+The request should fail with `HTTP 401: Unauthorized`.
+
+. *Testing the endpoint with a token:*
++
+[source,bash]
+----
+curl -v $(kubectl get llmisvc -n $TEST_NS -o=jsonpath='{.items[0].status.addresses[0].url}')/v1/completions \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer ${TEST_TOKEN}" \
+-d '{
+"model": "facebook/opt-125m",
+"prompt": "Hello!
+----
++
+The request should succeed with `HTTP 200 OK`.
