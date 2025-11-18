@@ -21,7 +21,7 @@ endif::[]
 
 .Prerequisites
 * You have logged in to {productname-long}.
-* You have created a data science project that you can add a model server to.
+* You have created a project that you can add a model server to.
 * You have enabled the multi-model serving platform.
 ifndef::upstream[]
 * If you want to use a custom model-serving runtime for your model server, you have added and enabled the runtime. See link:{rhoaidocshome}{default-format-url}/configuring_your_model-serving_platform/configuring_model_servers_on_the_multi_model_serving_platform#adding-a-custom-model-serving-runtime-for-the-multi-model-serving-platform_rhoai-admin[Adding a custom model-serving runtime].
@@ -33,9 +33,9 @@ ifdef::upstream[]
 endif::[]
 
 .Procedure
-. In the left menu of the {productname-short} dashboard, click *Data science projects*.
+. In the left menu of the {productname-short} dashboard, click *Projects*.
 +
-The *Data science projects* page opens.
+The *Projects* page opens.
 . Click the name of the project that you want to configure a model server for.
 +
 A project details page opens.
@@ -57,18 +57,7 @@ The *Add model server* dialog opens.
 If you are using a _custom_ model-serving runtime with your model server and want to use GPUs, you must ensure that your custom runtime supports GPUs and is appropriately configured to use them.
 ====
 . In the *Number of model replicas to deploy* field, specify a value.
-. From the *Accelerator profile* list, select an accelerator profile.
-+
-[IMPORTANT]
-====
-By default, hardware profiles are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. If you enable hardware profiles, the *Hardware profiles* list is displayed instead of the *Accelerator profiles* list. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
-ifdef::upstream[]
-For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
-endif::[]
-ifndef::upstream[]
-For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
-endif::[]
-====
+. From the *Hardware profile* list, select a hardware profile.
 
 . Optional: Click *Customize resource requests and limit* and update the following values:
 .. In the *CPUs requests* field, specify the number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.

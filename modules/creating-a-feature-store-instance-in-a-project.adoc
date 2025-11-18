@@ -1,0 +1,163 @@
+:_module-type: PROCEDURE
+
+[id="creating-a-feature-store-instance-in-a-project_{context}"]
+= Creating a Feature Store instance in a project
+
+[role='_abstract']
+You can add an instance of Feature Store to a project by creating a custom resource definition (CRD) in the OpenShift console.
+
+The following example shows the minimum requirements for a Feature Store CR YAML file:
+
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+apiVersion: feast.dev/v1alpha1
+kind: FeatureStore
+metadata:
+  name: sample
+spec:
+  feastProject: my_feast_project
+----
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have enabled the Feature Store component, as described in _Enabling the Feature Store component_.
+
+* You have set up your database infrastructure for the online store, offline store, and registry. 
++
+For an example of setting up and running PostgreSQL (for the registry) and Redis (for the online store), see the Feature Store Operator quick start example: https://github.com/feast-dev/feast/tree/stable/examples/operator-quickstart.
+
+
+ifndef::upstream[]
+* You have created a project, as described in link:{rhoaidocshome}{default-format-url}/working_on_projects/using-projects_projects#creating-a-project_projects[Creating a project]. In the following procedure, `my-project` is the name of the project.
+endif::[]
+
+ifdef::upstream[]
+* You have created a project, as described in link:{odhdocshome}/working-on-projects/#creating-a-project_projects[Creating a project]. In the following procedure, `my-project` is the name of the project.
+endif::[]
+
+.Procedure
+
+. In the OpenShift console, click the *Quick Create* (image:images/quick-create-icon.png[]) icon and then click the *Import YAML* option.
+
+. Verify that your project is the selected project.
+
+. Copy the following code and paste it into the YAML editor:
++
+[.lines_space]
+[.console-input]
+[source, yaml]
+----
+apiVersion: feast.dev/v1alpha1
+kind: FeatureStore
+metadata:
+  name: sample-git
+spec:
+  feastProject: credit_scoring_local
+  feastProjectDir:
+    git:
+      url: https://github.com/feast-dev/feast-credit-score-local-tutorial
+      ref: 598a270 
+----
++
+The `spec.feastProjectDir` references a Feature Store project that is in the Git repository for a Credit Store tutorial.
+
+. Optionally, change the `metadata.name` for the Feature Store instance.
+. Optionally, edit `feastProject`, which is the namespace for organizing your Feature Store instance. Note that this project is not the {productname-short} project.
+
+. Click *Create*.
+
+When you create the Feature Store CR in OpenShift, Feature Store starts a remote online feature server, and configures a default registry and an offline store with the local provider. 
+
+A _provider_ is a customizable interface that provides default Feature Store components, such as the registry, offline store, and online store, that target a specific environment, ensuring that these components can work together seamlessly. The local provider uses the following default settings:
+
+* *Registry:* A SQL registry or local file
+* *Offline store:*  A Parquet file
+* *Online store:* SQLite
+
+.Verification
+
+. In the {openshift-platform} console, select *Workloads* -> *Pods*.
+. Make sure that your project (for example, my-project) is selected.
+. Find the pod that has the `feast-` prefix, followed by the `metadata.name` that you specified in the CRD configuration, for example, `sample-git`. 
+. Verify that the pod status is *Running*.
+. Click the `feast` pod and then select *Pod details*. 
+. Scroll down to see the online container. This container is the deployment for the online server. It makes the feature server REST API available in the OpenShift cluster.
+. Scroll up and then click *Terminal*.
+. Run the following command to verify that the `feast` CLI is installed correctly:
++
+----
+$ feast --help
+----
+
+. To view the files for the Feature Store project, enter the following command:
++
+----
+$ ls -la
+----
++
+You should see output similar to the following:
++
+[.lines_space]
+[.console-output]
+[source, yaml]
+----
+.
+..
+data
+example_repo.py
+feature_store.yaml
+__init__.py
+__pycache__
+test_workflow.py
+----
+
+. To view the `feature_store.yaml` configuration file, enter the following command:
++
+----
+$ cat feature_store.yaml
+----
++
+You should see output similar to the following:
++
+[.lines_space]
+[.console-output]
+[source, yaml]
+----
+project: my_feast_project
+provider: local
+online_store:
+	path: /feast-data/online_store.db
+	type: sqlite
+registry:
+	path: /feast-data/registry.db
+	registry_type: file
+auth:
+	type: no_auth
+entity_key_serialization_version: 3
+----
+
+The `feature_store.yaml` file defines the following components:
+
+* *project* — The namespace for the Feature Store instance. Note that this project refers to the feature project rather than the {productname-short} project.
+
+* *provider* — The environment in which Feature Store deploys and operates.
+
+* *registry* — The location of the feature registry.
+
+* *online_store* — The location of the online store.
+
+* *auth* - The type of authentication and authorization (`no_auth`, `kubernetes`, or `oidc`) 
+
+* *entity_key_serialization_version* - Specifies the serialization scheme that Feature Store uses when writing data to the online store. 
+
+*NOTE:* Although the `offline_store` location is not included in the `feature_store.yaml` file, the Feature Store instance uses a DASK file-based offline store. In the `feature_store.yaml` file, the registry type is `file` but it uses a simple SQLite database.
+
+.Next steps
+
+* Optionally, you can customize the default configurations for the offline store, online store, or registry by editing the YAML configuration for the Feature Store CR, as described in _Customizing your Feature Store configuration_.
+
+* Give your ML engineers and data scientists access to the project so that they can create a workbench. and provide them with a copy of the `feature_store.yaml` file so that they can add it to their workbench IDE, such as Jupyter.

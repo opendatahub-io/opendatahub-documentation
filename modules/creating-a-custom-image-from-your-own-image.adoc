@@ -76,7 +76,13 @@ When a user launches a workbench from the {productname-short} *Applications* →
 chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
    fix-permissions /opt/app-root -P
 ----
++
+[IMPORTANT]
+====
+Your workbench image needs to serve all of its content from the base path `/${NB_PREFIX}` because the routing, handled by the Gateway API, is path-based and uses the same value as the environment variable `NB_PREFIX`. 
 
+The `NB_PREFIX` environment variable is injected in the workbench at runtime. Any call from a browser to a different path, for example `/index.html`, `/api/my-endpoint`, or simply `/`, will not be routed to the workbench container. 
+====
 * A service within your workbench image must answer at `${NB_PREFIX}/api`, otherwise the OpenShift liveness/readiness probes fail and delete the pod for the workbench image.
 +
 The `NB_PREFIX` environment variable specifies the URL path where the container is expected to be listening.
@@ -138,19 +144,4 @@ To enable CRB and EPEL on Centos Stream 9-based images, run the following comman
 
 ----
 
-*Adding Elyra compatibility*
-
-Support for data science pipelines V2 (provided with the `odh-elyra` package) is available in {productname-long} version 2.9 and later. Previous versions of {productname-short} support data science pipelines V1 (provided with the `elyra` package).
-
-If you want your custom image to support data science pipelines V2, you must address the following requirements:
-
-* Include the `odh-elyra` package for having support with Data Science pipeline V2 (not the `elyra` package), for example:
-+
-----
- USER 1001
- 
- RUN pip install odh-elyra
-----
-
-* If you want to include the data science pipeline configuration automatically, as a runtime configuration, add an annotation when you import a custom workbench image. 
 

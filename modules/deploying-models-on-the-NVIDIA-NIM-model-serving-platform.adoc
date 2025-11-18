@@ -9,7 +9,7 @@ When you have enabled the *NVIDIA NIM model serving platform*, you can start to 
 .Prerequisites
 * You have logged in to {productname-long}.
 * You have enabled the *NVIDIA NIM model serving platform*.
-* You have created a data science project.
+* You have created a project.
 ifdef::upstream[]
 * You have enabled support for graphic processing units (GPUs) in {productname-short}. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^].
 endif::[]
@@ -18,9 +18,9 @@ ifndef::upstream[]
 endif::[]
 
 .Procedure
-. In the left menu, click *Data science projects*.
+. In the left menu, click *Projects*.
 +
-The *Data science projects* page opens.
+The *Projects* page opens.
 . Click the name of the project that you want to deploy a model in.
 +
 A project details page opens.
@@ -45,18 +45,6 @@ When resizing a PersistentVolumeClaim (PVC) backed by Amazon EBS in {productname
 .. In the *Number of model server replicas to deploy* field, specify a value.
 .. From the *Model server size* list, select a value.
 . From the *Hardware profile* list, select a hardware profile.
-+
-[IMPORTANT]
-====
-By default, hardware profiles are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. If you enable hardware profiles, the *Hardware profiles* list is displayed instead of the *Accelerator profiles* list. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
-ifdef::upstream[]
-For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
-endif::[]
-ifndef::upstream[]
-For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
-endif::[] 
-====
-
 . Optional: Click *Customize resource requests and limit* and update the following values:
 .. In the *CPUs requests* field, specify the number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
 .. In the *CPU limits* field, specify the maximum number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.

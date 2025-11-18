@@ -1,0 +1,27 @@
+:_module-type: CONCEPT
+
+[id="using-ragas-with-llama-stack_{context}"]
+= Using Ragas with Llama Stack
+
+[role="_abstract"]
+You can use the Ragas (Retrieval-Augmented Generation Assessment) evaluation provider with Llama Stack to measure the quality of your Retrieval-Augmented Generation (RAG) workflows in {productname-short}. Ragas integrates with the Llama Stack evaluation API to compute metrics such as faithfulness, answer relevancy, and context precision for your RAG workloads.
+
+Llama Stack exposes evaluation providers as part of its API surface. When you configure Ragas as a provider, the Llama Stack server sends RAG inputs and outputs to Ragas and records the resulting metrics for later analysis.
+
+Ragas evaluation with Llama Stack in {productname-short} supports the following deployment modes:
+
+* *Inline provider* for development and small-scale experiments.
+* *Remote provider* for production-scale evaluations that run as {productname-short} AI pipelines.
+
+You choose the mode that best fits your workflow:
+
+* Use the inline provider when you want fast, low-overhead evaluation while you iterate on prompts, retrieval configuration, or model choices.
+* Use the remote provider when you need to evaluate large datasets, integrate with CI/CD pipelines, or run repeated benchmarks at scale.
+
+ifndef::upstream[]
+For information on evaluating RAG systems with Ragas in {productname-short}, see link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/evaluating-rag-systems-with-ragas_monitor[Evaluating RAG systems with RAGAS]
+endif::[]
+
+ifdef::upstream[]
+For information on evaluating RAG systems with Ragas in {productname-short}, see link:{odhdocshome}/monitoring-data-science-models/#evaluating-rag-systems-with-ragas_monitor[Evaluating RAG systems with RAGAS].
+endif::[]

@@ -1,58 +1,57 @@
 :_module-type: PROCEDURE
-
 [id="preparing-documents-with-docling-for-llama-stack-retrieval_{context}"]
 = Preparing documents with Docling for Llama Stack retrieval
 
 [role="_abstract"]
-You can transform your source documents with a Docling-enabled data science pipeline and ingest the output into a Llama Stack vector store by using the Llama Stack SDK. This modular approach separates document preparation from ingestion, yet still delivers an end-to-end, retrieval-augmented generation (RAG) workflow.
+You can transform your source documents with a Docling-enabled pipeline and ingest the output into a Llama Stack vector store by using the Llama Stack SDK. This modular approach separates document preparation from ingestion, yet still delivers an end-to-end, retrieval-augmented generation (RAG) workflow.
 
-The pipeline registers a Milvus vector database and downloads the source PDFs, then splits them for parallel processing and converts each batch to Markdown with Docling. It generates sentence-transformer embeddings from the Markdown and stores them in the vector store, making the documents instantly searchable in Llama Stack.
+The pipeline registers a vector store and downloads the source PDFs, then splits them for parallel processing and converts each batch to Markdown with Docling. It generates sentence-transformer embeddings from the Markdown and stores them in the vector store, making the documents searchable through Llama Stack.
 
 .Prerequisites
-* You have installed {openshift-platform} 4.17 or newer. 
+* You have installed {openshift-platform} {ocp-minimum-version} or newer. 
 ifndef::upstream[]
 * You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
 endif::[]
 ifdef::upstream[]
 * You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
 endif::[]
-* You have logged in to {openshift-platform} web console.
-* You have a data science project and access to pipelines in the {productname-short} dashboard.
-* You have created and configured a pipeline server within the data science project that contains your workbench.
+* You have logged in to the {openshift-platform} web console.
+* You have a project and access to pipelines in the {productname-short} dashboard.
+* You have created and configured a pipeline server within the project that contains your workbench.
 * You have activated the Llama Stack Operator in {productname-short}.
-* You have deployed an inference model, for example, the llama-3.2-3b-instruct model. 
+* You have deployed an inference model, for example, the *llama-3.2-3b-instruct* model. 
 * You have configured a Llama Stack deployment by creating a `LlamaStackDistribution` instance to enable RAG functionality.
-* You have created a project workbench within a data science project.
+* You have created a workbench within a project.
 * You have opened a Jupyter notebook and it is running in your workbench environment.
-ifdef::upstream[]
-* You have installed local object storage buckets and created connections, as described in link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
-endif::[]
 ifndef::upstream[]
-* You have installed the `llama_stack_client` version 0.2.22 or later in your workbench environment. 
-* You have installed local object storage buckets and created connections, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+* You have installed the `llama_stack_client` version 0.3.1 or later in your workbench environment. 
+* You have installed local object storage buckets and created connections, as described in link:{rhoaidocshome}{default-format-url}/working_on_projects/using-connections_projects#adding-a-connection-to-your-project_projects[Adding a connection to your project].
 endif::[]
-* You have compiled to YAML a data science pipeline that includes a Docling transform, either one of the RAG demo samples or your own custom pipeline.
-//* You have PDF documents ready for ingestion and know their storage location.
-* Your data science project quota allows between 500 millicores (0.5 CPU) and 4 CPU cores for the pipeline run.
-* Your data science project quota allows from 2 GiB up to 6 GiB of RAM for the pipeline run.
+ifdef::upstream[]
+* You have installed local object storage buckets and created connections, as described in link:{odhdocshome}/working-on-projects/#adding-a-connection-to-your-project_projects[Adding a connection to your project].
+* You have installed the `llama_stack_client` version 0.3.1 or later in your workbench environment. 
+endif::[]
+* You have compiled to YAML a pipeline that includes a Docling transform, either one of the RAG demo samples or your own custom pipeline.
+* Your project quota allows between 500 millicores (0.5 CPU) and 4 CPU cores for the pipeline run.
+* Your project quota allows from 2 GiB up to 6 GiB of RAM for the pipeline run.
 * If you are using GPU acceleration, you have at least one NVIDIA GPU available.
 
 .Procedure
-. In a new notebook cell, install the `llama_stack` client package:
+. In a new notebook cell, install the client:
 +
 [source,python]
 ----
-%pip install llama_stack_client
+%pip install -q llama_stack_client
 ----
 
-. In a new notebook cell, import Agent, AgentEventLogger, and LlamaStackClient:
+. In a new notebook cell, import `Agent`, `AgentEventLogger`, and `LlamaStackClient`:
 +
 [source,python]
 ----
 from llama_stack_client import Agent, AgentEventLogger, LlamaStackClient
 ----
 
-. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a LlamaStackClient instance:
+. In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a `LlamaStackClient` instance:
 +
 [source,python]
 ----
@@ -73,24 +72,26 @@ models = client.models.list()
 model_id = next(m.identifier for m in models if m.model_type == "llm")
 embedding_model = next(m for m in models if m.model_type == "embedding")
 embedding_model_id = embedding_model.identifier
-embedding_dimension = embedding_model.metadata["embedding_dimension"]
+embedding_dimension = int(embedding_model.metadata.get("embedding_dimension", 768))
 ----
 
-. In a new notebook cell, register a vector database (choose one option):
+. Register a vector store (choose one option). Skip this step if your pipeline registers the store automatically.
 +
 .Option 1: Inline Milvus Lite (embedded)
 ====
 [source,python]
 ----
-vector_db_id = "my_inline_db"
-
+vector_store_name = "my_inline_db"
 vector_store = client.vector_stores.create(
-    name=vector_db_id,
-    embedding_model=embedding_model_id,
-    embedding_dimension=embedding_dimension,
-    provider_id="milvus",   # inline Milvus Lite
+    name=vector_store_name,
+    extra_body={
+        "embedding_model": embedding_model_id,
+        "embedding_dimension": embedding_dimension,
+        "provider_id": "milvus",   # inline Milvus Lite
+    },
 )
-print(f"Registered inline Milvus Lite DB: {vector_db_id}")
+vector_store_id = vector_store.id
+print(f"Registered inline Milvus Lite DB: {vector_store_id}")
 ----
 [NOTE]
 Inline Milvus Lite is best for development. Data durability and scale are limited compared to remote Milvus.
@@ -100,56 +101,73 @@ Inline Milvus Lite is best for development. Data durability and scale are limite
 ====
 [source,python]
 ----
-vector_db_id = "my_remote_db"
-
+vector_store_name = "my_remote_db"
 vector_store = client.vector_stores.create(
-    name=vector_db_id,
-    embedding_model=embedding_model_id,
-    embedding_dimension=embedding_dimension,
-    provider_id="milvus-remote",  # remote Milvus provider (v2.25+)
+    name=vector_store_name,
+    extra_body={
+        "embedding_model": embedding_model_id,
+        "embedding_dimension": embedding_dimension,
+        "provider_id": "milvus-remote",  # remote Milvus provider
+    },
 )
-print(f"Registered remote Milvus DB: {vector_db_id}")
+vector_store_id = vector_store.id
+print(f"Registered remote Milvus DB: {vector_store_id}")
 ----
 [NOTE]
+Ensure your `LlamaStackDistribution` includes `MILVUS_ENDPOINT` and `MILVUS_TOKEN` (gRPC `:19530`).
 ====
-* Ensure your `LlamaStackDistribution` includes `MILVUS_ENDPOINT` and `MILVUS_TOKEN`.
-* Aside from the `provider_id`, ingestion and query APIs are identical between inline and remote Milvus.
+
+.Option 3: Inline FAISS (SQLite backend)
 ====
+[source,python]
+----
+vector_store_name = "my_faiss_db"
+vector_store = client.vector_stores.create(
+    name=vector_store_name,
+    extra_body={
+        "embedding_model": embedding_model_id,
+        "embedding_dimension": embedding_dimension,
+        "provider_id": "faiss",   # inline FAISS provider
+    },
+)
+vector_store_id = vector_store.id
+print(f"Registered inline FAISS DB: {vector_store_id}")
+----
+[NOTE]
+Inline FAISS (available in {productname-short} 3.0 and later) is a lightweight, in-process vector store with SQLite-based persistence. It is best for local experimentation, disconnected environments, or single-node RAG deployments.
 ====
-+
+
 [IMPORTANT]
 ====
-If you are using the sample Docling pipeline from the RAG demo repository, the pipeline registers the database automatically and you can skip this step. However, if you are using your own pipeline, you must register the database yourself.
+If you are using the sample Docling pipeline from the RAG demo repository, the pipeline registers the vector store automatically and you can skip the previous step. If you are using your own pipeline, you must register the vector store yourself.
 ====
 
 ifndef::upstream[]
-. In the {openshift-platform} web console, import the YAML file containing your docling pipeline into your data science project, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#importing-a-data-science-pipeline_ds-pipelines[Importing a data science pipeline].
+. In the {openshift-platform} web console, import the YAML file containing your Docling pipeline into your project, as described in link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-ai-pipelines_ai-pipelines#importing-a-pipeline_ai-pipelines[Importing a pipeline].
 endif::[]
 ifdef::upstream[]
-. In the {openshift-platform} web console, import your YAML file containing your docling pipeline into your data science project, as described in link:{odhdocshome}/working-with-data-science-pipelines/#importing-a-pipeline-version[Importing a pipeline version].
+. In the {openshift-platform} web console, import your YAML file containing your Docling pipeline into your project, as described in link:{odhdocshome}/working-with-ai-pipelines/#importing-a-pipeline-version[Importing a pipeline version].
 endif::[]
 
 ifndef::upstream[]
-. Create a pipeline run to execute your Docling pipeline, as described in link:{rhoaidocshome}{default-format-url}/working_with_data_science_pipelines/managing-pipeline-runs_ds-pipelines#executing-a-pipeline-run_ds-pipelines[Executing a pipeline run]. The pipeline run inserts your PDF documents into the vector database. If you run the Docling pipeline from the link:https://github.com/opendatahub-io/rag/tree/main/demos/kfp/docling/pdf-conversion[RAG demo samples repository], you can optionally customize the following parameters before starting the pipeline run:
-
+. Create a pipeline run to execute your Docling pipeline, as described in link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-pipeline-runs_ai-pipelines#executing-a-pipeline-run_ai-pipelines[Executing a pipeline run]. The pipeline run inserts your PDF documents into the vector store. If you run the Docling pipeline from the link:https://github.com/opendatahub-io/rag/tree/main/demos/kfp/docling/pdf-conversion[RAG demo samples repository], you can optionally customize the following parameters before starting the pipeline run:
 * `base_url`: The base URL to fetch PDF files from.
 * `pdf_filenames`: A comma-separated list of PDF filenames to download and convert.
 * `num_workers`: The number of parallel workers.
-* `vector_db_id`: The Milvus vector database ID.
-* `service_url`: The Milvus service URL.
+* `vector_store_id`: The vector store identifier.
+* `service_url`: The Milvus service URL (only for remote Milvus).
 * `embed_model_id`: The embedding model to use.
 * `max_tokens`: The maximum tokens for each chunk.
 * `use_gpu`: Enable or disable GPU acceleration.
 endif::[]
 
 ifdef::upstream[]
-. Create a pipeline run to execute your Docling pipeline, as described in link:{odhdocshome}/working-with-data-science-pipelines/#executing-a-pipeline-run_ds-pipelines[Executing a pipeline run]. The pipeline run inserts your PDF documents into the vector database. If you run the Docling pipeline from the link:https://github.com/opendatahub-io/rag/tree/main/demos/kfp/docling/pdf-conversion[RAG demo samples repository], you can optionally customize the following parameters before starting the pipeline run:
-
+. Create a pipeline run to execute your Docling pipeline, as described in link:{odhdocshome}/working-with-ai-pipelines/#executing-a-pipeline-run_ai-pipelines[Executing a pipeline run]. The pipeline run inserts your PDF documents into the vector store. If you run the Docling pipeline from the link:https://github.com/opendatahub-io/rag/tree/main/demos/kfp/docling/pdf-conversion[RAG demo samples repository], you can optionally customize the following parameters before starting the pipeline run:
 * `base_url`: The base URL to fetch PDF files from.
 * `pdf_filenames`: A comma-separated list of PDF filenames to download and convert.
 * `num_workers`: The number of parallel workers.
-* `vector_db_id`: The Milvus vector database ID.
-* `service_url`: The Milvus service URL.
+* `vector_store_id`: The vector store identifier.
+* `service_url`: The Milvus service URL (only for remote Milvus).
 * `embed_model_id`: The embedding model to use.
 * `max_tokens`: The maximum tokens for each chunk.
 * `use_gpu`: Enable or disable GPU acceleration.
@@ -157,7 +175,7 @@ endif::[]
 
 .Verification
 
-. In your Jupyter notebook, query the LLM with a question that relates to the ingested content. For example:   
+. In your Jupyter notebook, query the LLM with a question that relates to the ingested content. For example:
 +
 [source,python]
 ----
@@ -171,7 +189,7 @@ rag_agent = Agent(
     tools=[
         {
             "name": "builtin::rag/knowledge_search",
-            "args": {"vector_db_ids": [vector_db_id]},
+            "args": {"vector_store_ids": [vector_store_id]},
         }
     ],
 )
@@ -191,14 +209,18 @@ for log in AgentEventLogger().log(response):
     log.print()
 ----
 
-. Query chunks from the vector database:
+. Query chunks from the vector store:
 +
 [source,python]
 ----
 query_result = client.vector_io.query(
-    vector_db_id=vector_db_id,
+    vector_store_id=vector_store_id,
     query="what do you know about?",
 )
 print(query_result)
 ----
 
+.Verification
+* The pipeline run completes successfully in your project.
+* Document embeddings are stored in the vector store and are available for retrieval.
+* No errors or warnings appear in the pipeline logs or your notebook output.

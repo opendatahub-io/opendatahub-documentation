@@ -1,0 +1,102 @@
+:_module-type: PROCEDURE
+
+[id="configuring-and-managing-role-based-access-control_{context}"]
+= Configuring and managing Role Based Access Control
+
+[role="_abstract"]
+You can set permissions using Role-Based Access Control (RBAC) to manage user access to Feature Store. This grants access to actions such as creating, reading, updating and deleting namespaces.
+
+.Prerequisites
+* You have Administrator access.
+* You have created a Feature Store instance. 
+
+[NOTE]
+====
+For more information, see link:https://www.redhat.com/en/topics/containers/what-Kubernetes-role-based-access-control-rbac[What is Kubernetes Role Based Access Control]? 
+====
+
+.Procedure
+. Open your command line interface (CLI). Deploy the Feature store custom resource by running the following command:
++
+[source] 
+----
+kubectl apply -f feature-store-cr.yaml
+----
+
+.. Locate the **Feature Store Custom Resource (CR) YAML file**, which is named feature-store-cr.yaml. You will see key value pairs. Change the key **type**: to Kubernetes:
++
+[source, YAML] 
+----
+apiVersion: feast.dev/v1alpha1 
+kind: FeatureStore 
+metadata: 
+name: <feature-store-name> 
+spec: # ... other configurations ... 
+authz: 
+type: Kubernetes 
+----
+
+. Verify that your Feature Store projects were created.
++
+[source, kubectl] 
+----
+kubectl get feast
+
+<project name>
+kubectl get configmaps -l feast.dev/service-type=client
+
+<your-project-name> <feast project name> <number of data entries> <time since created>
+----
+
+. Configure data science project permissions. You must create a `permissions.py` file in the Feature Store pod terminal. This file must reside in the `feature_store directory.` You can use a role based policy, a group based policy, combined group namespace policy or read and write permissions.
++
+[NOTE]
+====
+For an example of a `permission.py` file, see the 
+link:https://github.com/feast-dev/feast/tree/master/examples/operator-rbac-openshift-tls[Feast Operator RBAC with TLS]. 
+====
+
+. Transfer your local `permissions.py` file to the remote container filesystem. In a Kubernetes/{openshift-platform} environment, you use a command-line tool such as  oc {openshift-platform} Command Line Interface or kubectl:
++
+[source] 
+----
+`oc/kubectl cp <local-file> <remote-pod>:<remote-path>.`
+----
+
+. Configure and set up the Feature Store Server. If a cron job has been run previously, run feast apply on the online container. Open your command line interface (CLI) and run the following command:
++
+[source]
+---- 
+`oc create job --from=cronjob/feast-project-name cronjob-manual-$(date +%s) -n <project name>`
+
+`oc exec -it deployments/<feast deployment name> -c online -- feast apply`
+----
+
+. Configure authentication in the {openshift-platform} web console. You have full control over your data science project access. You can grant and revoke access to users/groups instantly.
+
+.. Log in to your {productname-short} or {openshift-platform} Console.
+.. Navigate to the **Data Science Projects** tab and select the appropriate project.
+.. Click **Permissions tab > Users Groups.**
+.. Name your group.
+.. Under **Permissions**, choose a predefined role, add permissions, and click **Save**. 
+
+[NOTE]
+====
+The name of your group must exist in your identity provider. The identity provider is configured at the {openshift-platform} cluster level, outside of the specific project you are working in.
+====
+
+.Verification 
+The deployment pod is running and you see the project details in the Feature Store UI and *Integration* tab.
+
+.Additional resources 
+* link:https://github.com/feast-dev/feast/blob/master/docs/reference/auth/Kubernetes_auth_setup.md[Setting up Kubernetes Authentication]
+
+
+
+
+
+
+
+
+
+

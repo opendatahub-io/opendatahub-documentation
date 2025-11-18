@@ -80,7 +80,6 @@ When you use Kueue to manage workloads in {productname-short}, the following res
 * All workloads that you create from the {productname-short} dashboard, such as workbenches and model servers, must use a hardware profile that specifies a local queue.
 * When you specify a local queue in a hardware profile, {productname-short} automatically applies the corresponding `kueue.x-k8s.io/queue-name` label to workloads that use that profile.
 * You cannot use hardware profiles that contain node selectors or tolerations for node placement. To direct workloads to specific nodes, use a hardware profile that specifies a local queue that is associated with a queue configured with the appropriate resource flavors.
-* You cannot use accelerator profiles with Kueue. You must migrate any existing accelerator profiles to hardware profiles.
 * Because workbenches are not suspendable workloads, you can only assign them to a local queue that is associated with a non-preemptive cluster queue. The default cluster queue that {productname-short} creates is non-preemptive.
 
 .Additional resources

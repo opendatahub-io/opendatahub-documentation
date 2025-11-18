@@ -1,0 +1,57 @@
+:_module-type: PROCEDURE
+
+[id='granting-access-to-a-project_{context}']
+= Granting access to a project
+
+[role='_abstract']
+To enable your organization to work collaboratively, you can grant access to your project to other users and groups.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* You have created a project.
+
+.Procedure
+. From the {productname-short} dashboard, click *Projects*.
++
+The *Projects* page opens.
+. From the list of projects, click the name of the project that you want to grant access to.
++
+A project details page opens.
+. Click the *Permissions* tab.
++
+The *Permissions* page for the project opens.
+. Provide one or more users with access to the project.
+.. In the *Users* section, click *Add user*.
+.. In the *Name* field, enter the user name of the user whom you want to provide access to the project.
+.. From the *Permissions* list, select one of the following access permission levels:
+* Admin: Users with this access level can edit project details and manage access to the project.
+* Contributor: Users with this access level can view and edit project components, such as its workbenches, connections, and storage.
+.. To confirm your entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
+.. Optional: To add an additional user, click *Add user* and repeat the process.
+. Provide one or more OpenShift groups with access to the project.
+.. In the *Groups* section, click *Add group*.
+.. From the *Name* list, select a group to provide access to the project.
++
+[NOTE]
+--
+ifdef::cloud-service[]
+If you do not have `cluster-admin` or `dedicated-admin` permissions, the *Name* list is not visible. Instead, an input field is displayed enabling you to configure group permissions.
+endif::[]
+
+ifdef::upstream,self-managed[]
+If you do not have `cluster-admin` permissions, the *Name* list is not visible. Instead, an input field is displayed enabling you to configure group permissions.
+endif::[]
+--
+.. From the *Permissions* list, select one of the following access permission levels:
+* Admin: Groups with this access level can edit project details and manage access to the project.
+* Contributor: Groups with this access level can view and edit project components, such as its workbenches, connections, and storage.
+.. To confirm your entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
+.. Optional: To add an additional group, click *Add group* and repeat the process.
+
+.Verification
+* Users to whom you provided access to the project can perform only the actions permitted by their access permission level.
+* The *Users* and *Groups* sections on the *Permissions* tab show the respective users and groups that you granted access to.
+
+
+//[role="_additional-resources"]
+//.Additional resources

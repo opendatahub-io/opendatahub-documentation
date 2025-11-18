@@ -10,7 +10,6 @@ As a cluster administrator, you can create the following types of project-scoped
 
 * Workbench images
 * Hardware profiles
-* Accelerator profiles
 * Model-serving runtimes for KServe
 
 All resource names must be unique within a project.
@@ -19,10 +18,10 @@ All resource names must be unique within a project.
 [NOTE]
 ====
 ifdef::upstream[]
-A user with access permissions to a project can create project-scoped resources for that project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-project-scoped-resources-for-your-project_projects[Creating project-scoped resources for your project].
+A user with access permissions to a project can create project-scoped resources for that project, as described in link:{odhdocshome}/working-on-projects/#creating-project-scoped-resources-for-your-project_projects[Creating project-scoped resources for your project].
 endif::[]
 ifndef::upstream[]
-A user with access permissions to a project can create project-scoped resources for that project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/creating-project-scoped-resources-for-your-project_projects[Creating project-scoped resources for your project].
+A user with access permissions to a project can create project-scoped resources for that project, as described in link:{rhoaidocshome}{default-format-url}/working_on_projects/creating-project-scoped-resources-for-your-project_projects[Creating project-scoped resources for your project].
 endif::[]
 ====
 
@@ -60,7 +59,6 @@ endif::[]
 
 * For workbench images, search for `ImageStream`.
 * For hardware profiles, search for `HardwareProfile`.
-* For accelerator profiles, search for `AcceleratorProfile`.
 * For serving runtimes, search for `Template`. 
 From the resulting list, find the templates that have the `objects.kind` specification set to `ServingRuntime`. 
 
@@ -75,7 +73,7 @@ From the resulting list, find the templates that have the `objects.kind` specifi
 . Optional: Edit the resource name that is displayed in the {productname-short} console:
 
 * For workbench images, edit the `metadata.annotations.opendatahub.io/notebook-image-name` value.
-* For hardware profiles and accelerator profiles, edit the `spec.displayName` value.
+* For hardware profiles, edit the `spec.displayName` value.
 * For serving runtimes, edit the `objects.metadata.annotations.openshift.io/display-name` value.
 
 . Click *Create*.  
@@ -86,10 +84,10 @@ From the resulting list, find the templates that have the `objects.kind` specifi
 . Verify that the project-scoped resource is shown in the specified project:
 
 ifdef::upstream[]
-* For workbench images, hardware profiles, and accelerator profiles, see link:{odhdocshome}/working-on-data-science-projects/#creating-a-project-workbench_projects[Creating a workbench].
+* For workbench images and hardware profiles, see link:{odhdocshome}/working-on-projects/#creating-a-project-workbench_projects[Creating a workbench].
 endif::[]
 ifndef::upstream[]
-* For workbench images, hardware profiles, and accelerator profiles, see link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a workbench].
+* For workbench images and hardware profiles, see link:{rhoaidocshome}{default-format-url}/working_on_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Creating a workbench].
 endif::[]
 
 ifdef::upstream[]

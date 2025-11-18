@@ -1,0 +1,40 @@
+:_module-type: PROCEDURE
+
+[id="testing-with-model-control-protocol-servers_{context}"]
+= Testing with model control protocol (MCP) servers
+
+[role="_abstract"]
+
+Authorize and interact with connected MCP servers to use their integrated tools directly from the playground chat.
+
+.Prerequisites
+
+* You have deployed a model with tool-calling capabilities enabled in your project.
+* You have configured a playground instance for your project.
+* A cluster administrator has configured an MCP server, and the server is listed and available in the *MCP servers* section of your playground.
+
+.Procedure
+
+. In the *MCP servers* section, select the checkbox for the server that you want to use.
+. Click the *Auth* icon next to the server name.
++
+The *Authorize MCP server* dialog opens.
+. If the server requires a token, enter the token in the *Access token* field and click *Authorize*.
++
+A *Connection successful* message appears.
++
+[NOTE]
+====
+Authorization tokens for MCP servers are stored only for the current browser session. If you close your browser, you must re-authorize the server.
+====
+. Click *Close*.
+. Click the *View tools* (wrench) icon for the same MCP server.
++
+A modal appears, listing all available tools for that server. You can copy a tool name to use in the chat.
+. In the chat input field, type a query that uses one of the available tools.
+. Click the *Send* button or press Enter.
+
+.Verification
+
+* The AI bot responds, indicating it is using the tool.
+* The bot provides the output from the tool.

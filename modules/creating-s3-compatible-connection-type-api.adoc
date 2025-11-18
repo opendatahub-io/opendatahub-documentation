@@ -1,0 +1,129 @@
+:_module-type: PROCEDURE
+
+[id="creating-s3-compatible-connection-type-api_{context}"]
+= Creating an Amazon S3-compatible connection type using the connections API
+
+[role='_abstract']
+
+In {productname-short}, you can create an Amazon S3-compatible connection type by using the connections API. In the following procedure, you define a Kubernetes Secret resource that holds the necessary credentials and configuration for an S3-compatible connection.
+
+.Prerequisites
+
+* You have access to a Kubernetes cluster where you have permissions to create Secrets.
+* You have the following details for your S3 storage: the S3 endpoint URL, bucket name, Access Key ID, and Secret Access Key. 
+
+.Procedure
+
+. Create a YAML file (for example, `s3-connection.yaml`) that defines a Kubernetes `Secret` of type Opaque. This secret will contain the S3 connection parameters in the `stringData` section.
++
+[source,bash]
+----
+kind: Secret
+metadata:
+  name: <connection-name> # Choose a descriptive name for your connection
+  namespace: <your-namespace> # Specify the namespace where the connection is needed
+  annotations:
+    opendatahub.io/connection-type-protocol: "s3"
+type: Opaque
+stringData:
+  # --- REQUIRED FIELDS ---
+  AWS_S3_ENDPOINT: "<s3-endpoint-url>" # <1> 
+  AWS_S3_BUCKET: "<bucket-name>" # <2> 
+  AWS_ACCESS_KEY_ID: "<access-key-id>" # <3> 
+  AWS_SECRET_ACCESS_KEY: "<secret-access-key>" # <4> 
+  # -----------------------
+
+  # --- OPTIONAL FIELDS (Example) ---
+  # AWS_DEFAULT_REGION: "us-east-1" <5>
+----
++
+.. In the example YAML, replace the required fields by populating the placeholder values in the `stringData` section with your actual S3 connection details:
++
+
+<1> S3 endpoint URL: The full URL for your S3 compatible endpoint. 
+<2> Mandatory bucket name: The exact name of the S3 bucket you intend to connect to.
+<3> Access key ID: Your S3 account access key ID.
+<4> Secret access key: Your S3 account secret access key.
+<5> Optional region field: If your S3 provider requires a specific region or if you are using AWS, you may include this optional field. 
++
+
+NOTE:  The `opendatahub.io/connection-type-protocol: `s3`` annotation is required by applications to recognize this Secret as an S3 connection.
+
+. Apply the Secret to the cluster by using the `kubectl apply` command to create the Secret in your Kubernetes cluster. 
++
+[source,bash]
+----
+kubectl apply -f s3-connection.yaml
+----
+
+== Using an Amazon S3 connection with `InferenceService` custom resource 
+You can use an Amazon S3-compatible connection type with an `InferenceService` custom resource. In the following procedure, you define the storage location for your model when deploying a KServe `InferenceService` custom resource.
+
+.Prerequisites
+* You have created an S3 connection Secret in the `project` namespace.
+* You have deployed a KServe Operator in your cluster.
+* Your model files are stored in the designated S3 bucket.
+
+.Procedure
+. Create a YAML file (for example, `inferenceservice.yaml`) that defines the KServe `InferenceService` custom resource. This resource defines how your model is served.
+. Specify the connection and path annotations in the `metadata.annotations` section.
++
+[source,bash]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: my-model                   # Name of the service
+  namespace: my-project
+  annotations:
+    opendatahub.io/connections: 'my-s3-connection'    # <1> 
+    opendatahub.io/connection-path: 'my-bucket-path'  # <2> 
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: pytorch             # Specify the framework format (for example, pytorch, tensorflow)
+      # NOTE: The storageUri will be automatically generated and injected here
+      # by the operator (for example, storageUri: s3://my-bucket/my-bucket-path)
+----
++
+
+<1> In the `opendatahub.io/connections` field, reference the name of your S3 connection Secret. 
+<2> In the `opendatahub.io/connection-path` field, reference the folder path within the S3 bucket. This optional but highly recommended annotation specifies the path within the S3 bucket where your model files are located.
+
+NOTE: When used with an `InferenceService` custom resource, the `opendatahub.io/connections` annotation usually requires the Secret name (for example, `my-s3-connection`) if the Secret is in the same namespace as the `InferenceService`.
+
+== Using an Amazon S3 connection with `LLMInferenceService` custom resource
+You can use an Amazon S3-compatible connection type with the `LLMInferenceService` custom resource. In the following procedure, you define the storage location for your large language model (LLM) when deploying a KServe `LLMInferenceService` by using an S3 connection.
+
+.Prerequisites
+* You have created an S3 connection Secret in the `project` namespace.
+* You have deployed a KServe Operator that supports the `LLMInferenceService` custom resource.
+* Your LLM model files are stored in the designated S3 bucket at a specific path.
+
+.Procedure
+. Create a YAML file (for example, `llm-service.yaml`) that defines the KServe `LLMInferenceService` custom resource. This resource is specialized for serving large language models.
+. Specify the connection and path annotations in the `metadata.annotations` section to link the service to your S3 storage.
++
+[source,bash]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: my-llm-model                   # Name of the LLM serving instance
+  namespace: my-project
+  annotations:
+    opendatahub.io/connections: 'my-s3-connection'      # <1> 
+    opendatahub.io/connection-path: 'my-bucket-path'    # <2> 
+spec:
+  model:
+    # NOTE: The .spec.model.uri field is automatically injected by the operator
+    # based on the connection and path annotations above.
+
+    # Example of the injected field: .spec.model.uri: s3://my-bucket/my-bucket-path
+----
++
+
+<1> In the `opendatahub.io/connections` field, reference the name of your S3 connection Secret. For example, `my-s3-connection`. 
+<2> In the `opendatahub.io/connection-path` field, specify the path within the S3 bucket where your LLM model files are stored. For example, `my-bucket-path`. 
+

@@ -1,0 +1,46 @@
+= Llama Stack API provider support
+
+You can use Llama Stack to enable various Provider APIs and providers in {productname-short}. The following table lists the supported providers included in {productname-short}
+
+[WARNING]
+====
+The support status of the Llama Stack API providers has shifted between Technology Preview and Developer Preview across {productname-short} versions.
+====
+
+[cols="1,2,2,1,2", options="header"]
+|===
+|*Provider API* |*Providers* |*How to Enable* |*Disconnected support* |*Support status*
+|Agents 
+a|`inline::meta-reference` 
+[NOTE] 
+====
+The Responses API is accessible from the Agents provider API.
+====
+|Enabled by default 
+|Yes 
+|Developer Preview 
+.2+|Dataset_IO |`inline::localfs` |Enabled by default |Yes |Technology Preview
+|`remote::huggingface` |Enabled by default |No |Technology Preview
+.3+|Evaluation |`inline::ragas` |Set the `EMBEDDING_MODEL` environment variable |No |Technology Preview
+|`remote::lmeval` |Enabled by default |No |Technology Preview
+|`remote::ragas` |See the "Configuring the Ragas remote provider for production" documentation |No |Technology Preview
+|Files |`inline::localfs` |Enabled by default |No |Technology Preview
+.7+|Inference |`inline::sentence-transformers` |Enabled by default |Yes |Technology Preview
+|`remote::vllm` |Set the `VLLM_URL` environment variable |Yes |Technology Preview
+|`remote::azure` |Set the `AZURE_API_KEY` environment variable |No |Technology Preview
+|`remote::bedrock` |Set the `AWS_ACCESS_KEY_ID` environment variable |No |Technology Preview
+|`remote::openai` |Set the `OPENAI_API_KEY` environment variable |No |Technology Preview
+|`remote::vertexai` |Set the `VERTEX_AI_PROJECT` environment variable |No |Technology Preview
+|`remote::watsonx` |Set the `WATSONX_API_KEY` environment variable |No |Technology Preview
+|Safety |`remote::trustyai_fms` |Enabled by default |No |Technology Preview
+.3+|Scoring |`inline::basic` |Enabled by default |No |Technology Preview
+|`inline::braintrust` |Enabled by default |No |Technology Preview
+|`inline::llm-as-a-judge` |Enabled by default |No |Technology Preview
+.4+|Tool_Runtime |`inline::rag-runtime` |Enabled by default |No |Developer Preview
+|`remote::brave-search` |Enabled by default |No |Developer Preview
+|`remote::model-context-protocol` |Enabled by default |No |Developer Preview
+|`remote::tavily-search` |Enabled by default |No |Developer Preview
+.3+|Vector_IO | `inline::faiss` |Set the `ENABLE_FAISS` environment variable |No |Technology Preview
+|`inline::milvus` |Enabled by default |Yes |Technology Preview
+|`remote::milvus` |Set the `MILVUS_ENDPOINT` environment variable |Yes |Technology Preview
+|===

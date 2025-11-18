@@ -1,0 +1,30 @@
+name: Check links
+
+on: [push, pull_request]
+
+jobs:
+  check-links:
+    name: Check links in modified AsciiDoc files
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Asciidoctor
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y asciidoctor
+
+      - name: Make scripts executable
+        run: |
+          chmod +x scripts/check-updated-books.sh scripts/check-book-links.sh
+
+      - name: Check links in updated books
+        shell: bash
+        # Find book files that are directly or indirectly
+        # updated by the current PR and checks for 404s 
+        # passing the book to check-book-links.sh
+        run: |
+          scripts/check-updated-books.sh

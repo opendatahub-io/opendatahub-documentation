@@ -6,7 +6,7 @@
 [role="_abstract"]
 You can migrate existing pipelines and pipeline versions from the internal database to Kubernetes custom resources. This makes it easier to use OpenShift GitOps (Argo CD) or similar tools to manage pipelines and pipeline versions, while still allowing you to manage them through the {productname-short} dashboard, API, and the Kubeflow Pipelines (KFP) Software Development Kit (SDK).
 
-This procedure uses a community-supported Kubeflow Pipelines migration script to export pipelines from the Data Science Pipelines API and generate corresponding `Pipeline` and `PipelineVersion` custom resources for import into your cluster.
+This procedure uses a community-supported Kubeflow Pipelines migration script to export pipelines from the AI Pipelines API and generate corresponding `Pipeline` and `PipelineVersion` custom resources for import into your cluster.
 
 ifndef::upstream[]
 [IMPORTANT]
@@ -22,7 +22,7 @@ The pipeline and pipeline version IDs change during migration, so existing pipel
 
 .Prerequisites
 * You have {productname-short} administrator privileges or you are the project owner.
-* You have a data science project with a running pipeline server.
+* You have a project with a running pipeline server.
 * The pipeline server is configured with `spec.apiServer.pipelineStore: database`.
 * You have Python 3.11 installed in your local environment.
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
@@ -46,7 +46,7 @@ $ oc login -u __<user_name>__
 +
 When prompted, enter the {openshift-platform} server URL, connection type, and your password.
 
-. Set environment variables for your data science project and get the pipeline API route.
+. Set environment variables for your project and get the pipeline API route.
 +
 In the `export` command, replace __<namespace>__ with the name of your project:
 +
@@ -69,7 +69,7 @@ python3.11 -m venv .venv
 
 . Download and run the Kubeflow Pipelines community migration script.
 +
-The script connects to the Data Science Pipelines API, exports all pipelines and versions from the specified data science project, and generates one YAML file per pipeline in a local `kfp-exported-pipelines/` directory. Each file includes a `Pipeline` resource followed by all associated `PipelineVersion` resources.
+The script connects to the AI Pipelines API, exports all pipelines and versions from the specified project, and generates one YAML file per pipeline in a local `kfp-exported-pipelines/` directory. Each file includes a `Pipeline` resource followed by all associated `PipelineVersion` resources.
 
 .. Run the following command:
 +
@@ -127,7 +127,7 @@ oc -n $NAMESPACE patch dspa $DSPA_NAME --type=merge -p '{"spec":{"apiServer":{"p
 ----
 ====
 
-. Repeat this procedure for each additional data science project that you want to migrate, changing `NAMESPACE` to the appropriate project name.
+. Repeat this procedure for each additional project that you want to migrate, changing `NAMESPACE` to the appropriate project name.
 
 . Optional: Clean up the local environment.
 +

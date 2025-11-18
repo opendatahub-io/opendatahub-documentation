@@ -32,11 +32,9 @@ endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *AI hub* -> *Catalog*.
-. In the drop-down list, select from the available catalog sources that have been configured by your administrator. The *Default Catalog* is displayed by default. 
-+
-NOTE: OpenShift cluster administrators can configure additional model catalog sources. For more details, see the Kubeflow Model Registry community documentation on link:https://github.com/kubeflow/model-registry/tree/main/manifests/kustomize/options/catalog[Model Catalog Manifests].
-
-. Use the search bar to find a model in the catalog. You can enter text to search by model name, description, or provider.
+. The *Model Catalog* page provides a high-level view of available models, including the model category, name, description, and labels such as task, license, and provider.
+. You can use the search bar to search by model name, description, or provider.
+. You can use the filter menu to search and select filters by task, provider, or license. 
 . Click the name of a model to view the model details page.
 . Click *Deploy model* to display the *Deploy model* dialog.
 . From the *Project* drop-down list, select a project in which to deploy your model.
@@ -73,17 +71,6 @@ endif::[]
 .. From the *Model server size* list, select a value.
 .. If you have created a hardware profile, select a hardware profile from the *Hardware profile* list.
 If project-scoped hardware profiles exist, the *Hardware profile* list includes subheadings to distinguish between global hardware profiles and project-scoped hardware profiles.
-+
-[IMPORTANT]
-====
-By default, hardware profiles are hidden from appearing in the dashboard navigation menu and user interface. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Environment setup -> Hardware profiles* option in the dashboard navigation menu and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
-ifdef::upstream[]
-For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
-endif::[]
-ifndef::upstream[]
-For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
-endif::[] 
-====
 ..  In the *Model route* section, select the *Make deployed models available through an external route* checkbox to make your deployed models available to external clients.
 .. In the *Token authentication* section, select the *Require token authentication* checkbox to require token authentication for your model server. To finish configuring token authentication, perform the following actions:
 ... In the *Service account name* field, enter a service account name for which the token will be generated. The generated token is created and displayed in the *Token secret* field when the model server is configured.
@@ -102,8 +89,8 @@ endif::[]
 [role="_additional-resources"]
 .Additional resources
 ifdef::upstream[]
-* For more information about deployment options on the single-model serving platform, see link:{odhdocshome}/deploying-models/#deploying-models-on-the-single-model-serving-platform_odh-user[Deploying models on the single-model serving platform].
+* link:{odhdocshome}/deploying-models/#deploying-models-on-the-single-model-serving-platform_odh-user[Deploying models on the single-model serving platform].
 endif::[]
 ifndef::upstream[]
-* For more information about deployment options on the single-model serving platform, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_single_model_serving_platform#deploying-models-on-the-single-model-serving-platform_rhoai-user[Deploying models on the single-model serving platform].
+* link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_single_model_serving_platform#deploying-models-on-the-single-model-serving-platform_rhoai-user[Deploying models on the single-model serving platform].
 endif::[]

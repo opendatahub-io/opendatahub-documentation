@@ -1,0 +1,27 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="configuring-external-oidc-provider_{context}"]
+= Configuring a central authentication service for an external OIDC identity provider
+
+[role='_abstract']
+The built-in OpenShift OAuth server supports integration with various identity providers. However, it has limitations in direct OpenID Connect (OIDC) configurations on {rosa-productname} (ROSA) and on-premises {openshift-platform} (OCP) 4.20 and later clusters. The internal `oauth` service can be disabled or removed, which breaks dependencies like `oauth-proxy` sidecar containers.
+
+You can configure an external OIDC identity provider directly with {productname-long} by configuring a centralized Gateway API. The Gateway API configuration provides a secure, scalable, and manageable authentication solution because it centralizes the authentication logic and decouples it from individual backend services.
+
+[IMPORTANT]
+====
+OpenID Connect (OIDC) configuration is currently available in {productname-long} 3.0 as a Technology Preview feature. Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+
+include::modules/about-centralized-auth-oidc.adoc[leveloffset=+1]
+include::modules/configuring-oidc-auth-gateway-api.adoc[leveloffset=+1]
+include::modules/troubleshooting-common-problems-gateway-api.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

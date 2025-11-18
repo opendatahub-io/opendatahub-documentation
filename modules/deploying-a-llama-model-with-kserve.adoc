@@ -7,12 +7,12 @@
 To use Llama Stack and retrieval-augmented generation (RAG) workloads in {productname-short}, you must deploy a Llama model with a vLLM model server and configure KServe in KServe RawDeployment mode.
 
 .Prerequisites
-* You have installed {openshift-platform} 4.17 or newer. 
+* You have installed {openshift-platform} {ocp-minimum-version} or newer. 
 * You have logged in to {productname-long}.
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have activated the Llama Stack Operator. 
 ifdef::upstream[]
-For more information, see link:{odhdocshome}/working-with-rag/#installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+For more information, see link:{odhdocshome}/working-with-llama-stack/#installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
 endif::[]
 * You have installed KServe.
 ifdef::upstream[]
@@ -43,14 +43,14 @@ ifdef::cloud-service[]
 ** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
 ** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
-* You have created a data science project.
+* You have created a project.
 * The vLLM serving runtime is installed and available in your environment.
 * You have created a storage connection for your model that contains a `URI - v1` connection type. This storage connection must define the location of your Llama 3.2 model artifacts. For example, `oci://quay.io/redhat-ai-services/modelcar-catalog:llama-3.2-3b-instruct`. 
 ifdef::upstream[]
-For more information about creating storage connections, see link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project].
+For more information about creating storage connections, see link:{odhdocshome}/working-on-projects/#adding-a-connection-to-your-project_projects[Adding a connection to your project].
 endif::[] 
 ifndef::upstream[]
-For more information about creating storage connections, see link:{rhoaidocshome}/html/working_on_data_science_projects/using-connections_projects#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your data science project]. 
+For more information about creating storage connections, see link:{rhoaidocshome}/html/working_on_projects/using-connections_projects#adding-a-connection-to-your-project_projects[Adding a connection to your project]. 
 endif::[]
 
 .Procedure
@@ -157,7 +157,7 @@ endif::[]
 [source,terminal]
 ----
 $ oc get inferenceservice -n llamastack
-$ oc get pods -n <data science project name> | grep llama
+$ oc get pods -n <project name> | grep llama
 ----
 * The deployment automatically creates the following resources:
 ** A `ServingRuntime` resource.
@@ -166,7 +166,7 @@ $ oc get pods -n <data science project name> | grep llama
 +
 [source,terminal]
 ----
-$ oc logs llama-32-3b-instruct-predictor-77f6574f76-8nl4r  -n <data science project name>
+$ oc logs llama-32-3b-instruct-predictor-77f6574f76-8nl4r  -n <project name>
 ----
 +
 Check for output similar to the following example log:
@@ -180,7 +180,7 @@ INFO     2025-05-15 11:23:52,765 __main__:151 server: Starting up
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://['::', '0.0.0.0']:8321 (Press CTRL+C to quit)
 ----
-* The deployed model displays in the *Deployments* tab on the Data Science project details page for the project it was deployed under.
+* The deployed model displays in the *Deployments* tab on the project details page for the project it was deployed under.
 . If you see a `ConvertTritonGPUToLLVM` error in the pod logs when querying the `/v1/chat/completions` API, and the vLLM server restarts or returns a `500 Internal Server` error, apply the following workaround:
 +
 Before deploying the model, remove the `--enable-chunked-prefill` argument from the *Additional serving runtime arguments* field in the deployment dialog.

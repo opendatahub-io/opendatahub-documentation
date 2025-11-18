@@ -8,7 +8,7 @@ To use TrustyAI for bias monitoring or data drift detection, you must send train
 
 .Prerequisites
 
-* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the data science project that contains the deployed models.
+* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the project that contains the deployed models.
 
 ifndef::upstream[]
 * You authenticated the TrustyAI service as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/setting-up-trustyai-for-your-project_monitor#authenticating-trustyai-service_monitor[Authenticating the TrustyAI service].
@@ -19,18 +19,32 @@ endif::[]
 
 * You have uploaded model training data to TrustyAI.
 
-* Your deployed model is registered with TrustyAI. 
-+
-Verify that the TrustyAI service has registered your deployed model, as follows:
-
-. In the {openshift-platform} web console, navigate to *Workloads* → *Pods*. 
-. From the project list, select the project that contains your deployed model.
-. Select the pod for your serving platform (for example, `modelmesh-serving-ovms-1.x-xxxxx`).
-. On the *Environment* tab, verify that the `MM_PAYLOAD_PROCESSORS` environment variable is set.
+* Your deployed model is registered with TrustyAI.
 
 .Procedure
 
-. Set the `TRUSTY_ROUTE` variable to the external route for the TrustyAI service pod.
+. Verify that the TrustyAI service has registered your deployed model:
+.. In the {openshift-platform} console, go to *Workloads* → *Pods*. 
+.. From the project list, select the project that contains your deployed model.
+.. Inspect the `InferenceService` for your deployed model. For example, run the following command:
++
+[source, bash]
+----
+ oc describe inferenceservice my-model -n my-namespace
+----
++
+
+.. When inspecting the `InferenceService`, you should see the following field in the specification:
++
+[source, bash]
+----
+Logger:
+      # ...
+      Mode:  all
+      URL:   https://trustyai-service.my-namespace.svc.cluster.local
+----
+
+. Set the `TRUSTY_ROUTE` variable to the external route for the TrustyAI service pod:
 +
 ----
 TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})

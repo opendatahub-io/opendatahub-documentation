@@ -1,0 +1,49 @@
+:_module-type: CONCEPT
+
+[id='install-packages_{context}']
+= Install packages
+
+To ensure reliable and secure access to supported libraries, start your model customization workflow by creating a workbench image that is based on a {org-name} base image that is configured to use the {org-name} Python index. These base images are listed in Table 2.1.
+
+ifdef::upstream[]
+For guidance on custom workbenches, see link:{odhdocshome}/managing-openshift-ai/#creating-a-custom-image-from-your-own-image_custom-images[Creating a custom workbench image from your own image].
+endif::[]
+
+
+ifndef::upstream[]
+For guidance on custom workbenches, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/creating-custom-workbench-images#creating-a-custom-image-from-your-own-image_custom-images[Creating a custom workbench image from your own image].
+endif::[]
+
+When you use one of the images listed in Table 2.1 as a base image, both `pip` and `uv` commands are pre-configured to use the {org-name} Python index and system trust store for HTTPS.
+
+When you run a `pip install` command, it installs the package version referenced in the {org-name} Python index, ensuring that you are installing a version of the library that is secure and reliably accessible.
+
+For example, use the following commands to install the model customization libraries:
+
+* Install the data processing library:
++
+[source, bash]
+----
+pip install docling
+----
+* Install the synthetic data generation library:
++
+[source, bash]
+----
+pip install sdg-hub
+----
+* Install the model training library:
++
+[source, bash]
+----
+pip install training-hub
+----
++
+Install the model training library with CUDA support:
++
+[source, bash]
+----
+pip install training-hub[cuda]
+----
++
+*Note:* For additional options and details for installing the model training library, see link:https://github.com/Red-Hat-AI-Innovation-Team/training_hub?tab=readme-ov-file#installation[Training Hub installation guidelines]. 

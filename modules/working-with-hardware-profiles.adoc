@@ -4,29 +4,10 @@
 = Working with hardware profiles
 
 [role='_abstract']
-ifndef::upstream[]
-[IMPORTANT]
-====
-Hardware profiles are currently available in {productname-long} as a Technology Preview feature only. Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete. {org-name} does not recommend using them in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
-
-For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview[Technology Preview Features Support Scope]
-====
-endif::[]
 
 In {productname-long}, you can use *hardware profiles* to manage and allocate specific hardware resources, such as hardware accelerators, specialized memory, or CPU-only nodes for data science, machine learning, and generative AI workloads. 
 
 Hardware profiles are custom resources (CRs) for targeted scheduling that allow you to specify the exact resources you need for workloads such as workbenches and model serving. You can create your hardware profile in {productname-short} to specify a particular hardware configuration by going to *Settings* -> *Hardware profiles* on the {productname-short} dashboard.
-
-[IMPORTANT]
-====
-By default, this feature is hidden from appearing in the dashboard navigation menu. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and other user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}.
-ifdef::upstream[]
-For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
-endif::[]
-ifndef::upstream[]
-For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
-endif::[]
-====
 
 These profiles offer fine-grained control over resource allocation by defining specifications that include:
 
