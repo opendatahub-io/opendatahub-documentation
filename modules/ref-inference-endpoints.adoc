@@ -12,6 +12,28 @@ These examples show how to use inference endpoints to query the model.
 If you enabled token authentication when deploying the model, add the `Authorization` header and specify a token value.
 --
 
+== Caikit TGIS ServingRuntime for KServe
+
+* `:443/api/v1/task/text-generation`
+* `:443/api/v1/task/server-streaming-text-generation`
+
+.Example command
+
+ifdef::upstream[]
+[source]
+----
+curl --json '{"model_id": "<model_name>", "inputs": "<text>"}' \
+https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation \
+-H 'Authorization: Bearer <token>'
+----
+endif::[]
+ifdef::self-managed,cloud-service[]
+[source]
+----
+curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<inference_endpoint_url>:443/api/v1/task/server-streaming-text-generation -H 'Authorization: Bearer <token>'
+----
+endif::[]
+
 == OpenVINO Model Server
 
 * `/v2/models/<model-name>/infer`
@@ -257,6 +279,7 @@ endif::[]
 
 [role='_additional-resources']
 == Additional resources
+* link:https://caikit.readthedocs.io/en/latest/autoapi/caikit/index.html[Caikit API documentation^]
 * link:https://docs.openvino.ai/2023.3/ovms_docs_rest_api_kfs.html[OpenVINO KServe-compatible REST API documentation^]
 * link:https://platform.openai.com/docs/api-reference/introduction[OpenAI API documentation^]
 * link:https://kserve.github.io/archive/0.11/modelserving/data_plane/v2_protocol/[Open Inference Protocol]
