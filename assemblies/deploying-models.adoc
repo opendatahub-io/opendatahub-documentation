@@ -14,27 +14,20 @@ include::modules/using-oci-containers-for-model-storage.adoc[leveloffset=+1]
 include::modules/storing-a-model-in-oci-image.adoc[leveloffset=+1]
 include::modules/uploading-model-files-to-pvc.adoc[leveloffset=+1]
 	
-= Deploying models on the single-model serving platform
+= Deploying models
 
-The single-model serving platform deploys each model from its own dedicated model server. This architecture is ideal for deploying, monitoring, scaling, and maintaining large models that require more resources, such as large language models (LLMs).
+The model serving platform is based on the KServe component and deploys each model from its own dedicated model server. This architecture is ideal for deploying, monitoring, scaling, and maintaining large models that require more resources, such as large language models (LLMs).
 
-The platform is based on the KServe component and offers two deployment modes:
-
-* KServe RawDeployment: Uses a standard deployment method that does not require serverless dependencies.
-
-* Knative Serverless: Uses {org-name} OpenShift Serverless for deployments that can automatically scale based on demand.
-
-include::modules/about-kserve-deployment-modes.adoc[leveloffset=+1] 
-include::modules/deploying-models-on-the-single-model-serving-platform.adoc[leveloffset=+1] 
+include::modules/deploying-models-on-the-model-serving-platform.adoc[leveloffset=+1] 
 include::modules/deploying-model-stored-in-oci-image-cli.adoc[leveloffset=+1]
 include::modules/deploying-models-using-distributed-inference.adoc[leveloffset=+1]
 include::modules/ref-example-distributed-inference.adoc[leveloffset=+2]
 
-== Monitoring models on the single-model serving platform
-You can monitor models that are deployed on the single-model serving platform to view performance and resource usage metrics. 
+== Monitoring models
+You can monitor models that are deployed on the model serving platform to view performance and resource usage metrics. 
 
 include::modules/viewing-performance-metrics-for-deployed-model.adoc[leveloffset=+2]
-include::modules/viewing-metrics-for-the-single-model-serving-platform.adoc[leveloffset=+2]
+include::modules/viewing-metrics-for-the-model-serving-platform.adoc[leveloffset=+2]
 
 = Deploying models on the NVIDIA NIM model serving platform
 You can deploy models using NVIDIA NIM inference services on the NVIDIA NIM model serving platform.
@@ -45,36 +38,13 @@ include::modules/deploying-models-on-the-NVIDIA-NIM-model-serving-platform.adoc[
 include::modules/viewing-nvidia-nim-metrics-for-a-nim-model.adoc[leveloffset=+1]
 include::modules/viewing-performance-metrics-for-a-nim-model.adoc[leveloffset=+1]
 
-= Deploying models on the multi-model serving platform
-For deploying small and medium-sized models, {productname-short} includes a _multi-model serving platform_ that is based on the ModelMesh component.
-On the multi-model serving platform, multiple models can be deployed from the same model server and share the server resources.
-
-[IMPORTANT]
-====
-Starting with {productname-short} version 2.19, the multi-model serving platform based on ModelMesh is deprecated.
-You can continue to deploy models on the multi-model serving platform, but it is recommended that you migrate to the single-model serving platform.
-
-For more information or for help on using the single-model serving platform, contact your account manager.
-====
-
-include::modules/adding-a-model-server-for-the-multi-model-serving-platform.adoc[leveloffset=+1]
-include::modules/deleting-a-model-server.adoc[leveloffset=+1]
-include::modules/deploying-a-model-using-the-multi-model-serving-platform.adoc[leveloffset=+1]
-include::modules/viewing-a-deployed-model.adoc[leveloffset=+1]
-include::modules/updating-the-deployment-properties-of-a-deployed-model.adoc[leveloffset=+1]
-include::modules/deleting-a-deployed-model.adoc[leveloffset=+1]
-include::modules/configuring-monitoring-for-the-multi-model-serving-platform.adoc[leveloffset=+1]
-include::modules/viewing-metrics-for-the-multi-model-serving-platform.adoc[leveloffset=+1]
-include::modules/viewing-performance-metrics-for-model-server.adoc[leveloffset=+1]
-include::modules/viewing-http-request-metrics-for-a-deployed-model.adoc[leveloffset=+1]
-
 = Making inference requests to deployed models
 
 When you deploy a model, it is available as a service that you can access with API requests. This allows you to get predictions from your model based on the data you provide in the request.
 
-include::modules/accessing-authentication-token-for-model-deployed-on-single-model-serving-platform.adoc[leveloffset=+1]
-include::modules/accessing-inference-endpoint-for-model-deployed-on-single-model-serving-platform.adoc[leveloffset=+1]
-include::modules/making-inference-requests-to-models-deployed-on-single-model-server.adoc[leveloffset=+1]
+include::modules/accessing-authentication-token-for-deployed-model.adoc[leveloffset=+1]
+include::modules/accessing-inference-endpoint-for-model.adoc[leveloffset=+1]
+include::modules/making-inference-requests-to-models-deployed-on-model-server.adoc[leveloffset=+1]
 include::modules/ref-inference-endpoints.adoc[leveloffset=+1]
 
 // [role='_additional-resources']

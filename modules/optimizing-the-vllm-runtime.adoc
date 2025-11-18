@@ -18,8 +18,10 @@ The following procedure describes customizing the *vLLM NVIDIA GPU ServingRuntim
 
 
 .Procedure
+ifndef::upstream[]
+. Follow the steps to deploy a model as described in link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_model_serving_platform#deploying-models-on-the-model-serving-platform_rhoai-user[Deploying models on the model serving platform].
+endif::[]
 
-. Follow the steps to deploy a model as described in link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_single_model_serving_platform#deploying-models-on-the-single-model-serving-platform_rhoai-user[Deploying models on the single-model serving platform].
 . In the *Serving runtime* field, select the *vLLM NVIDIA GPU ServingRuntime for KServe* runtime.
 . To configure the vLLM model-serving runtime for speculative decoding by matching n-grams in the prompt, add the following arguments under *Additional serving runtime arguments* in the *Configuration parameters* section:
 +
@@ -96,8 +98,4 @@ curl -v https://<inference_endpoint_url>:443/v1/chat/completions
     }'
 ----
 
-[role='_additional-resources']
-.Additional resources
 
-* link:https://docs.vllm.ai/en/stable/serving/engine_args.html[vLLM: Engine Arguments]
-* link:https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html[OpenAI Compatible Server]

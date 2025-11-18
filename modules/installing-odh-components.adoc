@@ -9,16 +9,10 @@ You can use the OpenShift web console to install specific components of {product
 .Prerequisites
 * You have installed the {productname-short} Operator.
 * You can log in as a user with `cluster-admin` privileges.
-* If you want to use the `trustyai` component, you must configure workload monitoring as described in link:{odhdocshome}/managing-and-monitoring-models/#_monitoring_models_on_the_single_model_serving_platform[Monitoring models on the single-model serving platform].
+* If you want to use the `trustyai` component, you must configure workload monitoring as described in link:{odhdocshome}/managing-and-monitoring-models/#_monitoring_models[Monitoring models on the model serving platform].
 * If you want to use the `RAG` component, your infrastructure supports GPU-enabled instance types, for example, `g4dn.xlarge` on AWS.
-* If you want to use the `kserve` or `modelmesh` components, you must have already installed the following Operator or Operators for the component. For information about installing an Operator, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
-+
-[IMPORTANT]
-====
-The multi-model serving platform based on ModelMesh is deprecated. 
-You can continue to deploy models on the multi-model serving platform, but it is recommended that you migrate to the single-model serving platform.
-====
-* If you want to use `kserve`, you have selected a deployment mode. For more information, see link:{odhdocshome}/serving-models/#about-kserve-deployment-modes_serving-large-models[About KServe deployment modes].
+* If you want to use `kserve`, you must have already installed the following Operator for the component. For information about installing an Operator, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/operators/administrator-tasks#olm-adding-operators-to-a-cluster[Adding Operators to a cluster].
+
 * If you want to use the `kueue` component to manage workloads, you must install the {rhbok-productname} Operator before activating the Kueue integration. For more information, see link:{odhdocshome}/managing-odh/#configuring-workload-management-with-kueue_kueue[Configuring workload management with Kueue].
 
 .Required Operators for components
@@ -27,16 +21,12 @@ You can continue to deploy models on the multi-model serving platform, but it is
 | Component | Required Operators | Catalog
 
 | kserve
-| Red Hat OpenShift Serverless Operator, Red Hat OpenShift Service Mesh Operator, Red Hat Authorino Operator
+| Red Hat Authorino Operator, Red Hat OpenShift Service Mesh Operator
 | Red Hat
 
 | kueue
 | {rhbok-productname} Operator
 | Red Hat
-
-| [Deprecated] modelmesh
-| Prometheus Operator
-| Community
 
 | RAG (Llama Stack)
 | Llama Stack Operator, Node Feature Discovery Operator, NVIDIA GPU Operator
