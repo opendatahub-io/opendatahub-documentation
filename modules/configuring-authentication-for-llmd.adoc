@@ -12,7 +12,7 @@ Red Hat Connectivity Link is used for authentication and authorization.
 * You have installed {org-name} Connectivity Link version 1.1.1 or later. For more information, see link:https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2/html/installing_connectivity_link_on_openshift[Installing Connectivity Link on OpenShift].
 * You have access to the OpenShift CLI (`oc`).
 * The ServiceAccount has permission to get the corresponding `LLMInferenceService` and you have generated a JSON web token (JWT).
-* Authorino is installed. If Authorino is not installed before the `odh-model-controller` and KServe controller start, authentication is opted in by default, and your inference service requests will fail.
+
 
 .Procedure
 
@@ -24,8 +24,8 @@ oc apply -f - <<EOF
 apiVersion: kuadrant.io/v1beta1
 kind: Kuadrant
 metadata:
-name: kuadrant
-namespace: kuadrant-system
+  name: kuadrant
+  namespace: kuadrant-system
 EOF
 ----
 
@@ -58,19 +58,19 @@ oc apply -f - <<EOF
 apiVersion: operator.authorino.kuadrant.io/v1beta1
 kind: Authorino
 metadata:
-name: authorino
-namespace: kuadrant-system
+  name: authorino
+  namespace: kuadrant-system
 spec:
-replicas: 1
-clusterWide: true
-listener:
-tls:
-enabled: true
-certSecretRef:
-name: authorino-server-cert
-oidcServer:
-tls:
-enabled: false
+  replicas: 1
+  clusterWide: true
+  listener:
+    tls:
+      enabled: true
+      certSecretRef:
+        name: authorino-server-cert
+  oidcServer:
+    tls:
+      enabled: false
 EOF
 ----
 
@@ -81,7 +81,7 @@ EOF
 oc wait --for=condition=ready pod -l authorino-resource=authorino -n kuadrant-system --timeout 150s
 ----
 
-. Restart the controllers:
+. If OpenShift AI was installed before installing Connectivity Link and Kuadrant, restart the controllers:
 +
 [source,bash]
 ----
@@ -95,45 +95,3 @@ oc delete pod -n redhat-ods-applications -l control-plane=kserve-controller-mana
 ----
 oc get authPolicy -n openshift-ingress
 ----
-
-. (Optional) To disable authentication and allow anonymous access to the `LLMInferenceService`, add the following annotation:
-+
-[source,bash]
-----
-oc annotate llmisvc/facebook-opt-125m-single security.opendatahub.io/enable-auth=false -n $TEST_NS
-----
-
-.. Verify that the anonymous `AuthPolicy` was created:
-+
-[source,bash]
-----
-oc get authpolicy -n $TEST_NS
-----
-
-.Verification
-You can verify the security setup by performing inference requests with and without the generated token.
-
-. *Testing the endpoint without a token:*
-+
-[source,bash]
-----
-curl -v $(kubectl get llmisvc -n $TEST_NS -o=jsonpath='{.items[0].status.addresses[0].url}')/v1/completions \
--H "Content-Type: application/json" \
--d '{
-"model": "facebook/opt-125m",
-"prompt": "Hello!"
-}'
-----
-The request should fail with `HTTP 401: Unauthorized`.
-. *Testing the endpoint with a token:*
-+
-[source,bash]
-----
-curl -v $(kubectl get llmisvc -n $TEST_NS -o=jsonpath='{.items[0].status.addresses[0].url}')/v1/completions \
--H "Content-Type: application/json" \
--H "Authorization: Bearer ${TEST_TOKEN}" \
--d '{
-"model": "facebook/opt-125m",
-"prompt": "Hello!
-----
-The request should succeed with `HTTP 200 OK`.
