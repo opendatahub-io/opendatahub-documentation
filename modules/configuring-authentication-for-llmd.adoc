@@ -5,13 +5,13 @@
 
 [role='_abstract']
 
-Red Hat Connectivity Link (RHCL) is used for authentication and authorization.
+Red Hat Connectivity Link is used for authentication and authorization.
 
 .Prerequisites
 
-* You have installed {org-name} Connectivity Link (RHCL) version 1.1.1 or later. For more information, see link:https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2/html/installing_connectivity_link_on_openshift[Installing Connectivity Link on OpenShift].
+* You have installed {org-name} Connectivity Link version 1.1.1 or later. For more information, see link:https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2/html/installing_connectivity_link_on_openshift[Installing Connectivity Link on OpenShift].
 * You have access to the OpenShift CLI (`oc`).
-* The ServiceAccount has permission to get the corresponding `LLMInferenceService` and you have generated a JSON web token (JWT).\
+* The ServiceAccount has permission to get the corresponding `LLMInferenceService` and you have generated a JSON web token (JWT).
 * Authorino is installed. If Authorino is not installed before the `odh-model-controller` and KServe controller start, authentication is opted in by default, and your inference service requests will fail.
 
 .Procedure
@@ -112,6 +112,7 @@ oc get authpolicy -n $TEST_NS
 
 .Verification
 You can verify the security setup by performing inference requests with and without the generated token.
+
 . *Testing the endpoint without a token:*
 +
 [source,bash]
@@ -123,7 +124,7 @@ curl -v $(kubectl get llmisvc -n $TEST_NS -o=jsonpath='{.items[0].status.address
 "prompt": "Hello!"
 }'
 ----
-+
+
 The request should fail with `HTTP 401: Unauthorized`.
 
 . *Testing the endpoint with a token:*
@@ -137,5 +138,5 @@ curl -v $(kubectl get llmisvc -n $TEST_NS -o=jsonpath='{.items[0].status.address
 "model": "facebook/opt-125m",
 "prompt": "Hello!
 ----
-+
+
 The request should succeed with `HTTP 200 OK`.
