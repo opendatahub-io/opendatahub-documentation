@@ -11,11 +11,11 @@ ifdef::context[:parent-context: {context}]
 
 As a cluster administrator, you can create a custom model-serving runtime and edit the inference service for a model deployed in {productname-short}.
 
-include::modules/adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform.adoc[leveloffset=+1]
+include::modules/adding-a-custom-model-serving-runtime.adoc[leveloffset=+1]
 
-= Managing and monitoring models on the single-model serving platform
+= Managing and monitoring models
 
-As a cluster administrator, you can manage and monitor models on the single-model serving platform. You can configure monitoring for the single-model serving platform, deploy models across multiple GPU nodes and set up a Grafana dashboard to visualize real-time metrics, among other tasks.
+As a cluster administrator, you can configure monitoring, deploy models across multiple GPU nodes and set up a Grafana dashboard to visualize real-time metrics, among other tasks.
 
 include::modules/setting-timeout-for-kserve.adoc[leveloffset=+1]
 include::modules/deploying-models-using-multiple-gpu-nodes.adoc[leveloffset=+1]
@@ -41,9 +41,9 @@ include::modules/configuring-metric-based-autoscaling.adoc[leveloffset=+2]
 include::modules/guidelines-for-metrics-based-autoscaling.adoc[leveloffset=+2]
 ifdef::upstream[]
 // Conditionalized for self-managed because monitoring of user-defined projects is enabled on OSD and ROSA by default
-== Monitoring models on the single-model serving platform
+== Monitoring models
 
-include::modules/configuring-monitoring-for-the-single-model-serving-platform.adoc[leveloffset=+2]
+include::modules/configuring-monitoring-for-the-model-serving-platform.adoc[leveloffset=+2]
 
 endif::[]
 
@@ -60,17 +60,6 @@ As a cluster administrator, you can manage and monitor models on the NVIDIA NIM 
 
 include::modules/customizing-model-selection-options.adoc[leveloffset=+1]
 include::modules/enabling-metrics-for-existing-nim-deployment.adoc[leveloffset=+1]
-
-ifdef::upstream[]
-// Conditionalized for self-managed because monitoring of user-defined projects is enabled on OSD and ROSA by default
-= Managing and monitoring models on the multi-model serving platform
-As a cluster administrator, you can manage and monitor models on the multi-model serving platform.
-
-include::modules/configuring-monitoring-for-the-multi-model-serving-platform.adoc[leveloffset=+1]
-
-endif::[]
-
-
 
 // [role='_additional-resources']
 // == Additional resources
