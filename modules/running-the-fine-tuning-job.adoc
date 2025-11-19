@@ -74,7 +74,7 @@ client.create_job(
         "memory": "64Gi",
         "cpu": 4,
     },
-    base_image="quay.io/modh/training:py311-cuda124-torch251",
+    base_image="registry.redhat.io/rhoai/odh-training-cuda124-torch25-py311-rhel9",
     env_vars={
         # Hugging Face
         "HF_HOME": "/mnt/shared/.cache",
@@ -110,7 +110,7 @@ Optional: If you specify a different model, and your model is not a gated model 
 .. The example provided is for NVIDIA GPUs. If you use AMD accelerators, make the following additional changes:
 
 * In the `resources_per_worker` entry, change `nvidia.com/gpu` to `amd.com/gpu`
-* Change the `base_image` value to `quay.io/modh/training:py311-rocm62-torch251`
+* Change the `base_image` value to `registry.redhat.io/rhoai/odh-training-rocm62-torch25-py311-rhel9`
 * Remove the `CUDA` and `NCCL` entries
 
 .. If the RWX `PersistentVolumeClaim` resource that is attached to your workbench has a different name instead of `shared`, update the following values to replace `shared` with your PVC name:
