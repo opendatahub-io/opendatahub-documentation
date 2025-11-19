@@ -8,13 +8,13 @@ The workspace feature in AI Pipelines (AIP) provides standardized ephemeral shar
 
 == Understanding pipeline run workspaces
 
-A workspace is a standardized directory structure backed by a Persistent Volume Claim (PVC) that gets dynamically created for each pipeline run based on the DSPA workspace configuration. When the pipeline definition includes a workspace configuration, the DSPA automatically mounts the workspace PVC into each pipeline task pod that requires it at a path that is resolved at runtime by using the dsl.WORKSPACE_PATH_PLACEHOLDER variable as an input parameter to components.
+A workspace is a standardized directory structure backed by a Persistent Volume Claim (PVC) that gets dynamically created for each pipeline run based on the DSPA workspace configuration. When the pipeline definition leverages a workspace, the workspace PVC is automatically mounted into each pipeline task pod that requires it at a path that is resolved at runtime by using the dsl.WORKSPACE_PATH_PLACEHOLDER variable as an input parameter to components.
 
 Pipelines opt in to workspace support at compile time. When the pipeline definition includes a workspace configuration, the pipeline compiler annotates the run so that the DSPA automatically creates the workspace PVC and mounts the volume into each task pod that needs it.
 
 == Configuring default workspace PVC settings in DSPA
 
-You can configure the default values for workspace PersistentVolumeClaims (PVCs) in your DataSciencePipelinesApplication (DSPA). This allows you to specify the storage class and access mode for workspace volumes used by pipeline runs. Workspace storage size must be provided when you define the pipeline run.
+You can configure the default values for workspace PersistentVolumeClaims (PVCs) in your DataSciencePipelinesApplication (DSPA). This allows you to specify the storage class and access mode for workspace volumes used by pipeline runs. Workspace storage size must be provided when you define the pipeline.
 
 .Prerequisites
 * You have logged in to Open Data Hub.
@@ -121,7 +121,7 @@ When the pipeline completes, review the task logs to verify that both write and 
 
 == Adding external artifacts to pipeline run workspaces
 
-When working with external artifacts such as Modelcar images stored in an OCI (Open Container Initiative) registry, you cannot directly reference them in your pipeline tasks. Instead, copy these artifacts into the workspace volume so that task pods can access them during execution.
+When using `dsl.importer` with external artifacts such as Modelcar images stored in an OCI (Open Container Initiative) registry, you cannot directly downlowd them into the workspace. Instead, copy these artifacts into the workspace volume in a separate pipeline step for other subsequent tasks to access them without further downloads.
 
 .Prerequisites
 * You have configured a pipeline server in your data science project with workspace support enabled.
