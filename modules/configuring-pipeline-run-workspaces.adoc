@@ -52,6 +52,7 @@ Where:
 * `apiServer.workspace.volumeClaimTemplateSpec`: Configures the PVC template for workspace volumes
 ** `accessModes`: Specifies the access modes for workspace PVCs (options: `ReadWriteOnce`, `ReadWriteMany`, `ReadOnlyMany`)
 ** `storageClassName`: Specifies the storage class to use for workspace PVCs
+** Other PVC attributes supported by Kubernetes (for example, `resources` or `persistentVolumeReclaimPolicy`) can also be set when needed.
 
 . Click *Save* to apply the changes.
 
@@ -97,7 +98,7 @@ def read_from_workspace(file_path: str) -> str:
     description="A pipeline that demonstrates workspace functionality",
     pipeline_config=dsl.PipelineConfig(
         workspace=dsl.WorkspaceConfig(
-            size='1Gi',
+            size='100Mi',
         ),
     ),
 )
@@ -121,7 +122,7 @@ When the pipeline completes, review the task logs to verify that both write and 
 
 == Adding external artifacts to pipeline run workspaces
 
-When using `dsl.importer` with external artifacts such as Modelcar images stored in an OCI (Open Container Initiative) registry, you cannot directly downlowd them into the workspace. Instead, copy these artifacts into the workspace volume in a separate pipeline step for other subsequent tasks to access them without further downloads.
+When using `dsl.importer` with external artifacts such as Modelcar images stored in an OCI (Open Container Initiative) registry, you cannot directly download them into the workspace. Instead, copy these artifacts into the workspace volume in a separate pipeline step for other subsequent tasks to access them without further downloads.
 
 .Prerequisites
 * You have configured a pipeline server in your data science project with workspace support enabled.
@@ -151,7 +152,7 @@ def copy_model_to_workspace(input_model: dsl.Input[dsl.Model], workspace_path: s
 @dsl.pipeline(
     name="modelcar-to-workspace",
     pipeline_config=dsl.PipelineConfig(
-        workspace=dsl.WorkspaceConfig(size='5Gi'),
+        workspace=dsl.WorkspaceConfig(size='20Gi'),
     ),
 )
 def modelcar_to_workspace_pipeline(
@@ -192,6 +193,5 @@ The model files are copied to a subdirectory in the workspace (in this example, 
 
 [role='_additional-resources']
 .Additional resources
-* link:https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/persistent-volume/[Kubeflow Pipelines - Using Persistent Volumes]
 * link:https://www.kubeflow.org/docs/components/pipelines/user-guides/components/importer-component/[Special Case: Importer Components]
 
