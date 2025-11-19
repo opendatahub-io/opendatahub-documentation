@@ -297,12 +297,13 @@ spec:
     enableMetrics: true    <5>
     enableTracing: true    <6>
 ----
-<1> This references the config map that you created when deploying the Guardrails Orchestrator service.
-<2> The protocol for sending traces and metrics data. Valid values are `grpc` or `http`.
-<3> The hostname and port for exporting trace data to the OpenTelemetry collector.
-<4> The hostname and port for exporting metrics data to the OpenTelemetry collector.
-<5> Set to `true` to enable exporting metrics data.
-<6> Set to `true` to enable exporting trace data.
++
+* `orchestratorConfig`: This references the config map that you created when deploying the Guardrails Orchestrator service.
+* `otlpProtocol`: The protocol for sending traces and metrics data. Valid values are `grpc` or `http`.
+* `otlpTracesEndpoint`: The hostname and port for exporting trace data to the OpenTelemetry collector.
+* `otlpMetricsEndpoint`: The hostname and port for exporting metrics data to the OpenTelemetry collector.
+* `enableMetrics`: Set to `true` to enable exporting metrics data.
+* `enableTracing`: Set to `true` to enable exporting trace data.
 
 . Deploy the orchestrator custom resource:
 +
@@ -321,12 +322,12 @@ Send a request to the guardrails service and verify your OpenTelemetry configura
 ----
 $ oc port-forward svc/tempo-<tempo_stack_name>-query-frontend 16686:16686
 ----
-.. In a separate browser window, navigate to `http://localhost:16686` to access the Jaeger UI.
+.. In a separate browser window, navigate to `http://localhost:16686`.
 .. Under *Service*, select *fms_guardrails_orchestr8* and click *Find Traces*.
 
 . Observe metrics using the OpenShift Metrics UI:
 
-.. In the Administrator perspective within the {openshift-platform} web console, select Observe > Metrics and query one of the following metrics: 
+.. In the Administrator perspective within the {openshift-platform} web console, select *Observe* > *Metrics* and query one of the following metrics: 
 +
 * `incoming_request_count`
 * `success_request_count`
