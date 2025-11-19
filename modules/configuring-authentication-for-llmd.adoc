@@ -1,0 +1,90 @@
+:_module-type: PROCEDURE
+
+[id="configuring-authentication-for-llmd_{context}"]
+= Configuring authentication for {llmd} using {org-name} Connectivity Link
+
+[role='_abstract']
+
+Red Hat Connectivity Link is used for authentication and authorization.
+
+.Prerequisites
+
+* You have installed {org-name} Connectivity Link version 1.1.1 or later. For more information, see link:https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2/html/installing_connectivity_link_on_openshift[Installing Connectivity Link on OpenShift].
+* You have access to the OpenShift CLI (`oc`).
+* The ServiceAccount has permission to get the corresponding `LLMInferenceService` and you have generated a JSON web token (JWT).
+
+
+.Procedure
+
+. Create the Kuadrant custom resource (CR) to set up required objects:
++
+[source,bash]
+----
+oc apply -f - <<EOF
+apiVersion: kuadrant.io/v1beta1
+kind: Kuadrant
+metadata:
+  name: kuadrant
+  namespace: kuadrant-system
+EOF
+----
+
+. Wait for Kuadrant to become ready:
++
+[source,bash]
+----
+oc wait Kuadrant -n kuadrant-system kuadrant --for=condition=Ready --timeout=10m
+----
+
+. Add the `ServingCert` annotation to the Authorino Service:
++
+[source,bash]
+----
+oc annotate svc/authorino-authorino-authorization  service.beta.openshift.io/serving-cert-secret-name=authorino-server-cert -n kuadrant-system
+----
+
+. Wait for the secret to be created:
++
+[source,bash]
+----
+sleep 2
+----
+
+. Update Authorino to enable SSL:
++
+[source,bash]
+----
+oc apply -f - <<EOF
+apiVersion: operator.authorino.kuadrant.io/v1beta1
+kind: Authorino
+metadata:
+  name: authorino
+  namespace: kuadrant-system
+spec:
+  replicas: 1
+  clusterWide: true
+  listener:
+    tls:
+      enabled: true
+      certSecretRef:
+        name: authorino-server-cert
+  oidcServer:
+    tls:
+      enabled: false
+EOF
+----
+
+. Verify that the Authorino pods are ready:
++
+[source,bash]
+----
+oc wait --for=condition=ready pod -l authorino-resource=authorino -n kuadrant-system --timeout 150s
+----
+
+. If OpenShift AI was installed before installing Connectivity Link and Kuadrant, restart the controllers:
++
+[source,bash]
+----
+oc delete pod -n redhat-ods-applications -l app=odh-model-controller
+oc delete pod -n redhat-ods-applications -l control-plane=kserve-controller-manager
+----
