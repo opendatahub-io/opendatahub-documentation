@@ -5,7 +5,7 @@
 = Configuring the OpenTelemetry exporter
 
 [role='_abstract']
-Enable traces and metrics that are provided for the observability of the `GuardrailsOrchestrator` service with the OpenTelemetry exporter.
+You can configure the OpenTelemetry exporter to collect traces and metrics from the `GuardrailsOrchestrator` service. This enables you to monitor and observe the service behavior in your environment.
 
 .Prerequisites
 * You have installed the Tempo Operator from the link:https://operatorhub.io/[OperatorHub].
@@ -98,8 +98,20 @@ spec:
 ----
 $ oc apply -f minio.yaml
 ----
+
+.. Verify that the MinIO pod is running:
 +
-Wait for the `minio-xxx` pod to be running.
+[source,terminal]
+----
+$ oc get pods -l app=minio
+----
++
+.Example output
+[source,terminal]
+----
+NAME                     READY   STATUS    RESTARTS   AGE
+minio-5f8c9d7b6d-abc12   1/1     Running   0          30s
+----
 
 . Create a TempoStack instance:
 .. Create a secret for MinIO credentials:
@@ -153,8 +165,24 @@ spec:
 ----
 $ oc apply -f tempo.yaml
 ----
+
+.. Verify that the TempoStack pods are running:
 +
-Wait for the `<tempo_stack_name>-xxx` pods to be running.
+[source,terminal]
+----
+$ oc get pods -l app.kubernetes.io/instance=<tempo_stack_name>
+----
++
+.Example output
+[source,terminal]
+----
+NAME                                            READY   STATUS    RESTARTS   AGE
+tempo-sample-compactor-0                        1/1     Running   0          2m
+tempo-sample-distributor-7d9c8f5b6d-xyz12       1/1     Running   0          2m
+tempo-sample-ingester-0                         1/1     Running   0          2m
+tempo-sample-querier-5f8c9d7b6d-abc34           1/1     Running   0          2m
+tempo-sample-query-frontend-6c7d8e9f7g-def56    1/1     Running   0          2m
+----
 
 . Configure the OpenTelemetry instance to send telemetry data to the Tempo distributor:
 .. Create a YAML file named `opentelemetry.yaml` with the following content:
@@ -235,8 +263,20 @@ The OpenTelemetry collector configuration defines the Tempo distributor and Prom
 ----
 $ oc apply -f opentelemetry.yaml
 ----
+
+.. Verify that the OpenTelemetry collector pod is running:
 +
-Wait for the `<otelcol_name>-collector-xxx` pod to be running.
+[source,terminal]
+----
+$ oc get pods -l app.kubernetes.io/name=<otelcol_name>-collector
+----
++
+.Example output
+[source,terminal]
+----
+NAME                                      READY   STATUS    RESTARTS   AGE
+<otelcol_name>-collector-7d9c8f5b6d-abc12   1/1     Running   0          45s
+----
 
 . Define a `GuardrailsOrchestrator` custom resource object to specify the `otelExporter` configurations in a YAML file named `orchestrator_otel_cr.yaml`:
 +
@@ -271,6 +311,8 @@ spec:
 $ oc apply -f orchestrator_otel_cr.yaml
 ----
 
+.Verification
+
 . Observe traces using the Jaeger UI:
 .. Access the Jaeger UI by port-forwarding the Tempo traces service:
 +
@@ -279,4 +321,4 @@ $ oc apply -f orchestrator_otel_cr.yaml
 $ oc port-forward svc/tempo-<tempo_stack_name>-query-frontend 16686:16686
 ----
 .. In a separate browser window, navigate to `http://localhost:16686` to access the Jaeger UI.
-.. Under *Service*, select *fms_guardrails_orchestr8* and click on the *Find Traces* button.
+.. Under *Service*, select *fms_guardrails_orchestr8* and click *Find Traces*.
