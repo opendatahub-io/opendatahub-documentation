@@ -88,10 +88,3 @@ oc wait --for=condition=ready pod -l authorino-resource=authorino -n kuadrant-sy
 oc delete pod -n redhat-ods-applications -l app=odh-model-controller
 oc delete pod -n redhat-ods-applications -l control-plane=kserve-controller-manager
 ----
-
-. Verify that the global `authPolicy` is created:
-+
-[source,bash]
-----
-oc get authPolicy -n openshift-ingress
-----
