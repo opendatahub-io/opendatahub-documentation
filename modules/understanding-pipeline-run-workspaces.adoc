@@ -1,0 +1,12 @@
+:_module-type: CONCEPT
+
+[id="configuring-pipeline-run-workspaces_{context}"]
+= Understanding pipeline run workspaces
+
+[role='_abstract']
+
+The workspace feature in AI pipelines provides standardized ephemeral shared storage that exists only for the duration of a pipeline run. This storage lets pipeline components exchange large intermediate data without repeatedly uploading to or downloading from object storage, improving performance and reducing object storage costs.
+
+A workspace is a standardized directory structure backed by a Persistent Volume Claim (PVC) that is dynamically created for each pipeline run based on the `DataSciencePipelinesApplication` (DSPA) workspace configuration. When the pipeline definition uses a workspace, the workspace PVC is automatically mounted into each pipeline task pod that requires it.At runtime, the mount path is resolved by using the `dsl.WORKSPACE_PATH_PLACEHOLDER` variable as an input parameter to components.
+
+Pipelines opt into workspace support at compile time. When the pipeline definition includes a workspace configuration, the pipeline compiler annotates the run so that the DSPA automatically creates the workspace PVC and mounts the volume into each task pod that needs it.

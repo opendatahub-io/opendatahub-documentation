@@ -1,0 +1,73 @@
+:_module-type: PROCEDURE
+
+[id="adding-external-artifacts-to-pipeline-run-workspaces_{context}"]
+= Adding external artifacts to pipeline run workspaces
+
+[role='_abstract']
+When using `dsl.importer` with external artifacts such as Modelcar images stored in an Open Container Initiative (OCI) registry, you cannot download them directly into the workspace. To make the artifact available to subsequent tasks without additional downloads, copy the artifact into the workspace volume in a separate pipeline step.
+
+.Prerequisites
+* You have configured a pipeline server in your project with workspace support enabled.
+* You can reach the external location that stores your artifacts.
+* Your pipeline server has the credentials and network access required to pull from that location.
+
+.Procedure
+To use an external artifact in your pipeline, define a component that copies the artifact to the workspace, and then call this component in your pipeline.
+
+. Define a component that copies the imported artifact to the workspace:
++
+[source,python]
+----
+from kfp import dsl
+
+@dsl.component()
+def copy_model_to_workspace(input_model: dsl.Input[dsl.Model], workspace_path: str):
+    import os
+    import shutil
+    shutil.copytree(input_model.path, os.path.join(workspace_path, "my-model"))
+----
+
+. Define your pipeline with workspace configuration:
++
+[source,python]
+----
+@dsl.pipeline(
+    name="modelcar-to-workspace",
+    pipeline_config=dsl.PipelineConfig(
+        workspace=dsl.WorkspaceConfig(size='20Gi'),
+    ),
+)
+def modelcar_to_workspace_pipeline(
+    oci_uri: str = "oci://registry.redhat.io/rhelai1/modelcar-granite-3.1-8b-lab-v2.2:latest",
+):
+    # Import the model from the OCI registry
+    model_source = dsl.importer(
+        artifact_uri=oci_uri,
+        artifact_class=dsl.Model,
+    )
+    
+    # Copy the model to the workspace
+    copy_model_to_workspace(
+        input_model=model_source.output,
+        workspace_path=dsl.WORKSPACE_PATH_PLACEHOLDER,
+    )
+   
+----
++
+* The `pipeline_config` parameter with the workspace size is required to enable workspace support for the pipeline run.
+
+. Compile and upload your pipeline to {productname-short}.
+
+.Verification
+. Navigate to the *Run details* page in the {productname-short} dashboard.
+. Verify that the `copy_model_to_workspace` task completes successfully.
+. Check the logs of subsequent tasks to confirm they can access the model files in the workspace (for example, `/kfp-workspace/my-model`).
+
+[NOTE]
+====
+The model files are copied to a subdirectory in the workspace (in this example, `my-model`). Subsequent pipeline tasks can access these files at the workspace mount path resolved at runtime.
+====
+
+[role='_additional-resources']
+.Additional resources
+* link:https://www.kubeflow.org/docs/components/pipelines/user-guides/components/importer-component/[Special Case: Importer Components]
