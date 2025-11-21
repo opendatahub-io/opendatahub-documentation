@@ -15,7 +15,7 @@ The following guidelines help you determine the hardware requirements for your a
 +
 [NOTE]
 ====
-The *vLLM ServingRuntime for KServe* model-serving runtime supports several quantization methods. For more information about supported implementations and compatible hardware, see link:https://docs.vllm.ai/en/latest/quantization/supported_hardware.html[Supported hardware for quantization kernels].
+The *vLLM ServingRuntime for KServe* model-serving runtime supports several quantization methods. For more information about supported implementations and compatible hardware, see link:https://docs.vllm.ai/en/stable/features/quantization/#supported-hardware[Supported hardware for quantization kernels^].
 ====
 * *Additional memory for key-value cache*: In addition to model weights, GPU memory is also needed to store the attention key-value (KV) cache, which increases with the number of requests and the sequence length of each request. This can impact performance in real-time applications, especially for larger models.
 
@@ -35,4 +35,4 @@ For best results, start with smaller models and then scale up to larger models a
 
 [role="_additional-resources"]
 .Additional resources
-* https://docs.vllm.ai/en/latest/serving/distributed_serving.html[Distributed serving]
+* https://docs.vllm.ai/en/stable/serving/parallelism_scaling/[Parallelism and Scaling^]
