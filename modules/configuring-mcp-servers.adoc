@@ -17,14 +17,14 @@ endif::[]
 
 .Procedure
 
-. Create a file named `mcp-config.yaml` with the following YAML content. You can add multiple server entries under the `data:` field.
+. Create a file named `gen-ai-aa-mcp-servers.yaml` with the following YAML content. You can add multiple server entries under the `data:` field.
 +
 [source]
 ----
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: github-mcp-servers
+  name: gen-ai-aa-mcp-servers
   namespace: redhat-ods-applications
 data:
   `GitHub-MCP-Server`: |
@@ -43,7 +43,7 @@ The `ConfigMap` key (`GitHub-MCP-Server`) must be unique and is case-sensitive. 
 +
 [source,bash]
 ----
-oc apply -f mcp-config.yaml
+oc apply -f gen-ai-aa-mcp-servers.yaml
 ----
 
 .Verification
