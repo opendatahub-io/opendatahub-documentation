@@ -192,7 +192,7 @@ MODEL_ROUTE="${BASE_ROUTE}/v2/models/${MODEL}/infer"
 DATA_PATH=sample_trustyai_model_data
 mkdir $DATA_PATH
 for batch in {0..595..5}; do
-	wget https://github.com/trustyai-explainability/odh-trustyai-demos/blob/72f748da9410f92a60bea73ce5e3f47c10ad1cea/3-DataDrift/kserve-demo/data/data_batches/$batch.json -O $DATA_PATH/$batch.json
+	wget https://github.com/trustyai-explainability/odh-trustyai-demos/tree/main/3-DataDrift/kserve-demo/data/data_batches/$batch.json -O $DATA_PATH/$batch.json
 	curl -sk "${MODEL_ROUTE}"\
   		-H "Authorization: Bearer ${TOKEN}" \
   		-H "Content-Type: application/json" \
