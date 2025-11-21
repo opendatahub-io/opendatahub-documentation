@@ -1,0 +1,62 @@
+:_module-type: PROCEDURE
+
+[id="configuring-model-control-protocol-servers_{context}"]
+
+= Configuring Model Control Protocol (MCP) servers
+
+[role="_abstract"]
+A cluster administrator must configure and enable the Model Control Protocol (MCP) servers at the platform level before users can interact with external tools in the Generative AI Playground. This configuration is done by creating a `ConfigMap` in the `redhat-ods-applications` namespace, which holds the necessary information for each MCP server.
+
+.Prerequisites
+
+* You have cluster admin privileges for your OpenShift cluster.
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+endif::[]
+
+.Procedure
+
+. Create a file named `gen-ai-aa-mcp-servers.yaml` with the following YAML content. You can add multiple server entries under the `data:` field.
++
+[source]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: gen-ai-aa-mcp-servers
+  namespace: redhat-ods-applications
+data:
+  GitHub-MCP-Server: |
+    {
+      "url": "https://api.githubcopilot.com/mcp/x/repos/readonly",
+      "description": "The GitHub MCP server enables exploration and interaction with repositories, code, and developer resources on GitHub. It provides programmatic access to repositories, issues, pull requests, and related project data, allowing automation and integration within development workflows. With this service, developers can query repositories, discover project metadata, and streamline code-related tasks through MCP-compatible tools."
+    }
+----
++
+[IMPORTANT]
+====
+The `ConfigMap` key (`GitHub-MCP-Server`) is case-sensitive and must be unique. The content provided under this key must be valid JSON format.
+====
+
+. Apply the `ConfigMap` to the cluster by running the following command:
++
+[source,bash]
+----
+oc apply -f gen-ai-aa-mcp-servers.yaml
+----
+
+.Verification
+
+* Confirm that the `ConfigMap` was successfully applied by running the following command:
++
+[source,bash]
+----
+oc get configmap gen-ai-aa-mcp-servers -n redhat-ods-applications -o yaml | grep GitHub-MCP-Server
+----
+* The output should contain the key name, confirming its successful creation:
++
+[source,text]
+----
+GitHub-MCP-Server: |
+----

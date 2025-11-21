@@ -1,0 +1,64 @@
+[id="troubleshooting-playground-issues_{context}"]
+= Troubleshooting playground issues
+
+If you encounter issues while using the playground, refer to the following scenarios and solutions.
+
+== The chatbot thinks indefinitely
+
+**Problem**
+After sending a query, the chatbot shows a thinking indicator but never returns a response.
+
+**Cause**
+This issue often occurs when the query or the accumulated context exceeds the maximum context length (sequence length) configured for the model.
+
+**Solution**
+
+. In the OpenShift AI dashboard, click the **Applications** menu and select **OpenShift Console**.
+. Navigate to your project's namespace.
+. Check the logs for the following pods:
+* The playground pod: `lsd-genai-playground-<id>`
+* The model serving pod: `<model-name>-predictor-<id>`
+. Look for errors related to context length limits or memory (OOM) constraints.
+
+== The model does not use RAG data
+
+**Problem**
+The model answers questions using its training data instead of searching the uploaded RAG documents.
+
+**Solution**
+
+Update the **System instructions** in the playground to explicitly force the use of the search tool.
+
+* **Example:** "You MUST use the `knowledge_search` tool to obtain updated information."
+* **Example:** "Always search the knowledge base before answering questions about company policies."
+
+== MCP servers are missing from the UI
+
+**Problem**
+The **MCP servers** section is empty or not visible in the playground configuration.
+
+**Cause**
+MCP servers must be configured at the cluster level by an administrator.
+
+**Solution**
+
+Contact your OpenShift AI administrator to configure the required MCP servers. Administrators can find a list of available servers in the Red Hat OpenShift AI documentation.
+
+== The model fails to call MCP tools
+
+**Problem**
+The model attempts to use a tool but fails, or outputs raw XML tags (e.g., `<tool_call>`).
+
+**Cause**
+
+* The model does not support tool calling.
+* The vLLM runtime arguments are missing or incorrect.
+* **Known Issue:** Some models (e.g., `Qwen3-4B-Instruct`) may output raw tags if the correct reasoning parser is not available in the current vLLM version.
+
+**Solution**
+
+. Verify the model supports tool calling on its Hugging Face model card.
+. In the model's deployment settings, ensure the following **Custom Runtime Arguments** are present:
+* `--enable-auto-tool-choice`
+* `--tool-call-parser`
+. If the model outputs `<think>` tags, you can hide them by adding `/no_think` to your prompt.
