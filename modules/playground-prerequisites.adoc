@@ -23,6 +23,13 @@ endif::[]
 ifdef::upstream[]
 * Ensure that the Llama Stack Operator is enabled on the {openshift-platform} cluster by setting its `managementState` field to `Managed` in the `DataScienceCluster` custom resource (CR) of the {productname-short} Operator. For more information, see {odhdocshome}/working-with-llama-stack/#activating-the-llama-stack-operator_rag[Activating the Llama Stack Operator].
 endif::[]
+ifndef::upstream[]
+* Configure Model Control Protocol (MCP) servers to test models with external tools. For more information, see link:{rhoaidocshome}{default-format-url}/experimenting_with_models_in_the_gen_ai_playground/configuring-model-control-protocol-servers_rhoai-user[Configuring model control protocol servers].
+endif::[]
+ifdef::upstream[]
+* Configure Model Control Protocol (MCP) servers to test models with external tools. For more information, see link:{odhdocshome}/experimenting_with_models_in_the_gen_ai_playground/configuring-model-control-protocol-servers_odh-user[Configuring model control protocol servers].
+endif::[]
+
 
 == User prerequisites
 
@@ -30,37 +37,76 @@ After the cluster administrator completes the setup, you must complete the follo
 
 * You are logged in to {productname-short}.
 * If you are using {productname-short} groups, you are a member of the appropriate user or admin group.
-* Create a project. The playground instance is tied to a project context.
 ifndef::upstream[]
-** For more information, see link:{rhoaidocshome}{default-format-url}/working_on_projects/using-projects_projects#creating-a-project_projects[Creating a project].
+* Create a project. The playground instance is tied to a project context. For more information, see link:{rhoaidocshome}{default-format-url}/working_on_projects/using-projects_projects#creating-a-project_projects[Creating a project].
 endif::[]
 ifdef::upstream[]
-** For more information, see link:{odhdocshome}/working-on-projects/#creating-a-project_projects[Creating a project].
+* Create a project. The playground instance is tied to a project context. For more information, see link:{odhdocshome}/working-on-projects/#creating-a-project_projects[Creating a project].
 endif::[]
-
-* Add a connection to your project.
 ifdef::upstream[]
-** For more information about creating connections, see link:{odhdocshome}/working-on-projects/#adding-a-connection-to-your-project_projects[Adding a connection to your project].
+* Add a connection to your project. For more information about creating connections, see link:{odhdocshome}/working-on-projects/#adding-a-connection-to-your-project_projects[Adding a connection to your project].
 endif::[]
 ifndef::upstream[]
-** For more information about creating connections, see link:{rhoaidocshome}/html/working_on_projects/using-connections_projects#adding-a-connection-to-your-project_projects[Adding a connection to your  project].
+* Add a connection to your project. For more information about creating connections, see link:{rhoaidocshome}/html/working_on_projects/using-connections_projects#adding-a-connection-to-your-project_projects[Adding a connection to your  project].
 endif::[]
-
-* Deploy a model in your project and make it available as an AI asset endpoint.
 ifdef::upstream[]
-** For more information, see link:{odhdocshome}/deploying_models/#deploying-models-on-the-model-serving-platform_odh-user[Deploying models on the model serving platform^].
+* Deploy a model in your project and make it available as an AI asset endpoint. For more information, see link:{odhdocshome}/deploying_models/#deploying-models-on-the-model-serving-platform_odh-user[Deploying models on the model serving platform^].
 endif::[]
 ifndef::upstream[]
-** For more information, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_model_serving_platform#deploying-models-on-the-model-serving-platform_rhoai-user[Deploying models on the model serving platform^].
+* Deploy a model in your project and make it available as an AI asset endpoint. For more information, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_model_serving_platform#deploying-models-on-the-model-serving-platform_rhoai-user[Deploying models on the model serving platform^].
 endif::[]
-+
-[NOTE]
-====
-The model that you are deploying must support tool-calling and have tool-calling capabilities enabled. For more information, see link:https://docs.vllm.ai/en/stable/features/tool_calling.html[Tool calling] in the VLLM documentation.
-====
-
-* Configure MCP server connections.
-** To test models with external tools, you must configure any Model Control Protocol (MCP) servers.
 
 After you complete these tasks, the project is ready for you to configure your playground instance.
 
+== Model and runtime requirements for the playground
+
+To successfully use the retrieval-augmented generation (RAG) and Model Control Protocol (MCP) features in the playground, the model you deploy must meet specific requirements. Not all models offer the same capabilities.
+
+=== Key model selection factors
+
+Tool calling capabilities::
+The model must support tool calling to interact with the playground's RAG and MCP features. You must check the model card (for example, on Hugging Face) to verify this capability. For more information, see link:https://docs.vllm.ai/en/stable/features/tool_calling.html[Tool calling] in the VLLM documentation.
+
+Context length::
+Models with larger context windows are recommended for RAG applications. A larger context window allows the model to process more retrieved documents and maintain longer conversation histories.
+
+vLLM version and configuration::
+Tool calling functionality depends heavily on the version of vLLM used in your model serving runtime.
+* *Version*: Use the latest vLLM version included in {productname-long} for optimal compatibility.
+* *Runtime arguments*: You must configure specific runtime arguments in the model serving runtime to enable tool calling. Common arguments include: 
+** `--enable-auto-tool-choice`
+** `--tool-call-parser`
++
+For more information, see link:https://docs.vllm.ai/en/stable/features/tool_calling.html[Tool calling] in the VLLM documentation.
+
+[IMPORTANT]
+====
+If these requirements are not met, the model might fail to search documents or execute tools without returning a clear error message.
+====
+
+=== Example model configuration
+
+The following table describes an example configuration for the `Qwen/Qwen3-14B-AWQ` model for use in the playground. You can use this as a reference when configuring your own model runtime arguments.
+
+.Example configuration for Qwen/Qwen3-14B-AWQ
+[cols="1,2",options="header"]
+|===
+|Field |Configuration Details
+
+|**Model**
+|Qwen/Qwen3-14B-AWQ
+
+|**vLLM Runtime**
+|vLLM NVIDIA GPU ServingRuntime for KServe
+
+|**Hardware Profile**
+|NVIDIA A10G (24GB VRAM)
+
+|**Custom Runtime Arguments**
+|`--dtype=auto` +
+`--max-model-len=32768` +
+`--enable-auto-tool-choice` +
+`--tool-call-parser=hermes` +
+`--reasoning-parser=qwen3` +
+`--gpu-memory-utilization=0.90`
+|===
