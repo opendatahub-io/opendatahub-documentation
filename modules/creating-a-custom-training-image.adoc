@@ -46,19 +46,19 @@ The following table shows some example base training images:
 | CUDA
 | 3.11
 | `training:py311-cuda124-torch28`
-| Python 3.11, CUDA 12.4, PyTorch 2.8.0
-
-| KFTO
-| ROCm
-| 3.11
-| `training:py311-rocm62-torch28`
-| Python 3.11, ROCm 6.2, PyTorch 2.8.0
+| Python 3.11, CUDA 12.4, PyTorch 2.8
 
 | KFTO
 | CUDA
 | 3.12
 | `odh-training-cuda128-torch28-py312-rhel9`
-| Python 3.12, CUDA 12.8, PyTorch 2.8.0
+| Python 3.12, CUDA 12.8, PyTorch 2.8
+
+| KFTO
+| ROCm
+| 3.12
+| `odh-training-rocm64-torch28-py312-rhel9`
+| Python 3.12, ROCm 6.4, PyTorch 2.8
 
 |===
 
@@ -104,7 +104,7 @@ FROM quay.io/modh/ray:2.47.1-py311-cu121
 +
 [source,bash]
 ----
-FROM registry.redhat.io/rhoai/odh-training-rocm62-torch25-py311-rhel9
+FROM registry.redhat.io/rhoai/odh-training-rocm64-torch28-py312-rhel9:v3.0
 ----
 
 .. Use the `RUN` instruction to install additional packages.
