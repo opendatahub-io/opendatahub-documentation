@@ -40,7 +40,7 @@ check_url() {
     fi
 
     STATUS=$(curl -Ls -o /dev/null -w "%{http_code}" --max-time 5 --connect-timeout 2 "$URL")
-    if [[ "$STATUS" != "000" && "$STATUS" != "403" && ! "$STATUS" =~ ^(2|3)[0-9]{2}$ ]]; then
+    if [[ "$STATUS" != "000" && "$STATUS" != "403" && "$STATUS" != "503" && ! "$STATUS" =~ ^(2|3)[0-9]{2}$ ]]; then
         printf 'Invalid URL (HTTP status %s): \n\033[31m%s\033[0m\n' "$STATUS" "$URL"
         return 1
     fi
