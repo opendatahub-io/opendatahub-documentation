@@ -1,0 +1,102 @@
+:_module-type: PROCEDURE
+
+[id="authenticating-kfp-sdk-with-pipeline-server_{context}"]
+= Authenticating the Kubeflow Pipelines SDK with a pipeline server
+
+[role="_abstract"]
+You can connect the Kubeflow Pipelines (KFP) SDK to a pipeline server that is exposed by {productname-short}. The pipeline server route is protected by OpenShift OAuth, so you must provide a valid access token when you create the KFP client.
+
+.Prerequisites
+
+* You have logged in to the {openshift-cli} as a user who can access the project.
+* You have created a project and configured a pipeline server for that project.
+* You have installed Python and the required packages in your environment.
+* Optional: If your cluster uses a custom or self-signed certificate, you know the path to the trusted certificate bundle that your environment uses. 
+
+.Procedure
+
+. Set environment variables for your project and pipeline server route:
++
+[source,terminal]
+----
+export NAMESPACE=<project_namespace>
+export DSPA_NAME=$(oc -n "$NAMESPACE" get dspa -o jsonpath='{.items[0].metadata.name}')
+export API_URL="https://$(oc -n "$NAMESPACE" get route "ds-pipeline-${DSPA_NAME}" -o jsonpath='{.spec.host}')"
+----
++
+Replace `<project_namespace>` with the name of your project.
+
+. Obtain an {openshift-platform} access token for the current user:
++
+[source,terminal]
+----
+export OCP_TOKEN=$(oc whoami --show-token)
+----
++
+[NOTE]
+====
+Avoid pasting the access token directly into commands or scripts. The token can appear in your shell history or in process listings if you pass it as a literal argument.
+
+To reduce this risk, store the token in an environment variable and reference it from your code or commands. For example:
+
+[source,terminal]
+----
+./.venv/bin/python my_script.py --kfp-server-host "$API_URL" --namespace "$NAMESPACE" --token "$OCP_TOKEN"
+----
+
+Alternatively, use a prompt with `read -s` to input the token securely at runtime.
+====
+
+. Optional: If you are running outside the cluster or you use a custom or self-signed certificate, set an environment variable for your trusted certificate bundle:
++
+[source,terminal]
+----
+export SSL_CA_CERT=/etc/pki/tls/custom-certs/ca-bundle.crt
+----
++
+Adjust the path if your environment uses a different certificate location.
+
+. In your Python environment, create a KFP client that uses the pipeline server route and OpenShift access token:
++
+[source,python]
+----
+import os
+from kfp.client import Client
+
+api_url = os.environ["API_URL"]
+token = os.environ["OCP_TOKEN"]
+namespace = os.environ["NAMESPACE"]
+
+# Optional: Use a custom certificate bundle if required
+ssl_ca_cert = os.environ.get("SSL_CA_CERT", None)
+
+client_args = {
+    "host": api_url,
+    "existing_token": token,
+    "namespace": namespace,
+}
+
+if ssl_ca_cert:
+    client_args["ssl_ca_cert"] = ssl_ca_cert
+
+client = Client(**client_args)
+----
+
+. Verify the connection by calling the API. For example, list experiments or pipelines:
++
+[source,python]
+----
+print(client.list_experiments())
+# or
+print(client.list_pipelines())
+----
+
+.Verification
+
+* The Python code runs without authentication errors.
+* The command output lists experiments or pipelines that are defined on the pipeline server for the specified project.
+
+.Next steps
+
+* Use the KFP SDK to compile and upload pipelines, create pipeline runs, or manage pipeline versions against the authenticated pipeline server.
+* If required, integrate this client configuration into your own automation scripts or external applications that orchestrate pipelines on {productname-short}.
