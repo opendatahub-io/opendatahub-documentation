@@ -1,0 +1,112 @@
+:_module-type: PROCEDURE
+
+[id="configuring-default-workspace-pvc-settings-in-dspa_{context}"]
+= Configuring default workspace PVC settings in DSPA
+
+[role='_abstract']
+You can configure the default values for workspace Persistent Volume Claims (PVCs) in your `DataSciencePipelinesApplication` (DSPA). This allows you to specify the storage class and access mode for workspace volumes used by pipeline runs. You must provide the workspace storage size when you define the pipeline.
+
+.Prerequisites
+* You have logged in to {productname-short}.
+* You have the required roles and permissions to edit DSPAs in your project.
+* You have configured a pipeline server in your project.
+
+.Procedure
+. Log in to the {openshift-platform} web console.
+. Navigate to your project namespace.
+. Click *Search* -> *Resources* and select *DataSciencePipelinesApplication* from the resource list.
+. Select your DSPA instance and click the *YAML* tab to edit the configuration.
+. Add or update the workspace configuration under the `spec.apiServer.workspace` field:
++
+[source,yaml]
+----
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1
+kind: DataSciencePipelinesApplication
+metadata:
+  name: sample-dspa
+  namespace: my-namespace
+spec:
+  dspVersion: v2
+  apiServer:
+    deploy: true
+    workspace:
+      volumeClaimTemplateSpec:
+        accessModes:
+        - ReadWriteOnce
+        storageClassName: standard-csi
+  # ... other DSPA configuration
+----
++
+* `apiServer.workspace.volumeClaimTemplateSpec` configures the PVC template for workspace volumes.
+* `accessModes` specifies the access mode for workspace PVCs. Valid values are `ReadWriteOnce`, `ReadWriteMany`, or `ReadOnlyMany`.
+* `storageClassName` specifies the storage class used for workspace PVCs.
+* Additional PVC fields supported by Kubernetes, such as `resources` or `persistentVolumeReclaimPolicy`, can also be configured if needed.
+
+. Click *Save* to apply the changes.
+
+.Verification
+
+. Run the following sample pipeline. It writes a file into the workspace by using `dsl.WORKSPACE_PATH_PLACEHOLDER` and then reads the same file in a later task:
++
+[source,python]
+----
+from kfp import dsl
+
+@dsl.component
+def write_to_workspace(workspace_path: str) -> str:
+    """Write a file to the workspace."""
+    import os
+
+    file_path = os.path.join(workspace_path, "data", "test_file.txt")
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+    with open(file_path, "w") as f:
+        f.write("Hello from workspace!")
+
+    print(f"Wrote file to: {file_path}")
+    return file_path
+
+@dsl.component
+def read_from_workspace(file_path: str) -> str:
+    """Read a file from the workspace using the provided file path."""
+    import os
+
+    if os.path.exists(file_path):
+        with open(file_path, "r") as f:
+            content = f.read()
+        print(f"Read content from: {file_path}")
+        print(f"Content: {content}")
+        assert content == "Hello from workspace!"
+        return content
+
+    print(f"File not found at: {file_path}")
+    return "File not found"
+
+@dsl.pipeline(
+    name="pipeline-with-workspace",
+    description="A pipeline that demonstrates workspace functionality",
+    pipeline_config=dsl.PipelineConfig(
+        workspace=dsl.WorkspaceConfig(
+            size='100Mi',
+        ),
+    ),
+)
+def pipeline_with_workspace() -> str:
+    """A pipeline using workspace functionality with write and read components."""
+
+    write_task = write_to_workspace(
+        workspace_path=dsl.WORKSPACE_PATH_PLACEHOLDER,
+    )
+
+    read_task = read_from_workspace(
+        file_path=write_task.output,
+    )
+
+    return read_task.output
+----
+
+. When the pipeline completes, review the task logs to verify that both write and read operations succeeded.
+
+[role='_additional-resources']
+.Additional resources
+* link:https://www.kubeflow.org/docs/components/pipelines/user-guides/components/importer-component/[Special Case: Importer Components]
