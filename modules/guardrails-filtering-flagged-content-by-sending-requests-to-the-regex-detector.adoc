@@ -1,0 +1,64 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="filtering-flagged-content-by-sending-requests-to-the-regex-detector_{context}"]
+= Filtering flagged content by sending requests to the regex detector
+[role='_abstract']
+
+You can use the Guardrails Orchestrator API to send requests to the regex detector. The regex detector filters conversations by flagging content that matches specified regular expression patterns. 
+
+.Prerequisites
+You have deployed a Guardrails Orchestrator with the built-in-detector server, such as in the following example:
+
+.Example `guardrails_orchestrator_auto_cr.yaml` CR
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: guardrails-orchestrator
+  annotations:
+    security.opendatahub.io/enable-auth: 'true'
+spec:
+  autoConfig:
+    inferenceServiceToGuardrail: <inference_service_name>
+    detectorServiceLabelToMatch: <detector_service_label>
+  enableBuiltInDetectors: true
+  enableGuardrailsGateway: true
+  replicas: 1
+----
+
+.Procedure
+* Send a request to the built-in detector that you configured. The following example sends a request to a regex detector named `regex` to flag personally identifying information.
++
+[source,terminal]
+----
+GORCH_ROUTE=$(oc get routes guardrails-orchestrator -o jsonpath='{.spec.host}')
+curl -X 'POST' "https://$GORCH_ROUTE/api/v2/text/detection/content" \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "detectors": {
+    "built-in-detector": {"regex": ["email"]}
+  },
+  "content": "my email is test@domain.com"
+}' | jq
+----
++
+.Example response
+[source,terminal]
+----
+{
+  "detections": [
+    {
+      "start": 12,
+      "end": 27,
+      "text": "test@domain.com",
+      "detection": "EmailAddress",
+      "detection_type": "pii",
+      "detector_id": "regex",
+      "score": 1.0
+    }
+  ]
+}
+----

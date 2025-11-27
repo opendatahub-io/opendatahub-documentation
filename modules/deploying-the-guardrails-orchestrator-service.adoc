@@ -26,10 +26,11 @@ ifdef::upstream[]
 * You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace. 
 
 
-.Procedure
-. Define a `ConfigMap` object in a YAML file to specify the `chat_generation` and `detectors` services. For example, create a file named `orchestrator_cm.yaml` with the following content:
+.Creating an Orchestrator Configuration
+. Define a `ConfigMap` object in a YAML file to provide your Guardrails Orchestrator configuration. Here is an example
+version of this file:
 +
-.Example `orchestrator_cm.yaml`
+.Example `orchestrator_configmap.yaml`
 [source,yaml]
 ----
 kind: ConfigMap
@@ -39,28 +40,80 @@ metadata:
 data:
   config.yaml: |
     chat_generation: <1>
-      service:
-        hostname: <CHAT_GENERATION_HOSTNAME>
-        port: the generation service port (for example 8033)
-
-    detectors:       <2>
-      regex_language:
+      service: <2>
+        hostname: <Chat generation hostname>
+        port: <Generation service port> (for example 8080)
+        tls: generation-model-tls
+    detectors: <3>
+      built_in: <4>
         type: text_contents
         service:
             hostname: "127.0.0.1"
             port: 8080
         chunker_id: whole_doc_chunker
         default_threshold: 0.5
-      hap:
+      some-other-detector:
         type: text_contents
         service:
-          hostname: guardrails-detector-ibm-hap-predictor.model-namespace.svc.cluster.local
-          port: the generation service port (for example 8000)
+          hostname: <other detector hostname>
+          port: <detector server port> (for example 8000)
+          tls: some-other-detector-tls
         chunker_id: whole_doc_chunker
         default_threshold: 0.5
+    tls: <5>
+      - generation-model-tls:
+          cert_path: /etc/tls/<Path 1>/tls.crt
+          key_path: /etc/tls/<Path 1>/tls.key
+          ca_path: /etc/tls/ca/service-ca.crt
+      - some-other-detector-tls:
+          cert_path: /etc/tls/<Path 2>/tls.crt
+          key_path: /etc/tls/<Path 2>/tls.key
+          ca_path: /etc/tls/ca/service-ca.crt
+    passthrough_headers: <6>
+      - "authorization"
+      - "content-type"
 ----
-<1> A service for chat generation referring to a deployed LLM in your namespace where you are adding guardrails.
-<2> A list of services responsible for running detection of a certain class of content on text spans.
+<1> The `chat_generation` section describes The generation model to guardrail
+<2> A service configuration - throughout the orchestrator config, all external services are described via the
+service configuration, which contains the following fields:
+* `hostname` - The hostname of the service
+* `port` - The port of the service
+* `tls` *(Optional)* - The name of the TLS configuration (specified later in the configuration) to use for this service. If provided, the orchestrator
+will communicate with this service via HTTPS.
+<3> The `detectors` section is where the detector servers available to the orchestrator are specified. Provide some unique name for the detector server as the key
+to each entry, and then the following values are required:
+* `type` - The kind of detector server. For now, the only supported kind within RHOAI is `text_contents`
+* `service` - The service configuration for the detector server, see <2> for details. Note, if you want to use the built-in detector, the service configuration should always be
+
+    service:
+        hostname: "127.0.0.1"
+        port: 8080
+
+* `chunker_id`- The chunker to use for this detector server. For now, the only supported chunker is `whole_doc_chunker`
+* `default_threshold`- The threshold to pass to the detector server. The threshold can be used by the detector servers to determine their sensitivity, and recommended values
+will vary by detector algorithm. We recommend keeping this at `0.5` as a safe starting point.
+<4> Each key in the detector section will define the *name* of the detector server. You'll need to reference these names later, so pick memorable and descriptive names. Here, we've used `built_in` and `some-other-detector` as the names of the two detector servers we are configuring in this example.
+<5> The `tls` section defines TLS configurations. The names of these configurations can then be used as values within `service.tls` in your service configurations (see <2>).
+A TLS configuration consists of the following fields:
+    * `cert_path` - The path to a `.crt` file inside the Guardrails Orchestrator container.
+    * `key_path` - The path to a `.key` file inside the Guardrails Orchestrator container.
+    * `ca_path` - The path to CA certificate `.crt` file on the Guardrails Orchestrator container. The default Openshift Serving CA will be mounted at `/etc/tls/ca/service-ca.crt`, we recommend using this as your `ca_path`.
++
+See the <<tlsSecrets-param,`tlsSecrets`>> section of the GuardrailsOrchestrator Custom Resource to learn how to mount custom TLS files into the Guardrails Orchestrator container.
+<6> The `passthrough_headers` section defines which headers from your requests to the Guardrails Orchestrator get sent onwards to
+the various services specified in this configuration. If you want to ensure that the Orchestrator can talk to authenticated services, we recommend specifying `"authorization"` and `"content-type"` as `passthrough_headers`.
+
+
+
+
+
+
+
+
+
+
+
+---
 
 . Deploy the `orchestrator_cm.yaml` config map:
 +
