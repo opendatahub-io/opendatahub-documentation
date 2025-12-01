@@ -1,0 +1,164 @@
+:_module-type: PROCEDURE
+
+[id='deploying-the-guardrails-orchestrator-service_{context}']
+
+= Deploying the Guardrails Orchestrator
+
+[role='_abstract']
+You can deploy a Guardrails Orchestrator instance in your namespace to monitor elements, such as user inputs to your Large Language Model (LLM).
+
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+* You are familiar with how to create a `configMap` for monitoring a user-defined workflow. You perform similar steps in this procedure. See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-pods#nodes-pods-configmap-overview_configmaps[Understanding config maps].
+ifdef::upstream[]
+* You have configured KServe to use `RawDeployment` mode. For more information, see link:{odhdocshome}/deploying_models/#deploying-models-on-the-single-model-serving-platform_odh-user[Deploying models on the single-model serving platform^].
+endif::[]
+
+ifndef::upstream[]
+* You have configured KServe to use `RawDeployment` mode. For more information, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_single_model_serving_platform#deploying-models-on-the-single-model-serving-platform_rhoai-user[Deploying models on the single-model serving platform^].
+endif::[]
+
+* You have the TrustyAI component in your {productname-short} `DataScienceCluster` set to `Managed`.
+* You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace. 
+
+---
+
+. Deploy your Orchestrator config map:
++
+[source,terminal]
+----
+$ oc apply -f <ORCHESTRATOR CONFIGMAP>.yaml -n <TEST_NAMESPACE>
+----
+
+. Optional: Deploy your Guardrails gateway config map:
++
+[source,terminal]
+----
+$ oc apply -f <GUARDRAILS GATEWAY CONFIGMAP>.yaml -n <TEST_NAMESPACE>
+----
+. Create a Guardrails Orchestrator custom resource. Make sure that the `orchestratorConfig` and `guardrailsGatewayConfig` match the names of the resources you created in steps 1 and 2.
++
+.Example `orchestrator_cr.yaml` CR
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: guardrails-orchestrator-sample
+spec:
+  orchestratorConfig: <orchestrator_configmap>
+  guardrailsGatewayConfig: <guardrails_gateway_configmap>
+  customDetectorsConfig:  <custom_detectors_config>
+  autoConfig:
+    - <auto_config_settings>
+  enableBuiltInDetectors: True
+  enableGuardrailsGateway: True
+  logLevel: INFO
+  tlsSecrets:
+    - <tls_secret_1_to_mount>
+    - ...
+    - <tls_secret_2_to_mount>
+  otelExporter:
+    - <open_telemetry_config>
+  replicas: 1
+----
++
+If desired, the TrustyAI controller can automatically generate an `orchestratorConfig` and `guardrailsGatewayConfig` based on the available resources in your namespace.
+To access this, include the `autoConfig` parameter inside your Custom Resource, and see _Auto Configuring Guardrails_ for documentation on its usage.
++
+.Parameters from example `orchestrator_cr.yaml` CR
+[cols="1,2a", options="header"]
+|===
+| Parameter |Description
+| `orchestratorConfig`  *(optional)*|The name of the `ConfigMap` object that contains generator, detector, and chunker arguments. If using `autoConfig`, this field can be omitted.
+|`guardrailsGatewayConfig` *(optional)*| The name of the ConfigMap object that specifies gateway configurations. This field can be omitted if you are not using the Guardrails Gateway or are using `autoConfig`.
+|`customDetectorsConfig` *(optional)*| This feature is in development preview.
+| `autoConfig` *(optional)* | A list of paired name and value arguments to define how the Guardrails AutoConfig. Any manually-specified configuration files in `orchestratorConfig` or `guardrailsGatewayConfig` takes precedence over the automatically-generated configuration files.
+
+* `inferenceServiceToGuardrail` - The name of the inference service you want to guardrail. This should exactly match the model name provided when deploying the model. For a list of valid names, you can run
+`oc get isvc -n $NAMESPACE`
+* `detectorServiceLabelToMatch` - A string label to use when searching for available detector servers. All inference services in your namespace with the label `$detectorServiceLabelToMatch: true` is automatically configured as a detector.
++
+See _Auto Configuring Guardrails_ for more information.
+
+|`enableBuiltInDetectors` *(optional)*| A boolean value to inject the built-in detector sidecar container into the Orchestrator pod. The built-in detector is a lightweight HTTP server containing a number of available guardrailing algorithms.
+|`enableGuardrailsGateway` *(optional)*| A boolean value to enable controlled interaction with the Orchestrator service by enforcing stricter access to its exposed endpoints. It provides a mechanism of configuring detector pipelines, and then provides a unique `/v1/chat/completions` endpoint per configured detector pipeline.
+|`otelExporter` *(optional)*| A list of paired name and value arguments for configuring OpenTelemetry traces or metrics, or both:
+
+* `otlpProtocol` - Sets the protocol for all the OpenTelemetry protocol (OTLP) endpoints. Valid values are `grpc` (default) or `http`
+* `otlpTracesEndpoint` - Sets the OTLP endpoint. Default values are `localhost:4317` for `grpc` and `localhost:4318` for `http`
+* `otlpMetricsEndpoint` - Overrides the default OTLP metrics endpoint
+* `enableTraces` - Whether to enable tracing data export, default false
+* `enableMetrics` - Whether to enable metrics data export, default false
++
+| `logLevel` *(optional)* | The log level to be used in the Guardrails Orchestrator- available values are `Error`, `Warn`, `Info` (default), `Debug`, and `Trace`.
+[[tlsSecrets-param]]
+| `tlsSecrets` *(optional)* | A list of names of `Secret` objects to mount to the Guardrails Orchestrator container. All secrets provided here are mounted into the directory `/etc/tls/$SECRET_NAME` for use in your Orchestrator config TLS configuration. Each secret should contain a `tls.crt` and a `tls.key` field.
+|`replicas`| The number of Orchestrator pods to create.
+|===
+
+. Deploy the Orchestrator CR, which creates a service account, deployment, service, and route object in your namespace:
++
+[source,terminal]
+----
+oc apply -f orchestrator_cr.yaml -n <TEST_NAMESPACE>
+----
+
+.Verification
+. Confirm that the Orchestrator and LLM pods are running:
++
+[source,terminal]
+----
+$ oc get pods -n <TEST_NAMESPACE>
+----
++
+.Example response
+[source,terminal]
+----
+NAME                                       READY   STATUS    RESTARTS   AGE
+guardrails-orchestrator-sample             3/3     Running   0          3h53m
+----
+
+. Query the `/health` endpoint of the Orchestrator route to check the current status of the detector and generator services. If a `200 OK` response is returned, the services are functioning normally:
++
+[source,terminal]
+----
+$ GORCH_ROUTE_HEALTH=$(oc get routes guardrails-orchestrator-sample-health -o jsonpath='{.spec.host}' -n <TEST_NAMESPACE)
+----
++
+[source,terminal]
+----
+$ curl -v https://$GORCH_ROUTE_HEALTH/health
+----
++
+.Example response
+[source,terminal]
+----
+*   Trying ::1:8034...
+* connect to ::1 port 8034 failed: Connection refused
+*   Trying 127.0.0.1:8034...
+* Connected to localhost (127.0.0.1) port 8034 (#0)
+> GET /health HTTP/1.1
+> Host: localhost:8034
+> User-Agent: curl/7.76.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< content-type: application/json
+< content-length: 36
+< date: Fri, 31 Jan 2025 14:04:25 GMT
+<
+* Connection #0 to host localhost left intact
+{"fms-guardrails-orchestr8":"0.1.0"}
+----
