@@ -1,0 +1,163 @@
+:_module-type: PROCEDURE
+
+[id="deploying-llama-stack-server_{context}"]
+= Deploying a Llama Stack server 
+
+Llama Stack allows you to create and deploy a server that enables various APIs for accessing AI services in your {productname-short} cluster. You can create a `LlamaStackDistribution` custom resource for your desired use cases. 
+
+The included procedure provides an example `LlamaStackDistribution` CR that deploys a Llama Stack server that enables the following setup: 
+
+* A connection to a vLLM inference service with a `llama32-3b` model.
+* A connection to a remote vector database. 
+* An allocated persistent storage.
+* Orchestration endpoints. 
+
+.Prerequisites
+
+* You have installed {openshift-platform} 4.19 or newer.
+* You have logged in to {productname-long}.
+* You have cluster administrator privileges for your OpenShift cluster.
+* You have activated the Llama Stack Operator in your cluster.
+* You have installed the PostgreSQL Operator in your cluster. 
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+
+.Procedure 
+
+. In the OpenShift web console, select *Administrator* → *Quick Create* (image:images/quick-create-icon.png[]) → *Import YAML*, and create a CR similar to the following example `llamastack-custom-distribution.yaml` file: 
++
+.Example llamastack-custom-distribution.yaml
+[source,yaml]
+----
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: llamastack-custom-distribution
+  namespace: llamastack
+spec:
+  replicas: 1
+  server:
+    containerSpec:
+      env:
+        - name: VLLM_URL
+          value: 'https://llama32-3b.llamastack.svc.cluster.local/v1'
+        - name: INFERENCE_MODEL
+          value: llama32-3b
+        - name: VLLM_TLS_VERIFY
+          value: 'false'
+        - name: POSTGRES_HOST
+          value: <postgres-host>
+        - name: POSTGRES_PORT
+          value: '5432'
+        - name: POSTGRES_DB
+          value: llamastack
+        - name: POSTGRES_USER
+          value: llamastack
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: postgres-secret <1> 
+      name: llama-stack
+      port: 8321
+    distribution:
+      name: 'rh-dev'
+    storage:
+      size: 20Gi
+      mountPath: <custom-mount-path> ## Defaults to /opt/app-root/src/.llama/distributions/rh/
+----
+
+<1> You can create this secret by running `oc create secret generic postgres-secret\ --from-literal=password=<custom-password>` in your terminal.  
+
+. As the cluster administrator provisioning the Llama Stack server, you then need to create a Llama Stack PostgreSQL database and grant full permissions to a user. 
+
+.. Login to your cluster in a terminal window or access the terminal from the {productname-short} web console.
+
+.. Start the PostgresSQL shell with the following command: 
++
+[source,terminal]
+----
+$ psql
+----
+
+.. Create the database with the following command:
++
+[source,terminal]
+----
+CREATE DATABASE llamastack;
+----
+
+.. Create a user role called `llamastack` accessible with a custom password:
++
+[source,terminal]
+----
+$ CREATE ROLE llamastack WITH LOGIN PASSWORD <password-for-user-access>;
+----
+
+.. Grant full permissions on the database to the user with the following command:
++
+[source,terminal]
+----
+$ GRANT ALL PRIVILEGES ON DATABASE llamastack TO llamastack;
+----
+
+.. Connect to the new database by running the following command: 
++
+[source,terminal]
+----
+$ \c llamastack
+----
+
+.. Grant table usage and creation privileges to the public schema:
++
+[source,terminal]
+----
+$ GRANT USAGE, CREATE ON SCHEMA public TO llamastack;
+----
+
+.. Ensure all future tables are automatically accessible by running the following commands:
++
+[source,terminal]
+----
+$ ALTER DEFAULT PRIVILEGES IN SCHEMA public
+$ GRANT ALL PRIVILEGES ON TABLES TO llamastack;
+----
+
+.Verification 
+
+. Check that the custom resource was created with the following command: 
++
+[source,terminal]
+----
+$ oc get llamastackdistribution -n llamastack
+----
+
+. Check the running pods with the following command: 
++
+[source,terminal]
+----
+$ oc get pods -n llamastack | grep llamastack-custom-distribution
+----
+
+. Check the logs with the following command:
++
+[source,terminal]
+----
+$ oc logs -n llamastack -l app=llama-stack
+----
++
+.Example output 
+[source,terminal]
+----
+INFO: Started server process
+INFO: Waiting for application startup.
+INFO: Application startup complete.
+INFO: Uvicorn running on http://['::', '0.0.0.0']:8321
+----
