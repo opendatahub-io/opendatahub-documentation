@@ -1,0 +1,25 @@
+:_module-type: REFERENCE
+
+ifdef::context[:parent-context: {context}]
+[id="lmeval-metrics_{context}"]
+= LM-Eval metrics
+
+[role='_abstract']
+ Use LM-Eval metrics to track functions and outputs of your LM-Eval deployment and understand how your model is working. Metrics are included as standard in your LM-Eval deployment. 
+
+.LM-Eval metrics
+[cols="1,2,2"]
+|===
+| Metric | Labels | Description
+
+| `trustyai_eval`
+a| 
+* `eval_job_namespace`: namespace into which the evaluation job was deployed
+* `framework`: the evaluation framework used by the job, for example `lm-evaluation-harness`
+* `model_type`: the model type being evaluated, for example `local-chat-completions`
+* `task`: the evaluation task being performed, for example `mmlu`
+| Tracks the total number of LM-Eval jobs that have been deployed into the cluster, grouped by attributes of the job.
+
+|===
+
+
