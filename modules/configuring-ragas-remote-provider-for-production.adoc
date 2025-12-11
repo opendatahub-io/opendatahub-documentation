@@ -1,0 +1,322 @@
+:_module-type: PROCEDURE
+
+[id="configuring-ragas-remote-provider-for-production_{context}"]
+= Configuring the Ragas remote provider for production
+
+[role='_abstract']
+You can configure the Ragas remote provider to run evaluations as distributed jobs using {productname-short} pipelines. The remote provider enables production-scale evaluations by running Ragas in a separate Kubeflow Pipelines environment, providing resource isolation, improved scalability, and integration with CI/CD workflows.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have installed the {productname-short} Operator.
+* You have a `DataScienceCluster` custom resource in your environment; in the `spec.components` section the `llamastackoperator.managementState` is enabled with a value of `Managed`.
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+* You have configured a pipeline server in your project.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-ai-pipelines/#configuring-a-pipeline-server_ai-pipelines[Configuring a pipeline server].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_ai_pipelines/managing-ai-pipelines_ai-pipelines#configuring-a-pipeline-server_ai-pipelines[Configuring a pipeline server].
+endif::[]
+
+* You have activated the Llama Stack Operator in {productname-short}.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-llama-stack/#installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+endif::[]
+
+* You have deployed a Large Language Model with KServe.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-llama-stack/#deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/deploying-a-rag-stack-in-a-project_rag#Deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
+endif::[]
+
+* You have configured S3-compatible object storage for storing evaluation results and you know your S3 credentials: AWS access key, AWS secret access key, and AWS default region.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-on-projects/#adding-a-connection-to-your-project_projects[Adding a connection to your project].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_on_projects/using-connections_projects#adding-a-connection-to-your-project_projects[Adding a connection to your project].
+endif::[]
+
+* You have created a project.
+
+.Procedure
+. In a terminal window, if you are not already logged in to your OpenShift cluster, log in to the {openshift-cli} as shown in the following example:
++
+[source,terminal]
+----
+$ oc login <openshift_cluster_url> -u <username> -p <password>
+----
+
+. Navigate to your project:
++
+[source,terminal]
+----
+$ oc project <project_name>
+----
+
+. Create a secret for storing S3 credentials:
++
+[source,terminal]
+----
+$ oc create secret generic "<ragas_s3_credentials>" \
+  --from-literal=AWS_ACCESS_KEY_ID=<your_access_key> \
+  --from-literal=AWS_SECRET_ACCESS_KEY=<your_secret_key> \
+  --from-literal=AWS_DEFAULT_REGION=<your_region>
+----
++
+[IMPORTANT]
+====
+Replace the placeholder values with your actual S3 credentials. These AWS credentials are required in two locations:
+
+* In the Llama Stack server pod (as environment variables) - to access S3 when creating pipeline runs.
+* In the Kubeflow Pipeline pods (via the secret) - to store evaluation results to S3 during pipeline execution.
+
+The LlamaStackDistribution configuration loads these credentials from the 
+`"<ragas_s3_credentials>"` secret and makes them available to both locations.
+====
+
+. Create a secret for the Kubeflow Pipelines API token:
+.. Get your token by running the following command:
++
+[source,terminal]
+----
+$ export KUBEFLOW_PIPELINES_TOKEN=$(oc whoami -t)
+----
+.. Create the secret by running the following command:
++
+[source,terminal]
+----
+$ oc create secret generic kubeflow-pipelines-token \
+  --from-literal=KUBEFLOW_PIPELINES_TOKEN="$KUBEFLOW_PIPELINES_TOKEN"
+----
++
+[IMPORTANT]
+====
+The Llama Stack distribution service account does not have privileges to create pipeline runs. This secret provides the necessary authentication token for creating and managing pipeline runs.
+====
+
+. Verify that the Kubeflow Pipelines endpoint is accessible:
++
+[source,terminal]
+----
+$ curl -k -H "Authorization: Bearer $KUBEFLOW_PIPELINES_TOKEN" \
+ https://$KUBEFLOW_PIPELINES_ENDPOINT/apis/v1beta1/healthz
+----
+
+. Create a secret for storing your inference model information:
++
+[source,terminal]
+----
+$ export INFERENCE_MODEL="llama-3-2-3b"
+$ export VLLM_URL="https://llama-32-3b-instruct-predictor:8443/v1"
+$ export VLLM_TLS_VERIFY="false"  # Use "true" in production
+$ export VLLM_API_TOKEN="<token_identifier>"
+
+$ oc create secret generic llama-stack-inference-model-secret \
+  --from-literal INFERENCE_MODEL="$INFERENCE_MODEL" \
+  --from-literal VLLM_URL="$VLLM_URL" \
+  --from-literal VLLM_TLS_VERIFY="$VLLM_TLS_VERIFY" \
+  --from-literal VLLM_API_TOKEN="$VLLM_API_TOKEN"
+----
+
+. Get the Kubeflow Pipelines endpoint by running the following command and searching for "pipeline" in the routes. This is used in a later step for creating a ConfigMap for the Ragas remote provider configuration:
++
+[source,terminal]
+----
+$ oc get routes -A | grep -i pipeline
+----
++
+This output should show that the namespace, which is the namespace you specified for `KUBEFLOW_NAMESPACE`, has the pipeline server endpoint and the associated metadata one. The one to use is `ds-pipeline-dspa`.
+
+. Create a ConfigMap for the Ragas remote provider configuration. For example, create a `kubeflow-ragas-config.yaml` file as follows:
++
+.Example kubeflow-ragas-config.yaml
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubeflow-ragas-config
+  namespace: <project_name>
+data:
+  EMBEDDING_MODEL: "all-MiniLM-L6-v2"
+  KUBEFLOW_LLAMA_STACK_URL: "http://$<distribution_name>-service.$<your_namespace>.svc.cluster.local:$<port>"
+  KUBEFLOW_PIPELINES_ENDPOINT: "https://<kfp_endpoint>"
+  KUBEFLOW_NAMESPACE: "<project_name>"
+  KUBEFLOW_BASE_IMAGE: "quay.io/rhoai/odh-trustyai-ragas-lls-provider-dsp-rhel9:rhoai-3.0"
+  KUBEFLOW_RESULTS_S3_PREFIX: "s3://<bucket_name>/ragas-results"
+  KUBEFLOW_S3_CREDENTIALS_SECRET_NAME: "<ragas_s3_credentials>"
+----
++
+* `EMBEDDING_MODEL`: Used by Ragas for semantic similarity calculations.
+* `KUBEFLOW_LLAMA_STACK_URL`: The URL for the Llama Stack server. This must be accessible from the Kubeflow Pipeline pods. The <distribution_name>, <namespace>, and <port> are replaced with the name of the LlamaStack distribution you are creating, the namespace where you are creating it, and the port. These 3 elements are present in the LlamaStack distribution YAML.
+* `KUBEFLOW_PIPELINES_ENDPOINT`: The Kubeflow Pipelines API endpoint URL.
+* `KUBEFLOW_NAMESPACE`: The namespace where pipeline runs are executed. This should match your current project namespace.
+* `KUBEFLOW_BASE_IMAGE`: The container image used for Ragas evaluation pipeline components. This image contains the Ragas provider package installed via pip.
+* `KUBEFLOW_RESULTS_S3_PREFIX`: The S3 path prefix where evaluation results are stored. For example: `s3://my-bucket/ragas-evaluation-results`.
+* `KUBEFLOW_S3_CREDENTIALS_SECRET_NAME`: The name of the secret containing S3 credentials.
+
+. Apply the ConfigMap:
++
+[source,subs="+quotes"]
+----
+$ oc apply -f kubeflow-ragas-config.yaml
+----
+
+. Create a Llama Stack distribution configuration file with the Ragas remote provider. For example, create a llama-stack-ragas-remote.yaml as follows:
++
+.Example llama-stack-ragas-remote.yaml 
+[source,yaml,subs="+quotes"]
+----
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: llama-stack-pod
+spec:
+  replicas: 1
+  server:
+    containerSpec:
+      resources:
+        requests:
+          cpu: 4
+          memory: "12Gi"
+        limits:
+          cpu: 6
+          memory: "14Gi"
+      env:
+        - name: INFERENCE_MODEL
+          valueFrom:
+            secretKeyRef:
+              key: INFERENCE_MODEL
+              name: llama-stack-inference-model-secret
+              optional: true
+        - name: VLLM_MAX_TOKENS
+          value: "4096"
+        - name: VLLM_URL
+          valueFrom:
+            secretKeyRef:
+              key: VLLM_URL
+              name: llama-stack-inference-model-secret
+              optional: true
+        - name: VLLM_TLS_VERIFY
+          valueFrom:
+            secretKeyRef:
+              key: VLLM_TLS_VERIFY
+              name: llama-stack-inference-model-secret
+              optional: true
+        - name: VLLM_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: VLLM_API_TOKEN
+              name: llama-stack-inference-model-secret
+              optional: true
+        - name: MILVUS_DB_PATH
+          value: ~/milvus.db
+        - name: FMS_ORCHESTRATOR_URL
+          value: "http://localhost"
+        - name: KUBEFLOW_PIPELINES_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              key: KUBEFLOW_PIPELINES_ENDPOINT
+              name: kubeflow-ragas-config
+              optional: true
+        - name: KUBEFLOW_NAMESPACE
+          valueFrom:
+            configMapKeyRef:
+              key: KUBEFLOW_NAMESPACE
+              name: kubeflow-ragas-config
+              optional: true
+        - name: KUBEFLOW_BASE_IMAGE
+          valueFrom:
+            configMapKeyRef:
+              key: KUBEFLOW_BASE_IMAGE
+              name: kubeflow-ragas-config
+              optional: true
+        - name: KUBEFLOW_LLAMA_STACK_URL
+          valueFrom:
+            configMapKeyRef:
+              key: KUBEFLOW_LLAMA_STACK_URL
+              name: kubeflow-ragas-config
+              optional: true
+        - name: KUBEFLOW_RESULTS_S3_PREFIX
+          valueFrom:
+            configMapKeyRef:
+              key: KUBEFLOW_RESULTS_S3_PREFIX
+              name: kubeflow-ragas-config
+              optional: true
+        - name: KUBEFLOW_S3_CREDENTIALS_SECRET_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: KUBEFLOW_S3_CREDENTIALS_SECRET_NAME
+              name: kubeflow-ragas-config
+              optional: true
+        - name: EMBEDDING_MODEL
+          valueFrom:
+            configMapKeyRef:
+              key: EMBEDDING_MODEL
+              name: kubeflow-ragas-config
+              optional: true
+        - name: KUBEFLOW_PIPELINES_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: KUBEFLOW_PIPELINES_TOKEN
+              name: kubeflow-pipelines-token
+              optional: true
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: AWS_ACCESS_KEY_ID
+              name: "<ragas_s3_credentials>"
+              optional: true
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: AWS_SECRET_ACCESS_KEY
+              name: "<ragas_s3_credentials>"
+              optional: true
+        - name: AWS_DEFAULT_REGION
+          valueFrom:
+            secretKeyRef:
+              key: AWS_DEFAULT_REGION
+              name: "<ragas_s3_credentials>"
+              optional: true
+      name: llama-stack
+      port: 8321
+    distribution:
+      name: rh-dev
+----
+
+. Deploy the Llama Stack distribution:
++
+[source,terminal]
+----
+$ oc apply -f llama-stack-ragas-remote.yaml
+----
+
+. Wait for the deployment to complete:
++
+[source,terminal]
+----
+$ oc get pods -w
+----
++
+Wait until the `llama-stack-pod` pod status shows `Running`.
+
+.Next steps
+ifdef::upstream[]
+* link:{odhdocshome}/working-with-llama-stack/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with Ragas metrics]
+endif::[]

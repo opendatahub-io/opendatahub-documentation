@@ -1,0 +1,65 @@
+:_module-type: PROCEDURE
+
+[id="evaluating-rag-system-quality-with-ragas_{context}"]
+= Evaluating RAG system quality with Ragas metrics
+
+[role='_abstract']
+Evaluate your RAG system quality by testing your setup, using the example provided in the link:https://github.com/trustyai-explainability/llama-stack-provider-ragas/blob/main/demos/basic_demo.ipynb[demo notebook]. This demo outlines the basic steps for evaluating your RAG system with Ragas using the Python client. You can execute the demo notebook steps from a Jupyter environment. 
+
+Alternatively, you can submit an evaluation by directly using the `http` methods of the link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/overview-of-llama-stack_rag#llama_stack_providers_support[Llama Stack API]. 
+
+[IMPORTANT]
+====
+The Llama Stack pod must be accessible from the Jupyter environment in the cluster, which may not be the case by default. To configure this setup, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/deploying-a-rag-stack-in-a-project_rag#ingesting-content-into-a-llama-model_rag[Ingesting content into a Llama model]
+====
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* You have created a project.
+* You have created a pipeline server.
+* You have created a secret for your AWS credentials in your project namespace.
+* You have deployed a Llama Stack distribution with the Ragas evaluation provider enabled (Inline or Remote).
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/monitoring-data-science-models/#configuring-ragas-remote-provider-for-production_monitor[Configuring the Ragas remote provider for production].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/evaluating-rag-systems-with-ragas_monitor#setting-up-ragas-inline-provider_monitor[Setting up the Ragas inline provider for development].
+endif::[]
+* You have access to a workbench or notebook environment where you can run Python code.
+
+.Procedure
+. From the {productname-short} dashboard, click *Projects*.
+. Click the name of the project that contains the workbench.
+. Click the *Workbenches* tab.
+. If the status of the workbench is *Running*, skip to the next step. 
++
+If the status of the workbench is *Stopped*, in the *Status* column for the workbench, click *Start*. 
++
+The *Status* column changes from *Stopped* to *Starting* when the workbench server is starting, and then to *Running* when the workbench has successfully started.
+.  Click the open icon (image:images/open.png[The open icon]) next to the workbench.
++ 
+Your Jupyter environment window opens.
+. On the toolbar, click the *Git Clone* icon and then select *Clone a Repository*.
+. In the *Clone a repo* dialog, enter the following URL `https://github.com/trustyai-explainability/llama-stack-provider-ragas.git`                                                         
+. In the file browser, select the newly-created `/llama-stack-provider-ragas/demos` folder.
++ 
+You see a Jupyter notebook named `basic_demo.ipynb`.
+. Double-click the `basic_demo.ipynb` file to launch the Jupyter notebook.
++
+The Jupyter notebook opens. You see code examples for the following tasks: 
++
+** Run your Llama Stack distribution
+** Setup and Imports 
+** Llama Stack Client Setup
+** Dataset Preparation
+** Dataset Registration
+** Benchmark Registration
+** Evaluation Execution
+** Inline vs Remote Side-by-side
+
+. In the Jupyter notebook, run the code cells sequentially through the *Evaluation Execution*.
+. Return to the {productname-short} dashboard.
+. Click *Develop & train* -> *Pipelines* -> *Runs*. You might need to refresh the page to see that the new evaluation job running.
+. Wait for the job to show *Successful*. 
+. Return to the workbench and run the *Results Display* cell.
+. Inspect the results displayed.

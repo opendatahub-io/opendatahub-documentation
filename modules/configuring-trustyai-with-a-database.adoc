@@ -25,13 +25,13 @@ endif::[]
 ifndef::upstream[]
 * You have enabled the TrustyAI component, as described in link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models/configuring-trustyai_monitor#enabling-trustyai-component_monitor[Enabling the TrustyAI component].
 
-* The data scientist has created a data science project, as described in link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project], that contains the models that the data scientist wants to monitor.  
+* The data scientist has created a project, as described in link:{rhoaidocshome}{default-format-url}/working_on_projects/using-projects_projects#creating-a-project_projects[Creating a project], that contains the models that the data scientist wants to monitor.  
 endif::[]
 
 ifdef::upstream[]
 * You have enabled the TrustyAI component, as described in link:{odhdocshome}/monitoring-data-science-models/#enabling-trustyai-component_monitor[Enabling the TrustyAI component].
 
-* The data scientist has created a data science project, as described in link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project], that contains the models that the data scientist wants to monitor.  
+* The data scientist has created a project, as described in link:{odhdocshome}/working-on-projects/#creating-a-project_projects[Creating a project], that contains the models that the data scientist wants to monitor.  
 endif::[]
 
 * If you are configuring the TrustyAI service with an external MySQL database, your database must already be in your cluster and use at least MySQL version 5.x. However, {org-name} recommends that you use MySQL version 8.x. 
@@ -41,6 +41,8 @@ endif::[]
 [NOTE]
 --
 The transport security layer (TLS) protocol does not work with the MariaDB operator 0.29 or later versions.
+
+The MariaDB operator for `s390x` is not supported at this time.
 --
 
 .Procedure
@@ -73,7 +75,7 @@ data:
 
 .. Save the file with the file name *_<service_name>_-db-tls.yaml*. For example, if your service name is `trustyai-service`, save the file as *trustyai-service-db-tls.yaml*.
 
-.. Apply the YAML file in the data science project that contains the models that the data scientist wants to monitor:
+.. Apply the YAML file in the project that contains the models that the data scientist wants to monitor:
 +
 [source,subs="+quotes"]
 ----
@@ -111,7 +113,7 @@ stringData:
 
 .. Save the file with the file name *db-credentials.yaml*. You will need this name later when you install or change the TrustyAI service.
 
-.. Apply the YAML file in the data science project that contains the models that the data scientist wants to monitor:
+.. Apply the YAML file in the project that contains the models that the data scientist wants to monitor:
 +
 [source,subs="+quotes"]
 ----
@@ -159,7 +161,7 @@ spec:
 
 .. Save the file. For example, *trustyai_crd.yaml*.
 
-.. Apply the new TrustyAI service CR to the data science project that contains the models that the data scientist wants to monitor:
+.. Apply the new TrustyAI service CR to the project that contains the models that the data scientist wants to monitor:
 +
 [source,subs="+quotes"]
 ----

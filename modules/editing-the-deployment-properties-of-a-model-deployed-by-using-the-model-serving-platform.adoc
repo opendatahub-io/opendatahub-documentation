@@ -1,0 +1,51 @@
+:_module-type: PROCEDURE
+
+[id="editing-the-deployment-properties-of-a-model-deployed-by-using-the-model-serving-platform_{context}"]
+= Editing the deployment properties of a model deployed by using the model serving platform
+
+[role='_abstract']
+You can edit the deployment properties of a deployed model version from a model registry. For example, you can change the deployment name, model framework, number of model server replicas, model server size, and source model location details.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* An available model registry exists in your deployment, and contains at least 1 registered and deployed model version.
+* You have access to the model registry that contains the model version deployment that you want to edit.
+
+.Procedure
+. From the {productname-short} dashboard, click *AI hub* -> *Registry*.
+. From the *Model registry* drop-down list, select the model registry that contains the model deployment that you want to edit.
+. In the *Model name* column, click the name of the model that contains the deployment that you want to edit.
++
+The details page for the model opens.
+. Click the name of the model version with the deployment that you want to edit.
+. Click *Deployments*
+. Click the action menu (*&#8942;*) beside the model deployment that you want to edit.
+. Click *Edit*.
+. In the *Edit model* dialog, edit the model deployment properties:
+.. In the *Model deployment name* field, enter a new, unique name for your model deployment.
+.. From the *Model framework* list, select a different framework for your model. 
++
+NOTE: The *Model framework* list shows only the frameworks that are supported by the model serving runtime that you specified when you deployed your model.
++
+.. In the *Number of model server replicas to deploy* field, specify a value.
+.. From the *Model server size* list, select a value.
+..  In the *Model route* section, select the *Make deployed models available through an external route* checkbox to make your deployed models available to external clients.
+.. In the *Token authentication* section, select the *Require token authentication* checkbox to require token authentication for your model server. To finish configuring token authentication, perform the following actions:
+... In the *Service account name* field, enter a service account name for which the token will be generated. The generated token is created and displayed in the *Token secret* field when the model server is configured.
+... To add an additional service account, click *Add a service account* and enter another service account name.
+.. Edit the connection by specifying an existing connection, or by creating a new connection. 
+.. Customize the runtime parameters in the *Configuration parameters* section:
+... Modify the values in *Additional serving runtime arguments* to define how the deployed model behaves.
+... Modify the values in *Additional environment variables* to define variables in the model's environment.
++
+The *Configuration parameters* section shows predefined serving runtime parameters, if any are available.
++
+NOTE: Do not modify the port or model serving runtime arguments, because they require specific values to be set. Overwriting these parameters can cause the deployment to fail.
+.. Click *Redeploy*.			 
+
+.Verification
+* The model redeploys and is displayed with updated details on the *Deployments* tab for the model version.
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete

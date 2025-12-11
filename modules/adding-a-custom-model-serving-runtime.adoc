@@ -1,0 +1,66 @@
+:_module-type: PROCEDURE
+
+[id="adding-a-custom-model-serving-runtime_{context}"]
+= Adding a custom model-serving runtime
+ifdef::upstream[]
+A model-serving runtime adds support for a specified set of model frameworks and the model formats supported by those frameworks. You can use the link:{odhdocshome}/configuring-your-model-serving-platform/#supported-model-serving-runtimes_odh-admin[preinstalled runtimes] that are included with {productname-short}. You can also add your own custom runtimes if the default runtimes do not meet your needs. 
+endif::[]
+
+ifdef::self-managed,cloud-service[]
+A model-serving runtime adds support for a specified set of model frameworks and the model formats supported by those frameworks. You can use the link:{rhoaidocshome}{default-format-url}/configuring_your_model-serving_platform/configuring-your-model-serving-platform_rhoai-admin#supported-model-serving-runtimes_rhoai-admin[preinstalled runtimes] that are included with {productname-short}. You can also add your own custom runtimes if the default runtimes do not meet your needs.
+endif::[]
+
+As an administrator, you can use the {productname-short} interface to add and enable a custom model-serving runtime. You can then choose the custom runtime when you deploy a model on the model serving platform.
+
+NOTE: {org-name} does not provide support for custom runtimes. You are responsible for ensuring that you are licensed to use any custom runtimes that you add, and for correctly configuring and maintaining them.
+
+[role='_abstract']
+
+.Prerequisites
+* You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
+* You have built your custom runtime and added the image to a container image repository such as link:https://quay.io[Quay^].
+
+.Procedure
+. From the {productname-short} dashboard, click *Settings* -> *Model resources and operations* -> *Serving runtimes*.
++
+The *Serving runtimes* page opens and shows the model-serving runtimes that are already installed and enabled.
+
+. To add a custom runtime, choose one of the following options:
++
+** To start with an existing runtime (for example, 
+*vLLM NVIDIA GPU ServingRuntime for KServe*), click the action menu (&#8942;) next to the existing runtime and then click *Duplicate*.
+
+** To add a new custom runtime, click *Add serving runtime*.
+
+. In the *Select the model serving platforms this runtime supports* list, select *Single-model serving platform*.
+
+. In the *Select the API protocol this runtime supports* list, select *REST* or *gRPC*.
+
+. Optional: If you started a new runtime (rather than duplicating an existing one), add your code by choosing one of the following options:
++
+--
+* *Upload a YAML file*
+.. Click *Upload files*.
+.. In the file browser, select a YAML file on your computer.
++
+The embedded YAML editor opens and shows the contents of the file that you uploaded.
+
+* *Enter YAML code directly in the editor*
+.. Click *Start from scratch*.
+.. Enter or paste YAML code directly in the embedded editor.
+--
++
+NOTE: In many cases, creating a custom runtime will require adding new or custom parameters to the `env` section of the `ServingRuntime` specification.
+
+. Click *Add*.
++
+The *Serving runtimes* page opens and shows the updated list of runtimes that are installed. Observe that the custom runtime that you added is automatically enabled. The API protocol that you specified when creating the runtime is shown.
+
+. Optional: To edit your custom runtime, click the action menu (&#8942;) and select *Edit*.
+
+.Verification
+* The custom model-serving runtime that you added is shown in an enabled state on the *Serving runtimes* page.
+
+//[role='_additional-resources']
+// .Additional resources
+// *

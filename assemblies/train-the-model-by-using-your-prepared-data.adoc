@@ -1,0 +1,48 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="train-the-model-by-using-your-prepared-data_{context}"]
+= Train the model by using your prepared data
+
+To train the model, you can use the Red Hat Training Hub and the KubeFlow Trainer Operator.
+
+You can simplify and accelerate the process of fine-tuning and customizing a foundation model by using your own data. The Red Hat Training Hub is an algorithm-focused interface for common LLM training, continual learning, and reinforcement learning techniques.
+
+include::modules/explore-the-training-hub-examples.adoc[leveloffset=+1]
+
+include::modules/estimate-memory-usage.adoc[leveloffset=+1]
+
+include::modules/compare-the-performance-of-osft-and-sft.adoc[leveloffset=+1]
+
+== Distribute training jobs by using the KubeFlow Trainer Operator
+
+If you want to implement distributed training across multiple nodes to meet the needs of your training workloads, you can use the KubeFlow Trainer Operator (KFTO). KFTO abstracts the underlying infrastructure complexity of distributed training and fine-tuning of models. The iterative process of fine-tuning significantly reduces the time and resources required compared to training models from scratch.
+
+Learn more about the KubeFlow Trainer Operator in the following {productname-short} documentation:
+
+ifdef::upstream[]
+* link:{odhdocshome}/working-with-distributed-workloads/#running-kfto-based-distributed-training-workloads_distributed-workloads[Running Training Operator-based distributed training workloads] in the _Working with distributed workloads_ guide.
+endif::[]
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/working_with_distributed_workloads/running-kfto-based-distributed-training-workloads_distributed-workloads[Running Training Operator-based distributed training workloads] in the _Working with distributed workloads_ guide.
+endif::[]
+
+//* Example:
+//for some reason, using italics for the tutorial title  means that the following lines break the build of the downstream book
+
+//** link:{rhoaidocshome}{default-format-url}/openshift_ai_tutorial_-_fraud_detection_example/running-a-distributed-workload#distributing-training-jobs-with-kfto[Distributing training jobs with the Training Operator]
+//in the _Red Hat OpenShift AI tutorial: Fraud Detection example_.
+
+== Distributed fine-tuning with Training Hub and Kubeflow Trainer 
+
+The KubeFlow Trainer Operator supports distributed fine-tuning by using Training Hub, abstracting the complexity of distributed training. It seamlessly manages scaling and orchestration for you, allowing you to focus on your domain-specific fine-tuning logic by using the simplified Training Hub APIs.
+
+For a comprehensive tutorial on Fine Tuning with Training Hub leveraging distributed nodes with Kubeflow Trainer, follow these guided examples: 
+
+* link:https://github.com/red-hat-data-services/red-hat-ai-examples/tree/main/examples/fine-tuning/training-hub/sft[Example of Supervised Fine Tuning (SFT) with Training Hub and Kubeflow Trainer]
+* link:https://github.com/red-hat-data-services/red-hat-ai-examples/tree/main/examples/fine-tuning/osft[Example of Orthogonal Subspace Fine-Tuning (OSFT) with Training Hub and Kubeflow Trainer]
+
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

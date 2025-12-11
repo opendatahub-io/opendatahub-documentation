@@ -10,7 +10,7 @@ You can run evaluations using custom Unitxt cards. To do this, include the custo
 
 .Prerequisites
 * You have logged in to {productname-long}.
-* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
+* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the project where the models are deployed.
 
 .Procedure
 . Pass a custom Unitxt Card in JSON format:
@@ -114,3 +114,8 @@ spec:
 ----
 
 . (Optional) You can use other Unitxt loaders (found on the Unitxt website) that contain the `volumes` and `volumeMounts` parameters to mount the dataset from persistent volumes. For example, if you use the `LoadCSV` Unitxt command, mount the files to the container and make the dataset accessible for the evaluation process.
+
+[NOTE]
+--
+The provided scenario example does not work on `s390x`, as it uses a Parquet-type dataset, which is not supported on this architecture. To run the scenario on `s390x`, use a task with a non-Parquet dataset.
+--

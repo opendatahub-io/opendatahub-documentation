@@ -4,20 +4,20 @@
 = Updating a model server
 
 [role='_abstract']
-You can update your data science project's model server by changing details, such as the number of deployed replicas, the server size, the token authentication, and how to access the project. If you require extra power for use with large datasets, you can update you can assign accelerators to your model server to optimize performance.
+You can update your project's model server by changing details, such as the number of deployed replicas, the server size, the token authentication, and how to access the project. If you require extra power for use with large datasets, you can update you can assign accelerators to your model server to optimize performance.
 
 .Prerequisites
 * You have logged in to {productname-long}.
-* You have created a data science project that has a model server assigned.
+* You have created a project that has a model server assigned.
 
 .Procedure
-. From the {productname-short} dashboard, click *Data science projects*.
+. From the {productname-short} dashboard, click *Projects*.
 +
-The *Data science projects* page opens.
+The *Projects* page opens.
 . Click the name of the project whose model server details you want to update.
 +
 A project details page opens.
-. Click the *Models* tab.
+. Click the *Deployments* tab.
 . Locate the model server you want to update. Click the action menu (*&#8942;*) and select *Edit model server*.
 +
 The *Edit model server* dialog opens.
@@ -29,17 +29,6 @@ NOTE: You cannot change the *Serving runtime* selection for a model server that 
 .. In the *Number of model replicas to deploy* field, specify a value.
 .. From the *Hardware profile* list, select a hardware profile.
 If project-scoped hardware profiles exist, the *Hardware profile* list includes subheadings to distinguish between global hardware profiles and project-scoped hardware profiles.
-+
-[IMPORTANT]
-====
-By default, hardware profiles are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. If you enable hardware profiles, the *Hardware profiles* list is displayed instead of the *Accelerator profiles* list. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles, set the `disableHardwareProfiles` value to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
-ifdef::upstream[]
-For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
-endif::[]
-ifndef::upstream[]
-For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
-endif::[] 
-====
 .. Optional: Click *Customize resource requests and limit* and update the following values:
 ... In the *CPUs requests* field, specify the number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
 ... In the *CPU limits* field, specify the maximum number of CPUs to use with your model server. Use the list beside this field to specify the value in cores or millicores.
@@ -52,7 +41,7 @@ endif::[]
 . Click *Configure*.
 
 .Verification
-* The model server that you updated is displayed on the *Models* tab for the project.
+* The model server that you updated is displayed on the *Deployments* tab for the project.
 
 //[role='_additional-resources']
 //.Additional resources

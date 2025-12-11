@@ -27,7 +27,7 @@ ifdef::upstream[]
 * You can access a workbench that is suitable for distributed training, as described in link:{odhdocshome}/working-with-distributed-workloads/#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
 endif::[]
 
-* You have administrator access for the data science project.
+* You have administrator access for the project.
 ** If you created the project, you automatically have administrator access. 
 ** If you did not create the project, your cluster administrator must give you administrator access.
 
@@ -52,7 +52,7 @@ For more information, search for "user access tokens" in the link:https://huggin
 .Procedure
 . Open the workbench, as follows:
 .. Log in to the {productname-long} web console.
-.. Click *Data science projects* and click your project.
+.. Click *Projects* and click your project.
 .. Click the *Workbenches* tab. 
 If your workbench is not already running, start the workbench.
 .. Click the *Open* link to open the IDE in a new window. 
@@ -74,7 +74,7 @@ client.create_job(
         "memory": "64Gi",
         "cpu": 4,
     },
-    base_image="quay.io/modh/training:py311-cuda124-torch251",
+    base_image="registry.redhat.io/rhoai/odh-training-cuda128-torch28-py312-rhel9:v3.0",
     env_vars={
         # Hugging Face
         "HF_HOME": "/mnt/shared/.cache",
@@ -110,7 +110,7 @@ Optional: If you specify a different model, and your model is not a gated model 
 .. The example provided is for NVIDIA GPUs. If you use AMD accelerators, make the following additional changes:
 
 * In the `resources_per_worker` entry, change `nvidia.com/gpu` to `amd.com/gpu`
-* Change the `base_image` value to `quay.io/modh/training:py311-rocm62-torch251`
+* Change the `base_image` value to `registry.redhat.io/rhoai/odh-training-cuda128-torch28-py312-rhel9:v3.0`
 * Remove the `CUDA` and `NCCL` entries
 
 .. If the RWX `PersistentVolumeClaim` resource that is attached to your workbench has a different name instead of `shared`, update the following values to replace `shared` with your PVC name:

@@ -1,0 +1,46 @@
+:_module-type: CONCEPT
+
+[id="About-the-ai-assets-endpoint-page_{context}"]
+= About the AI assets endpoint page
+
+[role="_abstract"]
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+This feature is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+This feature is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+The *AI asset endpoints page* is a central dashboard for managing the generative AI assets available for you to use within your project. 
+
+
+The page organizes assets into two categories:
+
+* Models: Lists all generative AI models deployed in your project that have been designated as available assets. For a model to be available, you must select the *Add as AI asset endpoint* check box when deploying it.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/deploying-models/#deploying-models-on-the-model-serving-platform_odh-user[Deploying models on the model serving platform^].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#deploying-models-on-the-model-serving-platform_rhoai-user[Deploying models on the model serving platform^].
+endif::[]
+* MCP Server: Lists all available MCP servers associated with your project.
+
+
+The primary purpose of this page is to provide a starting point for using these assets. From here, you can perform actions such as adding a model to a playground instance for testing.
+
+[IMPORTANT]
+====
+The assets listed on the *AI assets endpoint* page page are scoped to your currently selected project. You will only see models and servers that are deployed and available within that specific project. 
+====
+

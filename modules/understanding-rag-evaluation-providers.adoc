@@ -1,0 +1,14 @@
+:_module-type: CONCEPT
+
+[id="understanding-rag-evaluation-providers_{context}"]
+= Understanding RAG evaluation providers
+
+Llama Stack supports pluggable evaluation providers that measure the quality and performance of Retrieval-Augmented Generation (RAG) pipelines. Evaluation providers assess how accurately, faithfully, and relevantly the generated responses align with the retrieved context and the original user query. Each provider implements its own metrics and evaluation methodology. You can enable a specific provider through the configuration of the `LlamaStackDistribution` custom resource.
+
+{productname-short} supports the following evaluation providers:
+
+* *Ragas*: A lightweight, Python-based framework that evaluates factuality, contextual grounding, and response relevance.
+* *BEIR*: A benchmarking framework for retrieval performance across multiple datasets. 
+* *TrustyAI*: A {org-name} framework that evaluates explainability, fairness, and reliability of model outputs. 
+
+Evaluation providers operate independently of model serving and retrieval components. You can run evaluations asynchronously and aggregate results for quality tracking over time.

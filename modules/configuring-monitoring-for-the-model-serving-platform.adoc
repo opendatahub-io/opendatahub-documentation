@@ -1,0 +1,164 @@
+:_module-type: PROCEDURE
+
+[id="configuring-monitoring-for-the-model-serving-platform_{context}"]
+= Configuring monitoring for the model serving platform
+
+[role="_abstract"]
+
+ifdef::self-managed,cloud-service[]
+The model serving platform includes metrics for link:{rhoaidocshome}{default-format-url}/configuring_your_model-serving_platform/configuring-your-model-serving-platform_rhoai-admin#supported-model-serving-runtimes_rhoai-admin[supported runtimes] of the KServe component. KServe does not generate its own metrics and relies on the underlying model-serving runtimes to provide them. The set of available metrics for a deployed model depends on its model-serving runtime.
+
+In addition to runtime metrics for KServe, you can also configure monitoring for OpenShift Service Mesh. The OpenShift Service Mesh metrics help you to understand dependencies and traffic flow between components in the mesh.
+endif::[]
+ifdef::upstream[]
+The model serving platform includes metrics for link:{odhdocshome}/configuring-your-model-serving-platform/#supported-model-serving-runtimes_odh-admin[supported runtimes] of the KServe component. KServe does not generate its own metrics, and relies on the underlying model-serving runtimes to provide them. The set of available metrics for a deployed model depends on its model-serving runtime.
+
+In addition to runtime metrics for KServe, you can also configure monitoring for OpenShift Service Mesh. The OpenShift Service Mesh metrics help you to understand dependencies and traffic flow between components in the mesh.
+endif::[]
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have created OpenShift Service Mesh and Knative Serving instances and installed KServe.
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated  
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+* You are familiar with link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-core-platform-monitoring#preparing-to-configure-the-monitoring-stack[creating a config map] for monitoring a user-defined workflow. You will perform similar steps in this procedure.
+* You are familiar with link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-user-workload-monitoring#enabling-monitoring-for-user-defined-projects-uwm_preparing-to-configure-the-monitoring-stack-uwm[enabling monitoring] for user-defined projects in OpenShift. You will perform similar steps in this procedure.
+* You have link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-user-workload-monitoring#granting-users-permission-to-monitor-user-defined-projects_preparing-to-configure-the-monitoring-stack-uwm[assigned] the `monitoring-rules-view` role to users that will monitor metrics.
+* You have installed the cert-manager Operator in {openshift-platform} by using the web console as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/cert-manager-operator-for-red-hat-openshift#installing-the-cert-manager-operator-for-red-hat-openshift[Installing the cert-manager Operator for Red Hat OpenShift].
+
+.Procedure
+. In a terminal window, if you are not already logged in to your OpenShift cluster as a cluster administrator, log in to the {openshift-cli} as shown in the following example:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<admin_username>__ -p __<password>__
+----
+
+. Define a `ConfigMap` object in a YAML file called `uwm-cm-conf.yaml` with the following contents:
++
+[source]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-workload-monitoring-config
+  namespace: openshift-user-workload-monitoring
+data:
+  config.yaml: |
+    prometheus:
+      logLevel: debug 
+      retention: 15d
+----
++
+The `user-workload-monitoring-config` object configures the components that monitor user-defined projects.  Observe that the retention time is set to the recommended value of 15 days.
+
+. Apply the configuration to create the `user-workload-monitoring-config` object.
++
+[source]
+----
+$ oc apply -f uwm-cm-conf.yaml
+----
+
+. Define another `ConfigMap` object in a YAML file called `uwm-cm-enable.yaml` with the following contents:
+
++
+[source]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-monitoring-config
+  namespace: openshift-monitoring
+data:
+  config.yaml: |
+    enableUserWorkload: true
+----
++
+The `cluster-monitoring-config` object enables monitoring for user-defined projects.
+
+. Apply the configuration to create the `cluster-monitoring-config` object.
++
+[source]
+----
+$ oc apply -f uwm-cm-enable.yaml
+----
+
+. Create `ServiceMonitor` and `PodMonitor` objects to monitor metrics in the service mesh control plane as follows:
+
+
+.. Create an `istiod-monitor.yaml` YAML file with the following contents:
++
+[source]
+----
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istiod-monitor
+  namespace: istio-system
+spec:
+  targetLabels:
+  - app
+  selector:
+    matchLabels:
+      istio: pilot
+  endpoints:
+  - port: http-monitoring
+    interval: 30s
+----
+
+.. Deploy the `ServiceMonitor` CR in the specified `istio-system` namespace.
++
+[source]
+----
+$ oc apply -f istiod-monitor.yaml
+----
++
+You see the following output:
++
+[source]
+----
+servicemonitor.monitoring.coreos.com/istiod-monitor created
+----
+
+.. Create an `istio-proxies-monitor.yaml` YAML file with the following contents:
++
+[source]
+----
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: istio-proxies-monitor
+  namespace: istio-system
+spec:
+  selector:
+    matchExpressions:
+    - key: istio-prometheus-ignore
+      operator: DoesNotExist
+  podMetricsEndpoints:
+  - path: /stats/prometheus
+    interval: 30s
+----
+
+.. Deploy the `PodMonitor` CR in the specified `istio-system` namespace.
++
+[source]
+----
+$ oc apply -f istio-proxies-monitor.yaml
+----
++
+You see the following output:
++
+[source]
+----
+podmonitor.monitoring.coreos.com/istio-proxies-monitor created
+----
+
+// [role="_additional-resources"]
+// .Additional resources

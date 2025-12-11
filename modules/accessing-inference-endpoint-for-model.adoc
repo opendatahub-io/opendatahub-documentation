@@ -1,0 +1,32 @@
+:_module-type: PROCEDURE
+
+[id="accessing-inference-endpoint-for-model_{context}"]
+= Accessing the inference endpoint for a deployed model
+
+[role='_abstract']
+To make inference requests to your deployed model, you must know how to access the inference endpoint that is available.
+
+ifdef::upstream[]
+For a list of paths to use with the supported runtimes and example commands, see link:{odhdocshome}/deploying-models/#inference-endpoints_odh-user[Inference endpoints].
+endif::[]
+ifndef::upstream[]
+For a list of paths to use with the supported runtimes and example commands, see link:{rhoaidocshome}{default-format-url}/deploying_models/making_inference_requests_to_deployed_models#inference-endpoints_rhoai-user[Inference endpoints].
+endif::[]
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* You have deployed a model by using the model serving platform.
+* If you enabled token authentication for your deployed model, you have the associated token value.
+
+.Procedure
+. From the {productname-short} dashboard, click *AI hub* -> *Deployments*. 
++
+The inference endpoint for the model is shown in the *Inference endpoints* field.
+. Depending on what action you want to perform with the model (and if the model supports that action), copy the inference endpoint and then add a path to the end of the URL.
+. Use the endpoint to make API requests to your deployed model.
+
+[role='_additional-resources']
+.Additional resources
+* link:https://caikit.readthedocs.io/en/latest/autoapi/caikit/index.html[Caikit API documentation^]
+* link:https://docs.openvino.ai/2023.3/ovms_docs_rest_api_kfs.html[OpenVINO KServe-compatible REST API documentation^]
+* link:https://platform.openai.com/docs/api-reference/introduction[OpenAI API documentation]

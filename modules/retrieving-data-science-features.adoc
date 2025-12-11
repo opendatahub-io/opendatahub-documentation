@@ -1,0 +1,30 @@
+:_module-type: PROCEDURE
+
+[id="retrieving-data-science-features_{context}"]
+= Retrieving data science features 
+You can connect to the Feature Store and consume the features necessary for model development and inference. 
+
+.Prerequisites
+* Your Feature Store has been deployed.
+* User access permissions have been configured by the administrator.
+* You have access to a relevant project and a workbench.
+* Your Feature Store client configuration must be complete.
+
+.Procedure
+
+. From the {productname-short} dashboard, click *Projects*.
++
+The *Projects* page opens.
+. Click the name of the project that you want to work on.
+. Create a new workbench or open an existing workbench with the Feast software development kit (SDK).
+.. In the Feature Store client configuration table, select the configmaps associated with the desired repositories.
+.. Copy the Python script that is generated on the left side of the page.
+that is generated on the left of the page.
+.. Click the **Workbenches** tab and launch a workbench.
+.. Paste the Python script into the workbench cell.
+
+[NOTE]
+====
+* You do not need tokens or manual authentication for the Feature Store. Your workbench automatically authenticates using the access your administrator granted to your Data Science Project.
+* Feast SDK is available in all images except minimal.
+====

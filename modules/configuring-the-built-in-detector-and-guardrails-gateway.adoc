@@ -5,7 +5,7 @@ ifdef::context[:parent-context: {context}]
 = Configuring the built-in detector and guardrails gateway
 [role='_abstract']
 
-The built-in detectors and guardrails gateway are sidecar containers that you can deploy with the `GuardrailsOrchestrator` service, either individually or together. Use the `GuardrailsOrchestrator` custom resource (CR) to enable them. This example uses the regex built-in detector to demonstrate the process.
+The built-in detectors and guardrails gateway are sidecar containers that you can deploy with the `GuardrailsOrchestrator` service, either individually or together. Use the `GuardrailsOrchestrator` custom resource (CR) to enable them.
 
 .Prerequisites
 * You have cluster administrator privileges for your {productname-short} cluster.
@@ -20,42 +20,10 @@ ifdef::cloud-service[]
 endif::[]
 * You are familiar with how to create a `ConfigMap` for monitoring a user-defined workflow. You perform similar steps in this procedure. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html-single/nodes/index#nodes-pods-configmap-overview_configmaps[Understanding config maps].
 
-ifdef::upstream[]
-* You have configured KServe to use `RawDeployment` mode. For more information, see link:{odhdocshome}/deploying_models/#deploying-models-on-the-single-model-serving-platform_odh-user[Deploying models on the single-model serving platform^].
-endif::[]
-
-ifndef::upstream[]
-* You have configured KServe to use `RawDeployment` mode. For more information, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models_on_the_single_model_serving_platform#deploying-models-on-the-single-model-serving-platform_rhoai-user[Deploying models on the single-model serving platform^].
-endif::[]
-
 * You have the TrustyAI component in your {productname-short} `DataScienceCluster` set to `Managed`.
 * You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace.  
 
 .Procedure
-
-. Define a `ConfigMap` object in a YAML file to specify the `regexDetectorImage`. For example, create a YAML file called `regex_image_cm.yaml` with the following content:
-+
-.Example `regex_gateway_images_cm.yaml`
-[source,yaml]
-----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: gorch-regex-gateway-image-config
-data:
-  regexDetectorImage: 'quay.io/repository/trustyai/regex-detector@sha256:efab6cd8b637b9c35d311aaf639dfedee7d28de3ee07b412ab473deadecd3606'            <1>
-  GatewayImage: 'quay.io/repository/trustyai/vllm-orchestrator-gateway@sha256:c511b386d61a728acdfe8a1ac7a16b3774d072dd053718e5b9c5fab0f025ac3b' <2>
-----
-<1> The regex detector is a sidecar image that provides regex-based detections.
-<2> The guardrails gateway is a sidecar image that emulates the vLLM chat completions API and saves preset detector configurations.
-
-. Deploy the `regex_gateway_images_cm.yaml` config map:
-+
-[source,terminal]
-----
-$ oc apply -f regex_gateway_images_cm.yaml -n <TEST_NAMESPACE>
-----
-
 . Define the guardrails gateway `ConfigMap` object to specify the `detectors` and `routes`. For example, create a YAML file called `detectors_cm.yaml` with the following contents:
 +
 .Example `detectors_cm.yaml`
@@ -69,12 +37,10 @@ metadata:
     app: fmstack-nlp
 data:
   config.yaml: |
-    orchestrator:   <1>
-      host: "localhost"
-      port: 8032
-    detectors:      <2>
+    detectors:      <1>
       - name: regex_language
-        input: true <3>
+        server: built_in
+        input: true <2>
         output: true
         detector_params:
           regex:
@@ -88,7 +54,7 @@ data:
             - $CUSTOM_REGEX
       - name: hap
         detector_params: {}
-    routes:         <4>
+    routes:         <3>
       - name: all
         detectors:
           - regex_language
@@ -96,10 +62,9 @@ data:
       - name: passthrough
         detectors:
 ----
-<1> The orchestrator service.
-<2> A list of preconfigured regular expressions for common detection actions. These regular expressions detect personal identifying information, such as `email` and `credit-card`.
-<3> The detector will be used for both input and output. 
-<4> The resulting endpoints for the  detectors. For example, `pii` is served at `$GUARDRAILS_GATEWAY_URL/pii/v1/chat/completions` and uses the `regex` detector. The `passthrough` preset does not use any detectors.
+<1> A list of preconfigured regular expressions for common detection actions. These regular expressions detect personal identifying information, such as `email` and `credit-card`.
+<2> The detector will be used for both input and output.
+<3> The resulting endpoints for the  detectors. For example, `pii` is served at `$GUARDRAILS_GATEWAY_URL/pii/v1/chat/completions` and uses the `regex` detector. The `passthrough` preset does not use any detectors.
 
 . Deploy the guardrails gateway `detectors_cm.yaml` config map:
 +

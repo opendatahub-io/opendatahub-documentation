@@ -6,36 +6,6 @@
 [role='_abstract']
 Create a workbench with the appropriate resources to run a distributed training or tuning job.
 
-ifdef::upstream[]
-[IMPORTANT]
-====
-By default, hardware profiles, including Kueue-enabled profiles, are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles and Kueue functionality, set the `disableHardwareProfiles` and `disableKueue` values to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
-
-For more information about setting dashboard configuration options, see link:{odhdocshome}/managing-resources/#customizing-the-dashboard[Customizing the dashboard].
-====
-endif::[]
-
-ifndef::upstream[]
-[IMPORTANT]
-====
-ifdef::self-managed[]
-The hardware profiles feature is currently available in {productname-long} {vernum} as a Technology Preview feature.
-endif::[]
-ifdef::cloud-service[]
-The hardware profiles feature is currently available in {productname-long} as a Technology Preview feature.
-endif::[]
-Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
-{org-name} does not recommend using them in production.
-These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
-
-For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
-
-By default, hardware profiles, including Kueue-enabled profiles, are hidden in the dashboard navigation menu and user interface, while accelerator profiles remain visible. In addition, user interface components associated with the deprecated accelerator profiles functionality are still displayed. To show the *Settings -> Hardware profiles* option in the dashboard navigation menu, and the user interface components associated with hardware profiles and Kueue functionality, set the `disableHardwareProfiles` and `disableKueue` values to `false` in the `OdhDashboardConfig` custom resource (CR) in {openshift-platform}. 
-
-For more information about setting dashboard configuration options, see link:{rhoaidocshome}{default-format-url}/managing_resources/customizing-the-dashboard[Customizing the dashboard].
-====
-endif::[]
-
 .Prerequisites
 
 * You can access an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training or tuning job.
@@ -80,7 +50,7 @@ endif::[]
 +
 If you want to add the workbench to a new project, create the project as follows:
 
-.. In the left navigation pane, click *Data science projects*, and click *Create project*.
+.. In the left navigation pane, click *Projects*, and click *Create project*.
 .. Enter a project name, and optionally a description, and click *Create*.
 The project details page opens, with the *Overview* tab selected by default.
 
@@ -123,13 +93,13 @@ On the *Workbenches* tab, the status changes from *Starting* to *Running*.
 .Additional resources
 
 ifndef::upstream[]
-* link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-data-science-projects_projects#creating-a-data-science-project_projects[Creating a data science project]
-* link:{rhoaidocshome}{default-format-url}/working_on_data_science_projects/using-project-workbenches_projects#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE]
+* link:{rhoaidocshome}{default-format-url}/working_on_projects/using-projects_projects#creating-a-project_projects[Creating a project]
+* link:{rhoaidocshome}{default-format-url}/working_on_projects/using-project-workbenches_projects#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE]
 * link:{rhoaidocshome}{default-format-url}/working_in_your_data_science_ide[Working in your data science IDE]
-* link:https://access.redhat.com/articles/rhoai-supported-configs[{productname-long}: Supported Configurations] Knowledgebase article
+* link:https://access.redhat.com/articles/rhoai-supported-configs-3.x[Supported Configurations for 3.x] Knowledgebase article
 endif::[]
 ifdef::upstream[]
-* link:{odhdocshome}/working-on-data-science-projects/#creating-a-data-science-project_projects[Creating a data science project]
-* link:{odhdocshome}/working-on-data-science-projects/#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE]
+* link:{odhdocshome}/working-on-projects/#creating-a-project_projects[Creating a project]
+* link:{odhdocshome}/working-on-projects/#creating-a-workbench-select-ide_projects[Creating a workbench and selecting an IDE]
 * link:{odhdocshome}/working-in-your-data-science-ide[Working in your data science IDE]
 endif::[]

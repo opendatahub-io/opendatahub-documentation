@@ -1,0 +1,132 @@
+:_module-type: PROCEDURE
+
+[id="setting-up-ragas-inline-provider_{context}"]
+= Setting up the Ragas inline provider for development
+
+[role='_abstract']
+You can set up the Ragas inline provider to run evaluations directly within the Llama Stack server process. The inline provider is ideal for development environments, rapid prototyping, and lightweight evaluation workloads where simplicity and quick iteration are priorities.
+
+.Prerequisites
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+
+* You have activated the Llama Stack Operator in {productname-short}.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-llama-stack/#installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/installing-the-llama-stack-operator_rag[Installing the Llama Stack Operator].
+endif::[]
+
+* You have deployed a Llama model with KServe.
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-llama-stack/#deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/deploying-a-rag-stack-in-a-project_rag#Deploying-a-llama-model-with-kserve_rag[Deploying a Llama model with KServe].
+endif::[]
+
+* You have created a project.
+
+.Procedure
+. In a terminal window, if you are not already logged in to your OpenShift cluster, log in to the {openshift-cli} as shown in the following example:
++
+[source,terminal]
+----
+$ oc login <openshift_cluster_url> -u <username> -p <password>
+----
+
+. Navigate to your project:
++
+[source,terminal]
+----
+$ oc project <project_name>
+----
+
+. Create a ConfigMap for the Ragas inline provider configuration. For example, create a `ragas-inline-config.yaml` file as follows:
++
+.Example `ragas-inline-config.yaml`
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ragas-inline-config
+  namespace: <project_name>
+data:
+  EMBEDDING_MODEL: "all-MiniLM-L6-v2"
+----
++
+* `EMBEDDING_MODEL`: Used by Ragas for semantic similarity calculations. The `all-MiniLM-L6-v2` model is a lightweight, efficient option suitable for most use cases.
+
+. Apply the ConfigMap:
++
+[source,terminal]
+----
+$ oc apply -f ragas-inline-config.yaml
+----
+
+. Create a Llama Stack distribution configuration file with the Ragas inline provider. For example, create a `llama-stack-ragas-inline.yaml` file as follows:
++
+.Example `llama-stack-ragas-inline.yaml`
+[source,yaml]
+----
+apiVersion: llamastack.trustyai.opendatahub.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: llama-stack-ragas-inline
+  namespace: <project_name>
+spec:
+  replicas: 1
+  server:
+    containerSpec:
+      env:
+# ...
+      - name: VLLM_URL
+        value: <model_url>
+      - name: VLLM_API_TOKEN
+        value: <model_api_token (if necessary)>
+      - name: INFERENCE_MODEL
+        value: <model_name>
+      - name: MILVUS_DB_PATH
+        value: ~/.llama/milvus.db
+      - name: VLLM_TLS_VERIFY
+        value: "false"
+      - name: FMS_ORCHESTRATOR_URL
+        value: http://localhost:123
+      - name: EMBEDDING_MODEL
+        value: granite-embedding-125m
+# ...
+----
++
+
+. Deploy the Llama Stack distribution:
++
+[source,subs="+quotes"]
+----
+$ oc apply -f llama-stack-ragas-inline.yaml
+----
+
+. Wait for the deployment to complete:
++
+[source,subs="+quotes"]
+----
+$ oc get pods -w
+----
++
+Wait until the `llama-stack-ragas-inline` pod status shows `Running`.
+
+.Next steps
+ifdef::upstream[]
+* link:{odhdocshome}/working-with-llama-stack/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with Ragas]
+* link:{odhdocshome}/working-with-llama-stack/#configuring-ragas-remote-provider-for-production_rag[Configuring the Ragas remote provider for production]
+endif::[]

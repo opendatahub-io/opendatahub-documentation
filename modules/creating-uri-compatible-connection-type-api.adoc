@@ -1,0 +1,117 @@
+:_module-type: PROCEDURE
+
+[id="creating-uri-compatible-connection-type-api_{context}"]
+
+= Creating a URI-compatible connection type using the connections API
+
+[role='_abstract']
+
+In {productname-short}, you can create a URI-compatible connection type by using the connections API. In the following procedure, you define a Kubernetes Secret resource that holds a simple URI for connecting to an external resource, such as a model file hosted on an HTTP server or Hugging Face.
+
+.Prerequisites
+
+* You have access to a Kubernetes cluster where you have permissions to create Secrets.
+* You have access to the full HTTP/HTTPS URL or Hugging Face URI (`hf://`) for the target resource.
+
+.Procedure
+
+. Create a YAML file (for example, `uri-connection.yaml`) that defines a Kubernetes `Secret` of type `Opaque`. This secret will contain the URI in the `stringData` section.
++
+[source,bash]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <connection-name>
+  namespace: <your-namespace>
+  annotations:
+    opendatahub.io/connection-type-protocol: "uri"
+type: Opaque
+stringData:
+  URI: "<uniform-resource-identifier>" # The full URI/URL of the external resource
+----
++
+.. In the example YAML, replace the required URI field by populating the placeholder value in  the `stringData` section to include complete URL to the resource. This can be an HTTP/HTTPS link, or a Hugging Face URI. 
++
+
+NOTE: The `opendatahub.io/connection-type-protocol: uri` annotation is used by certain operators to identify the purpose of the Kubernetes Secret.
+
+. Apply the Secret to the cluster by using the `kubectl apply` command to create the Secret in your Kubernetes cluster. 
++
+[source,bash]
+----
+kubectl apply -f uri-connection.yaml
+----
+
+== Using a URI connection with `InferenceService` custom resource
+You can use a URI-compatible connection type with an `InferenceService` custom resource. In the following procedure, you reference a pre-configured URI connection to define the storage location for your model when deploying a KServe `InferenceService`.
+
+.Prerequisites
+* You have created a URI Connection Secret in the `project` namespace. For more information, see _Creating a URI connection type using the Connections API_.
+* You have deployed a KServe Operator in your cluster.
+* Your model file is accessible at the URI specified in the Secret.
+
+.Procedure
+. Create a YAML file (for example, `uri-inferenceservice.yaml`) that defines the KServe `InferenceService` custom resource.
+. Specify the URI connection annotation in the `metadata.annotations section`. Add the `opendatahub.io/connections` annotation and set its value to reference the URI Secret name, `my-uri-connection`.
++
+[source,bash]
+----
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: my-model                   # Name of the service
+  namespace: my-project
+  annotations:
+    opendatahub.io/connections: "my-uri-connection"      # Reference to the URI Connection Secret
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: sklearn             # Specify the framework format (for example, sklearn, tensorflow)
+      # NOTE: The storageUri will be automatically generated and injected here
+      # by the operator using the URI value from the Secret.
+      # Example: .spec.predictor.model.storageUri: https://example.com/models/my-model.tar.gz
+----
+
+. Apply the `InferenceService` custom resource by using the `kubectl apply` command. 
++
+[source,bash]
+----
+kubectl apply -f uri-inferenceservice.yaml
+----
+
+== Using a URI connection with `LLMInferenceService` custom resource
+You can use a URI-compatible connection type with the `LLMInferenceService` custom resource. In the following procedure, you reference a pre-configured URI connection to define the storage location for your large language model (LLM) when deploying a KServe `LLMInferenceService`.
+
+.Prerequisites
+* You have created a URI connection Secret in the `project` namespace.
+* You have deployed a KServe Operator that supports the `LLMInferenceService` custom resource.
+* Your LLM model files are accessible at the URI specified in the Secret.
+
+.Procedure
+. Create a YAML file (for example, `uri-llm-service.yaml`) that defines the KServe `LLMInferenceService` custom resource.
+. Specify the URI connection annotation in the `metadata.annotations` section. Add the `opendatahub.io/connections` annotation and set its value to reference the URI Secret name, `my-uri-connection`.
++
+[source,bash]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: my-llm-model                   # Name of the LLM serving instance
+  namespace: my-project
+  annotations:
+    opendatahub.io/connections: "my-uri-connection"      # Reference to the URI Connection Secret
+spec:
+  model:
+    # NOTE: The .spec.model.uri field is automatically generated and injected here
+    # by the operator using the URI value from the Secret.
+    # Example: .spec.model.uri: https://example.com/models/llm-model
+----
+
+. Apply the `LLMInferenceService` custom resource by using the `kubectl apply` command. 
++
+[source,bash]
+----
+kubectl apply -f uri-llm-service.yaml
+----

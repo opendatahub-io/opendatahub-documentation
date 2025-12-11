@@ -34,100 +34,6 @@ curl --json '{"model_id": "<model_name__>", "inputs": "<text>"}' https://<infere
 ----
 endif::[]
 
-== Caikit Standalone ServingRuntime for KServe
-
-If you are serving multiple models, you can query `/info/models` or `:443 caikit.runtime.info.InfoService/GetModelsInfo` to view a list of served models.
-
---
-.REST endpoints
-
-* `/api/v1/task/embedding`
-* `/api/v1/task/embedding-tasks`
-* `/api/v1/task/sentence-similarity`
-* `/api/v1/task/sentence-similarity-tasks`
-* `/api/v1/task/rerank`
-* `/api/v1/task/rerank-tasks`
-* `/info/models`
-* `/info/version`
-* `/info/runtime`
---
-
---
-.gRPC endpoints
-
-* `:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict`
-* `:443 caikit.runtime.Nlp.NlpService/EmbeddingTasksPredict`
-* `:443 caikit.runtime.Nlp.NlpService/SentenceSimilarityTaskPredict`
-* `:443 caikit.runtime.Nlp.NlpService/SentenceSimilarityTasksPredict`
-* `:443 caikit.runtime.Nlp.NlpService/RerankTaskPredict`
-* `:443 caikit.runtime.Nlp.NlpService/RerankTasksPredict`
-* `:443 caikit.runtime.info.InfoService/GetModelsInfo`
-* `:443 caikit.runtime.info.InfoService/GetRuntimeInfo`
---
-
-ifdef::upstream[]
-[NOTE]
---
-By default, the Caikit Standalone Runtime exposes REST endpoints. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{odhdocshome}/configuring-your-model-serving-platform/#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_odh-admin[Adding a custom model-serving runtime for the single-model serving platform]. 
---
-
-An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
-endif::[]
-
-ifndef::upstream[]
-[NOTE]
---
-By default, the Caikit Standalone Runtime exposes REST endpoints. To use gRPC protocol, manually deploy a custom Caikit Standalone ServingRuntime. For more information, see link:{rhoaidocshome}{default-format-url}/configuring_your_model-serving_platform/configuring_model_servers_on_the_single_model_serving_platform#adding-a-custom-model-serving-runtime-for-the-single-model-serving-platform_rhoai-admin[Adding a custom model-serving runtime for the single-model serving platform].
---
-
-An example manifest is available in the link:https://github.com/opendatahub-io/caikit-tgis-serving/blob/main/demo/kserve/custom-manifests/caikit/caikit-standalone/caikit-standalone-servingruntime-grpc.yaml[caikit-tgis-serving GitHub repository^].
-endif::[]
-
-.Example command
---
-*REST*
-[source]
-----
-curl -H 'Content-Type: application/json' -d '{"inputs": "<text>", "model_id": "<model_id>"}' <inference_endpoint_url>/api/v1/task/embedding -H 'Authorization: Bearer <token>'
-----
-
-*gRPC*
-[source]
-----
-grpcurl -d '{"text": "<text>"}' -H \"mm-model-id: <model_id>\" <inference_endpoint_url>:443 caikit.runtime.Nlp.NlpService/EmbeddingTaskPredict -H 'Authorization: Bearer <token>'
-----
---
-
-== TGIS Standalone ServingRuntime for KServe
-
-IMPORTANT: The *Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe* is deprecated. For more information, see link:{rhoaidocshome}{default-format-url}/release_notes/index[{productname-short} release notes].
-
-* `:443 fmaas.GenerationService/Generate`
-* `:443 fmaas.GenerationService/GenerateStream`
-+
-[NOTE]
---
-To query the endpoint for the TGIS standalone runtime, you must also download the files in the link:https://github.com/opendatahub-io/text-generation-inference/blob/main/proto[proto^] directory of the {productname-short} `text-generation-inference` repository.
---
-
-.Example command
-
-ifdef::upstream[]
-[source]
-----
-grpcurl -proto text-generation-inference/proto/generation.proto -d \
-'{"requests": [{"text":"<text>"}]}' \
--insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate \
--H 'Authorization: Bearer <token>'
-----
-endif::[]
-ifdef::self-managed,cloud-service[]
-[source]
-----
-grpcurl -proto text-generation-inference/proto/generation.proto -d '{"requests": [{"text":"<text>"}]}' -H 'Authorization: Bearer <token>' -insecure <inference_endpoint_url>:443 fmaas.GenerationService/Generate 
-----
-endif::[]
-
 == OpenVINO Model Server
 
 * `/v2/models/<model-name>/infer`
@@ -163,7 +69,7 @@ endif::[]
 +
 [NOTE]
 ====
-* The vLLM runtime is compatible with the OpenAI REST API. For a list of models that the vLLM runtime supports, see link:https://docs.vllm.ai/en/latest/models/supported_models.html[Supported models].
+* The vLLM runtime is compatible with the OpenAI REST API.
 * To use the embeddings inference endpoint in vLLM, you must use an embeddings model that the vLLM supports. You cannot use the embeddings endpoint with generative models. For more information, see link:https://github.com/vllm-project/vllm/pull/3734[Supported embeddings models in vLLM].
 * As of vLLM v0.5.5, you must provide a chat template while querying a model using the `/v1/chat/completions` endpoint. If your model does not include a predefined chat template, you can use the `chat-template` command-line parameter to specify a chat template in your custom vLLM runtime, as shown in the example. Replace `<CHAT_TEMPLATE>` with the path to your template.
 +
@@ -176,7 +82,7 @@ containers:
 You can use the chat templates that are available as `.jinja` files link:https://github.com/opendatahub-io/vllm/tree/main/examples[here] or with the vLLM image under `/app/data/template`. For more information, see link:https://huggingface.co/docs/transformers/main/chat_templating[Chat templates].
 ====
 +
-As indicated by the paths shown, the single-model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
+As indicated by the paths shown, the model serving platform uses the HTTPS port of your OpenShift router (usually port 443) to serve external API requests.
 
 .Example command
 ifdef::upstream[]
@@ -233,11 +139,22 @@ For more information about the support scope of {org-name} Technology Preview fe
 ====
 endif::[]
 
-ifndef::upstream[]
-See link:{rhoaidocshome}{default-format-url}/deploying_models/making_inference_requests_to_deployed_models#vllm_nvidia_gpu_servingruntime_for_kserve[vLLM NVIDIA GPU ServingRuntime for KServe^].
-endif::[]
 ifdef::upstream[]
-See link:{odhdocshome}/deploying-models/#_vllm_nvidia_gpu_servingruntime_for_kserve[vLLM NVIDIA GPU ServingRuntime for KServe^].
+You can serve models with IBM Spyre AI accelerators on x86 by using the *vLLM Spyre AI Accelerator ServingRuntime for KServe* runtime. To use the runtime, you must install the Spyre Operator and configure a hardware profile. For more information, see link:https://catalog.redhat.com/en/software/containers/ibm-aiu/spyre-operator/688a1121575e62c686a471d4[Spyre operator image^] and link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles^].
+endif::[]
+
+ifndef::upstream[]
+You can serve models with IBM Spyre AI accelerators on x86 by using the *vLLM Spyre AI Accelerator ServingRuntime for KServe* runtime. To use the runtime, you must install the Spyre Operator and configure a hardware profile. For more information, see link:https://catalog.redhat.com/en/software/containers/ibm-aiu/spyre-operator/688a1121575e62c686a471d4[Spyre operator image^] and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
+endif::[]
+
+== vLLM Spyre s390x ServingRuntime for KServe
+
+ifdef::upstream[]
+You can serve models with IBM Spyre AI accelerators on IBM Z (s390x architecture) by using the *vLLM Spyre s390x ServingRuntime for KServe* runtime. To use the runtime, you must install the Spyre Operator and configure a hardware profile. For more information, see link:https://catalog.redhat.com/en/software/containers/ibm-aiu/spyre-operator/688a1121575e62c686a471d4[Spyre operator image^] and link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles^].
+endif::[]
+
+ifndef::upstream[]
+You can serve models with IBM Spyre AI accelerators on IBM Z (s390x architecture) by using the *vLLM Spyre s390x ServingRuntime for KServe* runtime. To use the runtime, you must install the Spyre Operator and configure a hardware profile. For more information, see link:https://catalog.redhat.com/en/software/containers/ibm-aiu/spyre-operator/688a1121575e62c686a471d4[Spyre operator image^] and link:{rhoaidocshome}{default-format-url}/working_with_accelerators/working-with-hardware-profiles_accelerators[Working with hardware profiles^].
 endif::[]
 
 == NVIDIA Triton Inference Server
@@ -251,15 +168,6 @@ endif::[]
 * `v2/models/<model_name>[/versions/]/ready`
 * `v2`
 --
-
-[NOTE]
-====
-ModelMesh does not support the following REST endpoints:
-
-* `v2/health/live`
-* `v2/health/ready`
-* `v2/models/<model_name>[/versions/]/ready`
-====
 
 .Example command
 ifndef::upstream[]
@@ -371,9 +279,7 @@ endif::[]
 
 [role='_additional-resources']
 == Additional resources
-* link:https://github.com/IBM/text-generation-inference[Text Generation Inference Server (TGIS)^]
 * link:https://caikit.readthedocs.io/en/latest/autoapi/caikit/index.html[Caikit API documentation^]
-* link:https://github.com/caikit/caikit-nlp[Caikit NLP GitHub project^]
 * link:https://docs.openvino.ai/2023.3/ovms_docs_rest_api_kfs.html[OpenVINO KServe-compatible REST API documentation^]
 * link:https://platform.openai.com/docs/api-reference/introduction[OpenAI API documentation^]
 * link:https://kserve.github.io/archive/0.11/modelserving/data_plane/v2_protocol/[Open Inference Protocol]

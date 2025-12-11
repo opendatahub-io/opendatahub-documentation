@@ -29,6 +29,7 @@ To set up autoscaling for your inference service in KServe RawDeployment mode, i
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have installed the CMA operator on your cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/automatically-scaling-pods-with-the-custom-metrics-autoscaler-operator#nodes-cma-autoscaling-custom-install[Installing the custom metrics autoscaler].
+* You have installed the cert-manager Operator in {openshift-platform} by using the web console as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/security_and_compliance/cert-manager-operator-for-red-hat-openshift#installing-the-cert-manager-operator-for-red-hat-openshift[Installing the cert-manager Operator for Red Hat OpenShift].
 +
 [NOTE]
 ====
@@ -36,7 +37,7 @@ To set up autoscaling for your inference service in KServe RawDeployment mode, i
 * The `odh-controller` automatically creates the `TriggerAuthentication`, `ServiceAccount`, `Role`, `RoleBinding`, and `Secret` resources to allow CMA access to OpenShift Monitoring metrics. 
 ====
 * You have enabled User Workload Monitoring (UWM) for your cluster. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/monitoring/configuring-user-workload-monitoring[Configuring user workload monitoring].
-* You have deployed a model on the single-model serving platform in KServe RawDeployment mode.
+* You have deployed a model on the model serving platform.
 
 .Procedure
 

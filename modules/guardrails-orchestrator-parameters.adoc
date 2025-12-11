@@ -12,19 +12,35 @@ You can modify the following parameters for the `GuardrailsOrchestrator` CR obje
 
 [cols="1,2a", options="header"]
 |===
-|Parameter |Description
-|`replicas`| The number of orchestrator pods to create.
-|`orchestratorConfig`| The name of the `ConfigMap` object that contains generator, detector, and chunker arguments.
-|`otelExporter` *(optional)*| A list of paired name and value arguments for configuring OpenTelemetry traces or metrics, or both: 
+Parameter |Description
+| *`orchestratorConfig`* |The name of the `ConfigMap` object that contains generator, detector, and chunker arguments.
+|`guardrailsGatewayConfig` *(optional)*| The name of the ConfigMap object that specifies gateway configurations.
+| `autoConfig` *(optional)* | A list of paired name and value arguments to define how the Guardrails AutoConfig. Any manually-specified configuration files in `orchestratorConfig` or `guardrailsGatewayConfig` will take precedence over the automatically-generated configuration files.
 
-* `protocol` - Sets the protocol for all the OpenTelemetry protocol (OTLP) endpoints. Valid values are `grpc` or `http`
-* `tracesProtocol` - Sets the protocol for traces. Acceptable values are `grpc` or `http`
-* `metricsProtocol` - Sets the protocol for metrics. Acceptable values are `grpc` or `http`
-* `otlpEndpoint` - Sets the OTLP endpoint. Default values are `gRPC localhost:4317` and `HTTP localhost:4318`
-* `metricsEndpoint` - Sets the OTLP endpoint for metrics
-* `tracesEndpoint` -  Sets the OTLP endpoint for traces
+* `inferenceServiceToGuardrail` - The name of the inference service you wish to guardrail. This should exactly match the model name provided when deploying the model. For a list of valid names, you can run
+`oc get isvc -n $NAMESPACE`
+* `detectorServiceLabelToMatch` - A string label to use when searching for available detector servers. All inference services in your namespace with the label `$detectorServiceLabelToMatch: true` will be automatically configured as a detector.
+|`enableBuiltInDetectors` *(optional)*| A boolean value to inject the built-in detector sidecar container into the orchestrator pod. The built-in detector is a lightweight HTTP server containing a number of available guardrailing algorithms.
+|`enableGuardrailsGateway` *(optional)*| A boolean value to enable controlled interaction with the orchestrator service by enforcing stricter access to its exposed endpoints. It provides a mechanism of configuring detector pipelines, and then provides a unique `/v1/chat/completions` endpoint per configured detector pipeline.
 
-|`orchestrator` *(optional)* | The orchestrator service to specify when enabling regex detectors
+|*`replicas`*| The number of orchestrator pods to create.
+|`otelExporter` *(optional)*| A list of paired name and value arguments for configuring OpenTelemetry traces or metrics, or both:
+
+* `otlpProtocol` - Sets the protocol for all the OpenTelemetry protocol (OTLP) endpoints. Valid values are `grpc` (default) or `http`
+* `otlpTracesEndpoint` - Sets the OTLP endpoint. Default values are `localhost:4317` for `grpc` and `localhost:4318` for `http`
+* `otlpMetricsEndpoint` - Overrides the default OTLP metrics endpoint
+* `enableTraces` - Whether to enable tracing data export, default false
+* `enableMetrics` - Whether to enable metrics data export, default false
+
+| `logLevel` *(optional)* | The log level to be used in the Guardrails Orchestrator- available values are `Error`, `Warn`, `Info` (default), `Debug`, and `Trace`.
+[[tlsSecrets-param]]
+| `tlsSecrets` *(optional)* | A list of names of `Secret` objects to mount to the Guardrails Orchestrator container. All secrets provided here will be mounted into the directory `/etc/tls/$SECRET_NAME` for use in your orchestrator config TLS configuration. We recommend that each secret contain a `tls.crt` and a `tls.key` field.
+
+
+
+
+|===
+# Gateway Pa
 |`detectors` *(optional)* | A list of preconfigured regex expressions and file types, for common detection actions:
 
 * `us-social-security-number` - registered pattern for social security numbers
@@ -41,12 +57,3 @@ You can modify the following parameters for the `GuardrailsOrchestrator` CR obje
 * `json-with-schema:$SCHEMA` - registered file type pattern for detecting whether the text content satisfies a provided JSON schema. To specify a schema, replace $SCHEMA with a JSON schema
 * `xml-with-schema:$SCHEMA` - registered file type pattern for detecting whether the text content satisfies a provided XML schema. To specify a schema, replace $SCHEMA with an XML Schema Definition (XSD)
 * `yaml-with-schema:$SCHEMA` - registered file type pattern for detecting  whether the text content satisfies a provided XML schema. To specify a schema, replace $SCHEMA with a JSON schema (not a YAML schema)
-
-|`routes` *(optional)* | The resulting endpoints for detections used with regex detectors
-
-|`enableBuiltInDetectors` *(optional)*| A boolean value to inject the built-in detector sidecar container into the orchestrator pod. The built-in detector is a lightweight HTTP server designed to perform detections based on predefined patterns or custom regular expressions.
-
-|`enableGuardrailsGateway` *(optional)*| A boolean value to enable controlled interaction with the orchestrator service by enforcing stricter access to its exposed endpoints. It provides a mechanism of configuring fixed detector pipelines, and then provides a unique `/v1/chat/completions` endpoint per configured detector pipeline.
-
-|`guardrailsGatewayConfig` *(optional)*| The name of the ConfigMap object that specifies gateway configurations.
-|===

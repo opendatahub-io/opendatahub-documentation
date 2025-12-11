@@ -17,7 +17,7 @@ You can use LLMaaJ to:
 
 Follow the custom quality assessment example below to learn more about using your own metrics criteria with LM-Eval to evaluate model responses.
 
-This example uses link:www.unitxt.ai[Unitxt] to define custom metrics and to see how the model (link:www.huggingface.co/google/flan-t5-small[flan-t5-small]) answers questions from MT-Bench, a standard benchmark. Custom evaluation criteria and instructions from the link:www.huggingface.co/mistralai/Mistral-7B-Instruct-v0.2[Mistral-7B] model are used to rate the answers from 1-10, based on helpfulness, accuracy, and detail.
+This example uses link:https://www.unitxt.ai[Unitxt] to define custom metrics and to see how the model (link:https://www.huggingface.co/google/flan-t5-small[flan-t5-small]) answers questions from MT-Bench, a standard benchmark. Custom evaluation criteria and instructions from the link:https://www.huggingface.co/mistralai/Mistral-7B-Instruct-v0.2[Mistral-7B] model are used to rate the answers from 1-10, based on helpfulness, accuracy, and detail.
 
 
 .Prerequisites
@@ -32,7 +32,7 @@ ifdef::cloud-service[]
 ** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
 
-* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the data science project where the models are deployed.
+* Your cluster administrator has installed {productname-short} and enabled the TrustyAI service for the project where the models are deployed.
 
 * You are familiar with how to use Unitxt.
 
@@ -224,3 +224,8 @@ taskList:
 .Verification
 
 A processor extracts the numeric rating from the judge's natural language response. The final result is available as part of the LMEval Job Custom Resource (CR).
+
+[NOTE]
+--
+The provided scenario example does not work for `s390x`. The scenario works with non-Parquet type dataset task for `s390x`.
+--

@@ -1,0 +1,17 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="generate-synthetic-data_{context}"]
+= Generate synthetic data
+
+When you customize a model for your enterprise, you must generate high-quality synthetic data to augment your dataset, improve model robustness, and cover edge cases.
+
+{org-name} provides the Synthetic Data Generation (SDG) Hub, a modular Python framework for building synthetic data generation pipelines by using composable blocks and flows. Each block performs a specific task, such as LLM chat, parse text, evaluate, or transform data. Flows chain blocks together to create complex data generation pipelines that include validation and parameter management. A flow (data generation pipeline) is a YAML specification that defines an instance of a data generation algorithm.
+
+include::modules/explore-the-sdg-hub-examples.adoc[leveloffset=+1]
+
+include::modules/guided-example-build-a-kfp-pipeline-for-sdg.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

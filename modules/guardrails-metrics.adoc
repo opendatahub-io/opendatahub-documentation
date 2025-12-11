@@ -1,0 +1,49 @@
+:_module-type: REFERENCE
+
+ifdef::context[:parent-context: {context}]
+[id="guardrails-metrics_{context}"]
+= Guardrails metrics
+
+[role='_abstract']
+Use Guardrails metrics to track functions and outputs of your Guardrails deployment and understand how your model is working. 
+ 
+Metrics are included as standard in your Guardrails deployment. They are sent to Prometheus in the form of outputs. They include features such as the number of requests for a particular guardrail function and the cumulative run time of a function. 
+
+
+.Guardrails metrics
+[cols="1,2,2"]
+|===
+| Metric | Labels | Description
+
+| `trustyai_guardrails_orchestrators`
+a| 
+* `orchestrator_namespace`: the namespace in which the orchestrator was deployed
+* `using_built_in_detectors`: boolean, whether the built_in detectors server is enabled for this orchestrator
+* `using_sidecar_gateway`: boolean, whether the sidecar gateway server is enabled for this orchestrator
+| Tracks the total number of guardrails orchestrators that have been deployed into the cluster, grouped by attributes of the orchestrator.
+
+| `trustyai_guardrails_detections`
+a| 
+* `detector_kind`: the class of detector, for example “regex” or “sequence_classifier”
+* `detector_name`: the name of individual detection function, for example “credit-card” or “granite-guardian-hap-38m”
+| The total number of requests to a particular guardrail function that have resulted in a flagged detection.
+
+| `trustyai_guardrails_requests`
+a| 
+* `detector_kind`: the class of detector, for example `regex` or `sequence_classifier`
+* `detector_name`: the name of individual detection function, for example `credit-card` or `granite-guardian-hap-38m`
+| The total number of requests to a particular guardrail function.
+
+| `trustyai_guardrails_errors`
+a| 
+* `detector_kind`: the class of detector, for example `regex` or `sequence_classifier`
+* `detector_name`: the name of individual detection function, for example `credit-card` or `granite-guardian-hap-38m`
+| The total number of requests to a particular guardrail function that have been unable to produce a meaningful result due to an internal error of some kind.
+
+| `trustyai_guardrails_runtime`
+a| 
+* `detector_kind`: the class of detector, for example `regex` or `sequence_classifier`
+* `detector_name`: the name of individual detection function, for example `credit-card` or `granite-guardian-hap-38m`
+| The cumulative runtime in seconds of a particular guardrail function, as the total latency that the guardrail function has induced over its lifespan.
+
+|===

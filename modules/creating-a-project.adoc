@@ -1,0 +1,47 @@
+:_module-type: PROCEDURE
+
+[id="creating-a-project_{context}"]
+= Creating a project
+
+[role='_abstract']
+To implement a data science workflow, you must create a project. In OpenShift, a project is a Kubernetes namespace with additional annotations, and is the main way that you can manage user access to resources. A project organizes your data science work in one place and also allows you to collaborate with other developers and data scientists in your organization.
+
+Within a project, you can add the following functionality: 
+
+* Connections so that you can access data without having to hardcode information like endpoints or credentials.
+* Workbenches for working with and processing data, and for developing models.
+* Deployed models so that you can test them and then integrate them into intelligent applications. Deploying a model makes it available as a service that you can access by using an API. 
+* Pipelines for automating your ML workflow.
+
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* You have the appropriate roles and permissions to create projects.
+
+.Procedure
+. From the {productname-short} dashboard, select *Projects*.
++
+The *Projects* page shows a list of projects that you can access.
+For each user-requested project in the list, the *Name* column shows the project display name, the user who requested the project, and the project description.
+
+. Click *Create project*.
+
+. In the *Create project* dialog, update the *Name* field to enter a unique display name for your project.
+
+. Optional: If you want to change the default resource name for your project, click *Edit resource name*. 
++
+The resource name is what your resource is labeled in OpenShift.
+Valid characters include lowercase letters, numbers, and hyphens (-).
+The resource name cannot exceed 30 characters, and it must start with a letter and end with a letter or number.
++
+*Note:* You cannot change the resource name after the project is created.
+You can edit only the display name and the description.
+
+. Optional: In the *Description* field, provide a project description.
+
+. Click *Create*.
+
+
+.Verification
+
+* A project details page opens. From this page, you can add connections, create workbenches, configure pipelines, and deploy models.

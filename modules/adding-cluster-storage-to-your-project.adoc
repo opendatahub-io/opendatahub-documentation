@@ -1,0 +1,52 @@
+:_module-type: PROCEDURE
+
+[id="adding-cluster-storage-to-your-project_{context}"]
+= Adding cluster storage to your project
+
+[role='_abstract']
+For projects that require data to be retained, you can add cluster storage to the project. Additionally, you can also connect cluster storage to a specific project's workbench.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* You have created a project that you can add cluster storage to.
+
+.Procedure
+. From the {productname-short} dashboard, click *Projects*.
++
+The *Projects* page opens.
+. Click the name of the project that you want to add the cluster storage to.
++
+A project details page opens.
+. Click the *Cluster storage* tab.
+. Click *Add cluster storage*.
++
+The *Add cluster storage* dialog opens.
+. In the *Name* field, enter a unique name for the cluster storage.
+. Optional: In the *Description* field, enter a description for the cluster storage.
+. From the *Storage class* list, select the type of cluster storage.
++
+NOTE: You cannot change the storage class after you add the cluster storage to the project.
+ifndef::upstream[]
+. For storage classes that support multiple access modes, select an *Access mode* to define how the volume can be accessed. For more information, see link:{rhoaidocshome}{default-format-url}/managing_resources/managing-storage-classes#about-persistent-storage_resource-mgmt[About persistent storage].  
+endif::[]
+ifdef::upstream[]
+. For storage classes that support multiple access modes, select an *Access mode* to define how the volume can be accessed. For more information, see link:{odhdocshome}/managing-resources/#about-persistent-storage_managing-resources[About persistent storage]. 
+endif::[]  
++
+Only the access modes that have been enabled for the storage class by your cluster and {productname-short} administrators are visible.
++
+. In the *Persistent storage size* section, specify a new size in gibibytes or mebibytes.
+. Optional: If you want to connect the cluster storage to an existing workbench:
+.. In the *Workbench connections* section, click *Add workbench*.
+.. In the *Name* field, select an existing workbench from the list.
+.. In the *Path format* field, select *Standard* if your storage directory begins with `/opt/app-root/src`, otherwise select *Custom*.
+.. In the *Mount path* field, enter the path to a model or directory within a container where a volume is mounted and accessible. The path must consist of lowercase alphanumeric characters or `-`. Use `/` to indicate subdirectories.
+. Click *Add storage*.
+
+.Verification
+* The cluster storage that you added is displayed on the *Cluster storage* tab for the project.
+* A new persistent volume claim (PVC) is created with the storage size that you defined.
+* The persistent volume claim (PVC) is visible as an attached storage on the *Workbenches* tab for the project.
+
+//[role='_additional-resources']
+//.Additional resources

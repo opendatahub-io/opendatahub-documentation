@@ -1,0 +1,59 @@
+:_module-type: CONCEPT
+
+[id='overview-of-the-model-customization-workflow_{context}']
+= Overview of the model customization workflow
+ 
+{org-name} AI model customization empowers you to tailor artificial intelligence models to your unique data and operational requirements. The model customization process involves the training or fine-tuning of pre-existing models with proprietary datasets, followed by their deployment with specific configurations on the {productname-long} platform. This comprehensive approach is facilitated by a powerful suite of integrated toolkits that streamline and accelerate the development of generative AI applications.
+
+The workflow for customizing models includes the following tasks:
+
+Set up your working environment:: Ensure reliable and secure access to supported libraries with the {org-name} Hosted Python index. 
+ifdef::upstream[]
+For details, see link:{odhdocshome}/customize-models-to-build-gen-ai-applications/#set-up-your-working-environment_custom-models[Set up your working environment].
+endif::[]
+ifndef::upstream[]
+For details, see link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_applications/set-up-your-working-environment_custom-models[Set up your working environment].
+endif::[]
+
+Prepare your data for AI consumption:: To prepare your data, use Docling, a powerful Python library to transform unstructured data (such as text documents, images, and audio files) into structured formats that models can consume. 
+ifdef::upstream[]
+For details, see link:{odhdocshome}/customize-models-to-build-gen-ai-applications/#prepare-your-data-for-ai-consumption_custom-models[Prepare your data for AI consumption].
+endif::[]
+ifndef::upstream[]
+For details, see link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_applications/prepare-your-data-for-ai-consumption_custom-models[Prepare your data for AI consumption].
+endif::[]
++
+ifdef::upstream[]
+To automate data processing tasks, you can build Kubeflow Pipelines (KFP), see link:{odhdocshome}/customize-models-to-build-gen-ai-applications/#automate_data_processing_steps_by_building_ai_pipelines[Automate data processing steps by building AI pipelines].
+endif::[]
+ifndef::upstream[]
+To automate data processing tasks, you can build Kubeflow Pipelines (KFP), see link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_applications/prepare-your-data-for-ai-consumption_custom-models#automate_data_processing_steps_by_building_ai_pipelines[Automate data processing steps by building AI pipelines].
+endif::[]
+
+Generate synthetic data:: Use the {org-name} AI Synthetic Data Generation (SDG) Hub framework to build, compose, and scale synthetic data pipelines with modular blocks. With the SDG Hub, you can extend your synthetic data pipelines with custom blocks to fit your domain, replace ad hoc scripts with the SDG Hub repeatable framework, and scale data generation with asynchronous execution and monitoring. 
+ifdef::upstream[]
+For details, see link:{odhdocshome}/customize-models-to-build-gen-ai-applications/#generate-synthetic-data_custom-models[Generate synthetic data].
+endif::[]
+ifndef::upstream[]
+For details, see link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_applications/generate-synthetic-data_custom-models[Generate synthetic data].
+endif::[]
+
+Train a model by using your prepared data:: After you prepare your data, use the {org-name} AI Training Hub to simplify and accelerate the process of fine-tuning and customizing a foundation model by using your own data.
++
+You can extend a base notebook to use distributed training across multiple nodes by using the KubeFlow Trainer Operator (KFTO). The KFTO, abstracts the underlying infrastructure complexity of distributed training and fine-tuning of models. The iterative process of fine-tuning significantly reduces the time and resources required compared to training models from scratch.
++
+ifdef::upstream[]
+For details, see link:{odhdocshome}/customize-models-to-build-gen-ai-applications/#train-the-model-by-using-your-prepared-data_custom-models[Train a model by using your prepared data].
+endif::[]
+ifndef::upstream[]
+For details, see link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_applications/train-the-model-by-using-your-prepared-data_custom-models[Train a model by using your prepared data].
+endif::[]
+
+Serve and consume a customized model:: After you customize a model, you can serve your customized models as APIs (Application Programming Interfaces). Serving a model as an API enables seamless integration into existing or newly developed applications.
++
+ifdef::upstream[]
+Learn more about serving and consuming a customized model link:{odhdocshome}/deploying-models/#deploying_models_on_the_model_serving_platform[Deploying models on the model serving platform].
+endif::[]
+ifndef::upstream[]
+Learn more about serving and consuming a customized model link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#deploying-models-on-the-model-serving-platform_rhoai-user[Deploying models on the model serving platform].
+endif::[]

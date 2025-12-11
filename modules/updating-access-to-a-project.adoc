@@ -1,0 +1,54 @@
+:_module-type: PROCEDURE
+
+[id='updating-access-to-a-project_{context}']
+= Updating access to a project
+
+[role='_abstract']
+To change the level of collaboration on your project, you can update the access permissions of users and groups who have access to your project.
+
+.Prerequisites
+* You have logged in to {productname-long}.
+* You have {productname-short} administrator privileges or you are the project owner.
+* You have created a project.
+* You have previously shared access to your project with other users or groups.
+
+.Procedure
+. From the {productname-short} dashboard, click *Projects*.
++
+The *Projects* page opens.
+. Click the name of the project that you want to change the access permissions of.
++
+A project details page opens.
+. Click the *Permissions* tab.
++
+The *Permissions* page for the project opens.
+. Update the user access permissions to the project.
+.. Click the action menu (*&#8942;*) beside the user whose access permissions you want to update and click *Edit*.
+.. In the *Name* field, update the user name of the user whom you want to provide access to the project.
+.. From the *Permissions* list, update the user access permissions by selecting one of the following:
+* Admin: Users with this access level can edit project details and manage access to the project.
+* Contributor: Users with this access level can view and edit project components, such as its workbenches, connections, and storage.
+.. To confirm the update to the entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
+. Update the OpenShift groups access permissions to the project.
+.. Click the action menu (*&#8942;*) beside the group whose access permissions you want to update and click *Edit*.
+.. From the *Name* list, update the group that has access to the project by selecting another group from the list.
++
+[NOTE]
+--
+ifdef::cloud-service[]
+If you do not have `cluster-admin` or `dedicated-admin` permissions, the *Name* list is not visible. Instead, an input field displays enabling you to configure group permissions.
+endif::[]
+ifdef::upstream,self-managed[]
+If you do not have `cluster-admin` permissions, the *Name* list is not visible. Instead, you can configure group permissions in the input field that is displayed.
+endif::[]
+--
+.. From the *Permissions* list, update the group access permissions by selecting one of the following:
+* Admin: Groups with this access level can edit project details and manage access to the project.
+* Contributor: Groups with this access level can view and edit project components, such as its workbenches, connections, and storage.
+.. To confirm the update to the entry, click *Confirm* (image:images/rhoai-confirm-entry-icon.png[The Confirm icon]).
+
+.Verification
+* The *Users* and *Groups* sections on the *Permissions* tab show the respective users and groups whose project access permissions you changed.
+
+//[role="_additional-resources"]
+//.Additional resources

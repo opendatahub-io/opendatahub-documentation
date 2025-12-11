@@ -1,0 +1,53 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+[id="enabling-ai-safety-with-guardrails_{context}"]
+= Enabling AI safety with Guardrails
+
+The TrustyAI Guardrails Orchestrator service is a tool to invoke detections on text generation inputs and outputs, as well as standalone detections.
+
+It is underpinned by the open-source project link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[FMS-Guardrails Orchestrator] from IBM. You can deploy the Guardrails Orchestrator service through a Custom Resource Definition (CRD) that is managed by the TrustyAI Operator.
+
+The following sections describe the Guardrails components, how to deploy them and provide example use cases of how to protect your AI applications using these tools:
+
+Understanding detectors::
+Explore the available detector types in the Guardrails framework. Currently supported detectors are:
+    - The built-in detector: Out-of-the-box guardrailing algorithms for quick setup and easy experimentation.
+    - Hugging Face detectors: Text classification models for guardrailing, such as link:https://huggingface.co/ibm-granite/granite-guardian-hap-38m[ibm-granite/granite-guardian-hap-38m] or any other text classifier from Hugging Face.
+Configuring the Orchestrator::
+Configure the Orchestrator to communicate with available detectors and your generation model.
+
+Configuring the Guardrails Gateway::
+Define preset guardrail pipelines with corresponding unique endpoints.
+
+Deploying the Orchestrator::
+Create a Guardrails Orchestrator to begin securing your Large Language Model (LLM) deployments.
+
+Automatically configuring Guardrails using `AutoConfig`::
+Automatically configure Guardrails based on available resources in your namespace.
+
+Monitoring user-inputs to your LLM::
+Enable a safer LLM by filtering hateful, profane, or toxic inputs.
+
+Enabling the OpenTelemetry exporter for metrics and tracing::
+Provide observability for the security and governance mechanisms of AI applications.
+
+include::modules/guardrails-orchestrator-detectors.adoc[leveloffset=+1]
+
+[role='_additional-resources']
+.Additional resources
+ifndef::upstream[]
+* To learn how to use the built-in detectors with `trustyai_fms` Orchestrator server external provider for Llama Stack to detect PII, see link:{rhoaidocshome}{default-format-url}/monitoring_data_science_models#detecting-pii-by-using-guardrails-with-llama-stack[Detecting personally identifiable information (PII) by using Guardrails with Llama Stack].
+endif::[]
+
+include::modules/guardrails-configuring-the-hugging-face-detector-serving-runtime.adoc[leveloffset=+2]
+include::modules/guardrails-orchestrator-configmap-parameters.adoc[leveloffset=+1]
+include::modules/guardrails-gateway-config-parameters.adoc[leveloffset=+1]
+include::modules/guardrails-deploying-the-guardrails-orchestrator-service.adoc[leveloffset=+1]
+include::modules/guardrails-auto-config.adoc[leveloffset=+1]
+include::modules/guardrails-configuring-the-opentelemetry-exporter.adoc[leveloffset=+1]
+include::modules/guardrails-metrics.adoc[leveloffset=+1]
+
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

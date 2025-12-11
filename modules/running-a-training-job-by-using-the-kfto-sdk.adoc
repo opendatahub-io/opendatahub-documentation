@@ -26,13 +26,13 @@ ifdef::upstream[]
 * You can access a workbench that is suitable for distributed training, as described in link:{odhdocshome}/working-with-distributed-workloads/#creating-a-workbench-for-distributed-training_distributed-workloads[Creating a workbench for distributed training].
 endif::[]
 
-* You have administrator access for the data science project.
+* You have administrator access for the project.
 ** If you created the project, you automatically have administrator access. 
 ** If you did not create the project, your cluster administrator must give you administrator access.
 
 * You have enabled your project for Kueue management by applying the `kueue.openshift.io/managed=true` label to the project namespace. 
 
-* You have created resource flavor, cluster queue, and local queue Kueue objects for your data science project. 
+* You have created resource flavor, cluster queue, and local queue Kueue objects for your project. 
 ifndef::upstream[]
 For more information about creating these objects, see link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/managing-distributed-workloads_managing-rhoai#configuring-quota-management-for-distributed-workloads_managing-rhoai[Configuring quota management for distributed workloads].
 endif::[]
@@ -54,7 +54,7 @@ endif::[]
 .Procedure
 . Open the workbench, as follows:
 .. Log in to the {productname-long} web console.
-.. Click *Data science projects* and click your project.
+.. Click *Projects* and click your project.
 .. Click the *Workbenches* tab. 
 If your workbench is not already running, start the workbench.
 .. Click the *Open* link to open the IDE in a new window. 
@@ -71,7 +71,7 @@ from kubernetes import client
 client.create_job(
    name="pytorch-ddp",
    train_func=train_func,
-   base_image="quay.io/modh/training:py311-cuda124-torch251",
+   base_image="registry.redhat.io/rhoai/odh-training-cuda128-torch28-py312-rhel9:v3.0",
    num_workers=2,
    resources_per_worker={"nvidia.com/gpu": "2"},
    packages_to_install=["torchvision==0.19.0"],
@@ -92,7 +92,7 @@ client.create_job(
 .. The example provided is for NVIDIA GPUs. If you use AMD accelerators, make the following additional changes:
 
 * In the `resources_per_worker` entry, change `nvidia.com/gpu` to `amd.com/gpu`
-* Change the `base_image` value to `quay.io/modh/training:py311-rocm62-torch251`
+* Change the `base_image` value to `registry.redhat.io/rhoai/odh-training-cuda128-torch28-py312-rhel9:v3.0`
 * Remove the `NCCL_DEBUG` entry
 [NOTE] 
 ====
