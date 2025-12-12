@@ -31,18 +31,23 @@ endif::[]
 
 
 .Procedure
-. From the {productname-short} dashboard, click *AI hub* -> *Catalog*.
-. The *Model Catalog* page provides a high-level view of available models, including the model category, name, description, and labels such as task, license, and provider.
+. From the {productname-short} dashboard, click *AI hub -> Catalog*.
+. The *Catalog* page provides a high-level view of available models, including the model category, name, description, and labels such as task, license, and provider.
 . You can use the search bar to search by model name, description, or provider.
 . You can use the filter menu to search and select filters by task, provider, or license. 
 . Click the name of a model to view the model details page.
-. Click *Deploy model* to display the *Deploy model* dialog.
-. From the *Project* drop-down list, select a project in which to deploy your model.
-. In the *Model deployment* section:
-.. Optional: In the *Model deployment name* field, enter a unique name for your model deployment. This field is autofilled with a value that contains the model name by default. 
+. Click *Deploy model* to display the *Deploy a model* wizard.
++
+[NOTE] 
+====
+For models in the catalog, the *Model details* section displays read-only information about the model such as the model location URI and the model type of generative AI.
+====
+. In the *Model deployment* section, configure the deployment as follows:
+.. From the *Project* list, select the project in which to deploy your model.
+.. In the *Model deployment name* field, enter a unique name for your model deployment. This field is autofilled with the model name by default. 
 +
 This is the name of the inference service created when the model is deployed.
-.. Optional: Click *Edit resource name*, and then enter a specific resource name for the model deployment in the *Resource name* field. By default, the resource name matches the name of the model deployment.
+.. Optional: Click *Edit resource name*, and enter a specific resource name in the *Resource name* field. By default, the resource name matches the name of the model deployment.
 +
 [IMPORTANT]
 ====
@@ -50,32 +55,41 @@ Resource names are what your resources are labeled as in OpenShift. Your resourc
 
 The resource name must not match the name of any other model deployment resource in your {openshift-platform} cluster.
 ====
-.. From the *Serving runtime* list, select a model-serving runtime that is installed and enabled in your {productname-short} deployment.
+.. In the *Description* field, enter a description of your deployment.
+.. From the *Hardware profile* list, select a hardware profile. Models provided in the catalog use the `default-profile`.
+.. Optional: To modify the default resource allocation, click *Customize resource requests and limits* and enter new values for the CPU and memory requests and limits. 
+.. In the *Serving runtime* field, select an enabled runtime.
++
+[NOTE]
+====
 If project-scoped runtimes exist, the *Serving runtime* list includes subheadings to distinguish between global runtimes and project-scoped runtimes.
-.. From the *Model framework* list, select a framework for your model.
-+
-NOTE: The *Model framework* list shows only the frameworks that are supported by the model-serving runtime that you specified when you deployed your model.
-+
-. From the **Deployment mode** list, select *KServe RawDeployment*.
-
+====
+// Not applicable yet. Support for predictive AI models might be added to catalog in a future release.
+//.. Optional: For predictive AI models only, you can select a framework from the *Model framework (name - version)* list. This field is not displayed for generative AI models.  
 .. In the *Number of model server replicas to deploy* field, specify a value.
-.. From the *Model server size* list, select a value.
-.. If you have created a hardware profile, select a hardware profile from the *Hardware profile* list.
-If project-scoped hardware profiles exist, the *Hardware profile* list includes subheadings to distinguish between global hardware profiles and project-scoped hardware profiles.
-..  In the *Model route* section, select the *Make deployed models available through an external route* checkbox to make your deployed models available to external clients.
-.. In the *Token authentication* section, select the *Require token authentication* checkbox to require token authentication for your model server. To finish configuring token authentication, perform the following actions:
-... In the *Service account name* field, enter a service account name for which the token will be generated. The generated token is created and displayed in the *Token secret* field when the model server is configured.
-... To add an additional service account, click *Add a service account* and enter another service account name.
-. In the *Source model location* section, select *Current URI* to deploy the selected model from the catalog.
-. Optional: Customize the runtime parameters in the *Configuration parameters* section:
-.. Modify the values in *Additional serving runtime arguments* to define how the deployed model behaves.
-.. Modify the values in *Additional environment variables* to define variables in the model's environment.
-. Click *Deploy*.
+.. Click *Next*.
+. In the *Advanced settings* section, configure the following options:
+** Select the *Add as AI asset endpoint* checkbox if you want to add your gen AI model endpoint to the *Gen AI studio -> AI asset endpoints* page.  
+*** In the *Use case* field, enter the types of tasks that your model performs, such as chat, multimodal, or natural language processing.
++
+[NOTE]
+====
+You must add your model as an AI asset endpoint to test your model on the *Gen AI studio -> playground* page.
+====
+** To require token authentication for inference requests to the deployed model, select *Require token authentication*.
+** In the *Service account name* field, enter the service account name that the token will be generated for.
+*** To add an additional service account, click *Add a service account* and enter another service account name.
+** In the *Configuration parameters* section:
+*** Select *Add custom runtime arguments*, and then enter arguments in the text field.
+*** Select *Add custom runtime environment variables*, and then click *Add variable* to enter custom variables in the text field.
+. In the *Review* section, review the settings that you have selected before deploying the model. 
+. Click *Deploy model*.
 
 .Verification
-* The model deployment is displayed on the *AI hub* -> *Deployments* page.
-* The model deployment is displayed in the *Latest deployments* section of the model details page.
-* The model deployment is displayed on the *Deployments* tab for the model version.
+* The model deployment is displayed in the following places in the dashboard: 
+** The *AI hub* -> *Deployments* page.
+** The *Latest deployments* section of the model details page.
+** The *Deployments* tab for the model version.
 
 [role="_additional-resources"]
 .Additional resources
