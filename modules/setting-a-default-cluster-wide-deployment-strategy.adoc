@@ -1,0 +1,25 @@
+:_module-type: PROCEDURE
+[id="setting-a-default-cluster-wide-deployment-strategy_{context}"]
+= Setting a default cluster-wide deployment strategy
+
+As a cluster administrator, you can set a default deployment strategy for new model deployments across the cluster. 
+
+.Prerequisites
+
+* You have cluster-admin privileges.
+* You have enabled model serving on your cluster.
+
+.Procedure
+
+. In the dashboard, navigate to *Settings* -> *Cluster settings*.
+. Click on the *General settings* tab.
+. Scroll down to the *Model deployment options* section.
+. In the *Default deployment strategy*, select the desired cluster default:
+* *Rolling update* 
+* *Recreate*
+. Click *Save changes* at the bottom of the page.
+
+.Verification
+
+* Deploy a new model in any project. On the "Advanced settings" page of the deployment wizard, the preselected radio button should match the new default you configured.
+

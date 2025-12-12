@@ -1,0 +1,57 @@
+:_module-type: CONCEPT
+[id="deployment-strategies-for-resource-optimization_{context}"]
+= Deployment strategies for resource optimization
+
+[role="_abstract"]
+To optimize resource usage and manage downtime during model rollouts, you can configure the deployment strategy for your inference services. Choosing the appropriate strategy depends on your cluster's available quotas, specifically regarding hardware accelerators such as GPUs, and your tolerance for service interruptions.
+
+There are two primary deployment strategies available for model serving:
+
+Rolling update::
+This strategy ensures zero downtime and continuous availability of the model. New inference service pods are started while the existing pods are still running. Traffic is switched to the new pods only after they are fully ready, and then the old pods are terminated.
++
+* Trade-off: This method requires increased resources (CPU, Memory, and GPUs) during the update process. Your cluster must have sufficient headroom to support approximately 200% of the model's resource request during the transition period because parallel instances exist temporarily.
+
+Recreate::
+This strategy prioritizes resource conservation over availability. All existing inference service pods are terminated before the new pods attempt to launch.
++
+* Trade-off: This method guarantees a period of downtime. The model endpoint is unavailable and returns errors (typically 503 Service Unavailable) between the termination of the old pod and the readiness of the new pod.
+
+== Choosing a deployment strategy
+
+Choose the deployment strategy that best fits your availability requirements and resource quotas. The following table compares the rolling update and recreate strategies.
+
+[cols="1,2,2,2", options="header"]
+|===
+|Strategy
+|Description
+|Resource impact
+|Recommended scenarios
+
+|*Rolling update*
+|Replaces pods gradually to ensure zero downtime. Traffic switches to new pods only after they are fully ready.
+|*High:* Requires sufficient quota to host parallel instances (approximately 200% of the request) during the transition.
+a|
+* *Production workloads:* Environments where the model must remain accessible without interruption.
+* *High-quota clusters:* Namespaces with sufficient headroom to accommodate parallel instances.
+
+|*Recreate*
+|Terminates the old pod before starting the new one. Service is unavailable during the transition.
+|*Low:* Consumption never exceeds the baseline requirement (100%). Prevents +Insufficient Resources+ errors.
+a|
+* *Resource-constrained environments:* Projects using scarce hardware, such as high-end GPUs, where double allocation is not possible.
+* *Development and staging:* Environments where downtime does not impact business operations.
+* *Batch processing:* Workflows where immediate availability is not critical.
+* *Maintenance windows:* Periods where service unavailability is expected.
+|===
+
+
+[IMPORTANT]
+====
+The *Recreate* strategy severs the connection to the old pod immediately. Ensure that your traffic routing gateway and client applications can handle a temporary gap in service before applying this strategy.
+====
+
+[NOTE]
+====
+Availability of the *Recreate* deployment strategy option may vary depending on the specific model runtime and the version of the application platform you are using.
+====
