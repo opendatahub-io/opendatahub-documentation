@@ -4,7 +4,13 @@
 = Overview of Llama Stack
 
 [role="_abstract"]
-Llama Stack is a unified AI runtime environment designed to simplify the deployment and management of generative AI workloads on {productname-short}. Llama Stack integrates LLM inference servers, vector databases, and retrieval services in a single stack, optimized for Retrieval-Augmented Generation (RAG) and agent-based AI workflows. In {openshift-platform}, the Llama Stack Operator manages the deployment lifecycle of these components, ensuring scalability, consistency, and integration with {productname-short} projects.
+Llama Stack is a unified AI runtime environment designed to simplify the deployment and management of generative AI workloads on {productname-short}. In {openshift-platform}, the Llama Stack Operator manages the deployment lifecycle of these components, ensuring scalability, consistency, and integration with {productname-short} projects. Llama Stack integrates LLM inference servers, vector databases, and retrieval services in a single stack, optimized for Retrieval-Augmented Generation (RAG) and agent-based AI workflows. 
+
+**Llama Stack core concepts**
+
+* **Llama Stack Operator:** Llama Stack is implemented in {productname-short} through the Llama Stack Operator.
+* **The `run.yaml` file:** The `run.yaml` is used to define the APIs and API provider configurations for your server environment. Red Hat ships a default `run.yaml` that includes various APIs and providers with default configurations for simple deployments. You can create a `run.yaml` file to configure advanced workflows and develop custom applications.
+* **`LlamaStackDistribution` custom resource:** The `LlamaStackDistribution` CR enables configurations for the specific use cases defined in the `run.yaml` file.
 
 ifndef::upstream[]
 [IMPORTANT]
@@ -25,10 +31,11 @@ endif::[]
 
 Llama Stack includes the following components:
 
+* **Integration with {productname-short}** by using the `LlamaStackDistribution` custom resource, simplifying configuration and deployment.
 * **Inference model servers** such as vLLM, designed to efficiently serve large language models.
 * **Vector storage** solutions, primarily Milvus, to store embeddings generated from your domain data.
 * **Retrieval and embedding management** workflows using integrated tools, such as Docling, to handle continuous data ingestion and synchronization.
-* **Integration with {productname-short}** by using the `LlamaStackDistribution` custom resource, simplifying configuration and deployment.
+* **Enabling agentic workflows** using Llama Stack supported APIs, such as Responses and Chat completions.
 
 ifdef::upstream[]
 For information about how to deploy Llama Stack in {productname-short}, see link:{odhdocshome}/working-with-llama-stack/#deploying-a-rag-stack-in-a-project_rag[Deploying a RAG stack in a project].

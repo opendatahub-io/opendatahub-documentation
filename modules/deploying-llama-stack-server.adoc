@@ -1,0 +1,96 @@
+:_module-type: PROCEDURE
+
+[id="deploying-llama-stack-server_{context}"]
+= Deploying a Llama Stack server 
+
+Llama Stack allows you to create and deploy a simple server that enables various APIs and API providers in your {productname-short} cluster. You can create a `LlamaStackDistribution` custom resource for your desired use cases. 
+
+The included procedure provides an example `LlamaStackDistribution` CR that deploys a Llama Stack server that enables the following: 
+
+* A vLLM inference service using a `llama32-3b` model.
+* A Milvus Vector Database. 
+* An allocated persistent storage.
+* Orchestration endpoints. 
+
+.Prerequisites
+
+* You have installed {openshift-platform} 4.19 or newer.
+* You have logged in to {productname-long}.
+* You have cluster administrator privileges for your OpenShift cluster.
+* You have activated the Llama Stack Operator in your cluster.
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+
+.Procedure 
+
+. In the OpenShift web console, select *Administrator* → *Quick Create* (image:images/quick-create-icon.png[]) → *Import YAML*, and create a CR similar to the following:
++
+[source,yaml]
+----
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: llamastack-custom-distribution
+  namespace: llamastack
+spec:
+  replicas: 1
+  server:
+    containerSpec:
+      env:
+        - name: VLLM_URL
+          value: 'https://llama32-3b.llamastack.svc.cluster.local/v1'
+        - name: INFERENCE_MODEL
+          value: llama32-3b
+        - name: MILVUS_DB_PATH
+          value: ~/.llama/milvus.db
+        - name: VLLM_TLS_VERIFY
+          value: 'false'
+        - name: FMS_ORCHESTRATOR_URL
+          value: 'http://localhost:1234'
+      name: llama-stack
+      port: 8321
+    distribution:
+      name: 'rh-dev'
+    storage:
+      size: 20Gi
+      mountPath: <custom-mount-path> ## Defaults to /opt/app-root/src/.llama/distributions/rh/
+----
+
+.Verification 
+
+. Check that the custom resource was created with the following command: 
++
+[source,terminal]
+----
+$ oc get llamastackdistribution -n llamastack
+----
+
+. Check the running pods with the following command: 
++
+[source,terminal]
+----
+$ oc get pods -n llamastack | grep llamastack-custom-distribution
+----
+
+. Check the logs with the following command:
++
+[source,terminal]
+----
+$ oc logs -n llamastack -l app=llama-stack
+----
++
+.Example output 
+[source,terminal]
+----
+INFO: Started server process
+INFO: Waiting for application startup.
+INFO: Application startup complete.
+INFO: Uvicorn running on http://['::', '0.0.0.0']:8321
+----
