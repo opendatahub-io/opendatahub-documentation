@@ -3,20 +3,19 @@
 = Deployment strategies for resource optimization
 
 [role="_abstract"]
-To optimize resource usage and manage downtime during model rollouts, you can configure the deployment strategy for your inference services. Choosing the appropriate strategy depends on your cluster's available quotas, specifically regarding hardware accelerators such as GPUs, and your tolerance for service interruptions.
+To optimize resource usage and manage downtime during model rollouts, you can configure the deployment strategy for your inference services. Choosing the appropriate strategy depends on your cluster's available quotas, especially hardware accelerators such as GPUs, and your tolerance for service interruptions.
 
 There are two primary deployment strategies available for model serving:
 
 Rolling update::
-This strategy ensures zero downtime and continuous availability of the model. New inference service pods are started while the existing pods are still running. Traffic is switched to the new pods only after they are fully ready, and then the old pods are terminated.
+This strategy ensures zero downtime and continuous availability of the model. New inference service pods start while the existing pods are running. Traffic is switched to the new pods only after they are fully ready, and then the old pods are terminated.
 +
-* Trade-off: This method requires increased resources (CPU, memory, and GPUs) during the update process. Plan for temporary headroom (approximately 200% of the pod requests) during the transition because parallel instances exist briefly.
+However, rolling updates require increased resources like CPU, memory, and GPUs during the update process. Plan for approximately 200% of the pod requests as headroom during the transition because parallel instances exist briefly.
 
 Recreate::
 This strategy prioritizes resource conservation over availability. All existing inference service pods are terminated before the new pods attempt to launch.
 +
-* Trade-off: 
-This method guarantees a period of downtime. The model endpoint is unavailable and returns errors (typically 503 Service Unavailable) between the termination of the old pod and the readiness of the new pod.
+However, this method requires a period of downtime. The model endpoint is unavailable and returns errors between the termination of the old pod and the readiness of the new pod.
 
 == Choosing a deployment strategy
 
@@ -31,14 +30,14 @@ Choose the deployment strategy that best fits your availability requirements and
 
 |*Rolling update*
 |Replaces pods gradually to ensure zero downtime. Traffic switches to new pods only after they are fully ready.
-|*High:* Requires sufficient quota to host parallel instances (approximately 200% of the request) during the transition.
+|*High:* Requires approximately 200% of the request resources to host parallel instances during the transition.
 a|
 * *Production workloads:* Environments where the model must remain accessible without interruption.
 * *High-quota clusters:* Namespaces with sufficient headroom to accommodate parallel instances.
 
 |*Recreate*
 |Terminates the old pod before starting the new one. Service is unavailable during the transition.
-|*Low:* Consumption never exceeds the baseline requirement (100%). Prevents +Insufficient Resources+ errors.
+|*Low:* Consumption does not exceed 100%. Prevents _Insufficient Resources_ errors.
 a|
 * *Resource-constrained environments:* Projects using scarce hardware, such as high-end GPUs, where double allocation is not possible.
 * *Development and staging:* Environments where downtime does not impact business operations.
