@@ -8,7 +8,7 @@ You can deploy models directly from the model catalog.
 
 [NOTE]
 ====
-{productname-short} model serving deployments use the global cluster pull secret to pull models in ModelCar format from the catalog. 
+{productname-short} model serving deployments use the global cluster pull secret to pull models in OCI-compliant ModelCar format from the catalog. 
 
 ifdef::upstream,self-managed[]
 For more information about using pull secrets in {openshift-platform}, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/images/managing-images#images-update-global-pull-secret_using-image-pull-secrets[Updating the global cluster pull secret] in the {openshift-platform} documentation.
@@ -37,12 +37,13 @@ endif::[]
 . You can use the filter menu to search and select filters by task, provider, or license. 
 . Click the name of a model to view the model details page.
 . Click *Deploy model* to display the *Deploy a model* wizard.
+. On the *Model details* page, in the *Model type* field, you can select *Generative AI model* or *Predictive model*. The default model type in the catalog is generative.   
 +
 [NOTE] 
 ====
-For models in the catalog, the *Model details* section displays read-only information about the model such as the model location URI and the model type of generative AI.
+For models in the catalog, the *Model details* page displays read-only information in the *Model location* and *URI* fields.
 ====
-. In the *Model deployment* section, configure the deployment as follows:
+. In the *Model deployment* page, configure the deployment as follows:
 .. From the *Project* list, select the project in which to deploy your model.
 .. In the *Model deployment name* field, enter a unique name for your model deployment. This field is autofilled with the model name by default. 
 +
@@ -51,7 +52,7 @@ This is the name of the inference service created when the model is deployed.
 +
 [IMPORTANT]
 ====
-Resource names are what your resources are labeled as in OpenShift. Your resource name cannot exceed 253 characters, must consist of lowercase alphanumeric characters or '-', and must start and end with an alphanumeric character. Resource names are not editable after creation.
+Resource names are what your resources are labeled as in OpenShift. Your resource name cannot exceed 253 characters, must consist of lowercase alphanumeric characters or '-', and must start and end with an alphanumeric character. You cannot edit resource names after creation.
 
 The resource name must not match the name of any other model deployment resource in your {openshift-platform} cluster.
 ====
@@ -64,11 +65,10 @@ The resource name must not match the name of any other model deployment resource
 ====
 If project-scoped runtimes exist, the *Serving runtime* list includes subheadings to distinguish between global runtimes and project-scoped runtimes.
 ====
-// Not applicable yet. Support for predictive AI models might be added to catalog in a future release.
-//.. Optional: For predictive AI models only, you can select a framework from the *Model framework (name - version)* list. This field is not displayed for generative AI models.  
+.. Optional: For predictive AI models only, you can select a framework from the *Model framework (name - version)* list. This field is not displayed for generative AI models.  
 .. In the *Number of model server replicas to deploy* field, specify a value.
 .. Click *Next*.
-. In the *Advanced settings* section, configure the following options:
+. On the *Advanced settings* page, configure the following options:
 ** Select the *Add as AI asset endpoint* checkbox if you want to add your gen AI model endpoint to the *Gen AI studio* -> *AI asset endpoints* page.  
 *** In the *Use case* field, enter the types of tasks that your model performs, such as chat, multimodal, or natural language processing.
 +
@@ -82,7 +82,10 @@ You must add your model as an AI asset endpoint to test your model on the *Gen A
 ** In the *Configuration parameters* section:
 *** Select *Add custom runtime arguments*, and then enter arguments in the text field.
 *** Select *Add custom runtime environment variables*, and then click *Add variable* to enter custom variables in the text field.
-. In the *Review* section, review the settings that you have selected before deploying the model. 
+** In the *Deployment strategy* section, select one of the following options:   
+*** *Rolling update*: Existing inference service pods are terminated _after_ new pods are started. This ensures zero downtime and continuous availability. This is the default option. 
+*** *Recreate*: Existing inference service pods are terminated _before_ new pods are started. This saves resources but guarantees a period of downtime.
+. On the *Review* page, review the settings that you have selected before deploying the model. 
 . Click *Deploy model*.
 
 .Verification
