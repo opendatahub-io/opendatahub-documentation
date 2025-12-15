@@ -106,7 +106,7 @@ endif::[]
 +
 A project details page opens.
 . Click the *Deployments* tab.
-. Click the *Deploy model* button.
+. Click *Deploy model*.
 +
 The *Deploy a model* wizard opens.
 . In the *Model details* section, provide information about the model:
@@ -114,7 +114,7 @@ The *Deploy a model* wizard opens.
 +
 [NOTE]
 ====
-* The *OCI-compliant registry*, *S3 compatible object storage*, and *URI* options are pre-installed connection types. Additional options might be available if your {productname-short} administrator added them.
+* The *OCI-compliant registry*, *S3 compatible object storage*, and *URI* options are preinstalled connection types. Additional options might be available if your {productname-short} administrator added them.
 * If you have uploaded model files to a persistent volume claim (PVC) and the PVC is attached to your workbench, the *Cluster storage* option becomes available in the *Model location* list. Use this option to select the PVC and specify the path to the model file.
 ====
 .. From the *Model type* list, select the type of model that you are deploying, *Predictive* or *Generative AI model*.
@@ -135,19 +135,29 @@ If project-scoped runtimes exist, the *Serving runtime* list includes subheading
 .. Click *Next*.
 . In the *Advanced settings* section, configure advanced options:
 .. Optional: (Generative AI models only) Select the *Add as AI asset endpoint* checkbox if you want to add your model's endpoint to the *AI asset endpoints* page. 
-... In the *Use case* field, enter the types of tasks that your model performs, such as chat, multimodal, or natural language processing.
 +
 [NOTE]
 ====
-You must add your model as an AI asset endpoint to test your model in the GenAI playground.
+You must add your model as an AI asset endpoint to test your model in the Generative AI (Gen AI) playground.
 ====
++
+If you enabled the endpoint, enter the types of tasks that your model performs in the *Use case* field.
 .. Optional: Select the *Model access* checkbox to make your model deployment available through an external route.
 .. Optional: To require token authentication for inference requests to the deployed model, select *Require token authentication*.
 .. In the *Service account name* field, enter the service account name that the token will be generated for.
 .. To add an additional service account, click *Add a service account* and enter another service account name.
-.. Optional: In the *Configuration parameters* section:
-... Select the *Add custom runtime arguments* and then enter arguments in the text field.
-... Select the *Add custom runtime environment variables* checkbox, then click *Add variable* to enter custom variables in the text field.
+.. Optional: Select *Add custom runtime arguments* or *Add custom runtime environment variables* to add configuration parameters to your deployment.
+ifndef::upstream[]
+.. In the *Deployment strategy* section, select *Rolling update* or *Recreate*. For more information about deployment strategies, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#deployment-strategies-for-resource-optimization_rhoai-user[Deployment strategies for resource optimization].
+endif::[]
+ifdef::upstream[]
+.. In the *Deployment strategy* section, select *Rolling update* or *Recreate*. For more information about deployment strategies, see link:{odhdocshome}/deploying-modelsi/#deployment-strategies-for-resource-optimization_odh-user[Deployment strategies for resource optimization].
+endif::[]
++
+[NOTE]
+====
+The *Recreate* deployment strategy is available for all runtimes except *Distributed inference with llm-d*. If you select the *Distributed inference with llm-d* runtime, the deployment strategy options are not displayed and the system defaults to the *Recreate* strategy.
+====
 . Click *Deploy*.
 
 .Verification
@@ -168,4 +178,9 @@ endif::[]
 ifndef::upstream[]
 * link:{rhoaidocshome}{default-format-url}/configuring_your_model-serving_platform/configuring_model_servers#adding-a-custom-model-serving-runtime_rhoai-admin[Adding a custom model-serving runtime].
 endif::[]
-
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#deployment-strategies-for-resource-optimization_rhoai-user[Deployment strategies for resource optimization].
+endif::[]
+ifdef::upstream[]
+* link:{odhdocshome}/deploying-models/#deployment-strategies-for-resource-optimization_odh-user[Deployment strategies for resource optimization].
+endif::[]
