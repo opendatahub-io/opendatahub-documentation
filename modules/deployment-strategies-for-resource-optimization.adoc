@@ -10,12 +10,13 @@ There are two primary deployment strategies available for model serving:
 Rolling update::
 This strategy ensures zero downtime and continuous availability of the model. New inference service pods are started while the existing pods are still running. Traffic is switched to the new pods only after they are fully ready, and then the old pods are terminated.
 +
-* Trade-off: This method requires increased resources (CPU, Memory, and GPUs) during the update process. Your cluster must have sufficient headroom to support approximately 200% of the model's resource request during the transition period because parallel instances exist temporarily.
+* Trade-off: This method requires increased resources (CPU, memory, and GPUs) during the update process. Plan for temporary headroom (approximately 200% of the pod requests) during the transition because parallel instances exist briefly.
 
 Recreate::
 This strategy prioritizes resource conservation over availability. All existing inference service pods are terminated before the new pods attempt to launch.
 +
-* Trade-off: This method guarantees a period of downtime. The model endpoint is unavailable and returns errors (typically 503 Service Unavailable) between the termination of the old pod and the readiness of the new pod.
+* Trade-off: 
+This method guarantees a period of downtime. The model endpoint is unavailable and returns errors (typically 503 Service Unavailable) between the termination of the old pod and the readiness of the new pod.
 
 == Choosing a deployment strategy
 
@@ -53,5 +54,5 @@ The *Recreate* strategy severs the connection to the old pod immediately. Ensure
 
 [NOTE]
 ====
-Availability of the *Recreate* deployment strategy option may vary depending on the specific model runtime and the version of the application platform you are using.
+The *Recreate* deployment strategy is available for all runtimes except *Distributed inference with llm-d*. If you select the *Distributed inference with llm-d* runtime, the deployment strategy options are not displayed and the system defaults to the Recreate strategy.
 ====
