@@ -50,6 +50,10 @@ If you are deploying to IBM Z (s390x) note the following platform-specific requi
 ** `--max_model_len`
 ** `--max-num-seqs=4`
 ** `--tensor-parallel-size`.
+* To use prebuilt model caches for {productname-short} Inference Server 3.2.5 images, ensure that you add the following runtime arguments in the `args` section:
+** `--max_model_len=32768`
+** `--max-num-seqs=32`
+** `--tensor-parallel-size=4`
 * The toleration key differs for the following platforms:
 ** For x86 nodes, use the toleration key `ibm.com/spyre_pf`.
 ** For IBM Z (s390x), only Virtual Function (VF) mode is supported for IBM Spyre devices. Therefore, use the VF toleration key for IBM Z: `ibm.com/spyre_vf`.
