@@ -42,16 +42,16 @@ Wait for the file to finish processing. A *Source uploaded* notification appears
 ====
 If a model is reluctant to use the RAG feature (its knowledge search tool), you can modify the prompt in the *System instructions* field to explicitly guide its behavior.
 
-You can refine the system prompt by including directives such as:
+To ensure that the model actively utilizes the available RAG documents rather than relying solely on its pre-trained data, refine the system prompt by including directives as shown in the following examples:
 
 * **To force use:** "You **MUST** use the `knowledge_search` tool to obtain updated information."
 * **To specify context:** "Always search the knowledge base before answering questions about company policies, recent events, or specific documentation."
-
-This ensures the model actively utilizes the available RAG documents rather than relying solely on its pre-trained data.
 ====
 +
 *NOTE:* After you send a prompt, the *Send* button in the chat input field changes to a *Stop* button. Click it if you want to interrupt the model's response, for example, when the response takes longer than you anticipated or if you notice that you made an error in your prompt. The Bot posts “You stopped this message” to confirm your stop request.
 
+. Optional. To clear the chat history and start a new conversation, click *New Chat*. The chat interface clears the chat history. Your playground configuration settings are preserved.
+
 .Verification
 
-* The model retrieves information from the uploaded documents to answer the question.
+* The model retrieves information from the uploaded documents to answer the questions.
