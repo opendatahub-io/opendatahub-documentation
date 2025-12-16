@@ -1,0 +1,32 @@
+:_module-type: PROCEDURE
+[id="setting-a-default-cluster-wide-deployment-strategy_{context}"]
+= Setting a default cluster-wide deployment strategy
+
+You can set a default deployment strategy for new model deployments across the cluster. 
+
+.Prerequisites
+
+* You have logged in to {productname-short} as a user with {productname-short} administrator privileges.
+* You have enabled model serving on your cluster.
+
+.Procedure
+
+. In the dashboard, navigate to *Settings* -> *Cluster settings*.
+. Click on the *General settings* tab.
+. Scroll down to the *Model deployment options* section.
+. In the *Default deployment strategy*, select the desired cluster default:
+* *Rolling update* 
+* *Recreate*
+. Click *Save changes* at the bottom of the page.
+
+.Verification
+
+ifdef::upstream[]
+* Follow the instructions to deploy a new model as described in link:{odhdocshome}/deploying-models/#deploying-models-on-the-model-serving-platform_odh-user[Deploying models on the model serving platform^].
+endif::[]
+ifndef::upstream[]
+* Follow the instructions to deploy a new model as described in link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#deploying-models-on-the-model-serving-platform_rhoai-user[Deploying models on the model serving platform^].
+endif::[]
+* In the *Advanced settings* page of the deployment wizard, locate the *Deployment strategy* section.
+* The preselected deployment strategy should match the new default you configured.
+
