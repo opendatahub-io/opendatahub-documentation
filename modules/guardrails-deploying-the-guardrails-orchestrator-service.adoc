@@ -55,6 +55,8 @@ apiVersion: trustyai.opendatahub.io/v1alpha1
 kind: GuardrailsOrchestrator
 metadata:
   name: guardrails-orchestrator-sample
+  annotations:
+    security.opendatahub.io/enable-auth: True
 spec:
   orchestratorConfig: <orchestrator_configmap>
   guardrailsGatewayConfig: <guardrails_gateway_configmap>
@@ -76,6 +78,13 @@ spec:
 If desired, the TrustyAI controller can automatically generate an `orchestratorConfig` and `guardrailsGatewayConfig` based on the available resources in your namespace.
 To access this, include the `autoConfig` parameter inside your Custom Resource, and see _Auto Configuring Guardrails_ for documentation on its usage.
 +
+.Annotations from example `orchestrator_cr.yaml` CR
+[cols="1,2a", options="header"]
+|===
+| Annotation | Description
+| `security.opendatahub.io/enable-auth` *(optional)* | Boolean value to control whether the Guardrails Orchestrator routes will be authenticated via the kube-rbac-proxy. If set to `true`, the created routes to the Guardrails Orchestrator, Guardrails Gateway, and built-in detectors will all require authentication headers in the form `Authentication: Bearer $xyz` for access.
+|===
++via
 .Parameters from example `orchestrator_cr.yaml` CR
 [cols="1,2a", options="header"]
 |===
@@ -93,6 +102,7 @@ See _Auto Configuring Guardrails_ for more information.
 
 |`enableBuiltInDetectors` *(optional)*| A boolean value to inject the built-in detector sidecar container into the Orchestrator pod. The built-in detector is a lightweight HTTP server containing a number of available guardrailing algorithms.
 |`enableGuardrailsGateway` *(optional)*| A boolean value to enable controlled interaction with the Orchestrator service by enforcing stricter access to its exposed endpoints. It provides a mechanism of configuring detector pipelines, and then provides a unique `/v1/chat/completions` endpoint per configured detector pipeline.
+|`disableOrchestrator` *(optional)*| A boolean value to control whether the Guardrails Orchestrator is included in the deployment. This is intended for standalone built-in detector use cases, such as when you wish to interface with the built-in detectors but do not need orchestration capabilities. For example, when using llama-stack. If `disableOrchestrator` is set to `true`, then `enableBuiltInDetectors` must be also set to `true`.
 |`otelExporter` *(optional)*| A list of paired name and value arguments for configuring OpenTelemetry traces or metrics, or both:
 
 * `otlpProtocol` - Sets the protocol for all the OpenTelemetry protocol (OTLP) endpoints. Valid values are `grpc` (default) or `http`
