@@ -1,0 +1,16 @@
+:_module-type: CONCEPT
+
+[id='performance-benchmarks-for-knowledge-tuning_{context}']
+=  Performance benchmarks for knowledge tuning
+
+To get an estimate of the total time a flow will take, you can run the `dry_run` function and set `enable_time_estimation` to `true`.
+
+For example, tests that use the gpt-oss-120b LLM on 4x H100 GPUs with the QuALITY dataset (266 articles) showed significant variance between flows.
+
+* The estimated generation times for the full dataset were approximately 15.12 hours for Extractive Summary and 12.99 hours for Detailed Summary, both of which were evaluated with 50 completions per summary (N=50).
+
+* In contrast, the Key Facts and Document Based flows, which generated only a single summary per document, completed in approximately 0.35 and 0.44 hours, respectively.
+
+* Additionally, analysis of the Extractive Summary flow highlights that the steepest time reductions occurred between concurrency levels 10 and 30, with returns observed to diminish significantly beyond 50 in this specific configuration.
+
+To view a graph that illustrates the accuracy on QuALITY Benchmark (4,609 Evaluation QA), go to: https://github.com/Red-Hat-AI-Innovation-Team/sdg_hub/blob/main/examples/knowledge_tuning/enhanced_summary_knowledge_tuning/imgs/quality_benchmark_accuracy.png.

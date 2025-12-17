@@ -1,9 +1,9 @@
 :_module-type: CONCEPT
 
 [id='about-the-python-index_{context}']
-= About the {org-name} Python Index
- 
-{org-name} AI includes a maintained Python package index that provides secure and reliable access to supported libraries, with full support for disconnected environments. 
+= About the {org-name} Python index
+
+{org-name} AI includes a maintained Python package index that provides secure and reliable access to supported libraries, with full support for disconnected environments.
 ifdef::upstream[]
 For details about {org-name} support for the Python package, see link:{odhdocshome}/customize-models-to-build-gen-ai-applications/#support-philosophy_custom-models[Support philosophy: A secure platform].
 endif::[]
@@ -19,18 +19,18 @@ Table 2.1 lists the images that are configured to use the {org-name} Python inde
 |Accelerator UBI9 | List of packages | Registry URL | Catalog URL
 
 |CPU
-|link:https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cpu-ubi9/simple/[https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cpu-ubi9/simple/]
-|registry.redhat.io/rhai/base-image-cpu-rhel9:3.0.0-1763044919
+|https://console.redhat.com/api/pypi/public-rhai/rhoai/3.2/cpu-ubi9/simple/
+|registry.redhat.io/rhai/base-image-cpu-rhel9:3.2.0-1764872006
 |https://catalog.redhat.com/software/containers/rhai/base-image-cpu-rhel9/690377f9d1c73dd1e81192f0
 
 |CUDA
-|link:https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cuda-ubi9/simple/[https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/cuda-ubi9/simple/]
-|registry.redhat.io/rhai/base-image-cuda-rhel9:3.0.0-1763044928
+|https://console.redhat.com/api/pypi/public-rhai/rhoai/3.2/cuda12.9-ubi9/simple/
+|registry.redhat.io/rhai/base-image-cuda-rhel9:3.2.0-1765367347
 |https://catalog.redhat.com/software/containers/rhai/base-image-cuda-rhel9/690377f9e1522d6afa972cc6
 
 |ROCm
-|link:https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/rocm-ubi9/simple/[https://console.redhat.com/api/pypi/public-rhai/rhoai/3.0/rocm-ubi9/simple/]
-|registry.redhat.io/rhai/base-image-rocm-rhel9:3.0.0-1763044801
+|https://console.redhat.com/api/pypi/public-rhai/rhoai/3.2/rocm6.4-ubi9/simple/
+|registry.redhat.io/rhai/base-image-rocm-rhel9:3.2.0-1764877298
 |https://catalog.redhat.com/software/containers/rhai/base-image-rocm-rhel9/690377f9e1522d6afa972cc9
 |===
 
@@ -39,6 +39,6 @@ Table 2.1 lists the images that are configured to use the {org-name} Python inde
 * NVIDIA CUDA, AMD GPU, and AMD ROCm RPM repositories are configured, but disabled.
 * The images listed in Table 2.1 have RHEL RPM repositories enabled. A RHEL RPM is a package file used for the {org-name} Package Manager system on {org-name} Enterprise Linux (RHEL). An RPM file contains all the necessary components for an application, such as executable files, configuration files, and documentation. It simplifies the process of distributing, installing, and managing software by bundling everything into a single, standalone file.
 +
-You can install additional RPMs, but you need a {org-name} subscription and you must run your container image in root mode (for example, `podman run --user 0`).
+You can install additional RPMs, but you must have a {org-name} Extended Update Support (EUS) subscription and you must run your container image in root mode (for example, `podman run --user 0`).
 +
 For more information about {org-name} Package Manager, see link:https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/packaging_and_distributing_software/introduction-to-rpm_packaging-and-distributing-software[Introduction to RPM].
