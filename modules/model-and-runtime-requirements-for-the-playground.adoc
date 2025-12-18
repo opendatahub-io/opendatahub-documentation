@@ -1,0 +1,54 @@
+:_module-type: CONCEPT
+[id="model-and-runtime-requirements-for-the-playground_{context}"]
+= Model and runtime requirements for the playground
+
+To successfully use the retrieval augmented generation (RAG) and Model Context Protocol (MCP) features in the playground, the model you deploy must meet specific requirements. Not all models offer the same capabilities.
+
+== Key model selection factors
+
+Tool calling capabilities::
+The model must support tool calling to interact with the playground's RAG and MCP features. You must check the model card (for example, on Hugging Face) to verify this capability. For more information, see link:https://docs.vllm.ai/en/stable/features/tool_calling.html[Tool calling] in the vLLM documentation.
+
+Context length::
+Models with larger context windows are recommended for RAG applications. A larger context window allows the model to process more retrieved documents and maintain longer conversation histories.
+
+vLLM version and configuration::
+Tool calling functionality depends heavily on the version of vLLM used in your model serving runtime.
+* *Version*: Use the latest vLLM version included in {productname-long} for optimal compatibility.
+* *Runtime arguments*: You must configure specific runtime arguments in the model serving runtime to enable tool calling. Common arguments include (not exhaustive):
+** `--enable-auto-tool-choice`
+** `--tool-call-parser`
++
+For more information, see link:https://docs.vllm.ai/en/stable/features/tool_calling.html[Tool calling] in the vLLM documentation.
+
+[IMPORTANT]
+====
+If these requirements are not met, the model might fail to search documents or execute tools without returning a clear error message.
+====
+
+== Example model configuration
+
+The following table describes an example configuration for the `Qwen/Qwen3-14B-AWQ` model for use in the playground. You can use this as a reference when configuring your own model runtime arguments.
+
+.Example configuration for Qwen/Qwen3-14B-AWQ
+[cols="1,2",options="header"]
+|===
+|Field |Configuration Details
+
+|**Model**
+|Qwen/Qwen3-14B-AWQ
+
+|**vLLM Runtime**
+|vLLM NVIDIA GPU ServingRuntime for KServe
+
+|**Hardware Profile**
+|NVIDIA A10G (24GB VRAM)
+
+|**Custom Runtime Arguments**
+|`--dtype=auto` +
+`--max-model-len=32768` +
+`--enable-auto-tool-choice` +
+`--tool-call-parser=hermes` +
+`--reasoning-parser=qwen3` +
+`--gpu-memory-utilization=0.90`
+|===
