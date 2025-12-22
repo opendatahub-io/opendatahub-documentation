@@ -1,0 +1,49 @@
+:_module-type: PROCEDURE
+
+[id="remote-embeddings-llama-stack_{context}"]
+== Custom remote embeddings in Llama Stack servers
+
+{productname-short} allows you to configure remote embedding models in the `LlamaStackDistribution` custom resource. In previous releases, the embedding providers were hardcoded and uncustomizable. Now, Llama Stack runs embedding computations in a dedicated vLLM instance. On {productname-short} 3.2, you can add any supported remote embedding model to enhance a RAG application. 
+Using remote embedding providers can improve your RAG applications by:
+
+* Improve performance on CPU-only systems or low-resource clusters.
+* Enabled dedicated embedding models which can improve answers when creating an RAG application. 
+* Embedding dimension improves vector database schema, chunking, and performance.
+
+.Prerequisites
+
+* You have installed {openshift-platform} 4.19 or newer.
+* You have logged in to {productname-long}.
+* You have installed the PostgreSQL operator. 
+* You have cluster administrator privileges for your OpenShift cluster.
+* You have activated the Llama Stack Operator in your cluster.
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+
+.Procedure
+
+. Add your preferred embedding providers to your `LlamaStackDistribution` custom resource. The following example, enables the `sentence-transformers` embeddings provider. 
++
+[source,yaml]
+----
+    name: ENABLE_SENTENCE_TRANSFORMERS
+      value: "true"
+    name: EMBEDDING_PROVIDER
+      value: "sentence-transformers"
+----
+
+.Verification
+
+. In the OpenShift web console, select Workloads > Deployments 
+
+. Verify that the 
+
+
