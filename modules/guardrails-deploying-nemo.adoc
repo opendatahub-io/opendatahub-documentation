@@ -19,9 +19,9 @@ endif::[]
 * You know the internal service URL for your deployed model predictor.
 
 .Procedure
-. Create a service account for the NeMo Guardrails service. For example, create a yaml file named `service-account.yaml` as follows:
+. Create a service account for the NeMo Guardrails service. For example, create a yaml file named `nemo-guardrails-service-account.yaml` as follows:
 +
-.Example service-account.yaml file
+.Example nemo-guardrails-service-account.yaml file
 [source,terminal]
 ----
 apiVersion: v1
@@ -30,11 +30,11 @@ metadata:
   name: nemo-guardrails-service-account
 ----
 +
-. Apply the `service-account.yaml` file:
+. Apply the `nemo-guardrails-service-account.yaml` file:
 +
 [source,terminal]
 ----
-$ oc apply -f service-account.yaml
+$ oc apply -f nemo-guardrails-service-account.yaml
 ----
 
 . Create a role binding for the NeMo Guardrails service account. For example, create a yaml file named `role-binding.yaml` as follows:
@@ -200,7 +200,7 @@ spec:
 
 . Deploy the NeMo Guardrails service:
 +
-[source.terminal]
+[source,terminal]
 ----
 $ oc apply -f nemo-guardrails-cr.yaml
 ----
@@ -247,7 +247,7 @@ $ curl -k -X POST $GUARDRAILS_ROUTE/v1/chat/completions \
 +
 [source,bash,subs="+quotes"]
 ----
-url -k -X POST $GUARDRAILS_ROUTE/v1/chat/completions \
+$ curl -k -X POST $GUARDRAILS_ROUTE/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $(oc whoami -t)" \
   -d '{"messages":[{"role":"user","content": "In just two words, provide a typical American first and last name."}]}'
