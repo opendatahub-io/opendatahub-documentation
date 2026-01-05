@@ -4,7 +4,7 @@
 = Deploying the NeMo Guardrails service
 
 [role='_abstract']
-Deploy NVIDIA NeMo Guardrails to add guardrails and safety controls to your deployed models in {productname-long}. NeMo Guardrails provides a framework for controlling the input and output of large language models, enabling you to define guardrails for sensitive data detection, content filtering, and custom validation rules.
+Deploy NVIDIA NeMo Guardrails to add guardrails and safety controls to your deployed models in {productname-long}. NeMo Guardrails provides a framework for controlling the input and output of large language models, enabling you to define guardrails for sensitive data detection, content filtering, and custom validation rules. For more information, see link:https://docs.nvidia.com/nemo/guardrails/latest/user-guides/configuration-guide.html(NVIDIA NeMo Guardrails Configuration Guide).
 
 .Prerequisites
 * You have installed {productname-long}.
@@ -28,7 +28,20 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: nemo-guardrails-service-account
----
+----
++
+. Apply the `service-account.yaml` file:
++
+[source,terminal]
+----
+$ oc apply -f service-account.yaml
+----
+
+. Create a role binding for the NeMo Guardrails service account. For example, create a yaml file named `role-binding.yaml` as follows:
++
+.Example role-binding.yaml file
+[source,terminal]
+----
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -41,11 +54,12 @@ roleRef:
   kind: ClusterRole
   name: view
 ----
-. Apply the `service-account.yaml` file:
++
+. Apply the `role-binding.yaml` file:
 +
 [source,terminal]
 ----
-$ oc apply -f nemo-guardrails-service-account.yaml
+$ oc apply -f role-binding.yaml
 ----
 
 . Create a secret containing an API token for the service account:

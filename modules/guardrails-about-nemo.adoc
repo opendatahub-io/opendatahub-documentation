@@ -4,4 +4,41 @@ ifdef::context[:parent-context: {context}]
 [id='guardrails-about-nemo_{context}']
 
 = About NeMo Guardrails
-One of the ways to guardrail your LLM in {product-name-long} is by using link:https://docs.nvidia.com/nemo/guardrails/latest/user-guides/configuration-guide/index.html[NeMo Guardrails].
+One of the ways to guardrail your large language model (LLM) in {product-name-long} is by using link:https://docs.nvidia.com/nemo/guardrails/latest/user-guides/configuration-guide/index.html[NeMo Guardrails]. NeMo Guardrails enables developers building LLM-based applications to easily add programmable guardrails between the application code and the LLM. It is integrated into the TrustyAI Service Operator to allow {product-name-long} users to seamlessly safeguard their LLM-based applications on OpenShift.
+
+NeMo Guardrails differs from the TrustyAI implementation of the link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator(FMS-Guardrails Orchestrator) in a few notable ways:
+
+.Comparison of Guardrail Architectures
+[cols="1,2,2", options="header"]
+|===
+|Feature |FMS Guardrails Architecture |NeMo Guardrails Architecture
+
+|Central Component
+|Guardrails Orchestrator
+|NeMo Guardrails Server
+
+|Deployment Resource
+|Guardrails CR
+|NeMo-Guardrails CR
+
+|Detection Mechanism
+|Built-in detectors that are external to the Orchestrator
+|Internal detectors within its own server pod and external, built-in detectors
+
+|Operational Flow
+|Orchestrator watches and calls detector services
+|NeMo server coordinates internal logic and external calls
+
+|Shared Operator
+|Managed by the TrustyAI Operator
+|Managed by the TrustyAI Operator
+
+|Namespace Location
+|Deployed within Model Namespaces
+|Deployed within Model Namespaces
+
+|Inference Path
+|User → Orchestrator → vLLM Model
+|User → NeMo Server → vLLM Model
+|===
+

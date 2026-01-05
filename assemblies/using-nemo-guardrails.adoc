@@ -1,0 +1,44 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: nemo-guardrails
+
+[id="deploying-nemo-guardrails_{context}"]
+= Deploying NeMo Guardrails
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+NeMo Guardrails is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+NeMo Guardrails is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+[role='_abstract']
+You can use NVIDIA NeMo Guardrails to add guardrails and safety controls to your deployed models in {productname-long}. NeMo Guardrails provides a framework for controlling the input and output of large language models, enabling you to define rails for sensitive data detection, content filtering, and custom validation rules.
+
+.Prerequisites
+* You have installed {productname-long}.
+ifdef::upstream[]
+* You have logged in to the {productname-short} dashboard.
+endif::[]
+ifndef::upstream[]
+* You have logged in to {productname-short}.
+endif::[]
+* You have deployed a model using KServe that you want to add guardrails to.
+* You have cluster administrator permissions or sufficient permissions to create service accounts, secrets, and custom resources in your project namespace.
+
+include::modules/guardrails-about-nemo.adoc[leveloffset=+1]
+include::modules/guardrails-deploying-nemo.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
