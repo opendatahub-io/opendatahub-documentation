@@ -157,7 +157,7 @@ data:
   KUBEFLOW_LLAMA_STACK_URL: "http://$<distribution_name>-service.$<your_namespace>.svc.cluster.local:$<port>"
   KUBEFLOW_PIPELINES_ENDPOINT: "https://<kfp_endpoint>"
   KUBEFLOW_NAMESPACE: "<project_name>"
-  KUBEFLOW_BASE_IMAGE: "quay.io/rhoai/odh-trustyai-ragas-lls-provider-dsp-rhel9:rhoai-3.0"
+  KUBEFLOW_BASE_IMAGE: "registry.access.redhat.com/ubi9/python-312:latest"
   KUBEFLOW_RESULTS_S3_PREFIX: "s3://<bucket_name>/ragas-results"
   KUBEFLOW_S3_CREDENTIALS_SECRET_NAME: "<ragas_s3_credentials>"
 ----
@@ -166,9 +166,16 @@ data:
 * `KUBEFLOW_LLAMA_STACK_URL`: The URL for the Llama Stack server. This must be accessible from the Kubeflow Pipeline pods. The <distribution_name>, <namespace>, and <port> are replaced with the name of the LlamaStack distribution you are creating, the namespace where you are creating it, and the port. These 3 elements are present in the LlamaStack distribution YAML.
 * `KUBEFLOW_PIPELINES_ENDPOINT`: The Kubeflow Pipelines API endpoint URL.
 * `KUBEFLOW_NAMESPACE`: The namespace where pipeline runs are executed. This should match your current project namespace.
-* `KUBEFLOW_BASE_IMAGE`: The container image used for Ragas evaluation pipeline components. This image contains the Ragas provider package installed via pip.
+* `KUBEFLOW_BASE_IMAGE`: The base container image used to run the Ragas evaluation in the remote provider. Defaults to `registry.access.redhat.com/ubi9/python-312:latest`. The Kubeflow Pipeline components automatically install `llama-stack-provider-ragas[remote]` and its dependencies on top of this base image at runtime.
 * `KUBEFLOW_RESULTS_S3_PREFIX`: The S3 path prefix where evaluation results are stored. For example: `s3://my-bucket/ragas-evaluation-results`.
 * `KUBEFLOW_S3_CREDENTIALS_SECRET_NAME`: The name of the secret containing S3 credentials.
++
+[IMPORTANT]
+====
+The Kubeflow Pipeline components automatically install `llama-stack-provider-ragas[remote]` at runtime. By default, this package is installed from the public link:https://pypi.org/project/llama-stack-provider-ragas/[Python Index (PyPI)]. No action is required for this default behavior.
+
+If you are using a disconnected environment, the package is installed from the link:https://console.redhat.com/api/pypi/public-rhai/rhoai/3.2/cuda12.9-ubi9/simple/[{org-name} Python Index]. In this case, you must link:{rhoaidocshome}{default-format-url}/customize_models_to_build_gen_ai_applications/set-up-your-working-environment_custom-models#mirror-the-python-index_custom-models[Mirror the Python Index for your disconnected environment].
+====
 
 . Apply the ConfigMap:
 +
@@ -315,8 +322,3 @@ $ oc get pods -w
 ----
 +
 Wait until the `llama-stack-pod` pod status shows `Running`.
-
-.Next steps
-ifdef::upstream[]
-* link:{odhdocshome}/working-with-llama-stack/#evaluating-rag-system-quality-with-ragas_rag[Evaluating RAG system quality with Ragas metrics]
-endif::[]
