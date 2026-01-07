@@ -72,6 +72,12 @@ spec:
     - <tls_secret_2_to_mount>
   otelExporter:
     - <open_telemetry_config>
+  env:
+    - name: MODEL_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: api-token-secret
+          key: token
   replicas: 1
 ----
 +
@@ -114,6 +120,7 @@ See _Auto Configuring Guardrails_ for more information.
 | `logLevel` *(optional)* | The log level to be used in the Guardrails Orchestrator- available values are `Error`, `Warn`, `Info` (default), `Debug`, and `Trace`.
 [[tlsSecrets-param]]
 | `tlsSecrets` *(optional)* | A list of names of `Secret` objects to mount to the Guardrails Orchestrator container. All secrets provided here are mounted into the directory `/etc/tls/$SECRET_NAME` for use in your Orchestrator config TLS configuration. Each secret should contain a `tls.crt` and a `tls.key` field.
+| `env` *(optional)* | A list of environment variables to set in the Guardrails Orchestrator deployment containers. These environment variables are created for every non-kube-rbac-proxy container, including the orchestrator, gateway, and built-in-detectors containers. Environment variables can be used to pass API tokens and other configuration values. For more information on defining environment variables, see link:https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/[Define Environment Variables for a Container].
 |`replicas`| The number of Orchestrator pods to create.
 |===
 
