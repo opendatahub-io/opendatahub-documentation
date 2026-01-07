@@ -4,7 +4,13 @@
 = Overview of Llama Stack
 
 [role="_abstract"]
-Llama Stack is a unified AI runtime environment designed to simplify the deployment and management of generative AI workloads on {productname-short}. Llama Stack integrates LLM inference servers, vector databases, and retrieval services in a single stack, optimized for Retrieval-Augmented Generation (RAG) and agent-based AI workflows. In {openshift-platform}, the Llama Stack Operator manages the deployment lifecycle of these components, ensuring scalability, consistency, and integration with {productname-short} projects.
+Llama Stack is a unified AI runtime environment designed to simplify the deployment and management of generative AI workloads on {productname-short}. In {openshift-platform}, the Llama Stack Operator manages the deployment lifecycle of these components, ensuring scalability, consistency, and integration with {productname-short} projects. Llama Stack integrates LLM inference servers, vector databases, and retrieval services in a single stack, optimized for Retrieval-Augmented Generation (RAG) and agent-based AI workflows. 
+
+**Llama Stack concepts**
+
+* **Llama Stack Operator:** A Llama Stack server instance is installed in {productname-short} through the Llama Stack Operator.
+* **The `run.yaml` file:**  The `run.yaml` is used to enable the APIs to expose backend provider configurations for your server environment. {org-name} ships a default `run.yaml` that includes various APIs and providers with default configurations for simple deployments. You can create a `run.yaml` file to configure advanced workflows and develop custom applications. For more information on advanced Llama Stack workflows and how to customize `run.yaml` files, see the "Llama Stack application examples".
+* **`LlamaStackDistribution` custom resource:** The `LlamaStackDistribution` CR enables configurations for the specific use cases defined in the `run.yaml` file.
 
 {productname-short} ships with the Llama Stack Distribution, enabling you to run a Llama Stack server in a containerized environment. 
 {productname-short} 3.2.0 uses the Open Data Hub Llama Stack version link:https://github.com/opendatahub-io/llama-stack/releases/tag/v0.3.5%2Brhai0[0.3.5+rhai0] in the Llama Stack Distribution, which is based on the upstream Llama Stack version link:https://github.com/llamastack/llama-stack/releases/tag/v0.3.5[0.3.5].
@@ -28,10 +34,11 @@ endif::[]
 
 Llama Stack includes the following components:
 
-* **Inference model servers** such as vLLM, designed to efficiently serve large language models.
-* **Vector storage** solutions, primarily Milvus, to store embeddings generated from your domain data.
-* **Retrieval and embedding management** workflows using integrated tools, such as Docling, to handle continuous data ingestion and synchronization.
 * **Integration with {productname-short}** by using the `LlamaStackDistribution` custom resource, simplifying configuration and deployment.
+* **Inference model connections** by acting as a proxy between the Llama Stack APIs and the inference server.
+* **Vector storage connections** primarily Milvus, to store embeddings generated from your domain data.
+* **Retrieval and embedding management** workflows using integrated tools, such as Docling, to handle continuous data ingestion and synchronization.
+* **Enabling agentic workflows** using Llama Stack supported APIs, such as OpenAI's Responses and Chat completions.
 
 ifdef::upstream[]
 For information about how to deploy Llama Stack in {productname-short}, see link:{odhdocshome}/working-with-llama-stack/#deploying-a-rag-stack-in-a-project_rag[Deploying a RAG stack in a project].
