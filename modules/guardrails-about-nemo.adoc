@@ -6,7 +6,7 @@ ifdef::context[:parent-context: {context}]
 = About NeMo Guardrails
 One of the ways to guardrail your large language model (LLM) in {productname-long} is by using link:https://docs.nvidia.com/nemo/guardrails/latest/index.html[NeMo Guardrails]. NeMo Guardrails enables developers building LLM-based applications to easily add programmable guardrails between the application code and the LLM. It is integrated into the TrustyAI Service Operator to allow {productname-long} users to seamlessly safeguard their LLM-based applications on OpenShift.
 
-NeMo Guardrails differs from the TrustyAI implementation of the link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator(FMS-Guardrails Orchestrator) in a few notable ways:
+NeMo Guardrails differs from the TrustyAI implementation of the link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[FMS-Guardrails Orchestrator] in a few notable ways:
 
 .Comparison of Guardrail Architectures
 [cols="1,2,2", options="header"]
@@ -26,8 +26,8 @@ NeMo Guardrails differs from the TrustyAI implementation of the link:https://git
 |Custom Python functions as internal detectors (using the @action decorator) that execute within the NeMo server pod and external, built-in detectors
 
 |Operational Flow
-|Orchestrator watches and calls detector services and detection flows are fixed in the CofigMap
-|NeMo server coordinates internal logic and external calls and Colang can be used for programmable detection flow.
+|Orchestrator watches and calls detector services and detection flows are fixed in the ConfigMap
+|NeMo server coordinates internal logic and external calls and Colang can be used for programmable detection flow
 
 |Shared Operator
 |Managed by the TrustyAI Operator
