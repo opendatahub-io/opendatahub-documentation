@@ -20,6 +20,7 @@ data:
       service:
         hostname: <generation_hostname>
         port: <generation_service_port>
+        api_token: <api_token_env_var>
         tls: <tls_config_1_name>
     detectors:
       <detector_server_1_name>:
@@ -34,6 +35,7 @@ data:
         service:
           hostname: <other_detector_hostname>
           port: <detector_server_port>
+          api_token: <api_token_env_var>
           tls: <some_other_detector_tls>
         chunker_id: whole_doc_chunker
         default_threshold: 0.5
@@ -60,6 +62,7 @@ service configuration, which contains the following fields:
 
 * `hostname` - The hostname of the service
 * `port` - The port of the service
+* `api_token` *(Optional)* - The name of an environment variable that holds the authentication token for the service. The token value is read from the environment variable at runtime. For example, if set to `MODEL_TOKEN`, the Orchestrator reads the token from the `$MODEL_TOKEN` environment variable.
 * `tls` *(Optional)* - The name of the TLS configuration (specified later in the configuration) to use for this service. If provided, the Orchestrator communicates with this service with HTTPS.
 | *`detectors`* | The `detectors` section is where the detector servers available to the Orchestrator are specified. Provide some unique name for the detector server as the key
 to each entry, and then the following values are required:
