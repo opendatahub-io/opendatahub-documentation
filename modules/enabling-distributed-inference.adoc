@@ -80,6 +80,16 @@ Customize the following parameters in the `spec` section of the inference servic
 
 `LLMInferenceService` supports a serving mode called Prefill-Decode (PD) Disaggregation. To enable PD disaggregation, add the `prefill` section to your CR:
 
+[WARNING]
+====
+Because KV transfers are latency sensitive, a high-performance secondary network (for example, InfiniBand or RoCE) or NVLink is required for this deployment topology.
+====
+
+[NOTE]
+====
+Configuration for secondary networks is intentionally omitted from the following example.
+====
+
 [source]
 ----
 apiVersion: serving.kserve.io/v1alpha1
@@ -127,11 +137,6 @@ spec:
             memory: 16Gi
             nvidia.com/gpu: "1"
 ----
-
-[WARNING]
-====
-Because KV transfers are latency sensitive, a high-performance secondary network (for example, InfiniBand or RoCE) or NVLink is required for this deployment topology.
-====
 
 === KV load failure recovery
 
