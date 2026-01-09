@@ -7,7 +7,7 @@
 You can deploy a version of a registered model directly from a model registry.
 
 .Prerequisites
-* An available model registry exists in your deployment, and contains at least 1 registered model.
+* An available model registry exists in your deployment, and contains at least one registered model.
 ifdef::upstream[]
 * To deploy a model version by using the model serving platform, you have fulfilled the prerequisites described in link:{odhdocshome}/deploying-models/#deploying-models-on-the-model-serving-platform_odh-admin[Deploying models on the model serving platform].
 endif::[]
@@ -17,27 +17,51 @@ endif::[]
 
 .Procedure
 . From the {productname-short} dashboard, click *AI hub* -> *Registry*.
-. From the *Model registry* drop-down list, select the model registry from which you want to deploy a model version.
+. From the *Model registry* list, select the model registry from which you want to deploy a model version.
 . In the *Model name* column, click the name of the model that contains the version that you want to deploy.
 +
 The details page for the model version opens.
 . Click the action menu (*&#8942;*) beside the model version that you want to deploy.
-. Click *Deploy*.
-. In the *Deploy model* dialog, configure properties for deploying the model.
-.. From the *Project* drop-down list, select a target project.
-.. Click *Deploy*.
-. Configure the following properties for deploying your model:
-.. From the *Project* drop-down list, select a project in which to deploy your model.
+. Click *Deploy* for the model version. 
+. In the *Deploy model* dialog, configure properties for deploying the model:
+.. From the *Project* list, select a target project. 
++
+When you select a project, {productname-short} scans through the connections to that project and checks if any match the connections that the model was registered with.  
++
+If there is a single matching connection, this is autoselected. If there are multiple matching connections, these are displayed next in the *Connection* list. 
++
+If there are no matching connections, you can go straight to the deployment wizard, without selecting a connection, and the model location data will be autofilled as a new connection. 
+
+.. When there are multiple matching connections, from the *Connection* list, select the connection that you want to use when deploying the model. 
++
+The deployment wizard is autofilled with the details for your selected connection. If you selected a connection or one was autoselected, you can change the connection or create a new one in the next steps.
+
+.. Click *Deploy*. 
++
+This displays the deployment wizard. 
+
+. On the *Model details* page, provide information about the model:
+.. From the *Model location* list, specify where your model is stored and complete the appropriate details for your connection. For a matching connection selected in the *Deploy model* dialog, the details are autofilled. Alternatively, you can create a new connection.  
++
+ifndef::upstream[]
+For more information about connections, see link:{rhoaidocshome}{default-format-url}/working_on_projects/using-connections_projects#adding-a-connection-to-your-project_projects[Adding a connection to your project].
+endif::[]
+ifdef::upstream[]
+For more information about connections, see link:{odhdocshome}/working-on-data-science-projects/#adding-a-connection-to-your-data-science-project_projects[Adding a connection to your project].
+endif::[]
+
 .. Optional: In the *Model deployment name* field, enter a unique name for your model deployment. This field is autofilled with a value that contains the model name by default. 
 +
 This will be the name of the inference service that is created when the model is deployed.
+. Click *Next*.
 ifdef::upstream[]
-. Configure the remaining properties for deploying your model, as described in link:{odhdocshome}/deploying-models/#deploying-models-on-the-model-serving-platform_odh-user[Deploying models on the model serving platform].
+. On the *Model deployment* and *Advanced settings* pages, configure the remaining properties for deploying your model, as described in link:{odhdocshome}/deploying-models/#deploying-models-on-the-model-serving-platform_odh-user[Deploying models on the model serving platform].
 endif::[]
 ifndef::upstream[]
-. Configure the remaining properties for deploying your model, as described in link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#deploying-models-on-the-model-serving-platform_rhoai-user[Deploying models on the model serving platform].
+. On the *Model deployment* and *Advanced settings* pages, configure the remaining properties for deploying your model, as described in link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#deploying-models-on-the-model-serving-platform_rhoai-user[Deploying models on the model serving platform].
 endif::[]
-.. Click *Deploy*.			 
+. On the *Review* page, review the settings that you have selected before deploying the model. 
+. Click *Deploy*.			 
 
 .Verification
 * The model deployment is displayed on the *AI hub* -> *Deployments* page.
