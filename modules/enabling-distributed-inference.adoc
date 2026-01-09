@@ -75,3 +75,77 @@ Customize the following parameters in the `spec` section of the inference servic
 --
 
 . Save the file.
+
+== PD Disaggregation
+
+`LLMInferenceService` supports a serving mode called Prefill-Decode (PD) Disaggregation. To enable PD disaggregation, add the `prefill` section to your CR:
+
+[source]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: sample-llm-inference-service-pd
+spec:
+  replicas: 2
+  model:
+    uri: hf://RedHatAI/Qwen3-8B-FP8-dynamic
+    name: RedHatAI/Qwen3-8B-FP8-dynamic
+  router:
+    route: {}
+    gateway: {}
+    scheduler: {}
+  template:
+    containers:
+    - name: main
+      env:
+        - name: VLLM_ADDITIONAL_ARGS
+          value: "--kv_transfer_config '{\"kv_connector\":\"NixlConnector\",\"kv_role\":\"kv_both\"}'"
+      resources:
+        limits:
+          cpu: '4'
+          memory: 32Gi
+          nvidia.com/gpu: "1"
+        requests:
+          cpu: '2'
+          memory: 16Gi
+          nvidia.com/gpu: "1"
+  prefill:
+    template:
+      containers:
+      - name: main
+        env:
+          - name: VLLM_ADDITIONAL_ARGS
+            value: "--kv_transfer_config '{\"kv_connector\":\"NixlConnector\",\"kv_role\":\"kv_both\"}'"
+        resources:
+          limits:
+            cpu: '4'
+            memory: 32Gi
+            nvidia.com/gpu: "1"
+          requests:
+            cpu: '2'
+            memory: 16Gi
+            nvidia.com/gpu: "1"
+----
+
+[WARNING]
+====
+Because KV transfers are latency sensitive, a high-performance secondary network (for example, InfiniBand or RoCE) or NVLink is required for this deployment topology.
+====
+
+=== KV load failure recovery
+
+vLLM supports automatic KV load failure recovery as a feature in its KV Connector API.
+
+[WARNING]
+====
+As of vLLM 0.13, `kv_load_failure_policy` defaults to `recompute`, which results in a local prefill on the decode instance if there is a failure while pulling KV blocks from the prefill instance. In high-throughput serving scenarios, local prefills on a decode node can significantly impact decode throughput.
+====
+
+To disable automatic recovery and cause failures to propagate to the API server, set `kv_load_failure_policy` to `fail`:
+
+[source]
+----
+- name: VLLM_ADDITIONAL_ARGS
+  value: "--kv_transfer_config '{\"kv_connector\":\"NixlConnector\",\"kv_role\":\"kv_both\",\"kv_load_failure_policy\":\"fail\"}'"
+----
