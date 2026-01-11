@@ -1,0 +1,43 @@
+:_module-type: PROCEDURE
+
+[id="connecting-a-workbench-to-a-feature-store_{context}"]
+= Connecting a workbench to a Feature Store
+
+[role='_abstract']
+You can connect your workbench to a Feature Store instance to avoid manual configuration and immediately access features for your models.
+
+.Prerequisites
+• You have logged in to the Red Hat {org-name} dashboard.
+• You have the necessary system permissions to view the specific Feature Store instances you intend to connect.
+• A Feature Store instance is deployed and available in your {openshift-platform} cluster.
+
+You can avoid manual scripting by selecting a preconfigured Feature Store during the workbench provisioning process.
+
+.Procedure
+** Log in to the Red Hat {org-name} dashboard, and click **Data Science Projects**.
+** Click the name of the project that contains the workbench you want to configure.
+** Perform one of the following actions:
+*** Create a new workbench: In the workbenches section, click **Create workbench**.
+*** Edit an existing workbench: In the workbenches section, click the *More options* icon (&#8942;) beside the workbench name and click **Edit workbench.**
+** Scroll to the Feature Store Configuration section.
+** Select one or more available Feature Store instances from the **Select Feature Store** list.
+
+NOTE: The Select Feature Store list displays only the Feature Store instances that your user account is authorized to access.
+
+** Click **Create workbench** or **Update workbench.**
+The workbench starts with the Feature Store configuration files automatically mounted, enabling you to efficiently integrate features into your notebooks.
+
+.Verification
+Verify the success of the procedure by creating a Python object that uses the Feature Store client configuration. Copy and paste the following code: 
+
+[source,python]
+----
+fs_banking = FeatureStore(fs_yaml_file=’ /opt/app-root/config/feast_configs/fs_banking.yaml’)
+fs_banking.list_feature_views()
+fs_banking.get_historical_features(. . . . .)
+fs_banking.get_online_features(. . . . .)
+----
+
+.Additional resources
+Jupyter Notebooks
+https://jupyter.org/
