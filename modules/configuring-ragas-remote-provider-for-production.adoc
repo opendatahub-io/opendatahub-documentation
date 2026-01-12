@@ -6,6 +6,8 @@
 [role='_abstract']
 You can configure the Ragas remote provider to run evaluations as distributed jobs using {productname-short} pipelines. The remote provider enables production-scale evaluations by running Ragas in a separate Kubeflow Pipelines environment, providing resource isolation, improved scalability, and integration with CI/CD workflows.
 
+The Ragas remote provider operates independently of the underlying vector store and works with any vector store supported by Llama Stack, including Milvus, FAISS, and PostgreSQL with the pgvector extension.
+
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have installed the {productname-short} Operator.
@@ -231,8 +233,10 @@ spec:
               key: VLLM_API_TOKEN
               name: llama-stack-inference-model-secret
               optional: true
-        - name: MILVUS_DB_PATH
-          value: ~/milvus.db
+      # Optional: only required when using inline Milvus Lite
+      # Do not set this value for remote Milvus or pgvector.
+      # - name: MILVUS_DB_PATH
+      #   value: ~/milvus.db
         - name: FMS_ORCHESTRATOR_URL
           value: "http://localhost"
         - name: KUBEFLOW_PIPELINES_ENDPOINT

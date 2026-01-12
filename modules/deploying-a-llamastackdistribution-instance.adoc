@@ -5,9 +5,16 @@
 [role="_abstract"]
 You can deploy Llama Stack with retrieval-augmented generation (RAG) by pairing it with a vLLM-served Llama 3.2 model. This module provides the following deployment examples of the `LlamaStackDistribution` custom resource (CR): 
 
+<<<<<<< HEAD
 * *Example A:* Inline Milvus (embedded, single-node, remote embeddings)  
 * *Example B:* Remote Milvus (external service, inline embeddings served with the sentence-transformers library)
 * *Example C:* Inline FAISS (embedded, single node, inline embeddings served with the sentence-transformers library)
+=======
+* *Example A:* Inline Milvus (embedded, single-node)  
+* *Example B:* Remote Milvus (external service)  
+* *Example C:* Inline FAISS (SQLite backend)
+* *Example D:* Remote PostgreSQL with pgvector
+>>>>>>> 5934319 (RHAI-ENG-2278 - pgvector integration docs draft)
 
 ifdef::self-managed[]
 ifdef::disconnected[]
@@ -87,7 +94,11 @@ oc create secret generic llama-stack-secret -n <project-name> \
 
 [IMPORTANT]
 ====
+<<<<<<< HEAD
 To enable the inline embeddings in a disconnected environment, you need add the following parameters to your `LlamaStackDistribution` custom resource. 
+=======
+To enable Llama Stack in a disconnected environment, add the following parameters to your `LlamaStackDistribution` custom resource. 
+>>>>>>> 5934319 (RHAI-ENG-2278 - pgvector integration docs draft)
 [source,yaml]
 ----
 # Enable inline embeddings with sentence-transformers 
@@ -417,5 +428,5 @@ INFO:     Uvicorn running on http://['::', '0.0.0.0']:8321 (Press CTRL+C to quit
 
 [TIP]
 ====
-If you switch from Inline Milvus to Remote Milvus, delete the existing pod to ensure the new environment variables and backing store are picked up cleanly.
+If you change the vector store configuration, delete the existing pod to ensure the new environment variables and backing store settings are applied.
 ====

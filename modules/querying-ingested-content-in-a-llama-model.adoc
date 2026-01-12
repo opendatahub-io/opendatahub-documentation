@@ -3,7 +3,7 @@
 = Querying ingested content in a Llama model
 
 [role="_abstract"]
-You can use the Llama Stack SDK in your Jupyter notebook to query ingested content by running retrieval-augmented generation (RAG) queries on text or HTML stored in your vector store. You can perform one-off lookups or start multi-turn conversational flows without setting up a separate retrieval service.
+You can use the Llama Stack SDK in your Jupyter notebook to query ingested content by running retrieval-augmented generation (RAG) queries on content stored in your vector store. You can perform one-off lookups without setting up a separate retrieval service.
 
 .Prerequisites
 * You have installed {openshift-platform} {ocp-minimum-version} or newer. 
@@ -27,7 +27,6 @@ This procedure requires that you have already ingested some text, HTML, or docum
 ====
 
 .Procedure
-
 . In a new notebook cell, install the client:
 +
 [source,python]
@@ -35,11 +34,11 @@ This procedure requires that you have already ingested some text, HTML, or docum
 %pip install -q llama_stack_client
 ----
 
-. In a new notebook cell, import `Agent`, `AgentEventLogger`, and `LlamaStackClient`:
+. In a new notebook cell, import `LlamaStackClient`:
 +
 [source,python]
 ----
-from llama_stack_client import Agent, AgentEventLogger, LlamaStackClient
+from llama_stack_client import LlamaStackClient
 ----
 
 . Create a client instance by setting your deployment endpoint:
@@ -56,7 +55,7 @@ client = LlamaStackClient(base_url="<your deployment endpoint>")
 models = client.models.list()
 ----
 
-. Select an LLM (and, if needed below, capture an embedding model for store registration):
+. Select an LLM. If you plan to register a new vector store later in this procedure, also capture an embedding model:
 +
 [source,python]
 ----
@@ -67,7 +66,7 @@ if embedding:
     embedding_model_id = embedding.identifier
     embedding_dimension = int(embedding.metadata.get("embedding_dimension", 768))
 ----
-  
+
 . If you do not already have a vector store ID, register a vector store (choose one):
 +
 .Option 1: Inline Milvus Lite (embedded)
@@ -130,6 +129,27 @@ print(f"Registered inline FAISS DB: {vector_store_id}")
 Inline FAISS (available in {productname-short} 3.0 and later) is a lightweight, in-process vector store with SQLite-based persistence. It is best for local experimentation, disconnected environments, or single-node RAG deployments.
 ====
 
+.Option 4: Remote PostgreSQL with pgvector
+====
+[source,python]
+----
+vector_store_name = "my_pgvector_db"
+vector_store = client.vector_stores.create(
+    name=vector_store_name,
+    extra_body={
+        "embedding_model": embedding_model_id,
+        "embedding_dimension": embedding_dimension,
+        "provider_id": "pgvector",  # remote PostgreSQL with pgvector
+    },
+)
+vector_store_id = vector_store.id
+print(f"Registered pgvector DB: {vector_store_id}")
+----
+[NOTE]
+Ensure that your `LlamaStackDistribution` is configured with a PostgreSQL instance that has the `pgvector` extension enabled and that the pgvector provider is activated (for example, by setting `ENABLE_PGVECTOR=true`).  
+pgvector is suitable for production-grade RAG workloads that require durable storage, concurrency, and centralized metadata management.
+====
+
 . If you already have a vector store, set its identifier:
 +
 [source,python]
@@ -138,15 +158,34 @@ Inline FAISS (available in {productname-short} 3.0 and later) is a lightweight, 
 # vector_store_id = "<your existing vector store ID>"
 ----
 
-. Query the ingested content by using the OpenAI-compatible Responses API with file search:
+. Query without using a vector store:
 +
 [source,python]
 ----
-query = "What benefits do the ingested passages provide for retrieval?"
+system_instructions = """You are a precise and reliable AI assistant.
+Use retrieved context when it is available.
+If nothing relevant is found in the available files, say so clearly."""
+
+query = "How do you do great work?"
 
 response = client.responses.create(
     model=model_id,
     input=query,
+    instructions=system_instructions,
+)
+
+print("Answer (without vector stores):")
+print(response.output_text)
+----
+
+. Query by using the Responses API with file search:
++
+[source,python]
+----
+response = client.responses.create(
+    model=model_id,
+    input=query,
+    instructions=system_instructions,
     tools=[
         {
             "type": "file_search",
@@ -154,39 +193,16 @@ response = client.responses.create(
         }
     ],
 )
-print("Responses API result:", getattr(response, "output_text", response))
+
+print("Answer (with vector stores):")
+print(response.output_text)
 ----
 
-. Query the ingested content by using the high-level Agent API:
-+
-[source,python]
-----
-agent = Agent(
-    client,
-    model=model_id,
-    instructions="You are a helpful assistant.",
-    tools=[
-        {
-            "name": "builtin::rag/knowledge_search",
-            "args": {"vector_store_ids": [vector_store_id]},
-        }
-    ],
-)
-
-prompt = "How do you do great work?"
-print("Prompt>", prompt)
-
-session_id = agent.create_session("rag_session")
-stream = agent.create_turn(
-    messages=[{"role": "user", "content": prompt}],
-    session_id=session_id,
-    stream=True,
-)
-
-for log in AgentEventLogger().log(stream):
-    log.print()
-----
+[NOTE]
+====
+When you include the `file_search` tool with `vector_store_ids`, Llama Stack retrieves relevant chunks from the specified vector store and provides them to the model as context for the response.
+====
 
 .Verification
-* The notebook prints query results for both the Responses API and the Agent API.
+* The notebook prints an answer for the query without vector stores and an answer for the same query with vector stores enabled.
 * No errors appear in the output, confirming the model can retrieve and respond to ingested content from your vector store.

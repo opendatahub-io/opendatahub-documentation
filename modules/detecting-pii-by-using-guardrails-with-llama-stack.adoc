@@ -6,7 +6,7 @@ ifdef::context[:parent-context: {context}]
 [role='_abstract']
 
 The `trustyai_fms` Orchestrator server is an external provider for Llama Stack that allows you to configure and use the Guardrails Orchestrator and compatible detection models through the Llama Stack API.
-This implementation of Llama Stack combines link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[Guardrails Orchestrator] with a suite of community-developed detectors to provide robust content filtering and safety monitoring. 
+This implementation of Llama Stack combines link:https://github.com/foundation-model-stack/fms-guardrails-orchestrator[Guardrails Orchestrator] with a suite of community-developed detectors to provide robust content filtering and safety monitoring. Guardrails execution is independent of the configured vector store and does not require Milvus or pgvector to be enabled.
 
 //potentially: list the detectors that can be used with trustyai_fms
 
@@ -130,8 +130,10 @@ spec:
           value: '${VLLM_URL}'
         - name: INFERENCE_MODEL
           value: '${INFERENCE_MODEL}'
-        - name: MILVUS_DB_PATH
-          value: '~/.llama/milvus.db'
+      # Optional: only required when using inline Milvus Lite as a vector store
+      # Do not set this value when using remote Milvus, pgvector, or no vector store
+      # - name: MILVUS_DB_PATH
+      #   value: ~/.llama/milvus.db
         - name: VLLM_TLS_VERIFY
           value: 'false'
         - name: FMS_ORCHESTRATOR_URL

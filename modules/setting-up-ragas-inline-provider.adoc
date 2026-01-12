@@ -97,8 +97,10 @@ spec:
         value: <model_api_token (if necessary)>
       - name: INFERENCE_MODEL
         value: <model_name>
-      - name: MILVUS_DB_PATH
-        value: ~/.llama/milvus.db
+    # Required only when using inline Milvus Lite as the vector store
+    # Do not set this value when using remote Milvus or pgvector
+    # - name: MILVUS_DB_PATH
+    #   value: ~/.llama/milvus.db
       - name: VLLM_TLS_VERIFY
         value: "false"
       - name: FMS_ORCHESTRATOR_URL
