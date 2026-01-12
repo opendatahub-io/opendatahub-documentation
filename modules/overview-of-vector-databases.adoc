@@ -26,8 +26,14 @@ Currently, {productname-short} supports the following vector databases:
   In {openshift-platform} environments, you must deploy Milvus with an etcd service directly in your project.  
   For more information on using etcd services, see https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/etcd/index[Providing redundancy with etcd].
 
+* *Remote PostgreSQL with pgvector*  
+  A remote PostgreSQL vector database with the pgvector extension enabled runs as a standalone database service that is accessed by the Llama Stack server.  
+  This option allows you to store and query vector embeddings in PostgreSQL, enabling organizations to reuse existing database infrastructure, operational tooling, and access controls.  
+  Remote PostgreSQL with pgvector is suitable for RAG workloads that require persistent storage and integration with established PostgreSQL environments.
+
 Consider the following points when you decide which vector database to use for your RAG workloads:
 
 * Use **inline Milvus Lite** if you want to experiment quickly with RAG in a self-contained setup and do not require persistence across pod restarts.
 * Use **inline FAISS** if you need a lightweight, in-process vector store with local persistence through SQLite and no network dependency.
 * Use **remote Milvus** if you need reliable storage, high availability, and the ability to scale RAG workloads in your {productname-short} environment.
+* Use **remote PostgreSQL with pgvector** if you already operate PostgreSQL and want to integrate vector search into existing database workflows while supporting persistent RAG workloads.
