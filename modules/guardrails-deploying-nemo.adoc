@@ -210,10 +210,10 @@ $ oc apply -f nemo-guardrails-cr.yaml
 .Verification
 . Retrieve the NeMo Guardrails route:
 +
-[source,terminal]
----
+[source,bash,subs="+quotes"]
+----
 $ GUARDRAILS_ROUTE=https://$(oc get routes/nemo-guardrails -o json  -o jsonpath='{.status.ingress[0].host}')
----
+----
 
 . Test the NeMo Guardrails service with a safe request:
 +
