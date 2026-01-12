@@ -4,21 +4,16 @@
 = Overview of Llama Stack
 
 [role="_abstract"]
-Llama Stack is a unified AI runtime environment designed to simplify the deployment and management of generative AI workloads on {productname-short}. In {openshift-platform}, the Llama Stack Operator manages the deployment lifecycle of these components, ensuring scalability, consistency, and integration with {productname-short} projects. Llama Stack integrates model inference, embedding generation, vector storage, and retrieval services into a single stack that is optimized for retrieval-augmented generation (RAG) and agent-based AI workflows.
+Llama Stack is a unified AI runtime environment designed to simplify the deployment and management of generative AI workloads on {productname-short}. In {openshift-platform}, the Llama Stack Operator manages the deployment lifecycle of these components, ensuring scalability, consistency, and integration with {productname-short} projects. Llama Stack integrates LLM inference servers, vector databases, and retrieval services in a single stack, optimized for Retrieval-Augmented Generation (RAG) and agent-based AI workflows. 
 
 **Llama Stack concepts**
 
-* **Llama Stack Operator**  
-  Installs and manages Llama Stack server instances in {productname-short}, handling lifecycle operations such as deployment, scaling, and updates.
+* **Llama Stack Operator:** A Llama Stack server instance is installed in {productname-short} through the Llama Stack Operator.
+* **The `run.yaml` file:**  The `run.yaml` is used to enable the APIs to expose backend provider configurations for your server environment. {org-name} ships a default `run.yaml` that includes various APIs and providers with default configurations for simple deployments. You can create a `run.yaml` file to configure advanced workflows and develop custom applications. For more information on advanced Llama Stack workflows and how to customize `run.yaml` files, see the "Llama Stack application examples".
+* **`LlamaStackDistribution` custom resource:** The `LlamaStackDistribution` CR enables configurations for the specific use cases defined in the `run.yaml` file.
 
-* **The `run.yaml` file**  
-  Defines which APIs are enabled and how backend providers are configured for a Llama Stack server. {org-name} ships a default `run.yaml` that supports common deployment scenarios. You can provide a custom `run.yaml` to enable advanced workflows or integrate additional providers.
-
-* **`LlamaStackDistribution` custom resource**  
-  Declares the runtime configuration for a Llama Stack server, including model providers, embedding configuration, vector storage, and persistence settings.
-
-{productname-short} ships with a Llama Stack Distribution that runs the Llama Stack server in a containerized environment.  
-{productname-short} 3.2.0 includes Open Data Hub Llama Stack version link:https://github.com/opendatahub-io/llama-stack/releases/tag/v0.3.5%2Brhai0[0.3.5+rhai0], which is based on upstream Llama Stack version link:https://github.com/llamastack/llama-stack/releases/tag/v0.3.5[0.3.5].
+{productname-short} ships with the Llama Stack Distribution, enabling you to run a Llama Stack server in a containerized environment. 
+{productname-short} 3.2.0 uses the Open Data Hub Llama Stack version link:https://github.com/opendatahub-io/llama-stack/releases/tag/v0.3.5%2Brhai0[0.3.5+rhai0] in the Llama Stack Distribution, which is based on the upstream Llama Stack version link:https://github.com/llamastack/llama-stack/releases/tag/v0.3.5[0.3.5].
 
 ifndef::upstream[]
 [IMPORTANT]
@@ -29,52 +24,37 @@ endif::[]
 ifdef::cloud-service[]
 Llama Stack integration is currently available in {productname-long} as a Technology Preview feature.
 endif::[]
-Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.  
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
 {org-name} does not recommend using them in production.
-
-These features provide early access to upcoming product capabilities, enabling customers to test functionality and provide feedback during development.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
 
 For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
 ====
 endif::[]
 
-Llama Stack includes the following core components:
+Llama Stack includes the following components:
 
-* **Integration with {productname-short}**  
-  Uses the `LlamaStackDistribution` custom resource to simplify configuration and deployment of AI workloads.
-
-* **Inference model connections**  
-  Acts as a proxy between Llama Stack APIs and model inference servers, such as vLLM deployments.
-
-* **Embedding generation**  
-  Generates vector embeddings used for retrieval. In {productname-short} 3.2, remote embedding models are the recommended and default option for production deployments. Inline embedding models remain available for development and testing scenarios.
-
-* **Vector storage**  
-  Stores and indexes embeddings by using supported vector databases, such as Milvus or PostgreSQL with the pgvector extension.
-
-* **Metadata persistence**  
-  Stores vector store metadata, file references, and configuration state. In {productname-short} 3.2, PostgreSQL is the default backend for production-grade deployments.
-
-* **Retrieval workflows**  
-  Manages ingestion, chunking, embedding, and similarity search to support RAG workflows.
-
-* **Agentic workflows**  
-  Enables agent-based interactions through supported APIs, such as OpenAI-compatible Responses and Chat Completions.
+* **Integration with {productname-short}** by using the `LlamaStackDistribution` custom resource, simplifying configuration and deployment.
+* **Inference model connections** by acting as a proxy between the Llama Stack APIs and the inference server.
+* **Vector storage connections** by connecting to external vector store providers, such as Milvus, FAISS, or PGVector, to store and query embeddings.
+* **Retrieval and embedding management** workflows using integrated tools, such as Docling, to handle continuous data ingestion and synchronization.
+* **Enabling agentic workflows** using Llama Stack supported APIs, such as OpenAI's Responses and Chat completions.
 
 ifdef::upstream[]
-For information about deploying Llama Stack in {productname-short}, see link:{odhdocshome}/working-with-llama-stack/#deploying-a-rag-stack-in-a-project_rag[Deploying a RAG stack in a project].
+For information about how to deploy Llama Stack in {productname-short}, see link:{odhdocshome}/working-with-llama-stack/#deploying-a-rag-stack-in-a-project_rag[Deploying a RAG stack in a project].
 endif::[]
 ifndef::upstream[]
-For information about deploying Llama Stack in {productname-short}, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/deploying-a-rag-stack-in-a-project_rag[Deploying a RAG stack in a project].
+For information about how to deploy Llama Stack in {productname-short}, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/deploying-a-rag-stack-in-a-project_rag[Deploying a RAG stack in a project].
 endif::[]
 
 [NOTE]
 ====
-The Llama Stack Operator is not currently supported on IBM Power or IBM Z platforms.
+The Llama Stack Operator is not currently supported on IBM Power/Z machines.
 ====
 
 [role="_additional-resources"]
 .Additional resources
-* link:https://github.com/opendatahub-io/llama-stack-demos[Llama Stack demos repository^]
+* link:https://github.com/opendatahub-io/llama-stack-demos[Llama Stack Demos repository^]
 * link:https://llama-stack-k8s-operator.pages.dev/[Llama Stack Kubernetes Operator documentation^]
-* link:https://llama-stack.readthedocs.io/en/latest/[Llama Stack documentation^]
+* link:https://llamastack.github.io/docs[Llama Stack documentation^]
+

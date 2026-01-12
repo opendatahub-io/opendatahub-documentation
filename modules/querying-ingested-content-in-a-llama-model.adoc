@@ -1,5 +1,4 @@
 :_module-type: PROCEDURE
-
 [id="querying-ingested-content-in-a-llama-model_{context}"]
 = Querying ingested content in a Llama model
 
@@ -7,26 +6,24 @@
 You can use the Llama Stack SDK in your Jupyter notebook to query ingested content by running retrieval-augmented generation (RAG) queries on content stored in your vector store. You can perform one-off lookups without setting up a separate retrieval service.
 
 .Prerequisites
-* You have installed {openshift-platform} {ocp-minimum-version} or newer.
+* You have installed {openshift-platform} {ocp-minimum-version} or newer. 
 ifndef::upstream[]
-* You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery Operator and NVIDIA GPU Operator. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery Operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
+* You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
 endif::[]
 ifdef::upstream[]
-* You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
+* You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
 endif::[]
 * If you are using GPU acceleration, you have at least one NVIDIA GPU available.
 * You have activated the Llama Stack Operator in {productname-short}.
-* You have deployed an inference model, for example, the *llama-3.2-3b-instruct* model.
-* You have created a `LlamaStackDistribution` instance with:
-** PostgreSQL configured as the metadata store.
-** An embedding model configured, preferably as a remote embedding provider.
+* You have deployed an inference model, for example, the *llama-3.2-3b-instruct* model. 
+* You have created a `LlamaStackDistribution` instance to enable RAG functionality.
 * You have created a workbench within a project and opened a running Jupyter notebook.
-* You have installed `llama_stack_client` version 0.3.1 or later in your workbench environment.
+* You have installed `llama_stack_client` version 0.3.1 or later in your workbench environment. 
 * You have already ingested content into a vector store.
 
 [NOTE]
 ====
-This procedure requires that content has already been ingested into a vector store. If no content is available, RAG queries return empty or non-contextual responses.
+This procedure requires that you have already ingested some text, HTML, or document data into a vector store, and that this content is available for retrieval. If no content is ingested, queries return empty results.
 ====
 
 .Procedure
@@ -37,20 +34,18 @@ This procedure requires that content has already been ingested into a vector sto
 %pip install -q llama_stack_client
 ----
 
-. Import `LlamaStackClient`:
+. In a new notebook cell, import `LlamaStackClient`:
 +
 [source,python]
 ----
 from llama_stack_client import LlamaStackClient
 ----
 
-. Create a client instance:
+. Create a client instance by setting your deployment endpoint:
 +
 [source,python]
 ----
-# Use the Llama Stack service or route URL that is reachable from the workbench.
-# Do not append /v1 when using llama_stack_client.
-client = LlamaStackClient(base_url="<llama-stack-base-url>")
+client = LlamaStackClient(base_url="<your deployment endpoint>")
 ----
 
 . List available models:
@@ -60,7 +55,7 @@ client = LlamaStackClient(base_url="<llama-stack-base-url>")
 models = client.models.list()
 ----
 
-. Select an LLM. If you plan to register a new vector store, also capture an embedding model:
+. Select an LLM. If you plan to register a new vector store later in this procedure, also capture an embedding model:
 +
 [source,python]
 ----
@@ -74,83 +69,72 @@ if embedding:
 
 . If you do not already have a vector store ID, register a vector store (choose one):
 +
-.Option 1: Inline Milvus (embedded)
+.Option 1: Inline Milvus Lite (embedded)
 ====
 [source,python]
 ----
+vector_store_name = "my_inline_db"
 vector_store = client.vector_stores.create(
-    name="my_inline_milvus",
+    name=vector_store_name,
     extra_body={
         "embedding_model": embedding_model_id,
         "embedding_dimension": embedding_dimension,
-        "provider_id": "milvus",
+        "provider_id": "milvus",   # inline Milvus Lite
     },
 )
 vector_store_id = vector_store.id
+print(f"Registered inline Milvus Lite DB: {vector_store_id}")
 ----
 [NOTE]
-Inline Milvus is suitable for development and small datasets. In {productname-short} 3.2 and later, metadata persistence uses PostgreSQL by default.
+Use inline Milvus Lite for development and small datasets. Persistence and scale are limited compared to remote Milvus.
 ====
 
 .Option 2: Remote Milvus (recommended for production)
 ====
 [source,python]
 ----
+vector_store_name = "my_remote_db"
 vector_store = client.vector_stores.create(
-    name="my_remote_milvus",
+    name=vector_store_name,
     extra_body={
         "embedding_model": embedding_model_id,
         "embedding_dimension": embedding_dimension,
-        "provider_id": "milvus-remote",
+        "provider_id": "milvus-remote",  # remote Milvus provider
     },
 )
 vector_store_id = vector_store.id
+print(f"Registered remote Milvus DB: {vector_store_id}")
 ----
 [NOTE]
-Ensure your `LlamaStackDistribution` sets `MILVUS_ENDPOINT` (gRPC port 19530) and `MILVUS_TOKEN`.
+Ensure your `LlamaStackDistribution` sets `MILVUS_ENDPOINT` (gRPC `:19530`) and `MILVUS_TOKEN`.
 ====
 
-.Option 3: Inline FAISS
+.Option 3: Inline FAISS (SQLite backend)
 ====
 [source,python]
 ----
+vector_store_name = "my_faiss_db"
 vector_store = client.vector_stores.create(
-    name="my_inline_faiss",
+    name=vector_store_name,
     extra_body={
         "embedding_model": embedding_model_id,
         "embedding_dimension": embedding_dimension,
-        "provider_id": "faiss",
+        "provider_id": "faiss",   # inline FAISS provider
     },
 )
 vector_store_id = vector_store.id
+print(f"Registered inline FAISS DB: {vector_store_id}")
 ----
 [NOTE]
-Inline FAISS is an in-process vector store intended for development and testing. In {productname-short} 3.2 and later, FAISS uses PostgreSQL as the default metadata store.
-====
-
-.Option 4: Remote PostgreSQL with pgvector
-====
-[source,python]
-----
-vector_store = client.vector_stores.create(
-    name="my_pgvector_store",
-    extra_body={
-        "embedding_model": embedding_model_id,
-        "embedding_dimension": embedding_dimension,
-        "provider_id": "pgvector",
-    },
-)
-vector_store_id = vector_store.id
-----
-[NOTE]
-Ensure the pgvector provider is enabled in your `LlamaStackDistribution` and that the PostgreSQL instance has the pgvector extension installed. This option is suitable for production-grade RAG workloads that require durability and concurrency.
+Inline FAISS (available in {productname-short} 3.0 and later) is a lightweight, in-process vector store with SQLite-based persistence. It is best for local experimentation, disconnected environments, or single-node RAG deployments.
 ====
 
 . If you already have a vector store, set its identifier:
 +
 [source,python]
 ----
-# vector_store_id = "<existing-vector-store-id>"
+# For an existing store:
+# vector_store_id = "<your existing vector store ID>"
 ----
 
 . Query without using a vector store:
@@ -159,7 +143,7 @@ Ensure the pgvector provider is enabled in your `LlamaStackDistribution` and tha
 ----
 system_instructions = """You are a precise and reliable AI assistant.
 Use retrieved context when it is available.
-If nothing relevant is found, say so clearly."""
+If nothing relevant is found in the available files, say so clearly."""
 
 query = "How do you do great work?"
 
@@ -169,6 +153,7 @@ response = client.responses.create(
     instructions=system_instructions,
 )
 
+print("Answer (without vector stores):")
 print(response.output_text)
 ----
 
@@ -188,6 +173,7 @@ response = client.responses.create(
     ],
 )
 
+print("Answer (with vector stores):")
 print(response.output_text)
 ----
 
@@ -197,5 +183,5 @@ When you include the `file_search` tool with `vector_store_ids`, Llama Stack ret
 ====
 
 .Verification
-* The notebook returns a response without vector stores and a context-aware response when vector stores are enabled.
-* No errors appear, confirming successful retrieval and model execution.
+* The notebook prints an answer for the query without vector stores and an answer for the same query with vector stores enabled.
+* No errors appear in the output, confirming the model can retrieve and respond to ingested content from your vector store.

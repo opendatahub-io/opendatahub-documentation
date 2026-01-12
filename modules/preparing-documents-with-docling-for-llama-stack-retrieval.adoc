@@ -3,9 +3,9 @@
 = Preparing documents with Docling for Llama Stack retrieval
 
 [role="_abstract"]
-You can transform your source documents with a Docling-enabled pipeline and ingest the output into a Llama Stack vector store by using the Llama Stack SDK. This modular approach separates document preparation from ingestion, yet still delivers an end-to-end, retrieval-augmented generation (RAG) workflow.
+You can transform your source documents with a Docling-enabled pipeline and ingest the output into a Llama Stack vector store by using the Llama Stack SDK. This modular approach separates document preparation from ingestion while still enabling an end-to-end, retrieval-augmented generation (RAG) workflow.
 
-The pipeline registers a vector store and downloads the source PDFs, then splits them for parallel processing and converts each batch to Markdown with Docling. It generates sentence-transformer embeddings from the Markdown and stores them in the vector store, making the documents searchable through Llama Stack.
+The pipeline registers a vector store and downloads the source PDFs, then splits them for parallel processing and converts each batch to Markdown with Docling. It generates embeddings from the Markdown and stores them in the vector store, making the documents searchable through Llama Stack.
 
 .Prerequisites
 * You have installed {openshift-platform} {ocp-minimum-version} or newer. 
@@ -44,11 +44,11 @@ endif::[]
 %pip install -q llama_stack_client
 ----
 
-. In a new notebook cell, import `Agent`, `AgentEventLogger`, and `LlamaStackClient`:
+. In a new notebook cell, import `LlamaStackClient`:
 +
 [source,python]
 ----
-from llama_stack_client import Agent, AgentEventLogger, LlamaStackClient
+from llama_stack_client import LlamaStackClient
 ----
 
 . In a new notebook cell, assign your deployment endpoint to the `base_url` parameter to create a `LlamaStackClient` instance:
@@ -175,38 +175,31 @@ endif::[]
 
 .Verification
 
-. In your Jupyter notebook, query the LLM with a question that relates to the ingested content. For example:
+. In your Jupyter notebook, query the LLM with a question that relates to the ingested content:
 +
 [source,python]
 ----
-from llama_stack_client import Agent, AgentEventLogger
-import uuid
+system_instructions = """You are a precise and reliable AI assistant.
+Use retrieved context when it is available.
+If nothing relevant is found in the available files, say so clearly."""
 
-rag_agent = Agent(
-    client,
+prompt = "What can you tell me about the birth of word processing?"
+
+# Query using the Responses API with file search
+response = client.responses.create(
     model=model_id,
-    instructions="You are a helpful assistant",
+    input=prompt,
+    instructions=system_instructions,
     tools=[
         {
-            "name": "builtin::rag/knowledge_search",
-            "args": {"vector_store_ids": [vector_store_id]},
+            "type": "file_search",
+            "vector_store_ids": [vector_store_id],
         }
     ],
 )
 
-prompt = "What can you tell me about the birth of word processing?"
-print("prompt>", prompt)
-
-session_id = rag_agent.create_session(session_name=f"s{uuid.uuid4().hex}")
-
-response = rag_agent.create_turn(
-    messages=[{"role": "user", "content": prompt}],
-    session_id=session_id,
-    stream=True,
-)
-
-for log in AgentEventLogger().log(response):
-    log.print()
+print("Answer (with vector stores):")
+print(response.output_text)
 ----
 
 . Query chunks from the vector store:
@@ -215,7 +208,7 @@ for log in AgentEventLogger().log(response):
 ----
 query_result = client.vector_io.query(
     vector_store_id=vector_store_id,
-    query="what do you know about?",
+    query="word processing",
 )
 print(query_result)
 ----
@@ -224,3 +217,4 @@ print(query_result)
 * The pipeline run completes successfully in your project.
 * Document embeddings are stored in the vector store and are available for retrieval.
 * No errors or warnings appear in the pipeline logs or your notebook output.
+
