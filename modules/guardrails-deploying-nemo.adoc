@@ -1,0 +1,287 @@
+:_module-type: PROCEDURE
+
+[id='guardrails-deploying-nemo_{context}']
+= Deploying the NeMo Guardrails service
+
+[role='_abstract']
+Deploy NVIDIA NeMo Guardrails to add guardrails and safety controls to your deployed models in {productname-long}. 
+
+NeMo Guardrails provides a framework for controlling the input and output of large language models, enabling you to define guardrails for sensitive data detection, content filtering, and custom validation rules. For more information, see link:https://docs.nvidia.com/nemo/guardrails/latest/user-guides/configuration-guide.html[NVIDIA NeMo Guardrails Configuration Guide].
+
+.Prerequisites
+* You have installed {productname-long}.
+ifdef::upstream[]
+* You have logged in to the {productname-short} dashboard.
+endif::[]
+ifndef::upstream[]
+* You have logged in to {productname-short}.
+endif::[]
+* You have deployed a model on the model-serving platform that you want to add guardrails to.
+* You have cluster administrator permissions or sufficient permissions to create service accounts, secrets, and custom resources in your project namespace.
+* You know the internal service URL for your deployed model predictor.
+
+.Procedure
+. Create a service account for the NeMo Guardrails service. For example, create a yaml file named `nemo-guardrails-service-account.yaml` as follows:
++
+.Example nemo-guardrails-service-account.yaml file
+[source,terminal]
+----
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nemo-guardrails-service-account
+----
++
+. Apply the `nemo-guardrails-service-account.yaml` file:
++
+[source,terminal]
+----
+$ oc apply -f nemo-guardrails-service-account.yaml
+----
+
+. Create a role binding for the NeMo Guardrails service account. For example, create a yaml file named `role-binding.yaml` as follows:
++
+.Example role-binding.yaml file
+[source,terminal]
+----
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nemo-guardrails-service-account-view
+subjects:
+  - kind: ServiceAccount
+    name: nemo-guardrails-service-account
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+----
++
+. Apply the `role-binding.yaml` file:
++
+[source,terminal]
+----
+$ oc apply -f role-binding.yaml
+----
+
+. Create a secret containing an API token for the service account:
++
+[source,terminal]
+----
+$ oc create secret generic api-token-secret \
+  --from-literal=token=$(oc create token nemo-guardrails-service-account --duration=8760h)
+----
+
+. Create a ConfigMap containing the NeMo Guardrails configuration. For example, create a file named `nemo-config.yaml` as follows:
++
+.Example nemo-config.yaml file
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nemo-config
+data:
+  config.yaml: |
+    models:
+      - type: main
+        engine: openai
+        parameters:
+          openai_api_base: "<model_predictor_url>"
+          model_name: "<model_name>"
+    rails:
+      config:
+        sensitive_data_detection:
+          input:
+            entities:
+              - EMAIL_ADDRESS
+          output:
+            entities:
+              - PERSON
+      input:
+        flows:
+          - detect sensitive data on input
+          - check message length
+          - check forbidden words
+      output:
+        flows:
+          - detect sensitive data on output
+  rails.co: |
+    define flow check message length
+      \$length_result = execute check_message_length
+      if \$length_result == "blocked_too_long"
+        bot inform message too long
+        stop
+      if \$length_result == "warning_long"
+        bot warn message long
+
+    define bot inform message too long
+      "Please keep your message under 100 words for better assistance."
+
+    define bot warn message long
+      "That's quite detailed! I'll help as best I can."
+
+    define flow check forbidden words
+      \$forbidden_result = execute check_forbidden_words
+      if \$forbidden_result != "allowed"
+        bot inform forbidden content
+        stop
+
+    define bot inform forbidden content
+      "I can't help with that type of request. Please ask something else."
+
+
+  actions.py: |
+    from typing import Optional
+    from nemoguardrails.actions import action
+
+    @action(is_system_action=True)
+    async def check_message_length(context: Optional[dict] = None) -> str:
+        """Check if user message is within acceptable length limits."""
+        user_message = context.get("user_message", "")
+        word_count = len(user_message.split())
+        MAX_WORDS = 100
+        if word_count > MAX_WORDS:
+            return "blocked_too_long"
+        elif word_count > MAX_WORDS * 0.8:
+            return "warning_long"
+        return "allowed"
+
+    @action(is_system_action=True)
+    async def check_forbidden_words(context: Optional[dict] = None) -> str:
+        """Check for forbidden words or topics."""
+        user_message = context.get("user_message", "").lower()
+        forbidden_topics = {
+            "security": ["password", "hack", "exploit", "vulnerability"],
+            "inappropriate": ["violence", "illegal", "harmful"],
+            "competitors": ["chatgpt", "openai", "claude", "anthropic"],
+        }
+        for category, words in forbidden_topics.items():
+            for word in words:
+                if word in user_message:
+                    return f"blocked_{category}_{word}"
+        return "allowed"
+----
++
+* `<model_predictor_url>`: The internal service URL for your model predictor (for example, `https://phi3-predictor.model-namespace.svc.cluster.local:8443/v1`)
+* `<model_name>`: The name of your deployed model (for example, `phi3`)
+* `data.config.yaml.models.type.engine`: To guardrail a vLLM model, you must set the first model's `engine` to `openai`, as shown in the configuration above.
+* `rails.co`: link:https://docs.nvidia.com/nemo/guardrails/latest/colang-2/language-reference/defining-flows.html[Colang flows] that implement the guardrails.
+* `actions.py`: The custom actions implemented in Python. For more information, see link:https://docs.nvidia.com/nemo/guardrails/latest/colang-2/language-reference/python-actions.html[Python Actions].
+
+. Apply the `nemo-config.yaml` file:
++
+[source,terminal]
+----
+$ oc apply -f nemo-config.yaml
+----
+
+. Create the NeMo Guardrails custom resource (CR). For example, create a file named `nemo-guardrails-cr.yaml`:
++
+.Example nemo-guardrails-cr.yaml file
+[source,yaml]
+----
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: NemoGuardrails
+metadata:
+  name: nemo-guardrails-cr
+  annotations:
+    security.opendatahub.io/enable-auth: 'true'
+spec:
+  nemoConfigs:
+    - name: nemo-config
+      configMaps:
+        - nemo-config
+  env:
+    - name: "OPENAI_API_KEY"
+      valueFrom:
+        secretKeyRef:
+          name: "api-token-secret"
+          key: "token"
+----
+
+. Deploy the NeMo Guardrails CR:
++
+[source,terminal]
+----
+$ oc apply -f nemo-guardrails-cr.yaml
+----
+
+.Verification
+. Retrieve the NeMo Guardrails route:
++
+[source,bash,subs="+quotes"]
+----
+$ GUARDRAILS_ROUTE=https://$(oc get routes/nemo-guardrails -o jsonpath='{.status.ingress[0].host}')
+----
+
+. Test the NeMo Guardrails service with a safe request:
++
+[source,bash,subs="+quotes"]
+----
+$ curl -k -X POST $GUARDRAILS_ROUTE/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $(oc whoami -t)" \
+  -d '{"messages":[{"role":"user","content":"Hi!"}]}'
+----
++
+.Example output
+[source,json]
+----
+{"messages":[{"role":"assistant","content":"Hello there! I'm so glad you're here. What can I help you with today?"}]}
+----
+
+. Test the guardrails by sending a request with forbidden input and requests, such as the following examples:
+* Input containing the word "violence":
++
+[source,bash,subs="+quotes"]
+----
+$ curl -k -X POST $GUARDRAILS_ROUTE/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $(oc whoami -t)" \
+  -d '{"messages":[{"role":"user","content":"I yearn for violence"}]}'
+----
++
+.Example output
+[source,json]
+----
+{"messages":[{"role":"assistant","content":"I can't help with that type of request. Please ask something else."}]}
+----
+* Request for a name output:
++
+[source,bash,subs="+quotes"]
+----
+$ curl -k -X POST $GUARDRAILS_ROUTE/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $(oc whoami -t)" \
+  -d '{"messages":[{"role":"user","content": "In just two words, provide a typical American first and last name."}]}'
+----
++
+.Example output
+[source,json]
+----
+{"messages":[{"role":"assistant","content":"I don't know the answer to that."}]}
+----
++
+[NOTE]
+====
+The output without guardrails is "John Smith".
+====
+
+* Input that is too long:
++
+[source,bash,subs="+quotes"]
+----
+$ curl -k -X POST $GUARDRAILS_ROUTE/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $(oc whoami -t)" \
+  -d '{"messages":[{"role":"user","content":"<long_message>"}]}'
+----
++
+Replace `<long_message>` with a message containing more than 100 words.
++
+.Example output
+[source,json]
+----
+{"messages":[{"role":"assistant","content":"Please keep your message under 100 words for better assistance."}]}
+----
