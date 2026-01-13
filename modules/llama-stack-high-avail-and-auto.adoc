@@ -1,0 +1,105 @@
+= Enabling high availability and autoscaling on Llama Stack (Optional)
+
+Llama Stack servers can be configured to remain operational in the event of a single point of failure. 
+If a pod restarts, an application crashes, or node maintenance occurs, you can maintain availability by enabling PostgreSQL high-availability settings in your Llama Stack server. 
+You can also enable autoscaling settings to adjust server capacity and automatic resource adjustment. 
+The following documentation displays how to configure high availability and autoscaling in your `LlamaStackDistribution` custom resource.  
+
+.Prerequisites
+
+* You have installed {openshift-platform} 4.19 or newer.
+* You have logged in to {productname-long}.
+* You have cluster administrator privileges for your OpenShift cluster.
+* You have installed the PostgreSQL Operator. 
+* You have activated the Llama Stack Operator in your cluster.
+* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+
+ifdef::upstream,self-managed[]
+** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
+endif::[]
+ifdef::cloud-service[]
+** link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Dedicated
+** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
+endif::[]
+
+.Procedure
+
+. To enable high availability for your Llama Stack server, add the following parameters to your `LlamaStackDistribution` CR:
++
+[source,yaml]
+----
+spec:
+  server:
+    podDisruptionBudget:
+      minAvailable: 1
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/instance: llamastackdistribution-sample
+    workers: 2 
+----
+
+. To enable autoscaling for your Llama Stack server, add the following parameters to your `LlamaStackDistribution` CR:
++
+[source,yaml]
+----
+spec:
+  server:
+      autoscaling: 
+        minReplicas: 1 
+        maxReplicas: 5 
+        targetCPUUtilizationPercentage: 75 
+        targetMemoryUtilizationPercentage: 70 
+----
++
+.Example `LlamaStackDistribution` CR with high availability and autoscaling settings enabled
+[source,yaml]
+----
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: llamastackdistribution-sample
+spec:
+  replicas: 1
+  server:
+    containerSpec:
+      env:
+        - name: OLLAMA_INFERENCE_MODEL
+          value: 'llama3.2:1b'
+        - name: OLLAMA_URL
+          value: 'http://ollama-server-service.ollama-dist.svc.cluster.local:11434'
+      name: llama-stack
+    distribution:
+      name: starter
+    workers: 2 <1> 
+    podDisruptionBudget: <2> 
+      minAvailable: 1
+    topologySpreadConstraints: <3> 
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/instance: llamastackdistribution-sample
+    autoscaling: <4> 
+      minReplicas: 1 <5> 
+      maxReplicas: 5 <6> 
+      targetCPUUtilizationPercentage: 75 <7>
+      targetMemoryUtilizationPercentage: 70 <8> 
+    storage:
+      size: "20Gi"
+      mountPath: "/home/lls/.lls" 
+----
++
+<1> `workers` - Specifies the number of Uvicorn worker nodes used to launch the Llama Stack server.
+<2> `podDisruptionBudget` - Controls voluntary disruption tolerance for the pods.
+<3> `topologySpreadConstraints` - Specifies how to spread matching pods in the topology. 
+<4> `autoscaling` - Configures HorizontalPodAutoscaler for the server pods.
+<5> `minReplicas` - Specifies the lower bound replica count maintained by the HPA. 
+<6> `maxReplicas` - Specifies the upper bound replica count maintained by the HPA.
+<7> `targetCPUUtilizationPercentage` - Configures CPU based scaling.
+<8> `targetMemoryUtilizationPercentage` - Configures memory based scaling.
