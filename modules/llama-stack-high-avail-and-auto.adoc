@@ -1,9 +1,9 @@
-= Enabling high availability and autoscaling on Llama Stack (Optional)
+= Enabling high availability and autoscaling on Llama Stack 
 
 Llama Stack servers can be configured to remain operational in the event of a single point of failure. 
 If a pod restarts, an application crashes, or node maintenance occurs, you can maintain availability by enabling PostgreSQL high-availability settings in your Llama Stack server. 
 You can also enable autoscaling settings to adjust server capacity and automatic resource adjustment. 
-The following documentation displays how to configure high availability and autoscaling in your `LlamaStackDistribution` custom resource.  
+The following documentation displays how to configure high availability and autoscaling in your `LlamaStackDistribution` custom resource. 
 
 .Prerequisites
 
@@ -13,7 +13,6 @@ The following documentation displays how to configure high availability and auto
 * You have installed the PostgreSQL Operator. 
 * You have activated the Llama Stack Operator in your cluster.
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
-
 ifdef::upstream,self-managed[]
 ** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
 ** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
@@ -30,18 +29,26 @@ endif::[]
 [source,yaml]
 ----
 spec:
+  replicas: 2 <1> 
   server:
     podDisruptionBudget:
-      minAvailable: 1
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: topology.kubernetes.io/zone
-        whenUnsatisfiable: ScheduleAnyway
+      minAvailable: 1 <2> 
+    topologySpreadConstraints: <3> 
+      - maxSkew: 1 <4> 
+        topologyKey: topology.kubernetes.io/zone <5>
+        whenUnsatisfiable: ScheduleAnyway <6> 
         labelSelector:
           matchLabels:
-            app.kubernetes.io/instance: llamastackdistribution-sample
-    workers: 2 
+            app.kubernetes.io/instance: llamastackdistribution-sample <7>
 ----
++
+<1> This example runs two llama stack pods for high availability.
+<2> Specifies voluntary disruption tolerance for the pods. For example, in a voluntary disruption, this configuration keeps at least one server pod available.
+<3> Specifies how to spread matching pods in the topology. 
+<4> Instructs the scheduler to minimize replica imbalance across zones. With a skew of one and two replicas, the scheduler targets one Pod per zone when multiple zones are available 
+<5> Configures and uses the node’s zone label as the failure-domain for pod spreading.
+<6> Configures and allows scheduling to proceed even when spread constraints cannot be met. For example, if the cluster has insufficient capacity, Pods are scheduled instead of remaining `Pending`.
+<7> Ensures that only pods from the same application instance are considered when calculating spread
 
 . To enable autoscaling for your Llama Stack server, add the following parameters to your `LlamaStackDistribution` CR:
 +
@@ -49,57 +56,20 @@ spec:
 ----
 spec:
   server:
-      autoscaling: 
-        minReplicas: 1 
-        maxReplicas: 5 
-        targetCPUUtilizationPercentage: 75 
-        targetMemoryUtilizationPercentage: 70 
+      autoscaling: <1> 
+        minReplicas: 1 <2> 
+        maxReplicas: 5 <3> 
+        targetCPUUtilizationPercentage: 75 <4> 
+        targetMemoryUtilizationPercentage: 70 <5> 
 ----
 +
-.Example `LlamaStackDistribution` CR with high availability and autoscaling settings enabled
-[source,yaml]
-----
-apiVersion: llamastack.io/v1alpha1
-kind: LlamaStackDistribution
-metadata:
-  name: llamastackdistribution-sample
-spec:
-  replicas: 1
-  server:
-    containerSpec:
-      env:
-        - name: OLLAMA_INFERENCE_MODEL
-          value: 'llama3.2:1b'
-        - name: OLLAMA_URL
-          value: 'http://ollama-server-service.ollama-dist.svc.cluster.local:11434'
-      name: llama-stack
-    distribution:
-      name: starter
-    workers: 2 <1> 
-    podDisruptionBudget: <2> 
-      minAvailable: 1
-    topologySpreadConstraints: <3> 
-      - maxSkew: 1
-        topologyKey: topology.kubernetes.io/zone
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/instance: llamastackdistribution-sample
-    autoscaling: <4> 
-      minReplicas: 1 <5> 
-      maxReplicas: 5 <6> 
-      targetCPUUtilizationPercentage: 75 <7>
-      targetMemoryUtilizationPercentage: 70 <8> 
-    storage:
-      size: "20Gi"
-      mountPath: "/home/lls/.lls" 
-----
-+
-<1> `workers` - Specifies the number of Uvicorn worker nodes used to launch the Llama Stack server.
-<2> `podDisruptionBudget` - Controls voluntary disruption tolerance for the pods.
-<3> `topologySpreadConstraints` - Specifies how to spread matching pods in the topology. 
-<4> `autoscaling` - Configures HorizontalPodAutoscaler for the server pods.
-<5> `minReplicas` - Specifies the lower bound replica count maintained by the HPA. 
-<6> `maxReplicas` - Specifies the upper bound replica count maintained by the HPA.
-<7> `targetCPUUtilizationPercentage` - Configures CPU based scaling.
-<8> `targetMemoryUtilizationPercentage` - Configures memory based scaling.
+<1> Configures HorizontalPodAutoscaler (HPA) for the server pods.
+<2> Specifies the lower bound replica count maintained by the HPA. 
+<3> Specifies the upper bound replica count maintained by the HPA.
+<4> Configures CPU based scaling.
+<5> Configures memory based scaling.
+
+.Additional information
+
+* https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/nodes/controlling-pod-placement-onto-nodes-scheduling#nodes-scheduler-pod-topology-spread-constraints[Controlling pod placement by using pod topology spread constraints].
+* https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/nodes/working-with-pods#nodes-pods-autoscaling[Automatically scaling pods with the horizontal pod autoscaling]
