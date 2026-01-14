@@ -124,12 +124,20 @@ The *Deploy a model* wizard opens.
 .. In the *Description* field, enter a description of your deployment.
 .. From the *Hardware profile* list, select a hardware profile.
 .. Optional: To modify the default resource allocation, click *Customize resource requests and limits* and enter new values for the CPU and Memory requests and limits. 
-.. In the *Serving runtime* field, select an enabled runtime.
+.. In the *Serving runtime* field, select one of the following options:
+* *Auto-select the best runtime for your model based on model type, model format, and hardware profile*
 +
-[NOTE]
-====
-If project-scoped runtimes exist, the *Serving runtime* list includes subheadings to distinguish between global runtimes and project-scoped runtimes.
-====
+The system analyzes the selected model framework and your available hardware profiles to recommend a serving runtime.
+* *Select from a list of serving runtimes, including custom ones*
++
+Select this option to manually choose a runtime from the list of global and project-scoped serving runtime templates.
++
+ifndef::upstream[]
+For more information about how the system determines the best runtime and administrator overrides, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#automatic-selection-of-serving-runtimes[Automatic selection of serving runtimes].
+endif::[]
+ifdef::upstream[]
+For more information about how the system determines the best runtime and administrator overrides, see link:{odhdocshome}/deploying_models/#automatic-selection-of-serving-runtimes[Automatic selection of serving runtimes].
+endif::[]
 .. Optional: If you selected a *Predictive model* type, select a framework from the *Model framework (name - version)* list. This field is hidden for Generative AI models.  
 .. In the *Number of model server replicas to deploy* field, specify a value.
 .. Click *Next*.
@@ -152,7 +160,7 @@ ifndef::upstream[]
 .. In the *Deployment strategy* section, select *Rolling update* or *Recreate*. For more information about deployment strategies, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#deployment-strategies-for-resource-optimization_rhoai-user[Deployment strategies for resource optimization].
 endif::[]
 ifdef::upstream[]
-.. In the *Deployment strategy* section, select *Rolling update* or *Recreate*. For more information about deployment strategies, see link:{odhdocshome}/deploying-modelsi/#deployment-strategies-for-resource-optimization_odh-user[Deployment strategies for resource optimization].
+.. In the *Deployment strategy* section, select *Rolling update* or *Recreate*. For more information about deployment strategies, see link:{odhdocshome}/deploying-models/#deployment-strategies-for-resource-optimization_odh-user[Deployment strategies for resource optimization].
 endif::[]
 +
 [NOTE]

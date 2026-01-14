@@ -1,0 +1,37 @@
+:_module-type: CONCEPT
+
+[id='automatic-selection-of-serving-runtimes_{context}']
+= Automatic selection of serving runtimes
+
+[role='_abstract']
+
+When you deploy a model, {productname-short} can automatically select the best serving runtime for your deployment. This feature allows you to efficiently deploy applications without needing to manually research runtime compatibility. The system determines the optimal runtime by analyzing the model type, model format, and selected hardware profile.
+
+== Hardware profile matching
+
+The system suggests a runtime by matching the accelerator defined in your selected hardware profile with available runtimes. For example, if you select a hardware profile that uses an NVIDIA GPU accelerator, the system filters for compatible runtimes, such as *vLLM NVIDIA GPU ServingRuntime for KServe*.
+
+[NOTE] 
+====
+Automatic selection is available only if a hardware profile exists for the specific accelerator that you want to use.
+====
+
+== Predictive model selection
+
+For predictive models, you must select a *Model format* before the system can determine the appropriate serving runtime.
+
+== Selection limitations
+
+The *Auto-select* option is displayed only when the system can identify a single, distinct match. If multiple serving runtime templates are defined for the same accelerator, the system cannot determine the best option automatically, and the auto-select option is not displayed for that hardware profile. In such cases, you must manually select a runtime.
+
+== Manual serving runtime selection
+
+You can manually select a specific runtime from the *Serving runtime* list if the automatically selected option does not meet your needs. This option is useful when you require a specific version of a runtime or want to use a custom runtime that you have added to the platform. The *Serving runtime* list displays all global and project-scoped serving runtime templates available to you. 
+
+== Administrator overrides
+
+Cluster administrator settings can override standard hardware profile matching. If the *Use distributed inference with llm-d by default when deploying generative models* option is enabled in the administrator settings, the system defaults to the *Distributed inference with llm-d* runtime, regardless of other potential matches. This option is available in *Settings* > *Cluster settings* > *General settings*.
+
+// [role="_additional-resources"]
+// .Additional resources
+// * TODO or delete
