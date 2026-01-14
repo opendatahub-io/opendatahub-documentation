@@ -1,0 +1,44 @@
+:_module-type: CONCEPT
+
+[id="overview-of-pgvector-vector-databases_{context}"]
+= Overview of pgvector vector databases
+
+[role="_abstract"]
+pgvector is an open source PostgreSQL extension that enables vector similarity search on embedding data stored in relational tables. In {productname-short}, PostgreSQL with the pgvector extension is supported as a remote vector database provider for the Llama Stack Operator. pgvector supports retrieval augmented generation workflows that require persistent vector storage while integrating with existing PostgreSQL environments.
+
+pgvector vector databases provide the following capabilities in {productname-short}:
+
+* Storage of vector embeddings in PostgreSQL tables.
+* Similarity search across embeddings by using pgvector distance metrics.
+* Persistent storage of vectors alongside structured relational data.
+* Integration with existing PostgreSQL security and operational tooling.
+
+In a typical retrieval augmented generation workflow in {productname-short}, your application uses the following components:
+
+* *Inference provider*  
+Generates embeddings and model responses.
+
+* *Vector store provider*  
+Stores embeddings and performs similarity search. When you use pgvector, PostgreSQL provides this capability as a remote vector store.
+
+* *File storage provider*  
+Stores the source files that are ingested into vector stores.
+
+* *Llama Stack server*  
+Provides a unified API surface, including an OpenAI compatible Vector Stores API.
+
+When you ingest content, Llama Stack splits source material into chunks, generates embeddings, and stores them in PostgreSQL through the pgvector extension. When you query a vector store, Llama Stack performs similarity search and returns the most relevant chunks for use in prompts.
+
+In {productname-short}, pgvector is used in the following operational mode:
+
+* *Remote PostgreSQL with pgvector*, which runs as a standalone PostgreSQL database service accessed by the Llama Stack server. This mode is suitable for development and production workloads that require persistent storage and integration with existing PostgreSQL infrastructure.
+
+When you deploy PostgreSQL with the pgvector extension, you typically manage the following components:
+
+* *Secrets* for PostgreSQL connection credentials.
+* *Persistent storage* for durable database data.
+* *A PostgreSQL service* that exposes a network endpoint.
+
+PostgreSQL with pgvector does not require an external coordination service. Vector data, indexes, and metadata are stored directly in PostgreSQL tables and managed through standard database mechanisms.
+
+Use PostgreSQL with pgvector when you require persistent vector storage and want to integrate vector search into existing PostgreSQL based data platforms within {productname-short}.

@@ -13,7 +13,7 @@ To deploy the RAG stack in a project, complete the following tasks:
 * Activate the Llama Stack Operator in {productname-short}.
 * Enable GPU support on the {openshift-platform} cluster. This task includes installing the required NVIDIA Operators.
 * Deploy an inference model, for example, the llama-3.2-3b-instruct model. This task includes creating a storage connection and configuring GPU allocation.
-* Create a `LlamaStackDistribution` instance to enable RAG functionality. This action deploys Llama Stack and connects it to a configured vector store and inference model.
+* Deploy an inference model, for example, the llama-3.2-3b-instruct model. This task includes creating a storage connection and configuring GPU allocation.
 * Ingest domain data into the configured vector store by running Docling in an AI pipeline or Jupyter notebook. This process keeps the embeddings synchronized with the source data.
 * Expose and secure the model endpoints.
 
@@ -21,6 +21,8 @@ include::modules/overview-of-rag.adoc[leveloffset=+1]
 include::modules/overview-of-vector-databases.adoc[leveloffset=+1]
 include::modules/overview-of-milvus-vector-databases.adoc[leveloffset=+2]
 include::modules/overview-of-faiss-vector-databases.adoc[leveloffset=+2]
+include::modules/overview-of-pgvector-vector-databases.adoc[leveloffset=+2]
+
 include::modules/deploying-a-llama-model-with-kserve.adoc[leveloffset=+1]
 include::modules/testing-your-vllm-model-endpoints.adoc[leveloffset=+1]
 include::modules/deploying-a-remote-milvus-vector-database.adoc[leveloffset=+1]
@@ -31,6 +33,7 @@ include::modules/ingesting-content-into-a-llama-model.adoc[leveloffset=+1]
 include::modules/querying-ingested-content-in-a-llama-model.adoc[leveloffset=+1]
 include::modules/preparing-documents-with-docling-for-llama-stack-retrieval.adoc[leveloffset=+1]
 include::modules/about-llama-stack-search-types.adoc[leveloffset=+1]
+
 
 ifdef::parent-context[:context: {parent-context}]
 ifndef::parent-context[:!context:]
