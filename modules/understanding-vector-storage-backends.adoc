@@ -1,0 +1,66 @@
+:_module-type: CONCEPT
+
+[id="understanding-vector-metadata-storage-backends_{context}"]
+= Understanding vector metadata storage backends
+
+[role="_abstract"]
+In {productname-short}, vector metadata storage backends persist non vector information that is associated with vector embeddings. Metadata storage is used alongside a configured vector storage provider to support retrieval augmented generation workflows in {productname-short}.
+
+Vector based workloads in {productname-short} typically require more than similarity search. In addition to storing and querying embeddings, applications often need to persist metadata such as document identifiers, source locations, labels, or timestamps. This metadata is stored in a dedicated backend that complements the vector database.
+
+== Role of metadata storage in vector based workloads
+
+Vector indexes used for similarity search and retrieval augmented generation are optimized for numerical operations on embeddings. Metadata access is handled separately to support richer application behavior.
+
+To support this separation, vector storage implementations in {productname-short} typically use:
+
+* A vector index to store and search embedding data.
+* A metadata storage backend to persist mappings between vector identifiers and metadata records.
+* Application logic that resolves metadata after vector search results are returned.
+
+This design allows metadata storage to be scaled, secured, and managed independently from vector indexing.
+
+== Vector storage providers and metadata storage backends are distinct
+
+In {productname-short}, a vector storage provider stores embeddings and performs similarity search. A metadata storage backend persists non vector records associated with those embeddings. These components have different configuration and lifecycle requirements.
+
+For example, pgvector is a vector storage provider that uses PostgreSQL with the pgvector extension to store and search embeddings. 
+
+== Supported metadata storage backends in {productname-short}
+
+Metadata storage backend support in {productname-short} depends on the selected vector storage provider and deployment configuration.
+
+Some providers use a local SQLite database for metadata storage by default. PostgreSQL can be configured as a centralized metadata storage backend for supported providers.
+
+[IMPORTANT]
+====
+Starting with {productname-short} 3.2, SQLite is intended for local testing and development only. PostgreSQL is expected to be required for production ready deployments of Llama Stack metadata storage.
+
+For production environments, provision a PostgreSQL instance version 14 or later.
+
+If validation errors occur, confirm that the deployed Llama Stack image version matches the configuration schema referenced by your `run.yaml`.
+====
+
+== SQLite for local development
+
+SQLite is a lightweight, file based relational database that is embedded in the application process. In {productname-short}, SQLite may be used for metadata storage only in development or evaluation scenarios.
+
+SQLite has limited write concurrency and stores metadata locally on the node where the workload runs. It is not suitable for production deployments.
+
+== PostgreSQL for production metadata storage
+
+PostgreSQL is a network accessible relational database that provides durable and centralized metadata storage for OpenShift AI workloads.
+
+When used as a metadata storage backend in {productname-short}, PostgreSQL provides:
+
+* Persistent metadata across pod restarts and rescheduling.
+* Centralized storage shared across workloads.
+* Improved concurrency for multi user and multi application access.
+* Alignment with enterprise operational practices such as backup and monitoring.
+
+== Choosing a metadata storage backend
+
+Select a metadata storage backend based on your OpenShift AI deployment requirements:
+
+* Use SQLite only for local development or testing.
+* Use PostgreSQL for production deployments that require durability, scalability, and multi node operation.
