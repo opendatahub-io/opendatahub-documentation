@@ -1,0 +1,165 @@
+:_module-type: PROCEDURE
+
+[id="configuring-ray-in-your-feature-store-yaml-file_{context}"]
+
+== Configuring Ray in your Feature Store YAML file 
+
+[role="_abstract"]
+
+.Prerequisites
+* Your Ray cluster is running.
+
+.Procedure
+* Configure the Ray compute engine in your `feature_store.yaml file:`
+
+|===
+| YAML | Available options
+a| [source, yaml]
+----
+project: my_project
+----
+| None
+
+
+a| [source, yaml]
+----
+registry: data/registry.db
+----
+| None
+
+
+a| [source, yaml]
+----
+provider: local
+----
+| None
+
+
+a| [source, yaml]
+----
+offline_store:
+    type: ray
+    storage_path: data/ray_storage`
+----
+| None
+
+
+a| [source, yaml]
+----
+batch_engine:
+ type: ray.engine
+    max_workers: 4 
+----                        
+|Maximum number of workers
+
+
+a| [source, yaml]
+----
+broadcast_join_threshold_mb: 100 
+----
+|Broadcast join threshold (MB)
+
+
+a| [source, yaml]
+----
+max_parallelism_multiplier: 2     
+----
+|Parallelism multiplier
+
+a| [source, yaml]
+----
+target_partition_size_mb: 64   
+----
+|Target partition size (MB)
+
+a| [source, yaml]
+----
+window_size_for_joins: "1H" 
+----
+|Time window for distributed joins
+
+a| [source, yaml]
+----
+ray_address: localhost  
+----
+|Ray cluster address
+|===
+
+.Ray Configuration options in Feature Store
+[cols=4*,options=header]
+|===
+|Option
+|Type
+|Default
+|Description
+
+|type
+|string
+|ray.engine
+|Must be ray.engine
+
+|max_workers
+|integer
+|none (uses all cores)
+|This enables the maximum number of Ray workers.
+
+|enable_optimization
+|boolean
+|true
+|This enables performance optimizations.
+
+|broadcast_join_threshold_mb
+|integer
+|100
+|This is the size threshold for broadcast joins (MB).
+
+|max_parallelism_multiplier
+|integer
+|2
+|This enables you to run many CPU cores simultaneously.
+
+|target_partition_size_mb
+|integer
+|64
+|This allows you to identify a partition size (MB).
+
+|window_size_for_joins
+|string
+|1H
+|This enables a time window for distributed joins.
+
+|ray_address
+|string
+|none
+|This enables the Ray cluster address, which triggers the remote mode.
+
+|use_kuberay
+|boolean
+|none
+|This enables KubeRay mode (overrides ray_address).
+
+|kuberay_conf
+|dictinary
+|none
+|This enables KubeRay configuration dictionary with keys: cluster_name (required), namespace (default: default), auth_token, auth_server, skip_tls (default: false).
+
+|enable_ray_logging
+|boolean
+|false
+|This enables Ray progress bars and logging.
+
+|enable_distributed_joins
+|boolean
+|true
+|This enables distributed joins for large datasets.
+
+|staging_location
+|string
+|none
+|This is the remote path for batch materialization jobs.
+
+|ray_conf
+|dictionary
+|none
+|These are Ray configuration parameters such as memory and CPU limits.
+|===

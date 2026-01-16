@@ -1,0 +1,65 @@
+:_module-type: PROCEDURE
+
+[id="configuring-spark-in-your-feature-store-yaml-file_{context}"]
+
+== Configuring Spark in your Feature Store YAML file 
+
+[role="_abstract"]
+
+.Prerequisites
+* Your Spark cluster is running.
+
+.Procedure
+* Configure the Spark compute engine in your `feature_store.yaml` file:  
+
+[source,yaml]
+----
+...
+offline_store:
+  type: snowflake.offline
+...
+batch_engine:
+  type: spark.engine
+  partitions: 10 # number of partitions when writing to the online or offline store
+  spark_conf:
+    spark.master: "local[*]"
+    spark.app.name: "Feast Spark Engine"
+    spark.sql.shuffle.partitions: 100
+    spark.executor.memory: "4g"
+====
+
+.Configuring the Spark offline store example
+You can configure the feature store by using the `feature_store.py` file. This configuration uses Amazon DynamoDB for the online store and the Spark compute engine for the offline store.
+
+NOTE: In the following code, replace [YOUR_BUCKET] with the name of your specific S3 bucket.
+
+[source,python]
+====
+from feast import FeatureStore, RepoConfig
+from feast.repo_config import RegistryConfig
+from feast.infra.online_stores.dynamodb import DynamoDBOnlineStoreConfig
+from feast.infra.offline_stores.contrib.spark_offline_store.spark import SparkOfflineStoreConfig
+
+repo_config = RepoConfig(
+    registry="s3://[YOUR_BUCKET]/feast-registry.db",
+    project="feast_repo",
+    provider="aws",
+    offline_store=SparkOfflineStoreConfig(
+      spark_conf={
+        "spark.ui.enabled": "false",
+        "spark.eventLog.enabled": "false",
+        "spark.sql.catalogImplementation": "hive",
+        "spark.sql.parser.quotedRegexColumnNames": "true",
+        "spark.sql.session.timeZone": "UTC"
+      }
+    ),
+    batch_engine={
+      "type": "spark.engine",
+      "partitions": 10
+    },
+    online_store=DynamoDBOnlineStoreConfig(region="us-west-1"),
+    entity_key_serialization_version=3
+)
+
+store = FeatureStore(config=repo_config)
+----
