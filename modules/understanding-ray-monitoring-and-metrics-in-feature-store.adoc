@@ -1,0 +1,21 @@
+:_module-type: CONCEPT
+
+[id="understanding-ray-monitoring-and-metrics-in-feature store_{context}"]
+
+== Understanding Ray monitoring and metrics in Feature Store
+You can check cluster resources and monitor job progress when working with the Ray compute engine.
+[role="_abstract"]
+See the following Python example for how to extract monitoring and metrics data:
+[source,python]
+----
+import ray
+
+# Check cluster resources
+resources = ray.cluster_resources()
+print(f"Available CPUs: {resources.get('CPU', 0)}")
+print(f"Available memory: {resources.get('memory', 0) / 1e9:.2f} GB")
+
+# Monitor job progress
+job = store.get_historical_features(...)
+# Ray compute engine provides built-in progress tracking
+----
