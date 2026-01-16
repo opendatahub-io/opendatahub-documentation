@@ -5,9 +5,9 @@
 [role="_abstract"]
 You can deploy Llama Stack with retrieval-augmented generation (RAG) by pairing it with a vLLM-served Llama 3.2 model. This module provides the following deployment examples of the `LlamaStackDistribution` custom resource (CR): 
 
-* *Example A:* Inline Milvus (embedded, single-node)  
-* *Example B:* Remote Milvus (external service)  
-* *Example C:* Inline FAISS (SQLite backend)  
+* *Example A:* Inline Milvus (embedded, single-node, remote embeddings)  
+* *Example B:* Remote Milvus (external service, inline embeddings served with the sentence-transformers library)
+* *Example C:* Inline FAISS (embedded, single node, inline embeddings served with the sentence-transformers library)
 
 ifdef::self-managed[]
 ifdef::disconnected[]
@@ -30,6 +30,7 @@ endif::[]
 * You have the correct inference model identifier, for example, `llama-3-2-3b`.
 * You have the model endpoint URL ending with `/v1`, for example, `https://llama-32-3b-instruct-predictor:8443/v1`.
 * You have the API token required to access the model endpoint.
+* You have installed the PostgreSQL operator and configured a PostgreSQL database, see "Deploying a Llama Stack server".
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
 ** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform  
@@ -51,7 +52,7 @@ In the upper-right corner of the OpenShift web console, click your user name and
 $ oc login --token=__<token>__ --server=__<openshift_cluster_url>__
 ----
 
-. Create a secret that contains the inference model environment variables:
+. Create a secret that contains the inference model and the remote embeddings environment variables:
 +
 [source,terminal]
 ----
@@ -59,29 +60,50 @@ export INFERENCE_MODEL="llama-3-2-3b"
 export VLLM_URL="https://llama-32-3b-instruct-predictor:8443/v1"
 export VLLM_TLS_VERIFY="false"   # Use "true" in production
 export VLLM_API_TOKEN="<token identifier>"
+export VLLM_MAX_TOKENS=16384
 
-oc create secret generic llama-stack-inference-model-secret \
-  --from-literal=INFERENCE_MODEL="$INFERENCE_MODEL" \
-  --from-literal=VLLM_URL="$VLLM_URL" \
-  --from-literal=VLLM_TLS_VERIFY="$VLLM_TLS_VERIFY" \
-  --from-literal=VLLM_API_TOKEN="$VLLM_API_TOKEN"
+export EMBEDDING_MODEL=nomic-embed-text-v1-5
+export EMBEDDING_PROVIDER_MODEL_ID=nomic-embed-text-v1-5
+export VLLM_EMBEDDING_URL=<EMBEDDING-ENDPOINT>/v1
+export VLLM_EMBEDDING_API_TOKEN=<EMBEDDING-TOKEN>
+export VLLM_EMBEDDING_MAX_TOKENS=8192
+export VLLM_EMBEDDING_TLS_VERIFY=true
+
+oc create secret generic llama-stack-secret -n <project-name> \
+    --from-literal INFERENCE_MODEL="$INFERENCE_MODEL"   \
+    --from-literal VLLM_URL="$VLLM_URL"                 \
+    --from-literal VLLM_TLS_VERIFY="$VLLM_TLS_VERIFY"   \
+    --from-literal VLLM_API_TOKEN="$VLLM_API_TOKEN"     \
+    --from-literal VLLM_MAX_TOKENS="$VLLM_MAX_TOKENS"   \
+    --from-literal EMBEDDING_MODEL="$EMBEDDING_MODEL"   \
+    --from-literal EMBEDDING_PROVIDER_MODEL_ID="$EMBEDDING_PROVIDER_MODEL_ID" \
+    --from-literal VLLM_EMBEDDING_URL="$VLLM_EMBEDDING_URL"                \
+    --from-literal VLLM_EMBEDDING_TLS_VERIFY="$VLLM_EMBEDDING_TLS_VERIFY"  \
+    --from-literal VLLM_EMBEDDING_API_TOKEN="$VLLM_EMBEDDING_API_TOKEN"    \
+    --from-literal VLLM_EMBEDDING_MAX_TOKENS="$VLLM_EMBEDDING_MAX_TOKENS"
 ----
 
 . Choose **one** of the following deployment examples:
 
 [IMPORTANT]
 ====
-To enable Llama Stack in a disconnected environment, you need add the following parameters to your `LlamaStackDistribution` custom resource. 
+To enable the inline embeddings in a disconnected environment, you need add the following parameters to your `LlamaStackDistribution` custom resource. 
 [source,yaml]
 ----
-- name: SENTENCE_TRANSFORMERS_HOME
-  value: /opt/app-root/src/.cache/huggingface/hub
-- name: HF_HUB_OFFLINE
-  value: "1"
-- name: TRANSFORMERS_OFFLINE
-  value: "1"
-- name: HF_DATASETS_OFFLINE
-  value: "1" 
+# Enable inline embeddings with sentence-transformers 
+    - name: ENABLE_SENTENCE_TRANSFORMERS  
+      value: "true"
+    - name: EMBEDDING_PROVIDER
+      value: "sentence-transformers"                  
+# Additional required configuration for disconnected
+    - name: SENTENCE_TRANSFORMERS_HOME
+      value: /opt/app-root/src/.cache/huggingface/hub
+    - name: HF_HUB_OFFLINE
+      value: "1"
+    - name: TRANSFORMERS_OFFLINE
+      value: "1"
+    - name: HF_DATASETS_OFFLINE
+      value: "1"
 ----
 
 The built-in Llama Stack tool `websearch` is not available in the {org-name} Llama Stack Distribution in disconnected environments. In addition, the built-in Llama Stack tool `wolfram_alpha` tool is not available in the {org-name} Llama Stack Distribution in all clusters.
@@ -111,32 +133,82 @@ spec:
           cpu: 4
           memory: "12Gi"
       env:
+        - name: POSTGRES_HOST
+          value: <postgres-host>
+        - name: POSTGRES_PORT
+          value: '5432'
+        - name: POSTGRES_DB
+          value: llamastack
+        - name: POSTGRES_USER
+          value: llamastack
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+                key: password
+                name: postgres-secret                
         - name: INFERENCE_MODEL
           valueFrom:
             secretKeyRef:
-              name: llama-stack-inference-model-secret
               key: INFERENCE_MODEL
-        - name: VLLM_MAX_TOKENS
-          value: "4096"
+              name: llama-stack-secret
         - name: VLLM_URL
           valueFrom:
             secretKeyRef:
-              name: llama-stack-inference-model-secret
               key: VLLM_URL
+              name: llama-stack-secret
         - name: VLLM_TLS_VERIFY
           valueFrom:
             secretKeyRef:
-              name: llama-stack-inference-model-secret
               key: VLLM_TLS_VERIFY
+              name: llama-stack-secret
         - name: VLLM_API_TOKEN
           valueFrom:
             secretKeyRef:
-              name: llama-stack-inference-model-secret
               key: VLLM_API_TOKEN
+              name: llama-stack-secret
+        - name: VLLM_MAX_TOKENS
+          valueFrom:
+            secretKeyRef:
+              key: VLLM_MAX_TOKENS
+              name: llama-stack-secret
+        - name: EMBEDDING_MODEL
+          valueFrom:
+            secretKeyRef:
+              key: EMBEDDING_MODEL
+              name: llama-stack-secret
+        - name: VLLM_EMBEDDING_URL
+          valueFrom:
+            secretKeyRef:
+              key: VLLM_EMBEDDING_URL
+              name: llama-stack-secret
+        - name: VLLM_EMBEDDING_TLS_VERIFY
+          valueFrom:
+            secretKeyRef:
+              key: VLLM_EMBEDDING_TLS_VERIFY
+              name: llama-stack-secret
+        - name: VLLM_EMBEDDING_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: VLLM_EMBEDDING_API_TOKEN
+              name: llama-stack-secret  
+        - name: VLLM_EMBEDDING_MAX_TOKENS
+          valueFrom:
+            secretKeyRef:
+              key: VLLM_EMBEDDING_MAX_TOKENS
+              name: llama-stack-secret       
+        - name: EMBEDDING_PROVIDER_MODEL_ID
+          valueFrom:
+            secretKeyRef:
+              key: EMBEDDING_PROVIDER_MODEL_ID
+              name: llama-stack-secret                     
+        - name: FMS_ORCHESTRATOR_URL
+          value: "http://localhost"                                                                                                 
       name: llama-stack
-      port: 8321
+      port: 8321 
     distribution:
       name: rh-dev
+    storage:
+      size: 5Gi
 ----
 +
 [NOTE]
@@ -188,6 +260,23 @@ spec:
           cpu: 4
           memory: "12Gi"
       env:
+        - name: POSTGRES_HOST
+          value: <postgres-host>
+        - name: POSTGRES_PORT
+          value: '5432'
+        - name: POSTGRES_DB
+          value: llamastack
+        - name: POSTGRES_USER
+          value: llamastack
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+                key: password
+                name: postgres-secret     
+        - name: ENABLE_SENTENCE_TRANSFORMERS  
+          value: "true"
+        - name: EMBEDDING_PROVIDER
+          value: "sentence-transformers"
         - name: INFERENCE_MODEL
           valueFrom:
             secretKeyRef:
@@ -225,7 +314,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: milvus-secret
-              key: MILVUS_CONSISTENCY_LEVEL
+              key: MILVUS_CONSISTENCY_LEVEL   
       name: llama-stack
       port: 8321
     distribution:
@@ -256,6 +345,23 @@ spec:
           cpu: "8"
           memory: "12Gi"
       env:
+        - name: POSTGRES_HOST
+          value: <postgres-host>
+        - name: POSTGRES_PORT
+          value: '5432'
+        - name: POSTGRES_DB
+          value: llamastack
+        - name: POSTGRES_USER
+          value: llamastack
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+                key: password
+                name: postgres-secret  
+        - name: ENABLE_SENTENCE_TRANSFORMERS  
+          value: "true"
+        - name: EMBEDDING_PROVIDER
+          value: "sentence-transformers"
         # vLLM inference model configuration
         - name: INFERENCE_MODEL
           valueFrom:
@@ -281,9 +387,7 @@ spec:
         # Enable inline FAISS with SQLite backend
         - name: ENABLE_FAISS
           value: faiss
-        - name: FAISS_KVSTORE_DB_PATH
-          value: /opt/app-root/src/.llama/distributions/rh/sqlite_vec.db
-
+    
         # Recommended workarounds for SQLite accessibility and version check
         - name: LLAMA_STACK_CONFIG_DIR
           value: /opt/app-root/src/.llama/distributions/rh
@@ -292,11 +396,6 @@ spec:
     distribution:
       name: rh-dev
 ----
-
-[NOTE]
-====
-The `FAISS_KVSTORE_DB_PATH` environment variable defines the local path where the FAISS SQLite backend stores its index data. Ensure that this directory exists and is writable inside the container. Inline FAISS is only suitable for experimental or testing use cases. 
-====
 
 . Click *Create*.
 
