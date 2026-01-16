@@ -6,6 +6,8 @@
 [role='_abstract']
 You can configure the Ragas remote provider to run evaluations as distributed jobs using {productname-short} pipelines. The remote provider enables production-scale evaluations by running Ragas in a separate Kubeflow Pipelines environment, providing resource isolation, improved scalability, and integration with CI/CD workflows.
 
+The Ragas remote provider operates independently of the underlying vector store and works with any vector store supported by Llama Stack, including Milvus, FAISS, and PostgreSQL with the pgvector extension.
+
 .Prerequisites
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have installed the {productname-short} Operator.
@@ -153,7 +155,7 @@ metadata:
   name: kubeflow-ragas-config
   namespace: <project_name>
 data:
-  EMBEDDING_MODEL: "all-MiniLM-L6-v2"
+  TRUSTYAI_EMBEDDING_MODEL: "all-MiniLM-L6-v2"
   KUBEFLOW_LLAMA_STACK_URL: "http://$<distribution_name>-service.$<your_namespace>.svc.cluster.local:$<port>"
   KUBEFLOW_PIPELINES_ENDPOINT: "https://<kfp_endpoint>"
   KUBEFLOW_NAMESPACE: "<project_name>"
@@ -162,7 +164,7 @@ data:
   KUBEFLOW_S3_CREDENTIALS_SECRET_NAME: "<ragas_s3_credentials>"
 ----
 +
-* `EMBEDDING_MODEL`: Used by Ragas for semantic similarity calculations.
+* `TRUSTYAI_EMBEDDING_MODEL`: Used by Ragas for semantic similarity calculations.
 * `KUBEFLOW_LLAMA_STACK_URL`: The URL for the Llama Stack server. This must be accessible from the Kubeflow Pipeline pods. The <distribution_name>, <namespace>, and <port> are replaced with the name of the LlamaStack distribution you are creating, the namespace where you are creating it, and the port. These 3 elements are present in the LlamaStack distribution YAML.
 * `KUBEFLOW_PIPELINES_ENDPOINT`: The Kubeflow Pipelines API endpoint URL.
 * `KUBEFLOW_NAMESPACE`: The namespace where pipeline runs are executed. This should match your current project namespace.
@@ -231,8 +233,10 @@ spec:
               key: VLLM_API_TOKEN
               name: llama-stack-inference-model-secret
               optional: true
-        - name: MILVUS_DB_PATH
-          value: ~/milvus.db
+      # Optional: only required when using inline Milvus Lite
+      # Do not set this value for remote Milvus or pgvector.
+      # - name: MILVUS_DB_PATH
+      #   value: ~/milvus.db
         - name: FMS_ORCHESTRATOR_URL
           value: "http://localhost"
         - name: KUBEFLOW_PIPELINES_ENDPOINT
@@ -271,10 +275,10 @@ spec:
               key: KUBEFLOW_S3_CREDENTIALS_SECRET_NAME
               name: kubeflow-ragas-config
               optional: true
-        - name: EMBEDDING_MODEL
+        - name: TRUSTYAI_EMBEDDING_MODEL
           valueFrom:
             configMapKeyRef:
-              key: EMBEDDING_MODEL
+              key: TRUSTYAI_EMBEDDING_MODEL
               name: kubeflow-ragas-config
               optional: true
         - name: KUBEFLOW_PIPELINES_TOKEN

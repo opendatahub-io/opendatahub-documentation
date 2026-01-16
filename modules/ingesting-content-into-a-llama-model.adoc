@@ -3,7 +3,7 @@
 = Ingesting content into a Llama model
 
 [role="_abstract"]
-You can quickly customize and prototype your retrievable content by ingesting raw text into your model from inside a Jupyter notebook. This approach avoids building a separate ingestion pipeline. By using the Llama Stack SDK, you can embed and store text in your vector store in real time, enabling immediate RAG workflows.
+You can quickly customize and prototype retrievable content by uploading a document and adding it to a vector store from inside a Jupyter notebook. This approach avoids building a separate ingestion pipeline. By using the Llama Stack SDK, you can ingest documents into a vector store and enable retrieval-augmented generation (RAG) workflows.
 
 .Prerequisites
 * You have installed {openshift-platform} {ocp-minimum-version} or newer. 
@@ -36,7 +36,6 @@ client = LlamaStackClient(base_url="<your deployment endpoint>")
 +
 [source,python]
 ----
-# Fetch all registered models
 models = client.models.list()
 ----
 
@@ -79,7 +78,7 @@ print(f"Registered inline Milvus Lite DB: {vector_store_id}")
 [NOTE]
 Use inline Milvus Lite for development and small datasets. Persistence and scale are limited compared to remote Milvus.
 ====
-
++
 .Option 2: Remote Milvus (recommended for production)
 ====
 [source,python]
@@ -99,7 +98,7 @@ print(f"Registered remote Milvus DB: {vector_store_id}")
 [NOTE]
 Ensure your `LlamaStackDistribution` sets `MILVUS_ENDPOINT` (gRPC `:19530`) and `MILVUS_TOKEN`.
 ====
-
++
 .Option 3: Inline FAISS (SQLite backend)
 ====
 [source,python]
@@ -120,6 +119,26 @@ print(f"Registered inline FAISS DB: {vector_store_id}")
 Inline FAISS (available in {productname-short} 3.0 and later) is a lightweight, in-process vector store with SQLite-based persistence. It is best for local experimentation, disconnected environments, or single-node RAG deployments.
 ====
 
+.Option 4: Remote PostgreSQL with pgvector
+====
+[source,python]
+----
+vector_store_name = "my_pgvector_db"
+vector_store = client.vector_stores.create(
+    name=vector_store_name,
+    extra_body={
+        "embedding_model": embedding_model_id,
+        "embedding_dimension": embedding_dimension,
+        "provider_id": "pgvector",  # remote PostgreSQL with pgvector
+    },
+)
+vector_store_id = vector_store.id
+print(f"Registered pgvector DB: {vector_store_id}")
+----
+[NOTE]
+Ensure that your `LlamaStackDistribution` is configured with a PostgreSQL instance that has the `pgvector` extension enabled and that the pgvector provider is activated (for example, by setting `ENABLE_PGVECTOR=true`).
+====
+
 . If you already have a vector store, set its identifier:
 +
 [source,python]
@@ -128,54 +147,53 @@ Inline FAISS (available in {productname-short} 3.0 and later) is a lightweight, 
 # vector_store_id = "<your existing vector store ID>"
 ----
 
-. Define raw text to ingest:
+. Download a PDF, upload it to Llama Stack, and add it to your vector store:
 +
 [source,python]
 ----
-raw_text = """Llama Stack can embed raw text into a vector store for retrieval.
-This example ingests a small passage for demonstration."""
-----
+import requests
 
-. Ingest raw text by using the Vector Store Files API:
-+
-[source,python]
-----
-items = [
-    {
-        "id": "raw_text_001",
-        "text": raw_text,
-        "mime_type": "text/plain",
-        "metadata": {"source": "example_passage"},
-    }
-]
-result = client.vector_stores.files.create(
-    vector_store_id=vector_store_id,
-    items=items,
-    chunk_size_in_tokens=100,
-)
-print("Text ingestion result:", result)
-----
+# Download a PDF from a URL
+pdf_url = "https://www.federalreserve.gov/aboutthefed/files/quarterly-report-20250822.pdf"
+filename = "quarterly-report-20250822.pdf"
 
-. Ingest an HTML source:
-+
-[source,python]
-----
-html_item = [
-    {
-        "id": "doc_html_001",
-        "text": "https://www.paulgraham.com/greatwork.html",
-        "mime_type": "text/html",
-        "metadata": {"note": "Example URL"},
-    }
-]
-result = client.vector_stores.files.create(
+response = requests.get(pdf_url)
+response.raise_for_status()
+
+# Save it locally
+with open(filename, "wb") as f:
+    f.write(response.content)
+
+print(f"Downloaded and saved: {filename}")
+
+# Upload the PDF to Llama Stack with a specified filename
+with open(filename, "rb") as f:
+    file_info = client.files.create(
+        file=(filename, f),
+        purpose="assistants",
+    )
+
+print("File uploaded successfully:")
+print(file_info)
+
+# Add the uploaded file to the vector store
+# If you do not set a chunking_strategy, default values are applied.
+vector_store_file = client.vector_stores.files.create(
     vector_store_id=vector_store_id,
-    items=html_item,
-    chunk_size_in_tokens=50,
+    file_id=file_info.id,
+    chunking_strategy={
+        "type": "static",  # required
+        "static": {
+            "max_chunk_size_tokens": 800,  # default ~800
+            "chunk_overlap_tokens": 400,   # default ~400
+        },
+    },
 )
-print("HTML ingestion result:", result)
+
+print("File added to vector store:")
+print(vector_store_file)
 ----
 
 .Verification
-* Review the output to confirm successful ingestion. A typical response includes file or chunk counts and any warnings or errors.
+* The output from `client.vector_stores.files.create()` confirms that the file was added to the vector store.
 * The model list returned by `client.models.list()` includes your Llama 3.2 model and an embedding model.
