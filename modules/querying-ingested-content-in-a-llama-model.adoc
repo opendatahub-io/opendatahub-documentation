@@ -146,8 +146,7 @@ vector_store_id = vector_store.id
 print(f"Registered pgvector DB: {vector_store_id}")
 ----
 [NOTE]
-Ensure that your `LlamaStackDistribution` is configured with a PostgreSQL instance that has the `pgvector` extension enabled and that the pgvector provider is activated (for example, by setting `ENABLE_PGVECTOR=true`).  
-pgvector is suitable for production-grade RAG workloads that require durable storage, concurrency, and centralized metadata management.
+Ensure your `LlamaStackDistribution` enables the pgvector provider by setting `ENABLE_PGVECTOR=pgvector` and supplies valid PostgreSQL connection details.pgvector is suitable for production-grade RAG workloads that require durable storage, concurrency, and centralized metadata management.
 ====
 
 . If you already have a vector store, set its identifier:

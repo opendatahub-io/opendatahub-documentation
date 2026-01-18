@@ -1,37 +1,31 @@
-Deploying a PostgreSQL instance with pgvector
-
 :_module-type: PROCEDURE
 [id="deploying-a-postgresql-instance-with-pgvector_{context}"]
 = Deploying a PostgreSQL instance with pgvector
 
 [role="_abstract"]
-You can connect Llama Stack in {productname-short} to an existing PostgreSQL instance that has the pgvector extension enabled. For development or evaluation, you can also deploy a PostgreSQL instance with the pgvector extension directly in your {openshift-platform} project by creating Kubernetes resources through the OpenShift web console or CLI.
+You can connect Llama Stack in {productname-short} to an existing PostgreSQL instance that has the pgvector extension enabled. For development or evaluation, you can also deploy a PostgreSQL instance with the pgvector extension directly in your {openshift-platform} project by creating Kubernetes resources through the OpenShift web console.
 
 .Prerequisites
 * You have installed {openshift-platform} {ocp-minimum-version} or newer.
 * You have permissions to create resources in a project in your {openshift-platform} cluster.
-* You have the PostgreSQL connection details, including the database name, user name, and password.
+* You have PostgreSQL connection details available, including the database name, user name, and password.
 * If you plan to deploy PostgreSQL in-cluster, you have a StorageClass that can provision persistent volumes.
 * If you are using an existing PostgreSQL instance, the pgvector extension is installed and enabled on the target database.
-ifdef::upstream,self-managed[]
-* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
-endif::[]
-ifdef::cloud-service[]
-* You have installed the OpenShift command line interface (`oc`) as described in link:https://docs.redhat.com/en/documentation/openshift_dedicated/{osd-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (OpenShift Dedicated)^] or link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI (Red Hat OpenShift Service on AWS)^].
-endif::[]
 
 .Procedure
 . Log in to the {openshift-platform} web console.
 . Select the project where you want to deploy the PostgreSQL instance.
 . Click the *Quick Create* (image:images/quick-create-icon.png[]) icon, and then click *Import YAML*.
 . Verify that the correct project is selected.
-. Copy the following YAML, update the placeholder values as needed, paste it into the YAML editor, and then click *Create*.
+. Copy the following YAML, replace the placeholder values, paste it into the YAML editor, and then click *Create*.
 +
 [IMPORTANT]
 ====
-This example creates a standalone PostgreSQL service with the pgvector extension enabled. Llama Stack does not automatically use this database until you explicitly configure the pgvector provider in a `LlamaStackDistribution`.
+This example deploys a standalone PostgreSQL service with the pgvector extension enabled.
 
-This example demonstrates one way to deploy PostgreSQL with the pgvector extension for development or evaluation. It is not intended for production use. Review and adapt the configuration to meet your organization’s security, availability, backup, and lifecycle requirements.
+Llama Stack does not automatically use this database. To use this PostgreSQL instance as a vector store, you must explicitly configure the pgvector provider in a `LlamaStackDistribution`.
+
+This example is intended for development or evaluation purposes. For production deployments, review and adapt the configuration to meet your organization’s security, availability, backup, and lifecycle requirements.
 ====
 +
 .Example PostgreSQL deployment with pgvector (development or evaluation)
@@ -40,39 +34,39 @@ This example demonstrates one way to deploy PostgreSQL with the pgvector extensi
 apiVersion: v1
 kind: Secret
 metadata:
-  name: pgvector-postgresql-credentials
+  name: <pgvector-postgresql-credentials-secret>
 type: Opaque
 stringData:
-  POSTGRES_DB: "vectordb"
-  POSTGRES_USER: "postgres"
-  POSTGRES_PASSWORD: "yourpassword"
+  POSTGRES_DB: "<database-name>"
+  POSTGRES_USER: "<database-username>"
+  POSTGRES_PASSWORD: "<database-password>"
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pgvector-postgresql-pvc
+  name: <pgvector-postgresql-pvc>
 spec:
   accessModes:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: <storage-size>
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pgvector-postgresql
+  name: <pgvector-postgresql-deployment>
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pgvector-postgresql
+      app: <pgvector-postgresql-app-label>
   template:
     metadata:
       labels:
-        app: pgvector-postgresql
+        app: <pgvector-postgresql-app-label>
     spec:
       containers:
       - name: postgres
@@ -84,17 +78,17 @@ spec:
         - name: POSTGRES_DB
           valueFrom:
             secretKeyRef:
-              name: pgvector-postgresql-credentials
+              name: <pgvector-postgresql-credentials-secret>
               key: POSTGRES_DB
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: pgvector-postgresql-credentials
+              name: <pgvector-postgresql-credentials-secret>
               key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: pgvector-postgresql-credentials
+              name: <pgvector-postgresql-credentials-secret>
               key: POSTGRES_PASSWORD
         volumeMounts:
         - name: pgdata
@@ -120,16 +114,16 @@ spec:
       volumes:
       - name: pgdata
         persistentVolumeClaim:
-          claimName: pgvector-postgresql-pvc
+          claimName: <pgvector-postgresql-pvc>
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: pgvector-postgresql
+  name: <pgvector-postgresql-service>
 spec:
   selector:
-    app: pgvector-postgresql
+    app: <pgvector-postgresql-app-label>
   ports:
   - name: postgres
     port: 5432
@@ -137,25 +131,15 @@ spec:
   type: ClusterIP
 ----
 
-. Click *Create*. 
-
+. Click *Create*.
 
 .Verification
-* Confirm that the PostgreSQL Service exists:
-+
-[source,terminal]
-----
-oc get svc pgvector-postgresql
-----
-* Confirm that port 5432 is reachable from within the project. For example, start a temporary pod and test connectivity:
-+
-[source,terminal]
-----
-oc run psql-netcheck --rm -it --restart=Never --image=registry.access.redhat.com/ubi9/ubi -- bash -lc \
-  "curl -sS -o /dev/null -w '%{http_code}\n' http://pgvector-postgresql:5432 || true"
-----
-+
+. Navigate to *Networking* → *Services*.
+. Confirm that the PostgreSQL Service is listed and exposes port `5432`.
+. Navigate to *Workloads* → *Pods*.
+. Confirm that the PostgreSQL pod is running.
+
 [NOTE]
 ====
-PostgreSQL does not speak HTTP on port 5432, so the command does not return `200`. This check confirms only DNS resolution and basic TCP connectivity. For stronger verification, connect using a PostgreSQL client such as `psql` from a pod that includes the client tools.
+This procedure verifies only that PostgreSQL with pgvector is deployed and reachable within the project. It does not verify integration with Llama Stack.
 ====

@@ -408,6 +408,112 @@ spec:
       name: rh-dev
 ----
 
+<<<<<<< HEAD
+=======
+[NOTE]
+====
+The `FAISS_KVSTORE_DB_PATH` environment variable defines the local path where the FAISS SQLite backend stores its index data. Ensure that this directory exists and is writable inside the container. Inline FAISS is only suitable for experimental or testing use cases. 
+====
+
+== Example D: LlamaStackDistribution with *Remote PostgreSQL with pgvector*
+
+Use this example when you want to use a PostgreSQL database with the pgvector extension as the vector store backend. This configuration enables the pgvector provider and reads connection values from a secret.
+
+. Create the pgvector connection secret.
++
+[source,terminal]
+----
+export PGVECTOR_HOST="pgvector"
+export PGVECTOR_PORT="5432"
+export PGVECTOR_DB="vectordb"
+export PGVECTOR_USER="postgres"
+export PGVECTOR_PASSWORD="<password>"
+
+oc create secret generic pgvector-connection \
+  --from-literal=PGVECTOR_HOST="$PGVECTOR_HOST" \
+  --from-literal=PGVECTOR_PORT="$PGVECTOR_PORT" \
+  --from-literal=PGVECTOR_DB="$PGVECTOR_DB" \
+  --from-literal=PGVECTOR_USER="$PGVECTOR_USER" \
+  --from-literal=PGVECTOR_PASSWORD="$PGVECTOR_PASSWORD"
+----
+
+. In the OpenShift web console, select *Administrator* → *Quick Create* image:images/quick-create-icon.png[] → *Import YAML*, and create a custom resource similar to the following:
++
+[source,yaml]
+----
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: lsd-llama-pgvector-remote
+spec:
+  replicas: 1
+  server:
+    containerSpec:
+      resources:
+        requests:
+          cpu: "250m"
+          memory: "500Mi"
+        limits:
+          cpu: 4
+          memory: "12Gi"
+      env:
+        - name: INFERENCE_MODEL
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: INFERENCE_MODEL
+        - name: VLLM_MAX_TOKENS
+          value: "4096"
+        - name: VLLM_URL
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: VLLM_URL
+        - name: VLLM_TLS_VERIFY
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: VLLM_TLS_VERIFY
+        - name: VLLM_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-inference-model-secret
+              key: VLLM_API_TOKEN
+
+        - name: ENABLE_PGVECTOR
+          value: "pgvector"
+        - name: PGVECTOR_HOST
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_HOST
+        - name: PGVECTOR_PORT
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_PORT
+        - name: PGVECTOR_DB
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_DB
+        - name: PGVECTOR_USER
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_USER
+        - name: PGVECTOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_PASSWORD
+      name: llama-stack
+      port: 8321
+    distribution:
+      name: rh-dev
+----
+
+>>>>>>> aee30b5 (Processing qe and sme feedback)
 . Click *Create*.
 
 .Verification

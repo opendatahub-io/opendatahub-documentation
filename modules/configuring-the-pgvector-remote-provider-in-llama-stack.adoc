@@ -3,13 +3,13 @@
 = Configuring the pgvector remote provider in Llama Stack
 
 [role="_abstract"]
-To use PostgreSQL with the pgvector extension as a remote vector store, configure a pgvector provider in the Llama Stack runtime configuration and supply PostgreSQL connection details to your `LlamaStackDistribution`. This configuration enables retrieval augmented generation (RAG) workflows in {productname-short} by using PostgreSQL based vector storage.
+To use PostgreSQL with the pgvector extension as a remote vector store, configure pgvector in a `LlamaStackDistribution` and supply PostgreSQL connection details as environment variables. This configuration enables retrieval augmented generation (RAG) workflows in {productname-short} by using PostgreSQL-based vector storage.
 
 .Prerequisites
 * You have installed and enabled the Llama Stack Operator in {productname-short}.
 * You have a PostgreSQL database with the pgvector extension enabled.
 * You have the PostgreSQL connection details, including the host name, port number, database name, user name, and password.
-* You have permissions to create Secrets, ConfigMaps, and custom resources in your project.
+* You have permissions to create Secrets and edit custom resources in your project.
 
 .Procedure
 . In the OpenShift web console, switch to the *Administrator* perspective.
@@ -22,7 +22,7 @@ To use PostgreSQL with the pgvector extension as a remote vector store, configur
 .. Paste the following YAML, update the placeholder values, and then click *Create*.
 +
 .Example Secret for pgvector connection details
-[source,yaml,subs="attributes+quotes"]
+[source,yaml]
 ----
 apiVersion: v1
 kind: Secret
@@ -30,49 +30,23 @@ metadata:
   name: pgvector-connection
 type: Opaque
 stringData:
-  PGVECTOR_HOST: "pgvector"
-  PGVECTOR_PORT: "5432"
-  PGVECTOR_DB: "vectordb"
-  PGVECTOR_USER: "postgres"
-  PGVECTOR_PASSWORD: "yourpassword"
+  PGVECTOR_HOST: "<pgvector-hostname>"
+  PGVECTOR_PORT: "<pgvector-port>"
+  PGVECTOR_DB: "<database-name>"
+  PGVECTOR_USER: "<database-username>"
+  PGVECTOR_PASSWORD: "<database-password>"
 ----
-
-. Create a ConfigMap that contains the Llama Stack run configuration (`run.yaml`) with the pgvector provider enabled.
 +
 [IMPORTANT]
 ====
-The pgvector provider is not enabled automatically. You must define the provider in `run.yaml` and supply the required connection values through environment variables in your `LlamaStackDistribution`.
+The pgvector provider is not enabled automatically.
 
-In this example, the pgvector provider is enabled when `PGVECTOR_DB` is set.
+You must explicitly enable pgvector and supply its connection details through environment variables in your `LlamaStackDistribution`.
+
+In {productname-short}, the pgvector provider is enabled when the `ENABLE_PGVECTOR` environment variable is set.
 ====
-+
-.. Click *Workloads* → *ConfigMaps*.
-.. Click *Create ConfigMap*.
-.. In the *Create ConfigMap* dialog, select the *YAML view* radio button.
-.. Paste the following YAML, and then click *Create*.
-+
-.Example ConfigMap containing run configuration with pgvector provider
-[source,yaml,subs="attributes+quotes"]
-----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: llama-stack-config
-data:
-  run.yaml: |
-    providers:
-      vector_io:
-      - provider_id: ${env.PGVECTOR_DB:+pgvector}
-        provider_type: remote::pgvector
-        config:
-          host: ${env.PGVECTOR_HOST}
-          port: ${env.PGVECTOR_PORT}
-          db: ${env.PGVECTOR_DB}
-          user: ${env.PGVECTOR_USER}
-          password: ${env.PGVECTOR_PASSWORD}
-----
 
-. Update your `LlamaStackDistribution` custom resource to reference the run configuration and expose the PostgreSQL connection values as environment variables.
+. Update your `LlamaStackDistribution` custom resource to enable pgvector and reference the Secret.
 +
 .. Click *Operators* → *Installed Operators*.
 .. Select the *Llama Stack Operator*.
@@ -82,7 +56,7 @@ data:
 .. Update the resource to include the following fields, and then click *Save*.
 +
 .Example `LlamaStackDistribution` configuration for pgvector
-[source,yaml,subs="attributes+quotes"]
+[source,yaml]
 ----
 apiVersion: llamastack.io/v1alpha1
 kind: LlamaStackDistribution
@@ -92,38 +66,33 @@ spec:
   server:
     containerSpec:
       env:
-      - name: PGVECTOR_HOST
-        valueFrom:
-          secretKeyRef:
-            name: pgvector-connection
-            key: PGVECTOR_HOST
-            optional: true
-      - name: PGVECTOR_PORT
-        valueFrom:
-          secretKeyRef:
-            name: pgvector-connection
-            key: PGVECTOR_PORT
-            optional: true
-      - name: PGVECTOR_DB
-        valueFrom:
-          secretKeyRef:
-            name: pgvector-connection
-            key: PGVECTOR_DB
-            optional: true
-      - name: PGVECTOR_USER
-        valueFrom:
-          secretKeyRef:
-            name: pgvector-connection
-            key: PGVECTOR_USER
-            optional: true
-      - name: PGVECTOR_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: pgvector-connection
-            key: PGVECTOR_PASSWORD
-            optional: true
-    userConfig:
-      configMapName: llama-stack-config
+        - name: ENABLE_PGVECTOR
+          value: "pgvector"
+        - name: PGVECTOR_HOST
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_HOST
+        - name: PGVECTOR_PORT
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_PORT
+        - name: PGVECTOR_DB
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_DB
+        - name: PGVECTOR_USER
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_USER
+        - name: PGVECTOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_PASSWORD
 ----
 
 .Verification

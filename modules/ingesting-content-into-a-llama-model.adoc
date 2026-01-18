@@ -29,7 +29,10 @@ endif::[]
 [source,python]
 ----
 from llama_stack_client import LlamaStackClient
-client = LlamaStackClient(base_url="<your deployment endpoint>")
+
+# Use the Llama Stack service URL that is reachable from the workbench.
+# Example: "http://llama-stack:8321" (service) or "https://<route-host>" (route)
+client = LlamaStackClient(base_url="<llama-stack-base-url>")
 ----
 
 . List the available models:
