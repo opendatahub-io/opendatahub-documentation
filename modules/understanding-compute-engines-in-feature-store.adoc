@@ -55,13 +55,13 @@ When defining a feature view, the source can be a physical data source, a derive
 
 |Spark compute engine
 |Distributed DAG execution using Apache Spark.
-|Supports point-in-time joins and large-scale materialization. 
-|Integrates with Spark Offline Store and Spark materialization job.
+Supports point-in-time joins and large-scale materialization. 
+Integrates with Spark Offline Store and Spark materialization job.
 
 |Ray compute engine
 |Provides distributed DAG execution.
-|Enables automatic resource management and optimization.
-|Integrates with Ray Offline Store and Ray Materialization Job.
+Enables automatic resource management and optimization.
+Integrates with Ray Offline Store and Ray Materialization Job.
 
 |Local compute engine
 |Runs on Arrow and a backend you specify (e.g., Pandas, Polars).
@@ -84,7 +84,7 @@ Use the feature builder to build a directed acyclic graph (DAG) from a feature v
 
 |Transformation node or join node
 |If a feature transformation is defined, the system applies a transformation node.
-|If multiple sources are defined, the system applies a join node.
+If multiple sources are defined, the system applies a join node.
 
 |Filter node
 |The system always includes this node to apply time to live (TTL) parameters or user-defined filters.
@@ -100,5 +100,5 @@ Use the feature builder to build a directed acyclic graph (DAG) from a feature v
 
 |Output
 |Use retrieval output for `get_historical_features` requests.
-|Use online store write or offline store write, for materialize requests.
+Use online store write or offline store write, for materialize requests.
 |===
