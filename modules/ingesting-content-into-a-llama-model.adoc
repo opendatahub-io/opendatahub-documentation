@@ -29,8 +29,13 @@ endif::[]
 [source,python]
 ----
 from llama_stack_client import LlamaStackClient
-client = LlamaStackClient(base_url="<your deployment endpoint>")
+client = LlamaStackClient(base_url="http://<llama-stack-service>:8321/v1")
 ----
++
+[NOTE]
+====
+For Llama Stack 0.3.5 and later, the base URL must include the `/v1` path suffix. For example, use `http://llama-stack-service:8321/v1`, not the service endpoint alone.
+====
 
 . List the available models:
 +
@@ -99,7 +104,7 @@ print(f"Registered remote Milvus DB: {vector_store_id}")
 Ensure your `LlamaStackDistribution` sets `MILVUS_ENDPOINT` (gRPC `:19530`) and `MILVUS_TOKEN`.
 ====
 +
-.Option 3: Inline FAISS (SQLite backend)
+.Option 3: Inline FAISS
 ====
 [source,python]
 ----

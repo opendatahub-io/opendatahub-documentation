@@ -55,8 +55,13 @@ from llama_stack_client import LlamaStackClient
 +
 [source,python]
 ----
-client = LlamaStackClient(base_url="<your deployment endpoint>")
+client = LlamaStackClient(base_url="http://<llama-stack-service>:8321/v1")
 ----
++
+[NOTE]
+====
+For Llama Stack 0.3.5 and later, the base URL must include the `/v1` path suffix. For example, use `http://llama-stack-service:8321/v1`, not the service endpoint alone.
+====
 
 . List the available models:
 +
@@ -117,7 +122,7 @@ print(f"Registered remote Milvus DB: {vector_store_id}")
 Ensure your `LlamaStackDistribution` includes `MILVUS_ENDPOINT` and `MILVUS_TOKEN` (gRPC `:19530`).
 ====
 
-.Option 3: Inline FAISS (SQLite backend)
+.Option 3: Inline FAISS
 ====
 [source,python]
 ----
@@ -134,7 +139,7 @@ vector_store_id = vector_store.id
 print(f"Registered inline FAISS DB: {vector_store_id}")
 ----
 [NOTE]
-Inline FAISS (available in {productname-short} 3.0 and later) is a lightweight, in-process vector store with SQLite-based persistence. It is best for local experimentation, disconnected environments, or single-node RAG deployments.
+Inline FAISS (available in {productname-short} 3.0 and later) is a lightweight, in-process vector store. It is best for local experimentation, disconnected environments, or single-node RAG deployments.
 ====
 
 [IMPORTANT]
