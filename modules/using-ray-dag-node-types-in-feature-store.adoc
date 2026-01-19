@@ -1,0 +1,44 @@
+:_module-type: CONCEPT
+
+[id="using-directed-acyclic-graph-node-types-in-feature-store_{context}"]
+
+= Using Ray directed acyclic graph node types in Feature Store
+
+[role="_abstract"]
+Use Ray directed acyclic graph (DAG) node types to build scalable, high-performance feature generation workflows. Ray optimizes resources and reduces execution time by handling data partitioning and statically allocating buffers. 
+
+.Ray read node
+.. Reads data from Ray-compatible sources:
+* Supports Parquet, comma-separated values (CSV), and other formats
+* Handles partitioning and schema inference
+* Applies field mappings and filters
+
+.Ray join node
+.. Performs distributed joins:
+* **Broadcast join**: Use for small datasets (&lt;100MB)
+* **Distributed join**: Use for large datasets with time-based windowing
+* **Automatic strategy selection:** Based on dataset size and cluster resources
+
+.Ray filter node
+.. Applies filters and time-based constraints:
+* Time to leave (TTL)-based filtering
+* Timestamp range filtering
+* Custom predicate filtering
+
+.Ray aggregation node
+.. Handles feature aggregations:
+* Windowed aggregations
+* Grouped aggregations
+* Custom aggregation functions
+
+.Ray transformation node
+.. Applies feature transformations:
+* Row-level transformations
+* Column-level transformations
+* Custom transformation functions
+
+.Ray write node
+.. Writes results to various targets:
+* Online stores
+* Offline stores
+* Temporary storage
