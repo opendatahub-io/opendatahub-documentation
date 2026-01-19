@@ -34,7 +34,7 @@ You can configure the feature store by using the `feature_store.py` file. This c
 NOTE: In the following code, replace [YOUR_BUCKET] with the name of your specific S3 bucket.
 
 [source,python]
-====
+----
 from feast import FeatureStore, RepoConfig
 from feast.repo_config import RegistryConfig
 from feast.infra.online_stores.dynamodb import DynamoDBOnlineStoreConfig
@@ -60,6 +60,5 @@ repo_config = RepoConfig(
     online_store=DynamoDBOnlineStoreConfig(region="us-west-1"),
     entity_key_serialization_version=3
 )
-
 store = FeatureStore(config=repo_config)
 ----

@@ -5,17 +5,17 @@
 = Using Ray directed acyclic graph node types in Feature Store
 
 [role="_abstract"]
-The Ray compute engine implements several specialized directed acyclic graph (DAG) nodes:
+Use Ray directed acyclic graph (DAG) node types to build scalable, high-performance feature generation workflows. Ray optimizes resources and reduces execution time by handling data partitioning and statically allocating buffers. 
 
 .Ray read node
 .. Reads data from Ray-compatible sources:
-* Supports Parquet, comma separated values (CSV), and other formats
+* Supports Parquet, comma-separated values (CSV), and other formats
 * Handles partitioning and schema inference
 * Applies field mappings and filters
 
 .Ray join node
 .. Performs distributed joins:
-* **Broadcast join**: Use for small datasets (<100MB)
+* **Broadcast join**: Use for small datasets (&lt;100MB)
 * **Distributed join**: Use for large datasets with time-based windowing
 * **Automatic strategy selection:** Based on dataset size and cluster resources
 
