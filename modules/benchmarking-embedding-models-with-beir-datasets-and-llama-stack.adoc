@@ -24,18 +24,18 @@ The default supported embedding models are `granite-embedding-30m` and `granite-
 . Start the Llama Stack server with a vector database provider enabled.
 +
 --
-a. Using remote Milvus:
+a. Using inline Milvus:
 +
 [subs=+quotes]
 ....
-ENABLE_MILVUS=milvus uv run llama stack run run.yaml
+MILVUS_URL=milvus uv run llama stack run run.yaml
 ....
 
 b. Using remote PostgreSQL with pgvector:
 +
 [subs=+quotes]
 ....
-ENABLE_PGVECTOR=true uv run llama stack run run.yaml
+PGVECTOR_DB=pgvector uv run llama stack run run.yaml
 ....
 --
 
@@ -56,18 +56,18 @@ llama-stack-client models register all-MiniLM-L6-v2 \
 .Procedure
 . Run the `beir_benchmarks.py` benchmarking script.
 
-* Enter the following command to use the configuration from `run.yaml` and the default dataset `scifact` with remote Milvus:
+* Enter the following command to use the configuration from `run.yaml` and the default dataset `scifact` with inline Milvus:
 +
 [subs=+quotes]
 ....
-ENABLE_MILVUS=milvus uv run python beir_benchmarks.py
+MILVUS_URL=milvus uv run python beir_benchmarks.py
 ....
 
 * Enter the following command to run the benchmark by using remote PostgreSQL with pgvector:
 +
 [subs=+quotes]
 ....
-ENABLE_PGVECTOR=true uv run python beir_benchmarks.py \
+PGVECTOR_DB=pgvector uv run python beir_benchmarks.py \
   --vector-db-provider-id remote-pgvector
 ....
 
@@ -75,7 +75,7 @@ ENABLE_PGVECTOR=true uv run python beir_benchmarks.py \
 +
 [subs=+quotes]
 ....
-LLAMA_STACK_URL="http://localhost:8321" ENABLE_MILVUS=milvus uv run python beir_benchmarks.py
+LLAMA_STACK_URL="http://localhost:8321" MILVUS_URL=milvus uv run python beir_benchmarks.py
 ....
 
 . Use environment variables and command line options to modify the benchmark run. For example, set the environment variable for the vector database provider before executing the script.
@@ -123,7 +123,7 @@ ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
 +
 [subs=+quotes]
 ....
-# Use remote Milvus
+# Use inline Milvus
 ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
   --vector-db-provider-id remote-milvus
 

@@ -110,8 +110,7 @@ spec:
               - /bin/sh
               - -c
               - |
-                psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS vector;"
-      volumes:
+                PGPASSWORD=$POSTGRES_PASSWORD psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS vector;" || true      volumes:
       - name: pgdata
         persistentVolumeClaim:
           claimName: <pgvector-postgresql-pvc>
