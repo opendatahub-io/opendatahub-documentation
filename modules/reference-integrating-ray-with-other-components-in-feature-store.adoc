@@ -1,0 +1,83 @@
+:_module-type: REFERENCE
+
+[id="reference-integrating-ray-with-other-components-in-Feature-Store_{context}"]
+
+= Integrating Ray with other components in Feature Store
+
+[role="_abstract"]
+You can integrate Ray with Spark, cloud storage and feature transformations. This enables distributed processing of large-scale machine learning workloads, from feature engineering to serving. It also enables efficient handling of intensive tasks.
+
+.Integrating Ray with the Spark offline store in Feature Store
+[source,yaml]
+----
+# Use Ray compute engine with Spark offline store
+offline_store:
+    type: spark
+    spark_conf:
+        spark.executor.memory: "4g"
+        spark.executor.cores: "2"
+batch_engine:
+    type: ray.engine
+    max_workers: 8
+    enable_optimization: true
+----
+
+.Integrating Ray with cloud storage in Feature Store
+[source,yaml]
+----
+# Use Ray compute engine with cloud storage
+offline_store:
+    type: ray
+    storage_path: s3://my-bucket/feast-data
+batch_engine:
+    type: ray.engine
+    ray_address: "ray://ray-cluster:10001"
+    broadcast_join_threshold_mb: 50
+----
+
+.Integrating Ray with feature transformations
+
+[source,python]
+----
+from feast import FeatureView, Field
+from feast.types import Float64
+from feast.on_demand_feature_view import on_demand_feature_view
+
+@on_demand_feature_view(
+    sources=["driver_stats"],
+    schema=[Field(name="trips_per_hour", dtype=Float64)]
+)
+def trips_per_hour(features_df):
+    features_df["trips_per_hour"] = features_df["avg_daily_trips"] / 24
+    return features_df
+
+# Ray compute engine handles transformations efficiently
+features = store.get_historical_features(
+    entity_df=entity_df,
+    features=["trips_per_hour:trips_per_hour"]
+)
+----
+
+.. Ray native transformations
+
+If you have distributed transformations that use Ray's dataset and parallel processing capabilities, use `mode=ray` in your `BatchFeatureView`:
+
+[source,python]
+----
+# Feature view with Ray transformation mode
+document_embeddings_view = BatchFeatureView(
+    name="document_embeddings",
+    entities=[document],
+    mode="ray",  # Enable Ray native transformation
+    ttl=timedelta(days=365),
+    schema=[
+        Field(name="document_id", dtype=String),
+        Field(name="embedding", dtype=Array(Float32), vector_index=True),
+        Field(name="movie_name", dtype=String),
+        Field(name="movie_director", dtype=String),
+    ],
+    source=movies_source,
+    udf=generate_embeddings_ray_native,
+    online=True,
+)
+----

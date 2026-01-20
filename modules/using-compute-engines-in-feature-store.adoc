@@ -1,0 +1,102 @@
+:_module-type: CONCEPT
+
+[id="using-compute-engines-in-feature-store_{context}"]
+= Using compute engines in Feature Store 
+
+[role="_abstract"]
+You can use compute engines to run feature pipelines on back ends such as Spark, PyArrow, Pandas, or Ray. These pipelines perform transformations, aggregations, joins, and materializations.
+
+Use the compute engine to build and run directed acyclic graphs (DAGs), for modular and scalable workflows.
+
+.Available operations:
+* `materialize()`: Generate features for offline and online stores in batch and stream modes.
+* `get_historical_features()`: Retrieve point-in-time training datasets.
+
+.Key concepts for compute engines
+Understand the following components for better execution of materialization and retrieval tasks:
+
+[cols=2*,options=header]
+|===
+|Concept
+|Definition
+
+|Compute engine
+|The interface for executing materialization and retrieval tasks.  
+
+|Feature builder
+|Constructs a Directed Acyclic Graphs (DAG), from a feature view definition for a specific backend.
+
+|Feature resolver
+|Arranges tasks in the correct sequence, so each step runs only after its dependencies.
+
+|DAG
+|A DAG operation, such as read, aggregate, or join.
+
+|Execution plan
+|Runs nodes in the correct sequence and saves the results.
+
+|Execution Context
+|Collects configuration, registry, stores, entity data, and node outputs.  
+|===
+
+.Understanding the feature resolver and builder
+The feature builder starts a feature resolver that extracts a DAG from `FeatureView` definitions, resolving dependencies and ensuring the correct execution order. A `FeatureView` represents a logical data source, whereas a DataSource represents the physical data source.
+
+When defining a feature view, the source can be a physical data source, a derived feature view, or a list of feature views. Use the feature resolver to organize data sources into a directed acyclic graph (DAG). The resolver identifies node dependencies to generate the final output. The FeatureBuilder then builds DAG node objects for each operation, such as read, join, filter, or aggregate.
+
+.Supported Compute engines
+[cols=2*,options=header]
+|===
+
+|Compute engine
+|Description
+
+|Spark compute engine
+|Distributed DAG execution using Apache Spark.
+Supports point-in-time joins and large-scale materialization. 
+Integrates with Spark Offline Store and Spark materialization job.
+
+|Ray compute engine
+|Provides distributed DAG execution.
+Enables automatic resource management and optimization.
+Integrates with Ray Offline Store and Ray Materialization Job.
+
+|Local compute engine
+|Runs on Arrow and a backend you specify (e.g., Pandas, Polars).
+
+|Enables local development, testing, or lightweight feature generation. 
+|Supports `local materialization job` and `local historical retrieval job`.
+|===
+
+.Feature builder node details
+Use the feature builder to build a directed acyclic graph (DAG) from a feature view definition to determine the operation order. The feature resolver identifies data sources and sorts the nodes to resolve dependencies.
+
+.Feature builder nodes 
+[cols=2*,options=header]
+|===
+|Node type
+|Description
+
+|Source read node
+|The process begins by reading the data source.
+
+|Transformation node or join node
+|If a feature transformation is defined, the system applies a transformation node.
+If there are multiple sources the system applies a join node.
+
+|Filter node
+|The system always includes this node to apply time to live (TTL) parameters or user-defined filters.
+
+|Aggregation node
+|The system applies this node if the feature view includes defined aggregations.
+
+|Deduplication node
+|The system applies this node for `get_historical_features` requests if no aggregation is defined.
+
+|Validation node
+|The system applies this node if `enable_validation` is set to true.
+
+|Output
+|Use retrieval output for `get_historical_features` requests.
+Use online store write or offline store write, for materialize requests.
+|===

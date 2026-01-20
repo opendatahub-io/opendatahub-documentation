@@ -1,0 +1,31 @@
+:_module-type: CONCEPT
+
+[id="using-ray-join-strategies-in-feature-store_{context}"]
+
+= Using Ray join strategies in Feature Store
+
+[role="_abstract"]
+The Ray compute engine automatically selects optimal join strategies:
+
+.Using the broadcast join
+..Used for small feature datasets:
+* Selects this join automatically when feature data is &lt;100MB.
+* Caches features in Ray's object store.
+* Distributes entities across a cluster.
+* Copies feature data and sends it to each worker.
+* Uses the distributed window join.
+* Used for large feature datasets.
+* Selects this join automatically when feature data  &lt;100MB.
+* Partitions data by time windows.
+* Provides point-in-time joins within each window.
+* Combines results across windows.
+
+.Example of using strategy selection logic 
+[source,python]
+----
+def select_join_strategy(feature_size_mb, threshold_mb):
+    if feature_size_mb < threshold_mb:
+        return "broadcast"
+    else:
+        return "distributed_windowed"
+----
