@@ -2,18 +2,21 @@
 
 [id="understanding-ray-performance-optimization-for-feature-store_{context}"]
 
-== Understanding Ray performance optimization for Feature Store
-Use the Ray automatic optimizations for increased efficiency.
+= Understanding Ray performance optimization for Feature Store
 
 [role="_abstract"]
-. Automatic optimization
+Ray is a distributed execution engine that scales Feast feature engineering and retrieval-augmented generation (RAG) workloads. By processing large datasets in parallel, Ray accelerates pipelines and reduces costs compared to single-node processing.
+
+Use the Ray automatic optimizations for increased efficiency.
+
+. Enabling automatic optimization
 .. The Ray compute engine includes several automatic optimizations:
 * **Partition optimization:** Automatically determines optimal partition sizes
 * **Join strategy selection:** Chooses between broadcast and distributed joins
 * **Resource allocation:** Scales workers based on available resources
 * **Memory management:** Handles out-of-core processing for large datasets
 
-.Manual Tuning example
+.Manual tuning example
 If you have specific workloads that require custom tuning, you can fine-tune performance:
 [source,yaml]
 ----
