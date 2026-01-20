@@ -3,6 +3,7 @@
 [id="benchmarking-embedding-models-with-BEIR-datasets-and-Llama-Stack_{context}"]
 = Benchmarking embedding models with BEIR datasets and Llama Stack
 
+[role='_abstract']
 This procedure explains how to set up, run, and verify embedding model benchmarks by using the Llama Stack framework. Embedding models are neural networks that convert text or other data into dense numerical vectors called embeddings, which capture semantic meaning. In retrieval augmented generation systems, embeddings enable semantic search so that the system retrieves the documents most relevant to a query.
 
 Selecting an embedding model depends on several factors, such as the content type, accuracy requirements, performance needs, and model license. The `beir_benchmarks.py` script compares the retrieval accuracy of embedding models by using standardized information retrieval benchmarks from the BEIR framework. The script is included in the link:https://github.com/opendatahub-io/rag[RAG] repository, which provides demonstrations, benchmarking scripts, and deployment guides for the RAG stack on {openshift-platform}.
@@ -84,21 +85,21 @@ LLAMA_STACK_URL="http://localhost:8321" MILVUS_URL=milvus uv run python beir_ben
 +
 [subs=+quotes]
 ....
-ENABLE_MILVUS=milvus uv run python beir_benchmarks.py
+MILVUS_URL=milvus uv run python beir_benchmarks.py
 ....
 
 * Enter the following command to use a larger batch size for document ingestion:
 +
 [subs=+quotes]
 ....
-ENABLE_MILVUS=milvus uv run python beir_benchmarks.py --batch-size 300
+MILVUS_URL=milvus uv run python beir_benchmarks.py --batch-size 300
 ....
 
 * Enter the following command to benchmark multiple datasets, for example, `scifact` and `scidocs`:
 +
 [subs=+quotes]
 ....
-ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
+MILVUS_URL=milvus uv run python beir_benchmarks.py \
   --dataset-names scifact scidocs
 ....
 
@@ -106,7 +107,7 @@ ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
 +
 [subs=+quotes]
 ....
-ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
+MILVUS_URL=milvus uv run python beir_benchmarks.py \
   --embedding-models granite-embedding-30m all-MiniLM-L6-v2
 ....
 
@@ -114,7 +115,7 @@ ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
 +
 [subs=+quotes]
 ....
-ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
+MILVUS_URL=milvus uv run python beir_benchmarks.py \
   --dataset-names my-dataset \
   --custom-datasets-urls https://example.com/my-beir-dataset.zip
 ....
@@ -123,13 +124,9 @@ ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
 +
 [subs=+quotes]
 ....
-# Use inline Milvus
-ENABLE_MILVUS=milvus uv run python beir_benchmarks.py \
-  --vector-db-provider-id remote-milvus
-
 # Use remote PostgreSQL with pgvector
-ENABLE_PGVECTOR=true uv run python beir_benchmarks.py \
-  --vector-db-provider-id remote-pgvector
+ENABLE_PGVECTOR=pgvector PGVECTOR_DB=llama-stack PGVECTOR_USER=user PGVECTOR_PASSWORD=yourpassword uv run python beir_benchmarks.py \
+  --vector-db-provider-id pgvector
 ....
 
 .Command line options
@@ -138,12 +135,12 @@ ENABLE_PGVECTOR=true uv run python beir_benchmarks.py \
 * *Description:* Specifies the vector database provider to use. The provider must also be enabled through the appropriate environment variable.
 * *Type:* String.
 * *Default:* `milvus`.
-* *Example values:* `remote-milvus`, `remote-pgvector`.
+* *Example values:* `milvus`, `pgvector`, `faiss`.
 * *Example:*
 +
 [subs=+quotes]
 ....
---vector-db-provider-id remote-milvus
+--vector-db-provider-id pgvector
 ....
 
 ** `--dataset-names`
