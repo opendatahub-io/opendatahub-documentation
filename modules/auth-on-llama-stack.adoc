@@ -258,3 +258,90 @@ $ curl -d client_id=llamastack \
 ----
 $ cat user2.token | cut -d . -f 2 | base64 -d 2>/dev/null | jq .
 ----
+
+.Verification
+. Set the Llama Stack base URL:
++
+[source,terminal]
+----
+export LLAMASTACK_URL="http://<llama-stack-host>:8321"
+----
+
+. Verify basic access for `user1` (no privileged roles).
++
+Load the token:
++
+[source,terminal]
+----
+USER1_TOKEN=$(cat user1.token)
+----
++
+Confirm that `user1` can access the vLLM-served model:
++
+[source,terminal]
+----
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${USER1_TOKEN}" \
+  -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
+----
++
+Expected result: HTTP `200`.
++
+Confirm that `user1` is denied access to the restricted OpenAI model:
++
+[source,terminal]
+----
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${USER1_TOKEN}" \
+  -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
+----
++
+Expected result: HTTP `403` (forbidden).
+
+. Verify privileged access for `user2` (assigned the `inference_max` role).
++
+Load the token:
++
+[source,terminal]
+----
+USER2_TOKEN=$(cat user2.token)
+----
++
+Confirm that `user2` can access both models:
++
+[source,terminal]
+----
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${USER2_TOKEN}" \
+  -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
+----
++
+[source,terminal]
+----
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${USER2_TOKEN}" \
+  -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
+----
++
+Expected result: HTTP `200` for both requests.
+
+. Verify that requests without a Bearer token are denied.
++
+[source,terminal]
+----
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
+----
++
+Expected result: HTTP `401` (unauthorized).
+
