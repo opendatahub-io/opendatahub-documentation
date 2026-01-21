@@ -1,17 +1,36 @@
-:module-type: CONCEPT
+:_module-type: CONCEPT
 [id="openai-compatibility-for-rag-apis-in-llama-stack_{context}"]
 = OpenAI compatibility for RAG APIs in Llama Stack
 
 [role="_abstract"]
-{productname-short} supports OpenAI-compatible request and response schemas for Llama Stack RAG workflows. You can use OpenAI clients and schemas for files, vector stores, and Responses API file search end-to-end.
+{productname-short} supports OpenAI-compatible request and response schemas for Llama Stack retrieval-augmented generation (RAG) workflows. This compatibility allows you to use OpenAI clients, tools, and schemas with Llama Stack for managing files, vector stores, and executing RAG queries through the Responses API.
 
 OpenAI compatibility enables the following capabilities:
 
-* You can use OpenAI SDKs and tools with Llama Stack by setting the client `base_url` to the Llama Stack OpenAI path, `/v1/openai/v1`. 
-* You can manage files and vector stores by using OpenAI-compatible endpoints. You can then invoke RAG workflows by using the Responses API with the `file_search` tool. 
+* You can use OpenAI SDKs and tools with Llama Stack by pointing the client to the Llama Stack OpenAI-compatible API path.
+* You can manage files and vector stores by using OpenAI-compatible endpoints and invoke RAG workflows by using the Responses API with the `file_search` tool.
+
+When configuring clients, the required `base_url` depends on the SDK that you use:
+
+* **OpenAI SDKs**  
+  When you use an OpenAI-compatible SDK (for example, the OpenAI Python client), you must include the `/v1` path suffix in the base URL.  
+  +
+  For example:
+  +
+  `http://llama-stack-service:8321/v1`
+
+* **Llama Stack SDK (`llama_stack_client`)**  
+  When you use the native Llama Stack SDK, set the base URL to the Llama Stack service endpoint *without* the `/v1` suffix. The SDK automatically appends the correct API paths.
+
+[IMPORTANT]
+====
+When you use OpenAI-compatible SDKs or send raw HTTP requests to Llama Stack, always include the `/v1` path suffix in the base URL.
+
+Using the service endpoint without `/v1` results in request failures.
+====
 
 [role="_additional-resources"]
 .Additional resources
-* link:https://llamastack.github.io/docs/providers/openai[OpenAI API Compatibility]
-* link:https://platform.openai.com/docs/api-reference/introduction[OpenAI API Reference]
-* link:https://github.com/llamastack/llama-stack-client-python/blob/main/api.md[llama-stack-client-python]
+* link:https://llamastack.github.io/docs/providers/openai[OpenAI API compatibility in Llama Stack]
+* link:https://platform.openai.com/docs/api-reference/introduction[OpenAI API reference]
+* link:https://github.com/llamastack/llama-stack-client-python/blob/main/api.md[Llama Stack Python client API]

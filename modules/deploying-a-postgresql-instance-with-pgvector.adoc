@@ -1,0 +1,167 @@
+:_module-type: PROCEDURE
+
+[id="deploying-a-postgresql-instance-with-pgvector_{context}"]
+= Deploying a PostgreSQL instance with pgvector
+
+[role="_abstract"]
+You can connect Llama Stack in {productname-short} to an existing PostgreSQL instance that has the pgvector extension enabled. For development or evaluation, you can also deploy a PostgreSQL instance with the pgvector extension directly in your {openshift-platform} project by creating Kubernetes resources through the OpenShift web console.
+
+.Prerequisites
+* You have installed {openshift-platform} {ocp-minimum-version} or newer.
+* You have permissions to create resources in a project in your {openshift-platform} cluster.
+* You have PostgreSQL connection details available, including the database name, user name, and password.
+* If you plan to deploy PostgreSQL in-cluster, you have a StorageClass that can provision persistent volumes.
+* If you are using an existing PostgreSQL instance, the pgvector extension is installed and enabled on the target database.
+
+.Procedure
+. Log in to the {openshift-platform} web console.
+. Select the project where you want to deploy the PostgreSQL instance.
+. Click the *Quick Create* (image:images/quick-create-icon.png[]) icon, and then click *Import YAML*.
+. Verify that the correct project is selected.
+. Copy the following YAML, replace the placeholder values, paste it into the YAML editor, and then click *Create*.
++
+[IMPORTANT]
+====
+This example deploys a standalone PostgreSQL service with the pgvector extension enabled.
+
+Llama Stack does not automatically use this database. To use this PostgreSQL instance as a vector store, you must explicitly configure the pgvector provider in a `LlamaStackDistribution`.
+
+This example is intended for development or evaluation purposes. For production deployments, review and adapt the configuration to meet your organization’s security, availability, backup, and lifecycle requirements.
+====
++
+.Example PostgreSQL deployment with pgvector (development or evaluation)
+[source,yaml,subs="attributes+quotes"]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <pgvector-postgresql-credentials-secret>
+type: Opaque
+stringData:
+  POSTGRES_DB: "<database-name>"
+  POSTGRES_USER: "<database-username>"
+  POSTGRES_PASSWORD: "<database-password>"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: <pgvector-postgresql-pvc>
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: <storage-size>
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <pgvector-postgresql-deployment>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: <pgvector-postgresql-app-label>
+  template:
+    metadata:
+      labels:
+        app: <pgvector-postgresql-app-label>
+    spec:
+      containers:
+      - name: postgres
+        image: pgvector/pgvector:pg16
+        ports:
+        - name: postgres
+          containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: <pgvector-postgresql-credentials-secret>
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: <pgvector-postgresql-credentials-secret>
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: <pgvector-postgresql-credentials-secret>
+              key: POSTGRES_PASSWORD
+        volumeMounts:
+        - name: pgdata
+          mountPath: /var/lib/postgresql/data
+
+        # Replace TCP socket probes with exec probes that validate SQL readiness.
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 6
+
+        # Create the pgvector extension after PostgreSQL is actually accepting SQL.
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - |
+                set -e
+                echo "Waiting for PostgreSQL to be ready before enabling pgvector..."
+                until PGPASSWORD="$POSTGRES_PASSWORD" psql -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT 1" >/dev/null 2>&1; do
+                  sleep 2
+                done
+                PGPASSWORD="$POSTGRES_PASSWORD" psql -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
+      volumes:
+      - name: pgdata
+        persistentVolumeClaim:
+          claimName: <pgvector-postgresql-pvc>
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: <pgvector-postgresql-service>
+spec:
+  selector:
+    app: <pgvector-postgresql-app-label>
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: 5432
+  type: ClusterIP
+
+----
+
+. Click *Create*.
+
+.Verification
+. Navigate to *Networking* → *Services*.
+. Confirm that the PostgreSQL Service is listed and exposes port `5432`.
+. Navigate to *Workloads* → *Pods*.
+. Confirm that the PostgreSQL pod is running.
+
+[NOTE]
+====
+This procedure verifies only that PostgreSQL with pgvector is deployed and reachable within the project. It does not verify integration with Llama Stack.
+====

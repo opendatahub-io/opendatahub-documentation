@@ -1,33 +1,35 @@
 :_module-type: PROCEDURE
+
 [id="querying-ingested-content-in-a-llama-model_{context}"]
 = Querying ingested content in a Llama model
 
 [role="_abstract"]
-You can use the Llama Stack SDK in your Jupyter notebook to query ingested content by running retrieval-augmented generation (RAG) queries on text or HTML stored in your vector store. You can perform one-off lookups or start multi-turn conversational flows without setting up a separate retrieval service.
+You can use the Llama Stack SDK in your Jupyter notebook to query ingested content by running retrieval-augmented generation (RAG) queries on content stored in your vector store. You can perform one-off lookups without setting up a separate retrieval service.
 
 .Prerequisites
-* You have installed {openshift-platform} {ocp-minimum-version} or newer. 
+* You have installed {openshift-platform} {ocp-minimum-version} or newer.
 ifndef::upstream[]
-* You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
+* You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery Operator and NVIDIA GPU Operator. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery Operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
 endif::[]
 ifdef::upstream[]
-* You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
+* You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
 endif::[]
 * If you are using GPU acceleration, you have at least one NVIDIA GPU available.
 * You have activated the Llama Stack Operator in {productname-short}.
-* You have deployed an inference model, for example, the *llama-3.2-3b-instruct* model. 
-* You have created a `LlamaStackDistribution` instance to enable RAG functionality.
+* You have deployed an inference model, for example, the *llama-3.2-3b-instruct* model.
+* You have created a `LlamaStackDistribution` instance with:
+** PostgreSQL configured as the metadata store.
+** An embedding model configured, preferably as a remote embedding provider.
 * You have created a workbench within a project and opened a running Jupyter notebook.
-* You have installed `llama_stack_client` version 0.3.1 or later in your workbench environment. 
+* You have installed `llama_stack_client` version 0.3.1 or later in your workbench environment.
 * You have already ingested content into a vector store.
 
 [NOTE]
 ====
-This procedure requires that you have already ingested some text, HTML, or document data into a vector store, and that this content is available for retrieval. If no content is ingested, queries return empty results.
+This procedure requires that content has already been ingested into a vector store. If no content is available, RAG queries return empty or non-contextual responses.
 ====
 
 .Procedure
-
 . In a new notebook cell, install the client:
 +
 [source,python]
@@ -35,18 +37,20 @@ This procedure requires that you have already ingested some text, HTML, or docum
 %pip install -q llama_stack_client
 ----
 
-. In a new notebook cell, import `Agent`, `AgentEventLogger`, and `LlamaStackClient`:
+. Import `LlamaStackClient`:
 +
 [source,python]
 ----
-from llama_stack_client import Agent, AgentEventLogger, LlamaStackClient
+from llama_stack_client import LlamaStackClient
 ----
 
-. Create a client instance by setting your deployment endpoint:
+. Create a client instance:
 +
 [source,python]
 ----
-client = LlamaStackClient(base_url="<your deployment endpoint>")
+# Use the Llama Stack service or route URL that is reachable from the workbench.
+# Do not append /v1 when using llama_stack_client.
+client = LlamaStackClient(base_url="<llama-stack-base-url>")
 ----
 
 . List available models:
@@ -56,7 +60,7 @@ client = LlamaStackClient(base_url="<your deployment endpoint>")
 models = client.models.list()
 ----
 
-. Select an LLM (and, if needed below, capture an embedding model for store registration):
+. Select an LLM. If you plan to register a new vector store, also capture an embedding model:
 +
 [source,python]
 ----
@@ -67,86 +71,115 @@ if embedding:
     embedding_model_id = embedding.identifier
     embedding_dimension = int(embedding.metadata.get("embedding_dimension", 768))
 ----
-  
+
 . If you do not already have a vector store ID, register a vector store (choose one):
 +
-.Option 1: Inline Milvus Lite (embedded)
+.Option 1: Inline Milvus (embedded)
 ====
 [source,python]
 ----
-vector_store_name = "my_inline_db"
 vector_store = client.vector_stores.create(
-    name=vector_store_name,
+    name="my_inline_milvus",
     extra_body={
         "embedding_model": embedding_model_id,
         "embedding_dimension": embedding_dimension,
-        "provider_id": "milvus",   # inline Milvus Lite
+        "provider_id": "milvus",
     },
 )
 vector_store_id = vector_store.id
-print(f"Registered inline Milvus Lite DB: {vector_store_id}")
 ----
 [NOTE]
-Use inline Milvus Lite for development and small datasets. Persistence and scale are limited compared to remote Milvus.
+Inline Milvus is suitable for development and small datasets. In {productname-short} 3.2 and later, metadata persistence uses PostgreSQL by default.
 ====
 
 .Option 2: Remote Milvus (recommended for production)
 ====
 [source,python]
 ----
-vector_store_name = "my_remote_db"
 vector_store = client.vector_stores.create(
-    name=vector_store_name,
+    name="my_remote_milvus",
     extra_body={
         "embedding_model": embedding_model_id,
         "embedding_dimension": embedding_dimension,
-        "provider_id": "milvus-remote",  # remote Milvus provider
+        "provider_id": "milvus-remote",
     },
 )
 vector_store_id = vector_store.id
-print(f"Registered remote Milvus DB: {vector_store_id}")
 ----
 [NOTE]
-Ensure your `LlamaStackDistribution` sets `MILVUS_ENDPOINT` (gRPC `:19530`) and `MILVUS_TOKEN`.
+Ensure your `LlamaStackDistribution` sets `MILVUS_ENDPOINT` (gRPC port 19530) and `MILVUS_TOKEN`.
 ====
 
-.Option 3: Inline FAISS (SQLite backend)
+.Option 3: Inline FAISS
 ====
 [source,python]
 ----
-vector_store_name = "my_faiss_db"
 vector_store = client.vector_stores.create(
-    name=vector_store_name,
+    name="my_inline_faiss",
     extra_body={
         "embedding_model": embedding_model_id,
         "embedding_dimension": embedding_dimension,
-        "provider_id": "faiss",   # inline FAISS provider
+        "provider_id": "faiss",
     },
 )
 vector_store_id = vector_store.id
-print(f"Registered inline FAISS DB: {vector_store_id}")
 ----
 [NOTE]
-Inline FAISS (available in {productname-short} 3.0 and later) is a lightweight, in-process vector store with SQLite-based persistence. It is best for local experimentation, disconnected environments, or single-node RAG deployments.
+Inline FAISS is an in-process vector store intended for development and testing. In {productname-short} 3.2 and later, FAISS uses PostgreSQL as the default metadata store.
+====
+
+.Option 4: Remote PostgreSQL with pgvector
+====
+[source,python]
+----
+vector_store = client.vector_stores.create(
+    name="my_pgvector_store",
+    extra_body={
+        "embedding_model": embedding_model_id,
+        "embedding_dimension": embedding_dimension,
+        "provider_id": "pgvector",
+    },
+)
+vector_store_id = vector_store.id
+----
+[NOTE]
+Ensure the pgvector provider is enabled in your `LlamaStackDistribution` and that the PostgreSQL instance has the pgvector extension installed. This option is suitable for production-grade RAG workloads that require durability and concurrency.
 ====
 
 . If you already have a vector store, set its identifier:
 +
 [source,python]
 ----
-# For an existing store:
-# vector_store_id = "<your existing vector store ID>"
+# vector_store_id = "<existing-vector-store-id>"
 ----
 
-. Query the ingested content by using the OpenAI-compatible Responses API with file search:
+. Query without using a vector store:
 +
 [source,python]
 ----
-query = "What benefits do the ingested passages provide for retrieval?"
+system_instructions = """You are a precise and reliable AI assistant.
+Use retrieved context when it is available.
+If nothing relevant is found, say so clearly."""
+
+query = "How do you do great work?"
 
 response = client.responses.create(
     model=model_id,
     input=query,
+    instructions=system_instructions,
+)
+
+print(response.output_text)
+----
+
+. Query by using the Responses API with file search:
++
+[source,python]
+----
+response = client.responses.create(
+    model=model_id,
+    input=query,
+    instructions=system_instructions,
     tools=[
         {
             "type": "file_search",
@@ -154,39 +187,15 @@ response = client.responses.create(
         }
     ],
 )
-print("Responses API result:", getattr(response, "output_text", response))
+
+print(response.output_text)
 ----
 
-. Query the ingested content by using the high-level Agent API:
-+
-[source,python]
-----
-agent = Agent(
-    client,
-    model=model_id,
-    instructions="You are a helpful assistant.",
-    tools=[
-        {
-            "name": "builtin::rag/knowledge_search",
-            "args": {"vector_store_ids": [vector_store_id]},
-        }
-    ],
-)
-
-prompt = "How do you do great work?"
-print("Prompt>", prompt)
-
-session_id = agent.create_session("rag_session")
-stream = agent.create_turn(
-    messages=[{"role": "user", "content": prompt}],
-    session_id=session_id,
-    stream=True,
-)
-
-for log in AgentEventLogger().log(stream):
-    log.print()
-----
+[NOTE]
+====
+When you include the `file_search` tool with `vector_store_ids`, Llama Stack retrieves relevant chunks from the specified vector store and provides them to the model as context for the response.
+====
 
 .Verification
-* The notebook prints query results for both the Responses API and the Agent API.
-* No errors appear in the output, confirming the model can retrieve and respond to ingested content from your vector store.
+* The notebook returns a response without vector stores and a context-aware response when vector stores are enabled.
+* No errors appear, confirming successful retrieval and model execution.

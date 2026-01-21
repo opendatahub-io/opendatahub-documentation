@@ -1,0 +1,101 @@
+:_module-type: PROCEDURE
+[id="configuring-the-pgvector-remote-provider-in-llama-stack_{context}"]
+= Configuring the pgvector remote provider in Llama Stack
+
+[role="_abstract"]
+To use PostgreSQL with the pgvector extension as a remote vector store, configure pgvector in a `LlamaStackDistribution` and supply PostgreSQL connection details as environment variables. This configuration enables retrieval augmented generation (RAG) workflows in {productname-short} by using PostgreSQL-based vector storage.
+
+.Prerequisites
+* You have installed and enabled the Llama Stack Operator in {productname-short}.
+* You have a PostgreSQL database with the pgvector extension enabled.
+* You have the PostgreSQL connection details, including the host name, port number, database name, user name, and password.
+* You have permissions to create Secrets and edit custom resources in your project.
+
+.Procedure
+. In the OpenShift web console, switch to the *Administrator* perspective.
+
+. Create a Secret that stores the PostgreSQL connection details.
++
+.. Ensure that the correct project is selected.
+.. Click *Workloads* → *Secrets*.
+.. Click *Create* → *From YAML*.
+.. Paste the following YAML, update the placeholder values, and then click *Create*.
++
+.Example Secret for pgvector connection details
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pgvector-connection
+type: Opaque
+stringData:
+  PGVECTOR_HOST: "<pgvector-hostname>"
+  PGVECTOR_PORT: "<pgvector-port>"
+  PGVECTOR_DB: "<database-name>"
+  PGVECTOR_USER: "<database-username>"
+  PGVECTOR_PASSWORD: "<database-password>"
+----
++
+[IMPORTANT]
+====
+The pgvector provider is not enabled automatically.
+
+You must explicitly enable pgvector and supply its connection details through environment variables in your `LlamaStackDistribution`.
+
+In {productname-short}, the pgvector provider is enabled when the `ENABLE_PGVECTOR` environment variable is set.
+====
+
+. Update your `LlamaStackDistribution` custom resource to enable pgvector and reference the Secret.
++
+.. Click *Operators* → *Installed Operators*.
+.. Select the *Llama Stack Operator*.
+.. Click the *LlamaStackDistribution* tab.
+.. Select your `LlamaStackDistribution` resource.
+.. Click *YAML*.
+.. Update the resource to include the following fields, and then click *Save*.
++
+.Example `LlamaStackDistribution` configuration for pgvector
+[source,yaml]
+----
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: llamastack
+spec:
+  server:
+    containerSpec:
+      env:
+        - name: ENABLE_PGVECTOR
+          value: "true"
+        - name: PGVECTOR_HOST
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_HOST
+        - name: PGVECTOR_PORT
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_PORT
+        - name: PGVECTOR_DB
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_DB
+        - name: PGVECTOR_USER
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_USER
+        - name: PGVECTOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pgvector-connection
+              key: PGVECTOR_PASSWORD
+----
+
+.Verification
+. Click *Workloads* → *Pods*.
+. Confirm that the Llama Stack pod restarts and reaches the *Running* state.
+. Open the pod logs and confirm that the server starts successfully and initializes the pgvector provider without errors.

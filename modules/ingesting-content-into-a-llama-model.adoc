@@ -1,19 +1,25 @@
 :_module-type: PROCEDURE
+
 [id="ingesting-content-into-a-llama-model_{context}"]
 = Ingesting content into a Llama model
 
 [role="_abstract"]
-You can quickly customize and prototype your retrievable content by ingesting raw text into your model from inside a Jupyter notebook. This approach avoids building a separate ingestion pipeline. By using the Llama Stack SDK, you can embed and store text in your vector store in real time, enabling immediate RAG workflows.
+You can quickly customize and prototype retrievable content by uploading a document and adding it to a vector store from inside a Jupyter notebook. This approach avoids building a separate ingestion pipeline. By using the Llama Stack SDK, you can ingest documents into a vector store and enable retrieval-augmented generation (RAG) workflows.
 
 .Prerequisites
-* You have installed {openshift-platform} {ocp-minimum-version} or newer. 
+* You have installed {openshift-platform} {ocp-minimum-version} or newer.
 * You have deployed a Llama 3.2 model with a vLLM model server.
-* You have created a `LlamaStackDistribution` instance (Llama Stack).
+* You have created a `LlamaStackDistribution` instance.
+* You have configured a PostgreSQL database for Llama Stack metadata storage.
+* You have configured an embedding model:
+** *Recommended:* You have configured a remote embedding model by using environment variables in the `LlamaStackDistribution`.
+** *Optional:* You have enabled inline embeddings with the sentence-transformers library for development or testing.
 * You have created a workbench within a project.
 * You have opened a Jupyter notebook and it is running in your workbench environment.
-* You have installed the `llama_stack_client` version 0.3.1 or later in your workbench environment. 
+* You have installed `llama_stack_client` version 0.3.1 or later in your workbench environment.
+* You have installed `requests` in your workbench environment. This is required for downloading example documents.
 ifdef::self-managed[]
-* If you use a remote vector store, your environment has network access to that service through {openshift-platform}.
+* If you use a remote vector store or remote embedding model, your environment has network access to those services through {openshift-platform}.
 endif::[]
 
 .Procedure
@@ -24,28 +30,39 @@ endif::[]
 %pip install llama_stack_client
 ----
 
+. Install the `requests` library if it is not already available:
++
+[source,python]
+----
+%pip install requests
+----
+
 . Import `LlamaStackClient` and create a client instance:
 +
 [source,python]
 ----
 from llama_stack_client import LlamaStackClient
-client = LlamaStackClient(base_url="<your deployment endpoint>")
+
+# Use the Llama Stack service or route URL that is reachable from the workbench.
+# Do not append /v1 when using llama_stack_client.
+client = LlamaStackClient(base_url="<llama-stack-base-url>")
 ----
 
 . List the available models:
 +
 [source,python]
 ----
-# Fetch all registered models
 models = client.models.list()
 ----
 
-. Verify that the list includes your Llama model and an embedding model. For example:
+. Verify that the list includes:
+* At least one LLM model.
+* At least one embedding model (remote or inline).
 +
 [source,python]
 ----
-[Model(identifier='llama-32-3b-instruct', metadata={}, api_model_type='llm', provider_id='vllm-inference', provider_resource_id='llama-32-3b-instruct', type='model', model_type='llm'),
- Model(identifier='ibm-granite/granite-embedding-125m-english', metadata={'embedding_dimension': 768.0}, api_model_type='embedding', provider_id='sentence-transformers', provider_resource_id='ibm-granite/granite-embedding-125m-english', type='model', model_type='embedding')]
+[Model(identifier='llama-32-3b-instruct', model_type='llm', provider_id='vllm-inference'),
+ Model(identifier='nomic-embed-text-v1-5', model_type='embedding', metadata={'embedding_dimension': 768})]
 ----
 
 . Select one LLM and one embedding model:
@@ -53,129 +70,135 @@ models = client.models.list()
 [source,python]
 ----
 model_id = next(m.identifier for m in models if m.model_type == "llm")
+
 embedding_model = next(m for m in models if m.model_type == "embedding")
 embedding_model_id = embedding_model.identifier
 embedding_dimension = int(embedding_model.metadata["embedding_dimension"])
 ----
 
-. (Optional) Create a vector store (choose one). Skip this step if you already have one.
+. (Optional) Create a vector store. Skip this step if you already have one.
 +
-.Option 1: Inline Milvus Lite (embedded)
+[NOTE]
+====
+Provider IDs can differ between interfaces. In the Python SDK, you typically use the provider name directly (for example, `provider_id: "pgvector"`). In some CLI tools and examples, remote providers might use a prefixed identifier (for example, `--vector-db-provider-id remote-pgvector`). Use the provider ID format that matches the interface you are using.
+====
+
+.Option 1: Inline Milvus (embedded)
 ====
 [source,python]
 ----
-vector_store_name = "my_inline_db"
 vector_store = client.vector_stores.create(
-    name=vector_store_name,
+    name="my_inline_milvus",
     extra_body={
         "embedding_model": embedding_model_id,
         "embedding_dimension": embedding_dimension,
-        "provider_id": "milvus",   # inline Milvus Lite
+        "provider_id": "milvus",
     },
 )
 vector_store_id = vector_store.id
-print(f"Registered inline Milvus Lite DB: {vector_store_id}")
 ----
 [NOTE]
-Use inline Milvus Lite for development and small datasets. Persistence and scale are limited compared to remote Milvus.
+Inline Milvus is suitable for development and small datasets. In {productname-short} 3.2 and later, metadata persistence uses PostgreSQL by default.
 ====
 
 .Option 2: Remote Milvus (recommended for production)
 ====
 [source,python]
 ----
-vector_store_name = "my_remote_db"
 vector_store = client.vector_stores.create(
-    name=vector_store_name,
+    name="my_remote_milvus",
     extra_body={
         "embedding_model": embedding_model_id,
         "embedding_dimension": embedding_dimension,
-        "provider_id": "milvus-remote",  # remote Milvus provider
+        "provider_id": "milvus-remote",
     },
 )
 vector_store_id = vector_store.id
-print(f"Registered remote Milvus DB: {vector_store_id}")
 ----
 [NOTE]
-Ensure your `LlamaStackDistribution` sets `MILVUS_ENDPOINT` (gRPC `:19530`) and `MILVUS_TOKEN`.
+Ensure your `LlamaStackDistribution` is configured with `MILVUS_ENDPOINT` and `MILVUS_TOKEN`.
 ====
 
-.Option 3: Inline FAISS (SQLite backend)
+.Option 3: Inline FAISS
 ====
 [source,python]
 ----
-vector_store_name = "my_faiss_db"
 vector_store = client.vector_stores.create(
-    name=vector_store_name,
+    name="my_inline_faiss",
     extra_body={
         "embedding_model": embedding_model_id,
         "embedding_dimension": embedding_dimension,
-        "provider_id": "faiss",   # inline FAISS provider
+        "provider_id": "faiss",
     },
 )
 vector_store_id = vector_store.id
-print(f"Registered inline FAISS DB: {vector_store_id}")
 ----
 [NOTE]
-Inline FAISS (available in {productname-short} 3.0 and later) is a lightweight, in-process vector store with SQLite-based persistence. It is best for local experimentation, disconnected environments, or single-node RAG deployments.
+Inline FAISS is an in-process vector store intended for development and testing. In {productname-short} 3.2 and later, FAISS uses PostgreSQL as the default metadata store.
+====
+
+.Option 4: Remote PostgreSQL with pgvector
+====
+[source,python]
+----
+vector_store = client.vector_stores.create(
+    name="my_pgvector_store",
+    extra_body={
+        "embedding_model": embedding_model_id,
+        "embedding_dimension": embedding_dimension,
+        "provider_id": "pgvector",
+    },
+)
+vector_store_id = vector_store.id
+----
+[NOTE]
+Ensure that the pgvector provider is enabled in your `LlamaStackDistribution` and that the PostgreSQL instance has the pgvector extension installed.
 ====
 
 . If you already have a vector store, set its identifier:
 +
 [source,python]
 ----
-# For an existing vector store:
-# vector_store_id = "<your existing vector store ID>"
+# vector_store_id = "<existing-vector-store-id>"
 ----
 
-. Define raw text to ingest:
+. Download a PDF, upload it to Llama Stack, and add it to your vector store:
 +
 [source,python]
 ----
-raw_text = """Llama Stack can embed raw text into a vector store for retrieval.
-This example ingests a small passage for demonstration."""
-----
+import requests
 
-. Ingest raw text by using the Vector Store Files API:
-+
-[source,python]
-----
-items = [
-    {
-        "id": "raw_text_001",
-        "text": raw_text,
-        "mime_type": "text/plain",
-        "metadata": {"source": "example_passage"},
-    }
-]
-result = client.vector_stores.files.create(
+pdf_url = "https://www.federalreserve.gov/aboutthefed/files/quarterly-report-20250822.pdf"
+filename = "quarterly-report-20250822.pdf"
+
+response = requests.get(pdf_url)
+response.raise_for_status()
+
+with open(filename, "wb") as f:
+    f.write(response.content)
+
+with open(filename, "rb") as f:
+    file_info = client.files.create(
+        file=(filename, f),
+        purpose="assistants",
+    )
+
+vector_store_file = client.vector_stores.files.create(
     vector_store_id=vector_store_id,
-    items=items,
-    chunk_size_in_tokens=100,
+    file_id=file_info.id,
+    chunking_strategy={
+        "type": "static",
+        "static": {
+            "max_chunk_size_tokens": 800,
+            "chunk_overlap_tokens": 400,
+        },
+    },
 )
-print("Text ingestion result:", result)
-----
 
-. Ingest an HTML source:
-+
-[source,python]
-----
-html_item = [
-    {
-        "id": "doc_html_001",
-        "text": "https://www.paulgraham.com/greatwork.html",
-        "mime_type": "text/html",
-        "metadata": {"note": "Example URL"},
-    }
-]
-result = client.vector_stores.files.create(
-    vector_store_id=vector_store_id,
-    items=html_item,
-    chunk_size_in_tokens=50,
-)
-print("HTML ingestion result:", result)
+print(vector_store_file)
 ----
 
 .Verification
-* Review the output to confirm successful ingestion. A typical response includes file or chunk counts and any warnings or errors.
-* The model list returned by `client.models.list()` includes your Llama 3.2 model and an embedding model.
+* The call to `client.vector_stores.files.create()` succeeds and returns metadata for the ingested file.
+* The vector store contains indexed chunks associated with the uploaded document.
+* Subsequent RAG queries can retrieve content from the vector store.

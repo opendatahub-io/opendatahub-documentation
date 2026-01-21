@@ -12,7 +12,19 @@ This compatibility layer has the following capabilities:
 
 [NOTE]
 ====
-When connecting OpenAI SDKs or third-party tools to {productname-short}, you must update the client configuration to use your deployment's Llama Stack route as the `base_url`. This ensures that API calls are sent to the OpenAI-compatible endpoints that run inside your {openshift-platform} cluster, rather than to the public OpenAI service.
+When connecting OpenAI SDKs or third-party tools to {productname-short}, you must update the client configuration to use your deployment's Llama Stack route as the `base_url`.
+
+When you use OpenAI-compatible SDKs, the `base_url` **must include the `/v1` path suffix** so that requests are routed to the OpenAI-compatible API surface exposed by Llama Stack.
+====
+
+[IMPORTANT]
+====
+When you use OpenAI SDKs or send raw HTTP requests to Llama Stack, always include the `/v1` path suffix in the base URL.
+
+For example:
+`http://llama-stack-service:8321/v1`
+
+Using the service endpoint without `/v1` results in request failures.
 ====
 
 == Supported OpenAI-compatible APIs in {productname-short}
@@ -54,7 +66,7 @@ The Files API manages file uploads for use in embedding and retrieval workflows.
 
 === Vector Stores API
 * *Endpoint:* `/v1/openai/v1/vector_stores/`.  
-* *Providers:* Inline and Remote Milvus configured in {productname-short}.
+* *Providers:* Inline and remote vector store providers configured in {productname-short}.
 * *Support level:* Technology Preview. 
 
 The Vector Stores API manages the creation, configuration, and lifecycle of vector store resources in Llama Stack. Through this API, you can create new vector stores, list existing ones, delete unused stores, and query their metadata, all using OpenAI-compatible request and response formats.  
@@ -66,7 +78,7 @@ The Vector Stores API manages the creation, configuration, and lifecycle of vect
 * *Providers:* Local inline provider configured for file storage and retrieval.
 * *Support level:* Developer Preview. 
 
-The Vector Store Files API implements the OpenAI Vector Store Files interface and manages the link between document files and Milvus vector stores used for RAG. 
+The Vector Store Files API implements the OpenAI Vector Store Files interface and manages the association between document files and vector stores used for RAG workflows. 
 
 ---
 
@@ -81,7 +93,7 @@ The Models API lists and retrieves available model resources from the Llama Stac
 
 === Responses API
 * *Endpoint:* `/v1/openai/v1/responses`.  
-* *Providers:* All agents, inference and vector providers configured in {productname-short}.
+* *Providers:* All agents, inference, and vector providers configured in {productname-short}.
 * *Support level:* Developer Preview. 
 
 The Responses API generates model outputs by combining inference, file search, and tool-calling capabilities through a single OpenAI-compatible endpoint. It is particularly useful for retrieval-augmented generation (RAG) workflows that rely on the `file_search` tool to retrieve context from vector stores.
@@ -96,4 +108,4 @@ The Responses API is an experimental feature that is still under active developm
 [role="_additional-resources"]
 .Additional resources
 
-* link:https://llamastack.github.io/docs/providers/openai[OpenAI API Compatibility]
+* link:https://llamastack.github.io/docs/providers/openai[OpenAI API compatibility in Llama Stack]
