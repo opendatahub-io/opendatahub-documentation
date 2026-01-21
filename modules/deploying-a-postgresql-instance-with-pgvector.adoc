@@ -1,4 +1,5 @@
 :_module-type: PROCEDURE
+
 [id="deploying-a-postgresql-instance-with-pgvector_{context}"]
 = Deploying a PostgreSQL instance with pgvector
 
@@ -93,16 +94,30 @@ spec:
         volumeMounts:
         - name: pgdata
           mountPath: /var/lib/postgresql/data
+
+        # Replace TCP socket probes with exec probes that validate SQL readiness.
         readinessProbe:
-          tcpSocket:
-            port: 5432
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"
           initialDelaySeconds: 10
           periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
         livenessProbe:
-          tcpSocket:
-            port: 5432
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"
           initialDelaySeconds: 30
           periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 6
+
+        # Create the pgvector extension after PostgreSQL is actually accepting SQL.
         lifecycle:
           postStart:
             exec:
@@ -110,7 +125,14 @@ spec:
               - /bin/sh
               - -c
               - |
-                PGPASSWORD=$POSTGRES_PASSWORD psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS vector;" || true      volumes:
+                set -e
+                echo "Waiting for PostgreSQL to be ready before enabling pgvector..."
+                until PGPASSWORD="$POSTGRES_PASSWORD" psql -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT 1" >/dev/null 2>&1; do
+                  sleep 2
+                done
+                PGPASSWORD="$POSTGRES_PASSWORD" psql -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
+      volumes:
       - name: pgdata
         persistentVolumeClaim:
           claimName: <pgvector-postgresql-pvc>
@@ -128,6 +150,7 @@ spec:
     port: 5432
     targetPort: 5432
   type: ClusterIP
+
 ----
 
 . Click *Create*.

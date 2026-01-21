@@ -17,6 +17,7 @@ You can quickly customize and prototype retrievable content by uploading a docum
 * You have created a workbench within a project.
 * You have opened a Jupyter notebook and it is running in your workbench environment.
 * You have installed `llama_stack_client` version 0.3.1 or later in your workbench environment.
+* You have installed `requests` in your workbench environment. This is required for downloading example documents.
 ifdef::self-managed[]
 * If you use a remote vector store or remote embedding model, your environment has network access to those services through {openshift-platform}.
 endif::[]
@@ -27,6 +28,13 @@ endif::[]
 [source,python]
 ----
 %pip install llama_stack_client
+----
+
+. Install the `requests` library if it is not already available:
++
+[source,python]
+----
+%pip install requests
 ----
 
 . Import `LlamaStackClient` and create a client instance:
@@ -70,6 +78,11 @@ embedding_dimension = int(embedding_model.metadata["embedding_dimension"])
 
 . (Optional) Create a vector store. Skip this step if you already have one.
 +
+[NOTE]
+====
+Provider IDs can differ between interfaces. In the Python SDK, you typically use the provider name directly (for example, `provider_id: "pgvector"`). In some CLI tools and examples, remote providers might use a prefixed identifier (for example, `--vector-db-provider-id remote-pgvector`). Use the provider ID format that matches the interface you are using.
+====
+
 .Option 1: Inline Milvus (embedded)
 ====
 [source,python]

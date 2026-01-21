@@ -18,29 +18,33 @@ The examples use the `sentence-transformers` inference provider, which you can r
 * You have built the Llama Stack starter distribution to install all dependencies.
 * You have verified that your vector database is accessible and configured in the `run.yaml` file, and that any required embedding models were preloaded or registered with Llama Stack.
 
-[NOTE]
+[IMPORTANT]
 ====
-The default supported embedding models are `granite-embedding-30m` and `granite-embedding-125m`, served by the `sentence-transformers` framework. Ollama is not required for basic benchmarks but can be used to serve custom embedding models. Before you register additional embedding models, ensure that the Llama Stack server is running and that a vector database provider is enabled.
+Before you run the benchmark script, the Llama Stack server must be running and a vector database provider must be enabled and reachable. If you plan to compare embedding models beyond the default set, you must also register those embedding models with Llama Stack.
+====
 
-. Start the Llama Stack server with a vector database provider enabled.
-+
---
-a. Using inline Milvus:
+.Procedure
+. Optional: Start the Llama Stack server and enable a vector database provider
+If you have not already started Llama Stack with a vector database provider enabled, start the server by using a configuration similar to one of the following examples:
+
+* Using inline Milvus:
 +
 [subs=+quotes]
 ....
 MILVUS_URL=milvus uv run llama stack run run.yaml
 ....
 
-b. Using remote PostgreSQL with pgvector:
+* Using remote PostgreSQL with pgvector:
 +
 [subs=+quotes]
 ....
-PGVECTOR_DB=pgvector uv run llama stack run run.yaml
+ENABLE_PGVECTOR=true PGVECTOR_DB=pgvector uv run llama stack run run.yaml
 ....
---
 
-. Register the embedding model by using the Llama Stack client. For example:
+. Optional: Register additional embedding models
+The default supported embedding models are `granite-embedding-30m` and `granite-embedding-125m`, served by the `sentence-transformers` framework. If you want to benchmark additional embedding models, register them with Llama Stack before running the benchmark script.
++
+For example, register an embedding model by using the Llama Stack client:
 +
 [subs=+quotes]
 ....
@@ -50,11 +54,7 @@ llama-stack-client models register all-MiniLM-L6-v2 \
   --metadata '{"embedding_dimension": 384}' \
   --model-type embedding
 ....
-====
-* You have shut down the Llama Stack server before running the benchmark script.
 
-
-.Procedure
 . Run the `beir_benchmarks.py` benchmarking script.
 
 * Enter the following command to use the configuration from `run.yaml` and the default dataset `scifact` with inline Milvus:

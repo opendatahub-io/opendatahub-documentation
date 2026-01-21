@@ -32,7 +32,7 @@ endif::[]
 * You have the correct inference model identifier, for example, `llama-3-2-3b`.
 * You have the model endpoint URL ending with `/v1`, for example, `https://llama-32-3b-instruct-predictor:8443/v1`.
 * You have the API token required to access the model endpoint.
-* You have installed the PostgreSQL operator and configured a PostgreSQL database for Llama Stack metadata storage, see "Deploying a Llama Stack server".
+* You have installed the PostgreSQL Operator and configured a PostgreSQL database for Llama Stack metadata storage. For more information, see the documentation for "Deploying a Llama Stack server".
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
 ** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
@@ -536,7 +536,7 @@ spec:
 
         # Enable and configure pgvector provider
         - name: ENABLE_PGVECTOR
-          value: "pgvector"
+          value: "true"
         - name: PGVECTOR_HOST
           valueFrom:
             secretKeyRef:
