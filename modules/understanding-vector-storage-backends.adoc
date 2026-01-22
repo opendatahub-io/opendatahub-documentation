@@ -4,7 +4,7 @@
 = Understanding vector metadata storage backends
 
 [role="_abstract"]
-In {productname-short}, vector metadata storage backends persist non vector information that is associated with vector embeddings. Metadata storage is used alongside a configured vector storage provider to support retrieval augmented generation workflows in {productname-short}.
+In {productname-short}, vector metadata storage backends persist non-vector information that is associated with vector embeddings. Metadata storage is used alongside a configured vector storage provider to support retrieval augmented generation workflows in {productname-short}.
 
 Vector based workloads in {productname-short} typically require more than similarity search. In addition to storing and querying embeddings, applications often need to persist metadata such as document identifiers, source locations, labels, or timestamps. This metadata is stored in a dedicated backend that complements the vector database.
 
@@ -22,7 +22,7 @@ This design allows metadata storage to be scaled, secured, and managed independe
 
 == Vector storage providers and metadata storage backends are distinct
 
-In {productname-short}, a vector storage provider stores embeddings and performs similarity search. A metadata storage backend persists non vector records associated with those embeddings. These components have different configuration and lifecycle requirements.
+In {productname-short}, a vector storage provider stores embeddings and performs similarity search. A metadata storage backend persists non-vector records associated with those embeddings. These components have different configuration and lifecycle requirements.
 
 For example, pgvector is a vector storage provider that uses PostgreSQL with the pgvector extension to store and search embeddings. 
 
