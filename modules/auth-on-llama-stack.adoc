@@ -17,6 +17,20 @@ Before you begin, you must already have Keycloak set up with the following param
 
 This document assumes the Keycloak server is available at `https://my-keycloak-server.com`
 
+[IMPORTANT]
+====
+When accessing Llama Stack APIs, the required base URL depends on the client you are using.
+
+* **OpenAI-compatible clients or raw HTTP requests**  
+  You must include the `/v1` path suffix in the base URL.  
+  For example: `http://llama-stack-service:8321/v1`
+
+* **`LlamaStackClient` SDK**  
+  Do not include the `/v1` path suffix.  
+  For example: `http://llama-stack-service:8321`
+
+Using an incorrect base URL results in request failures.
+====
 
 .Prerequisites
 
@@ -93,7 +107,7 @@ providers:
       provider_type: remote::openai
       config:
         api_key: ${env.OPENAI_API_KEY:=}
-        base_url: ${env.OPENAI_BASE_URL:=https://api.openai.com/v1}
+        base_url: ${env.OPENAI_BASE_URL:=https://api.openai.com/v1}  # OpenAI-compatible API requires /v1
   telemetry:
   - provider_id: meta-reference
     provider_type: inline::meta-reference
@@ -113,15 +127,6 @@ providers:
       responses_store:
         type: sqlite
         db_path: /opt/app-root/src/.llama/distributions/rh/responses_store.db
-  vector_io:
-  - provider_id: milvus
-    provider_type: inline::milvus
-    config:
-      db_path: /opt/app-root/src/.llama/distributions/rh/milvus.db
-      kvstore:
-        type: sqlite
-        namespace: null
-        db_path: /opt/app-root/src/.llama/distributions/rh/milvus_registry.db
 models:
   - model_id: llama-3-2-3b
     provider_id: vllm-inference
@@ -158,9 +163,9 @@ server:
         description: Allow only users with inference_max role to access OpenAI models
 ----
 +
-<1> Specify your Keycloak host and Realm in the URL.
-<2> Maps the `llamastack_roles` path from the token to the `roles` field.
-<3> Policy 1: Allow all authenticated users to access vLLM models.
+<1> Specify your Keycloak host and Realm in the URL.  
+<2> Maps the `llamastack_roles` path from the token to the `roles` field.  
+<3> Policy 1: Allow all authenticated users to access vLLM models.  
 <4> Policy 2: Restrict OpenAI models to users with the `inference_max` role.
 
 . Create a ConfigMap that uses the `run.yaml` configuration by running the following command:
@@ -253,136 +258,90 @@ $ curl -d client_id=llamastack \
 ----
 $ cat user2.token | cut -d . -f 2 | base64 -d 2>/dev/null | jq .
 ----
-+
-.Example output
-[source,terminal]
-----
-{
-  "iss": "https://my-keycloak-server.com/realms/llamastack-demo",
-  "aud": "account",
-  "exp": 1760553504,
-  "preferred_username": "user2",
-  "llamastack_roles": ["inference_max"]
-}
-----
-
-. To test the Llama Stack URLs, create a route called `route.yaml` with the following example parameters:
-+
-[source,yaml]
-----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: llamastack-distribution
-  namespace: redhat-ods-operator
-  labels:
-    app: llamastack-distribution
-spec:
-  to:
-    kind: Service
-    name: llamastack-distribution-service
-    weight: 100
-  port:
-    targetPort: 8321
-  tls:
-    termination: edge
-    insecureEdgeTerminationPolicy: Redirect
-  wildcardPolicy: None
-----
-
-. Apply the route to your cluster with the following command:
-[source,terminal]
-----
-oc apply -f route.yaml
-----
-
-. Verify that this route is active with the following command:
-+
-[source,terminal]
-----
-LLAMASTACK_URL=https://$(oc get route -n redhat-ods-operator llamastack-distribution -o jsonpath='{.spec.host}' 2>/dev/null)
-----
 
 .Verification
+. Set the Llama Stack base URL:
++
+[source,terminal]
+----
+export LLAMASTACK_URL="http://<llama-stack-host>:8321"
+----
 
-* Testing basic access to models
-
-. Load the token with the following command:
+. Verify basic access for `user1` (no privileged roles).
++
+Load the token:
 +
 [source,terminal]
 ----
 USER1_TOKEN=$(cat user1.token)
 ----
-
-. Access the vLLM model by running the following command:
++
+Confirm that `user1` can access the vLLM-served model:
 +
 [source,terminal]
 ----
-curl -X POST ${LLAMASTACK_URL}/v1/openai/v1/chat/completions -H "Content-Type: application/json" -H "Authorization: Bearer ${USER1_TOKEN}" -d '{"model": "vllm-inference/llama-3-2-3b", "messages": [{"role": "user", "content": "Hello!"}], "max_tokens": 50}'
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${USER1_TOKEN}" \
+  -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
-
-. If you attempt to access the OpenAI models without these permissions, you will see an error due to access restrictions:
 +
-[source, terminal]
-----
-curl -X POST ${LLAMASTACK_URL}/v1/openai/v1/chat/completions -H "Content-Type: application/json" -H "Authorization: Bearer ${USER1_TOKEN}" -d '{"model": "openai/gpt-4o-mini", "messages": [{"role": "user", "content": "Hello!"}], "max_tokens": 50}'
-----
-
-
-* Testing full authorization to models
-
-.  Load the token with the following command:
+Expected result: HTTP `200`.
++
+Confirm that `user1` is denied access to the restricted OpenAI model:
 +
 [source,terminal]
 ----
-$ USER2_TOKEN=$(cat user2.token)
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${USER1_TOKEN}" \
+  -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
++
+Expected result: HTTP `403` (forbidden).
 
-. Access the vLLM model by running the following command:
+. Verify privileged access for `user2` (assigned the `inference_max` role).
++
+Load the token:
 +
 [source,terminal]
 ----
-$ curl -X POST ${LLAMASTACK_URL}/v1/openai/v1/chat/completions \
+USER2_TOKEN=$(cat user2.token)
+----
++
+Confirm that `user2` can access both models:
++
+[source,terminal]
+----
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${USER2_TOKEN}" \
-  -d '{
-    "model": "vllm-inference/llama-3-2-3b",
-    "messages": [{"role": "user", "content": "Hello!"}],
-    "max_tokens": 50
-  }'
+  -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
-
-. Access the OpenAI models by running the following command:
 +
 [source,terminal]
 ----
-$ curl -X POST ${LLAMASTACK_URL}/v1/openai/v1/chat/completions \
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${USER2_TOKEN}" \
-  -d '{
-    "model": "openai/gpt-4o-mini",
-    "messages": [{"role": "user", "content": "Hello!"}],
-    "max_tokens": 50
-  }'
+  -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
++
+Expected result: HTTP `200` for both requests.
 
-* Testing without any authorization:
-+
-. Attempt to access the OpenAI or vLLM models:
+. Verify that requests without a Bearer token are denied.
 +
 [source,terminal]
 ----
-$ curl -X POST ${LLAMASTACK_URL}/v1/openai/v1/chat/completions \
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
   -H "Content-Type: application/json" \
-  -d '{
-    "model": "openai/gpt-4o-mini",
-    "messages": [{"role": "user", "content": "Hello!"}],
-    "max_tokens": 50
-  }'
+  -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
-.Example output
 +
-[source,terminal]
-----
-{"error": {"message": "Authentication required. Please provide a valid OAuth2 Bearer token from https://my-keycloak-server.com/realms/llamastack-demo"}}
-----
+Expected result: HTTP `401` (unauthorized).
+
