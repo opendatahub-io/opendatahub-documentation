@@ -3,22 +3,28 @@
 [id="overview-of-faiss-vector-databases_{context}"]
 = Overview of FAISS vector databases
 
-FAISS (Facebook AI Similarity Search) is an open source library for high performance vector similarity search and clustering. It is optimized for dense numerical embeddings and supports both CPU and GPU execution. In {productname-short}, you can enable FAISS as an inline vector store within a Llama Stack deployment.
+The FAISS (Facebook AI Similarity Search) library is an open source framework for high-performance vector search and clustering. It is optimized for dense numerical embeddings and supports both CPU and GPU execution. In {productname-short}, FAISS is supported as an *inline vector store provider* for Llama Stack, enabling fast, in-process similarity search without requiring a separate vector database service.
 
-When inline FAISS is enabled, vector indexing and similarity search run directly inside the `LlamaStackDistribution` server process. This configuration does not require a separate external vector database service, making it suitable for development and evaluation workflows.
+When you enable inline FAISS in a `LlamaStackDistribution`, Llama Stack uses FAISS as an embedded vector index that runs inside the Llama Stack server container. This configuration is designed for lightweight development, experimentation, and single-node retrieval-augmented generation (RAG) workflows.
 
-Inline FAISS enables efficient similarity search as part of retrieval augmented generation (RAG) workflows. Vector indexes are managed locally by the Llama Stack server, while vector metadata persistence uses the default Llama Stack metadata backend configured for the deployment. In {productname-short} 3.2 and later, this backend is PostgreSQL.
+Inline FAISS provides the following capabilities in {productname-short}:
 
-Inline FAISS provides the following benefits:
+* In-process similarity search using FAISS indexes.
+* Low-latency embedding ingestion and query operations.
+* Simple deployment with no external vector database service.
+* Compatibility with OpenAI-compatible Vector Stores API endpoints.
 
-* Simple enablement without deploying an external vector database service
-* Low latency vector ingestion and query execution
-* Compatibility with the OpenAI-compatible Vector Stores API
-* Integration with the default PostgreSQL-backed metadata store in {productname-short}
+In {productname-short} 3.2, inline FAISS relies on the Llama Stack metadata and persistence backend for managing vector store state. PostgreSQL is the default and recommended backend for production-grade deployments, even when FAISS is used as the inline vector index.
 
-Inline FAISS is designed for single-instance operation and does not provide distributed indexing, replication, or high availability.
+SQLite can be explicitly configured for local or on-the-fly development scenarios, but it is not recommended for production use.
+
+Inline FAISS is suitable for the following use cases:
+
+* Rapid prototyping of RAG workflows.
+* Development or testing environments.
+* Disconnected or single-node deployments where external vector databases are not required.
 
 [NOTE]
 ====
-Inline FAISS is best suited for development, testing, and evaluation environments. For production-grade RAG workloads that require scalability, durability, or multi-node operation, use a remote vector database such as Milvus or PostgreSQL with pgvector.
+Inline FAISS does not provide distributed storage, replication, or high availability. For production-grade RAG workloads that require durability, scalability, or multi-node access, use a remote vector database such as Milvus or PostgreSQL with the pgvector extension.
 ====

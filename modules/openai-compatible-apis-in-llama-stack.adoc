@@ -3,7 +3,7 @@
 = OpenAI-compatible APIs in Llama Stack
 
 [role="_abstract"]
-{productname-short} includes a Llama Stack component that exposes OpenAI-compatible APIs. These APIs enable you to reuse existing OpenAI SDKs, tools, and workflows directly within your {openshift-platform} environment without changing client-side logic. This compatibility layer supports inference, embeddings, and retrieval-augmented generation (RAG) workflows by using OpenAI-compatible endpoints, schemas, and authentication models.
+{productname-short} includes a Llama Stack component that exposes OpenAI-compatible APIs. These APIs enable you to reuse existing OpenAI SDKs, tools, and workflows directly within your {openshift-platform} environment, without changing your client code. This compatibility layer supports retrieval-augmented generation (RAG), inference, and embedding workloads by using the same endpoints, schemas, and authentication model as OpenAI.
 
 This compatibility layer has the following capabilities:
 
@@ -12,14 +12,28 @@ This compatibility layer has the following capabilities:
 
 [NOTE]
 ====
-When connecting OpenAI SDKs or third-party tools to {productname-short}, you must configure the client to use your Llama Stack service route as the `base_url`. Do not use the public OpenAI service endpoint. All API requests must be sent to the Llama Stack endpoint running inside your {openshift-platform} cluster.
+When connecting OpenAI SDKs or third-party tools to {productname-short}, you must update the client configuration to use your deployment's Llama Stack route as the `base_url`.
+
+When you use OpenAI-compatible SDKs, the `base_url` **must include the `/v1` path suffix** so that requests are routed to the OpenAI-compatible API surface exposed by Llama Stack.
 ====
+
+[IMPORTANT]
+====
+When you use OpenAI SDKs or send raw HTTP requests to Llama Stack, always include the `/v1` path suffix in the base URL.
+
+For example:
+`http://llama-stack-service:8321/v1`
+
+Using the service endpoint without `/v1` results in request failures.
+====
+
+These endpoints are exposed under the OpenAI compatibility layer and are distinct from the native Llama Stack APIs.
 
 == Supported OpenAI-compatible APIs in {productname-short}
 
 === Chat Completions API
-* *Endpoint:* `/v1/chat/completions`.
-* *Providers:* All inference providers configured in {productname-short}.
+* *Endpoint:* `/v1/openai/v1/chat/completions`.  
+* *Providers:* All inference back ends deployed through {productname-short}.
 * *Support level:* Technology Preview. 
 
 The Chat Completions API enables conversational, message-based interactions with models served by Llama Stack in {productname-short}.
@@ -27,8 +41,8 @@ The Chat Completions API enables conversational, message-based interactions with
 ---
 
 === Completions API
-* *Endpoint:*  `/v1/completions`.  
-* *Providers:* All inference providers configured in {productname-short}.
+* *Endpoint:* `/v1/openai/v1/completions`.  
+* *Providers:* All inference backends managed by {productname-short}.
 * *Support level:* Technology Preview. 
 
 The Completions API supports single-turn text generation and prompt completion.
@@ -36,16 +50,16 @@ The Completions API supports single-turn text generation and prompt completion.
 ---
 
 === Embeddings API
-* *Endpoint:* `/v1/embeddings`.
-* *Providers:* All embedding providers enabled in {productname-short}.
+* *Endpoint:* `/v1/openai/v1/embeddings`.  
+* *Providers:* All embedding models enabled in {productname-short}.
 
 The Embeddings API generates numerical embeddings for text or documents that can be used in downstream semantic search or RAG applications.
 
 ---
 
 === Files API
-* *Endpoint:* `/v1/files`.  
-* *Providers:* File storage providers configured in {productname-short}.
+* *Endpoint:* `/v1/openai/v1/files`.  
+* *Providers:* File system-based file storage provider for managing files and documents stored locally in your cluster.
 * *Support level:* Technology Preview. 
 
 The Files API manages file uploads for use in embedding and retrieval workflows.
@@ -53,8 +67,8 @@ The Files API manages file uploads for use in embedding and retrieval workflows.
 ---
 
 === Vector Stores API
-* *Endpoint:* `/v1/vector_stores`.  
-* *Providers:* Vector store providers configured in {productname-short}.
+* *Endpoint:* `/v1/openai/v1/vector_stores/`.  
+* *Providers:* Inline and remote vector store providers configured in {productname-short}.
 * *Support level:* Technology Preview. 
 
 The Vector Stores API manages the creation, configuration, and lifecycle of vector store resources in Llama Stack. Through this API, you can create new vector stores, list existing ones, delete unused stores, and query their metadata, all using OpenAI-compatible request and response formats.  
@@ -62,16 +76,16 @@ The Vector Stores API manages the creation, configuration, and lifecycle of vect
 ---
 
 === Vector Store Files API
-* *Endpoint:* `/v1/vector_stores/{vector_store_id}/files`.  
-* *Providers:* File ingestion providers configured for vector store usage in {productname-short}.
+* *Endpoint:* `/v1/openai/v1/vector_stores/{vector_store_id}/files`.  
+* *Providers:* Local inline provider configured for file storage and retrieval.
 * *Support level:* Developer Preview. 
 
-The Vector Store Files API manages the association between uploaded files and vector stores used for retrieval-augmented generation (RAG). Through this API, you can attach previously uploaded files to a vector store and control how content is chunked and prepared for retrieval by using configurable chunking strategies.
+The Vector Store Files API implements the OpenAI Vector Store Files interface and manages the association between document files and vector stores used for RAG workflows. 
 
 ---
 
 === Models API
-* *Endpoint:* `/v1/models`.  
+* *Endpoint:* `/v1/openai/v1/models`.  
 * *Providers:* All model-serving back ends configured within {productname-short}.
 * *Support level:* Technology Preview. 
 
@@ -80,15 +94,15 @@ The Models API lists and retrieves available model resources from the Llama Stac
 ---
 
 === Responses API
-* *Endpoint:* `/v1/responses`.  
-* *Providers:* Inference, file, and vector store providers configured in {productname-short}.
+* *Endpoint:* `/v1/openai/v1/responses`.  
+* *Providers:* All agents, inference, and vector providers configured in {productname-short}.
 * *Support level:* Developer Preview. 
 
-The Responses API generates model outputs by combining inference and retrieval capabilities through a single OpenAI-compatible endpoint. It is commonly used for RAG workflows that rely on vector store-backed file search.
+The Responses API generates model outputs by combining inference, file search, and tool-calling capabilities through a single OpenAI-compatible endpoint. It is particularly useful for retrieval-augmented generation (RAG) workflows that rely on the `file_search` tool to retrieve context from vector stores.
 
 [NOTE]
 ====
-The Responses API is under active development in {productname-short}. Some parameters and behaviors might change in future releases. This API is intended for evaluation and testing purposes and is not recommended for production use.
+The Responses API is an experimental feature that is still under active development in {productname-short}. While the API is already functional and suitable for evaluation, some endpoints and parameters remain under implementation and might change in future releases. This API is provided for testing and feedback purposes only and is not recommended for production use.
 ====
 
 ---
@@ -96,4 +110,4 @@ The Responses API is under active development in {productname-short}. Some param
 [role="_additional-resources"]
 .Additional resources
 
-* link:https://llamastack.github.io/docs/providers/openai[OpenAI API Compatibility]
+* link:https://llamastack.github.io/docs/providers/openai[OpenAI API compatibility in Llama Stack]
