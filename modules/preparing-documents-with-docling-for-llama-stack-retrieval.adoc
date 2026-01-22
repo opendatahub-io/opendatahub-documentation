@@ -8,28 +8,28 @@ You can transform your source documents with a Docling-enabled pipeline and inge
 The pipeline registers a vector store and downloads the source PDFs, then splits them for parallel processing and converts each batch to Markdown with Docling. It generates embeddings from the Markdown and stores them in the vector store, making the documents searchable through Llama Stack.
 
 .Prerequisites
-* You have installed {openshift-platform} {ocp-minimum-version} or newer. 
+* You have installed {openshift-platform} {ocp-minimum-version} or newer.
 ifndef::upstream[]
 * You have enabled GPU support in {productname-short}. This includes installing the Node Feature Discovery operator and NVIDIA GPU Operators. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator#installing-the-node-feature-discovery-operator_psap-node-feature-discovery-operator[Installing the Node Feature Discovery operator^] and link:{rhoaidocshome}{default-format-url}/managing_openshift_ai/enabling-accelerators#enabling-nvidia-gpus_managing-rhoai[Enabling NVIDIA GPUs^].
 endif::[]
 ifdef::upstream[]
-* You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation. 
+* You have enabled GPU support. This includes installing the Node Feature Discovery and NVIDIA GPU Operators. For more information, see link:https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/index.html[NVIDIA GPU Operator on {org-name} OpenShift Container Platform^] in the NVIDIA documentation.
 endif::[]
 * You have logged in to the {openshift-platform} web console.
 * You have a project and access to pipelines in the {productname-short} dashboard.
 * You have created and configured a pipeline server within the project that contains your workbench.
 * You have activated the Llama Stack Operator in {productname-short}.
-* You have deployed an inference model, for example, the *llama-3.2-3b-instruct* model. 
+* You have deployed an inference model, for example, the *llama-3.2-3b-instruct* model.
 * You have configured a Llama Stack deployment by creating a `LlamaStackDistribution` instance to enable RAG functionality.
 * You have created a workbench within a project.
 * You have opened a Jupyter notebook and it is running in your workbench environment.
 ifndef::upstream[]
-* You have installed the `llama_stack_client` version 0.3.1 or later in your workbench environment. 
+* You have installed the `llama_stack_client` version 0.3.1 or later in your workbench environment.
 * You have installed local object storage buckets and created connections, as described in link:{rhoaidocshome}{default-format-url}/working_on_projects/using-connections_projects#adding-a-connection-to-your-project_projects[Adding a connection to your project].
 endif::[]
 ifdef::upstream[]
 * You have installed local object storage buckets and created connections, as described in link:{odhdocshome}/working-on-projects/#adding-a-connection-to-your-project_projects[Adding a connection to your project].
-* You have installed the `llama_stack_client` version 0.3.1 or later in your workbench environment. 
+* You have installed the `llama_stack_client` version 0.3.1 or later in your workbench environment.
 endif::[]
 * You have compiled to YAML a pipeline that includes a Docling transform, either one of the RAG demo samples or your own custom pipeline.
 * Your project quota allows between 500 millicores (0.5 CPU) and 4 CPU cores for the pipeline run.
@@ -55,12 +55,14 @@ from llama_stack_client import LlamaStackClient
 +
 [source,python]
 ----
-client = LlamaStackClient(base_url="http://<llama-stack-service>:8321/v1")
+client = LlamaStackClient(base_url="http://<llama-stack-service>:8321")
 ----
 +
 [NOTE]
 ====
-For Llama Stack 0.3.5 and later, the base URL must include the `/v1` path suffix. For example, use `http://llama-stack-service:8321/v1`, not the service endpoint alone.
+`LlamaStackClient` requires the service root without the `/v1` path suffix. For example, use `http://llama-stack-service:8321`.
+
+The `/v1` suffix is required only when you use OpenAI-compatible SDKs or send raw HTTP requests to the OpenAI-compatible API surface.
 ====
 
 . List the available models:
@@ -81,7 +83,7 @@ embedding_dimension = int(embedding_model.metadata.get("embedding_dimension", 76
 ----
 
 . Register a vector store (choose one option). Skip this step if your pipeline registers the store automatically.
-+
+
 .Option 1: Inline Milvus Lite (embedded)
 ====
 [source,python]
@@ -179,7 +181,6 @@ ifdef::upstream[]
 endif::[]
 
 .Verification
-
 . In your Jupyter notebook, query the LLM with a question that relates to the ingested content:
 +
 [source,python]
@@ -218,8 +219,6 @@ query_result = client.vector_io.query(
 print(query_result)
 ----
 
-.Verification
 * The pipeline run completes successfully in your project.
 * Document embeddings are stored in the vector store and are available for retrieval.
 * No errors or warnings appear in the pipeline logs or your notebook output.
-
