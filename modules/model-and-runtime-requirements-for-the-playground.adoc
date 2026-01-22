@@ -23,8 +23,8 @@ Tool calling functionality depends heavily on the version of vLLM used in your m
 [IMPORTANT]
 ====
 * If these requirements are not met, the model might fail to search documents or execute tools without returning a clear error message.
-* Tool calling functionality varies by model family (Llama, Mistral, Qwen, etc.). For a complete list of supported models, compatible parsers, and template filenames, see link:https://docs.vllm.ai/en/stable/features/tool_calling.html[Tool calling] in the vLLM documentation.
-* When you specify a chat template, use the absolute path `/opt/app-root/template/` to locate the standard Jinja template files provided in the {productname-long} image (for example, `/opt/app-root/template/tool_chat_template_llama3.1_json.jinja`). Do not use relative paths, such as `examples/`, because they cause model deployment to fail.
+* Tool calling functionality varies by model family, such as Llama, Mistral, Qwen and so on. For a complete list of supported models, compatible parsers, and template filenames, see link:https://docs.vllm.ai/en/stable/features/tool_calling.html[Tool calling] in the vLLM documentation.
+* When you specify a chat template, use the absolute path `/opt/app-root/template/` to locate the standard Jinja template files provided in the {productname-long} image. For example, `/opt/app-root/template/tool_chat_template_llama3.1_json.jinja`. Do not use relative paths, such as `examples/`. Relative paths cause model deployment to fail.
 ====
 
 == Example model configuration
