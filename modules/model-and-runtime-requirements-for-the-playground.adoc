@@ -18,12 +18,13 @@ Tool calling functionality depends heavily on the version of vLLM used in your m
 * *Runtime arguments*: You must configure specific runtime arguments in the model serving runtime to enable tool calling. Common arguments include (not exhaustive):
 ** `--enable-auto-tool-choice`
 ** `--tool-call-parser`
-+
-For more information, see link:https://docs.vllm.ai/en/stable/features/tool_calling.html[Tool calling] in the vLLM documentation.
+** `--chat-template=/opt/app-root/template/<template_file>.jinja`
 
 [IMPORTANT]
 ====
-If these requirements are not met, the model might fail to search documents or execute tools without returning a clear error message.
+* If these requirements are not met, the model might fail to search documents or execute tools without returning a clear error message.
+* Tool calling functionality varies by model family, such as Llama, Mistral, Qwen and so on. For a complete list of supported models, compatible parsers, and template filenames, see link:https://docs.vllm.ai/en/stable/features/tool_calling.html[Tool calling] in the vLLM documentation.
+* When you specify a chat template, use the absolute path `/opt/app-root/template/` to locate the standard Jinja template files provided in the {productname-long} image. For example, `/opt/app-root/template/tool_chat_template_llama3.1_json.jinja`. Do not use relative paths, such as `examples/`. Relative paths cause model deployment to fail.
 ====
 
 == Example model configuration
