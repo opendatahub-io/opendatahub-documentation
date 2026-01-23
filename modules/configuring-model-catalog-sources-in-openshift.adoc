@@ -14,49 +14,54 @@ link:https://github.com/opendatahub-io/model-registry/blob/main/manifests/kustom
 
 .Procedure
 . In the OpenShift web console navigation menu, click *Workloads -> ConfigMaps*.
-. In the *Name* text box, enter `model-catalog-sources`.
-. Click the `model-catalog-sources` config map name.
+ifdef::upstream[]
+. In the *Project* list, enter `odh-model-registries`, and click the project name. 
+endif::[]
+ifndef::upstream[]
+. In the *Project* list, enter `rhoai-model-registries`, and click the project name.
+endif::[]
+. Click the *model-catalog-sources* config map name.
 . Click the *YAML* tab to view the contents of the config map `.yaml` file. 
-. Find the `data: sources.yaml` section to add custom catalog sources. 
-+
-The following sample shows the default `sources.yaml` section in the `model-catalog-default-sources` config map as an example:
+. Find the `data: sources.yaml` section to add your custom catalog source. 
+. Add a new entry under the `catalogs` field, for example: 
 +
 [source,yaml]
 ----
 data:
   sources.yaml: |-
     catalogs:
-      - name: Red Hat AI
-        id: redhat_ai_models
-        type: yaml
-        properties:
-          yamlCatalogPath: /shared-data/models-catalog.yaml
-        labels:
-          - Red Hat AI
-      - name: Red Hat AI validated
-        id: redhat_ai_validated_models
-        type: yaml
-        properties:
-          yamlCatalogPath: /shared-data/validated-models-catalog.yaml
-        labels:
-          - Red Hat AI validated
+     - name: Sample Catalog
+       id: sample_custom_catalog
+       type: yaml
+       enabled: true
+       properties:
+        yamlCatalogPath: sample-catalog.yaml
+       labels: 
+       - Sample Catalog  
+  sample-catalog.yaml: |-
+     <contents of your catalog file>
 ----
-. In the `model-catalog-sources` config map, add a new entry under the `catalogs` field and provide the following details: 
 +
-* `name`: The user-friendly name of the catalog source, for example, `My Sample Catalog`.
-* `id`: The unique ID of the catalog source, for example: `my-sample-catalog`.
-* `type`: The catalog source type. The only supported type is `yaml`. 
-* `properties.yamlCatalogPath`: The location of your catalog source file, for example: `my-sample-catalog.yaml`.
-* `labels`: Optional labels for your catalog source, for example: `My Sample Catalog`.
+This example adds the `sample-catalog.yaml` file in the same config map as a sibling of `sources.yaml` and references the sample catalog file in the `yamlCatalogPath` property. 
++
+The sample catalog source entry is described as follows:
++
+* `name`: The user-friendly name of the catalog source.
+* `id`: The unique ID of the catalog source.
+* `type`: The catalog source type. Use `yaml`. 
+* `enabled`: Whether the catalog source is enabled. Defaults to `true`.
+* `properties.yamlCatalogPath`: The location of your catalog source file.
+* `labels`: Optional labels for your catalog source to display in the catalog.
+
 . Click *Save*.
 
 .Verification
 . In the OpenShift AI dashboard, click *AI hub -> Catalog*.
 . In the menu bar, to view models from your new catalog source:
-* If your catalog source has no label, click *Community and custom models*.
+* If your catalog source has no label, click *Other models*.
 * If your catalog source has a label, click *<your-label-name> models*.
 +
-NOTE: It might take a few minutes for the changes to be reflected on the dashboard. 
+NOTE: These changes might take a few minutes to be displayed in the catalog on the dashboard. 
 
 .Additional resources
-* link:https://github.com/opendatahub-io/model-registry/blob/main/manifests/kustomize/options/catalog/README.md[Kubeflow Model Registry documentation on configuring catalog sources] 		
+* link:https://github.com/opendatahub-io/model-registry/blob/main/manifests/kustomize/options/catalog/README.md[Open Data Hub Model Registry documentation on configuring catalog sources] 		
