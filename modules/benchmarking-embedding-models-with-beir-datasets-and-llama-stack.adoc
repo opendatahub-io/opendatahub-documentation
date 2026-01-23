@@ -38,7 +38,7 @@ MILVUS_URL=milvus uv run llama stack run run.yaml
 +
 [subs=+quotes]
 ....
-ENABLE_PGVECTOR=true PGVECTOR_DB=pgvector uv run llama stack run run.yaml
+ENABLE_PGVECTOR=true PGVECTOR_DB=pgvector PGVECTOR_USER=<user> PGVECTOR_PASSWORD=<password> uv run llama stack run run.yaml
 ....
 
 . Optional: Register additional embedding models
@@ -54,6 +54,11 @@ llama-stack-client models register all-MiniLM-L6-v2 \
   --metadata '{"embedding_dimension": 384}' \
   --model-type embedding
 ....
++
+[NOTE]
+====
+Any embedding models specified in the `--embedding-models` option must be registered before running the benchmark script.
+====
 
 . Run the `beir_benchmarks.py` benchmarking script.
 
@@ -81,13 +86,6 @@ LLAMA_STACK_URL="http://localhost:8321" MILVUS_URL=milvus uv run python beir_ben
 
 . Use environment variables and command line options to modify the benchmark run. For example, set the environment variable for the vector database provider before executing the script.
 
-* Enter the following command to benchmark with a specific LLM by using default settings:
-+
-[subs=+quotes]
-....
-MILVUS_URL=milvus uv run python beir_benchmarks.py
-....
-
 * Enter the following command to use a larger batch size for document ingestion:
 +
 [subs=+quotes]
@@ -110,6 +108,11 @@ MILVUS_URL=milvus uv run python beir_benchmarks.py \
 MILVUS_URL=milvus uv run python beir_benchmarks.py \
   --embedding-models granite-embedding-30m all-MiniLM-L6-v2
 ....
++
+[NOTE]
+====
+Ensure that `all-MiniLM-L6-v2` is registered with Llama Stack before running this command. See step 2 for registration instructions.
+====
 
 * Enter the following command to use a custom BEIR compatible dataset:
 +
@@ -125,7 +128,7 @@ MILVUS_URL=milvus uv run python beir_benchmarks.py \
 [subs=+quotes]
 ....
 # Use remote PostgreSQL with pgvector
-ENABLE_PGVECTOR=true PGVECTOR_DB=llama-stack PGVECTOR_USER=user PGVECTOR_PASSWORD=yourpassword uv run python beir_benchmarks.py \
+ENABLE_PGVECTOR=true PGVECTOR_DB=llama-stack PGVECTOR_USER=<user> PGVECTOR_PASSWORD=<password> uv run python beir_benchmarks.py \
   --vector-db-provider-id pgvector
 ....
 
@@ -209,7 +212,7 @@ To verify that the benchmark completed successfully and to review the results, p
 . Locate the `results` directory. All output files are saved to the following path:
 +
 [subs=+quotes]
-`<path-to>/rag/benchmarks/embedding-models-with-beir/results`
+`<path-to>/rag/benchmarks/beir-benchmarks/results`
 
 . Examine the output. Compare your results with the sample output structure. The report includes performance metrics such as `map@cut_k` and `ndcg@cut_k` for each dataset and embedding model pair. The script also calculates a statistical significance test called a p value.
 +
@@ -226,4 +229,4 @@ scifact map_cut_10
  The granite-embedding-125m model performs better for this dataset and metric.
 ....
 
-. Interpret the results. A p value below `0.05` indicates that the performance difference between models is statistically significant. Use these results to identify which embedding model performs best for your dataset.
+. Interpret the results. A p value below `0.05` indicates that the performance difference between models is statistically significant. The model with the higher metric value performs better. Use these results to identify which embedding model performs best for your dataset.
