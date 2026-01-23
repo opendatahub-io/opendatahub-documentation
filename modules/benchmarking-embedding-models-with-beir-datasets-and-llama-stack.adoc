@@ -38,13 +38,8 @@ MILVUS_URL=milvus uv run llama stack run run.yaml
 +
 [subs=+quotes]
 ....
-ENABLE_PGVECTOR=true PGVECTOR_DB=pgvector PGVECTOR_USER=user PGVECTOR_PASSWORD=yourpassword uv run llama stack run run.yaml
+ENABLE_PGVECTOR=true PGVECTOR_DB=pgvector PGVECTOR_USER=<user> PGVECTOR_PASSWORD=<password> uv run llama stack run run.yaml
 ....
-+
-[NOTE]
-====
-Replace `user` and `yourpassword` with your actual PostgreSQL credentials.
-====
 
 . Optional: Register additional embedding models
 The default supported embedding models are `granite-embedding-30m` and `granite-embedding-125m`, served by the `sentence-transformers` framework. If you want to benchmark additional embedding models, register them with Llama Stack before running the benchmark script.
@@ -133,7 +128,7 @@ MILVUS_URL=milvus uv run python beir_benchmarks.py \
 [subs=+quotes]
 ....
 # Use remote PostgreSQL with pgvector
-ENABLE_PGVECTOR=true PGVECTOR_DB=llama-stack PGVECTOR_USER=user PGVECTOR_PASSWORD=yourpassword uv run python beir_benchmarks.py \
+ENABLE_PGVECTOR=true PGVECTOR_DB=llama-stack PGVECTOR_USER=<user> PGVECTOR_PASSWORD=<password> uv run python beir_benchmarks.py \
   --vector-db-provider-id pgvector
 ....
 
