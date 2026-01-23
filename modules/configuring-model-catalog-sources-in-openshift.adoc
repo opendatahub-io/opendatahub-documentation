@@ -13,9 +13,13 @@ As an OpenShift cluster administrator, you can configure a custom model catalog 
 link:https://github.com/opendatahub-io/model-registry/blob/main/manifests/kustomize/options/catalog/base/sample-catalog.yaml[sample-catalog.yaml] file from Kubeflow Model Registry.  
 
 .Procedure
-. In the OpenShift web console navigation menu, click *Home -> Projects*.
-. In the *Name* text box, enter `rhoai-model-registries`.
-. In the navigation menu, click *Workloads -> ConfigMaps*.
+. In the OpenShift web console navigation menu, click *Workloads -> ConfigMaps*.
+ifdef::upstream[]
+. In the *Project* list, enter `odh-model-registries`, and click the project name. 
+endif::[]
+ifndef::upstream[]
+. In the *Project* list, enter `rhoai-model-registries`, and click the project name.
+endif::[]
 . Click the *model-catalog-sources* config map name.
 . Click the *YAML* tab to view the contents of the config map `.yaml` file. 
 . Find the `data: sources.yaml` section to add your custom catalog source. 
