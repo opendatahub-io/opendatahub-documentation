@@ -1,0 +1,73 @@
+:_module-type: CONCEPT
+
+[id="understanding-llama-stack-metadata-storage_{context}"]
+= Understanding Llama Stack metadata storage
+
+[role="_abstract"]
+In {productname-short}, Llama Stack uses PostgreSQL as a metadata storage backend to persist state and configuration data across multiple components. Metadata storage provides durable persistence for vector stores, file management, agent state, conversation history, and other Llama Stack services.
+
+Llama Stack components require persistent storage beyond in-memory data structures. Components such as vector stores, file providers, agents, and dataset handlers need to persist metadata, state information, and operational data. This metadata is stored in a PostgreSQL database that is configured as part of the Llama Stack deployment.
+
+== Role of metadata storage in Llama Stack
+
+Metadata storage in Llama Stack provides persistent data management for multiple services and APIs. Without metadata storage, component state would be lost on pod restarts or application failures.
+
+Llama Stack uses metadata storage to persist:
+
+* Vector store metadata, such as collection identifiers and document mappings.
+* File metadata, including file locations, identifiers, and attributes.
+* Agent state and conversation history.
+* Dataset configurations and batch processing state.
+* Model registry information and prompt templates.
+
+This persistent storage allows Llama Stack to maintain operational state across pod restarts, rescheduling, and application updates.
+
+== PostgreSQL metadata storage backends
+
+PostgreSQL is the required metadata storage backend for all {productname-short} deployments. Llama Stack uses PostgreSQL through two storage backend types:
+
+* `kv_default`: A key-value store backend used for metadata that requires flexible schema storage. Components such as vector stores, dataset handlers, and the model registry use this backend.
+* `sql_default`: A relational table backend used for structured data storage. Components such as the files provider, agent responses, inference store, and conversation history use this backend.
+
+Both backend types use the same PostgreSQL instance but serve different data structure requirements within Llama Stack.
+
+[IMPORTANT]
+====
+Starting with {productname-short} 3.2, PostgreSQL is required for all deployments of Llama Stack metadata storage.
+
+Provision a PostgreSQL instance version 14 or later for your deployment.
+
+If validation errors occur, confirm that the deployed Llama Stack image version matches the configuration schema referenced by your `run.yaml`.
+====
+
+== Components that use metadata storage
+
+Multiple Llama Stack components depend on metadata storage for persistent state management:
+
+* **Vector stores**: Providers such as Milvus, FAISS, and pgvector use `kv_default` to persist vector collection metadata and document mappings.
+* **File management**: The files provider uses `sql_default` to store file metadata in the `files_metadata` table.
+* **Agents**: The agent system uses `kv_default` for agent state and `sql_default` for storing agent responses.
+* **Datasets and batches**: Dataset I/O and batch processing operations use `kv_default` to persist configurations and processing state.
+* **Model registry and prompts**: The model registry and prompt storage use `kv_default` to maintain registered resources.
+
+== Vector stores and metadata storage
+
+Vector store providers in Llama Stack use metadata storage separately from vector data storage. For example, pgvector is both a vector storage provider and can use the PostgreSQL metadata backend.
+
+When pgvector is configured as a vector store provider, it uses PostgreSQL with the pgvector extension to store and search vector embeddings. The same PostgreSQL instance also serves as the metadata storage backend through the `kv_default` configuration, but these are distinct concerns: the pgvector extension handles vector operations, while the metadata backend persists vector store metadata such as collection identifiers and document mappings.
+
+This separation allows metadata storage to be managed independently from vector indexing operations.
+
+== PostgreSQL metadata storage
+
+PostgreSQL is a network-accessible relational database that provides durable and centralized metadata storage for {productname-short} workloads.
+
+When used as the metadata storage backend in {productname-short}, PostgreSQL provides:
+
+* Persistent metadata across pod restarts and rescheduling.
+* Centralized storage shared across workloads.
+* Improved concurrency for multi-user and multi-application access.
+* Alignment with enterprise operational practices such as backup and monitoring.
+* Support for both key-value and relational table storage patterns through `kv_default` and `sql_default` backends.
+
+Provision a PostgreSQL instance version 14 or later for your deployment. PostgreSQL serves as the metadata storage backend for all deployments, including development, testing, and production environments.
