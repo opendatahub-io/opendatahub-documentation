@@ -28,15 +28,13 @@ For example, pgvector is a vector storage provider that uses PostgreSQL with the
 
 == Supported metadata storage backends in {productname-short}
 
-Metadata storage backend support in {productname-short} depends on the selected vector storage provider and deployment configuration.
-
-PostgreSQL is the supported metadata storage backend for {productname-short} deployments.
+PostgreSQL is the required metadata storage backend for all {productname-short} deployments, regardless of the selected vector storage provider.
 
 [IMPORTANT]
 ====
 Starting with {productname-short} 3.2, PostgreSQL is required for all deployments of Llama Stack metadata storage.
 
-For production environments, provision a PostgreSQL instance version 14 or later.
+Provision a PostgreSQL instance version 14 or later for your deployment.
 
 If validation errors occur, confirm that the deployed Llama Stack image version matches the configuration schema referenced by your `run.yaml`.
 ====
