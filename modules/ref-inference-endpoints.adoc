@@ -217,7 +217,25 @@ grpcurl -cacert ./openshift_ca_istio_knative.crt -proto ./grpc_predict_v2.proto 
 ----
 endif::[]
 
-== Seldon MLServer
+== MLServer ServingRuntime for KServe
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+MLServer ServingRuntime for KServe is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+MLServer ServingRuntime for KServe is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
 
 --
 .REST endpoints
@@ -249,6 +267,9 @@ curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d /
          }]}' -H 'Authorization: Bearer <token>'
 ----
 endif::[]
+
+//// 
+//MLServer currently does not support gRPC
 --
 .gRPC endpoints
 * `:443 inference.GRPCInferenceService/ModelInfer`
@@ -276,6 +297,7 @@ ifndef::upstream[]
 grpcurl -cacert ./openshift_ca_istio_knative.crt -proto ./grpc_predict_v2.proto -d @ -H "Authorization: Bearer <token>" <inference_endpoint_url>:443 inference.GRPCInferenceService/ModelMetadata
 ----
 endif::[]
+////
 
 [role='_additional-resources']
 == Additional resources
