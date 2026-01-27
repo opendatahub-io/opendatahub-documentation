@@ -6,7 +6,7 @@
 [role="_abstract"]
 In {productname-short}, Llama Stack requires PostgreSQL as a metadata storage backend to persist state and configuration data across multiple components. Metadata storage provides durable persistence for vector stores, file management, agent state, conversation history, and other Llama Stack services.
 
-PostgreSQL is required as a metadata storage backend for all {productname-short} deployments. You can also use PostgreSQL with the pgvector extension as a remote vector database provider for storing and searching vector embeddings.
+PostgreSQL is required as a metadata storage backend for all {productname-short} deployments. 
 
 == Role of metadata storage in Llama Stack
 
@@ -24,12 +24,7 @@ This persistent storage allows Llama Stack to maintain operational state across 
 
 == PostgreSQL metadata storage backends
 
-Llama Stack uses PostgreSQL through two storage backend types:
-
-* `kv_default`: A key-value store backend used for metadata that requires flexible schema storage. Components such as vector stores, dataset handlers, and the model registry use this backend.
-* `sql_default`: A relational table backend used for structured data storage. Components such as the files provider, agent responses, and conversation history use this backend.
-
-Both backend types use the same PostgreSQL instance but serve different data structure requirements within Llama Stack.
+Llama Stack uses PostgreSQL to store multiple categories of metadata, including vector store metadata, file records, agent state, conversation history, and configuration data. These data types have different storage characteristics but are managed automatically within a single PostgreSQL instance.
 
 [IMPORTANT]
 ====
