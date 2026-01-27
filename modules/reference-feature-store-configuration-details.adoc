@@ -1,0 +1,26 @@
+:_module-type: REFERENCE
+
+[id='reference-feature-store-configuration-details_{context}']
+= Feature Store configuration details reference
+
+[role='_abstract']
+This reference document describes how the system mounts configuration files to enable you to create and use features in your code.
+
+[cols=2*,options=header]
+|===
+|Configuration Element
+|Description
+
+|Configuration path
+|The system mounts the necessary Feature Store client configuration files to the following: 
+link:opt/app-root/src/feast-config/my_project.yaml[Feast configuration file]
+
+|Python instantiation
+|Initialize Feature Store with the path to the mounted configuration file:
+`fs_obj = FeatureStore(fs_yaml_file='/usr/app-root/config/feast/my_project.yaml)'
+
+|Troubleshooting access
+|If you cannot view a specific Feature Store in the workbench dropdown menu, an administrator must verify the following: 
+* You have the correct role-based access control (RBAC), based on your `group/namespace` access.
+* Your authentication token is valid and permits viewing the specific a config map associated with that Feature Store instance.
+|===
