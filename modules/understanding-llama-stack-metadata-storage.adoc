@@ -1,0 +1,34 @@
+:_module-type: CONCEPT
+
+[id="understanding-llama-stack-metadata-storage_{context}"]
+= Understanding Llama Stack metadata storage
+
+[role="_abstract"]
+In {productname-short}, Llama Stack requires PostgreSQL as a metadata storage backend to persist state and configuration data across multiple components. Metadata storage provides durable persistence for vector stores, file management, agent state, conversation history, and other Llama Stack services.
+
+PostgreSQL is required as a metadata storage backend for all {productname-short} deployments. 
+
+== Role of metadata storage in Llama Stack
+
+Llama Stack components require persistent storage beyond in-memory data structures. Without metadata storage, component state would be lost on pod restarts or application failures.
+
+Llama Stack uses metadata storage to persist:
+
+* Vector store metadata, such as collection identifiers and document mappings.
+* File metadata, including file locations, identifiers, and attributes.
+* Agent state and conversation history.
+* Dataset configurations and batch processing state.
+* Model registry information and prompt templates.
+
+This persistent storage allows Llama Stack to maintain operational state across pod restarts, rescheduling, and application updates.
+
+== PostgreSQL metadata storage backends
+
+Llama Stack uses PostgreSQL to store multiple categories of metadata, including vector store metadata, file records, agent state, conversation history, and configuration data. These data types have different storage characteristics but are managed automatically within a single PostgreSQL instance.
+
+[IMPORTANT]
+====
+Starting with {productname-short} 3.2, PostgreSQL version 14 or later is required for all Llama Stack deployments, including development, testing, and production environments.
+
+If validation errors occur, confirm that the deployed Llama Stack image version matches the configuration schema referenced by your `run.yaml`.
+====
