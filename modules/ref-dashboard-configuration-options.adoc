@@ -49,9 +49,7 @@ endif::[]
 | `spec.dashboardConfig.` +
 `disableFeatureStore` | `false` | Shows the *Feature store* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
 | `spec.dashboardConfig.` +
-`disableFineTuning` 
-
-(Technology Preview) | `true` | Hides the *Models → Model customization* menu item in the dashboard navigation menu and the button for registered model versions. 
+`disableFineTuning` | No longer used | Hides the *Models → Model customization* menu item in the dashboard navigation menu and the button for registered model versions. 
 To show these items, set the value to `false`.
 
 | `spec.dashboardConfig.` +
@@ -77,7 +75,8 @@ Model evaluation is a Technology Preview feature in this {productname-short} rel
 `disableKServeMetrics` | `false` | Enables the ability to view KServe metrics. To disable this ability, set the value to `true`.
 | `spec.dashboardConfig.` +
 `disableKServeRaw` | `false` | On the *Settings → Cluster settings* page, in the *Model serving platform* section, shows the *Default deployment mode* list. 
-
+| `spec.dashboardConfig.` +
+`disableLLMd` | `false` | Controls the state of the *Enable distributed inference with llm-d* switch on the *Settings → General settings* page. If set to `true`, the switch is set to *Off* and the *Distributed inference with llm-d* option is hidden in the model serving deployment wizard.
 | `spec.dashboardConfig.` +
 `disableModelCatalog` | `false` | Shows the *AI hub → Catalog* menu item in the dashboard navigation menu. 
 To hide this menu item, set the value to `true`.
@@ -98,6 +97,10 @@ To hide this menu item, set the value to `true`.
 `disablePipelines` | `false` | Shows the *Develop & train* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
 | `spec.dashboardConfig.` +
 `disableProjects` | `false` | Shows the *Projects* menu item in the dashboard navigation menu. To hide this menu item, set the value to `true`.
+| `spec.dashboardConfig.` +
+`projectRBAC`
+ 
+(Technology Preview) | `false` | Updates the standard *Permissions* tab on the *Projects* page to an enhanced version that provides role-based access control (RBAC). To update this tab, set the value to `true`.
 | `spec.dashboardConfig.` +
 `disableProjectScoped` | `false` | Distinguishes between global items and project-scoped items (if project-scoped items exist) in the {productname-short} web console. This option applies to workbench images, hardware profiles, and model-serving runtimes for KServe. To disable this functionality, set the value to `true`.
 | `spec.dashboardConfig.` +
