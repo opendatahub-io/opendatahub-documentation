@@ -1,0 +1,184 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: distributed-llm-roce
+
+[id="configuring-roce-networking-for-distributed-llm-deployments_{context}"]
+= Configuring RoCE networking for distributed LLM deployments
+
+High-performance distributed large language model (LLM) deployments require low-latency, high-bandwidth GPU-to-GPU communication across pods. RDMA over Converged Ethernet (RoCE) with GPUDirect RDMA (GDR) provides this capability by enabling direct memory access between GPUs without CPU involvement.
+
+This guide covers the complete configuration process for enabling RoCE networking on {openshift-platform} clusters for distributed LLM workloads using Distributed Inference Server with llm-d.
+
+== Overview of RoCE for LLM deployments
+
+RoCE (RDMA over Converged Ethernet) is a network protocol that enables RDMA communication over Ethernet networks. When combined with NVIDIA GPUDirect RDMA, it provides:
+
+* *High bandwidth*: Up to 400 Gbps on modern network infrastructure
+* *Low latency*: Sub-microsecond latency for GPU-to-GPU transfers
+* *CPU offload*: Direct GPU-to-network-to-GPU transfers without CPU involvement
+* *Scalability*: Efficient multi-node distributed inference and training
+
+=== Use cases for RoCE in LLM deployments
+
+RoCE networking is essential for:
+
+*Disaggregated prefill/decode serving*::
+Separates initial token generation (prefill) from subsequent generation (decode) across different GPU pools. RoCE enables high-speed KV cache transfers between stages, improving throughput and resource utilization.
+
+*Wide Expert Parallel (WideEP)*::
+Distributes expert layers of Mixture-of-Experts (MoE) models like Mixtral across multiple GPUs and nodes. RoCE provides the low-latency communication required for expert routing and token processing.
+
+*Multi-node tensor parallelism*::
+Splits large models across multiple nodes with tensor parallelism. RoCE reduces communication overhead for all-reduce operations during inference.
+
+*Distributed training*::
+Enables efficient gradient synchronization across nodes for large-scale model training.
+
+=== Architecture components
+
+A complete RoCE deployment for LLM inference includes:
+
+* *NVIDIA GPU Operator*: Manages GPU drivers, device plugins, and monitoring
+* *Node Feature Discovery (NFD) Operator*: Detects hardware capabilities on cluster nodes
+* *SR-IOV Network Operator* (bare metal) or *Cluster Network* (IBM Cloud): Configures secondary high-speed networks
+* *NCCL (NVIDIA Collective Communications Library)*: Provides optimized multi-GPU communication primitives
+* *Distributed Inference Server with llm-d*: Kubernetes-native framework for serving LLMs
+
+== Setting up RoCE networking
+
+include::enabling-roce-for-distributed-llm-deployments.adoc[leveloffset=+1]
+
+== Deploying models with RoCE
+
+After configuring RoCE networking, you can deploy models using different parallelization strategies:
+
+include::deploying-llm-with-prefill-decode-disaggregation-and-roce.adoc[leveloffset=+1]
+
+include::deploying-llm-with-wide-expert-parallel-and-roce.adoc[leveloffset=+1]
+
+== Troubleshooting
+
+include::troubleshooting-roce-networking.adoc[leveloffset=+1]
+
+== Performance optimization tips
+
+=== Network tuning
+
+For optimal RoCE performance:
+
+* Enable Priority Flow Control (PFC) on network switches for lossless Ethernet
+* Configure ECN (Explicit Congestion Notification) for RoCE v2
+* Use dedicated VLANs for RDMA traffic to isolate from other workloads
+* Set appropriate MTU size (9000 for jumbo frames)
+
+=== NCCL tuning
+
+Optimize NCCL performance with these environment variables:
+
+[source,yaml]
+----
+env:
+- name: NCCL_IB_HCA
+  value: "mlx5"  # Match your InfiniBand HCA prefix
+- name: NCCL_IB_GID_INDEX
+  value: "3"  # RoCE v2 GID index
+- name: NCCL_NET_GDR_LEVEL
+  value: "5"  # Maximum GPUDirect RDMA optimization
+- name: NCCL_SOCKET_IFNAME
+  value: "eth1"  # RoCE network interface name
+- name: NCCL_IB_ROCE_ADAPTIVE_ROUTING
+  value: "1"  # Enable adaptive routing for load balancing
+----
+
+=== Model serving optimization
+
+* *Use quantization*: FP8 or INT8 quantization reduces memory usage and bandwidth requirements
+* *Tune batch sizes*: Larger batch sizes improve GPU utilization but increase latency
+* *Configure KV cache*: Optimize KV cache size based on available GPU memory and expected sequence lengths
+* *Monitor GPU memory*: Use `nvidia-smi` or Prometheus metrics to track GPU memory usage and avoid OOM errors
+
+== Validation and benchmarking
+
+=== Microbenchmarks
+
+Run RDMA bandwidth tests to validate network performance:
+
+[source,bash]
+----
+# Server pod
+$ oc exec <server-pod> -- ib_write_bw -d mlx5_0 -a -F
+
+# Client pod
+$ oc exec <client-pod> -- ib_write_bw -d mlx5_0 -a -F <server-ip>
+----
+
+Expected results for 100 Gbps RoCE:
+* Bandwidth: >90 Gbps
+* Latency: <2 microseconds
+
+=== End-to-end inference benchmarks
+
+Use tools like GuideLLM or vLLM benchmarks to measure end-to-end performance:
+
+[source,bash]
+----
+# Install GuideLLM
+$ pip install guidellm
+
+# Run benchmark
+$ guidellm \
+  --model <model-name> \
+  --endpoint <inference-endpoint> \
+  --requests 1000 \
+  --concurrency 50 \
+  --output benchmark-results.json
+----
+
+Compare results with and without RoCE to quantify performance improvements.
+
+== Next steps
+
+After successfully configuring RoCE networking:
+
+ifdef::upstream[]
+* Learn about monitoring distributed workloads: link:{odhdocshome}/monitoring-distributed-workloads[Monitoring distributed workloads]
+* Explore model optimization techniques: link:{odhdocshome}/customize-models-to-build-gen-ai-applications[Customize models to build gen AI applications]
+* Configure model monitoring: link:{odhdocshome}/managing-and-monitoring-models[Managing and monitoring models]
+endif::[]
+
+* Experiment with different parallelization strategies for your specific models
+* Monitor performance metrics to optimize configuration
+* Scale your deployment based on workload requirements
+
+[role='_additional-resources']
+== Additional resources
+
+*OpenShift documentation*::
+* link:https://docs.openshift.com/container-platform/latest/networking/hardware_networks/about-sriov.html[About SR-IOV hardware networks]
+* link:https://docs.openshift.com/container-platform/latest/operators/operator-reference.html#node-feature-discovery-operator[Node Feature Discovery Operator]
+
+*NVIDIA documentation*::
+* link:https://docs.nvidia.com/networking/display/rdmacore/RDMA+Core[NVIDIA RDMA Core Documentation]
+* link:https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html[NCCL User Guide]
+* link:https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html[NVIDIA GPU Operator Documentation]
+* link:https://docs.nvidia.com/datacenter/cloud-native/network-operator/latest/index.html[NVIDIA Network Operator Documentation]
+
+*IBM Cloud documentation*::
+* link:https://cloud.ibm.com/docs/containers?topic=containers-cluster-network[IBM Cloud cluster network for NVIDIA accelerated computing]
+* link:https://www.ibm.com/blog/announcement/ibm-cloud-cluster-network-for-nvidia-accelerated-computing/[Announcing IBM Cloud cluster network]
+
+*Technical blogs and articles*::
+* link:https://www.redhat.com/en/blog/rdma-cuda-nvidia-openshift[RDMA+CUDA with NVIDIA on OpenShift] by Benjamin Schmaus
+* link:https://www.redhat.com/en/blog/rdma-nvidia-openshift[RDMA with NVIDIA on OpenShift] by Benjamin Schmaus
+
+ifdef::upstream[]
+*Open Data Hub documentation*::
+* link:{odhdocshome}/deploying-models[Deploying models]
+* link:{odhdocshome}/working-with-accelerators[Working with accelerators]
+* link:{odhdocshome}/working-with-distributed-workloads[Working with distributed workloads]
+endif::[]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

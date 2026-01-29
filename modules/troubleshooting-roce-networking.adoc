@@ -1,0 +1,417 @@
+:_module-type: REFERENCE
+
+[id="troubleshooting-roce-networking_{context}"]
+= Troubleshooting RoCE networking for distributed LLM deployments
+
+[role='_abstract']
+Common issues and solutions when configuring and using RoCE networking for distributed LLM deployments.
+
+== NVIDIA GPU Operator issues
+
+=== GPU Operator pods not starting
+
+*Symptom*: GPU Operator pods remain in `Pending` or `CrashLoopBackOff` state.
+
+*Possible causes and solutions*:
+
+* *Node selector mismatch*: Verify that your nodes have the correct labels:
++
+[source,bash]
+----
+$ oc get nodes --show-labels | grep nvidia
+----
+
+* *Insufficient node resources*: Check node capacity:
++
+[source,bash]
+----
+$ oc describe node <node-name> | grep -A 10 "Allocated resources"
+----
+
+* *Driver compatibility*: Ensure the NVIDIA driver version matches your GPU model:
++
+[source,bash]
+----
+$ oc get clusterpolicy gpu-cluster-policy -o yaml | grep "driver.*version"
+----
+
+=== GPUDirect RDMA not detected
+
+*Symptom*: RDMA devices are not available in pods, or `ls /dev/infiniband/` returns empty.
+
+*Solution*:
+
+. Verify the host has RDMA devices:
++
+[source,bash]
+----
+$ oc debug node/<node-name>
+sh-4.4# chroot /host
+sh-4.4# ls -l /dev/infiniband/
+----
+
+. Check that the device plugin is configured to expose RDMA devices:
++
+[source,bash]
+----
+$ oc get clusterpolicy gpu-cluster-policy -o jsonpath='{.spec.devicePlugin}'
+----
+
+. Ensure RDMA modules are loaded:
++
+[source,bash]
+----
+$ oc debug node/<node-name>
+sh-4.4# chroot /host
+sh-4.4# lsmod | grep -E "ib_|rdma|mlx"
+----
+
+. If modules are missing, load them manually or configure the node to load them at boot:
++
+[source,bash]
+----
+sh-4.4# modprobe ib_uverbs
+sh-4.4# modprobe rdma_ucm
+sh-4.4# modprobe mlx5_ib
+----
+
+== Secondary network configuration issues
+
+=== NetworkAttachmentDefinition not found
+
+*Symptom*: Pods fail to start with error: `error adding container to network "roce-network": network not found`.
+
+*Solution*:
+
+. Verify the NetworkAttachmentDefinition exists in the correct namespace:
++
+[source,bash]
+----
+$ oc get network-attachment-definitions -n <namespace>
+----
+
+. Check that the pod annotation references the correct network name:
++
+[source,yaml]
+----
+metadata:
+  annotations:
+    k8s.v1.cni.cncf.io/networks: <namespace>/roce-network
+----
+
+. For cluster-wide networks, ensure the NetworkAttachmentDefinition is in the pod's namespace or use the fully qualified name: `<namespace>/<network-name>`.
+
+=== SR-IOV VFs not created
+
+*Symptom*: SR-IOV Virtual Functions (VFs) are not created on nodes.
+
+*Solution*:
+
+. Check the SriovNetworkNodePolicy status:
++
+[source,bash]
+----
+$ oc get sriovnetworknodepolicy -n openshift-sriov-network-operator
+$ oc describe sriovnetworknodepolicy roce-policy
+----
+
+. Verify node selector matches your nodes:
++
+[source,bash]
+----
+$ oc get nodes -l feature.node.kubernetes.io/network-sriov.capable=true
+----
+
+. Check SR-IOV device plugin logs:
++
+[source,bash]
+----
+$ oc logs -n openshift-sriov-network-operator -l app=sriov-device-plugin
+----
+
+. Verify the NIC supports SR-IOV:
++
+[source,bash]
+----
+$ oc debug node/<node-name>
+sh-4.4# chroot /host
+sh-4.4# lspci -vvv | grep -i "single root\|SR-IOV"
+----
+
+== NCCL and RDMA communication issues
+
+=== NCCL falls back to TCP instead of using RDMA
+
+*Symptom*: Logs show `NCCL INFO Using network Socket` instead of `NCCL INFO Using network RoCE` or `IB`.
+
+*Solution*:
+
+. Verify NCCL environment variables are set correctly:
++
+[source,yaml]
+----
+env:
+- name: NCCL_IB_DISABLE
+  value: "0"  # Must be 0 to enable IB/RoCE
+- name: NCCL_NET_GDR_LEVEL
+  value: "5"
+- name: NCCL_DEBUG
+  value: "INFO"
+- name: NCCL_DEBUG_SUBSYS
+  value: "INIT,NET"
+----
+
+. Check that RDMA devices are mounted in the pod:
++
+[source,bash]
+----
+$ oc exec <pod-name> -- ls -l /dev/infiniband/
+----
+
+. Verify NCCL can detect RDMA devices:
++
+[source,bash]
+----
+$ oc exec <pod-name> -- ls -l /sys/class/infiniband/
+----
+
+. Check network connectivity between pods on the RoCE network:
++
+[source,bash]
+----
+# Get pod IPs on RoCE network
+$ oc exec <pod-1> -- ip addr show eth1
+
+# Test connectivity
+$ oc exec <pod-1> -- ping -c 3 <pod-2-roce-ip>
+----
+
+=== High RDMA transfer latency
+
+*Symptom*: RDMA transfers are slower than expected, impacting model inference performance.
+
+*Possible causes and solutions*:
+
+* *Network congestion*: Check for other workloads using the RoCE network:
++
+[source,bash]
+----
+$ oc get pods -A -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.metadata.annotations.k8s\.v1\.cni\.cncf\.io/networks}{"\n"}{end}' | grep roce
+----
+
+* *Suboptimal NCCL settings*: Tune NCCL parameters for your network topology:
++
+[source,yaml]
+----
+env:
+- name: NCCL_SOCKET_IFNAME
+  value: "eth1"  # RoCE interface name
+- name: NCCL_IB_HCA
+  value: "mlx5"  # Match your HCA
+- name: NCCL_IB_GID_INDEX
+  value: "3"  # RoCE v2 GID index
+----
+
+* *GDR not enabled*: If supported, enable GDRCopy in the GPU ClusterPolicy:
++
+[source,yaml]
+----
+spec:
+  gdrcopy:
+    enabled: true
+----
+
+* *Flow control issues*: Verify RoCE flow control (PFC - Priority Flow Control) is configured on network switches.
+
+=== NCCL initialization timeout
+
+*Symptom*: Pods fail to start with error: `NCCL WARN Call to ibv_create_qp failed` or `NCCL initialization timeout`.
+
+*Solution*:
+
+. Increase NCCL timeout:
++
+[source,yaml]
+----
+env:
+- name: NCCL_TIMEOUT
+  value: "3600"  # Increase to 1 hour for large models
+----
+
+. Check RDMA resource limits:
++
+[source,bash]
+----
+$ oc describe node <node-name> | grep rdma
+----
+
+. Verify sufficient RDMA resources are available:
++
+[source,yaml]
+----
+resources:
+  limits:
+    rdma/roce: "1"  # Or rdma/hca, depending on your setup
+----
+
+. Check for firewall rules blocking RDMA traffic:
++
+[source,bash]
+----
+$ oc debug node/<node-name>
+sh-4.4# chroot /host
+sh-4.4# iptables -L -n | grep -i rdma
+----
+
+== Model deployment issues
+
+=== Out of memory (OOM) errors with large models
+
+*Symptom*: Pods are killed with `OOMKilled` status when loading large models.
+
+*Solution*:
+
+. Increase memory limits:
++
+[source,yaml]
+----
+resources:
+  limits:
+    memory: "128Gi"  # Adjust based on model size
+----
+
+. Use model quantization (FP8, INT8) to reduce memory footprint:
++
+[source,yaml]
+----
+env:
+- name: VLLM_QUANTIZATION
+  value: "fp8"
+----
+
+. Enable tensor parallelism to split the model across multiple GPUs:
++
+[source,yaml]
+----
+spec:
+  parallelism:
+    tensorParallel: 2  # Split across 2 GPUs
+----
+
+=== Pods stuck in pending state
+
+*Symptom*: LLMInferenceService pods remain in `Pending` state.
+
+*Solution*:
+
+. Check pod events for scheduling errors:
++
+[source,bash]
+----
+$ oc describe pod <pod-name> | grep -A 20 Events
+----
+
+. Common causes:
++
+* *Insufficient GPU resources*: Verify GPU availability:
++
+[source,bash]
+----
+$ oc describe nodes | grep -A 5 "nvidia.com/gpu"
+----
+
+* *RDMA resource not available*: Check RDMA resource allocation:
++
+[source,bash]
+----
+$ oc describe nodes | grep -A 5 "rdma"
+----
+
+* *Node affinity/selector mismatch*: Verify pod node selectors match available nodes:
++
+[source,bash]
+----
+$ oc get pod <pod-name> -o jsonpath='{.spec.nodeSelector}'
+$ oc get nodes --show-labels
+----
+
+== Performance validation issues
+
+=== Unable to run RDMA bandwidth tests
+
+*Symptom*: `ib_write_bw` or similar tools fail with permission errors or device not found.
+
+*Solution*:
+
+. Ensure RDMA test tools are installed in the pod:
++
+[source,bash]
+----
+$ oc exec <pod-name> -- which ib_write_bw
+----
++
+If not installed, use a debug container with `perftest` package:
++
+[source,bash]
+----
+$ oc debug <pod-name> --image=quay.io/opendatahub/rdma-perftest:latest
+----
+
+. Verify RDMA capabilities are enabled:
++
+[source,bash]
+----
+$ oc exec <pod-name> -- cat /sys/class/infiniband/*/device/capabilities
+----
+
+. Run tests with proper permissions (may require privileged pods for some operations):
++
+[source,yaml]
+----
+securityContext:
+  capabilities:
+    add:
+    - IPC_LOCK
+----
+
+== IBM Cloud specific issues
+
+=== Cluster network not available
+
+*Symptom*: Secondary network interfaces are not created on IBM Cloud.
+
+*Solution*:
+
+. Verify IBM Cloud cluster network is enabled for your cluster:
++
+[source,bash]
+----
+$ ibmcloud ks cluster get --cluster <cluster-id> --json | jq '.clusterNetwork'
+----
+
+. Check that your worker pool has the correct network configuration:
++
+[source,bash]
+----
+$ ibmcloud ks worker-pool get --cluster <cluster-id> --worker-pool <pool-id>
+----
+
+. Ensure you are using supported VPC infrastructure with secondary subnet configured.
+
+. Verify the `ibm-vpc-eni` CNI plugin is installed:
++
+[source,bash]
+----
+$ oc get ds -n kube-system | grep vpc-eni
+----
+
+[role='_additional-resources']
+.Additional resources
+
+* link:https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/troubleshooting.html[NCCL Troubleshooting Guide]
+* link:https://docs.nvidia.com/networking/display/mlnxofedv494330/troubleshooting[NVIDIA MLNX_OFED Troubleshooting]
+* link:https://docs.openshift.com/container-platform/latest/networking/hardware_networks/troubleshooting-hardware-networks.html[Troubleshooting hardware networks in OpenShift]
+* link:https://access.redhat.com/solutions/6985596[Red Hat: Troubleshooting GPU Operator]
+ifdef::upstream[]
+* link:{odhdocshome}/enabling-roce-for-distributed-llm-deployments[Enabling RoCE networking for distributed LLM deployments]
+endif::[]

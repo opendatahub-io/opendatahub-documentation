@@ -1,0 +1,251 @@
+:_module-type: PROCEDURE
+
+[id="deploying-llm-with-wide-expert-parallel-and-roce_{context}"]
+= Deploying models with Wide Expert Parallel using RoCE
+
+[role='_abstract']
+Deploy large language models using Wide Expert Parallel (WideEP) with RoCE networking to enable efficient inference for Mixture-of-Experts (MoE) models.
+
+Wide Expert Parallel distributes expert layers across multiple GPUs and nodes, enabling efficient serving of large MoE models like Mixtral. RoCE provides the low-latency GPU-to-GPU communication required for expert routing and token processing.
+
+.Prerequisites
+
+* You have completed the procedure for enabling RoCE networking for distributed LLM deployments.
+* You have verified that RoCE networking is functioning correctly.
+* You have installed Distributed Inference Server with llm-d.
+* You have a Mixture-of-Experts model (for example, Mixtral-8x7B, Mixtral-8x22B).
+* You have sufficient GPUs to distribute expert layers (minimum 4 GPUs recommended for Mixtral-8x7B).
+
+.Procedure
+
+. Create a ConfigMap for Wide Expert Parallel configuration:
++
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wideep-config
+  namespace: <your-namespace>
+data:
+  config.yaml: |
+    expert_parallelism:
+      enabled: true
+      num_experts_per_gpu: 2  # <1>
+      routing_strategy: "load_balanced"  # <2>
+      communication:
+        backend: nccl
+        use_rdma: true
+    nccl:
+      ib_disable: 0
+      net_gdr_level: 5
+      ib_hca: mlx5  # <3>
+      ib_roce_adaptive_routing: 1
+----
+<1> Number of expert layers to place on each GPU. For Mixtral-8x7B with 4 GPUs, use 2.
+<2> Expert routing strategy: `load_balanced`, `random`, or `token_choice`.
+<3> InfiniBand/RoCE HCA (Host Channel Adapter) prefix.
+
+. Create an LLMInferenceService with Wide Expert Parallel enabled:
++
+[source,yaml]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: mixtral-wideep
+  namespace: <your-namespace>
+  annotations:
+    k8s.v1.cni.cncf.io/networks: roce-network
+spec:
+  replicas: 4  # <1>
+  model:
+    uri: hf://mistralai/Mixtral-8x7B-Instruct-v0.1
+    name: mixtral-8x7b
+    format:
+      name: vLLM
+  parallelism:
+    tensorParallel: 1
+    expertParallel: 4  # <2>
+  router:
+    template:
+      metadata:
+        annotations:
+          k8s.v1.cni.cncf.io/networks: roce-network
+      spec:
+        containers:
+        - name: vllm
+          image: quay.io/opendatahub/vllm:latest
+          env:
+          - name: VLLM_EXPERT_PARALLEL_SIZE
+            value: "4"  # <3>
+          - name: VLLM_USE_RDMA
+            value: "1"
+          - name: NCCL_IB_DISABLE
+            value: "0"
+          - name: NCCL_NET_GDR_LEVEL
+            value: "5"
+          - name: NCCL_IB_HCA
+            value: "mlx5"
+          - name: NCCL_DEBUG
+            value: "INFO"
+          - name: NCCL_DEBUG_SUBSYS
+            value: "INIT,NET"
+          resources:
+            limits:
+              nvidia.com/gpu: "1"
+              rdma/roce: "1"
+              cpu: "8"
+              memory: "64Gi"
+          volumeMounts:
+          - name: rdma-device
+            mountPath: /dev/infiniband
+          - name: shm  # <4>
+            mountPath: /dev/shm
+          - name: config
+            mountPath: /config
+        volumes:
+        - name: rdma-device
+          hostPath:
+            path: /dev/infiniband
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Gi
+        - name: config
+          configMap:
+            name: wideep-config
+----
+<1> Number of replicas equals the expert parallelism degree.
+<2> Expert parallelism degree - distributes 8 experts across 4 GPUs (2 experts per GPU).
+<3> Must match the `expertParallel` value.
+<4> Shared memory for inter-process communication.
+
+. Apply the configuration:
++
+[source,bash]
+----
+$ oc apply -f mixtral-wideep.yaml
+----
+
+. Verify the deployment is initializing with expert parallelism:
++
+[source,bash]
+----
+$ oc logs -l serving.kserve.io/inferenceservice=mixtral-wideep | grep -i "expert\|parallel"
+----
++
+Look for initialization messages showing expert distribution across GPUs.
+
+.Verification
+
+. Check that all replicas are running:
++
+[source,bash]
+----
+$ oc get pods -l serving.kserve.io/inferenceservice=mixtral-wideep
+----
++
+.Sample response
++
+[source]
+----
+NAME                              READY   STATUS    RESTARTS   AGE
+mixtral-wideep-predictor-0-abc    1/1     Running   0          8m
+mixtral-wideep-predictor-1-def    1/1     Running   0          8m
+mixtral-wideep-predictor-2-ghi    1/1     Running   0          8m
+mixtral-wideep-predictor-3-jkl    1/1     Running   0          8m
+----
+
+. Verify NCCL is using RoCE for expert communication:
++
+[source,bash]
+----
+$ oc logs mixtral-wideep-predictor-0-abc | grep "NCCL.*RoCE\|NCCL.*IB"
+----
++
+.Sample log output
++
+[source]
+----
+NCCL INFO NET/IB : Using [0]mlx5_0:1/RoCE [1]mlx5_1:1/RoCE
+NCCL INFO Using network RoCE
+NCCL INFO Channel 00/02 : 0   1   2   3
+----
+
+. Check expert distribution across GPUs:
++
+[source,bash]
+----
+$ for pod in $(oc get pods -l serving.kserve.io/inferenceservice=mixtral-wideep -o name); do
+  echo "=== $pod ==="
+  oc exec $pod -- curl -s localhost:8000/health | jq '.expert_assignment'
+done
+----
++
+Each pod should show which expert layers it is serving.
+
+. Send a test inference request:
++
+[source,bash]
+----
+$ curl -X POST http://<inference-endpoint>/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "mixtral-8x7b",
+    "messages": [
+      {"role": "user", "content": "Explain how mixture-of-experts models work"}
+    ],
+    "max_tokens": 300
+  }'
+----
+
+. Monitor expert routing and RDMA communication:
++
+[source,bash]
+----
+$ oc exec mixtral-wideep-predictor-0-abc -- curl localhost:8000/metrics | \
+  grep -E "expert_routing|rdma_transfer"
+----
++
+Key metrics to monitor:
++
+* `expert_routing_requests_total{expert="N"}` - Requests routed to each expert
+* `rdma_transfer_bytes_total` - Total data transferred via RDMA
+* `expert_communication_latency_seconds` - Latency for cross-GPU expert communication
+
+. Run a performance comparison:
++
+[source,bash]
+----
+# Benchmark with WideEP and RoCE
+$ python benchmark_moe.py \
+  --endpoint <wideep-endpoint> \
+  --model mixtral-8x7b \
+  --requests 100 \
+  --concurrent 10
+
+# Expected improvements:
+# - 40-60% lower latency vs. non-RDMA
+# - Better load balancing across experts
+# - Higher throughput for multi-request workloads
+----
+
+.Troubleshooting
+
+If you encounter issues with Wide Expert Parallel:
+
+* *Uneven expert utilization*: Check the `routing_strategy` in your config. Try switching between `load_balanced` and `token_choice`.
+* *High communication latency*: Verify RDMA is being used with `NCCL_DEBUG=INFO`. Check for network congestion.
+* *OOM errors*: Reduce `num_experts_per_gpu` or increase GPU memory. Consider using quantization (INT8/FP8).
+* *NCCL initialization failures*: Ensure all pods can communicate on the RoCE network. Check NetworkAttachmentDefinition and pod annotations.
+
+[role='_additional-resources']
+.Additional resources
+
+ifdef::upstream[]
+* link:{odhdocshome}/deploying-models-using-distributed-inference[Deploying models using Distributed Inference Server with llm-d]
+* link:{odhdocshome}/enabling-roce-for-distributed-llm-deployments[Enabling RoCE networking for distributed LLM deployments]
+endif::[]
+* link:https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1[Mixtral-8x7B Model Card]
+* link:https://arxiv.org/abs/2401.04088[Mixtral of Experts Paper]

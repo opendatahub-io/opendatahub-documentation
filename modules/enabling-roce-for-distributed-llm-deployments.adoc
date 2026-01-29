@@ -1,0 +1,359 @@
+:_module-type: PROCEDURE
+
+[id="enabling-roce-for-distributed-llm-deployments_{context}"]
+= Enabling RoCE networking for high-performance distributed LLM deployments
+
+[role='_abstract']
+Configure GPUDirect RDMA (GDR) over RDMA over Converged Ethernet (RoCE) to enable high-speed, low-latency GPU-to-GPU communication across pods for distributed large language model (LLM) deployments using Distributed Inference Server with llm-d.
+
+GPU RDMA enables high-performance data transfers between GPUs without CPU involvement, which is critical for:
+
+* High-speed KV Cache transfers in disaggregated prefill/decode deployments
+* Low-latency GPU-to-GPU communication in Wide Expert Parallel (WideEP) LLM deployments
+* Multi-node distributed training and inference workloads
+
+This procedure guides you through configuring your {openshift-platform} cluster to support RoCE networking for distributed LLM workloads.
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+RoCE networking for distributed LLM deployments is currently available in {productname-long} as a Technology Preview feature.
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have access to an {openshift-platform} cluster running version 4.12 or later.
+* Your cluster nodes have NVIDIA GPUs with GPUDirect RDMA support (Pascal architecture or later).
+* Your cluster has high-speed network interfaces (100 Gbps or higher recommended) that support RoCE.
+* You have installed the {openshift-cli}.
+ifdef::upstream[]
+* You have installed {productname-short} and enabled the single-model serving platform. For more information, see link:{odhdocshome}/installing-open-data-hub[Installing Open Data Hub].
+endif::[]
+ifndef::upstream[]
+* You have installed {productname-short} and enabled the single-model serving platform.
+endif::[]
+* You have network fabric that supports RDMA (InfiniBand or Ethernet with RoCE/iWARP).
+* You understand your deployment environment (IBM Cloud, bare metal, or other cloud providers).
+
+.Procedure
+
+. Install the Node Feature Discovery (NFD) Operator to detect hardware features on your cluster nodes:
+
+.. In the {openshift-platform} web console, navigate to *Operators* -> *OperatorHub*.
+.. Search for *Node Feature Discovery Operator*.
+.. Click *Install* and accept the default settings.
+.. Wait for the operator installation to complete.
+
+. Create an NFD instance to enable feature discovery:
++
+[source,yaml]
+----
+apiVersion: nfd.openshift.io/v1
+kind: NodeFeatureDiscovery
+metadata:
+  name: nfd-instance
+  namespace: openshift-nfd
+spec:
+  operand:
+    image: quay.io/openshift/origin-node-feature-discovery:4.12
+    imagePullPolicy: Always
+  workerConfig:
+    configData: |
+      sources:
+        pci:
+          deviceClassWhitelist:
+            - "03"
+            - "0200"
+          deviceLabelFields:
+            - "vendor"
+----
+
+. Install the NVIDIA GPU Operator:
+
+.. In the {openshift-platform} web console, navigate to *Operators* -> *OperatorHub*.
+.. Search for *NVIDIA GPU Operator*.
+.. Click *Install* and select the appropriate update channel.
+.. Choose the installation namespace (for example, `nvidia-gpu-operator`).
+.. Click *Install* and wait for the installation to complete.
+
+. Create a ClusterPolicy custom resource to configure the NVIDIA GPU Operator with RDMA support:
++
+[source,yaml]
+----
+apiVersion: nvidia.com/v1
+kind: ClusterPolicy
+metadata:
+  name: gpu-cluster-policy
+spec:
+  operator:
+    defaultRuntime: crio
+  driver:
+    enabled: true
+    version: "535.129.03"
+  toolkit:
+    enabled: true
+  devicePlugin:
+    enabled: true
+  dcgm:
+    enabled: true
+  dcgmExporter:
+    enabled: true
+  gfd:
+    enabled: true
+  migManager:
+    enabled: false
+  nodeStatusExporter:
+    enabled: true
+  gds:
+    enabled: false
+  vgpuManager:
+    enabled: false
+  vgpuDeviceManager:
+    enabled: false
+  sandboxDevicePlugin:
+    enabled: false
+  vfioManager:
+    enabled: false
+  gdrcopy:
+    enabled: false  # <1>
+----
+<1> GDRCopy provides additional performance optimizations for GPU-to-GPU transfers. Set to `true` if your environment supports it.
++
+NOTE: The performance impact of enabling or disabling GDRCopy depends on your specific workload and hardware configuration. Testing is recommended to determine the optimal setting for your use case.
+
+. Configure secondary networks for RoCE based on your deployment environment:
+
+.. *For IBM Cloud deployments*:
++
+IBM Cloud provides cluster network support for NVIDIA accelerated computing. Create a NetworkAttachmentDefinition for the secondary network interface:
++
+[source,yaml]
+----
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: roce-network
+  namespace: <your-namespace>
+spec:
+  config: |
+    {
+      "cniVersion": "0.3.1",
+      "type": "ibm-vpc-eni",
+      "secondarySubnetID": "<secondary-subnet-id>",
+      "vlanID": "<vlan-id>",
+      "interfaceName": "eth1"
+    }
+----
++
+Replace `<secondary-subnet-id>` and `<vlan-id>` with your IBM Cloud network configuration values.
++
+For more information, see link:https://cloud.ibm.com/docs/containers?topic=containers-cluster-network[IBM Cloud cluster network documentation].
+
+.. *For bare metal deployments*:
++
+Configure SR-IOV (Single Root I/O Virtualization) for high-performance network interfaces:
+
+... Install the SR-IOV Network Operator from OperatorHub.
+
+... Create an SriovNetworkNodePolicy to configure the network interfaces:
++
+[source,yaml]
+----
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: roce-policy
+  namespace: openshift-sriov-network-operator
+spec:
+  resourceName: rocenicresource
+  nodeSelector:
+    feature.node.kubernetes.io/network-sriov.capable: "true"
+  priority: 10
+  numVfs: 8
+  nicSelector:
+    vendor: "15b3"  # <1>
+    deviceID: "1017"  # <2>
+  deviceType: netdevice
+  isRdma: true  # <3>
+----
+<1> Mellanox/NVIDIA vendor ID. Adjust for your network card vendor.
+<2> Device ID for your specific network card model.
+<3> Enable RDMA support for RoCE.
+
+... Create an SriovNetwork to attach the RDMA-enabled network to pods:
++
+[source,yaml]
+----
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetwork
+metadata:
+  name: roce-network
+  namespace: openshift-sriov-network-operator
+spec:
+  resourceName: rocenicresource
+  networkNamespace: <your-namespace>
+  ipam: |
+    {
+      "type": "host-local",
+      "subnet": "192.168.100.0/24",
+      "rangeStart": "192.168.100.10",
+      "rangeEnd": "192.168.100.100",
+      "gateway": "192.168.100.1"
+    }
+----
+
+. Verify that the RDMA devices are available on your nodes:
++
+[source,bash]
+----
+$ oc debug node/<node-name>
+sh-4.4# chroot /host
+sh-4.4# ls -l /dev/infiniband/
+----
++
+You should see RDMA devices listed (for example, `uverbs0`, `uverbs1`).
+
+. Label the nodes that have RDMA capabilities:
++
+[source,bash]
+----
+$ oc label node <node-name> network.nvidia.com/roce=true
+----
+
+. Configure your pod to use the RoCE network by adding network annotations to your InferenceService or deployment:
++
+[source,yaml]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: llm-with-roce
+  annotations:
+    k8s.v1.cni.cncf.io/networks: roce-network  # <1>
+spec:
+  replicas: 2
+  model:
+    uri: hf://meta-llama/Llama-2-70b-hf
+    name: llama-2-70b
+  router:
+    template:
+      spec:
+        containers:
+        - name: main
+          resources:
+            limits:
+              cpu: '8'
+              memory: 64Gi
+              nvidia.com/gpu: "2"
+              rdma/roce: "1"  # <2>
+          env:
+          - name: NCCL_IB_DISABLE
+            value: "0"  # <3>
+          - name: NCCL_NET_GDR_LEVEL
+            value: "5"  # <4>
+          - name: NCCL_DEBUG
+            value: "INFO"  # <5>
+          volumeMounts:
+          - name: rdma-device
+            mountPath: /dev/infiniband
+        volumes:
+        - name: rdma-device
+          hostPath:
+            path: /dev/infiniband
+----
+<1> Attach the RoCE secondary network to the pod.
+<2> Request RDMA resources. The resource name depends on your SR-IOV or network configuration.
+<3> Enable InfiniBand/RoCE for NCCL (NVIDIA Collective Communications Library).
+<4> Set GPUDirect RDMA level (0-5, where 5 is maximum optimization).
+<5> Enable NCCL debug logging for troubleshooting.
+
+.Verification
+
+To verify that RoCE networking is properly configured and functioning:
+
+. Check that the GPU Operator pods are running:
++
+[source,bash]
+----
+$ oc get pods -n nvidia-gpu-operator
+----
++
+All pods should be in the `Running` state.
+
+. Verify that RDMA devices are detected:
++
+[source,bash]
+----
+$ oc get nodes -l network.nvidia.com/roce=true
+----
++
+Your RDMA-capable nodes should be listed.
+
+. Test RDMA connectivity between pods using `ib_write_bw` or `rping`:
++
+[source,bash]
+----
+# On the first pod (server)
+$ oc exec -it <pod-1> -- ib_write_bw -d <rdma-device>
+
+# On the second pod (client)
+$ oc exec -it <pod-2> -- ib_write_bw -d <rdma-device> <server-ip>
+----
++
+You should see bandwidth measurements indicating successful RDMA communication.
+
+. Check NCCL communication in your LLM deployment logs:
++
+[source,bash]
+----
+$ oc logs <llm-pod-name> | grep NCCL
+----
++
+Look for messages indicating successful NCCL initialization with RDMA transport:
++
+[source]
+----
+NCCL INFO NET/IB : Using [0]mlx5_0:1/RoCE [1]mlx5_1:1/RoCE
+NCCL INFO Using network RoCE
+----
+
+. Run a distributed inference request to verify end-to-end functionality:
++
+[source,bash]
+----
+$ curl -X POST http://<inference-endpoint>/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama-2-70b",
+    "messages": [{"role": "user", "content": "Explain RoCE networking"}],
+    "max_tokens": 100
+  }'
+----
++
+Monitor the response time and check logs for RDMA activity.
+
+[role='_additional-resources']
+.Additional resources
+
+* link:https://docs.nvidia.com/networking/display/rdmacore/RDMA+Core[NVIDIA RDMA Core Documentation]
+* link:https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html[NCCL Environment Variables]
+* link:https://cloud.ibm.com/docs/containers?topic=containers-cluster-network[IBM Cloud Cluster Network for NVIDIA Accelerated Computing]
+* link:https://docs.openshift.com/container-platform/latest/networking/hardware_networks/about-sriov.html[About SR-IOV hardware networks in OpenShift]
+* Benjamin Schmaus blog series:
+** link:https://www.redhat.com/en/blog/rdma-cuda-nvidia-openshift[RDMA+CUDA with NVIDIA on OpenShift]
+** link:https://www.redhat.com/en/blog/rdma-nvidia-openshift[RDMA with NVIDIA on OpenShift]
+ifdef::upstream[]
+* link:{odhdocshome}/deploying-models[Deploying models]
+* link:{odhdocshome}/working-with-accelerators[Working with accelerators]
+endif::[]
+ifndef::upstream[]
+* NVIDIA GPU Operator documentation
+* NVIDIA Network Operator documentation
+endif::[]
