@@ -48,7 +48,7 @@ For models in the catalog, the *Model details* page displays read-only informati
 .. In the *Model deployment name* field, enter a unique name for your model deployment. This field is autofilled with the model name by default. 
 +
 This is the name of the inference service created when the model is deployed.
-.. Optional: Click *Edit resource name*, and enter a specific resource name in the *Resource name* field. By default, the resource name matches the name of the model deployment.
+.. Optional: Click *Edit resource name*, and enter a specific name in the *Resource name* field. By default, the resource name matches the name of the model deployment.
 +
 [IMPORTANT]
 ====
@@ -59,12 +59,20 @@ The resource name must not match the name of any other model deployment resource
 .. In the *Description* field, enter a description of your deployment.
 .. From the *Hardware profile* list, select a hardware profile. Models provided in the catalog use the `default-profile`.
 .. Optional: To modify the default resource allocation, click *Customize resource requests and limits* and enter new values for the CPU and memory requests and limits. 
-.. In the *Serving runtime* list, select an enabled runtime.
+.. In the *Serving runtime* field, select one of the following options:
+* *Auto-select the best runtime for your model based on model type, model format, and hardware profile*
 +
-[NOTE]
-====
-If project-scoped runtimes exist, the *Serving runtime* list includes subheadings to distinguish between global runtimes and project-scoped runtimes.
-====
+The system analyzes the selected model framework and your available hardware profiles to recommend a serving runtime.
+* *Select from a list of serving runtimes, including custom ones*
++
+Select this option to manually choose a runtime from the list of global and project-scoped serving runtime templates.
++
+ifndef::upstream[]
+For more information about how the system determines the best runtime and administrator overrides, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#automatic-selection-of-serving-runtimes_rhoai-user[Automatic selection of serving runtimes].
+endif::[]
+ifdef::upstream[]
+For more information about how the system determines the best runtime and administrator overrides, see link:{odhdocshome}/deploying_models/#automatic-selection-of-serving-runtimes_odh-user[Automatic selection of serving runtimes].
+endif::[]
 .. Optional: For predictive AI models only, you can select a framework from the *Model framework (name - version)* list. This field is not displayed for generative AI models.  
 .. In the *Number of model server replicas to deploy* field, specify a value.
 .. Click *Next*.
