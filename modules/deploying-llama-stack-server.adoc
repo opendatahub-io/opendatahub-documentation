@@ -18,7 +18,7 @@ The included procedure provides an example `LlamaStackDistribution` CR that depl
 * You have logged in to {productname-long}.
 * You have cluster administrator privileges for your OpenShift cluster.
 * You have activated the Llama Stack Operator in your cluster.
-* You have installed the PostgreSQL Operator in your cluster. 
+* You have installed the PostgreSQL Operator version 14 or later in your cluster. 
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
 ** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
@@ -78,9 +78,9 @@ spec:
 
 . As the cluster administrator provisioning the Llama Stack server, you then need to create a Llama Stack PostgreSQL database and grant full permissions to a user. 
 
-.. Login to your cluster in a terminal window or access the terminal from the {productname-short} web console.
+.. Open a terminal that has network access to the PostgreSQL instance and the PostgreSQL client installed. 
 
-.. Start the PostgresSQL shell with the following command: 
+.. Start the PostgreSQL shell with the following command:
 +
 [source,terminal]
 ----
