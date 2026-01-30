@@ -38,6 +38,75 @@ These endpoints are exposed under the OpenAI compatibility layer and are distinc
 
 The Chat Completions API enables conversational, message-based interactions with models served by Llama Stack in {productname-short}.
 
+Example code in Python:
+
+[source,python]
+----
+import os
+
+from openai import OpenAI
+
+c = OpenAI()
+
+completion = c.chat.completions.create(
+    model=os.getenv("INFERENCE_MODEL", "ollama/llama3.2:3b"),
+    messages=[ { "role": "user", "content": "Hi", }, ],
+)
+
+print(completion.choices[0].message.content)
+
+----
+
+Example in curl:
+
+[source,curl]
+----
+curl -s ${LLAMA\_STACK\_CLIENT\_BASE\_URL:-http://localhost:8321}/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "'${INFERENCE\_MODEL:-ollama/llama3.2:3b}'",
+    "messages": [ { "role": "user", "content": "Hi" } ]
+  }' | jq .
+
+----
+
+Example JSON:
+
+[source,json]
+----
+{
+  "id": "IaF3acC9JcjskdUPu4aDwAs",
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "Hello! How can I help you today?",
+        "refusal": null,
+        "role": "assistant",
+        "annotations": null,
+        "audio": null,
+        "function_call": null,
+        "tool_calls": null
+      }
+    }
+  ],
+  "created": 1769447713,
+  "model": "gemini/gemini-2.5-flash",
+  "object": "chat.completion",
+  "service_tier": null,
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 9,
+    "prompt_tokens": 2,
+    "total_tokens": 363,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": null
+  }
+}
+----
+
 ---
 
 === Completions API
@@ -47,6 +116,106 @@ The Chat Completions API enables conversational, message-based interactions with
 
 The Completions API supports single-turn text generation and prompt completion.
 
+Example in Python:
+
+[source,python]
+----
+import http.client
+
+import json
+
+
+conn = http.client.HTTPSConnection("any-hosted-llama-stack.com")
+payload = json.dumps({
+"model": "string",
+"prompt": "string",
+"best_of": 0,
+"echo": True,
+"frequency_penalty": 0,
+"logit_bias": {},
+"logprobs": True,
+"max_tokens": 0,
+"n": 0,
+"presence_penalty": 0,
+"seed": 0,
+"stop": "string",
+"stream": True,
+"stream_options": {},
+"temperature": 0,
+"top_p": 0,
+"user": "string",
+"suffix": "string"
+})
+headers = {
+'Content-Type': 'application/json',
+'Accept': 'application/json'
+}
+conn.request("POST", "/v1/completions", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+
+----
+
+Example in curl:
+
+[source,curl]
+----
+curl -L 'http://any-hosted-llama-stack.com/v1/completions' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+-d '{
+"model": "string",
+"prompt": "string",
+"best_of": 0,
+"echo": true,
+"frequency_penalty": 0,
+"logit_bias": {},
+"logprobs": true,
+"max_tokens": 0,
+"n": 0,
+"presence_penalty": 0,
+"seed": 0,
+"stop": "string",
+"stream": true,
+"stream_options": {},
+"temperature": 0,
+"top_p": 0,
+"user": "string",
+"suffix": "string"
+}'
+----
+
+Example JSON:
+
+[source,json]
+----
+{
+  "id": "cmpl-3a9b8c7d6e5f4g3h2i1j",
+  "object": "text_completion",
+  "created": 1706439500,
+  "model": "meta-llama/Llama-3.1-8B",
+  "choices": [
+    {
+      "text": " is the capital of France.",
+      "index": 0,
+      "logprobs": {
+        "tokens": [" is", " the", " capital", " of", " France", "."],
+        "token_logprobs": [-0.012, -0.005, -0.001, -0.002, -0.001, -0.001],
+        "top_logprobs": [{}],
+        "text_offset": [5, 8, 12, 20, 23, 29]
+      },
+      "finish_reason": "length"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5,
+    "completion_tokens": 6,
+    "total_tokens": 11
+  }
+}
+----
+
 ---
 
 === Embeddings API
@@ -54,6 +223,75 @@ The Completions API supports single-turn text generation and prompt completion.
 * *Providers:* All embedding models enabled in {productname-short}.
 
 The Embeddings API generates numerical embeddings for text or documents that can be used in downstream semantic search or RAG applications.
+
+Example in Python:
+
+[source,python]
+----
+import http.client
+
+import json
+
+conn = http.client.HTTPSConnection("any-hosted-llama-stack.com")
+payload = json.dumps({
+"model": "string",
+"input": "string",
+"encoding_format": "string",
+"dimensions": 0,
+"user": "string"
+})
+headers = {
+'Content-Type': 'application/json',
+'Accept': 'application/json'
+}
+conn.request("POST", "/v1/embeddings", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+
+----
+Example in curl:
+
+[source,curl]
+----
+curl -L 'http://any-hosted-llama-stack.com/v1/embeddings' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+-d '{
+"model": "string",
+"input": "string",
+"encoding_format": "string",
+"dimensions": 0,
+"user": "string"
+}'
+
+----
+Example in JSON:
+
+[source,json]
+----
+{
+  "object": "list",
+  "data": [
+    {
+      "object": "embedding",
+      "index": 0,
+      "embedding": [
+        0.0023064255,
+        -0.009327292,
+        0.01579734,
+        -0.003112228,
+        "..." 
+      ]
+    }
+  ],
+  "model": "all-MiniLM-L6-v2",
+  "usage": {
+    "prompt_tokens": 8,
+    "total_tokens": 8
+  }
+}
+----
 
 ---
 
@@ -63,6 +301,60 @@ The Embeddings API generates numerical embeddings for text or documents that can
 * *Support level:* Technology Preview. 
 
 The Files API manages file uploads for use in embedding and retrieval workflows.
+
+Example in Python:
+
+[source,python]
+----
+import http.client
+
+conn = http.client.HTTPSConnection("any-hosted-llama-stack.com")
+payload = ''
+headers = {
+'Accept': 'application/json'
+}
+conn.request("GET", "/v1/files", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+
+----
+Example in curl:
+
+[source,curl]
+----
+curl -L 'http://any-hosted-llama-stack.com/v1/files' \
+-H 'Accept: application/json'
+----
+
+Example JSON:
+
+[source,json]
+----
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "file-8329472394",
+      "object": "file",
+      "bytes": 45120,
+      "created_at": 1706438000,
+      "filename": "training_data.jsonl",
+      "purpose": "batch"
+    },
+    {
+      "id": "file-9k2n38v01",
+      "object": "file",
+      "bytes": 1048576,
+      "created_at": 1706438150,
+      "filename": "company_handbook.pdf",
+      "purpose": "answers"
+    }
+  ],
+  "has_more": false
+}
+
+----
 
 ---
 
@@ -82,6 +374,64 @@ The Vector Stores API manages the creation, configuration, and lifecycle of vect
 
 The Vector Store Files API implements the OpenAI Vector Store Files interface and manages the association between document files and vector stores used for RAG workflows. 
 
+Example in Python:
+
+[source,python]
+----
+import http.client
+
+conn = http.client.HTTPSConnection("any-hosted-llama-stack.com")
+payload = ''
+headers = {
+'Accept': 'application/json'
+}
+conn.request("GET", "/v1/vector_stores", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+
+----
+
+Example in curl:
+
+[source,curl]
+----
+curl -L 'http://any-hosted-llama-stack.com/v1/vector_stores' \
+-H 'Accept: application/json'
+
+----
+
+Example JSON:
+
+[source,json]
+----
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "file-9k2n38v01",
+      "object": "vector_store.file",
+      "usage_bytes": 15420,
+      "created_at": 1706438400,
+      "vector_store_id": "vs_7h2938v9284h392",
+      "status": "completed",
+      "last_error": null,
+      "chunking_strategy": {
+        "type": "static",
+        "static": {
+          "max_chunk_size_tokens": 800,
+          "chunk_overlap_tokens": 400
+        }
+      }
+    }
+  ],
+  "first_id": "file-9k2n38v01",
+  "last_id": "file-9k2n38v01",
+  "has_more": false
+}
+
+----
+
 ---
 
 === Models API
@@ -91,6 +441,69 @@ The Vector Store Files API implements the OpenAI Vector Store Files interface an
 
 The Models API lists and retrieves available model resources from the Llama Stack deployment running on {productname-short}. By using the Models API, you can enumerate models, view their capabilities, and verify deployment status through a standardized OpenAI-compatible interface.
 
+Example in Python:
+
+[source,python]
+----
+from llama_stack_client import LlamaStackClient
+
+for m in LlamaStackClient().models.list():
+    print(m.custom_metadata.get("provider_id"), m.custom_metadata['model_type'], m.id)
+----
+
+Example in curl:
+
+[source,curl]
+----
+# The same example using curl:
+
+$ curl $LLAMA\_STACK\_CLIENT\_BASE\_URL/v1/models | yq -P .
+----
+
+Example JSON:
+
+[source,json]
+----
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "meta-llama/Llama-3.1-8B-Instruct",
+      "object": "model",
+      "created": 1721260800,
+      "owned_by": "llama-stack",
+      "custom_metadata": {
+        "provider_id": "vllm-local",
+        "model_type": "llm",
+        "context_window": 131072,
+        "max_tokens": 4096
+      }
+    },
+    {
+      "id": "all-MiniLM-L6-v2",
+      "object": "model",
+      "created": 1721260850,
+      "owned_by": "llama-stack",
+      "custom_metadata": {
+        "provider_id": "sentence-transformers",
+        "model_type": "embedding"
+      }
+    },
+    {
+      "id": "llama-guard-3-8b",
+      "object": "model",
+      "created": 1721260900,
+      "owned_by": "llama-stack",
+      "custom_metadata": {
+        "provider_id": "meta-internal",
+        "model_type": "safety"
+      }
+    }
+  ]
+}
+
+----
+
 ---
 
 === Responses API
@@ -99,6 +512,97 @@ The Models API lists and retrieves available model resources from the Llama Stac
 * *Support level:* Developer Preview. 
 
 The Responses API generates model outputs by combining inference, file search, and tool-calling capabilities through a single OpenAI-compatible endpoint. It is particularly useful for retrieval-augmented generation (RAG) workflows that rely on the `file_search` tool to retrieve context from vector stores.
+
+Example in Python:
+
+[source,python]
+----
+import os
+from openai import OpenAI
+
+c = OpenAI()
+
+resp = c.responses.create(
+    model=os.getenv("INFERENCE_MODEL", "ollama/llama3.2:3b"),
+    input="Hi",
+)
+
+print(resp.output[-1].content[-1].text)
+
+----
+
+Example in curl:
+
+[source,curl]
+----
+curl -s ${LLAMA\_STACK\_CLIENT\_BASE\_URL:-http://localhost:8321}/v1/responses \
+  -H "Content-Type: application/json" \
+  -d '{
+        "model": "'${INFERENCE\_MODEL:-ollama/llama3.2:3b}'",
+        "input": "hi"
+      }' | jq .
+----
+
+Example JSON:
+
+[source,json]
+----
+{
+  "created_at": 1769447921,
+  "completed_at": 1769447922,
+  "error": null,
+  "id": "resp_9df65b2f-f6b2-4950-9d19-db6478ff8b49",
+  "model": "gemini/gemini-2.5-flash",
+  "object": "response",
+  "output": [
+    {
+      "content": [
+        {
+          "text": "Hi there! How can I help you today?",
+          "type": "output_text",
+          "annotations": [],
+          "logprobs": null
+        }
+      ],
+      "role": "assistant",
+      "type": "message",
+      "id": "msg_aeaf1283-afce-4ef2-8218-b6281cbf2c53",
+      "status": "completed"
+    }
+  ],
+  "parallel_tool_calls": true,
+  "previous_response_id": null,
+  "prompt": null,
+  "status": "completed",
+  "temperature": null,
+  "text": {
+    "format": {
+      "type": "text"
+    }
+  },
+  "top_p": null,
+  "tools": [],
+  "tool_choice": null,
+  "truncation": null,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 10,
+    "total_tokens": 40,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "instructions": null,
+  "max_tool_calls": null,
+  "reasoning": null,
+  "metadata": null,
+  "store": true
+}
+
+----
 
 [NOTE]
 ====
