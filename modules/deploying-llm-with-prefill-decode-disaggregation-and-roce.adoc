@@ -10,7 +10,12 @@ Prefill/decode disaggregation separates the initial token generation, or prefill
 
 .Prerequisites
 
-* You have completed the procedure for enabling RoCE networking for distributed LLM deployments.
+ifdef::upstream[]
+* You have configured RoCE networking for distributed LLM deployments. For more information, see link:{odhdocshome}/working-with-distributed-workloads#configuring-roce-networking-for-distributed-llm-deployments[Configuring RoCE networking for distributed LLM deployments].
+endif::[]
+ifndef::upstream[]
+* You have configured RoCE networking for distributed LLM deployments.
+endif::[]
 * You have verified that RoCE networking is functioning correctly.
 * You have installed Distributed Inference Server with llm-d.
 * You have at least 4 GPUs available across your cluster: 2 for prefill, 2 for decode recommended.

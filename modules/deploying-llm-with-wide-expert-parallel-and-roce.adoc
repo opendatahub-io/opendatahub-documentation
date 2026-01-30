@@ -10,7 +10,12 @@ Wide Expert Parallel distributes expert layers across multiple GPUs and nodes, e
 
 .Prerequisites
 
-* You have completed the procedure for enabling RoCE networking for distributed LLM deployments.
+ifdef::upstream[]
+* You have configured RoCE networking for distributed LLM deployments. For more information, see link:{odhdocshome}/working-with-distributed-workloads#configuring-roce-networking-for-distributed-llm-deployments[Configuring RoCE networking for distributed LLM deployments].
+endif::[]
+ifndef::upstream[]
+* You have configured RoCE networking for distributed LLM deployments.
+endif::[]
 * You have verified that RoCE networking is functioning correctly.
 * You have installed Distributed Inference Server with llm-d.
 * You have a Mixture-of-Experts model such as Mixtral-8x7B or Mixtral-8x22B.
