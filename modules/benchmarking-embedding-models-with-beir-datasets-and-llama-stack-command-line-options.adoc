@@ -1,0 +1,87 @@
+:_module-type: REFERENCE
+
+[id="benchmarking-embedding-models-with-beir-datasets-and-llama-stack-command-line-options_{context}"]
+= BEIR benchmarking command-line options
+
+[role='_abstract']
+.Command line options
+
+** `--vector-db-provider-id`
+* *Description:* Specifies the vector database provider to use. The provider must also be enabled through the appropriate environment variable.
+* *Type:* String.
+* *Default:* `milvus`.
+* *Example values:* `milvus`, `pgvector`, `faiss`.
+* *Example:*
++
+[subs=+quotes]
+....
+--vector-db-provider-id pgvector
+....
+
+** `--dataset-names`
+* *Description:* Specifies which BEIR datasets to use for benchmarking. Use this option together with `--custom-datasets-urls` when testing custom datasets.
+* *Type:* List of strings.
+* *Default:* `["scifact"]`.
+* *Example:*
++
+[subs=+quotes]
+....
+--dataset-names scifact scidocs nq
+....
+
+** `--embedding-models`
+* *Description:* Specifies the embedding models to compare. Models must be defined in the `run.yaml` file.
+* *Type:* List of strings.
+* *Default:* `["granite-embedding-30m", "granite-embedding-125m"]`.
+* *Example:*
++
+[subs=+quotes]
+....
+--embedding-models all-MiniLM-L6-v2 granite-embedding-125m
+....
+
+** `--batch-size`
+* *Description:* Controls how many documents are processed per batch during ingestion. Larger batch sizes improve speed but use more memory.
+* *Type:* Integer.
+* *Default:* `150`.
+* *Example:*
++
+[subs=+quotes]
+....
+--batch-size 50
+--batch-size 300
+....
+
+** `--custom-datasets-urls`
+* *Description:* Specifies URLs for custom BEIR compatible datasets. Use this option with `--dataset-names`.
+* *Type:* List of strings.
+* *Default:* `[]`.
+* *Example:*
++
+[subs=+quotes]
+....
+--dataset-names my-custom-dataset \
+  --custom-datasets-urls https://example.com/my-dataset.zip
+....
+
+[NOTE]
+====
+Custom BEIR datasets must follow the required file structure and format:
+
+[subs=+quotes]
+....
+dataset-name.zip/
+├── qrels/
+│   └── test.tsv
+├── corpus.jsonl
+└── queries.jsonl
+....
+====
+
+For information on benchmarking embedding models with BEIR datasets, see 
+ifdef::upstream[]
+link:{odhdocshome}/working-with-llama-stack/#benchmarking-embedding-models-with-BEIR-datasets-and-Llama-Stack_rag[Benchmarking embedding models with BEIR datasets and Llama Stack]
+endif::[]
+ifndef::upstream[]
+link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/llama-stack-adv-examples_rag#benchmarking-embedding-models-with-BEIR-datasets-and-Llama-Stack_rag[Benchmarking embedding models with BEIR datasets and Llama Stack].
+endif::[]
