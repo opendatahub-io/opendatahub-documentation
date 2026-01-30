@@ -31,20 +31,21 @@ data:
   config.yaml: |
     expert_parallelism:
       enabled: true
-      num_experts_per_gpu: 2  # <1>
-      routing_strategy: "load_balanced"  # <2>
+      num_experts_per_gpu: 2
+      routing_strategy: "load_balanced"
       communication:
         backend: nccl
         use_rdma: true
     nccl:
       ib_disable: 0
       net_gdr_level: 5
-      ib_hca: mlx5  # <3>
+      ib_hca: mlx5
       ib_roce_adaptive_routing: 1
 ----
-<1> Number of expert layers to place on each GPU. For Mixtral-8x7B with 4 GPUs, use 2.
-<2> Expert routing strategy: `load_balanced`, `random`, or `token_choice`.
-<3> InfiniBand/RoCE HCA (Host Channel Adapter) prefix.
++
+. *expert_parallelism.num_experts_per_gpu*: Number of expert layers to place on each GPU. For Mixtral-8x7B with 4 GPUs, use 2.
+. *expert_parallelism.routing_strategy*: `load_balanced`, `random`, or `token_choice`.
+. *nccl.ib_hca*: InfiniBand/RoCE HCA (Host Channel Adapter) prefix.
 
 . Create an LLMInferenceService with Wide Expert Parallel enabled:
 +
@@ -58,7 +59,7 @@ metadata:
   annotations:
     k8s.v1.cni.cncf.io/networks: roce-network
 spec:
-  replicas: 4  # <1>
+  replicas: 4
   model:
     uri: hf://mistralai/Mixtral-8x7B-Instruct-v0.1
     name: mixtral-8x7b
@@ -66,7 +67,7 @@ spec:
       name: vLLM
   parallelism:
     tensorParallel: 1
-    expertParallel: 4  # <2>
+    expertParallel: 4
   router:
     template:
       metadata:
@@ -78,7 +79,7 @@ spec:
           image: quay.io/opendatahub/vllm:latest
           env:
           - name: VLLM_EXPERT_PARALLEL_SIZE
-            value: "4"  # <3>
+            value: "4"
           - name: VLLM_USE_RDMA
             value: "1"
           - name: NCCL_IB_DISABLE
@@ -100,7 +101,7 @@ spec:
           volumeMounts:
           - name: rdma-device
             mountPath: /dev/infiniband
-          - name: shm  # <4>
+          - name: shm
             mountPath: /dev/shm
           - name: config
             mountPath: /config
@@ -116,10 +117,11 @@ spec:
           configMap:
             name: wideep-config
 ----
-<1> Number of replicas equals the expert parallelism degree.
-<2> Expert parallelism degree - distributes 8 experts across 4 GPUs, 2 experts per GPU.
-<3> Must match the `expertParallel` value.
-<4> Shared memory for inter-process communication.
++
+. *replicas*: Equals the expert parallelism degree.
+. *parallelism.expertParallel*: Distributes 8 experts across 4 GPUs, 2 experts per GPU.
+. *VLLM_EXPERT_PARALLEL_SIZE*: Must match the `expertParallel` value.
+. *shm volume*: For inter-process communication.
 
 . Apply the configuration:
 +

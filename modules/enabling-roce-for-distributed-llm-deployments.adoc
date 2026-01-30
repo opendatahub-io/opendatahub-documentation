@@ -122,9 +122,10 @@ spec:
   vfioManager:
     enabled: false
   gdrcopy:
-    enabled: false  # <1>
+    enabled: false
 ----
-<1> GDRCopy provides additional performance optimizations for GPU-to-GPU transfers. Set to `true` if your environment supports it.
++
+. *gdrcopy.enabled*: GDRCopy provides additional performance optimizations for GPU-to-GPU transfers. Set to `true` if your environment supports it.
 +
 NOTE: The performance impact of enabling or disabling GDRCopy depends on your specific workload and hardware configuration. Testing is recommended to determine the optimal setting for your use case.
 
@@ -176,14 +177,15 @@ spec:
   priority: 10
   numVfs: 8
   nicSelector:
-    vendor: "15b3"  # <1>
-    deviceID: "1017"  # <2>
+    vendor: "15b3"
+    deviceID: "1017"
   deviceType: netdevice
-  isRdma: true  # <3>
+  isRdma: true
 ----
-<1> Mellanox/NVIDIA vendor ID. Adjust for your network card vendor.
-<2> Device ID for your specific network card model.
-<3> Enable RDMA support for RoCE.
++
+. *nicSelector.vendor*: Mellanox/NVIDIA vendor ID. Adjust for your network card vendor.
+. *nicSelector.deviceID*: Device ID for your specific network card model.
+. *isRdma*: Enable RDMA support for RoCE.
 
 .. Create an SriovNetwork to attach the RDMA-enabled network to pods:
 +
@@ -234,7 +236,7 @@ kind: LLMInferenceService
 metadata:
   name: llm-with-roce
   annotations:
-    k8s.v1.cni.cncf.io/networks: roce-network  # <1>
+    k8s.v1.cni.cncf.io/networks: roce-network
 spec:
   replicas: 2
   model:
@@ -250,14 +252,14 @@ spec:
               cpu: '8'
               memory: 64Gi
               nvidia.com/gpu: "2"
-              rdma/roce: "1"  # <2>
+              rdma/roce: "1"
           env:
           - name: NCCL_IB_DISABLE
-            value: "0"  # <3>
+            value: "0"
           - name: NCCL_NET_GDR_LEVEL
-            value: "5"  # <4>
+            value: "5"
           - name: NCCL_DEBUG
-            value: "INFO"  # <5>
+            value: "INFO"
           volumeMounts:
           - name: rdma-device
             mountPath: /dev/infiniband
@@ -266,11 +268,12 @@ spec:
           hostPath:
             path: /dev/infiniband
 ----
-<1> Attach the RoCE secondary network to the pod.
-<2> Request RDMA resources. The resource name depends on your SR-IOV or network configuration.
-<3> Enable InfiniBand/RoCE for NCCL (NVIDIA Collective Communications Library).
-<4> Set GPUDirect RDMA level: 0-5, where 5 is maximum optimization.
-<5> Enable NCCL debug logging for troubleshooting.
++
+. *k8s.v1.cni.cncf.io/networks*: Attach the RoCE secondary network to the pod.
+. *rdma/roce*: Request RDMA resources. The resource name depends on your SR-IOV or network configuration.
+. *NCCL_IB_DISABLE*: Enable InfiniBand/RoCE for NCCL (NVIDIA Collective Communications Library).
+. *NCCL_NET_GDR_LEVEL*: Set GPUDirect RDMA level: 0-5, where 5 is maximum optimization.
+. *NCCL_DEBUG*: Enable debug logging for troubleshooting.
 
 .Verification
 
