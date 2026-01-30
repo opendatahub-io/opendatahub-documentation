@@ -6,14 +6,14 @@
 [role='_abstract']
 Deploy large language models using prefill/decode (P/D) disaggregation with RoCE networking to optimize inference performance and resource utilization.
 
-Prefill/decode disaggregation separates the initial token generation (prefill) from subsequent token generation (decode) into separate GPU pools. RoCE enables high-speed KV cache transfers between the prefill and decode stages, improving throughput and latency.
+Prefill/decode disaggregation separates the initial token generation, or prefill, from subsequent token generation, or decode, into separate GPU pools. RoCE enables high-speed KV cache transfers between the prefill and decode stages, improving throughput and latency.
 
 .Prerequisites
 
 * You have completed the procedure for enabling RoCE networking for distributed LLM deployments.
 * You have verified that RoCE networking is functioning correctly.
 * You have installed Distributed Inference Server with llm-d.
-* You have at least 4 GPUs available across your cluster (2 for prefill, 2 for decode recommended).
+* You have at least 4 GPUs available across your cluster: 2 for prefill, 2 for decode recommended.
 
 .Procedure
 

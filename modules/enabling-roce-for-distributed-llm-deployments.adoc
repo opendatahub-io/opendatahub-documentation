@@ -30,8 +30,8 @@ endif::[]
 
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have access to an {openshift-platform} cluster running version 4.12 or later.
-* Your cluster nodes have NVIDIA GPUs with GPUDirect RDMA support (Pascal architecture or later).
-* Your cluster has high-speed network interfaces (100 Gbps or higher recommended) that support RoCE.
+* Your cluster nodes have NVIDIA GPUs with GPUDirect RDMA support, Pascal architecture or later.
+* Your cluster has high-speed network interfaces that support RoCE: 100 Gbps or higher recommended.
 * You have installed the {openshift-cli}.
 ifdef::upstream[]
 * You have installed {productname-short} and enabled the single-model serving platform. For more information, see link:{odhdocshome}/installing-open-data-hub[Installing Open Data Hub].
@@ -40,7 +40,7 @@ ifndef::upstream[]
 * You have installed {productname-short} and enabled the single-model serving platform.
 endif::[]
 * You have network fabric that supports RDMA (InfiniBand or Ethernet with RoCE/iWARP).
-* You understand your deployment environment (IBM Cloud, bare metal, or other cloud providers).
+* You understand your deployment environment: IBM Cloud, bare metal, or other cloud providers.
 
 .Procedure
 
@@ -80,7 +80,7 @@ spec:
 .. In the {openshift-platform} web console, navigate to *Operators* -> *OperatorHub*.
 .. Search for *NVIDIA GPU Operator*.
 .. Click *Install* and select the appropriate update channel.
-.. Choose the installation namespace (for example, `nvidia-gpu-operator`).
+.. Choose the installation namespace, for example, `nvidia-gpu-operator`.
 .. Click *Install* and wait for the installation to complete.
 
 . Create a ClusterPolicy custom resource to configure the NVIDIA GPU Operator with RDMA support:
@@ -216,7 +216,7 @@ sh-4.4# chroot /host
 sh-4.4# ls -l /dev/infiniband/
 ----
 +
-You should see RDMA devices listed (for example, `uverbs0`, `uverbs1`).
+You should see RDMA devices listed such as `uverbs0` or `uverbs1`.
 
 . Label the nodes that have RDMA capabilities:
 +
@@ -269,7 +269,7 @@ spec:
 <1> Attach the RoCE secondary network to the pod.
 <2> Request RDMA resources. The resource name depends on your SR-IOV or network configuration.
 <3> Enable InfiniBand/RoCE for NCCL (NVIDIA Collective Communications Library).
-<4> Set GPUDirect RDMA level (0-5, where 5 is maximum optimization).
+<4> Set GPUDirect RDMA level: 0-5, where 5 is maximum optimization.
 <5> Enable NCCL debug logging for troubleshooting.
 
 .Verification

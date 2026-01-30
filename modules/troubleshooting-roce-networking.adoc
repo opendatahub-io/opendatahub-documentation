@@ -248,7 +248,7 @@ resources:
     memory: "128Gi"  # Adjust based on model size
 ----
 
-. Use model quantization (FP8, INT8) to reduce memory footprint:
+. Use FP8 or INT8 model quantization to reduce memory footprint:
 +
 [source,yaml]
 ----
@@ -324,7 +324,7 @@ $ oc debug <pod-name> --image=quay.io/opendatahub/rdma-perftest:latest
 $ oc exec <pod-name> -- cat /sys/class/infiniband/*/device/capabilities
 ----
 
-. Run tests with proper permissions (may require privileged pods for some operations):
+. Run tests with proper permissions, which may require privileged pods for some operations:
 +
 [source,yaml]
 ----

@@ -13,8 +13,8 @@ Wide Expert Parallel distributes expert layers across multiple GPUs and nodes, e
 * You have completed the procedure for enabling RoCE networking for distributed LLM deployments.
 * You have verified that RoCE networking is functioning correctly.
 * You have installed Distributed Inference Server with llm-d.
-* You have a Mixture-of-Experts model (for example, Mixtral-8x7B, Mixtral-8x22B).
-* You have sufficient GPUs to distribute expert layers (minimum 4 GPUs recommended for Mixtral-8x7B).
+* You have a Mixture-of-Experts model such as Mixtral-8x7B or Mixtral-8x22B.
+* You have sufficient GPUs to distribute expert layers: minimum 4 GPUs recommended for Mixtral-8x7B.
 
 .Procedure
 
@@ -117,7 +117,7 @@ spec:
             name: wideep-config
 ----
 <1> Number of replicas equals the expert parallelism degree.
-<2> Expert parallelism degree - distributes 8 experts across 4 GPUs (2 experts per GPU).
+<2> Expert parallelism degree - distributes 8 experts across 4 GPUs, 2 experts per GPU.
 <3> Must match the `expertParallel` value.
 <4> Shared memory for inter-process communication.
 
@@ -237,7 +237,7 @@ If you encounter issues with Wide Expert Parallel:
 
 * *Uneven expert utilization*: Check the `routing_strategy` in your config. Try switching between `load_balanced` and `token_choice`.
 * *High communication latency*: Verify RDMA is being used with `NCCL_DEBUG=INFO`. Check for network congestion.
-* *OOM errors*: Reduce `num_experts_per_gpu` or increase GPU memory. Consider using quantization (INT8/FP8).
+* *OOM errors*: Reduce `num_experts_per_gpu` or increase GPU memory. Consider using INT8 or FP8 quantization.
 * *NCCL initialization failures*: Ensure all pods can communicate on the RoCE network. Check NetworkAttachmentDefinition and pod annotations.
 
 [role='_additional-resources']
