@@ -8,11 +8,7 @@ Common issues and solutions when configuring and using RoCE networking for distr
 
 == NVIDIA GPU Operator issues
 
-=== GPU Operator pods not starting
-
-*Symptom*: GPU Operator pods remain in `Pending` or `CrashLoopBackOff` state.
-
-*Possible causes and solutions*:
+If GPU Operator pods remain in `Pending` or `CrashLoopBackOff` state, check the following possible causes and solutions:
 
 * *Node selector mismatch*: Verify that your nodes have the correct labels:
 +
@@ -35,11 +31,7 @@ $ oc describe node <node-name> | grep -A 10 "Allocated resources"
 $ oc get clusterpolicy gpu-cluster-policy -o yaml | grep "driver.*version"
 ----
 
-=== GPUDirect RDMA not detected
-
-*Symptom*: RDMA devices are not available in pods, or `ls /dev/infiniband/` returns empty.
-
-*Solution*:
+If RDMA devices are not available in pods, or `ls /dev/infiniband/` returns empty, try the following solution:
 
 . Verify the host has RDMA devices:
 +
@@ -77,11 +69,7 @@ sh-4.4# modprobe mlx5_ib
 
 == Secondary network configuration issues
 
-=== NetworkAttachmentDefinition not found
-
-*Symptom*: Pods fail to start with error: `error adding container to network "roce-network": network not found`.
-
-*Solution*:
+If pods fail to start with error `error adding container to network "roce-network": network not found`, try the following solution:
 
 . Verify the NetworkAttachmentDefinition exists in the correct namespace:
 +
@@ -101,11 +89,7 @@ metadata:
 
 . For cluster-wide networks, ensure the NetworkAttachmentDefinition is in the pod's namespace or use the fully qualified name: `<namespace>/<network-name>`.
 
-=== SR-IOV VFs not created
-
-*Symptom*: SR-IOV Virtual Functions (VFs) are not created on nodes.
-
-*Solution*:
+If SR-IOV Virtual Functions (VFs) are not created on nodes, try the following solution:
 
 . Check the SriovNetworkNodePolicy status:
 +
@@ -140,11 +124,7 @@ sh-4.4# lspci -vvv | grep -i "single root\|SR-IOV"
 
 == NCCL and RDMA communication issues
 
-=== NCCL falls back to TCP instead of using RDMA
-
-*Symptom*: Logs show `NCCL INFO Using network Socket` instead of `NCCL INFO Using network RoCE` or `IB`.
-
-*Solution*:
+If logs show `NCCL INFO Using network Socket` instead of `NCCL INFO Using network RoCE` or `IB`, try the following solution:
 
 . Verify NCCL environment variables are set correctly:
 +
@@ -186,11 +166,7 @@ $ oc exec <pod-1> -- ip addr show eth1
 $ oc exec <pod-1> -- ping -c 3 <pod-2-roce-ip>
 ----
 
-=== High RDMA transfer latency
-
-*Symptom*: RDMA transfers are slower than expected, impacting model inference performance.
-
-*Possible causes and solutions*:
+If RDMA transfers are slower than expected, impacting model inference performance, check the following possible causes and solutions:
 
 * *Network congestion*: Check for other workloads using the RoCE network:
 +
@@ -223,11 +199,7 @@ spec:
 
 * *Flow control issues*: Verify RoCE flow control (PFC - Priority Flow Control) is configured on network switches.
 
-=== NCCL initialization timeout
-
-*Symptom*: Pods fail to start with error: `NCCL WARN Call to ibv_create_qp failed` or `NCCL initialization timeout`.
-
-*Solution*:
+If pods fail to start with error `NCCL WARN Call to ibv_create_qp failed` or `NCCL initialization timeout`, try the following solution:
 
 . Increase NCCL timeout:
 +
@@ -265,11 +237,7 @@ sh-4.4# iptables -L -n | grep -i rdma
 
 == Model deployment issues
 
-=== Out of memory (OOM) errors with large models
-
-*Symptom*: Pods are killed with `OOMKilled` status when loading large models.
-
-*Solution*:
+If pods are killed with `OOMKilled` status when loading large models, try the following solution:
 
 . Increase memory limits:
 +
@@ -298,11 +266,7 @@ spec:
     tensorParallel: 2  # Split across 2 GPUs
 ----
 
-=== Pods stuck in pending state
-
-*Symptom*: LLMInferenceService pods remain in `Pending` state.
-
-*Solution*:
+If LLMInferenceService pods remain in `Pending` state, try the following solution:
 
 . Check pod events for scheduling errors:
 +
@@ -337,11 +301,7 @@ $ oc get nodes --show-labels
 
 == Performance validation issues
 
-=== Unable to run RDMA bandwidth tests
-
-*Symptom*: `ib_write_bw` or similar tools fail with permission errors or device not found.
-
-*Solution*:
+If `ib_write_bw` or similar tools fail with permission errors or device not found, try the following solution:
 
 . Ensure RDMA test tools are installed in the pod:
 +
@@ -376,11 +336,7 @@ securityContext:
 
 == IBM Cloud specific issues
 
-=== Cluster network not available
-
-*Symptom*: Secondary network interfaces are not created on IBM Cloud.
-
-*Solution*:
+If secondary network interfaces are not created on IBM Cloud, try the following solution:
 
 . Verify IBM Cloud cluster network is enabled for your cluster:
 +
