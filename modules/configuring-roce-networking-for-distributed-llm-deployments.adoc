@@ -60,38 +60,7 @@ include::optimizing-roce-performance-for-llm-deployments.adoc[leveloffset=+1]
 
 == Validation and benchmarking
 
-To validate network performance, run RDMA bandwidth tests:
-
-[source,bash]
-----
-# Server pod
-$ oc exec <server-pod> -- ib_write_bw -d mlx5_0 -a -F
-
-# Client pod
-$ oc exec <client-pod> -- ib_write_bw -d mlx5_0 -a -F <server-ip>
-----
-
-Expected results for 100 Gbps RoCE:
-* Bandwidth: >90 Gbps
-* Latency: <2 microseconds
-
-To measure end-to-end performance, use tools like GuideLLM or vLLM benchmarks:
-
-[source,bash]
-----
-# Install GuideLLM
-$ pip install guidellm
-
-# Run benchmark
-$ guidellm \
-  --model <model-name> \
-  --endpoint <inference-endpoint> \
-  --requests 1000 \
-  --concurrency 50 \
-  --output benchmark-results.json
-----
-
-Compare results with and without RoCE to quantify performance improvements.
+include::validating-roce-networking-performance.adoc[leveloffset=+1]
 
 == Next steps
 
