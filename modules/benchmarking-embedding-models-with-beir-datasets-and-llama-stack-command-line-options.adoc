@@ -4,47 +4,47 @@
 = BEIR benchmarking command-line options
 
 [role='_abstract']
-.Command line options
+The BEIR benchmarking script accepts the following command-line options:
 
-** `--vector-db-provider-id`
-* *Description:* Specifies the vector database provider to use. The provider must also be enabled through the appropriate environment variable.
-* *Type:* String.
-* *Default:* `milvus`.
-* *Example values:* `milvus`, `pgvector`, `faiss`.
-* *Example:*
+* `--vector-db-provider-id`
+** *Description:* Specifies the vector database provider to use. The provider must also be enabled through the appropriate environment variable.
+** *Type:* String.
+** *Default:* `milvus`.
+** *Example values:* `milvus`, `pgvector`, `faiss`.
+** *Example:*
 +
 [subs=+quotes]
 ....
 --vector-db-provider-id pgvector
 ....
 
-** `--dataset-names`
-* *Description:* Specifies which BEIR datasets to use for benchmarking. Use this option together with `--custom-datasets-urls` when testing custom datasets.
-* *Type:* List of strings.
-* *Default:* `["scifact"]`.
-* *Example:*
+* `--dataset-names`
+** *Description:* Specifies which BEIR datasets to use for benchmarking. Use this option together with `--custom-datasets-urls` when testing custom datasets.
+** *Type:* List of strings.
+** *Default:* `["scifact"]`.
+** *Example:*
 +
 [subs=+quotes]
 ....
 --dataset-names scifact scidocs nq
 ....
 
-** `--embedding-models`
-* *Description:* Specifies the embedding models to compare. Models must be defined in the `run.yaml` file.
-* *Type:* List of strings.
-* *Default:* `["granite-embedding-30m", "granite-embedding-125m"]`.
-* *Example:*
+* `--embedding-models`
+** *Description:* Specifies the embedding models to compare. Models must be defined in the `run.yaml` file.
+** *Type:* List of strings.
+** *Default:* `["granite-embedding-30m", "granite-embedding-125m"]`.
+** *Example:*
 +
 [subs=+quotes]
 ....
 --embedding-models all-MiniLM-L6-v2 granite-embedding-125m
 ....
 
-** `--batch-size`
-* *Description:* Controls how many documents are processed per batch during ingestion. Larger batch sizes improve speed but use more memory.
-* *Type:* Integer.
-* *Default:* `150`.
-* *Example:*
+* `--batch-size`
+** *Description:* Controls how many documents are processed per batch during ingestion. Larger batch sizes improve speed but use more memory.
+** *Type:* Integer.
+** *Default:* `150`.
+** *Example:*
 +
 [subs=+quotes]
 ....
@@ -52,11 +52,11 @@
 --batch-size 300
 ....
 
-** `--custom-datasets-urls`
-* *Description:* Specifies URLs for custom BEIR compatible datasets. Use this option with `--dataset-names`.
-* *Type:* List of strings.
-* *Default:* `[]`.
-* *Example:*
+* `--custom-datasets-urls`
+** *Description:* Specifies URLs for custom BEIR compatible datasets. Use this option with `--dataset-names`.
+** *Type:* List of strings.
+** *Default:* `[]`.
+** *Example:*
 +
 [subs=+quotes]
 ....
