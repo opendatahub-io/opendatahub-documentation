@@ -17,11 +17,11 @@ Open Data Hub provides a platform for developing, training, and serving AI/ML mo
 - Model registry
 - Model observability (TrustyAI)
 
-The documentation is published to https://opendatahub.io/docs via Read the Docs.
+The documentation is published to [https://opendatahub.io/docs](https://opendatahub.io/docs) via Read the Docs.
 
 ## Repository structure
 
-```
+```text
 opendatahub-documentation/
 ├── _artifacts/
 │   └── document-attributes-global.adoc (global AsciiDoc attributes)
@@ -47,7 +47,7 @@ Each top-level `.adoc` file in the root directory is a book entry point that inc
 ## Key directories
 
 | Directory | Purpose |
-|-----------|---------|
+| --------- | ------- |
 | `modules/` | Reusable content modules (concepts, procedures, references) |
 | `assemblies/` | Assembly files that include and organize modules |
 | `_artifacts/` | Global document attributes and shared configuration |
@@ -107,7 +107,7 @@ Each top-level `.adoc` file in the root directory is a book entry point that inc
 ### Content generation
 
 **For new documentation:**
-```
+```text
 I need to document [specific ODH feature].
 Please create AsciiDoc documentation that includes:
 - Overview and purpose
@@ -122,7 +122,7 @@ Please create AsciiDoc documentation that includes:
 - "Convert this content to use AsciiDoc tables instead of plain text formatting"
 - "Add proper cross-references between these documentation pages using xref syntax"
 - "Help me set up include statements to reuse content from assemblies/ directory"
-- "Update attributes to use product names from \_artifacts/document-attributes-global.adoc"
+- "Update attributes to use product names from `_artifacts/document-attributes-global.adoc`"
 
 ## Best practices when using Claude
 
@@ -135,8 +135,8 @@ Always share:
 
 ### 2. Follow Red Hat documentation standards
 
-- Use the Red Hat documentation style guide: https://redhat-documentation.github.io/supplementary-style-guide
-- Use the Red Hat modular documentation reference guide: https://redhat-documentation.github.io/modular-docs/
+- Use the [Red Hat documentation style guide](https://redhat-documentation.github.io/supplementary-style-guide)
+- Use the [Red Hat modular documentation reference guide](https://redhat-documentation.github.io/modular-docs/)
 - Follow established product naming conventions using attributes from `_artifacts/document-attributes-global.adoc`
 - Use sentence case headings
 
@@ -256,7 +256,7 @@ Add important note content here.
 Always use product attributes from `_artifacts/document-attributes-global.adoc`:
 
 | Attribute | Usage |
-|-----------|-------|
+| --------- | ----- |
 | `{productname-long}` | Full product name (Open Data Hub) |
 | `{productname-short}` | Short product name (Open Data Hub) |
 | `{vernum}` | Product version number |
@@ -316,7 +316,7 @@ This repository is the upstream source for Red Hat OpenShift AI documentation. C
 
 - **Downstream Repository:** Red Hat GitLab (internal)
 - **Product:** Red Hat OpenShift AI (cloud-service and self-managed variants)
-- **Published Location:** https://docs.redhat.com/en
+- **Published Location:** [https://docs.redhat.com/en](https://docs.redhat.com/en)
 
 ### Content considerations
 
@@ -328,12 +328,12 @@ When writing documentation:
 
 ## Open Data Hub repositories and technologies
 
-The following repositories under https://github.com/opendatahub-io contain the source code for Open Data Hub components. Use this reference when investigating features, troubleshooting documentation questions, or understanding component architecture.
+The following repositories under [https://github.com/opendatahub-io](https://github.com/opendatahub-io) contain the source code for Open Data Hub components. Use this reference when investigating features, troubleshooting documentation questions, or understanding component architecture.
 
 ### Core platform and management
 
 | Repository | Purpose |
-|------------|---------|
+| ---------- | ------- |
 | [opendatahub-operator](https://github.com/opendatahub-io/opendatahub-operator) | Primary operator for deploying and managing all ODH components using DataScienceCluster CRD |
 | [odh-dashboard](https://github.com/opendatahub-io/odh-dashboard) | Unified UI/dashboard for Open Data Hub components |
 | [odh-model-controller](https://github.com/opendatahub-io/odh-model-controller) | Controller for managing model lifecycle |
@@ -341,7 +341,7 @@ The following repositories under https://github.com/opendatahub-io contain the s
 ### Model serving
 
 | Repository | Purpose |
-|------------|---------|
+| ---------- | ------- |
 | [kserve](https://github.com/opendatahub-io/kserve) | Standardized serverless ML inference platform on Kubernetes |
 | [modelmesh](https://github.com/opendatahub-io/modelmesh) | Distributed model serving management/routing layer for high-scale use cases |
 | [modelmesh-serving](https://github.com/opendatahub-io/modelmesh-serving) | Controller for managing ModelMesh with runtime adapters (Triton, MLServer, OpenVINO, TorchServe) |
@@ -353,7 +353,7 @@ The following repositories under https://github.com/opendatahub-io contain the s
 ### Model registry
 
 | Repository | Purpose |
-|------------|---------|
+| ---------- | ------- |
 | [model-registry](https://github.com/opendatahub-io/model-registry) | Central repository for storing and managing models, versions, and artifacts metadata |
 | [model-registry-operator](https://github.com/opendatahub-io/model-registry-operator) | Kubernetes operator for Model Registry lifecycle management |
 | [ml-metadata](https://github.com/opendatahub-io/ml-metadata) | System for recording and retrieving ML workflow metadata and lineage |
@@ -361,7 +361,7 @@ The following repositories under https://github.com/opendatahub-io contain the s
 ### Data science pipelines
 
 | Repository | Purpose |
-|------------|---------|
+| ---------- | ------- |
 | [data-science-pipelines](https://github.com/opendatahub-io/data-science-pipelines) | Machine Learning Pipelines for Kubeflow; orchestrates complex ML workflows |
 | [data-science-pipelines-operator](https://github.com/opendatahub-io/data-science-pipelines-operator) | Kubernetes operator for Data Science Pipelines lifecycle management |
 | [argo-workflows](https://github.com/opendatahub-io/argo-workflows) | Container-native workflow engine for orchestrating parallel jobs on Kubernetes |
@@ -370,14 +370,14 @@ The following repositories under https://github.com/opendatahub-io contain the s
 ### Notebooks and workbenches
 
 | Repository | Purpose |
-|------------|---------|
+| ---------- | ------- |
 | [notebooks](https://github.com/opendatahub-io/notebooks) | Pre-configured Jupyter notebook images (CPU, GPU/CUDA/ROCM, PyTorch, TensorFlow variants) |
 | [odh-ide-extensions](https://github.com/opendatahub-io/odh-ide-extensions) | Custom JupyterLab extensions for ODH IDE enhancements |
 
 ### Distributed training and workloads
 
 | Repository | Purpose |
-|------------|---------|
+| ---------- | ------- |
 | [training-operator](https://github.com/opendatahub-io/training-operator) | Kubernetes-native operator for distributed ML training (PyTorch, JAX, TensorFlow) |
 | [trainer](https://github.com/opendatahub-io/trainer) | Kubeflow Trainer for scalable LLM fine-tuning with HuggingFace, DeepSpeed, Megatron-LM |
 | [codeflare-operator](https://github.com/opendatahub-io/codeflare-operator) | Operator for CodeFlare distributed workload stack; manages RayCluster and AppWrapper controllers |
@@ -389,7 +389,7 @@ The following repositories under https://github.com/opendatahub-io contain the s
 ### LLM frameworks and infrastructure
 
 | Repository | Purpose |
-|------------|---------|
+| ---------- | ------- |
 | [llama-stack](https://github.com/opendatahub-io/llama-stack) | Meta's composable framework for AI applications (inference, RAG, agents, tools, safety) |
 | [llama-stack-k8s-operator](https://github.com/opendatahub-io/llama-stack-k8s-operator) | Kubernetes operator for Llama Stack lifecycle management |
 | [llama-stack-demos](https://github.com/opendatahub-io/llama-stack-demos) | Demo applications for building Llama Stack-based apps on OpenShift |
@@ -399,7 +399,7 @@ The following repositories under https://github.com/opendatahub-io contain the s
 ### Model observability and safety (TrustyAI)
 
 | Repository | Purpose |
-|------------|---------|
+| ---------- | ------- |
 | [trustyai-service-operator](https://github.com/opendatahub-io/trustyai-service-operator) | Kubernetes operator for TrustyAI; enables explainability, fairness monitoring, drift tracking |
 | [trustyai-explainability](https://github.com/opendatahub-io/trustyai-explainability) | Java toolkit for fairness metrics, explainable AI algorithms, and XAI tools |
 | [fms-guardrails-orchestrator](https://github.com/opendatahub-io/fms-guardrails-orchestrator) | Orchestrator for LLM guardrailing; manages detectors for input/output safety checks |
@@ -410,7 +410,7 @@ The following repositories under https://github.com/opendatahub-io contain the s
 ### Feature store and experiment tracking
 
 | Repository | Purpose |
-|------------|---------|
+| ---------- | ------- |
 | [feast](https://github.com/opendatahub-io/feast) | Open source feature store for machine learning |
 | [mlflow](https://github.com/opendatahub-io/mlflow) | Platform for tracking, evaluating, and managing ML models and experiments |
 | [mlflow-operator](https://github.com/opendatahub-io/mlflow-operator) | Kubernetes operator for MLflow lifecycle management |
@@ -418,14 +418,14 @@ The following repositories under https://github.com/opendatahub-io contain the s
 ### Model optimization
 
 | Repository | Purpose |
-|------------|---------|
+| ---------- | ------- |
 | [openvino](https://github.com/opendatahub-io/openvino) | Open-source toolkit for optimizing and deploying AI inference across Intel hardware |
 | [openvino.genai](https://github.com/opendatahub-io/openvino.genai) | Framework to run generative AI models with C++/Python API using OpenVINO |
 
 ### Infrastructure and build
 
 | Repository | Purpose |
-|------------|---------|
+| ---------- | ------- |
 | [kubeflow](https://github.com/opendatahub-io/kubeflow) | Machine Learning Toolkit for Kubernetes |
 | [opendatahub-documentation](https://github.com/opendatahub-io/opendatahub-documentation) | This repository - official Open Data Hub documentation |
 | [opendatahub-tests](https://github.com/opendatahub-io/opendatahub-tests) | Testing suite for OpenDataHub |
@@ -434,7 +434,7 @@ The following repositories under https://github.com/opendatahub-io contain the s
 ### Technology categories summary
 
 | Category | Key Technologies |
-|----------|------------------|
+| -------- | ---------------- |
 | Model Serving | KServe, ModelMesh, vLLM, OpenVINO Model Server, MLServer, Caikit |
 | Distributed Training | Training Operator, Kubeflow Trainer, CodeFlare, Ray, Kueue, Spark |
 | Pipelines | Data Science Pipelines (Kubeflow Pipelines), Argo Workflows, Elyra |
@@ -449,10 +449,10 @@ The following repositories under https://github.com/opendatahub-io contain the s
 
 This documentation repository tracks:
 - **Project:** Open Data Hub
-- **Website:** https://opendatahub.io
+- **Website:** [https://opendatahub.io](https://opendatahub.io)
 - **Documentation Format:** AsciiDoc
 - **Build System:** Asciidoctor
-- **Published Location:** https://opendatahub.io/docs (via Read the Docs)
+- **Published Location:** [https://opendatahub.io/docs](https://opendatahub.io/docs) (via Read the Docs)
 
 Version information is maintained in `_artifacts/document-attributes-global.adoc`. Always refer to this file for current version numbers when documenting features.
 
