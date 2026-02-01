@@ -226,7 +226,7 @@ Ask Claude to:
 - Include `include::` statements for reusable content
 - Add `xref:` links between related documentation
 - Follow the Red Hat Style supplementary guide when drafting content
-- Do not use file prefixes to denote topic type (avoid `con-`, `proc-`, `ref-` prefixes)
+- When creating new files, do not use file prefixes to denote topic type (avoid `con-`, `proc-`, `ref-` prefixes). Some existing files use this convention, this is not problematic. 
 - Use AsciiDoc description lists for discrete paragraphs focused on a single idea
 - Use AsciiDoc NOTE and IMPORTANT admonitions where appropriate:
 
