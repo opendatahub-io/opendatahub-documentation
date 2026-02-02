@@ -162,8 +162,8 @@ For more information, see link:https://cloud.ibm.com/docs/containers?topic=conta
 .. *For bare metal deployments*:
 +
 Configure SR-IOV (Single Root I/O Virtualization) for high-performance network interfaces. Install the SR-IOV Network Operator from OperatorHub.
-
-.. Create an SriovNetworkNodePolicy to configure the network interfaces:
++
+Create an SriovNetworkNodePolicy to configure the network interfaces:
 +
 [source,yaml]
 ----
@@ -190,8 +190,8 @@ where:
 nicSelector.vendor:: Specifies the Mellanox/NVIDIA vendor ID. Adjust for your network card vendor.
 nicSelector.deviceID:: Specifies the device ID for your specific network card model.
 isRdma:: Specifies whether to enable RDMA support for RoCE.
-
-.. Create an SriovNetwork to attach the RDMA-enabled network to pods:
++
+Create an SriovNetwork to attach the RDMA-enabled network to pods:
 +
 [source,yaml]
 ----
