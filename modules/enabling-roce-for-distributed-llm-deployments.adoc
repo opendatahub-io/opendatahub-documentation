@@ -124,8 +124,10 @@ spec:
   gdrcopy:
     enabled: false
 ----
-+
-. *gdrcopy.enabled*: GDRCopy provides additional performance optimizations for GPU-to-GPU transfers. Set to `true` if your environment supports it.
+
+where:
+
+gdrcopy.enabled:: Specifies whether to enable GDRCopy, which provides additional performance optimizations for GPU-to-GPU transfers. Set to `true` if your environment supports it.
 +
 NOTE: The performance impact of enabling or disabling GDRCopy depends on your specific workload and hardware configuration. Testing is recommended to determine the optimal setting for your use case.
 
@@ -182,10 +184,12 @@ spec:
   deviceType: netdevice
   isRdma: true
 ----
-+
-. *nicSelector.vendor*: Mellanox/NVIDIA vendor ID. Adjust for your network card vendor.
-. *nicSelector.deviceID*: Device ID for your specific network card model.
-. *isRdma*: Enable RDMA support for RoCE.
+
+where:
+
+nicSelector.vendor:: Specifies the Mellanox/NVIDIA vendor ID. Adjust for your network card vendor.
+nicSelector.deviceID:: Specifies the device ID for your specific network card model.
+isRdma:: Specifies whether to enable RDMA support for RoCE.
 
 .. Create an SriovNetwork to attach the RDMA-enabled network to pods:
 +
@@ -268,12 +272,14 @@ spec:
           hostPath:
             path: /dev/infiniband
 ----
-+
-. *k8s.v1.cni.cncf.io/networks*: Attach the RoCE secondary network to the pod.
-. *rdma/roce*: Request RDMA resources. The resource name depends on your SR-IOV or network configuration.
-. *NCCL_IB_DISABLE*: Enable InfiniBand/RoCE for NCCL (NVIDIA Collective Communications Library).
-. *NCCL_NET_GDR_LEVEL*: Set GPUDirect RDMA level: 0-5, where 5 is maximum optimization.
-. *NCCL_DEBUG*: Enable debug logging for troubleshooting.
+
+where:
+
+k8s.v1.cni.cncf.io/networks:: Specifies the RoCE secondary network to attach to the pod.
+rdma/roce:: Specifies the RDMA resources to request. The resource name depends on your SR-IOV or network configuration.
+NCCL_IB_DISABLE:: Specifies whether to enable InfiniBand/RoCE for NCCL (NVIDIA Collective Communications Library).
+NCCL_NET_GDR_LEVEL:: Specifies the GPUDirect RDMA level: 0-5, where 5 is maximum optimization.
+NCCL_DEBUG:: Specifies whether to enable debug logging for troubleshooting.
 
 .Verification
 

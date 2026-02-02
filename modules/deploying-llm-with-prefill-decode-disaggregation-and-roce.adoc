@@ -50,9 +50,11 @@ data:
       ib_disable: 0
       net_gdr_level: 5
 ----
-+
-. *kv_cache.transfer_method*: Use RDMA for KV cache transfers between prefill and decode stages.
-. *kv_cache.rdma_device*: Specify the RDMA device name. Use `ibv_devices` to list available devices.
+
+where:
+
+kv_cache.transfer_method:: Specifies the transfer method for KV cache between prefill and decode stages. Use RDMA for high-performance transfers.
+kv_cache.rdma_device:: Specifies the RDMA device name. Use `ibv_devices` to list available devices.
 
 . Create an LLMInferenceService with disaggregation enabled:
 +
@@ -141,9 +143,11 @@ spec:
       disaggregation:
         enabled: true
 ----
-+
-. *prefillPool*: Handles initial token generation with optimized batching.
-. *decodePool*: Handles subsequent token generation, receiving KV cache from prefill via RDMA.
+
+where:
+
+prefillPool:: Specifies the prefill pool configuration, which handles initial token generation with optimized batching.
+decodePool:: Specifies the decode pool configuration, which handles subsequent token generation, receiving KV cache from prefill via RDMA.
 
 . Apply the configuration:
 +

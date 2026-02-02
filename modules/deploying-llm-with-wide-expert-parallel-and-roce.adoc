@@ -47,10 +47,12 @@ data:
       ib_hca: mlx5
       ib_roce_adaptive_routing: 1
 ----
-+
-. *expert_parallelism.num_experts_per_gpu*: Number of expert layers to place on each GPU. For Mixtral-8x7B with 4 GPUs, use 2.
-. *expert_parallelism.routing_strategy*: `load_balanced`, `random`, or `token_choice`.
-. *nccl.ib_hca*: InfiniBand/RoCE HCA (Host Channel Adapter) prefix.
+
+where:
+
+expert_parallelism.num_experts_per_gpu:: Specifies the number of expert layers to place on each GPU. For Mixtral-8x7B with 4 GPUs, use 2.
+expert_parallelism.routing_strategy:: Specifies the expert routing strategy: `load_balanced`, `random`, or `token_choice`.
+nccl.ib_hca:: Specifies the InfiniBand/RoCE HCA (Host Channel Adapter) prefix.
 
 . Create an LLMInferenceService with Wide Expert Parallel enabled:
 +
@@ -122,11 +124,13 @@ spec:
           configMap:
             name: wideep-config
 ----
-+
-. *replicas*: Equals the expert parallelism degree.
-. *parallelism.expertParallel*: Distributes 8 experts across 4 GPUs, 2 experts per GPU.
-. *VLLM_EXPERT_PARALLEL_SIZE*: Must match the `expertParallel` value.
-. *shm volume*: For inter-process communication.
+
+where:
+
+replicas:: Specifies the number of replicas, which equals the expert parallelism degree.
+parallelism.expertParallel:: Specifies the expert parallelism degree, which distributes 8 experts across 4 GPUs, 2 experts per GPU.
+VLLM_EXPERT_PARALLEL_SIZE:: Specifies the expert parallelism size. Must match the `expertParallel` value.
+shm volume:: Specifies the shared memory volume for inter-process communication.
 
 . Apply the configuration:
 +
