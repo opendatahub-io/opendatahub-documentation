@@ -218,15 +218,28 @@ spec:
       name: llama-stack
       port: 8321
     distribution:
+ifdef::upstream[]
+      name: upstream
+endif::[]
+ifndef::upstream[]
       name: rh-dev
+endif::[]
     storage:
       size: 5Gi
 ----
 +
+ifdef::upstream[]
+[NOTE]
+====
+The `upstream` value is an example distribution name. If your deployment uses a different distribution name, replace `upstream` with the name that matches your Llama Stack Distribution image and configuration.
+====
+endif::[]
+ifndef::upstream[]
 [NOTE]
 ====
 The `rh-dev` value is an internal image reference. When you create the `LlamaStackDistribution` custom resource, the {productname-short} Operator automatically resolves `rh-dev` to the container image in the appropriate registry. This internal image reference allows the underlying image to update without requiring changes to your custom resource.
 ====
+endif::[]
 
 == Example B: LlamaStackDistribution with *Remote Milvus*
 
@@ -336,8 +349,26 @@ spec:
       name: llama-stack
       port: 8321
     distribution:
+ifdef::upstream[]
+      name: upstream
+endif::[]
+ifndef::upstream[]
       name: rh-dev
+endif::[]
 ----
++
+ifdef::upstream[]
+[NOTE]
+====
+The `upstream` value is an example distribution name. If your deployment uses a different distribution name, replace `upstream` with the name that matches your Llama Stack Distribution image and configuration.
+====
+endif::[]
+ifndef::upstream[]
+[NOTE]
+====
+The `rh-dev` value is an internal image reference. When you create the `LlamaStackDistribution` custom resource, the {productname-short} Operator automatically resolves `rh-dev` to the container image in the appropriate registry. This internal image reference allows the underlying image to update without requiring changes to your custom resource.
+====
+endif::[]
 
 == Example C: LlamaStackDistribution with *Inline FAISS*
 
@@ -415,8 +446,26 @@ spec:
       name: llama-stack
       port: 8321
     distribution:
+ifdef::upstream[]
+      name: upstream
+endif::[]
+ifndef::upstream[]
       name: rh-dev
+endif::[]
 ----
++
+ifdef::upstream[]
+[NOTE]
+====
+The `upstream` value is an example distribution name. If your deployment uses a different distribution name, replace `upstream` with the name that matches your Llama Stack Distribution image and configuration.
+====
+endif::[]
+ifndef::upstream[]
+[NOTE]
+====
+The `rh-dev` value is an internal image reference. When you create the `LlamaStackDistribution` custom resource, the {productname-short} Operator automatically resolves `rh-dev` to the container image in the appropriate registry. This internal image reference allows the underlying image to update without requiring changes to your custom resource.
+====
+endif::[]
 
 == Example D: LlamaStackDistribution with *Remote PostgreSQL with pgvector*
 
@@ -568,8 +617,26 @@ spec:
       name: llama-stack
       port: 8321
     distribution:
+ifdef::upstream[]
+      name: upstream
+endif::[]
+ifndef::upstream[]
       name: rh-dev
+endif::[]
 ----
++
+ifdef::upstream[]
+[NOTE]
+====
+The `upstream` value is an example distribution name. If your deployment uses a different distribution name, replace `upstream` with the name that matches your Llama Stack Distribution image and configuration.
+====
+endif::[]
+ifndef::upstream[]
+[NOTE]
+====
+The `rh-dev` value is an internal image reference. When you create the `LlamaStackDistribution` custom resource, the {productname-short} Operator automatically resolves `rh-dev` to the container image in the appropriate registry. This internal image reference allows the underlying image to update without requiring changes to your custom resource.
+====
+endif::[]
 
 . Click *Create*.
 
