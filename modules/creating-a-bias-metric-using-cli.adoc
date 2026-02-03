@@ -1,0 +1,103 @@
+:_module-type: PROCEDURE
+
+[id='creating-a-bias-metric-using-cli_{context}']
+= Creating a bias metric by using the CLI
+
+[role='_abstract']
+You can use the {openshift-cli} to create a bias metric for a model. 
+
+.Prerequisites
+
+ifndef::upstream[]
+* You are familiar with link:{rhoaidocshome}{default-format-url}/monitoring_your_ai_systems/monitoring-model-bias_bias-monitoring#using-bias-metrics_bias-monitoring[the bias metrics that you can use with {productname-short}] and how to interpret them.
+endif::[]
+ifdef::upstream[]
+* You are familiar with link:{odhdocshome}/monitoring-data-science-models/#using-bias-metrics_bias-monitoring[the bias metrics that you can use with {productname-short}] and how to interpret them.
+endif::[]
+
+* You are familiar with the specific data set schema and understand the names and meanings of the inputs and outputs.
+
+* Your OpenShift cluster administrator added you as a user to the {openshift-platform} cluster and has installed the TrustyAI service for the project that contains the deployed models.
+
+ifdef::upstream[]
+* You set up TrustyAI for your project, as described in link:{odhdocshome}/monitoring-data-science-models/#setting-up-trustyai-for-your-project_monitor[Setting up TrustyAI for your project].
+endif::[]
+
+ifndef::upstream[]
+* You set up TrustyAI for your project, as described in link:{rhoaidocshome}{default-format-url}/monitoring_your_ai_systems/setting-up-trustyai-for-your-project_monitor[Setting up TrustyAI for your project].
+endif::[]
+
+.Procedure
+
+. In a terminal window, log in to the OpenShift cluster where {productname-short} is deployed.
++
+----
+oc login
+----
+
+. Set the `TRUSTY_ROUTE` variable to the external route for the TrustyAI service pod.
++
+----
+TRUSTY_ROUTE=https://$(oc get route/trustyai-service --template={{.spec.host}})
+----
+
+.  Optionally, get the full list of TrustyAI service endpoints and payloads.
++
+----
+curl -H "Authorization: Bearer $TOKEN" --location $TRUSTY_ROUTE/q/openapi
+----
+
+. Use `POST /metrics/group/fairness/spd/request` to schedule a recurring bias monitoring metric with the following syntax and payload structure:
++
+*Syntax*:
++
+----
+curl -sk -H "Authorization: Bearer $TOKEN" -X POST --location $TRUSTY_ROUTE/metrics/group/fairness/spd/request  \
+ --header 'Content-Type: application/json' \
+ --data <payload>
+----
++
+*Payload structure*:
+
+`modelId`:: The name of the model to query.
+`protectedAttribute`:: The name of the feature that distinguishes the groups that you are checking for fairness.
+`privilegedAttribute`:: The suspected favored (positively biased) class.
+`unprivilegedAttribute`:: The suspected unfavored (negatively biased) class.
+`outcomeName`:: The name of the output that provides the output you are examining for fairness.
+`favorableOutcome`:: The value of the `outcomeName` output that describes the favorable or desired model prediction.
+`batchSize`:: The number of previous inferences to include in the calculation.
+
+For example:
+
+----
+curl -sk -H "Authorization: Bearer $TOKEN" -X POST --location $TRUSTY_ROUTE /metrics/group/fairness/spd/request \
+     --header 'Content-Type: application/json' \
+     --data "{
+                 \"modelId\": \"demo-loan-nn-onnx-alpha\",
+                 \"protectedAttribute\": \"Is Male-Identifying?\",
+                 \"privilegedAttribute\": 1.0,
+                 \"unprivilegedAttribute\": 0.0,
+                 \"outcomeName\": \"Will Default?\",
+                 \"favorableOutcome\": 0,
+                 \"batchSize\": 5000
+             }"
+----
+
+.Verification
+
+The bias metrics request should return output similar to the following:
+
+----
+{
+   "timestamp":"2023-10-24T12:06:04.586+00:00",
+   "type":"metric",
+   "value":-0.0029676404469311524,
+   "namedValues":null,
+   "specificDefinition":"The SPD of -0.002968 indicates that the likelihood of Group:Is Male-Identifying?=1.0 receiving Outcome:Will Default?=0 was -0.296764 percentage points lower than that of Group:Is Male-Identifying?=0.0.",
+   "name":"SPD",
+   "id":"d2707d5b-cae9-41aa-bcd3-d950176cbbaf",
+   "thresholds":{"lowerBound":-0.1,"upperBound":0.1,"outsideBounds":false}
+}
+----
+
+The `specificDefinition` field helps you understand the real-world interpretation of these metric values. For this example, the model is fair over the `Is Male-Identifying?` field, with the rate of positive outcome only differing by about -0.3%.
