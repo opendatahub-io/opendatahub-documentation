@@ -242,15 +242,6 @@ $ python benchmark_moe.py \
 # - Higher throughput for multi-request workloads
 ----
 
-.Troubleshooting
-
-If you encounter issues with Wide Expert Parallel:
-
-* *Uneven expert utilization*: Check the `routing_strategy` in your config. Try switching between `load_balanced` and `token_choice`.
-* *High communication latency*: Verify RDMA is being used with `NCCL_DEBUG=INFO`. Check for network congestion.
-* *OOM errors*: Reduce `num_experts_per_gpu` or increase GPU memory. Consider using INT8 or FP8 quantization.
-* *NCCL initialization failures*: Ensure all pods can communicate on the RoCE network. Check NetworkAttachmentDefinition and pod annotations.
-
 [role='_additional-resources']
 .Additional resources
 
