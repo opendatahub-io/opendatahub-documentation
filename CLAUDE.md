@@ -1,7 +1,5 @@
 # CLAUDE.md
 
-## Working with Claude on Open Data Hub documentation
-
 This document provides guidelines for contributors using Claude AI to help maintain and improve the AsciiDoc documentation for Open Data Hub (ODH).
 
 ## About this documentation repository
@@ -11,13 +9,15 @@ This repository contains AsciiDoc-formatted documentation for **Open Data Hub**,
 Open Data Hub provides a platform for developing, training, and serving AI/ML models on OpenShift Container Platform. Key components include:
 
 - Jupyter notebook workbenches
-- Model serving (KServe, ModelMesh)
+- Model serving: KServe, ModelMesh
 - Data science pipelines
 - Distributed training workloads
 - Model registry
-- Model observability (TrustyAI)
+- Model observability: TrustyAI
 
 The documentation is published to [https://opendatahub.io/docs](https://opendatahub.io/docs) via Read the Docs.
+
+This repository is the upstream source for Red Hat OpenShift AI documentation. Content flows downstream to the productized documentation at Red Hat GitLab. For downstream considerations, see "Working with downstream" below.
 
 ## Repository structure
 
@@ -44,17 +44,6 @@ opendatahub-documentation/
 
 Each top-level `.adoc` file in the root directory is a book entry point that includes modules from the shared `modules/` and `assemblies/` directories.
 
-## Key directories
-
-| Directory | Purpose |
-| --------- | ------- |
-| `modules/` | Reusable content modules (concepts, procedures, references) |
-| `assemblies/` | Assembly files that include and organize modules |
-| `_artifacts/` | Global document attributes and shared configuration |
-| `images/` | Image assets |
-| `examples/` | Code examples and Jupyter notebooks |
-| `scripts/` | Build, validation, and link-checking scripts |
-
 ## Build and preview
 
 **Build Tool:** Asciidoctor
@@ -78,16 +67,11 @@ Each top-level `.adoc` file in the root directory is a book entry point that inc
 
 **Branch Naming:**
 - Feature branches: descriptive names based on the change (e.g., `add-pipeline-docs`, `fix-kserve-instructions`)
-- Issue-based branches: reference GitHub issue numbers when applicable
+- Issue-based branches: reference Jira issue numbers when applicable (e.g., `RHAIENG-12345`)
 
 **Remotes:**
 - `origin` - Personal fork
 - `upstream` - Main repository (https://github.com/opendatahub-io/opendatahub-documentation)
-
-**Downstream Relationship:**
-- This repository is the upstream source for Red Hat OpenShift AI documentation
-- Changes here flow downstream to the productized documentation at Red Hat GitLab
-- Content uses the `upstream` attribute for Open Data Hub-specific values
 
 ## Effective prompts for Claude
 
@@ -133,27 +117,20 @@ Always share:
 - The ODH component being documented
 - Any related GitHub issues
 
-### 2. Follow Red Hat documentation standards
-
-- Use the [Red Hat documentation style guide](https://redhat-documentation.github.io/supplementary-style-guide)
-- Use the [Red Hat modular documentation reference guide](https://redhat-documentation.github.io/modular-docs/)
-- Follow established product naming conventions using attributes from `_artifacts/document-attributes-global.adoc`
-- Use sentence case headings
-
-### 3. Specify AsciiDoc requirements
+### 2. Specify AsciiDoc requirements
 
 Mention when you need:
 - Specific AsciiDoc attributes or formatting
 - Cross-module references between assemblies and modules
 - Integration with the existing documentation structure
 
-### 4. Use AsciiDoc templates
+### 3. Use AsciiDoc templates
 
 When creating new content, use the following AsciiDoc templates:
 
 **Concept module template:**
 ```asciidoc
-:_module-type: CONCEPT
+:_mod-docs-content-type: CONCEPT
 [id="module-id_{context}"]
 = Module title
 
@@ -166,7 +143,7 @@ The text that immediately follows the `[role="_abstract"]` tag is used for searc
 
 **Procedure module template:**
 ```asciidoc
-:_module-type: PROCEDURE
+:_mod-docs-content-type: PROCEDURE
 [id="module-id_{context}"]
 = Module title
 
@@ -189,7 +166,7 @@ Short introductory paragraph that provides an overview of the procedure.
 
 **Reference module template:**
 ```asciidoc
-:_module-type: REFERENCE
+:_mod-docs-content-type: REFERENCE
 [id="module-id_{context}"]
 = Module title
 
@@ -208,7 +185,7 @@ Term 2:: Definition
 |====
 ```
 
-### 5. Request code verification
+### 4. Request code verification
 
 Ask Claude to:
 - Verify code examples against the actual product behavior
@@ -216,6 +193,34 @@ Ask Claude to:
 - Validate that configuration examples are current
 
 ## Documentation standards for this project
+
+### Avoid parentheticals
+
+Use alternatives to parentheses:
+
+**For multiple items:** Use a colon.
+- [CORRECT] You have at least 4 GPUs: 2 for prefill, 2 for decode recommended.
+- [INCORRECT] You have at least 4 GPUs (2 for prefill, 2 for decode recommended).
+
+**For single items or examples:** Incorporate naturally into the sentence.
+- [CORRECT] You have a model such as Mixtral-8x7B or Mixtral-8x22B.
+- [CORRECT] NVIDIA GPUs with GPUDirect RDMA support, Pascal architecture or later.
+- [INCORRECT] You have a model (for example, Mixtral-8x7B).
+
+**Exception:** Acronym definitions remain acceptable.
+- [CORRECT] Large Language Model (LLM)
+
+### Next steps sections
+
+- No introductory sentence
+- Jump straight to the bullet list
+
+### Modular content
+
+- Follow the [Red Hat modular documentation reference guide](https://redhat-documentation.github.io/modular-docs/)
+- Follow the [Red Hat supplementary style guide](https://redhat-documentation.github.io/supplementary-style-guide/)
+- Extract reusable sections into standalone modules
+- Prefer modular structure over monolithic assemblies for maintainability and reuse
 
 ### AsciiDoc conventions
 
@@ -225,8 +230,12 @@ Ask Claude to:
 - Use `source` blocks with appropriate language highlighting
 - Include `include::` statements for reusable content
 - Add `xref:` links between related documentation
-- Follow the Red Hat Style supplementary guide when drafting content
-- When creating new files, do not use file prefixes to denote topic type (avoid `con-`, `proc-`, `ref-` prefixes). Some existing files use this convention, this is not problematic. 
+- When creating new files, ensure that one of the following attributes is applied at the top of the file:
+    - `:_mod-docs-content-type: ASSEMBLY`
+    - `:_mod-docs-content-type: PROCEDURE`
+    - `:_mod-docs-content-type: CONCEPT`
+    - `:_mod-docs-content-type: REFERENCE`
+    - `:_mod-docs-content-type: SNIPPET`
 - Use AsciiDoc description lists for discrete paragraphs focused on a single idea
 - Use AsciiDoc NOTE and IMPORTANT admonitions where appropriate:
 
@@ -244,12 +253,149 @@ Add important note content here.
 ====
 ```
 
+#### Links and additional resources
+
+**In sentences:** No colons, link at end, period after link, commas are OK.
+- [CORRECT] For more information, see link:...[Link Text].
+- [INCORRECT] For more information: link:...[Link Text].
+
+**In bullet lists for references or next steps:** Entire bullet is the link, no period at end.
+- [CORRECT] * link:...[Link Text]
+- [INCORRECT] * Descriptive text: link:...[Link Text]
+- [INCORRECT] * link:...[Link Text].
+
+**Additional resources:** Single flat list, no category subdivisions.
+- [CORRECT] Single flat list of all links
+- [INCORRECT] Category:: with nested lists
+
+#### Header levels
+
+- Maximum 2 levels: = (level 1) and == (level 2) only
+- No deeper nesting (=== or beyond)
+- For granular sections: Use introductory sentences instead of level 3+
+headers
+
+#### Flattening nested procedures
+
+- Keep to 2 levels maximum (`.` and `..`)
+- Flatten any triple nesting (`...`), incorporate into double-nested or convert
+to separate steps
+
 ### Code examples
 
-- All code examples should be tested and current
-- Include both minimal and complete examples where appropriate
-- Use callouts (`<1>`, `<2>`) to explain complex code
-- Provide context about when/why to use each approach
+All code examples should be tested and current. Include both minimal and complete examples where appropriate.
+
+#### Explaining code elements
+
+Do not use AsciiDoc callouts. Instead, use one of these approaches:
+
+**For single elements**
+Use a simple sentence after the code block:
+
+Example AsciiDoc:
+
+```asciidoc
+[source,terminal]
+----
+$ hcp create cluster <platform> --help 
+----
++
+Use the `hcp create cluster` command to create and manage hosted clusters. The supported platforms are `aws`, `agent`, and `kubevirt`.
+```
+
+**For multiple parameters/variables**
+- Use a definition list to explain multiple options, parameters, user-replaced values, placeholders, or UI elements.
+    - List the parameters or variables in the order in which they appear in the code block.
+    - Introduce definition lists with "where:" and begin each variable description with "Specifies".
+
+Example AsciiDoc:
+
+```asciidoc
+[source,yaml,subs="+attributes,+quotes"]
+----
+$ cat <<EOF | oc -n <my_product_namespace> create -f -
+apiVersion: v1
+kind: Secret
+metadata:
+ name: <my_product_database_certificates_secrets> 
+type: Opaque
+stringData:
+ postgres-ca.pem: |-
+  -----BEGIN CERTIFICATE-----
+  <ca_certificate_key> 
+ postgres-key.key: |-
+  -----BEGIN CERTIFICATE-----
+  <tls_private_key> 
+ postgres-crt.pem: |-
+  -----BEGIN CERTIFICATE-----
+  <tls_certificate_key> 
+  # ...
+EOF
+----
++
+where:
+
+`<my_product_database_certificates_secrets>`:: Specifies the name of the certificate secret.
+`<ca_certificate_key>`:: Specifies the CA certificate key.
+`<tls_private_key>`:: Specifies the TLS private key.
+`<tls_certificate_key>`:: Specifies the TLS certificate key.
+```
+
+**For YAML files or multiple lines of code**
+* Use a bulleted list to describe the structure of a sample YAML file or explain multiple lines of code in a code block.
+**  List the explanations in the order in which they appear in the code block.
+** Use the bullet format that makes the most sense for your explanations. You do not have to follow the exact wording in the following example.
+
+Example AsciiDoc:
+
+```asciidoc
+[source,yaml]
+----
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: build-and-deploy
+spec:
+  workspaces:
+  - name: shared-workspace
+  params:
+...
+  tasks: 
+  - name: build-image
+    taskRef:
+      resolver: cluster
+      params:
+      - name: kind
+        value: task
+      - name: name
+        value: buildah
+      - name: namespace
+        value: openshift-pipelines
+    workspaces: 
+    - name: source 
+      workspace: shared-workspace 
+    params:
+    - name: TLSVERIFY
+      value: "false"
+    - name: IMAGE
+      value: $(params.IMAGE)
+    runAfter:
+    - fetch-repository
+  - name: apply-manifests
+    taskRef:
+      name: apply-manifests
+    workspaces: 
+    - name: source
+      workspace: shared-workspace
+    runAfter:
+      - build-image
+...
+----
++
+*** `spec.workspaces` defines the list of pipeline workspaces shared between the tasks defined in the pipeline. A pipeline can define as many workspaces as required. In this example, only one workspace named `shared-workspace` is declared.
+*** `spec.tasks` defines the tasks used in the pipeline. This snippet defines two tasks, `build-image` and `apply-manifests`.
+*** `spec.tasks.workspaces` defines the list of task workspaces used in the `build-image` and `apply-manifests` tasks. A task definition can include as many workspaces as it requires. However, it is recommended that a task uses at most one writable workspace. In this example, both the tasks share a common task workspace named `source`, which in turn could share the pipeline workspace named `shared-workspace`.
+```
 
 ### Product attributes
 
@@ -291,15 +437,6 @@ When Claude helps generate or improve documentation:
 - [ ] Content matches the intended audience level
 - [ ] Product attributes used instead of hardcoded names
 
-## Keeping CLAUDE.md current
-
-When working on this repository, Claude should proactively review and update CLAUDE.md to reflect changes:
-
-- **New directories:** Update the repository structure section
-- **Version updates:** Update when product versions change in `_artifacts/document-attributes-global.adoc`
-- **New documentation patterns:** Document any new AsciiDoc conventions or standards
-- **Deprecated content:** Remove or update references to deprecated features
-
 ## Getting help
 
 If Claude suggests changes that seem incorrect or incomplete:
@@ -308,23 +445,28 @@ If Claude suggests changes that seem incorrect or incomplete:
 3. Test any code examples in your development environment
 4. Consult the Red Hat modular documentation guide
 
+## Maintaining this file
+
+When working on this repository, update CLAUDE.md to reflect changes:
+
+- **New directories:** Update the repository structure section
+- **Version updates:** Update when product versions change in `_artifacts/document-attributes-global.adoc`
+- **New documentation patterns:** Document any new AsciiDoc conventions or standards
+- **Deprecated content:** Remove or update references to deprecated features
+
 ## Working with downstream (Red Hat OpenShift AI)
 
-This repository is the upstream source for Red Hat OpenShift AI documentation. Content from this repository is periodically synced to the downstream productized documentation.
-
-### Downstream relationship
+Content from this repository is periodically synced to the downstream productized documentation.
 
 - **Downstream Repository:** Red Hat GitLab (internal)
 - **Product:** Red Hat OpenShift AI (cloud-service and self-managed variants)
 - **Published Location:** [https://docs.redhat.com/en](https://docs.redhat.com/en)
 
-### Content considerations
-
 When writing documentation:
 
 - Focus on Open Data Hub functionality and namespaces
-- Use `{productname-long}` and `{productname-short}` attributes (resolved via `upstream` ifdef)
-- Downstream teams will adapt content for Red Hat-specific features and support
+- Use `{productname-long}` and `{productname-short}` attributes, which resolve via the `upstream` ifdef
+- Downstream teams adapt content for Red Hat-specific features and support
 
 ## Open Data Hub repositories and technologies
 
@@ -445,15 +587,6 @@ The following repositories under [https://github.com/opendatahub-io](https://git
 | Experiment Tracking | MLflow |
 | Model Registry | Kubeflow Model Registry |
 
-## Version compatibility
-
-This documentation repository tracks:
-- **Project:** Open Data Hub
-- **Website:** [https://opendatahub.io](https://opendatahub.io)
-- **Documentation Format:** AsciiDoc
-- **Build System:** Asciidoctor
-- **Published Location:** [https://opendatahub.io/docs](https://opendatahub.io/docs) (via Read the Docs)
-
 Version information is maintained in `_artifacts/document-attributes-global.adoc`. Always refer to this file for current version numbers when documenting features.
 
-**Remember: Claude is a powerful tool for documentation work, but always verify technical details against the actual product and test any code examples before publishing.**
+Always verify technical details against the actual product and test code examples before publishing.
