@@ -1,0 +1,23 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+
+[id="fine-tuning-a-model-by-using-kubeflow-training_{context}"]
+= Fine-tuning a model by using Kubeflow Training
+
+[role='_abstract']
+_Supervised fine-tuning_ (SFT) is the process of customizing a Large Language Model (LLM) for a specific task by using labelled data.
+In this example, you use the Kubeflow Training Operator and Kubeflow Training Operator Python Software Development Kit (Training Operator SDK) to supervise fine-tune an LLM in {productname-long}, by using the Hugging Face SFT Trainer.
+
+
+Optionally, you can use Low-Rank Adaptation (LoRA) to efficiently fine-tune large language models. 
+LORA optimizes computational requirements and reduces memory footprint, enabling you to fine-tune on consumer-grade GPUs. 
+With SFT, you can combine PyTorch Fully Sharded Data Parallel (FSDP) and LoRA to enable scalable, cost-effective model training and inference, enhancing the flexibility and performance of AI workloads within OpenShift environments.
+
+include::modules/configuring-the-fine-tuning-job.adoc[leveloffset=+1]
+include::modules/running-the-fine-tuning-job.adoc[leveloffset=+1]
+include::modules/deleting-the-fine-tuning-job.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
