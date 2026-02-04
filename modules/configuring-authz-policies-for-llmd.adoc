@@ -28,7 +28,7 @@ spec:
   targetRef:
     group: serving.kserve.io
     kind: LLMInferenceService
-    name: <llm-inference-service-name> <1>
+    name: <llm-inference-service-name>
   rules:
     authentication:
       "k8s-service-account-token":
@@ -43,7 +43,7 @@ spec:
       "resource-owners":
         kubernetesSubjectAccessReview:
           user:
-            selector: auth.identity.sub <2>
+            selector: auth.identity.sub
           resourceAttributes:
             namespace:
               value: <namespace>
@@ -56,8 +56,12 @@ spec:
             verb:
               value: get
 ----
-<1> Replace with the name of your `LLMInferenceService`.
-<2> This validates that the ServiceAccount has permission to get the specific `LLMInferenceService` resource.
++
+where:
+
+`<namespace>`:: Specifies the namespace where the `LLMInferenceService` is deployed.
+`<llm-inference-service-name>`:: Specifies the name of your `LLMInferenceService` resource.
+`auth.identity.sub`:: Specifies the selector that validates the ServiceAccount has permission to get the specific `LLMInferenceService` resource.
 
 . Apply the authorization policy:
 +
@@ -96,9 +100,14 @@ spec:
           patterns:
           - selector: auth.identity.sub
             operator: matches
-            value: ^system:serviceaccount:<namespace>:(llm-user-1|llm-user-2)$ <1>
+            value: ^system:serviceaccount:<namespace>:(llm-user-1|llm-user-2)$
 ----
-<1> Replace with a regular expression that matches the allowed ServiceAccount names.
++
+where:
+
+`<namespace>`:: Specifies the namespace where the ServiceAccounts are located.
+`<llm-inference-service-name>`:: Specifies the name of your `LLMInferenceService` resource.
+`llm-user-1|llm-user-2`:: Specifies the allowed ServiceAccount names in a regular expression pattern. Replace with the names of the ServiceAccounts that should have access.
 
 .Verification
 

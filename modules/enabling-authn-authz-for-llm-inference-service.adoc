@@ -23,7 +23,7 @@ kind: LLMInferenceService
 metadata:
   name: sample-llm-inference-service
   annotations:
-    security.opendatahub.io/enable-auth: "true" <1>
+    security.opendatahub.io/enable-auth: "true"
 spec:
   replicas: 2
   model:
@@ -46,7 +46,8 @@ spec:
             memory: 16Gi
             nvidia.com/gpu: "1"
 ----
-<1> This annotation enables authentication and authorization for the inference service.
++
+The `security.opendatahub.io/enable-auth: "true"` annotation enables authentication and authorization for the inference service.
 
 . Apply the configuration:
 +
