@@ -1,0 +1,81 @@
+:_module-type: PROCEDURE
+
+[id="enabling-authn-authz-for-llm-inference-service_{context}"]
+= Enabling authentication and authorization for an LLM inference service
+
+[role='_abstract']
+After configuring {org-name} Connectivity Link for {llmd}, you must annotate your `LLMInferenceService` resource to enable authentication and authorization protection. This ensures that only authenticated requests with valid tokens can access the inference endpoint.
+
+.Prerequisites
+
+* You have configured {org-name} Connectivity Link for {llmd} as described in _Configuring authentication for {llmd} using {org-name} Connectivity Link_.
+* You have created an `LLMInferenceService` resource as described in _Enabling {llmd}_.
+* You have access to the OpenShift CLI (`oc`).
+
+.Procedure
+
+. Create or update your `LLMInferenceService` resource to include the annotation that enables Connectivity Link protection:
++
+[source,yaml]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: sample-llm-inference-service
+  annotations:
+    security.opendatahub.io/enable-auth: "true" <1>
+spec:
+  replicas: 2
+  model:
+    uri: hf://RedHatAI/Qwen3-8B-FP8-dynamic
+    name: RedHatAI/Qwen3-8B-FP8-dynamic
+  router:
+    route: {}
+    gateway: {}
+    scheduler: {}
+    template:
+      containers:
+      - name: main
+        resources:
+          limits:
+            cpu: '4'
+            memory: 32Gi
+            nvidia.com/gpu: "1"
+          requests:
+            cpu: '2'
+            memory: 16Gi
+            nvidia.com/gpu: "1"
+----
+<1> This annotation enables authentication and authorization for the inference service.
+
+. Apply the configuration:
++
+[source,bash]
+----
+oc apply -f <llm-inference-service-file>.yaml
+----
+
+. Verify that the inference service is protected by attempting to access it without authentication:
++
+[source,bash]
+----
+curl -v https://<inference-endpoint-url>/v1/models
+----
++
+If authentication is properly configured, you should receive a `401 Unauthorized` response.
+
+.Verification
+
+* Confirm that the `LLMInferenceService` resource has the annotation:
++
+[source,bash]
+----
+oc get llminferenceservice sample-llm-inference-service -o jsonpath='{.metadata.annotations.security\.opendatahub\.io/enable-auth}'
+----
++
+This command should return `true`.
+
+[role='_additional-resources']
+.Additional resources
+
+* For information about creating authorization policies, see link:https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2/html/configuring_and_deploying_gateway_policies_with_connectivity_link/app-developer-workflow_rhcl[Override your Gateway policies for auth and rate limiting^].
