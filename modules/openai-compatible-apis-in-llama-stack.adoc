@@ -31,6 +31,32 @@ These endpoints are exposed under the OpenAI compatibility layer and are distinc
 
 == Supported OpenAI-compatible APIs in {productname-short}
 
+Before running the following examples, ensure you have:
+
+* The OpenAI Python SDK installed: `pip install -q openai`
+* A configured client pointing to your Llama Stack endpoint
+* Model IDs from your deployment (see Models API section)
+
+[source,python]
+----
+import os
+from openai import OpenAI
+import rich
+
+# We'll be using a llama-stack server deployed in OpenShift AI. More info at "Deploying a Llama Stack server" at 
+# https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/working_with_llama_stack/deploying-llama-stack-server_rag
+#
+# Once all pods associated to the LlamaStackDistribution are running,
+# create the base_url using the llama-stack service hostname (with /v1 at the end when using openai sdk)
+base_url = "http://llama-stack-distribution-service.my-project.svc.cluster.local:8321/v1"
+
+import openai
+client = openai.OpenAI(
+    api_key="your-llama-stack-key",
+    base_url=base_url
+)
+----
+
 === Chat Completions API
 * *Endpoint:* `/v1/openai/v1/chat/completions`.  
 * *Providers:* All inference back ends deployed through {productname-short}.
