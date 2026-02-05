@@ -38,6 +38,23 @@ These endpoints are exposed under the OpenAI compatibility layer and are distinc
 
 The Chat Completions API enables conversational, message-based interactions with models served by Llama Stack in {productname-short}.
 
+Example code in Python:
+
+[source,python]
+----
+# Test chat completion functionality with a simple question
+response = client.chat.completions.create(
+    model=model_id,
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "What is the capital of France?"},
+    ],
+    temperature=0,
+)
+assert len(response.choices) > 0, "No response after basic inference on llama-stack server"
+content = response.choices[0].message.content
+rich.print(content)
+----
 ---
 
 === Completions API
@@ -47,6 +64,22 @@ The Chat Completions API enables conversational, message-based interactions with
 
 The Completions API supports single-turn text generation and prompt completion.
 
+Example code in Python:
+
+[source,python]
+----
+# Test chat completion functionality with a simple question
+response = client.completions.create(
+    model=model_id,
+    prompt="What is the capital of France?",
+    max_tokens=64,
+    temperature=0.1
+)
+assert len(response.choices) > 0, "No response after basic inference on llama-stack server"
+content = response.choices[0].text
+rich.print(content)
+rich.print(response)
+----
 ---
 
 === Embeddings API
@@ -55,6 +88,18 @@ The Completions API supports single-turn text generation and prompt completion.
 
 The Embeddings API generates numerical embeddings for text or documents that can be used in downstream semantic search or RAG applications.
 
+Example code in Python:
+
+[source,python]
+----
+# Create text embeddings
+response = client.embeddings.create(
+    input="Your text string goes here",
+    model=embedding_model_id
+)
+embedding = response.data[0].embedding
+rich.print(embedding[:5] + ["..."] + embedding[-5:])
+----
 ---
 
 === Files API
@@ -64,6 +109,124 @@ The Embeddings API generates numerical embeddings for text or documents that can
 
 The Files API manages file uploads for use in embedding and retrieval workflows.
 
+Example code in Python:
+
+[source,python]
+----
+import requests
+from rich import print
+from rich.rule import Rule
+
+# -----------------------------
+# Download the PDF
+# -----------------------------
+print(Rule("[bold cyan]Downloading PDF[/bold cyan]"))
+
+pdf_url = "https://www.ibm.com/downloads/documents/us-en/1550f7eea8c0ded6"
+filename = "ibm-Q4-2025-4q25-press-release.pdf"
+
+print("📥 Fetching PDF from URL...")
+response = requests.get(pdf_url)
+response.raise_for_status()
+print("✅ PDF fetched successfully")
+
+print(f"💾 Saving PDF as [bold]{filename}[/bold]...")
+with open(filename, "wb") as f:
+    f.write(response.content)
+print(f"✅ Downloaded and saved: [green]{filename}[/green]")
+
+# -----------------------------
+# Upload the PDF
+# -----------------------------
+print(Rule("[bold cyan]Uploading File[/bold cyan]"))
+
+print("☁️ Uploading file to Files API...")
+with open(filename, "rb") as f:
+    file_info = client.files.create(
+        file=(filename, f),
+        purpose="assistants"
+    )
+
+print("✅ File uploaded successfully")
+print(file_info)
+
+# -----------------------------
+# Verify file is completed
+# -----------------------------
+print(Rule("[bold cyan]Waiting until file status is complete[/bold cyan]"))
+import time
+
+# Wait for file processing to complete
+print("Waiting for file processing to complete...")
+max_wait_time = 300  # 5 minutes
+start_time = time.time()
+
+while time.time() - start_time < max_wait_time:
+    files = client.vector_stores.files.list(vector_store_id=vector_store.id)
+    if files.data:
+        file_status = files.data[0].status
+        print(f"File status: {file_status}")
+        if file_status == "completed":
+            print("✅ File processing completed!")
+            break
+        elif file_status == "failed":
+            print("✗ File processing failed!")
+            break
+    time.sleep(5)
+else:
+    print("⚠ Timeout waiting for file processing")
+
+# Verify file is completed
+files = client.vector_stores.files.list(vector_store_id=vector_store.id)
+if files.data:
+    print(f"\nFinal file status: {files.data[0].status}")
+    print(f"File details: {files.data[0]}")
+else:
+    print("No files found in vector store")
+
+# -----------------------------
+# Create vector store
+# -----------------------------
+print(Rule("[bold cyan]Creating Vector Store[/bold cyan]"))
+
+provider_id = "milvus"
+
+print("🧠 Creating vector store with Milvus provider...")
+vector_store = client.vector_stores.create(
+    name="test_vector_store",
+    extra_body={
+        "embedding_model": embedding_model_id,
+        "embedding_dimension": embedding_dimension,
+        "provider_id": provider_id,
+    },
+)
+
+print("✅ Vector store created")
+print(vector_store)
+
+# -----------------------------
+# Add file to vector store
+# -----------------------------
+print(Rule("[bold cyan]Indexing File[/bold cyan]"))
+
+print("📎 Adding uploaded file to vector store...")
+vector_store_file = client.vector_stores.files.create(
+    vector_store_id=vector_store.id,
+    file_id=file_info.id,
+    chunking_strategy={
+        "type": "static",
+        "static": {
+            "max_chunk_size_tokens": 500,
+            "chunk_overlap_tokens": 50,
+        }
+    }
+)
+
+print("✅ File added to vector store")
+print(vector_store_file)
+
+print(Rule("[bold green]All tasks completed successfully ✔[/bold green]"))
+----
 ---
 
 === Vector Stores API
@@ -91,6 +254,21 @@ The Vector Store Files API implements the OpenAI Vector Store Files interface an
 
 The Models API lists and retrieves available model resources from the Llama Stack deployment running on {productname-short}. By using the Models API, you can enumerate models, view their capabilities, and verify deployment status through a standardized OpenAI-compatible interface.
 
+Example code in Python:
+
+[source,python]
+----
+# List models available in the llama-stack server
+models = client.models.list()
+rich.print(models)
+
+# Select the first LLM and first embedding model
+model_id = next(m for m in models if m.custom_metadata["model_type"] == "llm").id
+embedding_model_id = (
+    em := next(m for m in models if m.custom_metadata["model_type"] == "embedding")
+).id
+embedding_dimension = em.custom_metadata["embedding_dimension"]
+----
 ---
 
 === Responses API
@@ -99,6 +277,87 @@ The Models API lists and retrieves available model resources from the Llama Stac
 * *Support level:* Developer Preview. 
 
 The Responses API generates model outputs by combining inference, file search, and tool-calling capabilities through a single OpenAI-compatible endpoint. It is particularly useful for retrieval-augmented generation (RAG) workflows that rely on the `file_search` tool to retrieve context from vector stores.
+
+Example code in Python:
+
+[source,python]
+----
+from rich import print
+from rich.table import Table
+
+system_instructions = (
+    "You are a helpful AI assistant. You are designed to answer questions "
+    "in a concise and professional manner."
+)
+
+examples = [
+    {
+        "input_query": "What do you know about Twilio's earnings in Q3 2025?",
+        "expected_answer": "Revenue grew by 15% year-over-year, with organic revenue growth of 13%"
+    },
+    {
+        "input_query": "Who is buying Stytch, Inc in 2025?",
+        "expected_answer": (
+            "Twilio is buying Stytch, Inc. Twilio entered into a definitive agreement "
+            "to acquire Stytch, Inc. on October 30, 2025"
+        )
+    },
+    {
+        "input_query": "How many active customer accounts does Twilio have in Q3 2025?",
+        "expected_answer": (
+            "Twilio had more than 392,000 Active Customer Accounts as of September 30, 2025"
+        )
+    },
+]
+
+# Use the Responses API to create a results table comparing not using vs using
+# the vector_store
+table = Table(
+    title="Answer Comparison (With vs Without Vector Store)",
+    show_lines=True,
+)
+
+table.add_column("Question", style="cyan", no_wrap=False)
+table.add_column("Expected Answer", style="magenta", no_wrap=False)
+table.add_column("Answer (No Vector Store)", style="yellow", no_wrap=False)
+table.add_column("Answer (With Vector Store)", style="green", no_wrap=False)
+
+for example in examples:
+    question = example["input_query"]
+    expected_answer = example["expected_answer"]
+
+    # Ask question without vector_store
+    response_no_vs = client.responses.create(
+        model=model_id,
+        input=question,
+        instructions=system_instructions,
+    )
+    answer_no_vs = response_no_vs.output_text.strip()
+
+    # Ask question with vector_store
+    response_vs = client.responses.create(
+        model=model_id,
+        input=question,
+        instructions=system_instructions,
+        tools=[
+            {
+                "type": "file_search",
+                "vector_store_ids": [vector_store.id],
+            }
+        ],
+    )
+    answer_vs = response_vs.output_text.strip()
+
+    table.add_row(
+        question,
+        expected_answer,
+        answer_no_vs,
+        answer_vs,
+    )
+
+# The table will take a while to be printed, as multiple queries to the responses API will be done
+print(table)
+----
 
 [NOTE]
 ====
