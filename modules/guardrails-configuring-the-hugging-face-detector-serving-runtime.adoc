@@ -11,6 +11,9 @@ To use link:https://huggingface.co/docs/transformers/model_doc/auto#transformers
 
 The link:https://github.com/opendatahub-io/odh-model-controller/blob/incubating/config/runtimes/hf-detector-template.yaml[guardrails-detector-huggingface-runtime] is a KServe serving runtime for Hugging Face predictive text models. This allows models such as the link:https://huggingface.co/ibm-granite/granite-guardian-hap-38m[ibm-granite/granite-guardian-hap-38m] to be used within the TrustyAI Guardrails ecosystem.
 
+.Prerequisites
+* You have configured the `spec.kserve.rawDeploymentServiceConfig` field to `Headed` in your `DataScienceCluster`.
+
 .Example custom serving runtime
 
 This YAML file contains an example of a custom serving Huggingface runtime:

@@ -42,6 +42,8 @@ endif::[]
 
 * You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace.
 
+* You have configured the `spec.kserve.rawDeploymentServiceConfig` field to `Headed` in your `DataScienceCluster`.
+
 * A cluster administrator has installed the following Operators in {openshift-platform}:
 ** {org-name} Connectivity Link version 1.1.1 or later.
 
@@ -64,7 +66,7 @@ spec:
     managementState: Managed
     nim:
       managementState: Managed
-    rawDeploymentServiceConfig: Headless
+    rawDeploymentServiceConfig: Headed
   serving:
     ingressGateway:
       certificate:
