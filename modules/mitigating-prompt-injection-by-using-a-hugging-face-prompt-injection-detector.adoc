@@ -41,6 +41,8 @@ endif::[]
 
 * You have the TrustyAI component in your OpenShift AI `DataScienceCluster` set to `Managed`.
 
+* You have configured the `spec.kserve.rawDeploymentServiceConfig` field to `Headed` in your `DataScienceCluster`.
+
 * You have a large language model (LLM) for chat generation or text classification, or both, deployed in your namespace, to follow the Orchestrator API example.
 
 .Scenario 1: Using a Prompt Injection detector with a generative large language model
@@ -293,21 +295,21 @@ data:
   config.yaml: |
     chat_generation:
       service:
-        hostname: llm-predictor  
-        port: 8080
+        hostname: llm-predictor
+        port: 80
     detectors:
       hap:
         type: text_contents
         service:
           hostname: hap-detector-predictor
-          port: 8000
+          port: 80
         chunker_id: whole_doc_chunker
         default_threshold: 0.5
       prompt_injection:
         type: text_contents
         service:
           hostname: prompt-injection-detector-predictor
-          port: 8000
+          port: 80
         chunker_id: whole_doc_chunker
         default_threshold: 0.5
 ---
