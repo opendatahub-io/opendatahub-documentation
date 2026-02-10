@@ -20,11 +20,13 @@ ifndef::upstream[]
 * **NVIDIA GPUs**: See link:{rhoaidocshome}{default-format-url}/working_with_accelerators/enabling-nvidia-gpus_accelerators[Enabling NVIDIA GPUs].
 * **Intel Gaudi AI accelerators**: See link:{rhoaidocshome}{default-format-url}/working_with_accelerators/intel-gaudi-ai-accelerator-integration_accelerators[Enabling Intel Gaudi AI accelerators].
 * **AMD GPUs**: See link:{rhoaidocshome}{default-format-url}/working_with_accelerators/amd-gpu-integration_accelerators[Enabling AMD GPUs].
+//* **IBM Spyre**: See link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/{ocp-latest-version}/html/managing_openshift_ai/enabling-accelerators#enabling-ibm-spyre_managing-rhoai[Enabling IBM Spyre accelerators]
 endif::[]
 ifdef::upstream[]
 * **NVIDIA GPUs**: See link:{odhdocshome}/working-with-accelerators/#enabling-nvidia-gpus_accelerators[Enabling NVIDIA GPUs].
 * **Intel Gaudi AI accelerators**: See link:{odhdocshome}/working-with-accelerators/#intel-gaudi-ai-accelerator-integration_accelerators[Intel Gaudi AI Accelerator integration].
 * **AMD GPUs**: See link:{odhdocshome}/working-with-accelerators/#amd-gpu-integration_accelerators[AMD GPU Integration].
+//* **IBM Spyre**: See link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/{ocp-latest-version}/html/managing_openshift_ai/enabling-accelerators#enabling-ibm-spyre_managing-rhoai[Enabling IBM Spyre accelerators]
 endif::[]
 . After installing your accelerator, create a hardware profile as described in:
 ifndef::upstream[]
@@ -41,7 +43,7 @@ endif::[]
 ** Node Feature Discovery (NFD)
 ** Kernel Module Management (KMM)
 
-* The accelerator is correctly detected a few minutes after full installation of the Node Feature Discovery (NFD) and the relevant accelerator Operator. The {openshift-cli} displays the appropriate output for the GPU worker node. For example, here is output confirming that an NVIDIA GPU is detected: 
+* The accelerator is correctly detected a few minutes after full installation of the Node Feature Discovery (NFD) and the relevant accelerator Operator. The {openshift-cli} displays the appropriate output for the GPU worker nodes with accelerator cards. For example, here is output confirming that an NVIDIA GPU is detected: 
 +
 [source]
 ----
