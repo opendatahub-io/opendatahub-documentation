@@ -15,28 +15,7 @@ For optimal RoCE performance:
 * Use dedicated VLANs for RDMA traffic to isolate from other workloads
 * Set appropriate MTU size, 9000 for jumbo frames
 
-== NCCL tuning
-
-Optimize NCCL performance with these environment variables:
-
-[source,yaml]
-----
-env:
-- name: NCCL_IB_HCA
-  value: "mlx5"  # Match your InfiniBand HCA prefix
-- name: NCCL_IB_GID_INDEX
-  value: "3"  # RoCE v2 GID index
-- name: NCCL_NET_GDR_LEVEL
-  value: "5"  # Maximum GPUDirect RDMA optimization
-- name: NCCL_SOCKET_IFNAME
-  value: "eth1"  # RoCE network interface name
-- name: NCCL_IB_ROCE_ADAPTIVE_ROUTING
-  value: "1"  # Enable adaptive routing for load balancing
-----
-
 == Model serving optimization
 
 * *Use quantization*: FP8 or INT8 quantization reduces memory usage and bandwidth requirements
 * *Tune batch sizes*: Larger batch sizes improve GPU utilization but increase latency
-* *Configure KV cache*: Optimize KV cache size based on available GPU memory and expected sequence lengths
-* *Monitor GPU memory*: Use `nvidia-smi` or Prometheus metrics to track GPU memory usage and avoid OOM errors

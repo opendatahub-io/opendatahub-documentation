@@ -17,6 +17,11 @@ ifndef::upstream[]
 * You have configured RoCE networking for distributed LLM deployments.
 endif::[]
 * You have verified that RoCE networking is functioning correctly.
+* Ensure your cluster infrastructure is sufficient to [deploy high scale inference](). 
+** You must have high speed inter-accelerator networking.
+** The pods leveraging inter-node EP must be deployed in a cluster environment with full mesh network connectivity.
+** [NOTE] The DeepEP backend used in WideEP requires All-to-All RDMA connectivity. Every NIC on a host must be able to communicate with every NIC on all other hosts. Networks restricted to communicating only between matching NIC IDs (rail-only connectivity) will fail.
+** You have deployed the [LeaderWorkerSet optional controller]().
 * You have installed Distributed Inference Server with llm-d.
 * You have a Mixture-of-Experts model such as Mixtral-8x7B or Mixtral-8x22B.
 * You have sufficient GPUs to distribute expert layers: minimum 4 GPUs recommended for Mixtral-8x7B.
@@ -167,32 +172,6 @@ mixtral-wideep-predictor-1-def    1/1     Running   0          8m
 mixtral-wideep-predictor-2-ghi    1/1     Running   0          8m
 mixtral-wideep-predictor-3-jkl    1/1     Running   0          8m
 ----
-
-. Verify NCCL is using RoCE for expert communication:
-+
-[source,bash]
-----
-$ oc logs mixtral-wideep-predictor-0-abc | grep "NCCL.*RoCE\|NCCL.*IB"
-----
-+
-.Sample log output
-+
-[source,text]
-----
-NCCL INFO NET/IB : Using [0]mlx5_0:1/RoCE [1]mlx5_1:1/RoCE
-NCCL INFO Using network RoCE
-NCCL INFO Channel 00/02 : 0   1   2   3
-----
-
-. Check expert distribution across GPUs:
-+
-[source,bash]
-----
-$ for pod in $(oc get pods -l serving.kserve.io/inferenceservice=mixtral-wideep -o name); do
-  echo "=== $pod ==="
-  oc exec $pod -- curl -s localhost:8000/health | jq '.expert_assignment'
-done
-----
 +
 Each pod should show which expert layers it is serving.
 
@@ -224,23 +203,6 @@ Key metrics to monitor:
 * `expert_routing_requests_total{expert="N"}` - Requests routed to each expert
 * `rdma_transfer_bytes_total` - Total data transferred via RDMA
 * `expert_communication_latency_seconds` - Latency for cross-GPU expert communication
-
-. Run a performance comparison:
-+
-[source,bash]
-----
-# Benchmark with WideEP and RoCE
-$ python benchmark_moe.py \
-  --endpoint <wideep-endpoint> \
-  --model mixtral-8x7b \
-  --requests 100 \
-  --concurrent 10
-
-# Expected improvements:
-# - 40-60% lower latency vs. non-RDMA
-# - Better load balancing across experts
-# - Higher throughput for multi-request workloads
-----
 
 [role='_additional-resources']
 .Additional resources
