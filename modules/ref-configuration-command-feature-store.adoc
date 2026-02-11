@@ -1,0 +1,23 @@
+[id="ref-configuration-command-feature-store_{context}"]
+
+= Feature Store configuration command
+
+[role='_abstract']
+The Feature Store configuration command displays the active configuration for the Feature Store environment. The output includes both user-provided and default configurations.
+
+.Configuration example command and output
+[source,yaml]
+----
+Feature Store configuration
+project: foo
+registry: data/registry.db
+provider: local
+online_store:
+    type: sqlite
+    path: data/online_store.db
+offline_store: 
+    type: dask 
+entity_key_serialization_version: 3
+auth:
+    type: no_auth
+----

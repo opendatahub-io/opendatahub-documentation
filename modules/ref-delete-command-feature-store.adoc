@@ -1,0 +1,41 @@
+:_mod-docs-content-type: REFERENCE
+[id="ref_feast-delete-command_{context}"]
+
+= Feature Store delete command
+
+[role='_abstract']
+The `feast delete` command removes a Feast object from the registry. This includes objects such as feature views, entities, data sources, and feature services.
+
+The command searches for the specified object name across all object types, including entities, feature views, feature services, data sources, saved datasets, and validation references. It deletes the first matching object found and removes any associated infrastructure.
+
+.Delete syntax
+[source,bash]
+----
+feast delete <object_name>
+----
+
+[IMPORTANT]
+====
+The delete operation is permanent. Proceed with caution.
+====
+
+[NOTE]
+====
+If multiple objects share the same name across different types, `feast delete` removes the first one it encounters. For programmatic deletion with greater control, use the Python SDK methods, such as `store.delete_feature_view()` or `store.delete_feature_service()`.
+====
+
+.Delete command examples
+
+* Delete a feature view named `driver_hourly_stats`:
++
+[source,bash]
+----
+feast delete driver_hourly_stats
+----
+
+* Delete an entity named `driver`:
++
+[source,bash]
+----
+feast delete driver
+----
