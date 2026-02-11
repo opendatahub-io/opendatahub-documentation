@@ -84,45 +84,110 @@ spec:
 apiVersion: nvidia.com/v1
 kind: ClusterPolicy
 metadata:
-  name: gpu-cluster-policy
+  name: cluster-policy
+  namespace: nvidia-gpu-operator
 spec:
+  # --- General Operator Settings ---
   operator:
     defaultRuntime: crio
+    initContainer: {}
+    runtimeClass: nvidia
+    use_ocp_driver_toolkit: true
+  # --- Driver & Licensing ---
   driver:
     enabled: true
-    version: "535.129.03"
-  toolkit:
-    enabled: true
-  devicePlugin:
-    enabled: true
+    licensingConfig:
+      configMapName: 'nvidia-licensing-config'
+      nlsEnabled: true
+    kernelModuleType: auto
+    certConfig:
+      name: ''
+    rdma:
+      enabled: true      # Enables nvidia-peermem
+      useHostMofed: false # Requires Network Operator
+    useNvidiaDriverCRD: false
+    kernelModuleConfig:
+      name: 'kernel-module-params'
+    usePrecompiled: false
+    repoConfig:
+      configMapName: ''
+    upgradePolicy:
+      autoUpgrade: true
+      maxParallelUpgrades: 1
+      maxUnavailable: 25%
+      drain:
+        deleteEmptyDir: false
+        enable: false
+        force: false
+        timeoutSeconds: 300
+      podDeletion:
+        deleteEmptyDir: false
+        force: false
+        timeoutSeconds: 300
+      waitForCompletion:
+        timeoutSeconds: 0
+  # --- Monitoring ---
   dcgm:
     enabled: true
   dcgmExporter:
     enabled: true
-  gfd:
-    enabled: true
-  migManager:
-    enabled: false
+    serviceMonitor:
+      enabled: true
+  config:
+    name: ''
   nodeStatusExporter:
     enabled: true
+  # --- Device Plugins & Topology ---
+  devicePlugin:
+    enabled: true
+    config:
+      default: ''
+      name: ''
+  mps:
+    root: /run/nvidia/mps
+  sandboxDevicePlugin:
+    enabled: true
+  virtualTopology:
+    config: ''
+  # --- Advanced Features (MIG, RDMA, GDR) ---
+  mig:
+    strategy: single
+  migManager:
+    enabled: true
+  vgpuDeviceManager:
+    enabled: true
+  gdrcopy:
+    enabled: true
+  gfd:
+    enabled: true
+  vfioManager:
+    enabled: true
+  # --- Toolkit ---
+  toolkit:
+    enabled: true
+    installDir: /usr/local/nvidia
+  # --- Updates & Validation ---
+  daemonsets:
+    rollingUpdate:
+      maxUnavailable: '1'
+    updateStrategy: RollingUpdate
+  validator:
+    plugin:
+      env: []
+  # --- Disabled Components ---
+  sandboxWorkloads:
+    defaultWorkload: container
+    enabled: false
   gds:
     enabled: false
   vgpuManager:
-    enabled: false
-  vgpuDeviceManager:
-    enabled: false
-  sandboxDevicePlugin:
-    enabled: false
-  vfioManager:
-    enabled: false
-  gdrcopy:
     enabled: false
 ----
 +
 where:
 
 driver.rdma.useHostMofed:: Set to false. The NVIDIA Network Operator  manages the mofed drivers (configured in later steps).
-gdrcopy.enabled:: Specifies whether to enable GDRCopy, which provides additional performance optimizations for GPU-to-GPU transfers and is required for low-latency memory copying. Set to `true` if your environment supports it. 
+driver.gdrcopy.enabled:: Specifies whether to enable GDRCopy, which provides additional performance optimizations for GPU-to-GPU transfers and is required for low-latency memory copying. Set to `true` if your environment supports it. 
 +
 NOTE: The performance impact of enabling or disabling GDRCopy depends on your specific workload and hardware configuration. Testing is recommended to determine the optimal setting for your use case.
 

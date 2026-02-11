@@ -17,14 +17,16 @@ ifndef::upstream[]
 * You have configured RoCE networking for distributed LLM deployments.
 endif::[]
 * You have verified that RoCE networking is functioning correctly.
-* Ensure your cluster infrastructure is sufficient to [deploy high scale inference](). 
-** You must have high speed inter-accelerator networking.
-** The pods leveraging inter-node EP must be deployed in a cluster environment with full mesh network connectivity.
-** [NOTE] The DeepEP backend used in WideEP requires All-to-All RDMA connectivity. Every NIC on a host must be able to communicate with every NIC on all other hosts. Networks restricted to communicating only between matching NIC IDs (rail-only connectivity) will fail.
-** You have deployed the [LeaderWorkerSet optional controller]().
+* Your cluster infrastructure can support deploying high scale inference:
+** You have high speed inter-accelerator networking.
+** The pods using inter-node EP are deployed in a cluster environment with full mesh network connectivity.
++
+[NOTE:] The DeepEP backend used in WideEP requires All-to-All RDMA connectivity. Every NIC on a host must be able to communicate with every NIC on all other hosts. Networks restricted to communicating only between matching NIC IDs, for example, rail-only connectivity, will fail.
++
+** You have deployed the optional `LeaderWorkerSet` controller.
 * You have installed Distributed Inference Server with llm-d.
 * You have a Mixture-of-Experts model such as Mixtral-8x7B or Mixtral-8x22B.
-* You have sufficient GPUs to distribute expert layers: minimum 4 GPUs recommended for Mixtral-8x7B.
+* You have enough GPUs to distribute expert layers: minimum 4 GPUs recommended for Mixtral-8x7B.
 
 .Procedure
 
