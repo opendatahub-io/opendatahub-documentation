@@ -1,0 +1,27 @@
+:_mod-docs-content-type: REFERENCE
+
+[id="ref_feast-feature-views-command_{context}"]
+
+= Feature Store feature views command
+
+[role='_abstract']
+The `feast feature-views list` command displays a list of all registered feature views.
+
+.Feature views syntax
+[source,bash]
+----
+feast feature-views list [options]
+----
+
+.Feature views options
+`--tags <text>`::
+Filters the list by tags (for example, `--tags 'key:value'`). You can specify multiple tags. Items are returned only when all specified tags match.
+
+.Feature views example command and output
+[source,bash]
+----
+$ feast feature-views list
+
+NAME                 ENTITIES    TYPE
+driver_hourly_stats  {'driver'}  FeatureView
+----

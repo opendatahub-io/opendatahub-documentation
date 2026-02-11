@@ -1,0 +1,61 @@
+:_mod-docs-content-type: REFERENCE
+
+[id="ref_feast-materialize-command-feature-store_{context}"]
+
+= Feature Store materialize command
+
+[role='_abstract']
+Use the `feast materialize` command to load data from feature views into the online store for a specific time range.
+
+.Materialize syntax
+[subs="+quotes"]
+----
+$ *feast materialize [options] __<start_date>__ __<end_date>__*
+----
+
+.Options
+`--disable-event-timestamp`::
+Materializes all available data using the current date and time as the event timestamp. This flag is useful when the source data lacks event timestamp columns.
+
+`-v __<feature_view_name>__`::
+Limits materialization to a specific feature view.
+
+.Materialize data within a time range
+The following command materializes data between two ISO 8601 timestamps:
+
+[subs="+quotes"]
+----
+$ *feast materialize 2020-01-01T00:00:00 2022-01-01T00:00:00*
+----
+
+.Materialize example output
+[source,text]
+----
+Materializing 1 feature views from 2020-01-01 to 2022-01-01
+
+driver_hourly_stats:
+100%|██████████████████████████| 5/5 [00:00<00:00, 5949.37it/s]
+----
+
+.Materialize without timestamps
+The following command uses the current date and time for the event timestamp:
+
+[subs="+quotes"]
+----
+$ *feast materialize --disable-event-timestamp*
+----
+
+.Materialize a specific feature view
+The following command materializes the `driver_hourly_stats` feature view for a specific time range:
+
+[subs="+quotes"]
+----
+$ *feast materialize -v driver_hourly_stats 2020-01-01T00:00:00 2022-01-01T00:00:00*
+----
+
+The following command materializes the `driver_hourly_stats` feature view without event timestamps:
+
+[subs="+quotes"]
+----
+$ *feast materialize --disable-event-timestamp -v driver_hourly_stats*
+----
