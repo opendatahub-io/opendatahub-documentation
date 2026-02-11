@@ -187,9 +187,32 @@ spec:
 where:
 
 driver.rdma.useHostMofed:: Set to false. The NVIDIA Network Operator  manages the mofed drivers (configured in later steps).
-driver.gdrcopy.enabled:: Specifies whether to enable GDRCopy, which provides additional performance optimizations for GPU-to-GPU transfers and is required for low-latency memory copying. Set to `true` if your environment supports it. 
+driver.gdrcopy.enabled:: Specifies whether to enable GDRCopy, which provides additional performance optimizations for GPU-to-GPU transfers and is required for low-latency memory copying. Set to `true` if your environment supports it.
 +
 NOTE: The performance impact of enabling or disabling GDRCopy depends on your specific workload and hardware configuration. Testing is recommended to determine the optimal setting for your use case.
+driver.kernelModuleConfig.name:: Specifies the name of the ConfigMap containing custom driver settings. The example above references `kernel-module-params`, which is required for DeepEP (Deep Endpoint) support.
+
+. Create a ConfigMap with custom driver settings required by DeepEP:
++
+DeepEP requires specific NVIDIA driver settings to enable advanced peer-to-peer memory operations. For more information about customizing nvidia.conf values, see the link:https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-operator-rdma.html#configuration-for-gdr[NVIDIA GPU Operator documentation on GPUDirect RDMA configuration].
++
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kernel-module-params
+  namespace: nvidia-gpu-operator
+data:
+  nvidia.conf: |
+    NVreg_EnableStreamMemOPs=1
+    NVreg_RegistryDwords="PeerMappingOverride=1;"
+----
++
+where:
++
+NVreg_EnableStreamMemOPs:: Enables stream memory operations for improved GPU-to-GPU communication performance.
+NVreg_RegistryDwords:: Configures additional driver registry settings. `PeerMappingOverride=1` enables peer mapping for GPUDirect RDMA.
 
 . Configure secondary networks for RoCE based on your deployment environment:
 
@@ -197,18 +220,19 @@ NOTE: The performance impact of enabling or disabling GDRCopy depends on your sp
 +
 IBM Cloud provides cluster network support for NVIDIA accelerated computing. Create a NetworkAttachmentDefinition for each secondary network interface using the host-device CNI plugin.
 +
+IMPORTANT: Use the host-device CNI to attach the full host interface to pods. Alternative CNI plugins like ipvlan and macvlan may not work on cloud platforms without special configuration of routing rules. By default, ipvlan/macvlan traffic is likely to be blocked by cloud routing rules.
++
 NOTE: Only one pod can use each interface per node, similar to GPU allocation. You need to create one NetworkAttachmentDefinition per secondary network interface.
 +
 [source,yaml]
 ----
-apiVersion: k8s.cni.cncf.io/v1
+apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
-  name: dhcp-host-device-port-1
+  name: "dhcp-host-device-port-1"
   namespace: <your-namespace>
 spec:
-  config: |
-    {
+  config: '{
       "cniVersion": "0.3.1",
       "name": "dhcp-host-device-port-1",
       "plugins": [
@@ -226,16 +250,16 @@ spec:
           "mtu": 9000
         }
       ]
-    }
+    }'
 ----
 +
 where:
 
-device:: Specifies the host network device name. Replace `enp163s0` with your actual device name.
+device:: Specifies the host network device name. Replace `enp163s0` with your actual device name. You must create a separate NetworkAttachmentDefinition for each secondary network interface with the appropriate device name.
 isRdma:: Specifies whether to enable RDMA support.
 mtu:: Specifies the maximum transmission unit size. 9000 is recommended for high-performance workloads.
 +
-To attach the network interfaces to your pods, add annotations to the pod specification:
+To attach the network interfaces to your pods, you must use pod annotations that reference the NetworkAttachmentDefinitions. The following example shows annotations for all 8 high-speed secondary network interfaces:
 +
 [source,yaml]
 ----
@@ -253,6 +277,8 @@ metadata:
         {"name":"dhcp-host-device-port-8", "namespace": "<your-namespace>"}
       ]
 ----
++
+Replace `<your-namespace>` with the namespace where you created the NetworkAttachmentDefinitions.
 +
 For more information, see link:https://cloud.ibm.com/docs/vpc?topic=vpc-create-cluster-network-subnet&interface=cli[IBM Cloud cluster network documentation].
 
