@@ -1,0 +1,338 @@
+:_mod-docs-content-type: PROCEDURE
+
+[id="access-models-with-maas_{context}"]
+= Access models through models-as-a-service
+
+[role="_abstract"]
+As a data scientist, developer, or application builder, you can use Models-as-a-Service (MaaS) to access large language models with built-in authentication, rate limiting, and quota management.
+
+== Your tier and access level
+
+Before you begin working with models, it's helpful to understand how MaaS determines your access level:
+
+* *Tier assignment*: You are automatically assigned to a service tier based on your group membership in {openshift-platform}.
+* *Rate limits*: Your tier determines how many requests you can make per minute and how many tokens you can consume.
+* *Model access*: Some models may be available only to specific tiers.
+* *Authentication*: You must use a MaaS-issued token to access models.
+
+.Prerequisites
+
+* You have access to the {productname-short} dashboard.
+* Your administrator has enabled Models-as-a-Service and assigned you to a tier.
+
+== View available models
+
+Discover which models are available to your tier and check their status.
+
+.Procedure
+
+. Log in to the {productname-short} dashboard.
+. In the left navigation menu, click *Gen AI studio*.
+. Click *AI asset endpoints*.
+. Click the *Models as a service* tab.
++
+The Models as a service page displays a table of all models published to MaaS. Each model shows:
++
+* Model deployment name (used in API requests)
+* Status (Ready, Not ready, or Unknown)
+* Inference endpoint with a *View* link
+* Actions menu with options like *Add to playground*
++
+Models published to MaaS display a *MaaS* badge next to the name.
+
+.Verification
+
+* Verify that at least one model appears in the list with a Ready status and MaaS badge.
+* If no models appear, contact your administrator to verify that models are deployed and your tier has access.
+
+== View your tier and limits
+
+Check your current tier assignment and understand your resource limits.
+
+.Procedure
+
+. On the Models as a service page, click the *Tier information* link near the top of the page.
+. Review your tier details in the popup dialog:
++
+* Tier name (for example, Free, Premium, or Enterprise)
+* Groups you belong to
+* Priority level
+* Rate limits (requests per time period and token quotas)
+
+[TIP]
+====
+If you frequently hit rate limits or need higher quotas, contact your administrator to request access to a higher tier.
+====
+
+.Verification
+
+* Verify that the Tier information dialog displays your tier name and associated limits.
+
+== Generate an authentication token
+
+Generate a token to authenticate your API requests to models.
+
+.Procedure
+
+. On the Models as a service page, locate the model you want to access.
+. Click *View* in the Inference endpoint column.
+. In the "Model as a service (MaaS) route" dialog, copy the MaaS route URL and store it securely.
++
+You will need this URL to make API calls to the model.
++
+. Click *Generate API Key*.
+. Copy the generated token immediately and store it securely.
++
+[IMPORTANT]
+====
+The token is displayed only once. If you lose the token, you must generate a new one.
+====
+
+.Verification
+
+Test the token by making an API call to list available models:
+
+[source,terminal]
+----
+$ export MAAS_TOKEN="<your_generated_token>"
+$ export CLUSTER_DOMAIN=$(oc get ingresses.config.openshift.io cluster -o jsonpath='{.spec.domain}')
+
+$ curl -X GET "https://maas.${CLUSTER_DOMAIN}/v1/models" \
+  -H "Authorization: Bearer ${MAAS_TOKEN}"
+----
+
+If the token is valid, the command returns a JSON list of available models.
+
+== Make API calls to models
+
+Use your token to make requests to models through the MaaS API.
+
+.Procedure
+
+. If you did not copy the MaaS route URL during token generation, get it using one of the following methods:
++
+Copy the MaaS route URL from the "Model as a service (MaaS) route" dialog in the dashboard.
++
+Alternatively, construct the URL from your cluster domain:
++
+[source,terminal]
+----
+$ export CLUSTER_DOMAIN=$(oc get ingresses.config.openshift.io cluster -o jsonpath='{.spec.domain}')
+$ export MAAS_URL="https://maas.${CLUSTER_DOMAIN}"
+$ echo $MAAS_URL
+----
+
+. List available models using the `/v1/models` endpoint:
++
+[source,terminal]
+----
+$ curl -X GET "${MAAS_URL}/v1/models" \
+  -H "Authorization: Bearer ${MAAS_TOKEN}"
+----
++
+Example response (OpenAI-compatible format):
++
+[source,json]
+----
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "facebook-opt-125m",
+      "object": "model",
+      "created": 1234567890,
+      "owned_by": "llm",
+      "ready": true
+    },
+    {
+      "id": "llama-2-7b-chat",
+      "object": "model",
+      "created": 1234567890,
+      "owned_by": "llm",
+      "ready": true
+    }
+  ]
+}
+----
+
+. Call a model using the chat completions endpoint:
++
+[source,terminal]
+----
+$ curl -X POST "${MAAS_URL}/llm/<model_name>/v1/chat/completions" \
+  -H "Authorization: Bearer ${MAAS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "<model_name>",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Explain quantum computing in simple terms."
+      }
+    ],
+    "max_tokens": 150,
+    "temperature": 0.7
+  }'
+----
++
+Replace `<model_name>` with the actual model deployment name.
++
+Example response:
++
+[source,json]
+----
+{
+  "id": "chatcmpl-abc123",
+  "object": "chat.completion",
+  "created": 1234567890,
+  "model": "llama-2-7b-chat",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Quantum computing is a type of computing that uses quantum mechanics..."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 12,
+    "completion_tokens": 45,
+    "total_tokens": 57
+  }
+}
+----
+
+.Verification
+
+. Test the `/v1/models` endpoint and confirm you receive a list of available models.
+. Make a chat completion request to a model and verify that you receive a response with the expected JSON structure.
+. Check the response headers for rate limit information (`X-RateLimit-Limit`, `X-RateLimit-Remaining`).
++
+If you receive authentication errors, verify that your token is valid and has not expired.
+
+== Rate limit responses
+
+When you exceed your tier's rate limits, MaaS returns specific error responses to help you manage your usage.
+
+.Request rate limit exceeded
+
+If you exceed the maximum number of requests per minute:
+
+.Example error response
+[source,json]
+----
+{
+  "error": {
+    "message": "Rate limit exceeded. You have exceeded the maximum number of requests per minute for your tier.",
+    "type": "rate_limit_error",
+    "code": 429
+  }
+}
+----
+
+.Response headers (useful for retry logic)
+----
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1234567890
+Retry-After: 42
+----
+
+.Handling rate limits in Python
+[source,python]
+----
+import time
+import requests
+
+def make_request_with_retry(url, headers, data, max_retries=3):
+    for attempt in range(max_retries):
+        response = requests.post(url, headers=headers, json=data)
+
+        if response.status_code == 429:
+            retry_after = int(response.headers.get('Retry-After', 60))
+            print(f"Rate limited. Retrying after {retry_after} seconds...")
+            time.sleep(retry_after)
+            continue
+
+        return response
+
+    raise Exception("Max retries exceeded")
+----
+
+.Token quota exceeded
+
+If you exceed the maximum number of tokens per minute:
+
+.Example error response
+[source,json]
+----
+{
+  "error": {
+    "message": "Token quota exceeded. You have consumed the maximum number of tokens allowed per minute for your tier.",
+    "type": "quota_error",
+    "code": 429
+  }
+}
+----
+
+.Mitigation strategies
+
+* Reduce `max_tokens` in your requests
+* Implement exponential backoff retry logic
+* Batch requests with longer delays between them
+* Request a higher tier from your administrator if you consistently hit limits
+
+== Test models in the playground
+
+Use the built-in playground to test prompts and observe model responses without writing code.
+
+.Procedure
+
+. On the Models as a service page, locate the model you want to test.
+. In the Actions column, click the menu and select *Add to playground*.
+. In the playground interface:
+.. Enter your prompt in the message field.
+.. Adjust parameters:
+... *Temperature*: Controls randomness (0.0 for deterministic, 1.0 for creative)
+... *Max tokens*: Maximum length of the response
+... *Top P*: Nucleus sampling threshold
+.. Click *Send*.
+. Review the model's response.
+. Experiment with different prompts and parameters to understand the model's behavior.
+
+The playground is useful for:
+
+* Testing prompt engineering strategies
+* Comparing model responses
+* Validating that a model is suitable for your use case before integrating it into your application
+* Demonstrating model capabilities to stakeholders
+
+.Verification
+
+* Verify that the model responds to your prompts in the playground.
+* Check that adjusting parameters like temperature and max tokens affects the model's responses as expected.
+
+== Best practices
+
+Follow these recommendations to effectively use MaaS:
+
+.Security
+* *Never commit tokens to version control*: Use environment variables or secret management systems.
+* *Regenerate tokens periodically*: Generate new tokens regularly and discard old ones.
+* *Use named tokens for tracking*: When generating tokens, note which application or purpose they're for.
+
+.Performance
+* *Implement retry logic with exponential backoff*: Handle rate limit errors gracefully.
+* *Cache responses when appropriate*: If you're making identical requests, consider caching results.
+* *Set reasonable `max_tokens` values*: Don't request more tokens than you need, as token quotas are enforced.
+
+.Cost management
+* *Check rate limit headers*: Review `X-RateLimit-Remaining` in API responses to track your usage against tier limits.
+* *Use the playground for testing*: Test prompts in the playground before implementing them in code.
+* *Optimize prompts*: Shorter, more focused prompts consume fewer tokens.
+
+.Additional resources
+
+* For troubleshooting user access issues, see link:{rhoaidocshome}{default-format-url}/using_models-as-a-service/index#maas-user-access-troubleshooting_{context}[Models-as-a-Service user access troubleshooting].

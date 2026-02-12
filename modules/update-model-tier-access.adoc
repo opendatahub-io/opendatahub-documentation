@@ -1,0 +1,48 @@
+:_mod-docs-content-type: PROCEDURE
+
+[id="update-model-tier-access_{context}"]
+= Update tier access for deployed models
+
+[role="_abstract"]
+After deploying a model to Models-as-a-Service (MaaS), you can modify which service tiers have access without redeploying the model.
+
+.Prerequisites
+
+* You have logged in to {productname-short}.
+* You have administrator access to a project in {productname-short}.
+* You have deployed a model and published it to Models-as-a-Service.
+
+.Procedure
+
+. Navigate to *Projects* and click your project name.
+. Click the *Deployments* tab.
+. Click the model deployment name.
+. Click *Edit* from the actions menu.
+. In the *Advanced settings* section, modify the *Tier access* settings:
+.. Change between *All tiers* and *Specific tiers*.
+.. Update the tier selections if using specific tiers.
+. Click *Update*.
++
+[WARNING]
+====
+Changing tier access takes effect immediately. Users who lose access will receive 403 Forbidden errors on their next API request.
+====
+
+.Verification
+
+. Verify that the tier access changes were applied:
++
+[source,terminal]
+----
+$ oc get rolebindings -n <your-project-namespace> | grep <your_model_name>
+----
++
+You should see RoleBindings for each tier that has access.
++
+. Test functional access:
+.. Verify that users in authorized tiers can access the model through the MaaS interface.
+.. If you restricted access to specific tiers, verify that users in unauthorized tiers receive 403 errors.
+
+.Additional resources
+
+* For troubleshooting tier access issues, see link:{rhoaidocshome}{default-format-url}/deploy_and_manage_models-as-a-service/index#maas-administration-troubleshooting_{context}[Models-as-a-Service administration troubleshooting].

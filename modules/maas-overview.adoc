@@ -1,0 +1,101 @@
+:_mod-docs-content-type: CONCEPT
+
+[id="maas-overview_{context}"]
+= Models-as-a-Service overview
+
+[role="_abstract"]
+
+You can deploy Models-as-a-Service (MaaS) in {productname-long} to provide tier-based governance for large language model (LLM) serving across your organization. This platform helps you manage resource consumption and governance challenges when you serve models to a large user base.
+
+With MaaS, you can perform the following tasks:
+
+* Define service tiers with different rate limits and quotas.
+* Control access through API key authentication.
+* Track resource consumption for cost allocation.
+
+As an administrator, you can use this tier-based system to expose models through managed API endpoints. This structure allows you to enforce different consumption policies for different user groups and deliver AI models as shared resources with appropriate access levels.
+
+
+== System operations
+
+The Models-as-a-Service platform acts as a governance layer between users and model serving infrastructure. When users request access to a model:
+
+1. MaaS authenticates the user and determines their assigned tier based on group membership.
+2. Policy enforcement checks rate limits and quotas for that tier.
+3. Authorized requests are forwarded to the appropriate model endpoint.
+4. Usage metrics are recorded for tracking and cost allocation purposes.
+
+This architecture enables centralized policy enforcement without modifying the underlying model serving infrastructure.
+
+== Key capabilities
+
+MaaS includes the following capabilities:
+
+Tier-based access control:: Define multiple service tiers, such as free, premium, or enterprise, with different rate limits, quotas, and model access permissions for different user groups.
+Policy and quota management:: Enforce rate limiting and quota policies to prevent resource exhaustion.
+API key authentication:: Control access to models through tier-based resource allocation and API key-based authentication.
+Multi-tenancy:: Provide isolation for different teams or projects.
+Usage tracking:: Track consumption metrics for cost allocation and billing.
+Observability:: Monitor model access patterns, policy enforcement, and resource utilization.
+
+== When to use MaaS
+
+The following table compares use cases for MaaS and standard model serving to help you choose the right approach.
+
+.MaaS vs. standard model serving comparison
+[cols="1,1", options="header"]
+|===
+|MaaS
+|Standalone model serving
+
+|Centralized governance across multiple teams or projects is required.
+|You are deploying models for single-team or single-user use cases.
+
+|You need rate limiting, quota enforcement, and usage tracking for cost control.
+|You are prototyping or developing models in a single-user environment where governance overhead is unnecessary.
+
+|Multi-tenancy isolation and tier-based access control are necessary.
+|You need direct model access with minimal latency and authentication overhead is not required.
+
+|You prefer declarative configuration management via GitOps.
+|Simplified deployment is preferred over centralized control.
+|===
+
+== Administration workflow
+
+MaaS administration is divided into initial configuration and ongoing management, with distinct responsibilities for cluster administrators and {productname-short} administrators.
+
+=== Initial configuration
+
+During the setup phase, administrators focus on installation, access control, and validation.
+
+Cluster administrators::
++
+* Enable MaaS in the {productname-short} operator
+* Configure the underlying cluster infrastructure to support model serving
+
+{productname-short} administrators::
++
+* Define the initial governance structure by creating tiers
+* Assign users to groups
+* Generate API keys
+* Configure access to existing models
+* Validate that users can successfully access models through MaaS
+
+=== Ongoing operations
+
+After installation, the focus shifts to monitoring, maintenance, and optimization.
+
+{productname-short} administrators::
++
+* Monitor usage metrics to track costs
+* Adjust tier configurations and user group assignments
+* Modify rate limits based on demand patterns
+* Rotate API keys according to security schedules
+* Troubleshoot authentication and authorization issues
+
+Cluster administrators::
++
+* Scale MaaS components to handle increased load
+* Apply software updates
+* Troubleshoot infrastructure performance issues
