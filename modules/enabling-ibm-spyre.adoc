@@ -1,0 +1,84 @@
+:_mod-docs-content-type: PROCEDURE
+[id="enabling-ibm-spyre_{context}"]
+= Enabling IBM Spyre
+
+[role='_abstract']
+Before you can use IBM Spyre AI accelerators in {productname-short}, you must install the Spyre Operator.
+
+.Prerequisites
+
+* You have logged in to the {openshift-platform} cluster.
+
+* You have the `cluster-admin` role in the {openshift-platform} cluster.
+
+* Your worker nodes equipped with IBM Spyre accelerators meet the following hardware requirements:
+
+** A minimum of 512 GB of RAM.
+
+** A minimum of 500 GB of local disk space.
+
+* You have configured the IBM Spyre accelerators and verified that the cluster detects them.
+
+* You have applied the required `MachineConfig` objects as described in link:https://github.com/IBM/spyre-operator-power-docs/blob/main/docs/intro/hardware-requirements.md[Specifying IBM Spyre `MachineConfigs`].
+
+.Procedure
+
+. To enable IBM Spyre support on an OpenShift cluster, follow the instructions in link:https://github.com/ibm/spyre-operator-power-docs[IBM Spyre accelerator on Red Hat OpenShift Container Platform] in the IBM documentation.
+
+. After you install the Node Feature Discovery (NFD) Operator, create a `NodeFeatureDiscovery` instance.
+
+. After you install the IBM Spyre Operator, create a `SpyreClusterPolicy` instance and populate it with default values.
+
+. To use the default scheduler for IBM Spyre workloads, remove the `externalDeviceReservation` field from the `SpyreClusterPolicy` object under the `spec.experimentalMode` section.
+
+. Create a hardware profile for the IBM Spyre accelerators.
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles].
+endif::[]
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-accelerators/#working-with-hardware-profiles_accelerators[Working with hardware profiles].
+endif::[]
+
+.Verification
+
+. In the {openshift-platform} web console, in the **Administrator** perspective, click **Operators** > **Installed Operators**.
+
+. Verify that the following operators appear with a status of `Succeeded`:
+
+* **IBM Spyre Operator**
+
+* **Node Feature Discovery (NFD)**
+
+* **cert-manager Operator for Red Hat OpenShift**
+
+* **Secondary Scheduler Operator**
+
+. Verify that the cluster detects the IBM Spyre accelerators.
++
+Wait a few minutes after the installation completes, and then run the following command to describe a worker node:
++
+[source,terminal]
+----
+$ oc describe node <node_name>
+----
+
+. In the `Capacity` section of the output, verify that the `ibm.com` resources appear, similar to the following example:
++
+[source,yaml]
+----
+Capacity:
+  cpu:                             16
+  ephemeral-storage:               523823084Ki
+  hugepages-1Gi:                   0
+  hugepages-2Mi:                   0
+  ibm.com/spyre_pf:                4
+  ibm.com/spyre_pf_0481_50_00.0:   1
+  ibm.com/spyre_pf_0482_60_00.0:   1
+  ibm.com/spyre_pf_0483_70_00.0:   1
+  ibm.com/spyre_pf_0484_80_00.0:   0
+  ibm.com/spyre_pf_tier0:          3
+  ibm.com/spyre_pf_tier1:          3
+  ibm.com/spyre_pf_tier2:          3
+  memory:                          1038738560Ki
+  pods:                            250
+----
