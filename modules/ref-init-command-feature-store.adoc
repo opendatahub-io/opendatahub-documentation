@@ -1,0 +1,55 @@
+:_mod-docs-content-type: REFERENCE
+
+[id="ref_feast-init-command_{context}"]
+
+= Feature Store init command
+
+[role='_abstract']
+The `feast init` command creates a new feature repository to store feature definitions.
+
+.Init syntax
+[source,bash]
+----
+feast init <repository_name> [options]
+----
+
+.Init options
+`-t`::
+Specifies a template for the repository (for example, `gcp` or `aws`).
+
+.Init examples
+
+* **Create a repository with the default template**
++
+The following command creates a repository named `my_repo_name`:
++
+[source,bash]
+----
+$ feast init my_repo_name
+----
++
+.Init output
+[source,text]
+----
+Creating a new Feast repository in /projects/my_repo_name.
+
+.
+├── data
+│   └── driver_stats.parquet
+├── example.py
+└── feature_store.yaml
+----
+
+* **Create a repository using the Google Cloud Platform (GCP) template:**
++
+[source,bash]
+----
+$ feast init -t gcp my_feature_repo
+----
+
+* **Set the name of the new project:**
++
+[source,bash]
+----
+$ feast init -t gcp my_feature_repo
+----

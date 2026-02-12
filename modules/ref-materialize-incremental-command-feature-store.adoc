@@ -1,0 +1,25 @@
+:_mod-docs-content-type: REFERENCE
+
+[id="ref_feast-materialize-incremental-command_{context}"]
+
+= Feature Store materialize-incremental command
+
+[role='_abstract']
+The `feast materialize-incremental` command loads data from feature views into the online store.
+
+The command processes data starting from one of the following points:
+
+* The end date of the previous materialization interval.
+* The beginning of available history (if no previous materialization exists).
+
+.Materialize incremental syntax
+[source,bash,subs="+quotes"]
+----
+$ *feast materialize-incremental __<end_date>__*
+----
+
+.Materialize incremental example
+[source,bash,subs="+quotes"]
+----
+$ *feast materialize-incremental 2022-01-01T00:00:00*
+----

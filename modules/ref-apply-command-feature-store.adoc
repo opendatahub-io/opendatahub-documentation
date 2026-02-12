@@ -1,0 +1,39 @@
+:_module-type: REFERENCE
+
+[id="ref-apply-command-feature-store_{context}"]
+
+= Feature Store apply command
+
+[role='_abstract']
+The `feast apply` command updates a Feature Store deployment to match the feature definitions in the feature repository.
+
+The command performs the following actions:
+
+* *Scans definitions*
++
+Scans the Python files in the feature repository to identify Feature Store object definitions. This includes feature views, entities, and data sources.
+
+* *Validates definitions*
++
+Validates feature definitions to ensure accuracy.
+
+* *Synchronizes metadata*
++
+Synchronizes the metadata of Feature Store objects in the registry. If a registry does not exist, the Feature Store creates one. The standard registry is a `protobuf` binary file stored on a disk, either locally or in an object store.
+
+* *Provisions infrastructure*
++
+Creates the necessary Feature Store infrastructure. The deployed infrastructure depends on the provider configuration specified in the `feature_store.yaml` file:
++
+** *Local provider*: Creates a SQLite online store.
+** *Cloud provider*: Creates cloud infrastructure for services such as Google Cloud Platform (GCP) or Amazon Web Services (AWS).
++
+[NOTE]
+====
+Creating cloud infrastructure might incur costs.
+====
+
+[IMPORTANT]
+====
+The `feast apply` command registers or updates only objects found in your Python files. It does not delete objects that you remove from your code. To delete objects from the registry, use the `feast delete` command or the explicit delete methods available in the Python SDK.
+====
