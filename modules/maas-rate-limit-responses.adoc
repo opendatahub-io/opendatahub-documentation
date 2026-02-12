@@ -1,0 +1,75 @@
+:_mod-docs-content-type: REFERENCE
+
+[id="maas-rate-limit-responses_{context}"]
+= Rate limit responses
+
+[role="_abstract"]
+When you exceed your tier's rate limits, MaaS returns specific error responses to help you manage your usage.
+
+.Request rate limit exceeded
+
+If you exceed the maximum number of requests per minute:
+
+.Example error response
+[source,json]
+----
+{
+  "error": {
+    "message": "Rate limit exceeded. You have exceeded the maximum number of requests per minute for your tier.",
+    "type": "rate_limit_error",
+    "code": 429
+  }
+}
+----
+
+.Response headers (useful for retry logic)
+----
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1234567890
+Retry-After: 42
+----
+
+.Handling rate limits in Python
+[source,python]
+----
+import time
+import requests
+
+def make_request_with_retry(url, headers, data, max_retries=3):
+    for attempt in range(max_retries):
+        response = requests.post(url, headers=headers, json=data)
+
+        if response.status_code == 429:
+            retry_after = int(response.headers.get('Retry-After', 60))
+            print(f"Rate limited. Retrying after {retry_after} seconds...")
+            time.sleep(retry_after)
+            continue
+
+        return response
+
+    raise Exception("Max retries exceeded")
+----
+
+.Token quota exceeded
+
+If you exceed the maximum number of tokens per minute:
+
+.Example error response
+[source,json]
+----
+{
+  "error": {
+    "message": "Token quota exceeded. You have consumed the maximum number of tokens allowed per minute for your tier.",
+    "type": "quota_error",
+    "code": 429
+  }
+}
+----
+
+.Mitigation strategies
+
+* Reduce `max_tokens` in your requests
+* Implement exponential backoff retry logic
+* Batch requests with longer delays between them
+* Request a higher tier from your administrator if you consistently hit limits

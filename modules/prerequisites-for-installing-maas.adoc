@@ -1,9 +1,12 @@
+:_mod-docs-content-type: CONCEPT
+
 [id="prerequisites-for-installing-maas_{context}"]
 = Prerequisites for installing MaaS
 
 [role="_abstract"]
 Before installing Models-as-a-Service, verify that your cluster has the required platform components, operators, and infrastructure resources.
 
+[id="maas-dependencies_{context}"]
 == MaaS dependencies
 
 MaaS requires several platform components to function:
@@ -14,11 +17,12 @@ MaaS requires several platform components to function:
 * *LeaderWorkerSet* enables multi-host inference for large models that require distributed serving.
 
 ifndef::upstream[]
+[id="requirements_{context}"]
 == Requirements
 
 Before you install MaaS, ensure that your environment meets the following requirements:
 
-=== Platform and access requirements
+**Platform and access requirements:**
 
 * You have a cluster with {openshift-platform} version 4.19 or later.
 * You have cluster administrator access to install operators and create cluster-scoped resources.
@@ -26,18 +30,19 @@ Before you install MaaS, ensure that your environment meets the following requir
 * Your cluster has a functional ingress controller with valid TLS certificates for external access.
 * You have installed the OpenShift CLI, `oc`.
 
-=== Operator requirements
+**Operator requirements:**
 
 * You have installed the LeaderWorkerSet Operator and created the required API resources.
 * You have installed the Red Hat Connectivity Link Operator v1.2 or later and created a `Kuadrant` custom resource in the `kuadrant-system` namespace with ready status.
 * You have installed {productname-long} Operator v3.0 or later.
 
-=== Infrastructure requirements
+**Infrastructure requirements:**
 
 * You have created a `DataScienceCluster` resource with the `kserve` component set to `Managed`.
 * You have created the `openshift-ai-inference` Gateway in the `openshift-ingress` namespace.
 * You have a `GatewayClass` resource configured for the OpenShift Gateway Controller: `openshift.io/gateway-controller`.
 
+[id="prerequisite-verification_{context}"]
 == Prerequisite verification
 
 To verify that your environment meets these requirements:
@@ -116,11 +121,12 @@ leaderworkersets    lws    leaderworkerset.x-k8s.io/v1alpha1    true    LeaderWo
 endif::[]
 
 ifdef::upstream[]
+[id="requirements_{context}"]
 == Requirements
 
 Before you install MaaS, ensure that your environment meets the following requirements:
 
-=== Platform and access requirements
+**Platform and access requirements:**
 
 * You have an {openshift-platform} cluster version 4.19 or later.
 * You have cluster administrator access to install operators and create cluster-scoped resources.
@@ -128,7 +134,7 @@ Before you install MaaS, ensure that your environment meets the following requir
 * Your cluster has a functional ingress controller with valid TLS certificates for external access.
 * You have installed the OpenShift CLI, `oc`.
 
-=== Operator requirements
+**Operator requirements:**
 
 * You have installed the LeaderWorkerSet Operator v0.2 or later and created the required API resources.
 * You have installed Kuadrant Operator v1.3 or later:
@@ -136,7 +142,7 @@ Before you install MaaS, ensure that your environment meets the following requir
 ** You have configured the `ISTIO_GATEWAY_CONTROLLER_NAME` environment variable to `"openshift.io/gateway-controller/v1"`.
 ** You have created a `Kuadrant` custom resource in the `kuadrant-system` namespace with ready status.
 
-=== {productname-long} requirements
+**{productname-long} requirements:**
 
 * You have installed the `opendatahub-operator`.
 * You have initialized the platform with a `DSCInitialization` resource.
@@ -144,6 +150,7 @@ Before you install MaaS, ensure that your environment meets the following requir
 * You have created an inference Gateway, such as `odh-inference-gateway`.
 * You have a `GatewayClass` resource configured for the OpenShift Gateway Controller: `openshift.io/gateway-controller`.
 
+[id="prerequisite-verification_{context}"]
 == Prerequisite verification
 
 To verify that your environment meets these requirements:

@@ -6,6 +6,7 @@
 [role="_abstract"]
 Use this reference to diagnose and resolve common administrative issues with Models-as-a-Service (MaaS) deployment, configuration, and management.
 
+[id="component-enablement-issues_{context}"]
 == Component enablement issues
 
 If the `maas-api` pod does not start or shows errors after enabling the MaaS component:
@@ -37,6 +38,7 @@ $ oc get clusterrole | grep maas
 $ oc get clusterrolebinding | grep maas
 ----
 
+[id="dashboard-tab-visibility-issues_{context}"]
 == Dashboard tab visibility issues
 
 If the Models-as-a-Service tab does not appear in the dashboard:
@@ -66,8 +68,7 @@ $ oc logs -n {dbd-config-default-namespace} -l app=odh-dashboard --tail=50
 
 * Verify that you have the required permissions to view the tab. Some features may be restricted based on user roles.
 
-== Model deployment issues
-
+[id="deployment-failures-and-status-errors_{context}"]
 == Deployment failures and status errors
 
 * Check the deployment logs:
@@ -89,6 +90,7 @@ $ oc describe nodes | grep -A 5 "nvidia.com/gpu"
 +
 Check your S3 bucket or storage connection to confirm the model path is correct.
 
+[id="model-visibility-issues-on-maas-page_{context}"]
 == Model visibility issues on Models-as-a-Service page
 
 * Verify that you selected *Publish as MaaS endpoint* in the Advanced settings during deployment.
@@ -107,7 +109,8 @@ $ oc get pods -n {dbd-config-default-namespace} -l app=maas-api
 $ oc get llminferenceservice -n <your-project-namespace>
 ----
 
-== User access errors (403 Forbidden)
+[id="user-access-errors-403-forbidden_{context}"]
+== User access errors: 403 Forbidden
 
 * Verify that the user's tier is included in the model's tier access configuration:
 ** Check the model's deployment settings in the dashboard.
@@ -129,7 +132,8 @@ $ oc exec -n {dbd-config-default-namespace} deployment/maas-api -- curl -s http:
   -d '{"groups": ["<user-group-name>"]}'
 ----
 
-== Token authentication errors (401 Unauthorized)
+[id="token-authentication-errors-401-unauthorized_{context}"]
+== Token authentication errors: 401 Unauthorized
 
 * Ensure that *Require token authentication* is enabled in the model's deployment settings.
 
@@ -139,6 +143,7 @@ $ oc exec -n {dbd-config-default-namespace} deployment/maas-api -- curl -s http:
 +
 Ephemeral tokens expire after 4 hours by default. Generate a new token if needed.
 
+[id="tier-based-access-control-issues_{context}"]
 == Tier-based access control issues
 
 If users receive unexpected access denials:
@@ -185,6 +190,7 @@ If all tiers are denied access:
 * Verify that the `llminferenceservice-access` Role includes the `create` verb (required for POST requests).
 * Check that the Role's `resourceNames` field includes your model name, or omit it to allow all models.
 
+[id="tier-management-issues_{context}"]
 == Tier management issues
 
 If users cannot access models after tier creation:
