@@ -1,0 +1,193 @@
+:_module-type: PROCEDURE
+
+[id="proc-configuring-monitoring-for-distributed-inference_{context}"]
+= Configuring monitoring for {llmd}
+
+[role="_abstract"]
+Enable metrics collection for {llmd} components by creating `ServiceMonitor` and `PodMonitor` resources that integrate with {openshift-platform} User Workload Monitoring.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have deployed a model using {llmd}.
+* You have enabled User Workload Monitoring in {openshift-platform}. For more information, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/monitoring/configuring-user-workload-monitoring[Configuring user workload monitoring].
+* You have installed the {openshift-cli}.
+
+.Procedure
+
+. In a terminal window, if you are not already logged in to your {openshift-platform} cluster, log in to the {openshift-cli}:
++
+[source,subs="+quotes"]
+----
+$ oc login __<openshift_cluster_url>__ -u __<username>__ -p __<password>__
+----
+
+. Verify that User Workload Monitoring is enabled and running:
++
+[source,bash]
+----
+$ oc get pods -n openshift-user-workload-monitoring
+----
++
+You should see `prometheus-user-workload` and `thanos-ruler-user-workload` pods in a `Running` state.
+
+. Create a `ServiceMonitor` resource to collect metrics from the {llmd} router component:
++
+[source,yaml,subs="attributes+"]
+----
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: llmd-router-monitor
+  namespace: __<llmd-namespace>__
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: router
+      app.kubernetes.io/part-of: llm-d
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+----
++
+Replace `__<llmd-namespace>__` with the namespace where your {llmd} deployment is running.
+
+. Apply the `ServiceMonitor` configuration:
++
+[source,bash]
+----
+$ oc apply -f llmd-router-monitor.yaml
+----
+
+. Create a `ServiceMonitor` resource to collect metrics from the {llmd} scheduler component:
++
+[source,yaml,subs="attributes+"]
+----
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: llmd-scheduler-monitor
+  namespace: __<llmd-namespace>__
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: scheduler
+      app.kubernetes.io/part-of: llm-d
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+----
+
+. Apply the `ServiceMonitor` configuration:
++
+[source,bash]
+----
+$ oc apply -f llmd-scheduler-monitor.yaml
+----
+
+. Create a `PodMonitor` resource to collect metrics from vLLM worker pods:
++
+[source,yaml,subs="attributes+"]
+----
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: llmd-vllm-monitor
+  namespace: __<llmd-namespace>__
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: vllm-worker
+      app.kubernetes.io/part-of: llm-d
+  podMetricsEndpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+----
+
+. Apply the `PodMonitor` configuration:
++
+[source,bash]
+----
+$ oc apply -f llmd-vllm-monitor.yaml
+----
+
+. Create a `ServiceMonitor` resource to collect metrics from the Envoy proxy component:
++
+[source,yaml,subs="attributes+"]
+----
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: llmd-envoy-monitor
+  namespace: __<llmd-namespace>__
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: envoy
+      app.kubernetes.io/part-of: llm-d
+  endpoints:
+  - port: envoy-admin
+    interval: 30s
+    path: /stats/prometheus
+----
+
+. Apply the `ServiceMonitor` configuration:
++
+[source,bash]
+----
+$ oc apply -f llmd-envoy-monitor.yaml
+----
+
+.Verification
+
+. Verify that the `ServiceMonitor` and `PodMonitor` resources were created successfully:
++
+[source,bash,subs="attributes+"]
+----
+$ oc get servicemonitor,podmonitor -n __<llmd-namespace>__
+----
++
+You should see the four monitoring resources you created:
++
+[source,text]
+----
+NAME                                                      AGE
+servicemonitor.monitoring.coreos.com/llmd-router-monitor    1m
+servicemonitor.monitoring.coreos.com/llmd-scheduler-monitor 1m
+servicemonitor.monitoring.coreos.com/llmd-envoy-monitor     1m
+
+NAME                                               AGE
+podmonitor.monitoring.coreos.com/llmd-vllm-monitor    1m
+----
+
+. In the {openshift-platform} web console, navigate to *Observe* -> *Metrics*.
+
+. In the *Expression* field, enter a query to verify that {llmd} metrics are being collected:
++
+[source,promql,subs="attributes+"]
+----
+llmd_router_requests_total{namespace="__<llmd-namespace>__"}
+----
+
+. Click *Run Queries*.
++
+If metrics are being collected successfully, you see a graph showing the total number of requests received by the router. If no data appears, wait a few minutes for Prometheus to scrape the metrics endpoints, then try again.
+
+. Optional: Verify that all {llmd} components are being monitored by querying metrics from each component:
++
+--
+* Router: `llmd_router_requests_total`
+* Scheduler: `llmd_scheduler_queue_depth`
+* vLLM workers: `vllm:generation_tokens_total`
+* Envoy proxy: `envoy_http_downstream_rq_total`
+--
+
+[role="_additional-resources"]
+.Additional resources
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/monitoring/configuring-user-workload-monitoring[Configuring user workload monitoring]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/monitoring_apis/servicemonitor-monitoring-coreos-com-v1[ServiceMonitor API reference]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html/monitoring/accessing-metrics[Accessing metrics in {openshift-platform} Console]
