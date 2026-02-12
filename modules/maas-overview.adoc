@@ -15,19 +15,7 @@ With MaaS, you can perform the following tasks:
 
 As an administrator, you can use this tier-based system to expose models through managed API endpoints. This structure allows you to enforce different consumption policies for different user groups and deliver AI models as shared resources with appropriate access levels.
 
-
-== System operations
-
-The Models-as-a-Service platform acts as a governance layer between users and model serving infrastructure. When users request access to a model:
-
-1. MaaS authenticates the user and determines their assigned tier based on group membership.
-2. Policy enforcement checks rate limits and quotas for that tier.
-3. Authorized requests are forwarded to the appropriate model endpoint.
-4. Usage metrics are recorded for tracking and cost allocation purposes.
-
-This architecture enables centralized policy enforcement without modifying the underlying model serving infrastructure.
-
-== Key capabilities
+The Models-as-a-Service platform acts as a governance layer between users and model serving infrastructure. When users request access to a model, MaaS authenticates the user and determines their assigned tier based on group membership. Policy enforcement checks rate limits and quotas for that tier. Authorized requests are forwarded to the appropriate model endpoint, and usage metrics are recorded for tracking and cost allocation purposes. This architecture enables centralized policy enforcement without modifying the underlying model serving infrastructure.
 
 MaaS includes the following capabilities:
 
@@ -37,8 +25,6 @@ API key authentication:: Control access to models through tier-based resource al
 Multi-tenancy:: Provide isolation for different teams or projects.
 Usage tracking:: Track consumption metrics for cost allocation and billing.
 Observability:: Monitor model access patterns, policy enforcement, and resource utilization.
-
-== When to use MaaS
 
 The following table compares use cases for MaaS and standard model serving to help you choose the right approach.
 
@@ -61,41 +47,35 @@ The following table compares use cases for MaaS and standard model serving to he
 |Simplified deployment is preferred over centralized control.
 |===
 
-== Administration workflow
-
 MaaS administration is divided into initial configuration and ongoing management, with distinct responsibilities for cluster administrators and {productname-short} administrators.
 
-=== Initial configuration
+.MaaS administrator responsibilities
+[cols="1,2,2", options="header"]
+|===
+|Phase
+|Cluster administrators
+|{productname-short} administrators
 
-During the setup phase, administrators focus on installation, access control, and validation.
-
-Cluster administrators::
-+
+|Initial configuration
+a|
 * Enable MaaS in the {productname-short} operator
 * Configure the underlying cluster infrastructure to support model serving
-
-{productname-short} administrators::
-+
+a|
 * Define the initial governance structure by creating tiers
 * Assign users to groups
 * Generate API keys
 * Configure access to existing models
 * Validate that users can successfully access models through MaaS
 
-=== Ongoing operations
-
-After installation, the focus shifts to monitoring, maintenance, and optimization.
-
-{productname-short} administrators::
-+
+|Ongoing operations
+a|
+* Scale MaaS components to handle increased load
+* Apply software updates
+* Troubleshoot infrastructure performance issues
+a|
 * Monitor usage metrics to track costs
 * Adjust tier configurations and user group assignments
 * Modify rate limits based on demand patterns
 * Rotate API keys according to security schedules
 * Troubleshoot authentication and authorization issues
-
-Cluster administrators::
-+
-* Scale MaaS components to handle increased load
-* Apply software updates
-* Troubleshoot infrastructure performance issues
+|===

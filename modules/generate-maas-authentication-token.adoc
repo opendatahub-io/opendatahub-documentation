@@ -1,0 +1,42 @@
+:_mod-docs-content-type: PROCEDURE
+
+[id="generate-maas-authentication-token_{context}"]
+= Generate an authentication token
+
+[role="_abstract"]
+Generate a token to authenticate your API requests to models.
+
+.Procedure
+
+. On the Models as a service page, locate the model you want to access.
+. Click *View* in the Inference endpoint column.
+. In the MaaS route dialog, copy the route URL and store it securely.
++
+You will need this URL to make API calls to the model.
++
+. Click *Generate API Key*.
+. Copy the generated token immediately and store it securely.
++
+[IMPORTANT]
+====
+The token is displayed only once. If you lose the token, you must generate a new one.
+====
+
+.Verification
+
+Test the token by making an API call to list available models:
+
+[source,terminal,subs="+quotes"]
+----
+$ export MAAS_TOKEN="<your_generated_token>"
+$ export CLUSTER_DOMAIN=$(oc get ingresses.config.openshift.io cluster -o jsonpath='{.spec.domain}')
+
+$ curl -X GET "https://maas.${CLUSTER_DOMAIN}/v1/models" \
+  -H "Authorization: Bearer ${MAAS_TOKEN}"
+----
++
+where:
++
+`<your_generated_token>`:: Specifies the authentication token you copied in the previous step.
+
+If the token is valid, the command returns a JSON list of available models.

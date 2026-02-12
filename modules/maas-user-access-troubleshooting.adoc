@@ -6,7 +6,8 @@
 [role="_abstract"]
 Use this reference to diagnose and resolve common issues when accessing models through Models-as-a-Service (MaaS).
 
-== Authentication errors (401 Unauthorized)
+[id="authentication-errors-401-unauthorized_{context}"]
+== Authentication errors: 401 Unauthorized
 
 .Symptom
 [source,json]
@@ -26,7 +27,8 @@ Use this reference to diagnose and resolve common issues when accessing models t
 * *Incorrect token format*: Ensure you're using the `Authorization: Bearer <token>` header format.
 * *Token not issued by MaaS*: Do not use your {openshift-platform} token directly. Generate a MaaS-specific token.
 
-== Authorization errors (403 Forbidden)
+[id="authorization-errors-403-forbidden_{context}"]
+== Authorization errors: 403 Forbidden
 
 .Symptom
 [source,json]
@@ -45,7 +47,8 @@ Use this reference to diagnose and resolve common issues when accessing models t
 * *Model not available to your tier*: Contact your administrator to request access or upgrade your tier.
 * *Model exists but RBAC not configured*: Ask your administrator to verify that RoleBindings are created for your tier.
 
-== Model not found (404)
+[id="model-not-found-404_{context}"]
+== Model not found: 404
 
 .Symptom
 [source,json]
@@ -65,8 +68,7 @@ Use this reference to diagnose and resolve common issues when accessing models t
 * *Model not deployed*: Ask your administrator to check if the model is deployed and ready.
 * *Typo in URL*: Ensure the URL format is correct: `https://maas.<domain>/llm/<model-name>/v1/chat/completions`
 
-== Rate limit errors (429)
-
+[id="exceeded-request-rate-limits_{context}"]
 == Exceeded request rate limits
 
 If you exceed the maximum number of requests per minute:
@@ -84,6 +86,7 @@ If you exceed the maximum number of requests per minute:
 ----
 
 .Response headers (useful for retry logic)
+[source,text]
 ----
 X-RateLimit-Limit: 1000
 X-RateLimit-Remaining: 0
@@ -112,6 +115,7 @@ def make_request_with_retry(url, headers, data, max_retries=3):
     raise Exception("Max retries exceeded")
 ----
 
+[id="exceeded-token-quotas_{context}"]
 == Exceeded token quotas
 
 If you exceed the maximum number of tokens per minute:
@@ -135,6 +139,7 @@ If you exceed the maximum number of tokens per minute:
 * Batch requests with longer delays between them
 * Request a higher tier from your administrator if you consistently hit limits
 
+[id="persistent-rate-limit-errors_{context}"]
 == Persistent rate limit errors
 
 .Symptom
