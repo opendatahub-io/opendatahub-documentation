@@ -1,0 +1,125 @@
+:_mod-docs-content-type: CONCEPT
+
+[id="maas-tiers_{context}"]
+= Models-as-a-Service tiers
+
+[role="_abstract"]
+The Models-as-a-Service (MaaS) platform uses a tier-based model to manage access control and rate limiting for AI model serving. Tiers allow platform administrators to define different levels of service and control model access based on user group membership.
+
+== Tier benefits
+
+When multiple teams share large language models, you need to:
+
+* Prevent resource exhaustion from unlimited usage
+* Provide different service levels for different user groups
+* Track and allocate costs based on team consumption
+* Control which teams can access expensive or sensitive models
+
+Tiers enable you to implement these governance policies without modifying your model serving infrastructure.
+
+== Tier resolution
+
+Tiers serve as the logical link between user identity and system resources. When a user requests access to a model, the MaaS API determines the user's tier based on their OpenShift group membership.
+
+The tier system provides the following capabilities:
+
+* *Group-based access control*: Users are assigned tiers based on their group membership extracted from authentication tokens.
+* *Namespace-scoped RBAC*: Each tier has its own dedicated namespace for permission management.
+* *Dynamic tier resolution*: User tiers are resolved on each request and cached for performance.
+* *Per-model authorization*: Access control is enforced at the individual model level.
+* *Hierarchical precedence*: Users with multiple group memberships are assigned the tier with the highest level number.
+
+== Tier configuration
+
+MaaS tiers are defined in the `tier-to-group-mapping` ConfigMap in the `{dbd-config-default-namespace}` namespace. A tier configuration includes the following properties:
+
+* *Name*: A unique identifier for the tier, such as `free`, `premium`, or `enterprise`.
+* *Display name*: A human-readable label shown in the dashboard.
+* *Level*: A numeric hierarchy that determines tier precedence. Higher numbers indicate higher priority. When a user belongs to multiple groups, the system assigns the tier with the highest level value.
+* *Groups*: A list of OpenShift groups whose members are assigned to this tier.
+
+While tiers define group membership and precedence, the actual resource limits (such as requests per minute and token quotas) are configured through the dashboard when creating or editing tiers. These limits are enforced using Kuadrant's `RateLimitPolicy` custom resources.
+
+////
+== Tier resolution process
+
+The system resolves a user's tier through the following process:
+
+. User authenticates with their OpenShift credentials.
+. MaaS issues a ServiceAccount token scoped to the user's tier.
+. The Gateway extracts the user's OpenShift groups from the token.
+. The MaaS API resolves the tier based on group membership and returns the highest-level matching tier.
+. Tier information is cached for 5 minutes to improve performance.
+. Access control and rate limiting are applied based on the resolved tier.
+////
+
+== Default tiers
+
+The MaaS platform includes three default configurable tiers. Each tier has a dedicated namespace following the pattern `{instance-name}-tier-{tier-name}`.
+
+.Default tier configurations
+[cols="1,2,1,2,3", options="header"]
+|===
+|Tier |Description |Level |Default group |Namespace
+
+|*Free*
+|Entry-level tier for basic users
+|0 (Lowest)
+|`system:authenticated`
+|`maas-default-gateway-tier-free`
+
+|*Premium*
+|Intermediate tier for higher throughput
+|1
+|`premium-users`
+|`maas-default-gateway-tier-premium`
+
+|*Enterprise*
+|Top tier for critical workloads
+|2 (Highest)
+|`enterprise-users`
+|`maas-default-gateway-tier-enterprise`
+|===
+
+All tiers are fully configurable. You can modify the default tiers or create additional custom tiers to meet your organization's needs.
+
+[NOTE]
+====
+Tier name values are case-sensitive and must match exactly with rate limit policy predicates.
+====
+
+== Access control and RBAC
+
+Tiers enforce access control through Kubernetes Role-Based Access Control (RBAC):
+
+* *Model access*: Administrators control which tiers can access a specific model by configuring RBAC permissions for the tier's namespace.
+* *ServiceAccount permissions*: Each tier has a dedicated ServiceAccount. When MaaS issues a token, it creates the token for the appropriate tier's ServiceAccount based on the user's group membership.
+* *Namespace isolation*: Tier namespaces provide logical isolation, allowing fine-grained control over which models are accessible to each tier.
+
+For example, the `maas-default-gateway-tier-premium` namespace's ServiceAccount group (`system:serviceaccounts:maas-default-gateway-tier-premium`) can be granted POST permissions to specific `LLMInferenceService` resources, controlling which models premium-tier users can access.
+
+== Rate limiting and quotas
+
+Rate limiting and quota policies are configured when you create or edit a tier through the dashboard. These policies include:
+
+* *Request rate limits*: Maximum number of API requests allowed per time period, such as 1000 requests per minute.
+* *Token consumption limits*: Maximum number of tokens that can be consumed per time period, such as 100,000 tokens per minute.
+* *Quota policies*: Optional daily or monthly limits on total usage.
+
+These limits are enforced by Kuadrant's Limitador component and are applied based on the user's resolved tier.
+
+////
+== Observability and metrics
+
+The MaaS observability stack tracks metrics on a per-tier basis through Limitador. Available metrics include:
+
+* `limitador_ratelimit_tier_requests_total`: Total number of requests per tier
+* `limitador_ratelimit_tier_allowed_total`: Number of allowed requests per tier
+* `limitador_ratelimit_tier_denied_total`: Number of rate-limited (denied) requests per tier
+
+These metrics can be accessed through Prometheus or viewed in Grafana dashboards to monitor tier usage, identify capacity issues, and plan resource allocation.
+
+.Additional resources
+
+* For information about monitoring MaaS metrics, see the Grafana dashboard in the {productname-short} observability stack.
+////

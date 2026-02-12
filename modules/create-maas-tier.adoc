@@ -1,0 +1,59 @@
+:_mod-docs-content-type: PROCEDURE
+
+[id="creating-maas-tier_{context}"]
+= Create a tier
+
+[role="_abstract"]
+Create a new tier through the {productname-short} dashboard to define service levels, resource limits, and group assignments.
+
+.Prerequisites
+
+* You have logged in to {productname-short}.
+* You have administrator access to the {productname-short} dashboard.
+
+.Procedure
+
+. In the left navigation menu, click *Settings*.
+. Click *Tiers* to view existing tiers.
+. Click *Create tier*.
+. In the *Create tier* form, configure the tier:
+.. *Name*: Enter a descriptive name for the tier that will be displayed to users, such as `Production Tier` or `Data Science Team`.
+.. (Optional) Click *Edit resource name* to set a custom internal identifier for the tier. If not specified, the resource name is generated automatically from the display name.
++
+The resource name must use lowercase letters, numbers, and hyphens only.
++
+.. (Optional) *Description*: Provide a brief description of the tier's purpose and intended users.
+.. *Level*: Set the tier priority level using a numeric value.
++
+Higher numbers indicate higher priority. When a user belongs to multiple groups, they are assigned the tier with the highest level value. For example, use 0 for the lowest tier, 1 for medium, and 2 for the highest.
++
+.. *Groups*: Select or create the OpenShift groups that should be assigned to this tier.
++
+Users who are members of these groups will be automatically assigned to this tier.
++
+. Configure rate limits:
+.. To limit token consumption, select *Enforce token rate limit* and click *Add token rate limit*:
+... Enter the number of tokens allowed.
+... Enter the time period.
+... Select the time unit (minute, hour, etc.).
++
+For example, set `100000` tokens per `1` `minute` for production workloads.
++
+.. To limit API requests, select *Enforce request rate limit* and click *Add request rate limit*:
+... Enter the number of requests allowed.
+... Enter the time period.
+... Select the time unit (minute, hour, etc.).
++
+For example, set `1000` requests per `1` `minute` for production workloads.
++
+[TIP]
+====
+You can configure multiple rate limits with different time windows by clicking *Add token rate limit* or *Add request rate limit* again.
+====
++
+. Click *Create tier*.
+
+.Verification
+
+* Verify that the new tier appears in the tiers list with the correct configuration.
+* Click the tier name to view its details and confirm the groups, rate limits, and level are set correctly.

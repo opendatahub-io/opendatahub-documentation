@@ -1,0 +1,70 @@
+:_mod-docs-content-type: PROCEDURE
+
+[id="deploy-models-using-dashboard-wizard_{context}"]
+= Publish models with Models-as-a-Service
+
+[role="_abstract"]
+You can deploy generative AI models and publish them to Models-as-a-Service (MaaS) to enable tier-based access control and centralized authentication.
+
+.Prerequisites
+
+* You have logged in to {productname-short}.
+* You have administrator access to a project in {productname-short}.
+* You have enabled the Models-as-a-Service component and configured at least one service tier.
+* You have access to a storage connection containing your model files, such as S3-compatible object storage.
+
+.Procedure
+
+. In the left navigation menu, click *Projects*.
+. Click the name of the project where you want to deploy the model.
+. Click the *Deployments* tab.
+. Click *Deploy model* to open the wizard.
+. In the *Model details* section:
+.. Specify your storage connection and model path.
+.. Select *Generative AI model* as the model type.
+.. Click *Next*.
+. In the *Model deployment* section:
+.. Enter a unique model deployment name using lowercase letters, numbers, and hyphens.
+.. Select *Distributed inference with llm-d* as the serving runtime.
++
+[IMPORTANT]
+====
+Currently, only the Distributed inference with llm-d runtime supports Models-as-a-Service integration. If you select a different runtime, the *Publish as MaaS endpoint* option will not be available in Advanced settings.
+====
++
+.. Select an appropriate hardware profile for your model.
+.. Click *Next*.
+. In the *Advanced settings* section, configure MaaS access:
+.. Select *Publish as MaaS endpoint* to make the model available through Models-as-a-Service.
+.. Configure tier access:
++
+* *All tiers*: Make the model available to all service tiers.
+* *Specific tiers*: Limit access to selected tiers. If you choose this option, select the specific tiers from the *Tier names* field.
++
+.. (Optional) Select *Require token authentication* for added security.
+.. (Optional) Select *Add custom runtime environment variables* to customize model behavior.
+. Click *Deploy*.
+
+.Verification
+
+. Verify that the model appears on the *Deployments* tab with a checkmark in the *Status* column.
+. Navigate to *AI assets endpoint* -> *Models-as-a-Service* -> *Models*.
+. Verify that your model is listed with a *Ready* status.
+. Verify that tier access control was configured correctly:
++
+[source,terminal]
+----
+$ oc get rolebindings -n <your-project-namespace> | grep <your_model_name>
+----
++
+You should see RoleBindings for each tier that has access to the model.
++
+. Test model access:
+.. Generate an authentication token as described in link:{rhoaidocshome}{default-format-url}/using_models-as-a-service/index#access-models-with-maas_{context}[Access models through models-as-a-service].
+.. Make a test API call to the model endpoint to verify that it responds.
+.. If you configured tier-based access restrictions, confirm that only authorized tiers can access the model.
+
+.Additional resources
+
+* For information about updating tier access for deployed models, see link:{rhoaidocshome}{default-format-url}/deploy_and_manage_models-as-a-service/index#update-model-tier-access_{context}[Update tier access for deployed models].
+* For troubleshooting model deployment issues, see link:{rhoaidocshome}{default-format-url}/deploy_and_manage_models-as-a-service/index#maas-administration-troubleshooting_{context}[Models-as-a-Service administration troubleshooting].

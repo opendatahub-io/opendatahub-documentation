@@ -1,0 +1,50 @@
+:_mod-docs-content-type: ASSEMBLY
+
+[id="managing-maas-tiers-dashboard_{context}"]
+= Manage Models-as-a-Service tiers
+
+[role="_abstract"]
+You can create and manage Models-as-a-Service (MaaS) tiers to control access levels, rate limits, and quotas for different user groups.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have enabled the Models-as-a-Service component.
+* You have enabled the Models-as-a-Service dashboard interface.
+* You have access to the {productname-short} dashboard with administrator privileges.
+
+include::../modules/view-maas-tier-configurations.adoc[leveloffset=+1]
+
+include::../modules/create-maas-tier.adoc[leveloffset=+1]
+
+include::../modules/edit-maas-tier.adoc[leveloffset=+1]
+
+include::../modules/delete-maas-tier.adoc[leveloffset=+1]
+
+////
+== Monitor tier usage
+
+You can monitor tier usage and resource consumption through the MaaS observability stack.
+
+.Procedure
+
+. Access the Grafana dashboard:
+.. In the {openshift-platform} console, navigate to *Networking* -> *Routes*.
+.. From the *Project* list, select the namespace where Grafana is deployed.
+.. Click the Grafana route URL to open the Grafana dashboard.
+. Navigate to the MaaS metrics dashboard.
+. View tier-specific metrics:
+.. *Requests per tier*: Total API requests broken down by tier.
+.. *Allowed requests*: Requests that passed rate limiting.
+.. *Denied requests*: Requests that were rate-limited.
+.. *Token consumption*: Number of tokens consumed per tier.
+. Use these metrics to:
+.. Identify tiers approaching rate limits.
+.. Plan capacity adjustments.
+.. Detect unusual usage patterns.
+.. Make informed decisions about tier configuration changes.
+////
+
+.Additional resources
+
+* For troubleshooting tier management issues, see link:{rhoaidocshome}{default-format-url}/deploy_and_manage_models-as-a-service/index#maas-administration-troubleshooting_{context}[Models-as-a-Service administration troubleshooting].

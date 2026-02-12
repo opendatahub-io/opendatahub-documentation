@@ -1,0 +1,80 @@
+:_mod-docs-content-type: PROCEDURE
+
+[id="enable-the-models-as-a-service-component_{context}"]
+= Enable the models-as-a-service component
+
+[role="_abstract"]
+You can enable Models-as-a-Service (MaaS) in your {productname-short} deployment by updating the `modelsAsService` component in the `DataScienceCluster` custom resource (CR).
+
+Enabling the Models-as-a-Service component deploys the following resources in your cluster:
+
+* The `maas-api` service that handles authentication, authorization, and model discovery
+* Default tier configuration with free, premium, and enterprise tiers
+* ServiceAccounts for token issuance and policy enforcement
+* RBAC roles for model access control
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+
+.Procedure
+
+. Log in to the {openshift-platform} console as a cluster administrator.
+. Navigate to *Operators* -> *Installed Operators*, and then click the *{productname-long}* Operator.
+. Click the *Data Science Cluster* tab.
+. On the *DataScienceClusters* page, click your DataScienceCluster object (typically named `default-dsc`).
+. Click the *YAML* tab.
+. In the `spec.components` section, locate the `kserve` component and add or update the `modelsAsService` configuration:
++
+[source,yaml]
+----
+# ... existing configuration ...
+spec:
+  components:
+    kserve:
+      managementState: Managed
+      modelsAsService:
+        managementState: Managed
+# ... remaining configuration ...
+----
++
+where:
++
+`modelsAsService`:: Specifies the MaaS component nested under the kserve component.
+`managementState: Managed`:: Specifies that MaaS functionality is enabled.
++
+. Click *Save*.
+
+.Verification
+
+Verify that the MaaS component is running:
+
+. Verify that the `maas-api` pod is running:
++
+[source,terminal]
+----
+$ oc get pods -n {dbd-config-default-namespace} -l app=maas-api
+----
++
+.Example output
+----
+NAME                        READY   STATUS    RESTARTS   AGE
+maas-api-7f8c9d4b5-xyz12    1/1     Running   0          3m
+----
+
+. Verify that the tier configuration ConfigMap exists:
++
+[source,terminal]
+----
+$ oc get configmap tier-to-group-mapping -n {dbd-config-default-namespace}
+----
++
+.Example output
+----
+NAME                      DATA   AGE
+tier-to-group-mapping     1      3m
+----
+
+.Additional resources
+
+* For troubleshooting MaaS component issues, see link:{rhoaidocshome}{default-format-url}/deploy_and_manage_models-as-a-service/index#maas-administration-troubleshooting_{context}[Models-as-a-Service administration troubleshooting].
