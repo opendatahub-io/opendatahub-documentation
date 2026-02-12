@@ -1,21 +1,30 @@
 :_module-type: PROCEDURE
 
 [id="configuring-authorization-policies-for-llmd_{context}"]
-= Configuring authorization policies for {llmd}
+= Configuring custom authorization policies for {llmd}
 
 [role='_abstract']
-After enabling authentication for {llmd}, you can configure fine-grained authorization policies to control which ServiceAccounts can access specific `LLMInferenceService` resources. This enables you to implement role-based access control for your inference endpoints.
+In {productname-short} 3.0 and later, an `AuthPolicy` resource is automatically created when authentication is enabled for an `LLMInferenceService`. You can create custom authorization policies to override the default behavior and implement fine-grained access control, such as restricting access to specific ServiceAccounts or implementing custom authorization rules.
 
 .Prerequisites
 
 * You have configured {org-name} Connectivity Link for {llmd} as described in _Configuring authentication for {llmd} using {org-name} Connectivity Link_.
-* You have enabled authentication for your `LLMInferenceService` as described in _Enabling authentication and authorization for an LLM inference service_.
+* You have authentication enabled for your `LLMInferenceService`. In {productname-short} 3.0 and later, authentication is enabled by default when Connectivity Link is configured.
 * You have access to the OpenShift CLI (`oc`).
 * You have cluster administrator or equivalent permissions to create authorization policies.
 
 .Procedure
 
-. Create an `AuthPolicy` resource that targets your `LLMInferenceService`:
+. Optional: View the automatically generated `AuthPolicy` for your `LLMInferenceService`:
++
+[source,bash]
+----
+oc get authpolicy -n <namespace>
+----
++
+In {productname-short} 3.0 and later, an `AuthPolicy` is automatically created when authentication is enabled.
+
+. To customize authorization beyond the default policy, create a custom `AuthPolicy` resource that targets your `LLMInferenceService`:
 +
 [source,yaml]
 ----
@@ -136,5 +145,5 @@ You should receive a `403 Forbidden` response.
 [role='_additional-resources']
 .Additional resources
 
-* For more information about Connectivity Link authorization policies, see link:https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2/html/configuring_and_deploying_gateway_policies_with_connectivity_link/app-developer-workflow_rhcl[Override your Gateway policies for auth and rate limiting^].
-* For information about Kubernetes SubjectAccessReview, see link:https://kubernetes.io/docs/reference/access-authn-authz/authorization/[Authorization in Kubernetes^].
+* link:https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2/html/configuring_and_deploying_gateway_policies_with_connectivity_link/app-developer-workflow_rhcl[Override your Gateway policies for auth and rate limiting^]
+* link:https://kubernetes.io/docs/reference/access-authn-authz/authorization/[Authorization in Kubernetes^]

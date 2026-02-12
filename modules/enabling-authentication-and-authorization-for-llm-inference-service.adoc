@@ -1,10 +1,10 @@
 :_module-type: PROCEDURE
 
 [id="enabling-authentication-and-authorization-for-llm-inference-service_{context}"]
-= Enabling authentication and authorization for an LLM inference service
+= Managing authentication and authorization for an LLM inference service
 
 [role='_abstract']
-After configuring {org-name} Connectivity Link for {llmd}, you must annotate your `LLMInferenceService` resource to enable authentication and authorization protection. This ensures that only authenticated requests with valid tokens can access the inference endpoint.
+In {productname-short} 3.0 and later, authentication and authorization are automatically enabled for `LLMInferenceService` resources when {org-name} Connectivity Link is configured. You can use the `security.opendatahub.io/enable-auth: "true"` annotation to explicitly enable authentication, such as re-enabling it after it was previously disabled.
 
 .Prerequisites
 
@@ -14,7 +14,7 @@ After configuring {org-name} Connectivity Link for {llmd}, you must annotate you
 
 .Procedure
 
-. Create or update your `LLMInferenceService` resource to include the annotation that enables Connectivity Link protection:
+. By default, authentication is enabled automatically. To explicitly enable authentication or to re-enable it after disabling, annotate your `LLMInferenceService` resource:
 +
 [source,yaml]
 ----
@@ -47,7 +47,7 @@ spec:
             nvidia.com/gpu: "1"
 ----
 +
-The `security.opendatahub.io/enable-auth: "true"` annotation enables authentication and authorization for the inference service.
+NOTE: In {productname-short} 3.0 and later, the `security.opendatahub.io/enable-auth: "true"` annotation is the default behavior when Connectivity Link is configured. You only need to add this annotation if you previously disabled authentication.
 
 . Apply the configuration:
 +
@@ -63,7 +63,7 @@ oc apply -f <llm-inference-service-file>.yaml
 curl -v https://<inference-endpoint-url>/v1/models
 ----
 +
-If authentication is properly configured, you should receive a `401 Unauthorized` response.
+You should receive a `401 Unauthorized` response.
 
 .Verification
 
@@ -79,4 +79,4 @@ This command should return `true`.
 [role='_additional-resources']
 .Additional resources
 
-* For information about creating authorization policies, see link:https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2/html/configuring_and_deploying_gateway_policies_with_connectivity_link/app-developer-workflow_rhcl[Override your Gateway policies for auth and rate limiting^].
+* link:https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2/html/configuring_and_deploying_gateway_policies_with_connectivity_link/app-developer-workflow_rhcl[Override your Gateway policies for auth and rate limiting^]
