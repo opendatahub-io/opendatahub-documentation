@@ -1,0 +1,70 @@
+:_module-type: CONCEPT
+
+[id="con-understanding-observability-for-distributed-inference_{context}"]
+= Understanding observability for {llmd}
+
+[role="_abstract"]
+{llmd} provides comprehensive observability through metrics, logs, and distributed tracing to monitor performance, troubleshoot issues, and optimize resource use across distributed inference deployments.
+
+{llmd} is a Kubernetes-native framework for serving large language models at scale. Its distributed architecture includes multiple components that work together to handle inference requests efficiently. To monitor and troubleshoot {llmd} deployments effectively, you must have visibility into each component's performance and behavior.
+
+== {llmd} observability architecture overview
+
+{llmd} integrates with {openshift-platform}'s built-in observability stack, including Prometheus for metrics collection, OpenShift Console for visualization, and support for external tools such as Grafana.
+
+The following components emit metrics:
+
+Router:: Routes incoming inference requests to available vLLM worker pods by using configured strategies such as least-loaded or prefix-cache-aware routing. Router metrics include request rates, routing decisions, cache hit rates, and routing latency.
+
+Scheduler:: Manages request queuing and assigns requests to vLLM workers by using capacity and resource availability. Scheduler metrics include queue depth, wait times, scheduled request counts, and rejection rates.
+
+vLLM workers:: Run the actual model inference by using optimized vLLM libraries. Worker metrics include inference latency (time to first token and time per output token), token throughput, GPU utilization, and cache usage.
+
+Envoy proxy:: Handles HTTP traffic and load balancing for the {llmd} service. Envoy metrics include HTTP request counts by status code, connection statistics, and upstream request latency.
+
+== Types of observability data
+
+{llmd} provides three types of observability data:
+
+Metrics:: Prometheus-formatted time-series metrics that each component exposes through `/metrics` endpoints. {openshift-platform} User Workload Monitoring collects metrics, and you can query them by using PromQL.
+
+Logs:: Container logs from each {llmd} component are available through {openshift-platform} logging infrastructure. Logs show detailed information about request processing, errors, and component behavior.
+
+Traces:: Optional distributed tracing through OpenTelemetry provides end-to-end visibility into request flow across all {llmd} components, helping identify bottlenecks in distributed inference pipelines.
+
+== Integration with {openshift-platform} monitoring
+
+{llmd} metrics integrate seamlessly with {openshift-platform} User Workload Monitoring:
+
+* Metrics are automatically discovered when you create `ServiceMonitor` and `PodMonitor` resources.
+* Metrics are stored in Prometheus and queryable through the {openshift-platform} Console.
+* You can create custom dashboards in Grafana by using {llmd} metrics.
+* Alert rules can be configured to notify you of performance degradation or failures.
+
+For more information about {openshift-platform} monitoring, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/monitoring/configuring-user-workload-monitoring[Configuring user workload monitoring].
+
+== Key observability use cases
+
+Monitor the following aspects of your {llmd} deployment:
+
+Request latency and throughput:: Track end-to-end request latency, time to first token (TTFT), time per output token (TPOT), and overall request throughput to ensure you meet performance SLAs.
+
+Resource utilization:: Monitor GPU memory usage, CPU utilization, and network bandwidth to identify resource constraints and optimize capacity planning.
+
+Routing and scheduling efficiency:: Track cache hit rates, routing decisions, and queue depth to optimize request distribution and minimize wait times.
+
+Error rates and failures:: Monitor HTTP error rates, request rejections, and component failures to quickly identify and resolve issues.
+
+Capacity planning:: Use historical metrics to predict resource needs, plan scaling operations, and optimize costs.
+
+[role="_additional-resources"]
+.Additional resources
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/monitoring/configuring-user-workload-monitoring[Configuring user workload monitoring]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html/monitoring/accessing-metrics[Accessing metrics in {openshift-platform} Console]
+ifdef::upstream[]
+* link:{odhdocshome}/deploying-models/#deploying-models-using-distributed-inference_deploying-models[Deploying models using {llmd}]
+endif::[]
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/deploying_models/deploying-models_rhoai-user#deploying-models-using-distributed-inference_deploying-models[Deploying models using {llmd}]
+endif::[]

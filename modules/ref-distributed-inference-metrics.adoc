@@ -1,0 +1,320 @@
+:_module-type: REFERENCE
+
+[id="ref-distributed-inference-metrics_{context}"]
+= {llmd} metrics reference
+
+[role="_abstract"]
+{llmd} components expose Prometheus-formatted metrics that give visibility into request processing, resource use, and system performance across distributed inference deployments.
+
+This reference describes the metrics exposed by each {llmd} component. All metrics use standard Prometheus naming conventions and include labels for filtering and aggregation.
+
+== Common labels
+
+The following labels are common across all {llmd} metrics:
+
+namespace:: The Kubernetes namespace where the {llmd} deployment is running.
+
+llm_inference_service:: The name of the `LLMInferenceService` custom resource.
+
+model_name:: The name of the model being served.
+
+component:: The {llmd} component type: `router`, `scheduler`, `worker`, or `envoy`.
+
+== Router metrics
+
+The router component exposes the following metrics:
+
+llmd_router_requests_total::
+Total number of requests received by the router.
++
+--
+_Type_: Counter
+
+_Labels_: `llm_inference_service`, `namespace`, `model_name`
+
+_Example query_: Request rate over the last 5 minutes:
+[source,promql]
+----
+rate(llmd_router_requests_total{namespace="my-namespace"}[5m])
+----
+--
+
+llmd_router_routing_decisions_total::
+Total number of routing decisions made, labeled by routing strategy.
++
+--
+_Type_: Counter
+
+_Labels_: `strategy`, `llm_inference_service`, `namespace`
+
+_Strategy values_: `least-loaded`, `prefix-cache-aware`, `round-robin`
+
+_Example query_: Routing decisions by strategy:
+[source,promql]
+----
+rate(llmd_router_routing_decisions_total{namespace="my-namespace"}[5m])
+----
+--
+
+llmd_router_cache_hits_total::
+Total number of prefix cache hits.
++
+--
+_Type_: Counter
+
+_Labels_: `llm_inference_service`, `namespace`, `model_name`
+
+_Example query_: Cache hit rate:
+[source,promql]
+----
+rate(llmd_router_cache_hits_total{namespace="my-namespace"}[5m]) /
+rate(llmd_router_requests_total{namespace="my-namespace"}[5m])
+----
+--
+
+llmd_router_request_duration_seconds::
+Request routing latency in seconds.
++
+--
+_Type_: Histogram
+
+_Labels_: `llm_inference_service`, `namespace`
+
+_Buckets_: 0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0
+
+_Example query_: 95th percentile routing latency:
+[source,promql]
+----
+histogram_quantile(0.95,
+  rate(llmd_router_request_duration_seconds_bucket{namespace="my-namespace"}[5m])
+)
+----
+--
+
+== Scheduler metrics
+
+The scheduler component exposes the following metrics:
+
+llmd_scheduler_queue_depth::
+Current number of requests waiting in the scheduler queue.
++
+--
+_Type_: Gauge
+
+_Labels_: `llm_inference_service`, `namespace`
+
+_Example query_: Current queue depth:
+[source,promql]
+----
+llmd_scheduler_queue_depth{namespace="my-namespace"}
+----
+--
+
+llmd_scheduler_wait_time_seconds::
+Time requests spend waiting in the queue before being scheduled.
++
+--
+_Type_: Histogram
+
+_Labels_: `llm_inference_service`, `namespace`
+
+_Buckets_: 0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 30.0, 60.0
+
+_Example query_: 95th percentile queue wait time:
+[source,promql]
+----
+histogram_quantile(0.95,
+  rate(llmd_scheduler_wait_time_seconds_bucket{namespace="my-namespace"}[5m])
+)
+----
+--
+
+llmd_scheduler_scheduled_requests_total::
+Total number of requests successfully scheduled to workers.
++
+--
+_Type_: Counter
+
+_Labels_: `llm_inference_service`, `namespace`, `worker_id`
+
+_Example query_: Scheduling rate by worker:
+[source,promql]
+----
+rate(llmd_scheduler_scheduled_requests_total{namespace="my-namespace"}[5m])
+----
+--
+
+llmd_scheduler_rejected_requests_total::
+Total number of requests rejected due to capacity constraints.
++
+--
+_Type_: Counter
+
+_Labels_: `reason`, `llm_inference_service`, `namespace`
+
+_Reason values_: `queue-full`, `no-capacity`, `timeout`
+
+_Example query_: Rejection rate by reason:
+[source,promql]
+----
+rate(llmd_scheduler_rejected_requests_total{namespace="my-namespace"}[5m])
+----
+--
+
+== vLLM worker metrics
+
+vLLM worker pods expose standard vLLM metrics with additional labels for {llmd} integration. For the complete list of vLLM metrics, see the vLLM metrics reference.
+
+The following {llmd}-specific labels are added to all vLLM metrics:
+
+worker_id:: Unique identifier for the worker pod.
+
+replica_id:: Pod replica number within the deployment.
+
+llm_inference_service:: Name of the parent `LLMInferenceService` resource.
+
+Key vLLM metrics include:
+
+vllm:time_to_first_token_seconds::
+Time to generate the first token in a response.
++
+--
+_Type_: Histogram
+
+_Example query_: 95th percentile TTFT across all workers:
+[source,promql]
+----
+histogram_quantile(0.95,
+  rate(vllm:time_to_first_token_seconds_bucket{llm_inference_service="my-service"}[5m])
+)
+----
+--
+
+vllm:time_per_output_token_seconds::
+Average time to generate each output token.
++
+--
+_Type_: Histogram
+
+_Example query_: 95th percentile TPOT:
+[source,promql]
+----
+histogram_quantile(0.95,
+  rate(vllm:time_per_output_token_seconds_bucket{llm_inference_service="my-service"}[5m])
+)
+----
+--
+
+vllm:generation_tokens_total::
+Total number of tokens generated.
++
+--
+_Type_: Counter
+
+_Example query_: Token throughput per second:
+[source,promql]
+----
+rate(vllm:generation_tokens_total{llm_inference_service="my-service"}[5m])
+----
+--
+
+vllm:gpu_cache_usage_perc::
+Percentage of GPU memory used by the vLLM cache.
++
+--
+_Type_: Gauge
+
+_Example query_: GPU cache utilization:
+[source,promql]
+----
+vllm:gpu_cache_usage_perc{llm_inference_service="my-service"}
+----
+--
+
+ifdef::upstream[]
+For more information about vLLM metrics, see link:{odhdocshome}/deploying-models/#ref-vllm-metrics_deploying-models[vLLM metrics].
+endif::[]
+ifndef::upstream[]
+For more information about vLLM metrics, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying-models_rhoai-user#ref-vllm-metrics_deploying-models[vLLM metrics].
+endif::[]
+
+== Envoy proxy metrics
+
+The Envoy proxy exposes standard Envoy metrics for HTTP traffic monitoring:
+
+envoy_http_downstream_rq_total::
+Total number of HTTP requests received.
++
+--
+_Type_: Counter
+
+_Labels_: `llm_inference_service`, `namespace`
+
+_Example query_: HTTP request rate:
+[source,promql]
+----
+rate(envoy_http_downstream_rq_total{llm_inference_service="my-service"}[5m])
+----
+--
+
+envoy_http_downstream_rq_2xx::
+envoy_http_downstream_rq_4xx::
+envoy_http_downstream_rq_5xx::
+HTTP requests by status code class (2xx, 4xx, 5xx).
++
+--
+_Type_: Counter
+
+_Labels_: `llm_inference_service`, `namespace`
+
+_Example query_: Error rate (4xx and 5xx):
+[source,promql]
+----
+rate(envoy_http_downstream_rq_4xx{llm_inference_service="my-service"}[5m]) +
+rate(envoy_http_downstream_rq_5xx{llm_inference_service="my-service"}[5m])
+----
+--
+
+envoy_cluster_upstream_cx_active::
+Number of active connections to upstream services (vLLM workers).
++
+--
+_Type_: Gauge
+
+_Labels_: `cluster_name`, `llm_inference_service`, `namespace`
+
+_Example query_: Active connections per cluster:
+[source,promql]
+----
+envoy_cluster_upstream_cx_active{llm_inference_service="my-service"}
+----
+--
+
+envoy_cluster_upstream_rq_time::
+Request latency to upstream services in milliseconds.
++
+--
+_Type_: Histogram
+
+_Labels_: `cluster_name`, `llm_inference_service`, `namespace`
+
+_Example query_: 95th percentile upstream latency:
+[source,promql]
+----
+histogram_quantile(0.95,
+  rate(envoy_cluster_upstream_rq_time_bucket{llm_inference_service="my-service"}[5m])
+)
+----
+--
+
+[role="_additional-resources"]
+.Additional resources
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html/monitoring/accessing-metrics[Accessing metrics in {openshift-platform} Console]
+* link:https://prometheus.io/docs/prometheus/latest/querying/basics/[Prometheus query language documentation]
+ifdef::upstream[]
+* link:{odhdocshome}/deploying-models/#ref-vllm-metrics_deploying-models[vLLM metrics reference]
+endif::[]
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/deploying_models/deploying-models_rhoai-user#ref-vllm-metrics_deploying-models[vLLM metrics reference]
+endif::[]

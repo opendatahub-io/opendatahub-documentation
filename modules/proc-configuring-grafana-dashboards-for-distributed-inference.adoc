@@ -1,0 +1,267 @@
+:_module-type: PROCEDURE
+
+[id="proc-configuring-grafana-dashboards-for-distributed-inference_{context}"]
+= Configuring Grafana dashboards for {llmd}
+
+[role="_abstract"]
+Create custom Grafana dashboards to visualize {llmd} metrics, monitor performance, and set up alerts for distributed inference deployments.
+
+.Prerequisites
+
+* You have configured monitoring for {llmd} as described in _Configuring monitoring for {llmd}_.
+* You have deployed and configured Grafana to connect to {openshift-platform} Prometheus. For more information about connecting Grafana to your {llmd} deployment, see the Grafana connectivity documentation.
+* You have permissions to create and edit Grafana dashboards.
+* {llmd} metrics are being collected and are queryable in Prometheus.
+
+.Procedure
+
+. Log in to your Grafana instance.
+
+. Create a new dashboard:
+
+.. Click *Dashboards* in the left navigation menu.
+.. Click *New* -> *New Dashboard*.
+.. Click *Add visualization*.
+
+. Configure dashboard variables to filter metrics by namespace and service:
+
+.. Click the dashboard settings icon (gear) in the top right.
+.. Click *Variables* in the left menu.
+.. Click *Add variable*.
+.. Configure the namespace variable:
++
+--
+* *Name*: `namespace`
+* *Type*: Query
+* *Data source*: Prometheus
+* *Query*: `label_values(llmd_router_requests_total, namespace)`
+* *Refresh*: On dashboard load
+--
+
+.. Click *Add variable* again and configure the service variable:
++
+--
+* *Name*: `service`
+* *Type*: Query
+* *Data source*: Prometheus
+* *Query*: `label_values(llmd_router_requests_total{namespace="$namespace"}, llm_inference_service)`
+* *Refresh*: On dashboard load
+--
+
+.. Click *Save dashboard*.
+
+. Create a panel to monitor router request rate:
+
+.. Click *Add* -> *Visualization*.
+.. In the *Query* tab, enter:
++
+[source,promql]
+----
+rate(llmd_router_requests_total{namespace="$namespace", llm_inference_service="$service"}[5m])
+----
+
+.. In the panel settings:
++
+--
+* *Title*: Router Request Rate
+* *Visualization*: Time series
+* *Unit*: requests/sec
+--
+
+.. Click *Apply*.
+
+. Create a panel to monitor scheduler queue depth:
+
+.. Click *Add* -> *Visualization*.
+.. In the *Query* tab, enter:
++
+[source,promql]
+----
+llmd_scheduler_queue_depth{namespace="$namespace", llm_inference_service="$service"}
+----
+
+.. In the panel settings:
++
+--
+* *Title*: Scheduler Queue Depth
+* *Visualization*: Gauge
+* *Unit*: requests
+* *Thresholds*: Green (0-50), Yellow (50-100), Red (>100)
+--
+
+.. Click *Apply*.
+
+. Create a panel to monitor vLLM time to first token (TTFT):
+
+.. Click *Add* -> *Visualization*.
+.. In the *Query* tab, add multiple queries for different percentiles:
++
+[source,promql]
+----
+# P50 TTFT
+histogram_quantile(0.50, rate(vllm:time_to_first_token_seconds_bucket{llm_inference_service="$service"}[5m]))
+
+# P95 TTFT
+histogram_quantile(0.95, rate(vllm:time_to_first_token_seconds_bucket{llm_inference_service="$service"}[5m]))
+
+# P99 TTFT
+histogram_quantile(0.99, rate(vllm:time_to_first_token_seconds_bucket{llm_inference_service="$service"}[5m]))
+----
+
+.. In the panel settings:
++
+--
+* *Title*: Time to First Token (TTFT)
+* *Visualization*: Time series
+* *Unit*: seconds
+* *Legend*: Show with labels (p50, p95, p99)
+--
+
+.. Click *Apply*.
+
+. Create a panel to monitor token throughput:
+
+.. Click *Add* -> *Visualization*.
+.. In the *Query* tab, enter:
++
+[source,promql]
+----
+rate(vllm:generation_tokens_total{llm_inference_service="$service"}[5m])
+----
+
+.. In the panel settings:
++
+--
+* *Title*: Token Generation Throughput
+* *Visualization*: Time series
+* *Unit*: tokens/sec
+--
+
+.. Click *Apply*.
+
+. Create a panel to monitor HTTP request status codes:
+
+.. Click *Add* -> *Visualization*.
+.. In the *Query* tab, add queries for each status code class:
++
+[source,promql]
+----
+# 2xx (Success)
+rate(envoy_http_downstream_rq_2xx{llm_inference_service="$service"}[5m])
+
+# 4xx (Client errors)
+rate(envoy_http_downstream_rq_4xx{llm_inference_service="$service"}[5m])
+
+# 5xx (Server errors)
+rate(envoy_http_downstream_rq_5xx{llm_inference_service="$service"}[5m])
+----
+
+.. In the panel settings:
++
+--
+* *Title*: HTTP Request Status Codes
+* *Visualization*: Time series
+* *Unit*: requests/sec
+* *Legend*: Show with labels (2xx, 4xx, 5xx)
+--
+
+.. Click *Apply*.
+
+. Create a panel to monitor GPU cache utilization:
+
+.. Click *Add* -> *Visualization*.
+.. In the *Query* tab, enter:
++
+[source,promql]
+----
+vllm:gpu_cache_usage_perc{llm_inference_service="$service"}
+----
+
+.. In the panel settings:
++
+--
+* *Title*: GPU Cache Utilization
+* *Visualization*: Time series
+* *Unit*: percent (0-100)
+--
+
+.. Click *Apply*.
+
+. Create a panel to monitor routing cache hit rate:
+
+.. Click *Add* -> *Visualization*.
+.. In the *Query* tab, enter:
++
+[source,promql]
+----
+rate(llmd_router_cache_hits_total{namespace="$namespace", llm_inference_service="$service"}[5m]) /
+rate(llmd_router_requests_total{namespace="$namespace", llm_inference_service="$service"}[5m])
+----
+
+.. In the panel settings:
++
+--
+* *Title*: Router Cache Hit Rate
+* *Visualization*: Stat
+* *Unit*: percentunit (0.0-1.0)
+--
+
+.. Click *Apply*.
+
+. Optional: Configure alerts for critical metrics:
+
+.. Click on a panel and select *Edit*.
+.. Click the *Alert* tab.
+.. Click *Create alert rule from this panel*.
+.. Configure alert conditions, for example:
++
+--
+* *Alert name*: High Queue Depth
+* *Condition*: WHEN last() OF query(A) IS ABOVE 100
+* *For*: 5m
+--
+
+.. Configure notification channels and save the alert.
+
+. Save the dashboard:
+
+.. Click the *Save dashboard* icon (disk) in the top right.
+.. Enter a dashboard name, for example, `LLM-D Performance Dashboard`.
+.. Optional: Add tags such as `llm-d`, `inference`, `monitoring`.
+.. Click *Save*.
+
+. Optional: Export the dashboard for sharing with your team:
+
+.. Click the dashboard settings icon (gear).
+.. Click *JSON Model*.
+.. Copy the JSON or click *Save to file*.
+.. Share the JSON with your team or save it to version control.
+
+.Verification
+
+. Verify that all panels are displaying data:
+
+.. Check that each panel shows metrics for your selected namespace and service.
+.. If panels show "No data," verify that:
++
+--
+* The `$namespace` and `$service` variables are set correctly at the top of the dashboard.
+* Metrics are being collected (check in {openshift-platform} Console -> Observe -> Metrics).
+* The time range selector at the top right covers a period when your {llmd} deployment was active.
+--
+
+. Optional: Test the dashboard variables by selecting different namespaces and services from the dropdown menus at the top of the dashboard.
+
+. Optional: If you configured alerts, verify that they trigger correctly by simulating conditions that should trigger the alert.
+
+[role="_additional-resources"]
+.Additional resources
+
+* link:https://grafana.com/docs/grafana/latest/dashboards/[Grafana dashboard documentation]
+* link:https://prometheus.io/docs/prometheus/latest/querying/basics/[Prometheus query language documentation]
+ifdef::upstream[]
+* link:{odhdocshome}/deploying-models/#ref-vllm-metrics_deploying-models[vLLM metrics reference]
+endif::[]
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/deploying_models/deploying-models_rhoai-user#ref-vllm-metrics_deploying-models[vLLM metrics reference]
+endif::[]

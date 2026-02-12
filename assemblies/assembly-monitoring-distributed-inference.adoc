@@ -1,0 +1,37 @@
+ifdef::context[:parent-context: {context}]
+
+[id="assembly-monitoring-distributed-inference_{context}"]
+= Monitoring {llmd}
+
+:context: monitoring-distributed-inference
+
+[role="_abstract"]
+Monitor {llmd} (Distributed Inference Server) deployments using {openshift-platform}'s built-in observability tools and Grafana dashboards to track performance, troubleshoot issues, and optimize resource utilization.
+
+{llmd} provides comprehensive metrics for all components in the distributed inference pipeline, including the router, scheduler, vLLM workers, and Envoy proxy. By integrating with {openshift-platform} User Workload Monitoring and Grafana, you can visualize performance metrics, set up alerts, and ensure your distributed inference deployments meet performance requirements.
+
+include::modules/con-understanding-observability-for-distributed-inference.adoc[leveloffset=+1]
+
+include::modules/proc-configuring-monitoring-for-distributed-inference.adoc[leveloffset=+1]
+
+include::modules/ref-distributed-inference-metrics.adoc[leveloffset=+1]
+
+include::modules/proc-configuring-grafana-dashboards-for-distributed-inference.adoc[leveloffset=+1]
+
+[role="_additional-resources"]
+== Additional resources
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/monitoring/configuring-user-workload-monitoring[Configuring user workload monitoring in {openshift-platform}]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html/monitoring/accessing-metrics[Accessing metrics in {openshift-platform} Console]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/monitoring_apis/servicemonitor-monitoring-coreos-com-v1[ServiceMonitor API reference]
+ifdef::upstream[]
+* link:{odhdocshome}/deploying-models/#deploying-models-using-distributed-inference_deploying-models[Deploying models using {llmd}]
+* link:{odhdocshome}/deploying-models/#ref-vllm-metrics_deploying-models[vLLM metrics reference]
+endif::[]
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/deploying_models/deploying-models_rhoai-user#deploying-models-using-distributed-inference_deploying-models[Deploying models using {llmd}]
+* link:{rhoaidocshome}{default-format-url}/deploying_models/deploying-models_rhoai-user#ref-vllm-metrics_deploying-models[vLLM metrics reference]
+endif::[]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
