@@ -8,7 +8,10 @@ You can add a self-signed certificate to a cluster-wide Certificate Authority (C
 
 When the cluster-wide CA bundle is updated, the Cluster Network Operator (CNO) automatically detects the change and injects the updated bundle into the `odh-trusted-ca-bundle` ConfigMap, making the certificate available to {productname-short} components.
 
-*Note:* By default, the management state for the Trusted CA bundle is `Managed` (that is, the `spec.trustedCABundle.managementState` field in the {productname-long} Operator's DSCI object is set to `Managed`). If you change this setting to `Unmanaged`, you must manually update the `odh-trusted-ca-bundle` ConfigMap to include the updated cluster-wide CA bundle.
+[NOTE]
+====
+By default, the management state for the Trusted CA bundle is `Managed` (that is, the `spec.trustedCABundle.managementState` field in the {productname-long} Operator's DSCI object is set to `Managed`). If you change this setting to `Unmanaged`, you must manually update the `odh-trusted-ca-bundle` ConfigMap to include the updated cluster-wide CA bundle.
+====
 
 ifdef::upstream[]
 Alternatively, you can add certificates to a custom CA bundle, as described in link:{odhdocshome}/installing-open-data-hub/#adding-certificates-to-a-custom-ca-bundle_certs[Adding certificates to a custom CA bundle].
