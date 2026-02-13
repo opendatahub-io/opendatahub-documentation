@@ -36,9 +36,21 @@ git clone https://github.com/Red-Hat-AI-Innovation-Team/sdg_hub
 +
 * *Knowledge tuning* - Generate data to fine-tune a model on enterprise documents so that the resulting trained model can accurately recall relevant content and facts in response to user queries. This example provides a complete walkthrough of data generation and preparation for training.
 
+* *Enhanced Knowledge Tuning* - This version of the knowledge pipeline introduces data scaling and improved prompting strategies. While the previous pipeline focused on scaling the number of questions per summary, this iteration focuses on generating _n_ summaries per document, where _n_ is a configurable parameter. Increasing summary token count leads to superior memorization.
++
+This pipeline formalizes data generation by converting documents into Augmentations. It implements the following augmentation instances:
++
+- Thematic Summaries - for capturing high-level ideas.
+- Knowledge Relationships - for identifying connections between segments.
+- Atomic Facts - for isolating granular details.
++
+For each summary, the system generates three question-answer pairs (excess pairs are discarded during post-processing). This architecture is modular; you can integrate additional augmentation types by editing existing flows or adding new ones.
+
 * *Text analysis* - Generate data for teaching models to extract meaningful insights from text in structured format. Create custom blocks and extend existing flows for new applications.
 +
 Each use case directory includes a README file that provides details for each use case — such as instructions, performance notes, and configuration tips.
+
+* *RAG Evaluation* -  Reliable, repeatable evaluation is essential before shipping RAG or agentic updates to production. SDG Hub offers a flow for generating data for evaluating RAG systems at scale. The input of the flow is user documents and the output dataset is post-processed to work with the RAGAS framework. The flow creates question-answer pairs with ground truth context for evaluating RAG systems. This flow simplifies data generation for RAG workflows.
 
 . When you run the example notebooks, consider the following information:
 +

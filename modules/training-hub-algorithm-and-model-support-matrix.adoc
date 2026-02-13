@@ -1,0 +1,72 @@
+:_module-type: CONCEPT
+
+[id='training-hub-algorithm-and-model-support-matrix_{context}']
+=  Training Hub algorithm and model support matrix
+
+To simplify tuning for enterprise customers, the Training Hub supports multiple backends and exposes a unified API surface to access the latest training algorithms from different backends.
+
+The following table lists the Training Hub algorithm and model support matrix.
+
+
+.Model customization example notebooks
+[cols="3,2,3"]
+|===
+|*Algorithm*
+|*Backend*
+|*Supported Model Architectures*
+
+|Supervised Fine Tuning (SFT)
+|instructlab.training
+|GPTOssForCausalLM
+(GPT OSS 20B/120B)
+
+LlamaForCausalLM
+(Llama 3 Models)
+
+Qwen2ForCausalLM
+(Qwen 2.5 models)
+
+Qwen3ForCausalLM
+(Qwen 3 models)
+
+GraniteForCausalLM
+(Granite 3 models)
+
+GraniteMoeHybridForCausalLM
+(Granite 4 models)
+
+Phi3ForCausalLM
+(Phi 3 and 4 models)
+
+MistralForCausalLM (Mistral models)
+
+| Orthogonal Subspace Fine Tuning (OSFT)
+| mini-trainer
+| SAME AS SFT
+
+|Low-Rank Adaption (LoRA) /Quantized Low-Rank Adaption (QLoRA)
+|Unsloth
+|GPTOssForCausalLM
+(GPT OSS 20B/120B)
+(QLoRA ONLY)
+
+LlamaForCausalLM
+(Llama 3 Models)
+
+Qwen2ForCausalLM
+(Qwen 2.5 models)
+
+Qwen3ForCausalLM
+(Qwen 3 models)
+
+GraniteForCausalLM
+(Granite 3 models)
+
+GraniteMoeHybridForCausalLM
+(Granite 4 models)
+
+MistralForCausalLM (Mistral models)
+
+|===
+
+*NOTE:* if you experience an issue with the model classes listed for OSFT with `use_liger=True`, try setting `use_liger=False`. Liger kernels are supported for most model architectures, but some newer architectures might experience errors or instability if not fully supported. For up-to-date support information, see the link:https://github.com/linkedin/Liger-Kernel[Liger-Kernel GitHub repository].
