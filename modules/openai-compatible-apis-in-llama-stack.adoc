@@ -31,8 +31,66 @@ These endpoints are exposed under the OpenAI compatibility layer and are distinc
 
 == Supported OpenAI-compatible APIs in {productname-short}
 
+Before running the following examples, ensure you have:
+
+* The OpenAI Python SDK installed: `pip install -q openai rich`
+* A configured client pointing to your Llama Stack endpoint
+* Model IDs from your deployment (see Models API section)
+
+[source,python]
+----
+import os
+from openai import OpenAI
+import rich
+
+# We'll be using a llama-stack server deployed in {productname-short}.
+# Once all pods associated to the LlamaStackDistribution are running,
+# create the base_url using the llama-stack service hostname (with /v1 at the end when using openai sdk)
+base_url = "http://llama-stack-distribution-service.my-project.svc.cluster.local:8321/v1"
+
+import openai
+client = openai.OpenAI(
+    api_key="your-llama-stack-key",
+    base_url=base_url
+)
+----
+
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-llama-stack/#deploying-llama-stack-server_rag[Deploying a Llama Stack server].
+endif::[]
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/deploying-llama-stack-server_rag[Deploying a Llama Stack server].
+endif::[]
+
+---
+
+=== Models API
+* *Endpoint:* `/v1/models`.  
+* *Providers:* All model-serving back ends configured within {productname-short}.
+* *Support level:* Technology Preview. 
+
+The Models API lists and retrieves available model resources from the Llama Stack deployment running on {productname-short}. By using the Models API, you can enumerate models, view their capabilities, and verify deployment status through a standardized OpenAI-compatible interface.
+
+Example code in Python:
+
+[source,python]
+----
+# List models available in the llama-stack server
+models = client.models.list()
+rich.print(models)
+
+# Select the first LLM and first embedding model
+model_id = next(m for m in models if m.custom_metadata["model_type"] == "llm").id
+embedding_model_id = (
+    em := next(m for m in models if m.custom_metadata["model_type"] == "embedding")
+).id
+embedding_dimension = em.custom_metadata["embedding_dimension"]
+----
+---
+
+>>>>>>> d6a6fdb (ENG-1552: updating code examples with corrected file)
 === Chat Completions API
-* *Endpoint:* `/v1/openai/v1/chat/completions`.  
+* *Endpoint:* `/v1/chat/completions`.  
 * *Providers:* All inference back ends deployed through {productname-short}.
 * *Support level:* Technology Preview. 
 
@@ -58,8 +116,8 @@ rich.print(content)
 ---
 
 === Completions API
-* *Endpoint:* `/v1/openai/v1/completions`.  
-* *Providers:* All inference backends managed by {productname-short}.
+* *Endpoint:* `/v1/completions`.  
+* *Providers:* All inference back ends managed by {productname-short}.
 * *Support level:* Technology Preview. 
 
 The Completions API supports single-turn text generation and prompt completion.
@@ -78,12 +136,11 @@ response = client.completions.create(
 assert len(response.choices) > 0, "No response after basic inference on llama-stack server"
 content = response.choices[0].text
 rich.print(content)
-rich.print(response)
 ----
 ---
 
 === Embeddings API
-* *Endpoint:* `/v1/openai/v1/embeddings`.  
+* *Endpoint:* `/v1/embeddings`.  
 * *Providers:* All embedding models enabled in {productname-short}.
 
 The Embeddings API generates numerical embeddings for text or documents that can be used in downstream semantic search or RAG applications.
@@ -103,7 +160,7 @@ rich.print(embedding[:5] + ["..."] + embedding[-5:])
 ---
 
 === Files API
-* *Endpoint:* `/v1/openai/v1/files`.  
+* *Endpoint:* `/v1/files`.  
 * *Providers:* File system-based file storage provider for managing files and documents stored locally in your cluster.
 * *Support level:* Technology Preview. 
 
@@ -116,14 +173,17 @@ Example code in Python:
 import requests
 from rich import print
 from rich.rule import Rule
+import time
 
 # -----------------------------
-# Download the PDF
+# Download the PDF from url
 # -----------------------------
 print(Rule("[bold cyan]Downloading PDF[/bold cyan]"))
 
+# We'll use IBM 2025-Q4 report to test RAG, as models don't have that info
 pdf_url = "https://www.ibm.com/downloads/documents/us-en/1550f7eea8c0ded6"
 filename = "ibm-Q4-2025-4q25-press-release.pdf"
+title = "IBM-4Q25-Earnings-Press-Release"
 
 print("📥 Fetching PDF from URL...")
 response = requests.get(pdf_url)
@@ -149,40 +209,6 @@ with open(filename, "rb") as f:
 
 print("✅ File uploaded successfully")
 print(file_info)
-
-# -----------------------------
-# Verify file is completed
-# -----------------------------
-print(Rule("[bold cyan]Waiting until file status is complete[/bold cyan]"))
-import time
-
-# Wait for file processing to complete
-print("Waiting for file processing to complete...")
-max_wait_time = 300  # 5 minutes
-start_time = time.time()
-
-while time.time() - start_time < max_wait_time:
-    files = client.vector_stores.files.list(vector_store_id=vector_store.id)
-    if files.data:
-        file_status = files.data[0].status
-        print(f"File status: {file_status}")
-        if file_status == "completed":
-            print("✅ File processing completed!")
-            break
-        elif file_status == "failed":
-            print("✗ File processing failed!")
-            break
-    time.sleep(5)
-else:
-    print("⚠ Timeout waiting for file processing")
-
-# Verify file is completed
-files = client.vector_stores.files.list(vector_store_id=vector_store.id)
-if files.data:
-    print(f"\nFinal file status: {files.data[0].status}")
-    print(f"File details: {files.data[0]}")
-else:
-    print("No files found in vector store")
 
 # -----------------------------
 # Create vector store
@@ -216,21 +242,58 @@ vector_store_file = client.vector_stores.files.create(
     chunking_strategy={
         "type": "static",
         "static": {
-            "max_chunk_size_tokens": 500,
-            "chunk_overlap_tokens": 50,
+            "max_chunk_size_tokens": 700,
+            "chunk_overlap_tokens": 100,
         }
-    }
+    },
+    attributes={
+        "title": title,
+    },
 )
 
 print("✅ File added to vector store")
 print(vector_store_file)
 
-print(Rule("[bold green]All tasks completed successfully ✔[/bold green]"))
+# -----------------------------
+# Verify file is completed
+# -----------------------------
+print(Rule("[bold cyan]Waiting until file status is complete[/bold cyan]"))
+
+
+# Wait for file processing to complete
+print("Waiting for file processing to complete...")
+max_wait_time = 300  # 5 minutes
+start_time = time.time()
+
+while time.time() - start_time < max_wait_time:
+    files = client.vector_stores.files.list(vector_store_id=vector_store.id)
+    if files.data:
+        file_status = files.data[0].status
+        print(f"File status: {file_status}")
+        if file_status == "completed":
+            print("✅ File processing completed!")
+            break
+        elif file_status == "failed":
+            print("✗ File processing failed!")
+            break
+    time.sleep(5)
+else:
+    print("⚠ Timeout waiting for file processing")
+
+# Verify file is completed
+files = client.vector_stores.files.list(vector_store_id=vector_store.id)
+if files.data:
+    print(f"\nFinal file status: {files.data[0].status}")
+    print(f"File details: {files.data[0]}")
+else:
+    print("No files found in vector store")
+
+print(Rule("[bold green]All tasks completed successfully ✔[/bold green]"))   
 ----
 ---
 
 === Vector Stores API
-* *Endpoint:* `/v1/openai/v1/vector_stores/`.  
+* *Endpoint:* `/v1/vector_stores/`.  
 * *Providers:* Inline and remote vector store providers configured in {productname-short}.
 * *Support level:* Technology Preview. 
 
@@ -239,7 +302,7 @@ The Vector Stores API manages the creation, configuration, and lifecycle of vect
 ---
 
 === Vector Store Files API
-* *Endpoint:* `/v1/openai/v1/vector_stores/{vector_store_id}/files`.  
+* *Endpoint:* `/v1/vector_stores/{vector_store_id}/files`.  
 * *Providers:* Local inline provider configured for file storage and retrieval.
 * *Support level:* Developer Preview. 
 
@@ -272,7 +335,7 @@ embedding_dimension = em.custom_metadata["embedding_dimension"]
 ---
 
 === Responses API
-* *Endpoint:* `/v1/openai/v1/responses`.  
+* *Endpoint:* `/v1/responses`.  
 * *Providers:* All agents, inference, and vector providers configured in {productname-short}.
 * *Support level:* Developer Preview. 
 
@@ -285,27 +348,34 @@ Example code in Python:
 from rich import print
 from rich.table import Table
 
-system_instructions = (
-    "You are a helpful AI assistant. You are designed to answer questions "
-    "in a concise and professional manner."
-)
+system_instructions = """You are a financial document analysis assistant specialized in quarterly earnings reports, annual filings, press releases, and earnings call transcripts.
+You are designed to answer questions in a concise and professional manner.
+Answer questions strictly using only the provided documents.
+Base every answer strictly on the retrieved document content and cite the relevant section or excerpt ID.
+Do not use outside knowledge.
+Do not guess, infer missing data, or fabricate numbers.
+If the answer is not found in the retrieved content, reply: "I couldn't find relevant information in the available files or my own knowledge." 
+Be concise, precise, and factual."""
 
 examples = [
-    {
-        "input_query": "What do you know about Twilio's earnings in Q3 2025?",
-        "expected_answer": "Revenue grew by 15% year-over-year, with organic revenue growth of 13%"
+     {
+        "input_query": "What do you know about IBM earnings in Q4, 2025?  Summarize in one sentence",
+        "expected_answer": "IBM reported strong fourth-quarter results with revenue rising 12% to $19.7 billion, driven by double-digit growth in its Software and Infrastructure segments and a generative AI book of business that has now surpassed $12.5 billion"
     },
     {
-        "input_query": "Who is buying Stytch, Inc in 2025?",
+        "input_query": "What was the total value of IBM's generative AI book of business as reported in the fourth quarter of 2025?",
+        "expected_answer": "IBM reported that its generative AI book of business now stands at more than $12.5 billion."
+    },
+    {
+        "input_query": "What was IBM's reported free cash flow for the full year of 2025?",
         "expected_answer": (
-            "Twilio is buying Stytch, Inc. Twilio entered into a definitive agreement "
-            "to acquire Stytch, Inc. on October 30, 2025"
+            "IBM reported a full-year free cash flow of $14.7 billion, which was an increase of $2.0 billion year-over-year"
         )
     },
     {
-        "input_query": "How many active customer accounts does Twilio have in Q3 2025?",
+        "input_query": "How did the Software segment perform in terms of revenue during the fourth quarter of 2025?",
         "expected_answer": (
-            "Twilio had more than 392,000 Active Customer Accounts as of September 30, 2025"
+            "The Software segment generated $9.0 billion in revenue, representing an increase of 14 percent (or 11 percent at constant currency)"
         )
     },
 ]
