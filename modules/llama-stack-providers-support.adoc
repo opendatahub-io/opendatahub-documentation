@@ -22,11 +22,11 @@ The Responses API is accessible from the Agents provider API.
 .2+|Dataset_IO |`inline::localfs` |Enabled by default |Yes |Technology Preview
 |`remote::huggingface` |Enabled by default |No |Technology Preview
 .3+|Evaluation |`inline::ragas` |Set the `EMBEDDING_MODEL` environment variable |No |Technology Preview
-|`remote::lmeval` |Enabled by default |No |Technology Preview
 |`remote::ragas` |See the "Configuring the Ragas remote provider for production" documentation |No |Technology Preview
+|`remote::lmeval` |Enabled by default |No |Technology Preview
 |Files |`inline::localfs` |Enabled by default |No |Technology Preview
-.7+|Inference |`inline::sentence-transformers` |Enabled by default |Yes |Technology Preview
-|`remote::vllm` |Set the `VLLM_URL` environment variable |Yes |Technology Preview
+.7+|Inference |`remote::vllm` |Set the `VLLM_URL` environment variable |Yes |Technology Preview
+|`inline::sentence-transformers` |Enabled by default |Yes |Technology Preview
 |`remote::azure` |Set the `AZURE_API_KEY` environment variable |No |Technology Preview
 |`remote::bedrock` |Set the `AWS_ACCESS_KEY_ID` environment variable |No |Technology Preview
 |`remote::openai` |Set the `OPENAI_API_KEY` environment variable |No |Technology Preview
@@ -36,9 +36,9 @@ The Responses API is accessible from the Agents provider API.
 .3+|Scoring |`inline::basic` |Enabled by default |No |Technology Preview
 |`inline::braintrust` |Enabled by default |No |Technology Preview
 |`inline::llm-as-a-judge` |Enabled by default |No |Technology Preview
-.4+|Tool_Runtime |`inline::rag-runtime` |Enabled by default |No |Developer Preview
+.4+|Tool_Runtime |`remote::model-context-protocol` |Enabled by default |No |Developer Preview
+|`inline::rag-runtime` |Enabled by default |No |Developer Preview
 |`remote::brave-search` |Enabled by default |No |Developer Preview
-|`remote::model-context-protocol` |Enabled by default |No |Developer Preview
 |`remote::tavily-search` |Enabled by default |No |Developer Preview
 .4+|Vector_IO | `inline::faiss` |Set the `ENABLE_FAISS` environment variable |No |Technology Preview
 |`inline::milvus` |Enabled by default |Yes |Technology Preview
