@@ -236,36 +236,49 @@ For more information about the support scope of {org-name} Technology Preview fe
 ====
 endif::[]
 
+[NOTE]
+====
+HTTP requests to the MLServer ServingRuntime for KServe require the `Content-Type: application/json` header.
+====
 
 --
 .REST endpoints
-* `v2/models/[/versions/<model_version>]/infer`
-* `v2/models/<model_name>[/versions/<model_version>]`
-* `v2/health/ready`
-* `v2/health/live`
-* `v2/models/<model_name>[/versions/]/ready`
-* `v2`
+* `/v2`
+* `/v2/health/live`
+* `/v2/health/ready`
+* `/v2/models/{model_name}`
+* `/v2/models/{model_name}/ready`
+* `/v2/models/{model_name}/versions/{model_version}`
+* `/v2/models/{model_name}/versions/{model_version}/ready`
 --
 
 .Example command
 ifndef::upstream[]
 [source]
 ----
-curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d '{ "model_name": "<model_name>", "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'
+curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -H "Content-Type: application/json" -d '{ "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'
 ----
 endif::[]
 ifdef::upstream[]
 [source]
 ----
-curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -d /
-'{ "model_name": "<model_name>", \
-   "inputs": \
+curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer \
+-H "Content-Type: application/json" \
+-d '{ "inputs": \
         [{ "name": "<name_of_model_input>", \
            "shape": [<shape>], \
            "datatype": "<data_type>", \
            "data": [<data>] \
-         }]}' -H 'Authorization: Bearer <token>'
+         }]}' \
+-H 'Authorization: Bearer <token>'
 ----
+endif::[]
+
+ifdef::upstream[]
+For detailed configuration guidance, see link:{odhdocshome}/deploying-models/#deploying-models-using-mlserver-runtime_odh-user[Deploying models by using the MLServer runtime].
+endif::[]
+ifndef::upstream[]
+For detailed configuration guidance, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#deploying-models-using-mlserver-runtime_rhoai-user[Deploying models by using the MLServer runtime].
 endif::[]
 
 //// 

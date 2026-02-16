@@ -1,0 +1,144 @@
+:_mod-docs-content-type: PROCEDURE
+
+[id="deploying-models-using-mlserver-runtime_{context}"]
+= Deploying models by using the MLServer runtime
+
+[role="_abstract"]
+To deploy models with the *MLServer ServingRuntime for KServe*, you must specify the model implementation and URI using environment variables in the *Deploy a model* wizard.
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+*MLServer ServingRuntime for KServe* is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+*MLServer ServingRuntime for KServe* is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+.Prerequisites
+
+* You have logged in to {productname-long}.
+* You have installed KServe and enabled the model serving platform.
+* The *MLServer ServingRuntime for KServe* is enabled in your cluster.
+* You have created a project.
+* Your model is stored in a location accessible to the model server and you have added a connection to your project:
+** S3-compatible object storage
+** Persistent Volume Claim (PVC)
+** Model-car Open Container Initiative (OCI) image
+* You are deploying a model that uses one of the supported MLServer implementations:
+** Scikit-learn (SKLearn)
+** XGBoost
+** LightGBM
+
+[NOTE]
+====
+The model name is automatically exported and made available from the model deployment name. You do not need to set a `MLSERVER_MODEL_NAME` environment variable.
+====
+
+[IMPORTANT]
+====
+You can also use MLServer's `model-settings.json` file for model configuration. If a `model-settings.json` file is present alongside your model file, the MLServer runtime loads configuration values from that file and overrides any environment variables you set through the deployment wizard.
+====
+
+.Procedure
+
+. Deploy the model using the *Deploy a model* wizard.
++
+ifndef::upstream[]
+For complete deployment instructions, see link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#deploying-models-on-the-model-serving-platform_rhoai-user[Deploying models on the model serving platform].
+endif::[]
+ifdef::upstream[]
+For complete deployment instructions, see link:{odhdocshome}/deploying-models/#deploying-models-on-the-model-serving-platform_odh-user[Deploying models on the model serving platform].
+endif::[]
+
+. In the *Advanced settings* section of the wizard, configure the environment variables:
+.. Under *Configuration parameters*, select the *Add custom runtime environment variables* checkbox.
+.. Click *Add variable*.
+.. Add the appropriate variables for your model framework as shown in the following examples:
++
+[NOTE]
+====
+For `MLSERVER_MODEL_URI`, you can specify either:
+
+* An absolute path to a specific model file such as `/mnt/models/model.json`
+* A directory path such as `/mnt/models`. If you use a directory path, your model file must use one of the following well-known filenames:
+** XGBoost: `model.bst`, `model.json`, `model.ubj`
+** LightGBM: `model.bst`
+** Scikit-learn: `model.joblib`, `model.pickle`, `model.pkl`
+====
++
+.For an XGBoost model
+[cols="1,3"]
+|===
+|Key |Value
+
+|MLSERVER_MODEL_IMPLEMENTATION
+|`mlserver_xgboost.XGBoostModel`
+
+|MLSERVER_MODEL_URI
+|`/mnt/models/model.json`
+|===
++
+.For a Scikit-learn model
+[cols="1,3"]
+|===
+|Key |Value
+
+|MLSERVER_MODEL_IMPLEMENTATION
+|`mlserver_sklearn.SKLearnModel`
+
+|MLSERVER_MODEL_URI
+|`/mnt/models/model.joblib`
+|===
++
+.For a LightGBM model
+[cols="1,3"]
+|===
+|Key |Value
+
+|MLSERVER_MODEL_IMPLEMENTATION
+|`mlserver_lightgbm.LightGBMModel`
+
+|MLSERVER_MODEL_URI
+|`/mnt/models/model.bst`
+|===
+
+.Verification
+
+* Confirm that the deployed model is shown on the *Deployments* tab for the project with a checkmark in the *Status* column.
+* Test the model by querying the ready endpoint:
++
+[source,terminal]
+----
+$ curl -H "Content-Type: application/json" \
+https://<inference_endpoint_url>/v2/models/<model_name>/ready
+----
++
+where:
++
+`<inference_endpoint_url>`:: Specifies the inference endpoint URL displayed in the model details.
+`<model_name>`:: Specifies the name of your deployed model.
+
+[role="_additional-resources"]
+.Additional resources
+
+ifdef::upstream[]
+* link:{odhdocshome}/deploying-models/#inference-endpoints_odh-user[Inference endpoints]
+* link:{odhdocshome}/deploying-models/#deploying-models-on-the-model-serving-platform_odh-user[Deploying models on the model serving platform]
+endif::[]
+ifndef::upstream[]
+* link:{rhoaidocshome}{default-format-url}/deploying_models/making_inference_requests_to_deployed_models#inference-endpoints_rhoai-user[Inference endpoints]
+* link:{rhoaidocshome}{default-format-url}/deploying_models/deploying_models#deploying-models-on-the-model-serving-platform_rhoai-user[Deploying models on the model serving platform]
+endif::[]
+* link:https://github.com/opendatahub-io/MLServer/blob/master/docs-gb/runtimes/xgboost.md[MLServer XGBoost Runtime^]
+* link:https://github.com/opendatahub-io/MLServer/blob/master/docs-gb/runtimes/sklearn.md[MLServer scikit-learn Runtime^]
+* link:https://github.com/opendatahub-io/MLServer/blob/master/docs-gb/runtimes/lightgbm.md[MLServer LightGBM Runtime^]
+* link:https://github.com/opendatahub-io/MLServer/blob/master/docs-gb/user-guide/openapi.md[MLServer OpenAPI / Inference API^]
