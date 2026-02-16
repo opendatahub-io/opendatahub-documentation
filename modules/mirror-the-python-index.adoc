@@ -9,13 +9,13 @@ If you are using a disconnected environment, use the following code example to a
 ----
 #!/bin/bash -x
 
-URL=https://console.redhat.com/api/pypi/public-rhai/rhoai/3.2/cuda12.9-ubi9/simple/
+URL=https://console.redhat.com/api/pypi/public-rhai/rhoai/3.3/cuda12.9-ubi9/simple/
 
-wget \
---verbose \
---mirror \
---continue \
---no-host-directories \
---cut-dirs=4 \
-$URL
+ wget \
+     --verbose \                 # Show detailed progress
+     --mirror \                  # Mirror the directory structure
+     --continue \                # Resume partial downloads
+     --no-host-directories \     # Don't create host-named directories
+     --cut-dirs=4 \              # Remove first 4 path segments
+     $URL
 ----
