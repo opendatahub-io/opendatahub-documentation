@@ -105,6 +105,7 @@ response = client.chat.completions.create(
     ],
     temperature=0,
 )
+# Optional verification check
 assert len(response.choices) > 0, "No response after basic inference on llama-stack server"
 content = response.choices[0].message.content
 rich.print(content)
@@ -129,6 +130,7 @@ response = client.completions.create(
     max_tokens=64,
     temperature=0.1
 )
+# Optional verification check
 assert len(response.choices) > 0, "No response after basic inference on llama-stack server"
 content = response.choices[0].text
 rich.print(content)
