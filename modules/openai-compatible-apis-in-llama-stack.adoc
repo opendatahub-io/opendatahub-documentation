@@ -10,15 +10,12 @@ This compatibility layer has the following capabilities:
 * *Standardized endpoints*: REST API paths align with OpenAI specifications.  
 * *Schema parity:* Request and response fields follow OpenAI data structures.  
 
-[NOTE]
+[IMPORTANT]
 ====
 When connecting OpenAI SDKs or third-party tools to {productname-short}, you must update the client configuration to use your deployment's Llama Stack route as the `base_url`.
 
 When you use OpenAI-compatible SDKs, the `base_url` **must include the `/v1` path suffix** so that requests are routed to the OpenAI-compatible API surface exposed by Llama Stack.
-====
 
-[IMPORTANT]
-====
 When you use OpenAI SDKs or send raw HTTP requests to Llama Stack, always include the `/v1` path suffix in the base URL.
 
 For example:
