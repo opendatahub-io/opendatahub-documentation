@@ -125,10 +125,10 @@ Example code in Python:
 
 [source,python]
 ----
-# Test chat completion functionality with a simple question
+# Test completion functionality with a simple question
 response = client.completions.create(
     model=model_id,
-    prompt="What is the capital of France?",
+    prompt="Answer with one word only: What is the capital of France?",
     max_tokens=64,
     temperature=0.1
 )
@@ -287,7 +287,7 @@ if files.data:
 else:
     print("No files found in vector store")
 
-print(Rule("[bold green]All tasks completed successfully ✔[/bold green]"))   
+print(Rule("[bold green]All tasks completed successfully ✔[/bold green]"))
 ----
 ---
 
@@ -307,30 +307,6 @@ The Vector Stores API manages the creation, configuration, and lifecycle of vect
 
 The Vector Store Files API implements the OpenAI Vector Store Files interface and manages the association between document files and vector stores used for RAG workflows. 
 
----
-
-=== Models API
-* *Endpoint:* `/v1/openai/v1/models`.  
-* *Providers:* All model-serving back ends configured within {productname-short}.
-* *Support level:* Technology Preview. 
-
-The Models API lists and retrieves available model resources from the Llama Stack deployment running on {productname-short}. By using the Models API, you can enumerate models, view their capabilities, and verify deployment status through a standardized OpenAI-compatible interface.
-
-Example code in Python:
-
-[source,python]
-----
-# List models available in the llama-stack server
-models = client.models.list()
-rich.print(models)
-
-# Select the first LLM and first embedding model
-model_id = next(m for m in models if m.custom_metadata["model_type"] == "llm").id
-embedding_model_id = (
-    em := next(m for m in models if m.custom_metadata["model_type"] == "embedding")
-).id
-embedding_dimension = em.custom_metadata["embedding_dimension"]
-----
 ---
 
 === Responses API
