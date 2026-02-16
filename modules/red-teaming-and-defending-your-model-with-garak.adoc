@@ -1,0 +1,168 @@
+:_module-type: PROCEDURE
+
+[id='red-teaming-and-defending-your-model-with-garak_{context}']
+= Red-Teaming and defending your model with Garak
+
+[role='_abstract']
+
+Use the TrustyAI Garak provider with remote execution to identify vulnerabilities in your model, add appropriate defenses ('guardrails' or 'shields') to protect the model, and verify that these defenses work.
+
+.Prerequisites
+
+//* Your cluster administrator added you as a user to the cluster and link:{odhdocshome}/monitoring-data-science-models/#configuring-trustyai_monitor[configured TrustyAI] for use in the project that contains the deployed models.
+
+* You have access to a Kubernetes cluster with Kubeflow Pipelines configured.
+
+* The Llama Stack server is running in remote mode and is accessible from the Kubernetes pods.
+
+* Ensure that the server has the safety-enabled configuration enabled.
+
+* The `llama_stack_client` Python library is installed and configured.
+
+
+.Procedure
+
+. Establish a baseline of your model's current security capabilities by running a remote scan on the bare, unguarded model to detect specific vulnerabilities, for example, prompt injection or jailbreaks.
+
+.. Register a baseline benchmark. Use the `trustyai_garak provider` to register a benchmark configuration. 
++ 
+[NOTE]
+----
+Ensure that no shields are configured in the test settings, as they will skew the baseline reading
+----
+. Run the following configuration to register a scan using the `promptinject` probe:
++
+[source, python]
+----
+from llama_stack_client import LlamaStackClient
+
+client = LlamaStackClient(base_url="http://localhost:8321")
+benchmark_id = "remote_baseline_scan"
+
+client.alpha.benchmarks.register(
+    benchmark_id=benchmark_id,
+    dataset_id="garak",
+    scoring_functions=["garak_scoring"],
+    provider_benchmark_id=benchmark_id,
+    provider_id="trustyai_garak",
+    metadata={
+        "probes": ["promptinject.HijackHateHumans"],
+        "timeout": 600
+    }
+)
+----
+
+. Run the remote baseline evaluation and execute the evaluation against your unguarded model. 
++
+[NOTE]
+----
+The ID `kfp_run_id` is the ID used to track the pipeline execution in the Kubeflow UI and `<your_model_name>` is the name of the model you are testing.
+----
++
+[source, python]
+----
+remote_job = client.alpha.eval.run_eval(
+    benchmark_id=benchmark_id,
+    benchmark_config={
+        "eval_candidate": {
+            "type": "model",
+            "model": "<your_model_name>",
+            "sampling_params": {"max_tokens": 150}
+        }
+    }
+)
+print(f"Remote Pipeline Run ID: {remote_job.metadata.get('kfp_run_id')}")
+----
++
+[NOTE]
+----
+The job runs as a Kubeflow Pipeline as this is a remote execution.
+----
+
+. Once the job status says it has completed, get the baseline score results to understand your model's vulnerability level:
++
+[source, bash]
+----
+results = client.alpha.eval.jobs.retrieve(
+    job_id=remote_job.job_id,
+    benchmark_id=benchmark_id
+)
+
+baseline_scores = {k: v.aggregated_results for k, v in results.scores.items()}
+print(baseline_scores)
+----
+
+
+. Analyze the scores. A score of `1.0` typically indicates a high vulnerability (100% failure rate against the probe); a score of `0.0` indicates no vulnerability found.
+
+. Configure shields (guardrails) to filter malicious inputs or outputs after identifying vulnerabilities in the baseline scan by registering a guarded benchmark. Register a new benchmark that applies shields to the model. Use the `shield_config` parameter to map specific shields to input or output:
++
+[source, python]
+----
+shield_benchmark_id = "remote_shielded_scan"
+
+client.benchmarks.register(
+    benchmark_id=shield_benchmark_id,
+    dataset_id="garak",
+    scoring_functions=["garak_scoring"],
+    provider_benchmark_id=shield_benchmark_id,
+    provider_id="trustyai_garak",
+    metadata={
+        "probes": ["promptinject.HijackHateHumans"],
+        "timeout": 600,
+        "shield_config": {
+            "input": ["Prompt-Guard-86M"],
+            "output": ["Llama-Guard-3-8B"]
+        }
+    }
+)
+----
+
+[NOTE]
+----
+Input shields filter prompts before they reach the model. Output shields filter the model's response before it reaches the user.
+----
+
+. Perform a second red team evaluation against the guardrailed model to verify that these shields reduce the vulnerability scores. Execute this evaluation using the new `shield_benchmark_id`. The execution flow remains the same as the baseline scan, but the server now routes traffic through the configured shields:
++
+[source, python]
+----
+shield_job = client.eval.run_eval(
+    benchmark_id=shield_benchmark_id,
+    benchmark_config={
+        "eval_candidate": {
+            "type": "model",
+            "model": "<your_model_name>",
+            "sampling_params": {"max_tokens": 150}
+        }
+    }
+)
+----
+
+. Compare the results from the guarded scan and compare them against the baseline scores to verify the effectiveness of your guardrails:
++
+[source, python]
+----
+shield_results = client.eval.jobs.retrieve(
+    job_id=shield_job.job_id,
+    benchmark_id=shield_benchmark_id
+)
+shield_scores = {k: v.aggregated_results for k, v in shield_results.scores.items()}
+
+# Calculate Risk Reduction
+# Simplified logic for demonstration
+for probe in baseline_scores:
+    baseline = baseline_scores[probe]
+    guarded = shield_scores.get(probe, baseline) # Default to baseline if probe missing
+
+    # Assuming lower score is better (0.0 is secure)
+    if baseline > 0:
+        reduction = ((baseline - guarded) / baseline) * 100
+        print(f"Probe: {probe}")
+        print(f"Risk Reduction: {reduction:.1f}%")
+----
+
+.Verification
+
+. Verify the effectiveness of your guardrails by observing whether the vulnerability score has decreased. For example, if it drops from 1.0 to 0.0, the guardrails are working effectively and blocking the attacks. If the score remains unchanged, the shields may be misconfigured or ineffective against the specific probe type used.
+
