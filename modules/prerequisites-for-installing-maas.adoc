@@ -14,7 +14,11 @@ MaaS requires several platform components to function:
 * *KServe* provides the underlying model serving infrastructure that hosts the large language models.
 * *Kuadrant*, which includes Authorino and Limitador, enforces authentication, authorization, and rate limiting policies.
 * *Gateway API* routes traffic to models and applies policy enforcement at the network level.
-* *LeaderWorkerSet* enables multi-host inference for large models that require distributed serving.
+
+[NOTE]
+====
+Deploying large language models may require additional dependencies based on the model size and serving runtime. For comprehensive model serving infrastructure requirements, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#component_requirements[Component requirements].
+====
 
 ifndef::upstream[]
 [id="requirements_{context}"]
@@ -24,22 +28,20 @@ Before you install MaaS, ensure that your environment meets the following requir
 
 **Platform and access requirements:**
 
-* You have a cluster with {openshift-platform} version 4.19 or later.
+* You have a cluster with {openshift-platform} version 4.19.9 or later.
 * You have cluster administrator access to install operators and create cluster-scoped resources.
-* You have administrator access to the {productname-short} namespace to configure MaaS components.
 * Your cluster has a functional ingress controller with valid TLS certificates for external access.
 * You have installed the OpenShift CLI, `oc`.
 
 **Operator requirements:**
 
-* You have installed the LeaderWorkerSet Operator and created the required API resources.
 * You have installed the Red Hat Connectivity Link Operator v1.2 or later and created a `Kuadrant` custom resource in the `kuadrant-system` namespace with ready status.
 * You have installed {productname-long} Operator v3.0 or later.
 
 **Infrastructure requirements:**
 
 * You have created a `DataScienceCluster` resource with the `kserve` component set to `Managed`.
-* You have created the `openshift-ai-inference` Gateway in the `openshift-ingress` namespace.
+* You have created a Gateway named `maas-default-gateway` in the `openshift-ingress` namespace.
 * You have a `GatewayClass` resource configured for the OpenShift Gateway Controller: `openshift.io/gateway-controller`.
 
 [id="prerequisite-verification_{context}"]
@@ -97,25 +99,13 @@ limitador-limitador-xxx                                1/1     Running   0      
 +
 [source,terminal]
 ----
-$ oc get gateway openshift-ai-inference -n openshift-ingress
+$ oc get gateway maas-default-gateway -n openshift-ingress
 ----
 +
 .Example output
 ----
 NAME                      CLASS                                 ADDRESS         PROGRAMMED   AGE
-openshift-ai-inference    openshift-gateway-controller          192.168.1.100   True         10m
-----
-
-. Verify that LeaderWorkerSet API is available:
-+
-[source,terminal]
-----
-$ oc api-resources | grep leaderworkerset
-----
-+
-.Example output
-----
-leaderworkersets    lws    leaderworkerset.x-k8s.io/v1alpha1    true    LeaderWorkerSet
+maas-default-gateway      openshift-gateway-controller          192.168.1.100   True         10m
 ----
 
 endif::[]
@@ -128,15 +118,13 @@ Before you install MaaS, ensure that your environment meets the following requir
 
 **Platform and access requirements:**
 
-* You have an {openshift-platform} cluster version 4.19 or later.
+* You have an {openshift-platform} cluster version 4.19.9 or later.
 * You have cluster administrator access to install operators and create cluster-scoped resources.
-* You have administrator access to the namespace where you plan to deploy MaaS.
 * Your cluster has a functional ingress controller with valid TLS certificates for external access.
 * You have installed the OpenShift CLI, `oc`.
 
 **Operator requirements:**
 
-* You have installed the LeaderWorkerSet Operator v0.2 or later and created the required API resources.
 * You have installed Kuadrant Operator v1.3 or later:
 ** You have created the `kuadrant-system` namespace and OperatorGroup.
 ** You have configured the `ISTIO_GATEWAY_CONTROLLER_NAME` environment variable to `"openshift.io/gateway-controller/v1"`.
@@ -147,7 +135,7 @@ Before you install MaaS, ensure that your environment meets the following requir
 * You have installed the `opendatahub-operator`.
 * You have initialized the platform with a `DSCInitialization` resource.
 * You have created a `DataScienceCluster` resource with the `kserve` component set to `Managed`.
-* You have created an inference Gateway, such as `odh-inference-gateway`.
+* You have created a Gateway named `maas-default-gateway` in the `openshift-ingress` namespace.
 * You have a `GatewayClass` resource configured for the OpenShift Gateway Controller: `openshift.io/gateway-controller`.
 
 [id="prerequisite-verification_{context}"]
@@ -202,17 +190,5 @@ $ oc get gateway -A
 ----
 +
 Verify that your inference Gateway is listed and shows a PROGRAMMED status of `True`.
-
-. Verify that LeaderWorkerSet API is available:
-+
-[source,terminal]
-----
-$ oc api-resources | grep leaderworkerset
-----
-+
-.Example output
-----
-leaderworkersets    lws    leaderworkerset.x-k8s.io/v1alpha1    true    LeaderWorkerSet
-----
 
 endif::[]

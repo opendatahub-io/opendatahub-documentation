@@ -68,6 +68,10 @@ Groups:: A list of OpenShift groups whose members are assigned to this tier.
 
 Administrators control which tiers can access specific models by configuring RBAC permissions for the tier's namespace.
 
+When a user belongs to multiple groups across different tiers, MaaS assigns them to the tier with the highest level number. Users can only access models made available to their assigned tier and cannot access models in lower-level tiers, even if they belong to groups associated with those lower tiers.
+
+For example, if a user belongs to both the `premium-users` group (tier level 1) and the `enterprise-users` group (tier level 2), they are assigned to the enterprise tier and can only access models configured for the enterprise tier. They cannot access models restricted to the premium or free tiers.
+
 == Rate limiting and quotas
 
 Configure rate limiting and quota policies when you create or edit a tier through the dashboard. These policies include:
