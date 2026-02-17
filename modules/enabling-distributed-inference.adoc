@@ -20,12 +20,8 @@ Review the link:https://docs.redhat.com/en/documentation/openshift_container_pla
 ====
 
 * Your cluster administrator has installed the `LeaderWorkerSet` Operator in {openshift-platform}. For more information, see the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ai_workloads/leader-worker-set-operator[Leader Worker Set Operator documentation].
-* If you are running {openshift-platform} on a bare metal cluster:  Your cluster administrator has provisioned an external entry point for the `openshift-ai-inference` Inference Gateway service with the type `LoadBalancer`. Ensure that the `LoadBalancer` is configured as follows:
-** Has a standard Kubernetes Service manifest.
-** Has `type:LoadBalancer` in the `spec` section.
-
+* If you are running {openshift-platform} on a bare-metal cluster:  Your cluster administrator has an external entry point for the `openshift-ai-inference` Inference Gateway service with the type `LoadBalancer`.
 * You have enabled authentication as described in _Configuring authentication for {llmd}_.
-
 
 .Procedure
 
@@ -66,7 +62,7 @@ spec:
 Customize the following parameters in the `spec` section of the inference service:
 
 * `replicas` - Specify the number of replicas.
-* `model` - Provide the URI to the model based on how the model is stored (`uri`) and the model name to use in chat completion requests (`name`).
+* `model` - Specify the URI to the model based on how the model is stored (`uri`) and the model name to use in chat completion requests (`name`).
 ** S3 bucket:  `s3://<bucket-name>/<object-key>`
 ** Persistent volume claim (PVC): `pvc://<claim-name>/<pvc-path>`
 ** OCI container image: `oci://<registry_host>/<org_or_username>/<repository_name><tag_or_digest>`
