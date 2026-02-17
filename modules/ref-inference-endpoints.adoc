@@ -254,13 +254,13 @@ HTTP requests to the MLServer ServingRuntime for KServe require the `Content-Typ
 
 .Example command
 ifndef::upstream[]
-[source]
+[source,terminal]
 ----
 curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer -H "Content-Type: application/json" -d '{ "inputs": [{ "name": "<name_of_model_input>", "shape": [<shape>], "datatype": "<data_type>", "data": [<data>] }]}' -H 'Authorization: Bearer <token>'
 ----
 endif::[]
 ifdef::upstream[]
-[source]
+[source,terminal]
 ----
 curl -ks <inference_endpoint_url>/v2/models/<model_name>/infer \
 -H "Content-Type: application/json" \
