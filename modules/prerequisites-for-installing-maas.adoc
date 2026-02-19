@@ -125,7 +125,6 @@ Before you install MaaS, ensure that your environment meets the following requir
 
 * You have an {openshift-platform} cluster version 4.19.9 or later.
 * You have cluster administrator access to install operators and create cluster-scoped resources.
-* Your cluster has a functional ingress controller with valid TLS certificates for external access.
 * You have installed the OpenShift CLI, `oc`.
 
 **Operator requirements:**
@@ -187,13 +186,17 @@ kuadrant-operator-controller-manager-xxx               1/1     Running   0      
 limitador-limitador-xxx                                1/1     Running   0          5m
 ----
 
-. Verify that your inference Gateway exists:
+. Verify that the Gateway exists:
 +
 [source,terminal]
 ----
-$ oc get gateway -A
+$ oc get gateway maas-default-gateway -n openshift-ingress
 ----
 +
-Verify that your inference Gateway is listed and shows a PROGRAMMED status of `True`.
+.Example output
+----
+NAME                      CLASS                                 ADDRESS         PROGRAMMED   AGE
+maas-default-gateway      openshift-gateway-controller          192.168.1.100   True         10m
+----
 
 endif::[]
