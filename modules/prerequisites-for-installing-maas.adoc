@@ -1,0 +1,202 @@
+:_mod-docs-content-type: CONCEPT
+
+[id="prerequisites-for-installing-maas_{context}"]
+= Prerequisites for installing MaaS
+
+[role="_abstract"]
+Before installing Models-as-a-Service, verify that your cluster has the required platform components, operators, and infrastructure resources.
+
+[id="maas-dependencies_{context}"]
+== MaaS dependencies
+
+MaaS requires several platform components to function:
+
+* *KServe* provides the underlying model serving infrastructure that hosts the large language models.
+* *Kuadrant*, which includes Authorino and Limitador, enforces authentication, authorization, and rate limiting policies.
+* *Gateway API* routes traffic to models and applies policy enforcement at the network level.
+
+[NOTE]
+====
+Deploying large language models may require additional dependencies based on the model size and serving runtime. For comprehensive model serving infrastructure requirements, see link:{rhoaidocshome}{default-format-url}/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#component_requirements[Component requirements].
+====
+
+[NOTE]
+====
+To access MaaS through the dashboard interface, you must also enable the GenAI Studio menu item in the dashboard by setting `spec.dashboardConfig.genAiStudio: true` in the `OdhDashboardConfig` custom resource.
+====
+
+ifndef::upstream[]
+[id="requirements_{context}"]
+== Requirements
+
+Before you install MaaS, ensure that your environment meets the following requirements:
+
+**Platform and access requirements:**
+
+* You have a cluster with {openshift-platform} version 4.19.9 or later.
+* You have cluster administrator access to install operators and create cluster-scoped resources.
+* Your cluster has a functional ingress controller with valid TLS certificates for external access.
+* You have installed the OpenShift CLI, `oc`.
+
+**Operator requirements:**
+
+* You have installed the Red Hat Connectivity Link Operator v1.2 or later and created a `Kuadrant` custom resource in the `kuadrant-system` namespace with ready status.
+* You have installed {productname-long} Operator v3.0 or later.
+
+**Infrastructure requirements:**
+
+* You have created a `DataScienceCluster` resource with the `kserve` component set to `Managed`.
+* You have created a Gateway named `maas-default-gateway` in the `openshift-ingress` namespace.
+* You have a `GatewayClass` resource configured for the OpenShift Gateway Controller: `openshift.io/gateway-controller`.
+
+[id="prerequisite-verification_{context}"]
+== Prerequisite verification
+
+To verify that your environment meets these requirements:
+
+. Check your OpenShift version:
++
+[source,terminal]
+----
+$ oc version
+----
+
+. Verify that you have cluster administrator access:
++
+[source,terminal]
+----
+$ oc auth can-i create clusterrole
+----
++
+.Example output
+----
+yes
+----
+
+. Verify that KServe is installed and managed:
++
+[source,terminal]
+----
+$ oc get datasciencecluster -o jsonpath='{.items[0].spec.components.kserve.managementState}'
+----
++
+.Example output
+----
+Managed
+----
+
+. Verify that Kuadrant is running:
++
+[source,terminal]
+----
+$ oc get pods -n kuadrant-system
+----
++
+.Example output
+----
+NAME                                                   READY   STATUS    RESTARTS   AGE
+authorino-operator-controller-manager-xxx              2/2     Running   0          5m
+kuadrant-operator-controller-manager-xxx               1/1     Running   0          5m
+limitador-limitador-xxx                                1/1     Running   0          5m
+----
+
+. Verify that the Gateway exists:
++
+[source,terminal]
+----
+$ oc get gateway maas-default-gateway -n openshift-ingress
+----
++
+.Example output
+----
+NAME                      CLASS                                 ADDRESS         PROGRAMMED   AGE
+maas-default-gateway      openshift-gateway-controller          192.168.1.100   True         10m
+----
+
+endif::[]
+
+ifdef::upstream[]
+[id="requirements_{context}"]
+== Requirements
+
+Before you install MaaS, ensure that your environment meets the following requirements:
+
+**Platform and access requirements:**
+
+* You have an {openshift-platform} cluster version 4.19.9 or later.
+* You have cluster administrator access to install operators and create cluster-scoped resources.
+* You have installed the OpenShift CLI, `oc`.
+
+**Operator requirements:**
+
+* You have installed Kuadrant Operator v1.3 or later:
+** You have created the `kuadrant-system` namespace and OperatorGroup.
+** You have configured the `ISTIO_GATEWAY_CONTROLLER_NAME` environment variable to `"openshift.io/gateway-controller/v1"`.
+** You have created a `Kuadrant` custom resource in the `kuadrant-system` namespace with ready status.
+
+**{productname-long} requirements:**
+
+* You have installed the `opendatahub-operator`.
+* You have initialized the platform with a `DSCInitialization` resource.
+* You have created a `DataScienceCluster` resource with the `kserve` component set to `Managed`.
+* You have created a Gateway named `maas-default-gateway` in the `openshift-ingress` namespace.
+* You have a `GatewayClass` resource configured for the OpenShift Gateway Controller: `openshift.io/gateway-controller`.
+
+[id="prerequisite-verification_{context}"]
+== Prerequisite verification
+
+To verify that your environment meets these requirements:
+
+. Verify that you have cluster administrator access:
++
+[source,terminal]
+----
+$ oc auth can-i create clusterrole
+----
++
+.Example output
+----
+yes
+----
+
+. Verify that KServe is installed and managed:
++
+[source,terminal]
+----
+$ oc get datasciencecluster -o jsonpath='{.items[0].spec.components.kserve.managementState}'
+----
++
+.Example output
+----
+Managed
+----
+
+. Verify that Kuadrant is running:
++
+[source,terminal]
+----
+$ oc get pods -n kuadrant-system
+----
++
+.Example output
+----
+NAME                                                   READY   STATUS    RESTARTS   AGE
+authorino-operator-controller-manager-xxx              2/2     Running   0          5m
+kuadrant-operator-controller-manager-xxx               1/1     Running   0          5m
+limitador-limitador-xxx                                1/1     Running   0          5m
+----
+
+. Verify that the Gateway exists:
++
+[source,terminal]
+----
+$ oc get gateway maas-default-gateway -n openshift-ingress
+----
++
+.Example output
+----
+NAME                      CLASS                                 ADDRESS         PROGRAMMED   AGE
+maas-default-gateway      openshift-gateway-controller          192.168.1.100   True         10m
+----
+
+endif::[]

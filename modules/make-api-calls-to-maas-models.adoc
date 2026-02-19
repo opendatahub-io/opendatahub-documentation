@@ -1,0 +1,114 @@
+:_mod-docs-content-type: PROCEDURE
+
+[id="make-api-calls-to-maas-models_{context}"]
+= Make API calls to models
+
+[role="_abstract"]
+Use your token to make requests to models through the MaaS API.
+
+.Procedure
+
+. If you did not copy the MaaS route URL during token generation, get it using one of the following methods:
++
+Copy the MaaS route URL from the MaaS route dialog in the dashboard.
++
+Alternatively, construct the URL from your cluster domain:
++
+[source,terminal]
+----
+$ export CLUSTER_DOMAIN=$(oc get ingresses.config.openshift.io cluster -o jsonpath='{.spec.domain}')
+$ export MAAS_URL="https://maas.${CLUSTER_DOMAIN}"
+$ echo $MAAS_URL
+----
+
+. List available models using the `/v1/models` endpoint:
++
+[source,terminal]
+----
+$ curl -X GET "${MAAS_URL}/v1/models" \
+  -H "Authorization: Bearer ${MAAS_TOKEN}"
+----
++
+Example response in OpenAI-compatible format:
++
+[source,json]
+----
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "facebook-opt-125m",
+      "object": "model",
+      "created": 1234567890,
+      "owned_by": "llm",
+      "ready": true
+    },
+    {
+      "id": "llama-2-7b-chat",
+      "object": "model",
+      "created": 1234567890,
+      "owned_by": "llm",
+      "ready": true
+    }
+  ]
+}
+----
+
+. Call a model using the chat completions endpoint:
++
+[source,terminal,subs="+quotes"]
+----
+$ curl -X POST "${MAAS_URL}/llm/<model_name>/v1/chat/completions" \
+  -H "Authorization: Bearer ${MAAS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "<model_name>",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Explain quantum computing in simple terms."
+      }
+    ],
+    "max_tokens": 150,
+    "temperature": 0.7
+  }'
+----
++
+where:
+
+`<model_name>`:: Specifies the model deployment name from the Models as a service page, such as `facebook-opt-125m` or `llama-2-7b-chat`.
++
+Example response:
++
+[source,json]
+----
+{
+  "id": "chatcmpl-abc123",
+  "object": "chat.completion",
+  "created": 1234567890,
+  "model": "llama-2-7b-chat",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Quantum computing is a type of computing that uses quantum mechanics..."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 12,
+    "completion_tokens": 45,
+    "total_tokens": 57
+  }
+}
+----
+
+.Verification
+
+. Test the `/v1/models` endpoint and confirm you receive a list of available models.
+. Make a chat completion request to a model and verify that you receive a response with the expected JSON structure.
+. Check the response headers for rate limit information (`X-RateLimit-Limit`, `X-RateLimit-Remaining`).
++
+If you receive authentication errors, verify that your token is valid and has not expired.

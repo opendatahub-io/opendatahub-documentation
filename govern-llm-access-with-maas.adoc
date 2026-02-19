@@ -1,0 +1,40 @@
+---
+layout: docs
+title: Governing LLM access with models-as-a-service
+permalink: /docs/governing-llm-access-with-models-as-a-service
+custom_css: asciidoc.css
+---
+:_mod-docs-content-type: ASSEMBLY
+//:self-managed:
+:upstream:
+include::_artifacts/document-attributes-global.adoc[]
+
+:doctype: book
+:toc: left
+:compat-mode:
+:context: maas
+
+= Governing LLM access with models-as-a-service
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+Models-as-a-Service (MaaS) is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+Models-as-a-Service (MaaS) is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+Models-as-a-Service (MaaS) provides tier-based governance for large language model serving in {productname-long}. MaaS enables administrators to define service tiers with different rate limits and quotas, control access through API key authentication, and track resource consumption for cost allocation. Users can discover available models, generate authentication credentials, and integrate models into their applications using OpenAI-compatible APIs.
+
+include::assemblies/deploy-and-manage-models-as-a-service.adoc[leveloffset=+1]
+
+include::assemblies/use-models-as-a-service.adoc[leveloffset=+1]
