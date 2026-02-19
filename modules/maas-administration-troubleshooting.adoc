@@ -68,28 +68,6 @@ $ oc logs -n {dbd-config-default-namespace} -l app=odh-dashboard --tail=50
 
 * Verify that you have the required permissions to view the tab. Some features may be restricted based on user roles.
 
-[id="deployment-failures-and-status-errors_{context}"]
-== Deployment failures and status errors
-
-* Check the deployment logs:
-+
-[source,terminal]
-----
-$ oc get pods -n <your-project-namespace> | grep <your-model-name>
-$ oc logs <model-pod-name> -n <your-project-namespace>
-----
-
-* Verify that your cluster has sufficient GPU resources:
-+
-[source,terminal]
-----
-$ oc describe nodes | grep -A 5 "nvidia.com/gpu"
-----
-
-* Ensure that the model files are accessible at the specified storage location:
-+
-Check your S3 bucket or storage connection to confirm the model path is correct.
-
 [id="model-visibility-issues-on-maas-page_{context}"]
 == Model visibility issues on Models-as-a-Service page
 
