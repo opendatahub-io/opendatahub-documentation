@@ -25,6 +25,8 @@ The *Configuration parameters* section shows predefined serving runtime paramete
 .. Modify the values in *Additional environment variables* to define variables in the model's environment.
 +
 NOTE: Do not modify the port or model serving runtime arguments, because they require specific values to be set. Overwriting these parameters can cause the deployment to fail.
++
+NOTE: Set `VLLM_CPU_KVCACHE_SPACE` to define the KV cache size for vLLM. For example, `VLLM_CPU_KVCACHE_SPACE=40` allocates 40 GiB of memory to the KV cache. Increase this value to enable vLLM to handle more parallel requests. Choose a value that matches your hardware capacity and memory management requirements. The default is 0. When set to 0, vLLM does not reserve dedicated KV cache memory and instead allocates from available system memory at runtime, which can result in out-of-memory errors.
 . After you are done customizing the runtime parameters, click *Redeploy* to save.
 . Click *Start* to deploy the model with your changes.
 
