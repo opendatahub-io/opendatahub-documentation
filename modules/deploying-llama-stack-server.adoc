@@ -19,6 +19,11 @@ The included procedure provides an example `LlamaStackDistribution` CR that depl
 * You have cluster administrator privileges for your OpenShift cluster.
 * You have activated the Llama Stack Operator in your cluster.
 * You have installed the PostgreSQL Operator version 14 or later in your cluster. 
+* You have deployed and prepared a PostgreSQL database for Llama Stack metadata storage. 
+* You have a running PostgreSQL instance that is reachable from the {productname-short} cluster network.
+* You have PostgreSQL administrator credentials for that instance. For example, a superuser role, to create a database and user.
+* You know the PostgreSQL hostname and database port to use for the `POSTGRES_HOST` and `POSTGRES_PORT` environment variables.
+* You have access to the `psql` client from a location that can reach the PostgreSQL instance. For example, from a pod running in the cluster.
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
 ** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
@@ -73,61 +78,62 @@ spec:
       size: 20Gi
       mountPath: <custom-mount-path> ## Defaults to /opt/app-root/src/.llama/distributions/rh/
 ----
-
-<1> You can create this secret by running `oc create secret generic postgres-secret\ --from-literal=password=<custom-password>` in your terminal.  
-
++
+<1> Create the secret in the same namespace as the `LlamaStackDistribution` resource. Avoid placing passwords directly on the command line, as they can be stored in shell history. Instead, create the secret from a file or by using the OpenShift web console. For example, run `oc create secret generic postgres-secret --from-file=password=<password filename> -n <namespace>`.
++
+Delete the temporary file after creating the secret to prevent accidental exposure of credentials. For more information about creating and managing Secrets, see the OpenShift documentation.
 . As the cluster administrator provisioning the Llama Stack server, you then need to create a Llama Stack PostgreSQL database and grant full permissions to a user. 
 
-.. Open a terminal that has network access to the PostgreSQL instance and the PostgreSQL client installed. 
+. Open a terminal that has network access to the PostgreSQL instance and the PostgreSQL client installed. 
 
-.. Start the PostgreSQL shell with the following command:
+. Start the PostgreSQL shell. For example:  
 +
 [source,terminal]
 ----
-$ psql
+$ psql -h <host> -p 5432 -U <admin-user> -d postgres
 ----
 
-.. Create the database with the following command:
+. Create the database with the following command:
 +
 [source,terminal]
 ----
-CREATE DATABASE llamastack;
+$ CREATE DATABASE llamastack;
 ----
 
-.. Create a user role called `llamastack` accessible with a custom password:
+. Create a user role called `llamastack` accessible with a custom password:
 +
 [source,terminal]
 ----
 $ CREATE ROLE llamastack WITH LOGIN PASSWORD <password-for-user-access>;
 ----
 
-.. Grant full permissions on the database to the user with the following command:
+. Grant full permissions on the database to the user with the following command:
 +
 [source,terminal]
 ----
 $ GRANT ALL PRIVILEGES ON DATABASE llamastack TO llamastack;
 ----
 
-.. Connect to the new database by running the following command: 
+. Connect to the new database by running the following command: 
 +
 [source,terminal]
 ----
 $ \c llamastack
 ----
 
-.. Grant table usage and creation privileges to the public schema:
+. Grant table usage and creation privileges to the public schema:
 +
 [source,terminal]
 ----
 $ GRANT USAGE, CREATE ON SCHEMA public TO llamastack;
 ----
 
-.. Ensure all future tables are automatically accessible by running the following commands:
+. Ensure all future tables are automatically accessible by running the following commands:
 +
 [source,terminal]
 ----
 $ ALTER DEFAULT PRIVILEGES IN SCHEMA public
-$ GRANT ALL PRIVILEGES ON TABLES TO llamastack;
+  GRANT ALL PRIVILEGES ON TABLES TO llamastack;
 ----
 
 .Verification 
