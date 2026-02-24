@@ -13,7 +13,7 @@ If the `maas-api` pod does not start or shows errors after enabling the MaaS com
 
 * Check the pod logs for error messages:
 +
-[source,terminal]
+[source,terminal,subs="+attributes"]
 ----
 $ oc logs -n {dbd-config-default-namespace} -l app=maas-api
 ----
@@ -25,7 +25,7 @@ $ oc logs -n {dbd-config-default-namespace} -l app=maas-api
 
 * Check for events related to the MaaS deployment:
 +
-[source,terminal]
+[source,terminal,subs="+attributes"]
 ----
 $ oc get events -n {dbd-config-default-namespace} --sort-by='.lastTimestamp' | grep maas
 ----
@@ -45,14 +45,14 @@ If the Models-as-a-Service tab does not appear in the dashboard:
 
 * Verify that the MaaS API component is running:
 +
-[source,terminal]
+[source,terminal,subs="+attributes"]
 ----
 $ oc get pods -n {dbd-config-default-namespace} -l app=maas-api
 ----
 
 * Check that the OdhDashboardConfig was updated correctly:
 +
-[source,terminal]
+[source,terminal,subs="+attributes"]
 ----
 $ oc get odhdashboardconfig odh-dashboard-config -n {dbd-config-default-namespace} -o yaml | grep modelAsService
 ----
@@ -61,7 +61,7 @@ $ oc get odhdashboardconfig odh-dashboard-config -n {dbd-config-default-namespac
 
 * Check the dashboard pod logs for errors:
 +
-[source,terminal]
+[source,terminal,subs="+attributes"]
 ----
 $ oc logs -n {dbd-config-default-namespace} $(oc get pods -n {dbd-config-default-namespace} -o name | grep dashboard | head -1) --tail=50
 ----
@@ -75,7 +75,7 @@ $ oc logs -n {dbd-config-default-namespace} $(oc get pods -n {dbd-config-default
 
 * Check that the MaaS API is running:
 +
-[source,terminal]
+[source,terminal,subs="+attributes"]
 ----
 $ oc get pods -n {dbd-config-default-namespace} -l app=maas-api
 ----
@@ -103,7 +103,7 @@ $ oc get rolebindings -n <your-project-namespace> | grep <your-model-name>
 
 * Check the user's tier assignment:
 +
-[source,terminal]
+[source,terminal,subs="+attributes"]
 ----
 $ oc exec -n {dbd-config-default-namespace} deployment/maas-api -- curl -s http://localhost:8080/v1/tiers/lookup \
   -H "Content-Type: application/json" \
@@ -179,7 +179,7 @@ If users cannot access models after tier creation:
 * Verify that the tier's level is higher than any other tiers the user's groups might belong to.
 * Check the MaaS API logs for tier resolution errors:
 +
-[source,terminal]
+[source,terminal,subs="+attributes"]
 ----
 $ oc logs -n {dbd-config-default-namespace} -l app=maas-api --tail=50 | grep tier
 ----
