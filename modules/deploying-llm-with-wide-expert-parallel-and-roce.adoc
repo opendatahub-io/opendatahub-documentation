@@ -113,16 +113,11 @@ spec:
               cpu: "8"
               memory: "64Gi"
           volumeMounts:
-          - name: rdma-device
-            mountPath: /dev/infiniband
           - name: shm
             mountPath: /dev/shm
           - name: config
             mountPath: /config
         volumes:
-        - name: rdma-device
-          hostPath:
-            path: /dev/infiniband
         - name: shm
           emptyDir:
             medium: Memory

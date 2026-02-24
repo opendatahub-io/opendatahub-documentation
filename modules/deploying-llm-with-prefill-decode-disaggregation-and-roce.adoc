@@ -94,14 +94,9 @@ spec:
                 nvidia.com/gpu: "1"
                 rdma/roce: "1"
             volumeMounts:
-            - name: rdma-device
-              mountPath: /dev/infiniband
             - name: config
               mountPath: /config
           volumes:
-          - name: rdma-device
-            hostPath:
-              path: /dev/infiniband
           - name: config
             configMap:
               name: disaggregation-config
@@ -126,14 +121,9 @@ spec:
                 nvidia.com/gpu: "1"
                 rdma/roce: "1"
             volumeMounts:
-            - name: rdma-device
-              mountPath: /dev/infiniband
             - name: config
               mountPath: /config
           volumes:
-          - name: rdma-device
-            hostPath:
-              path: /dev/infiniband
           - name: config
             configMap:
               name: disaggregation-config
