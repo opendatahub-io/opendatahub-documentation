@@ -29,7 +29,7 @@ Enabling this interface makes MaaS functionality accessible to users through the
 . In the OpenShift console, navigate to *Home* -> *API Explorer*.
 . In the search bar, enter `OdhDashboardConfig` to filter by kind.
 . Click the *OdhDashboardConfig* custom resource to open the resource details page.
-. From the *Project* list, select the {productname-short} applications namespace (typically `{dbd-config-default-namespace}`).
+. From the *Project* list, select the {productname-short} applications namespace (typically `pass:attributes[{dbd-config-default-namespace}]`).
 . Click the *Instances* tab.
 . Click the *odh-dashboard-config* instance to open the details page.
 . Click the *YAML* tab.
@@ -56,7 +56,7 @@ Verify that the Models-as-a-Service dashboard interface is enabled and accessibl
 
 . Verify that the feature is enabled in the OdhDashboardConfig:
 +
-[source,terminal]
+[source,terminal,subs="+attributes"]
 ----
 $ oc get odhdashboardconfig odh-dashboard-config -n {dbd-config-default-namespace} -o jsonpath='{.spec.dashboardConfig.modelAsService}'
 ----
@@ -68,7 +68,7 @@ true
 
 . Verify that the dashboard pods have reloaded with the new configuration:
 +
-[source,terminal]
+[source,terminal,subs="+attributes"]
 ----
 $ oc get pods -n {dbd-config-default-namespace} | grep dashboard
 ----
