@@ -110,17 +110,6 @@ $ oc exec -n {dbd-config-default-namespace} deployment/maas-api -- curl -s http:
   -d '{"groups": ["<user-group-name>"]}'
 ----
 
-[id="token-authentication-errors-401-unauthorized_{context}"]
-== Token authentication errors: 401 Unauthorized
-
-* Ensure that *Require token authentication* is enabled in the model's deployment settings.
-
-* Verify that the user is generating tokens from the MaaS dashboard, not using their {openshift-platform} token directly.
-
-* Check that the token has not expired:
-+
-Ephemeral tokens expire after 4 hours by default. Generate a new token if needed.
-
 [id="tier-based-access-control-issues_{context}"]
 == Tier-based access control issues
 
