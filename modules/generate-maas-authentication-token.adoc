@@ -25,7 +25,7 @@ The token is displayed only once. If you lose the token, you must generate a new
 .Verification
 
 Test the token by making an API call to list available models:
-+
+
 [source,terminal,subs="+quotes"]
 ----
 $ export MAAS_TOKEN="<your_generated_token>"
@@ -34,7 +34,7 @@ $ export CLUSTER_DOMAIN=$(oc get ingresses.config.openshift.io cluster -o jsonpa
 $ curl -X GET "https://maas.${CLUSTER_DOMAIN}/v1/models" \
   -H "Authorization: Bearer ${MAAS_TOKEN}"
 ----
-+
+
 where:
 
 `<your_generated_token>`:: Specifies the authentication token you copied in the previous step.
