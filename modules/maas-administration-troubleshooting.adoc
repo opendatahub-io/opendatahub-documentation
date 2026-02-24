@@ -20,7 +20,7 @@ $ oc logs -n {dbd-config-default-namespace} -l app=maas-api
 
 * Verify that all prerequisites are met, especially:
 ** Kuadrant is running in the `kuadrant-system` namespace
-** The `openshift-ai-inference` Gateway exists in the `openshift-ingress` namespace
+** The `maas-default-gateway` Gateway exists in the `openshift-ingress` namespace
 ** KServe component is set to `Managed` in the DataScienceCluster
 
 * Check for events related to the MaaS deployment:
@@ -63,7 +63,7 @@ $ oc get odhdashboardconfig odh-dashboard-config -n {dbd-config-default-namespac
 +
 [source,terminal]
 ----
-$ oc logs -n {dbd-config-default-namespace} -l app=odh-dashboard --tail=50
+$ oc logs -n {dbd-config-default-namespace} $(oc get pods -n {dbd-config-default-namespace} -o name | grep dashboard | head -1) --tail=50
 ----
 
 * Verify that you have the required permissions to view the tab. Some features may be restricted based on user roles.

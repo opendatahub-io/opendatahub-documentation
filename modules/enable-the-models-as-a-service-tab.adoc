@@ -26,7 +26,7 @@ Enabling this interface makes MaaS functionality accessible to users through the
 .Procedure
 
 . Log in to the {openshift-platform} console as a cluster administrator.
-. In the *Administrator* perspective, navigate to *Home* -> *API Explorer*.
+. In the OpenShift console, navigate to *Home* -> *API Explorer*.
 . In the search bar, enter `OdhDashboardConfig` to filter by kind.
 . Click the *OdhDashboardConfig* custom resource to open the resource details page.
 . From the *Project* list, select the {productname-short} applications namespace (typically `{dbd-config-default-namespace}`).
@@ -70,7 +70,7 @@ true
 +
 [source,terminal]
 ----
-$ oc get pods -n {dbd-config-default-namespace} -l app=odh-dashboard
+$ oc get pods -n {dbd-config-default-namespace} | grep dashboard
 ----
 +
 Check that the pods are running and have been recently restarted.
