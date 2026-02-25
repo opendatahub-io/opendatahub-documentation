@@ -7,13 +7,13 @@ ifdef::context[:parent-context: {context}]
 [id="configuring-roce-networking-for-distributed-llm-deployments_{context}"]
 = Configuring RoCE networking for distributed LLM deployments
 
-High-performance distributed large language model (LLM) deployments require low-latency, high-bandwidth GPU-to-GPU communication across pods. RDMA over Converged Ethernet (RoCE) with GPUDirect RDMA (GDR) provides this capability by enabling direct memory access between GPUs without CPU involvement.
+High-performance distributed large language model (LLM) deployments require low-latency, high-bandwidth GPU-to-GPU communication across pods. RoCE with GPUDirect RDMA (GDR) enables direct memory access between GPUs without CPU involvement. 
 
 RoCE (RDMA over Converged Ethernet) is a network protocol that enables RDMA communication over Ethernet networks. When combined with NVIDIA GPUDirect RDMA, it provides:
 
 * *High bandwidth*: Up to 400 Gbps on modern network infrastructure
 * *Low latency*: Sub-microsecond latency for GPU-to-GPU transfers
-* *CPU offload*: Direct GPU-to-network-to-GPU transfers without CPU involvement
+* *CPU offload*: Transfers data directly between GPUs without CPU involvement
 * *Scalability*: Efficient multi-node distributed inference and training
 
 RoCE networking is useful for:
@@ -34,12 +34,12 @@ The following components can be used to configure an OpenShift Cluster for RoCE 
 
 * *NVIDIA GPU Operator*: Manages GPU drivers, device plugins, and monitoring
 * *Node Feature Discovery (NFD) Operator*: Detects hardware capabilities on cluster nodes
-* *SR-IOV network Operator* (bare metal) or *network-attachment-definitions* (IBM Cloud): Configures secondary high-speed networks
+* *SR-IOV Network Operator* (bare metal) or *network-attachment-definitions* (IBM Cloud): Configures secondary high-speed networks
 
 {llmd} uses the following software libraries to enable high performance distributed inference:
 
 * *NCCL (NVIDIA Collective Communications Library)*: Provides optimized multi-GPU communication primitives
-* *NIXL NVIDIA Inference Xfer Library (NIXL)*: Enables KV Cache transfers across vLLM Pods using RoCE
+* *NVIDIA Inference Xfer Library (NIXL)*: Enables KV Cache transfers across vLLM Pods using RoCE
 * *NVSHMEM (NVIDIA OpenSHMEM Library)*: Used by DeepEP kernels for WideEP deployments of large MoE models
 
 include::enabling-roce-for-distributed-llm-deployments.adoc[leveloffset=+1]
