@@ -278,8 +278,17 @@ Use active, direct language that states what happens rather than what "should" h
     - `:_mod-docs-content-type: REFERENCE`
     - `:_mod-docs-content-type: SNIPPET`
 - Use AsciiDoc description lists for discrete paragraphs focused on a single idea
-- Use AsciiDoc NOTE and IMPORTANT admonitions where appropriate:
+- Use AsciiDoc NOTE and IMPORTANT admonitions where appropriate
 
+Always use proper AsciiDoc block format for admonitions, never inline format:
+
+[INCORRECT] Inline format:
+```asciidoc
+NOTE: This is incorrect formatting.
+IMPORTANT: This is also incorrect.
+```
+
+[CORRECT] Block format:
 ```asciidoc
 [NOTE]
 ====
