@@ -33,7 +33,7 @@ endif::[]
 ifndef::upstream[]
 * You have installed {productname-short} and enabled the single-model serving platform.
 endif::[]
-* You have network fabric that supports RDMA (InfiniBand or Ethernet with RoCE/iWARP).
+* Your network infrastructure supports RDMA (InfiniBand or Ethernet with RoCE/iWARP).
 * You understand your deployment environment: IBM Cloud, bare metal, or other cloud providers.
 
 .Procedure
@@ -189,7 +189,10 @@ where:
 driver.rdma.useHostMofed:: Set to false. The NVIDIA Network Operator  manages the mofed drivers (configured in later steps).
 driver.gdrcopy.enabled:: Specifies whether to enable GDRCopy, which provides additional performance optimizations for GPU-to-GPU transfers and is required for low-latency memory copying. Set to `true` if your environment supports it.
 +
-NOTE: The performance impact of enabling or disabling GDRCopy depends on your specific workload and hardware configuration. Testing is recommended to determine the optimal setting for your use case.
+[NOTE]
+====
+The performance impact of enabling or disabling GDRCopy depends on your specific workload and hardware configuration. Testing is recommended to determine the optimal setting for your use case.
+====
 driver.kernelModuleConfig.name:: Specifies the name of the ConfigMap containing custom driver settings. The example above references `kernel-module-params`, which is required for DeepEP (Deep Endpoint) support.
 
 . Create a ConfigMap with custom driver settings required by DeepEP:
@@ -220,9 +223,15 @@ NVreg_RegistryDwords:: Configures additional driver registry settings. `PeerMapp
 +
 IBM Cloud provides cluster network support for NVIDIA accelerated computing. Create a NetworkAttachmentDefinition for each secondary network interface using the host-device CNI plugin.
 +
-IMPORTANT: Use the host-device CNI to attach the full host interface to pods. Alternative CNI plugins like ipvlan and macvlan may not work on cloud platforms without special configuration of routing rules. By default, ipvlan/macvlan traffic is likely to be blocked by cloud routing rules.
+[IMPORTANT]
+====
+Use the host-device CNI to attach the full host interface to pods. Alternative CNI plugins like ipvlan and macvlan may not work on cloud platforms without special configuration of routing rules. By default, ipvlan/macvlan traffic is likely to be blocked by cloud routing rules.
+====
 +
-NOTE: Only one pod can use each interface per node, similar to GPU allocation. You need to create one NetworkAttachmentDefinition per secondary network interface.
+[NOTE]
+====
+Only one pod can use each interface per node, similar to GPU allocation. You need to create one NetworkAttachmentDefinition per secondary network interface.
+====
 +
 [source,yaml]
 ----
@@ -256,7 +265,7 @@ spec:
 where:
 
 device:: Specifies the host network device name. Replace `enp163s0` with your actual device name. You must create a separate NetworkAttachmentDefinition for each secondary network interface with the appropriate device name.
-isRdma:: Specifies whether to enable RDMA support.
+isRdma:: Set to true to enable RDMA support for RoCE.
 mtu:: Specifies the maximum transmission unit size. 9000 is recommended for high-performance workloads.
 +
 To attach the network interfaces to your pods, you must use pod annotations that reference the NetworkAttachmentDefinitions. The following example shows annotations for all 8 high-speed secondary network interfaces:
@@ -312,7 +321,7 @@ where:
 
 nicSelector.vendor:: Specifies the Mellanox/NVIDIA vendor ID. Adjust for your network card vendor.
 nicSelector.deviceID:: Specifies the device ID for your specific network card model.
-isRdma:: Specifies whether to enable RDMA support for RoCE.
+isRdma:: Set to true to enable RDMA support for RoCE.
 +
 Create an SriovNetwork to attach the RDMA-enabled network to pods:
 +
@@ -345,7 +354,7 @@ sh-4.4# chroot /host
 sh-4.4# ls -l /dev/infiniband/
 ----
 +
-You should see RDMA devices listed such as `uverbs0` or `uverbs1`.
+The output lists available RDMA devices, for example uverbs0 or uverbs1. If no devices are listed, verify that the GPU Operator is running and that your nodes have RDMA-capable hardware.
 
 . Label the nodes that have RDMA capabilities:
 +
@@ -367,8 +376,8 @@ metadata:
 spec:
   replicas: 2
   model:
-    uri: hf://meta-llama/Llama-2-70b-hf
-    name: llama-2-70b
+    uri: hf://meta-llama/Meta-Llama-3-70B
+    name: llama-3-70b
   router:
     template:
       spec:
@@ -393,9 +402,9 @@ where:
 
 k8s.v1.cni.cncf.io/networks:: Specifies the RoCE secondary network to attach to the pod.
 rdma/roce:: Specifies the RDMA resources to request. The resource name depends on your SR-IOV or network configuration.
-NCCL_IB_DISABLE:: Specifies whether to enable InfiniBand/RoCE for NCCL (NVIDIA Collective Communications Library).
+NCCL_IB_DISABLE:: Set to "0" to enable InfiniBand/RoCE for NCCL (NVIDIA Collective Communications Library).
 NCCL_NET_GDR_LEVEL:: Specifies the GPUDirect RDMA level: 0-5, where 5 is maximum optimization.
-NCCL_DEBUG:: Specifies whether to enable debug logging for troubleshooting.
+NCCL_DEBUG:: Sets the NCCL log verbosity level. Set to INFO for troubleshooting; use WARN or remove in production.
 
 .Verification
 
@@ -408,7 +417,7 @@ To verify that RoCE networking is properly configured and functioning:
 $ oc get pods -n nvidia-gpu-operator
 ----
 +
-All pods should be in the `Running` state.
+All pods are in the `Running` state when the GPU Operator is properly configured.
 
 . Verify that RDMA devices are detected:
 +
@@ -417,7 +426,7 @@ All pods should be in the `Running` state.
 $ oc get nodes -l network.nvidia.com/roce=true
 ----
 +
-Your RDMA-capable nodes should be listed.
+The output lists all RDMA-capable nodes.
 
 . Test RDMA connectivity between pods using `ib_write_bw` or `rping`:
 +
@@ -430,7 +439,7 @@ $ oc exec -it <pod-1> -- ib_write_bw -d <rdma-device>
 $ oc exec -it <pod-2> -- ib_write_bw -d <rdma-device> <server-ip>
 ----
 +
-You should see bandwidth measurements indicating successful RDMA communication.
+The output displays bandwidth measurements indicating successful RDMA communication.
 
 . Check NCCL communication in your LLM deployment logs:
 +
@@ -454,7 +463,7 @@ NCCL INFO Using network RoCE
 $ curl -X POST http://<inference-endpoint>/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "llama-2-70b",
+    "model": "llama-3-70b",
     "messages": [{"role": "user", "content": "Explain RoCE networking"}],
     "max_tokens": 100
   }'
