@@ -4,9 +4,9 @@
 = Enable the Models-as-a-Service dashboard interface
 
 [role="_abstract"]
-To view the Models-as-a-Service dashboard interface in {productname-short}, you must enable the feature in the `OdhDashboardConfig` custom resource (CR).
+To view the Models-as-a-Service (MaaS) dashboard interface in {productname-short}, you must enable the feature in the `OdhDashboardConfig` custom resource (CR).
 
-The Models-as-a-Service dashboard interface provides a user interface for:
+The MaaS dashboard interface provides a user interface for:
 
 * Viewing available models and their status
 * Generating authentication tokens for model access
@@ -21,7 +21,7 @@ Enabling this interface makes MaaS functionality accessible to users through the
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have {productname-short} administrator privileges.
 * You have enabled the GenAI Studio menu item in the dashboard.
-* You have enabled the Models-as-a-Service component.
+* You have enabled the MaaS component.
 
 .Procedure
 
@@ -44,7 +44,7 @@ spec:
 # ... remaining configuration ...
 ----
 +
-Set `modelAsService` to `true` to display the Models-as-a-Service dashboard interface.
+Set `modelAsService` to `true` to display the MaaS dashboard interface.
 +
 . Click *Save*.
 +
@@ -52,7 +52,7 @@ The configuration is automatically applied to the dashboard pods.
 
 .Verification
 
-Verify that the Models-as-a-Service dashboard interface is enabled and accessible:
+Verify that the MaaS dashboard interface is enabled and accessible:
 
 . Verify that the feature is enabled in the OdhDashboardConfig:
 +
@@ -79,8 +79,8 @@ Check that the pods are running and have been recently restarted.
 . In the left navigation menu, click *AI assets endpoint*.
 . Verify that the *Models-as-a-Service* tab is displayed.
 +
-The Models-as-a-Service tab should appear alongside other endpoint tabs and provide access to model discovery, token generation, and API key management.
+The MaaS tab should appear alongside other endpoint tabs and provide access to model discovery, token generation, and API key management.
 
 .Additional resources
 
-* For troubleshooting dashboard interface visibility issues, see link:{rhoaidocshome}{default-format-url}/deploy_and_manage_models-as-a-service/index#maas-administration-troubleshooting_{context}[Models-as-a-Service administration troubleshooting].
+* link:{rhoaidocshome}{default-format-url}/deploy_and_manage_models-as-a-service/index#maas-administration-troubleshooting_{context}[Models-as-a-Service administration troubleshooting]
