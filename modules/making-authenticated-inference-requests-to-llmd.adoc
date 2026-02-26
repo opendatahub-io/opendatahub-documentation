@@ -1,0 +1,120 @@
+:_module-type: PROCEDURE
+
+[id="making-authenticated-inference-requests-to-llmd_{context}"]
+= Making authenticated inference requests to {llmd}
+
+[role='_abstract']
+When you enable authentication for an `LLMInferenceService`, you must include a valid JSON web token (JWT) in your inference requests. You can generate a token from a ServiceAccount or use an OIDC token from an identity provider.
+
+.Prerequisites
+
+* You have enabled authentication for your `LLMInferenceService` as described in _Enabling authentication and authorization for an LLM inference service_.
+* You have access to the OpenShift CLI (`oc`).
+* You have the inference endpoint URL for your deployed model.
+
+.Procedure
+
+. Create a ServiceAccount with permissions to access the `LLMInferenceService`:
++
+[source,bash]
+----
+oc create serviceaccount llm-user -n <namespace>
+----
+
+. Create a Role that grants permission to get the `LLMInferenceService`:
++
+[source,bash]
+----
+oc apply -f - <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: llm-inference-viewer
+  namespace: <namespace>
+rules:
+- apiGroups: ["serving.kserve.io"]
+  resources: ["llminferenceservices"]
+  verbs: ["get"]
+  resourceNames: ["<llm-inference-service-name>"]
+EOF
+----
+
+. Bind the Role to the ServiceAccount:
++
+[source,bash]
+----
+oc create rolebinding llm-user-binding \
+  --role=llm-inference-viewer \
+  --serviceaccount=<namespace>:llm-user \
+  -n <namespace>
+----
+
+. Generate a JWT token from the ServiceAccount:
++
+[source,bash]
+----
+TOKEN=$(oc create token llm-user -n <namespace> --duration=1h)
+----
++
+The `--duration` flag sets the token validity period. Adjust this value based on your workload requirements. For production use, consider using a shorter duration or integrating with an OIDC provider.
+
+.Verification
+
+* Verify that the authenticated request was successful:
++
+[source,bash]
+----
+curl -v https://<inference-endpoint-url>/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -d '{
+    "model": "<model-name>",
+    "messages": [{
+      "role": "user",
+      "content": "What is Red Hat OpenShift AI?"
+    }]
+  }'
+----
++
+A successful response indicates that authentication is working correctly.
+
+* Verify that requests without authentication are rejected:
++
+[source,bash]
+----
+curl -v https://<inference-endpoint-url>/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "<model-name>",
+    "messages": [{
+      "role": "user",
+      "content": "What is Red Hat OpenShift AI?"
+    }]
+  }'
+----
++
+The request returns a `401 Unauthorized` response with a message indicating that authentication is required.
+
+* Verify that requests with an invalid or expired token are rejected:
++
+[source,bash]
+----
+curl -v https://<inference-endpoint-url>/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer invalid-token" \
+  -d '{
+    "model": "<model-name>",
+    "messages": [{
+      "role": "user",
+      "content": "What is Red Hat OpenShift AI?"
+    }]
+  }'
+----
++
+The request returns a `401 Unauthorized` response, confirming that invalid tokens are rejected.
+
+[role='_additional-resources']
+.Additional resources
+
+* For information about OpenShift authentication, see link:https://docs.openshift.com/container-platform/latest/authentication/understanding-authentication.html[Understanding authentication^].
+* For information about ServiceAccount tokens, see link:https://docs.openshift.com/container-platform/latest/authentication/bound-service-account-tokens.html[Using bound service account tokens^].
