@@ -1,0 +1,85 @@
+:_mod-docs-content-type: CONCEPT
+
+[id="maas-tiers_{context}"]
+= Models-as-a-Service tiers
+
+[role="_abstract"]
+The Models-as-a-Service (MaaS) platform uses a tier-based model to manage access control and rate limiting for AI model serving. Tiers allow platform administrators to define different levels of service and control model access based on user group membership.
+
+== Tier-based access control
+
+When multiple teams share large language models, tiers enable you to:
+
+* Prevent resource exhaustion from unlimited usage
+* Provide different service levels for different user groups
+* Track and allocate costs based on team consumption
+* Control which teams can access expensive or sensitive models
+
+MaaS assigns users to tiers based on their OpenShift group membership. When a user belongs to multiple groups, the system assigns the tier with the highest level number.
+
+== Default tier configurations
+
+The MaaS platform includes three default configurable tiers. Each tier has a dedicated namespace following the pattern `{instance-name}-tier-{tier-name}`.
+
+.Default tier configurations
+[cols="1,2,1,2,3", options="header"]
+|===
+|Tier |Description |Level |Default group |Namespace
+
+|*Free*
+|Entry-level tier for basic users
+|0 (Lowest)
+|`system:authenticated`
+|`maas-default-gateway-tier-free`
+
+|*Premium*
+|Intermediate tier for higher throughput
+|1
+|`premium-users`
+|`maas-default-gateway-tier-premium`
+
+|*Enterprise*
+|Top tier for critical workloads
+|2 (Highest)
+|`enterprise-users`
+|`maas-default-gateway-tier-enterprise`
+|===
+
+All tiers are fully configurable. You can modify the default tiers or create additional custom tiers to meet your organization's needs.
+
+[NOTE]
+====
+Tier name values are case-sensitive and must match exactly with rate limit policy predicates.
+====
+
+== Tier configuration
+
+MaaS tiers are defined in the `tier-to-group-mapping` ConfigMap in the `pass:attributes[{dbd-config-default-namespace}]` namespace. A tier configuration includes the following properties:
+
+Name:: A unique identifier for the tier, such as `free`, `premium`, or `enterprise`.
+
+Display name:: A human-readable label shown in the dashboard.
+
+Level:: A numeric hierarchy that determines tier precedence. Higher numbers indicate higher priority.
+
+Groups:: A list of OpenShift groups whose members are assigned to this tier.
+
+== Access control
+
+Administrators control which tiers can access specific models by configuring RBAC permissions for the tier's namespace.
+
+When a user belongs to multiple groups across different tiers, MaaS assigns them to the tier with the highest level number. Users can only access models made available to their assigned tier and cannot access models in lower-level tiers, even if they belong to groups associated with those lower tiers.
+
+For example, if a user belongs to both the `premium-users` group (tier level 1) and the `enterprise-users` group (tier level 2), they are assigned to the enterprise tier and can only access models configured for the enterprise tier. They cannot access models restricted to the premium or free tiers.
+
+== Rate limiting and quotas
+
+Configure rate limiting and quota policies when you create or edit a tier through the dashboard. These policies include:
+
+Request rate limits:: Maximum number of API requests allowed per time period, such as 1000 requests per minute.
+
+Token consumption limits:: Maximum number of tokens that can be consumed per time period, such as 100,000 tokens per minute.
+
+Quota policies:: Optional daily or monthly limits on total usage.
+
+Kuadrant's Limitador component enforces these limits based on the user's assigned tier.

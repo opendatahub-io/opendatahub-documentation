@@ -1,0 +1,86 @@
+:_mod-docs-content-type: PROCEDURE
+
+[id="enable-the-models-as-a-service-dashboard-interface_{context}"]
+= Enable the Models-as-a-Service dashboard interface
+
+[role="_abstract"]
+To view the Models-as-a-Service (MaaS) dashboard interface in {productname-short}, you must enable the feature in the `OdhDashboardConfig` custom resource (CR).
+
+The MaaS dashboard interface provides a user interface for:
+
+* Viewing available models and their status
+* Generating authentication tokens for model access
+* Creating and managing named API keys
+* Viewing your assigned tier and rate limits
+* Accessing API documentation and examples
+
+Enabling this interface makes MaaS functionality accessible to users through the dashboard.
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have {productname-short} administrator privileges.
+* You have enabled the GenAI Studio menu item in the dashboard.
+* You have enabled the MaaS component.
+
+.Procedure
+
+. Log in to the {openshift-platform} console as a cluster administrator.
+. In the OpenShift console, navigate to *Home* -> *API Explorer*.
+. In the search bar, enter `OdhDashboardConfig` to filter by kind.
+. Click the *OdhDashboardConfig* custom resource to open the resource details page.
+. From the *Project* list, select the {productname-short} applications namespace (typically `pass:attributes[{dbd-config-default-namespace}]`).
+. Click the *Instances* tab.
+. Click the *odh-dashboard-config* instance to open the details page.
+. Click the *YAML* tab.
+. In the `spec.dashboardConfig` section, add or update the `modelAsService` configuration:
++
+[source,yaml]
+----
+# ... existing configuration ...
+spec:
+  dashboardConfig:
+    modelAsService: true
+# ... remaining configuration ...
+----
++
+Set `modelAsService` to `true` to display the MaaS dashboard interface.
++
+. Click *Save*.
++
+The configuration is automatically applied to the dashboard pods.
+
+.Verification
+
+Verify that the MaaS dashboard interface is enabled and accessible:
+
+. Verify that the feature is enabled in the OdhDashboardConfig:
++
+[source,terminal,subs="+attributes"]
+----
+$ oc get odhdashboardconfig odh-dashboard-config -n {dbd-config-default-namespace} -o jsonpath='{.spec.dashboardConfig.modelAsService}'
+----
++
+.Example output
+----
+true
+----
+
+. Verify that the dashboard pods have reloaded with the new configuration:
++
+[source,terminal,subs="+attributes"]
+----
+$ oc get pods -n {dbd-config-default-namespace} | grep dashboard
+----
++
+Check that the pods are running and have been recently restarted.
+
+. Log in to the {productname-short} dashboard.
+. In the left navigation menu, click *AI assets endpoint*.
+. Verify that the *Models-as-a-Service* tab is displayed.
++
+The MaaS tab should appear alongside other endpoint tabs and provide access to model discovery, token generation, and API key management.
+
+.Additional resources
+
+* link:{rhoaidocshome}{default-format-url}/deploy_and_manage_models-as-a-service/index#maas-administration-troubleshooting_{context}[Models-as-a-Service administration troubleshooting]

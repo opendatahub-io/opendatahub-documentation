@@ -1,0 +1,25 @@
+:_mod-docs-content-type: REFERENCE
+
+[id="maas-best-practices_{context}"]
+= Best practices
+
+[role="_abstract"]
+Follow these recommendations to effectively use MaaS.
+
+*Security*
+
+* Never commit tokens to version control. Use environment variables or secret management systems.
+* Regenerate tokens periodically. Generate new tokens regularly and discard old ones.
+* Use named tokens for tracking. When generating tokens, note which application or purpose they are for.
+
+*Performance*
+
+* Implement retry logic with exponential backoff. Handle rate limit errors gracefully.
+* Cache responses when appropriate. If you are making identical requests, consider caching results.
+* Set reasonable `max_tokens` values. Do not request more tokens than you need, as token quotas are enforced.
+
+*Cost management*
+
+* Check rate limit headers. Review `X-RateLimit-Remaining` in API responses to track your usage against tier limits.
+* Use the playground for testing. Test prompts in the playground before implementing them in code.
+* Optimize prompts. Shorter, more focused prompts consume fewer tokens.

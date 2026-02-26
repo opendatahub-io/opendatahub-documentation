@@ -1,0 +1,152 @@
+:_mod-docs-content-type: REFERENCE
+
+[id="maas-user-access-troubleshooting_{context}"]
+= Models-as-a-Service user access troubleshooting
+
+[role="_abstract"]
+Use this reference to diagnose and resolve common issues when accessing models through Models-as-a-Service (MaaS).
+
+[id="authentication-errors-401-unauthorized_{context}"]
+== Authentication errors: 401 Unauthorized
+
+.Symptom
+[source,json]
+----
+{
+  "error": {
+    "message": "Invalid or expired token",
+    "type": "authentication_error",
+    "code": 401
+  }
+}
+----
+
+.Possible causes and solutions
+
+* *Token expired*: Generate a new token from the dashboard.
+* *Incorrect token format*: Ensure you're using the `Authorization: Bearer <token>` header format.
+* *Token not issued by MaaS*: Do not use your {openshift-platform} token directly. Generate a MaaS-specific token.
+
+[id="authorization-errors-403-forbidden_{context}"]
+== Authorization errors: 403 Forbidden
+
+.Symptom
+[source,json]
+----
+{
+  "error": {
+    "message": "Access denied. Your tier does not have permission to access this model.",
+    "type": "authorization_error",
+    "code": 403
+  }
+}
+----
+
+.Possible causes and solutions
+
+* *Model not available to your tier*: Contact your administrator to request access or upgrade your tier.
+* *Model exists but RBAC not configured*: Ask your administrator to verify that RoleBindings are created for your tier.
+
+[id="model-not-found-404_{context}"]
+== Model not found: 404
+
+.Symptom
+[source,json]
+----
+{
+  "error": {
+    "message": "Model not found",
+    "type": "not_found_error",
+    "code": 404
+  }
+}
+----
+
+.Possible causes and solutions
+
+* *Incorrect model name*: Verify the model name using the `/v1/models` endpoint.
+* *Model not deployed*: Ask your administrator to check if the model is deployed and ready.
+* *Typo in URL*: Ensure the URL format is correct: `https://maas.<domain>/llm/<model-name>/v1/chat/completions`
+
+[id="exceeded-request-rate-limits_{context}"]
+== Exceeded request rate limits
+
+If you exceed the maximum number of requests per minute:
+
+.Example error response
+[source,json]
+----
+{
+  "error": {
+    "message": "Rate limit exceeded. You have exceeded the maximum number of requests per minute for your tier.",
+    "type": "rate_limit_error",
+    "code": 429
+  }
+}
+----
+
+.Response headers (useful for retry logic)
+[source,text]
+----
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1234567890
+Retry-After: 42
+----
+
+.Handling rate limits in Python
+[source,python]
+----
+import time
+import requests
+
+def make_request_with_retry(url, headers, data, max_retries=3):
+    for attempt in range(max_retries):
+        response = requests.post(url, headers=headers, json=data)
+
+        if response.status_code == 429:
+            retry_after = int(response.headers.get('Retry-After', 60))
+            print(f"Rate limited. Retrying after {retry_after} seconds...")
+            time.sleep(retry_after)
+            continue
+
+        return response
+
+    raise Exception("Max retries exceeded")
+----
+
+[id="exceeded-token-quotas_{context}"]
+== Exceeded token quotas
+
+If you exceed the maximum number of tokens per minute:
+
+.Example error response
+[source,json]
+----
+{
+  "error": {
+    "message": "Token quota exceeded. You have consumed the maximum number of tokens allowed per minute for your tier.",
+    "type": "quota_error",
+    "code": 429
+  }
+}
+----
+
+.Mitigation strategies
+
+* Reduce `max_tokens` in your requests
+* Implement exponential backoff retry logic
+* Batch requests with longer delays between them
+* Request a higher tier from your administrator if you consistently hit limits
+
+[id="persistent-rate-limit-errors_{context}"]
+== Persistent rate limit errors
+
+.Symptom
+You continue to receive 429 errors even after waiting.
+
+.Possible causes and solutions
+
+* *Shared tier quota*: Rate limits are per-user, but if many users in your tier are making requests simultaneously, the aggregate tier limit may be reached. Contact your administrator.
+* *Incorrect retry logic*: Ensure you're respecting the `Retry-After` header value.
+* *Multiple applications using the same token*: Each application should have its own API key to avoid unexpected rate limiting.

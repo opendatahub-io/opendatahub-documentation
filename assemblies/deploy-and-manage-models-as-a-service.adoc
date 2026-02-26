@@ -1,0 +1,41 @@
+:_mod-docs-content-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="deploy-and-manage-models-as-a-service_{context}"]
+= Deploy and manage Models-as-a-Service
+
+:context: maas-deploy
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+Models-as-a-Service (MaaS) is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+Models-as-a-Service (MaaS) is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+[role='_abstract']
+You can deploy Models-as-a-Service (MaaS) to provide tier-based governance for large language model serving. MaaS enables you to define service tiers with different rate limits and quotas, control access through API key authentication, and track resource consumption for cost allocation.
+
+include::modules/maas-overview.adoc[leveloffset=+1]
+include::modules/prerequisites-for-installing-maas.adoc[leveloffset=+1]
+include::modules/enable-the-models-as-a-service-component.adoc[leveloffset=+1]
+include::modules/enable-the-models-as-a-service-tab.adoc[leveloffset=+1]
+include::modules/maas-tiers.adoc[leveloffset=+1]
+include::managing-maas-tiers-dashboard.adoc[leveloffset=+1]
+include::modules/deploy-models-using-dashboard-wizard.adoc[leveloffset=+1]
+include::modules/update-model-tier-access.adoc[leveloffset=+1]
+include::modules/maas-administration-troubleshooting.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

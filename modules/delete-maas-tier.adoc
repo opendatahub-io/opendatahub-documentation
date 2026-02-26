@@ -1,0 +1,40 @@
+:_mod-docs-content-type: PROCEDURE
+
+[id="deleting-maas-tier_{context}"]
+= Delete a tier
+
+[role="_abstract"]
+Delete a tier through the dashboard when it is no longer needed.
+
+.Prerequisites
+
+* You have logged in to {productname-short}.
+* You have administrator access to the {productname-short} dashboard.
+
+.Procedure
+
+. In the left navigation menu, click *Settings*.
+. Click *Tiers*.
+. Locate the tier you want to delete and click its name.
+. Click *Actions* -> *Delete tier*.
+. In the confirmation dialog, review the impact of deletion:
+.. Users assigned to this tier will lose their current tier assignment.
+.. Active API keys and tokens scoped to this tier may stop working.
++
+. Type the tier name to confirm deletion.
+. Click *Delete*.
++
+// TODO: Remove this WARNING once RHOAIENG-49389 is resolved (fixed in 3.3.1)
+[NOTE]
+====
+Do not delete all tiers from your system. If you delete the last remaining tier, the dashboard will not display the "Add tier" button, preventing you from creating new tiers through the UI. Ensure at least one tier remains in the system at all times.
+====
+[IMPORTANT]
+====
+Deleting a tier immediately affects all users assigned to it. Ensure that affected users are reassigned to another tier before deletion to avoid service disruption.
+====
+
+.Verification
+
+* Verify that the tier no longer appears in the tiers list.
+* Confirm that users who were in the deleted tier's groups are now assigned to a different tier based on their remaining group memberships.

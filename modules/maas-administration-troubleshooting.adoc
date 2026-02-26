@@ -1,0 +1,174 @@
+:_mod-docs-content-type: REFERENCE
+
+[id="maas-administration-troubleshooting_{context}"]
+= Models-as-a-service administration troubleshooting
+
+[role="_abstract"]
+Use this reference to diagnose and resolve common administrative issues with Models-as-a-Service (MaaS) deployment, configuration, and management.
+
+[id="component-enablement-issues_{context}"]
+== Component enablement issues
+
+If the `maas-api` pod does not start or shows errors after enabling the MaaS component:
+
+* Check the pod logs for error messages:
++
+[source,terminal,subs="+attributes"]
+----
+$ oc logs -n {dbd-config-default-namespace} -l app=maas-api
+----
+
+* Verify that all prerequisites are met, especially:
+** Kuadrant is running in the `kuadrant-system` namespace
+** The `maas-default-gateway` Gateway exists in the `openshift-ingress` namespace
+** KServe component is set to `Managed` in the DataScienceCluster
+
+* Check for events related to the MaaS deployment:
++
+[source,terminal,subs="+attributes"]
+----
+$ oc get events -n {dbd-config-default-namespace} --sort-by='.lastTimestamp' | grep maas
+----
+
+* Verify that the required RBAC resources were created:
++
+[source,terminal]
+----
+$ oc get clusterrole | grep maas
+$ oc get clusterrolebinding | grep maas
+----
+
+[id="dashboard-tab-visibility-issues_{context}"]
+== Dashboard tab visibility issues
+
+If the Models-as-a-Service tab does not appear in the dashboard:
+
+* Verify that the MaaS API component is running:
++
+[source,terminal,subs="+attributes"]
+----
+$ oc get pods -n {dbd-config-default-namespace} -l app=maas-api
+----
+
+* Check that the OdhDashboardConfig was updated correctly:
++
+[source,terminal,subs="+attributes"]
+----
+$ oc get odhdashboardconfig odh-dashboard-config -n {dbd-config-default-namespace} -o yaml | grep modelAsService
+----
+
+* Clear your browser cache and hard refresh the dashboard (Ctrl+Shift+R or Cmd+Shift+R).
+
+* Check the dashboard pod logs for errors:
++
+[source,terminal,subs="+attributes"]
+----
+$ oc logs -n {dbd-config-default-namespace} $(oc get pods -n {dbd-config-default-namespace} -o name | grep dashboard | head -1) --tail=50
+----
+
+* Verify that you have the required permissions to view the tab. Some features may be restricted based on user roles.
+
+[id="model-visibility-issues-on-maas-page_{context}"]
+== Model visibility issues on Models-as-a-Service page
+
+* Verify that you selected *Publish as MaaS endpoint* in the Advanced settings during deployment.
+
+* Check that the MaaS API is running:
++
+[source,terminal,subs="+attributes"]
+----
+$ oc get pods -n {dbd-config-default-namespace} -l app=maas-api
+----
+
+* Verify that the model is in a Ready state:
++
+[source,terminal]
+----
+$ oc get llminferenceservice -n <your-project-namespace>
+----
+
+[id="user-access-errors-403-forbidden_{context}"]
+== User access errors: 403 Forbidden
+
+* Verify that the user's tier is included in the model's tier access configuration:
+** Check the model's deployment settings in the dashboard.
+** Ensure the user's assigned tier matches one of the selected tiers.
+
+* Verify that RoleBindings were created for the selected tiers:
++
+[source,terminal]
+----
+$ oc get rolebindings -n <your-project-namespace> | grep <your-model-name>
+----
+
+* Check the user's tier assignment:
++
+[source,terminal,subs="+attributes"]
+----
+$ oc exec -n {dbd-config-default-namespace} deployment/maas-api -- curl -s http://localhost:8080/v1/tiers/lookup \
+  -H "Content-Type: application/json" \
+  -d '{"groups": ["<user-group-name>"]}'
+----
+
+[id="tier-based-access-control-issues_{context}"]
+== Tier-based access control issues
+
+If users receive unexpected access denials:
+
+* Verify that the user's tier is correctly resolved:
++
+[source,terminal,subs="+attributes"]
+----
+$ oc exec -n {dbd-config-default-namespace} deployment/maas-api -- curl -s http://localhost:8080/v1/tiers/lookup \
+  -H "Content-Type: application/json" \
+  -d '{"groups": ["<user-group-name>"]}'
+----
+
+* Check that the RoleBinding exists for that tier:
++
+[source,terminal]
+----
+$ oc get rolebindings -n llm | grep <tier-name>
+----
+
+* Verify the RoleBinding subject matches the tier namespace exactly:
++
+[source,terminal]
+----
+$ oc get rolebinding <rolebinding-name> -n llm -o yaml | grep "system:serviceaccounts"
+----
+
+* Ensure the model is ready and the LLMInferenceService exists:
++
+[source,terminal]
+----
+$ oc get llminferenceservice -n llm
+----
+
+* Check the Gateway logs for authorization errors:
++
+[source,terminal]
+----
+$ oc logs -n kuadrant-system -l app=authorino --tail=50
+----
+
+If all tiers are denied access:
+
+* Verify that the `llminferenceservice-access` Role includes the `create` verb (required for POST requests).
+* Check that the Role's `resourceNames` field includes your model name, or omit it to allow all models.
+
+[id="tier-management-issues_{context}"]
+== Tier management issues
+
+If users cannot access models after tier creation:
+
+* Verify that the tier name in the ConfigMap exactly matches the tier name created in the dashboard (case-sensitive).
+* Verify that the user's OpenShift groups are listed in the tier's `groups` array in the ConfigMap.
+* Check that the MaaS API deployment restarted successfully after ConfigMap changes.
+* Verify that the tier's level is higher than any other tiers the user's groups might belong to.
+* Check the MaaS API logs for tier resolution errors:
++
+[source,terminal,subs="+attributes"]
+----
+$ oc logs -n {dbd-config-default-namespace} -l app=maas-api --tail=50 | grep tier
+----
