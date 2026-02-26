@@ -55,8 +55,12 @@ oc create rolebinding llm-user-binding \
 ----
 TOKEN=$(oc create token llm-user -n <namespace> --duration=1h)
 ----
++
+The `--duration` flag sets the token validity period. Adjust this value based on your workload requirements. For production use, consider using a shorter duration or integrating with an OIDC provider.
 
-. Make an authenticated inference request using the token:
+.Verification
+
+* Verify that the authenticated request was successful:
 +
 [source,bash]
 ----
@@ -74,8 +78,6 @@ curl -v https://<inference-endpoint-url>/v1/chat/completions \
 +
 A successful response indicates that authentication is working correctly.
 
-.Verification
-
 * Verify that requests without authentication are rejected:
 +
 [source,bash]
@@ -91,7 +93,7 @@ curl -v https://<inference-endpoint-url>/v1/chat/completions \
   }'
 ----
 +
-You should receive a `401 Unauthorized` response with a message indicating that authentication is required.
+The request returns a `401 Unauthorized` response with a message indicating that authentication is required.
 
 * Verify that requests with an invalid or expired token are rejected:
 +
@@ -109,7 +111,7 @@ curl -v https://<inference-endpoint-url>/v1/chat/completions \
   }'
 ----
 +
-You should receive a `401 Unauthorized` response.
+The request returns a `401 Unauthorized` response, confirming that invalid tokens are rejected.
 
 [role='_additional-resources']
 .Additional resources

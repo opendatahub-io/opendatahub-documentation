@@ -1,7 +1,7 @@
 :_module-type: PROCEDURE
 
 [id="enabling-authentication-and-authorization-for-llm-inference-service_{context}"]
-= Managing authentication and authorization for an LLM inference service
+= Enabling authentication and authorization for an LLM inference service
 
 [role='_abstract']
 In {productname-short} 3.0 and later, authentication and authorization are automatically enabled for `LLMInferenceService` resources when {org-name} Connectivity Link is configured. You can use the `security.opendatahub.io/enable-auth: "true"` annotation to explicitly enable authentication, such as re-enabling it after it was previously disabled.
@@ -46,8 +46,6 @@ spec:
             memory: 16Gi
             nvidia.com/gpu: "1"
 ----
-+
-NOTE: In {productname-short} 3.0 and later, the `security.opendatahub.io/enable-auth: "true"` annotation is the default behavior when Connectivity Link is configured. You only need to add this annotation if you previously disabled authentication.
 
 . Apply the configuration:
 +
@@ -55,15 +53,6 @@ NOTE: In {productname-short} 3.0 and later, the `security.opendatahub.io/enable-
 ----
 oc apply -f <llm-inference-service-file>.yaml
 ----
-
-. Verify that the inference service is protected by attempting to access it without authentication:
-+
-[source,bash]
-----
-curl -v https://<inference-endpoint-url>/v1/models
-----
-+
-You should receive a `401 Unauthorized` response.
 
 .Verification
 
@@ -74,7 +63,16 @@ You should receive a `401 Unauthorized` response.
 oc get llminferenceservice sample-llm-inference-service -o jsonpath='{.metadata.annotations.security\.opendatahub\.io/enable-auth}'
 ----
 +
-This command should return `true`.
+The command returns `true`.
+
+* Verify that the inference service is protected by attempting to access it without authentication:
++
+[source,bash]
+----
+curl -v https://<inference-endpoint-url>/v1/models
+----
++
+The request returns a `401 Unauthorized` response, confirming that unauthenticated requests are rejected.
 
 [role='_additional-resources']
 .Additional resources
