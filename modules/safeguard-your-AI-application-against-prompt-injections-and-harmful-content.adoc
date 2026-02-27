@@ -1,0 +1,234 @@
+:_module-type: PROCEDURE
+
+ifdef::context[:parent-context: {context}]
+[id="safeguard-your-AI-application-against-prompt-injections-and-harmful-content_{context}"]
+= Safeguard your AI application against prompt-injections and harmful content
+
+[role='_abstract']
+
+This tutorial uses Llama 3.2 3B Instruct as the core inference model, with 3 main detector models integrated to monitor the request-response lifecycle. These detectors perform harmful content detection, prompt injection mitigation, and language and business compliance.
+
+In this tutorial, you carry out the following steps to create your customer service agent:
+
+* *Set up and deploy models:* Deploy a series of models (for example, Granite or Llama).
+
+* *Configure the Guardrails Gateway:* The guardrails gateway provides the OpenAI `v1/chat/completions` API, which lets you hotswap between unguardrailed and guardrailed models. It also lets you create guardrail presets as integrated components of the endpoint.
+
+* *Testing:* Use a CLI or Curl request to send a "malicious" prompt.
+
+* *Verification:* If successful, the Gateway returns a 403 Forbidden or a predefined `Safe` message instead of passing the prompt to the LLM.
+
+
+// Example link:  link:https://www.unitxt.ai[Unitxt] to define custom metrics and to see how the model (link:https://www.huggingface.co/google/flan-t5-small[flan-t5-small]) 
+
+
+.Prerequisites
+* You have cluster administrator privileges for your OpenShift cluster and have configured your cluster for a GPU deployment.
+
+* You have RHOAI installed on your cluster and a Data Science Cluster (DSC) is deployed.
+
+* You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+
+
+.Procedure
+// Prepare the deployment environment and model
+. In the RHOAI operator menu, ensure the `servicemesh` component is set to Removed in the DSC, so that the LLM is deployed as a KServe Raw deployment.
+
+. Deploy the Data Science Cluster (DSC) using the provided images:
++
+[source,YAML]
+----
+oc apply -f dsc.yaml
+----
+
+. Create a new project and set a container for the model deployment:
++
+[source,YAML]
+----
+oc new-project model-namespace
+oc apply -f vllm/model_container.yaml
+oc apply -f vllm/phi3.yaml
+----
+
+[NOTE]
+--
+The first time the container starts, it might take a few minutes because it needs to download the Phi-3-mini HuggingFace model and save it to storage. The model pod, once active, should look something like `phi3-predictor-XXXXXX`. 
+--
+
+. Test the model by sending some inferences to it:
++
+[source,terminal]
+----
+oc port-forward $(oc get pods -o name | grep phi3) 8080:8080
+----
+
+. In a new terminal tab, input the following: 
++
+[source,terminal]
+----
+python3 prompt.py --url http://localhost:8080/v1/chat/completions --model phi3 --message "Hi, can you tell me about yourself?"
+----
+
+// Deploy and configure the guardrails models and orchestrator
+
+. Deploy the Hateful And Profane (HAP) language detector. This uses IBM's *Granite-Guadrian-HAP-38m* model:
++
+[source, terminal]
+----
+oc apply -f guardrails/hap_detector/hap_model_container.yaml
+----
+
+. After the `guardrails-container-deployment-hap-xxxx` pod is spun up, input the following:
++
+[source, terminal]
+----
+oc apply -f guardrails/hap_detector/hap.yaml
+----
+
+. Ensure that the guardrails-detector-ibm-hap-predictor-xxx pod is spun up, then configure the guardrails orchestrator:
++
+[source, YAML]
+----
+  config.yaml: |
+    chat_generation:
+      service:
+        hostname: phi3-predictor.model-namespace.svc.cluster.local
+        port: 8080
+    detectors:
+      regex_competitor:
+        type: text_contents
+        service:
+            hostname: "127.0.0.1"
+            port: 8080
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.5
+      hap:
+        type: text_contents
+        service:
+          hostname: guardrails-detector-ibm-hap-predictor.model-namespace.svc.cluster.local
+          port: 8000
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.5
+
+----
+
+. Configure the regex detector by opening the following YAML. This is where we configure our local detectors and our preset guardrailing pipelines: 
++
+[source,YAML]
+----
+guardrails/configmap_vllm_gateway.yaml
+----
+
+//Configure the Guardrails Gateway
+. Configure the Guardrails Gateway and set up the detectors:
++
+[source, YAML]
+----
+detectors:
+  - name: regex_competitor
+    input: true
+    output: true
+    detector_params:
+      regex:    
+        - \b(?i:orange|apple|cranberry|pineapple|grape)\b
+  - name: hap
+    input: true
+    output: true
+    detector_params: {}
+
+----
+
+[NOTE]
+--
+In the code snippet, we refer to the two detector names created in the Orchestrator Configuration (`hap` and `regex_competitor`). For both detectors, we specify `input: true` and `output: true`, meaning we use them for both input and output detectors. 
+--
+
+. Create three preset pipelines for the detectors: `all`, which is served at `$GUARDRAILS_GATEWAY_URL/all/v1/chat/completions` and is used by both the `regex_competitor` and `hap` detectors, `hap`, which uses the hap detector, and the passthrough preset, which does not use any detectors.
++
+[source, YAML]
+----
+routes:
+  - name: all
+    detectors:
+      - regex_competitor
+      - hap
+  - name: hap
+    detectors:
+      - hap
+  - name: passthrough
+    detectors:
+----
+
+. Deploy the first configmap:
+[source, YAML]
+----
+oc apply -f guardrails/configmap_vllm_gateway.yaml
+----
+
+. Apply the final two configmaps needed to configure the orchestrator:
++
+[source, terminal]
+----
+oc apply -f guardrails/configmap_auxiliary_images.yaml
+oc apply -f guardrails/configmap_orchestrator.yaml
+----
+
+. Create a route to the guardrails-vLLM-gateway:
++
+[source, terminal]
+----
+oc apply -f guardrails/gateway_route.yaml
+----
+
+. Deploy the Orchestrator: 
++
+[source, terminal]
+----
+oc apply -f guardrails/orchestrator_cr.yaml
+----
+
+. Check the Orchestrator health:
++
+[source, curl]
+----
+ORCH_ROUTE_HEALTH=$(oc get routes guardrails-orchestrator-health -o jsonpath='{.spec.host}')
+curl -s https://$ORCH_ROUTE_HEALTH/info | jq
+----
+
+
+.Verification
+
+. Test the guardrailed customer service agent. Ensure beforehand that your port-forward from earlier is still running:
++
+[source, terminal]
+----
+GUARDRAILS_GATEWAY=https://$(oc get routes guardrails-gateway -o jsonpath='{.spec.host}')
+RAW_MODEL=http://localhost:8080
+----
++
+The available endpoints are:
+.. $GUARDRAILS_GATEWAY/passthrough: query the raw, unguardrailed model.
+
+.. $GUARDRAILS_GATEWAY/hap: query using with the HAP detector.
+
+.. $GUARDRAILS_GATEWAY/all: query with all available detectors, so the HAP and competitor-check detectors.
+
+. Verify that your product works by inputting the following, asking it if orange juice is good: 
++
+[source, terminal]
+----
+python3 prompt.py \
+  --url $RAW_MODEL/v1/chat/completions \
+  --model phi3 \
+  --message "Is orange juice good?"
+----
++
+If functional, the guardrailed model will return: 
++
+[source, terminal]
+----
+Orange juice is generally considered good, especially when it's freshly squeezed. It's a rich source of vitamin C, which is essential for a healthy immune system. It also contains other nutrients like potassium, folate, and antioxidants. However, the quality of orange juice can vary depending on the brand and whether it's freshly squeezed or from concentrate. It's always best to check the label for added sugars and preservatives.
+----
+
+
+
