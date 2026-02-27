@@ -1,0 +1,78 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: distributed-llm-roce
+
+[id="configuring-roce-networking-for-distributed-llm-deployments_{context}"]
+= Configuring RoCE networking for distributed LLM deployments
+
+High-performance distributed large language model (LLM) deployments require low-latency, high-bandwidth GPU-to-GPU communication across pods. RoCE with GPUDirect RDMA (GDR) enables direct memory access between GPUs without CPU involvement. 
+
+RoCE (RDMA over Converged Ethernet) is a network protocol that enables RDMA communication over Ethernet networks. When combined with NVIDIA GPUDirect RDMA, it provides:
+
+* *High bandwidth*: Provides up to 400 Gbps on modern network infrastructure.
+* *Low latency*: Delivers sub-microsecond latency for GPU-to-GPU transfers.
+* *CPU offload*: Transfers data directly between GPUs without CPU involvement.
+* *Scalability*: Supports efficient multi-node distributed inference and training.
+
+RoCE networking is useful for:
+
+*Disaggregated prefill and decode serving*::
+Separates initial token generation, or prefill, from subsequent generation, or decode, across different GPU pools. RoCE enables high-speed KV cache transfers between stages, improving throughput and resource use.
+
+*Wide Expert Parallel (WideEP)*::
+Distributes expert layers of Mixture-of-Experts (MoE) models such as Mixtral across multiple GPUs and nodes. RoCE provides the low-latency communication required for expert routing and token processing.
+
+*Multi-node tensor parallelism*::
+Splits large models across multiple nodes with tensor parallelism. RoCE reduces communication strain for all-reduce operations during inference.
+
+*Distributed training*::
+Enables efficient gradient synchronization across nodes for large-scale model training.
+
+The following components can be used to configure an OpenShift Cluster for RoCE workloads:
+
+* *NVIDIA GPU Operator*: Manages GPU drivers, device plugins, and monitoring
+* *Node Feature Discovery (NFD) Operator*: Detects hardware capabilities on cluster nodes
+* *SR-IOV Network Operator* (bare metal) or *network-attachment-definitions* (IBM Cloud): Configures secondary high-speed networks
+
+{llmd} uses the following software libraries to enable high performance distributed inference:
+
+* *NCCL (NVIDIA Collective Communications Library)*: Provides optimized multi-GPU communication primitives
+* *NVIDIA Inference Xfer Library (NIXL)*: Enables KV Cache transfers across vLLM Pods using RoCE
+* *NVSHMEM (NVIDIA OpenSHMEM Library)*: Used by DeepEP kernels for WideEP deployments of large MoE models
+
+include::enabling-roce-for-distributed-llm-deployments.adoc[leveloffset=+1]
+
+include::optimizing-roce-performance-for-llm-deployments.adoc[leveloffset=+1]
+
+== Next steps
+
+ifdef::upstream[]
+* link:{odhdocshome}/monitoring-distributed-workloads[Monitoring distributed workloads]
+* link:{odhdocshome}/customize-models-to-build-gen-ai-applications[Customizing models to build gen AI applications]
+* link:{odhdocshome}/managing-and-monitoring-models[Managing and monitoring models]
+endif::[]
+
+* Experiment with different parallelization strategies for your specific models
+* Monitor performance metrics to optimize configuration
+* Scale your deployment based on workload requirements
+
+[role='_additional-resources']
+== Additional resources
+
+* link:https://docs.openshift.com/container-platform/latest/networking/hardware_networks/about-sriov.html[About SR-IOV hardware networks]
+* link:https://docs.openshift.com/container-platform/latest/operators/operator-reference.html#node-feature-discovery-operator[Node Feature Discovery Operator]
+* link:https://docs.nvidia.com/networking/display/rdmacore/RDMA+Core[NVIDIA RDMA Core Documentation]
+* link:https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html[NCCL User Guide]
+* link:https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html[NVIDIA GPU Operator Documentation]
+* link:https://docs.nvidia.com/datacenter/cloud-native/network-operator/latest/index.html[NVIDIA Network Operator Documentation]
+* link:https://cloud.ibm.com/docs/vpc?topic=vpc-create-cluster-network-subnet&interface=cli[IBM Cloud cluster network for NVIDIA accelerated computing]
+ifdef::upstream[]
+* link:{odhdocshome}/deploying-models[Deploying models]
+* link:{odhdocshome}/working-with-accelerators[Working with accelerators]
+* link:{odhdocshome}/working-with-distributed-workloads[Working with distributed workloads]
+endif::[]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

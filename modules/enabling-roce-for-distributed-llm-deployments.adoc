@@ -1,0 +1,488 @@
+:_module-type: PROCEDURE
+
+[id="enabling-roce-for-distributed-llm-deployments_{context}"]
+= Enabling RoCE networking for distributed LLM deployments
+
+[role='_abstract']
+Configure GPUDirect RDMA (GDR) over RDMA over Converged Ethernet (RoCE) to enable high-speed, low-latency GPU-to-GPU communication across pods for distributed large language model (LLM) deployments using Distributed Inference Server with llm-d.
+
+This procedure guides you through configuring your {openshift-platform} cluster to support RoCE networking for distributed LLM workloads.
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+RoCE networking for distributed LLM deployments is currently available in {productname-long} as a Technology Preview feature.
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+.Prerequisites
+
+* You have cluster administrator privileges for your {openshift-platform} cluster.
+* You have access to an {openshift-platform} cluster running version 4.12 or later.
+* Your cluster nodes have NVIDIA GPUs with GPUDirect RDMA support, Pascal architecture or later.
+* Your cluster has high-speed network interfaces that support RoCE: 100 Gbps or higher recommended.
+* You have installed the {openshift-cli}.
+ifdef::upstream[]
+* You have installed {productname-short} and enabled the single-model serving platform. For more information, see link:{odhdocshome}/installing-open-data-hub[Installing Open Data Hub].
+endif::[]
+ifndef::upstream[]
+* You have installed {productname-short} and enabled the single-model serving platform.
+endif::[]
+* Your network infrastructure supports RDMA (InfiniBand or Ethernet with RoCE/iWARP).
+* You understand your deployment environment: IBM Cloud, bare metal, or other cloud providers.
+
+.Procedure
+
+. Install the Node Feature Discovery (NFD) Operator to detect hardware features on your cluster nodes:
+
+.. In the {openshift-platform} web console, navigate to *Operators* -> *OperatorHub*.
+.. Search for *Node Feature Discovery Operator*.
+.. Click *Install* and accept the default settings.
+.. Wait for the operator installation to complete.
+
+. Create an NFD instance to enable feature discovery:
++
+[source,yaml]
+----
+apiVersion: nfd.openshift.io/v1
+kind: NodeFeatureDiscovery
+metadata:
+  name: nfd-instance
+  namespace: openshift-nfd
+spec:
+  operand:
+    image: quay.io/openshift/origin-node-feature-discovery:4.12
+    imagePullPolicy: Always
+  workerConfig:
+    configData: |
+      sources:
+        pci:
+          deviceClassWhitelist:
+            - "03"
+            - "0200"
+          deviceLabelFields:
+            - "vendor"
+----
+
+. Install the NVIDIA GPU Operator:
+
+.. In the {openshift-platform} web console, navigate to *Operators* -> *OperatorHub*.
+.. Search for *NVIDIA GPU Operator*.
+.. Click *Install* and select the appropriate update channel.
+.. Choose the installation namespace, for example, `nvidia-gpu-operator`.
+.. Click *Install* and wait for the installation to complete.
+
+. Create a ClusterPolicy custom resource to configure the NVIDIA GPU Operator with RDMA support:
++
+[source,yaml]
+----
+apiVersion: nvidia.com/v1
+kind: ClusterPolicy
+metadata:
+  name: cluster-policy
+  namespace: nvidia-gpu-operator
+spec:
+  # --- General Operator Settings ---
+  operator:
+    defaultRuntime: crio
+    initContainer: {}
+    runtimeClass: nvidia
+    use_ocp_driver_toolkit: true
+  # --- Driver & Licensing ---
+  driver:
+    enabled: true
+    licensingConfig:
+      configMapName: 'nvidia-licensing-config'
+      nlsEnabled: true
+    kernelModuleType: auto
+    certConfig:
+      name: ''
+    rdma:
+      enabled: true      # Enables nvidia-peermem
+      useHostMofed: false # Requires Network Operator
+    useNvidiaDriverCRD: false
+    kernelModuleConfig:
+      name: 'kernel-module-params'
+    usePrecompiled: false
+    repoConfig:
+      configMapName: ''
+    upgradePolicy:
+      autoUpgrade: true
+      maxParallelUpgrades: 1
+      maxUnavailable: 25%
+      drain:
+        deleteEmptyDir: false
+        enable: false
+        force: false
+        timeoutSeconds: 300
+      podDeletion:
+        deleteEmptyDir: false
+        force: false
+        timeoutSeconds: 300
+      waitForCompletion:
+        timeoutSeconds: 0
+  # --- Monitoring ---
+  dcgm:
+    enabled: true
+  dcgmExporter:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  config:
+    name: ''
+  nodeStatusExporter:
+    enabled: true
+  # --- Device Plugins & Topology ---
+  devicePlugin:
+    enabled: true
+    config:
+      default: ''
+      name: ''
+  mps:
+    root: /run/nvidia/mps
+  sandboxDevicePlugin:
+    enabled: true
+  virtualTopology:
+    config: ''
+  # --- Advanced Features (MIG, RDMA, GDR) ---
+  mig:
+    strategy: single
+  migManager:
+    enabled: true
+  vgpuDeviceManager:
+    enabled: true
+  gdrcopy:
+    enabled: true
+  gfd:
+    enabled: true
+  vfioManager:
+    enabled: true
+  # --- Toolkit ---
+  toolkit:
+    enabled: true
+    installDir: /usr/local/nvidia
+  # --- Updates & Validation ---
+  daemonsets:
+    rollingUpdate:
+      maxUnavailable: '1'
+    updateStrategy: RollingUpdate
+  validator:
+    plugin:
+      env: []
+  # --- Disabled Components ---
+  sandboxWorkloads:
+    defaultWorkload: container
+    enabled: false
+  gds:
+    enabled: false
+  vgpuManager:
+    enabled: false
+----
++
+where:
+
+driver.rdma.useHostMofed:: Set to false. The NVIDIA Network Operator  manages the mofed drivers (configured in later steps).
+driver.gdrcopy.enabled:: Specifies whether to enable GDRCopy, which provides additional performance optimizations for GPU-to-GPU transfers and is required for low-latency memory copying. Set to `true` if your environment supports it.
++
+[NOTE]
+====
+The performance impact of enabling or disabling GDRCopy depends on your specific workload and hardware configuration. Testing is recommended to determine the optimal setting for your use case.
+====
+driver.kernelModuleConfig.name:: Specifies the name of the ConfigMap containing custom driver settings. The example above references `kernel-module-params`, which is required for DeepEP (Deep Endpoint) support.
+
+. Create a ConfigMap with custom driver settings required by DeepEP:
++
+DeepEP requires specific NVIDIA driver settings to enable advanced peer-to-peer memory operations. For more information about customizing nvidia.conf values, see the link:https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-operator-rdma.html#configuration-for-gdr[NVIDIA GPU Operator documentation on GPUDirect RDMA configuration].
++
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kernel-module-params
+  namespace: nvidia-gpu-operator
+data:
+  nvidia.conf: |
+    NVreg_EnableStreamMemOPs=1
+    NVreg_RegistryDwords="PeerMappingOverride=1;"
+----
++
+where:
++
+NVreg_EnableStreamMemOPs:: Enables stream memory operations for improved GPU-to-GPU communication performance.
+NVreg_RegistryDwords:: Configures additional driver registry settings. `PeerMappingOverride=1` enables peer mapping for GPUDirect RDMA.
+
+. Configure secondary networks for RoCE based on your deployment environment:
+
+.. *For IBM Cloud deployments*:
++
+IBM Cloud provides cluster network support for NVIDIA accelerated computing. Create a NetworkAttachmentDefinition for each secondary network interface using the host-device CNI plugin.
++
+[IMPORTANT]
+====
+Use the host-device CNI to attach the full host interface to pods. Alternative CNI plugins like ipvlan and macvlan may not work on cloud platforms without special configuration of routing rules. By default, ipvlan/macvlan traffic is likely to be blocked by cloud routing rules.
+====
++
+[NOTE]
+====
+Only one pod can use each interface per node, similar to GPU allocation. You need to create one NetworkAttachmentDefinition per secondary network interface.
+====
++
+[source,yaml]
+----
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: "dhcp-host-device-port-1"
+  namespace: <your-namespace>
+spec:
+  config: '{
+      "cniVersion": "0.3.1",
+      "name": "dhcp-host-device-port-1",
+      "plugins": [
+        {
+          "type": "host-device",
+          "device": "enp163s0",
+          "isRdma": true,
+          "ipam": {
+            "type": "dhcp"
+          }
+        },
+        {
+          "type": "tuning",
+          "name": "mytuning",
+          "mtu": 9000
+        }
+      ]
+    }'
+----
++
+where:
+
+device:: Specifies the host network device name. Replace `enp163s0` with your actual device name. You must create a separate NetworkAttachmentDefinition for each secondary network interface with the appropriate device name.
+isRdma:: Set to true to enable RDMA support for RoCE.
+mtu:: Specifies the maximum transmission unit size. 9000 is recommended for high-performance workloads.
++
+To attach the network interfaces to your pods, you must use pod annotations that reference the NetworkAttachmentDefinitions. The following example shows annotations for all 8 high-speed secondary network interfaces:
++
+[source,yaml]
+----
+metadata:
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [
+        {"name":"dhcp-host-device-port-1", "namespace": "<your-namespace>"},
+        {"name":"dhcp-host-device-port-2", "namespace": "<your-namespace>"},
+        {"name":"dhcp-host-device-port-3", "namespace": "<your-namespace>"},
+        {"name":"dhcp-host-device-port-4", "namespace": "<your-namespace>"},
+        {"name":"dhcp-host-device-port-5", "namespace": "<your-namespace>"},
+        {"name":"dhcp-host-device-port-6", "namespace": "<your-namespace>"},
+        {"name":"dhcp-host-device-port-7", "namespace": "<your-namespace>"},
+        {"name":"dhcp-host-device-port-8", "namespace": "<your-namespace>"}
+      ]
+----
++
+Replace `<your-namespace>` with the namespace where you created the NetworkAttachmentDefinitions.
++
+For more information, see link:https://cloud.ibm.com/docs/vpc?topic=vpc-create-cluster-network-subnet&interface=cli[IBM Cloud cluster network documentation].
+
+.. *For bare metal deployments*:
++
+Configure SR-IOV (Single Root I/O Virtualization) for high-performance network interfaces. Install the SR-IOV Network Operator from OperatorHub.
++
+Create an SriovNetworkNodePolicy to configure the network interfaces:
++
+[source,yaml]
+----
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: roce-policy
+  namespace: openshift-sriov-network-operator
+spec:
+  resourceName: rocenicresource
+  nodeSelector:
+    feature.node.kubernetes.io/network-sriov.capable: "true"
+  priority: 10
+  numVfs: 8
+  nicSelector:
+    vendor: "15b3"
+    deviceID: "1017"
+  deviceType: netdevice
+  isRdma: true
+----
++
+where:
+
+nicSelector.vendor:: Specifies the Mellanox/NVIDIA vendor ID. Adjust for your network card vendor.
+nicSelector.deviceID:: Specifies the device ID for your specific network card model.
+isRdma:: Set to true to enable RDMA support for RoCE.
++
+Create an SriovNetwork to attach the RDMA-enabled network to pods:
++
+[source,yaml]
+----
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetwork
+metadata:
+  name: roce-network
+  namespace: openshift-sriov-network-operator
+spec:
+  resourceName: rocenicresource
+  networkNamespace: <your-namespace>
+  ipam: |
+    {
+      "type": "host-local",
+      "subnet": "192.168.100.0/24",
+      "rangeStart": "192.168.100.10",
+      "rangeEnd": "192.168.100.100",
+      "gateway": "192.168.100.1"
+    }
+----
+
+. Verify that the RDMA devices are available on your nodes:
++
+[source,bash]
+----
+$ oc debug node/<node-name>
+sh-4.4# chroot /host
+sh-4.4# ls -l /dev/infiniband/
+----
++
+The output lists available RDMA devices, for example uverbs0 or uverbs1. If no devices are listed, verify that the GPU Operator is running and that your nodes have RDMA-capable hardware.
+
+. Label the nodes that have RDMA capabilities:
++
+[source,bash]
+----
+$ oc label node <node-name> network.nvidia.com/roce=true
+----
+
+. Configure your pod to use the RoCE network by adding network annotations to your InferenceService or deployment:
++
+[source,yaml]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: llm-with-roce
+  annotations:
+    k8s.v1.cni.cncf.io/networks: roce-network
+spec:
+  replicas: 2
+  model:
+    uri: hf://meta-llama/Meta-Llama-3-70B
+    name: llama-3-70b
+  router:
+    template:
+      spec:
+        containers:
+        - name: main
+          resources:
+            limits:
+              cpu: '8'
+              memory: 64Gi
+              nvidia.com/gpu: "2"
+              rdma/roce: "1"
+          env:
+          - name: NCCL_IB_DISABLE
+            value: "0"
+          - name: NCCL_NET_GDR_LEVEL
+            value: "5"
+          - name: NCCL_DEBUG
+            value: "INFO"
+----
++
+where:
+
+k8s.v1.cni.cncf.io/networks:: Specifies the RoCE secondary network to attach to the pod.
+rdma/roce:: Specifies the RDMA resources to request. The resource name depends on your SR-IOV or network configuration.
+NCCL_IB_DISABLE:: Set to "0" to enable InfiniBand/RoCE for NCCL (NVIDIA Collective Communications Library).
+NCCL_NET_GDR_LEVEL:: Specifies the GPUDirect RDMA level: 0-5, where 5 is maximum optimization.
+NCCL_DEBUG:: Sets the NCCL log verbosity level. Set to INFO for troubleshooting; use WARN or remove in production.
+
+.Verification
+
+To verify that RoCE networking is properly configured and functioning:
+
+. Check that the GPU Operator pods are running:
++
+[source,bash]
+----
+$ oc get pods -n nvidia-gpu-operator
+----
++
+All pods are in the `Running` state when the GPU Operator is properly configured.
+
+. Verify that RDMA devices are detected:
++
+[source,bash]
+----
+$ oc get nodes -l network.nvidia.com/roce=true
+----
++
+The output lists all RDMA-capable nodes.
+
+. Test RDMA connectivity between pods using `ib_write_bw` or `rping`:
++
+[source,bash]
+----
+# On the first pod (server)
+$ oc exec -it <pod-1> -- ib_write_bw -d <rdma-device>
+
+# On the second pod (client)
+$ oc exec -it <pod-2> -- ib_write_bw -d <rdma-device> <server-ip>
+----
++
+The output displays bandwidth measurements indicating successful RDMA communication.
+
+. Check NCCL communication in your LLM deployment logs:
++
+[source,bash]
+----
+$ oc logs <llm-pod-name> | grep NCCL
+----
++
+Look for messages indicating successful NCCL initialization with RDMA transport:
++
+[source,text]
+----
+NCCL INFO NET/IB : Using [0]mlx5_0:1/RoCE [1]mlx5_1:1/RoCE
+NCCL INFO Using network RoCE
+----
+
+. Run a distributed inference request to verify end-to-end functionality:
++
+[source,bash]
+----
+$ curl -X POST http://<inference-endpoint>/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama-3-70b",
+    "messages": [{"role": "user", "content": "Explain RoCE networking"}],
+    "max_tokens": 100
+  }'
+----
++
+Monitor the response time and check logs for RDMA activity.
+
+[role='_additional-resources']
+.Additional resources
+
+* link:https://docs.nvidia.com/networking/display/rdmacore/RDMA+Core[NVIDIA RDMA Core Documentation]
+* link:https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html[NCCL Environment Variables]
+* link:https://cloud.ibm.com/docs/containers?topic=containers-cluster-network[IBM Cloud Cluster Network for NVIDIA Accelerated Computing]
+* link:https://docs.openshift.com/container-platform/latest/networking/hardware_networks/about-sriov.html[About SR-IOV hardware networks in OpenShift]
+ifdef::upstream[]
+* link:{odhdocshome}/deploying-models[Deploying models]
+* link:{odhdocshome}/working-with-accelerators[Working with accelerators]
+endif::[]
+ifndef::upstream[]
+* link:https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html[NVIDIA GPU Operator Documentation]
+* link:https://docs.nvidia.com/datacenter/cloud-native/network-operator/latest/index.html[NVIDIA Network Operator Documentation]
+endif::[]
