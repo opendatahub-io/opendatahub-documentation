@@ -36,7 +36,6 @@ Before running the following examples, ensure you have:
 
 [source,python]
 ----
-import os
 from openai import OpenAI
 import rich
 
@@ -45,8 +44,7 @@ import rich
 # create the base_url using the llama-stack service hostname (with /v1 at the end when using openai sdk)
 base_url = "http://llama-stack-distribution-service.my-project.svc.cluster.local:8321/v1"
 
-import openai
-client = openai.OpenAI(
+client = OpenAI(
     api_key="your-llama-stack-key",
     base_url=base_url
 )
