@@ -210,6 +210,47 @@ Use alternatives to parentheses:
 **Exception:** Acronym definitions remain acceptable.
 - [CORRECT] Large Language Model (LLM)
 
+### Clear and direct language
+
+Use active, direct language that states what happens rather than what "should" happen or what "enables" something.
+
+**Avoid weak constructions:**
+- [INCORRECT] You should see RDMA devices listed.
+- [CORRECT] The output lists available RDMA devices, for example uverbs0 or uverbs1.
+
+**Avoid nominalized constructions:**
+- [INCORRECT] RoCE provides the capability by enabling direct memory access.
+- [CORRECT] RoCE enables direct memory access.
+
+**Be direct with boolean fields:**
+- [INCORRECT] isRdma:: Specifies whether to enable RDMA support.
+- [CORRECT] isRdma:: Set to true to enable RDMA support for RoCE.
+
+**Be accurate with non-boolean fields:**
+- [INCORRECT] NCCL_DEBUG:: Specifies whether to enable debug logging.
+- [CORRECT] NCCL_DEBUG:: Sets the NCCL log verbosity level. Set to INFO for troubleshooting; use WARN or remove in production.
+
+**State expected output directly and include failure conditions:**
+- [INCORRECT] All pods should be in the Running state.
+- [CORRECT] All pods are in the Running state when the GPU Operator is properly configured.
+- [BETTER] The output lists available RDMA devices, for example uverbs0 or uverbs1. If no devices are listed, verify that the GPU Operator is running and that your nodes have RDMA-capable hardware.
+
+**Use specific terminology:**
+- [INCORRECT] network fabric
+- [CORRECT] network infrastructure
+
+**Use complete purpose statements:**
+- [INCORRECT] Set the MTU size to 9000 bytes for jumbo frames.
+- [CORRECT] Set the MTU size to 9000 bytes to enable jumbo frames.
+
+**Keep examples current:**
+- Update model names, library versions, and API examples to reflect current releases
+- Example: Use Llama 3 rather than Llama 2 in examples
+
+**Ensure consistent formatting within sections:**
+- If using labeled bullets (*Term*: explanation) in one section, use the same format in related sections
+- Alternatively, use plain imperative bullets consistently throughout
+
 ### Next steps sections
 
 - No introductory sentence
@@ -237,8 +278,17 @@ Use alternatives to parentheses:
     - `:_mod-docs-content-type: REFERENCE`
     - `:_mod-docs-content-type: SNIPPET`
 - Use AsciiDoc description lists for discrete paragraphs focused on a single idea
-- Use AsciiDoc NOTE and IMPORTANT admonitions where appropriate:
+- Use AsciiDoc NOTE and IMPORTANT admonitions where appropriate
 
+Always use proper AsciiDoc block format for admonitions, never inline format:
+
+[INCORRECT] Inline format:
+```asciidoc
+NOTE: This is incorrect formatting.
+IMPORTANT: This is also incorrect.
+```
+
+[CORRECT] Block format:
 ```asciidoc
 [NOTE]
 ====
