@@ -6,11 +6,11 @@ ifdef::context[:parent-context: {context}]
 
 [role='_abstract']
 
-This tutorial uses Llama 3.2 3B Instruct as the core inference model, with 3 main detector models integrated to monitor the request-response lifecycle. These detectors perform harmful content detection, prompt injection mitigation, and language and business compliance.
+This tutorial uses 3 main detector models integrated to monitor the request-response lifecycle. These detectors perform harmful content detection, prompt injection mitigation, and language and business compliance.
 
 In this tutorial, you carry out the following steps to create your customer service agent:
 
-* *Set up and deploy models:* Deploy a series of models (for example, Granite or Llama).
+* *Set up and deploy models:* Deploy a series of models that provide the desired functions.
 
 * *Configure the Guardrails Gateway:* The guardrails gateway provides the OpenAI `v1/chat/completions` API, which lets you hotswap between unguardrailed and guardrailed models. It also lets you create guardrail presets as integrated components of the endpoint.
 
@@ -23,9 +23,10 @@ In this tutorial, you carry out the following steps to create your customer serv
 
 
 .Prerequisites
-* You have cluster administrator privileges for your OpenShift cluster and have configured your cluster for a GPU deployment.
 
-* You have RHOAI installed on your cluster and a Data Science Cluster (DSC) is deployed.
+* You have {productname-long} installed on your cluster and a Data Science Cluster (DSC) is deployed.
+
+* You have cluster administrator privileges for your {productname-short} cluster and have configured your cluster for a GPU deployment.
 
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
 
@@ -51,11 +52,11 @@ oc apply -f vllm/phi3.yaml
 ----
 
 [NOTE]
---
+====
 The first time the container starts, it might take a few minutes because it needs to download the Phi-3-mini HuggingFace model and save it to storage. The model pod, once active, should look something like `phi3-predictor-XXXXXX`. 
---
+====
 
-. Test the model by sending some inferences to it:
+. In a new terminal window, test the model by sending some inferences to it:
 +
 [source,terminal]
 ----
@@ -87,7 +88,7 @@ oc apply -f guardrails/hap_detector/hap.yaml
 
 . Ensure that the guardrails-detector-ibm-hap-predictor-xxx pod is spun up, then configure the guardrails orchestrator:
 +
-[source, YAML]
+[source, yaml]
 ----
   config.yaml: |
     chat_generation:
@@ -114,7 +115,7 @@ oc apply -f guardrails/hap_detector/hap.yaml
 
 . Configure the regex detector by opening the following YAML. This is where we configure our local detectors and our preset guardrailing pipelines: 
 +
-[source,YAML]
+[source,yaml]
 ----
 guardrails/configmap_vllm_gateway.yaml
 ----
