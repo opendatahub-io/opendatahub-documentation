@@ -1,0 +1,35 @@
+:_module-type: PROCEDURE
+
+[id='stopping-a-basic-workbench-cli_{context}']
+= Stopping a basic workbench through the {openshift-cli}
+
+[role='_abstract']
+
+When you have a running workbench, you can stop the workbench to conserve cluster resources, or to make configuration changes that require you to restart the workbench. You can stop your workbench through the {openshift-cli}.
+
+.Prerequisites
+* You have installed the OpenShift CLI (oc).
+* You have created a data science project.
+* You have a running workbench.
+
+.Procedure
+* Run the following commands to annotate the notebook resource with a stop timestamp:
++
+[NOTE]
+====
+Replace `$name` with your workbench name and `$namespace` with your project name.
+====
++
+[source,terminal, subs="attributes+"]
+----
+Bash
+----
++
+[source,terminal, subs="attributes+"]
+----
+$ oc annotate notebook "$name" -n "$namespace" \
+"kubeflow-resource-stopped=$(date -u +%Y-%m-%dT%H:%M:%SZ)" --overwrite
+----
+//Need example output
+.Verification
+//need verification
