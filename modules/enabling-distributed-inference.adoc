@@ -20,7 +20,13 @@ Review the link:https://docs.redhat.com/en/documentation/openshift_container_pla
 ====
 
 * Your cluster administrator has installed the `LeaderWorkerSet` Operator in {openshift-platform}. For more information, see the link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ai_workloads/leader-worker-set-operator[Leader Worker Set Operator documentation].
-* If you are running {openshift-platform} on a bare-metal cluster:  Your cluster administrator has an external entry point for the `openshift-ai-inference` Inference Gateway service with the type `LoadBalancer`.
+* If you are running {openshift-platform} on a bare-metal cluster:  Your cluster administrator has an external entry point for the `openshift-ai-inference` Inference Gateway service.
++
+[NOTE]
+====
+By default, the Inference Gateway uses type: `LoadBalancer`. If the cluster does not already include support for `LoadBalancer` services, you can use the OpenShift option described in link:https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/ingress_and_load_balancing/load-balancing-with-metallb[Load balancing with MetalLB].
+====
+
 * You have enabled authentication as described in _Configuring authentication for {llmd}_.
 
 .Procedure
