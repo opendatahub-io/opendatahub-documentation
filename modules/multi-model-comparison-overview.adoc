@@ -1,0 +1,66 @@
+:_mod-docs-content-type: CONCEPT
+[id="multi-model-comparison-overview_{context}"]
+= How multi-model comparison accelerates model selection
+
+[role="_abstract"]
+You can test multiple AI models side-by-side with identical prompts using multi-model comparison.
+Comparing model responses in parallel helps you identify the best-performing model for your use case based on quality, latency, and behavior.
+
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+Multi-model comparison is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+Multi-model comparison is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
+
+When you enable multi-model comparison in the GenAI Playground, the interface displays responses from multiple models simultaneously.
+Each model receives the same prompt with identical parameters, enabling direct comparison of outputs.
+
+== Benefits of multi-model comparison
+
+Accelerates model selection::
+You can evaluate multiple models in a single session instead of configuring separate playground instances for each model.
+
+Reveals performance differences::
+Side-by-side comparison highlights variations in response quality, tone, verbosity, and accuracy across models.
+
+Enables A/B testing of prompts::
+You can test how different models respond to the same prompt, helping you select models that are robust to prompt variations.
+
+Compares latency and behavior::
+You can observe which models generate responses faster and which models handle specific tasks more effectively.
+
+== Common use cases
+
+Multi-model comparison is useful when you need to:
+
+* Evaluate open-source models against commercial models
+* Compare different versions of the same model (for example, Llama 3 vs Llama 3.1)
+* Test how models respond to complex or ambiguous prompts
+* Assess cost-performance tradeoffs for production deployment
+* Select a model for a specific domain (for example, code generation vs summarization)
+
+== Limitations in Technology Preview
+
+In the Technology Preview release, multi-model comparison has the following limitations:
+
+* A maximum of three models can be compared simultaneously
+* All models must be deployed as AI asset endpoints before comparison
+* Shared parameters (temperature, top-k, top-p) apply to all models equally
+* Individual model parameters cannot be configured differently during comparison
+* Conversation history is shared across all models in the comparison
+
+.Additional resources
+
+* xref:comparing-model-outputs-in-playground_{context}[Comparing model outputs in the playground]
+* xref:about-the-ai-assets-endpoints-page_{context}[About the AI assets endpoints page]
