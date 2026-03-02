@@ -322,6 +322,7 @@ Add important note content here.
 
 - Maximum 2 levels: = (level 1) and == (level 2) only
 - No deeper nesting (=== or beyond)
+- Procedure modules should avoid level 2 headers (==). Use the module title (=) followed by .Prerequisites, .Procedure, and .Verification sections with numbered/bulleted lists instead of nested headings
 - For granular sections: Use introductory sentences instead of level 3+
 headers
 
