@@ -1,0 +1,29 @@
+:_module-type: CONCEPT
+
+[id="openai-file-citation-annotations-in-llama-stack_{context}"]
+= OpenAI-compatible file citation annotations in Llama Stack
+
+[role="_abstract"]
+{productname-short} provides OpenAI-compatible file citation annotations in Responses API outputs when using retrieval-augmented generation (RAG) with the `file_search` tool. These annotations enable applications to trace generated responses back to the source files used during retrieval without requiring changes to existing OpenAI client code. When you use the Responses API with the `file_search` tool, Llama Stack returns citation metadata that references the source file used to generate the response. Annotations are enabled by default.
+
+Citation annotations have the following characteristics:
+
+* They follow the same response structure defined by OpenAI.
+* They appear in the `annotations` field of `output_text` response content.
+* They identify the source file by ID and filename.
+* They provide document-level attribution.
+
+This feature improves transparency for RAG workflows while maintaining schema compatibility with OpenAI request and response formats.
+
+In {productname-short}, the following annotation capabilities are supported:
+
+* Annotations are returned only through the Responses API.
+* Annotations are returned only when using the `file_search` tool.
+* The `file_citation` annotation type is supported.
+* Attribution is provided at the document level.
+
+[role="_additional-resources"]
+.Additional resources
+
+* link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/openai-compatibility-for-rag-apis-in-llama-stack[OpenAI compatibility for RAG APIs in Llama Stack]
+* link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/openai-compatible-apis-in-llama-stack[OpenAI-compatible APIs in Llama Stack]

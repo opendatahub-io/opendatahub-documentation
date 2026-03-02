@@ -1,0 +1,64 @@
+:_module-type: REFERENCE
+
+[id="file-citation-annotation-reference_{context}"]
+= File citation annotation reference
+
+This reference describes the `file_citation` annotation type returned by Llama Stack through the OpenAI-compatible Responses API.
+
+== Annotation location
+
+Annotations are returned in the `annotations` field of `output_text` content items within the `output[].content[]` structure of the Responses API response.
+
+[source,json]
+----
+"output": [
+  {
+    "content": [
+      {
+        "type": "output_text",
+        "text": "Example generated response.",
+        "annotations": [ ... ]
+      }
+    ]
+  }
+]
+----
+
+== Supported annotation type
+
+In {productname-short}, Llama Stack returns the `file_citation` annotation type when using the `file_search` tool.
+
+.URL citation annotations
+The `url_citation` type is defined in the OpenAI schema but is not produced by Llama Stack in {productname-short} 3.3.
+
+== File citation fields
+
+The `file_citation` annotation includes the following fields:
+
+[cols="1,1,2",options="header"]
+|===
+|Field |Type |Description
+
+|type
+|string
+|Always `file_citation`
+
+|file_id
+|string
+|Identifier of the source file used during retrieval
+
+|filename
+|string
+|Name of the source file
+
+|index
+|integer
+|Character index in the generated text where the citation applies
+|===
+
+== Annotation behavior
+
+* Attribution is provided at the document level.
+* Multiple annotations can reference the same index position.
+* Chunk-level and token-level attribution are not supported.
+* Annotations follow the OpenAI response schema without modification.
