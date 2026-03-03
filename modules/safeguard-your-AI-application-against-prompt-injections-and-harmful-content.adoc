@@ -6,7 +6,7 @@ ifdef::context[:parent-context: {context}]
 
 [role='_abstract']
 
-This tutorial uses three main detector models to monitor the request-response lifecycle. These detectors perform harmful content detection, prompt injection mitigation, and language and business compliance.
+This tutorial demonstrates how to safeguard an AI application by integrating three detector models into the request-response lifecycle. These detectors monitor incoming prompts and outgoing completions, to identify and triage harmful content, prompt injections, and inappropriate language.
 
 In this tutorial, you carry out the following steps to create your customer service agent:
 
@@ -14,32 +14,25 @@ In this tutorial, you carry out the following steps to create your customer serv
 
 * *Configure the Guardrails Gateway:* The guardrails gateway provides the OpenAI `v1/chat/completions` API, which lets you hotswap between unguardrailed and guardrailed models. It also lets you create guardrail presets as integrated components of the endpoint.
 
-* *Testing:* Use a CLI or Curl request to send a "malicious" prompt.
+* *Testing:* Use a CLI or CURL request to send a "malicious" prompt.
 
-* *Verification:* If successful, the Gateway returns a 403 Forbidden or a predefined `Safe` message instead of passing the prompt to the LLM.
+* *Verification:* If successful, the Gateway returns a `403 forbidden` or a predefined `safe` message instead of passing the prompt to the LLM.
 
 
 .Prerequisites
 
-* You have {productname-long} installed on your cluster and a Data Science Cluster (DSC) is deployed.
+* You have the {productname-long} operator installed with the TrustyAI component set to `Managed`
 
-* You have cluster administrator privileges for your {productname-short} cluster and have configured your cluster for a GPU deployment.
+* You have cluster administrator privileges and have configured your cluster for a GPU deployment.
+
+* In the {productname-short} operator menu, the `servicemesh` component is set to `Removed` in the Data Science Cluster (DSC), so that the LLM is deployed as a KServe Raw deployment.
 
 * You have downloaded and installed the OpenShift command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
 
 
 .Procedure
 // Prepare the deployment environment and model
-. In the RHOAI operator menu, ensure the `servicemesh` component is set to Removed in the DSC, so that the LLM is deployed as a KServe Raw deployment.
-
-. Deploy the Data Science Cluster (DSC) using the provided images:
-+
-[source,YAML]
-----
-oc apply -f dsc.yaml
-----
-
-. Create a new project and set a container for the model deployment:
+. Create a new project and set a container to deploy the LLM to be safeguarded:
 +
 [source,YAML]
 ----
@@ -50,7 +43,7 @@ oc apply -f vllm/phi3.yaml
 
 [NOTE]
 ====
-The first time the container starts, it might take a few minutes because it needs to download the Phi-3-mini HuggingFace model and save it to storage. The model pod, once active, should look something like `phi3-predictor-XXXXXX`. 
+The first time the container starts, it might take a few minutes because it needs to download the model. The model pod, once active, should look something like `phi3-predictor-XXXXXX`. 
 ====
 
 . In a new terminal window, test the model by sending some inferences to it:
@@ -69,7 +62,8 @@ python3 prompt.py --url http://localhost:8080/v1/chat/completions --model phi3 -
 
 // Deploy and configure the guardrails models and orchestrator
 
-. Deploy the Hateful And Profane (HAP) language detector. This uses IBM's *Granite-Guardian-HAP-38m* model:
+. Deploy the Hateful And Profane (HAP) language detector, which spins up a `guardrails-container-deployment-hap-xxxx` pod. 
+This uses IBM's *Granite-Guardian-HAP-38m* model:
 +
 [source, terminal]
 ----
