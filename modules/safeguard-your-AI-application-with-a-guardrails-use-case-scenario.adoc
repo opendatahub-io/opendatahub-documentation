@@ -12,13 +12,13 @@ It is part of the TrustyAI open-source community demonstrations and it contains 
 ifndef::upstream[]
 [IMPORTANT]
 --
-This tutorial covers community-maintained tools and third-party configurations that fall outside the scope of {productname-long} commercial support. While provided as a resource for {productname-long} users, Red Hat does not offer technical assistance for these specific workflows. These procedures and software versions are not covered by Red Hat support service level agreements and should be used for informational or proof-of-concept purposes only.
+This tutorial covers community-maintained tools and third-party configurations that fall outside the scope of {productname-long} commercial support. While provided as a resource for {productname-long} users, {org-name} does not offer technical assistance for these specific workflows. These procedures and software versions are not covered by {org-name} support service level agreements and should be used for informational or proof-of-concept purposes only.
 --
 endif::[]
 +
-The scenario involves creating and deploying an LLM customer service assistant (CSA) to answer queries about your product (lemonade). It uses guardrailing models to ensure the CSA focuses on your brand, avoids inappropriate language, and does not promote any competitor products. In this way, it mitigates risks associated with unstructured text generation.
+The scenario involves creating and deploying an LLM customer service assistant (CSA) to answer queries about your product, lemonade. It uses guardrailing models to ensure the CSA focuses on your brand, avoids inappropriate language, and does not promote any competitor products. In this way, it mitigates risks associated with unstructured text generation.
 
-The models analyze the input (the customer's prompt) and output (the response) and provide guardrailing based on three criteria:
+The models analyze the input, which is the customer's prompt, and output which is the response, and provide guardrailing based on the following three criteria:
 
 * *Input validation:* Verifies if the user's question is safe and relevant.
 * *Business logic:* Checks if the user is asking about restricted topics, such as competitors' products.
