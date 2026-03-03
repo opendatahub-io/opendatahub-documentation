@@ -3,6 +3,7 @@
 [id="deploying-llama-stack-server_{context}"]
 = Deploying a Llama Stack server
 
+[role='_abstract']
 Llama Stack allows you to create and deploy a server that enables various APIs for accessing AI services in your {productname-short} cluster. You can create a `LlamaStackDistribution` custom resource for your desired use cases. You are responsible for provisioning and managing the PostgreSQL instance. The PostgreSQL database can be deployed in-cluster or hosted externally, as long as it is reachable from the cluster network.
 
 The included procedure provides an example `LlamaStackDistribution` CR that deploys a Llama Stack server that enables the following setup:
@@ -13,7 +14,6 @@ The included procedure provides an example `LlamaStackDistribution` CR that depl
 * Orchestration endpoints.
 
 .Prerequisites
-
 * You have installed {openshift-platform} 4.19 or newer.
 * You have logged in to {productname-long}.
 * You have cluster administrator privileges for your OpenShift cluster.
@@ -33,7 +33,6 @@ ifdef::cloud-service[]
 endif::[]
 
 .Procedure
-
 . In the OpenShift web console, select *Administrator* → *Quick Create* (image:images/quick-create-icon.png[]) → *Import YAML*, and create a CR similar to the following example `llamastack-custom-distribution.yaml` file:
 +
 .Example llamastack-custom-distribution.yaml
@@ -77,16 +76,19 @@ spec:
       mountPath: <custom-mount-path> ## Defaults to /opt/app-root/src/.llama/distributions/rh/
 ----
 +
-<1> Create the secret in the same namespace as the `LlamaStackDistribution` resource. Avoid placing passwords directly on the command line, as they can be stored in shell history. Instead, create the secret from a file or by using the OpenShift web console. For example:
+<1> Create the secret in the same namespace as the `LlamaStackDistribution` resource. Avoid placing passwords directly on the command line, as they can be stored in shell history. Instead, create a file that contains only the database password and use that file to create the secret, or create the secret by using the OpenShift web console.
++
+For example:
 +
 [source,terminal]
 ----
-echo -n "<database-password>" > pg-password.txt
-oc create secret generic postgres-secret --from-file=password=pg-password.txt -n llamastack
-rm -f pg-password.txt
+$ oc create secret generic postgres-secret --from-file=password=pg-password.txt -n llamastack
+$ rm -f pg-password.txt
 ----
 +
 For more information about creating and managing Secrets, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-pods#nodes-pods-secrets[Providing sensitive data to pods by using secrets^].
++
+Ensure that the file `pg-password.txt` contains only the database password and is deleted after the secret is created.
 
 ifdef::upstream[]
 If you deployed PostgreSQL by using the example in
@@ -106,7 +108,7 @@ If you are using an existing or externally managed PostgreSQL instance, complete
 +
 [source,terminal]
 ----
-$ psql -h <postgres-host> -p 5432 -U <postgres-admin-user> -d postgres
+$ psql -h <postgres-host> -p <postgres-port> -U <postgres-admin-user> -d postgres
 ----
 
 . Create the Llama Stack database and user, and grant the required permissions:
