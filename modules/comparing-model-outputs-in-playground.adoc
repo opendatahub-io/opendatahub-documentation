@@ -1,0 +1,54 @@
+:_mod-docs-content-type: PROCEDURE
+[id="comparing-model-outputs-in-playground_{context}"]
+= Comparing model outputs in the playground
+
+[role="_abstract"]
+You can configure the gen AI Playground to display responses from multiple models side-by-side.
+Multi-model comparison helps you evaluate model performance and select the best model for your use case.
+
+.Prerequisites
+
+* You have logged in to {productname-long}.
+ifdef::cloud-service[]
+* You have created a data science project that contains a workbench, and the workbench is running.
+endif::[]
+ifdef::self-managed[]
+* You have created a data science project.
+endif::[]
+* Two or more models are deployed and available as AI asset endpoints in your project.
+* Multi-model comparison is enabled in the gen AI Playground.
+
+.Procedure
+
+. In the {productname-short} dashboard, click *Gen AI Studio* -> *Playground*.
+. In the **Project** dropdown, select the project that contains the models you want to compare.
+. In the playground configuration panel, click *Enable multi-model comparison*.
++
+The interface expands to display multiple model response panels.
+
+. In the **Model** dropdown for each comparison panel, select a model to include in the comparison.
++
+You can select up to three models.
+
+. Optional: Configure shared parameters that apply to all models:
+.. Set the **Temperature** slider to control response randomness.
+.. Adjust **Top-k** and **Top-p** values to control response diversity.
+.. Enable or disable **Streaming** for real-time response generation.
++
+All selected models use the same parameter values during comparison.
+
+. In the chat input field, enter a prompt to test across all models.
+. Click *Send*.
++
+The playground displays responses from all selected models simultaneously in separate panels.
+
+. Compare the responses:
+.. Review response quality and accuracy for each model.
+.. Note differences in tone, verbosity, and structure.
+.. Observe response latency for each model.
+. Optional: Refine your prompt and click *Send* again to test variations.
+. After identifying the best-performing model, click *Disable multi-model comparison* to return to single-model mode.
+
+.Next steps
+
+* xref:exporting-your-playground-configuration_{context}[Exporting your playground configuration]

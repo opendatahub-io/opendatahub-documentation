@@ -13,30 +13,36 @@ Use the playground to test and evaluate your model's baseline responses.
 
 .Procedure
 
-To test your model, follow these steps:
-
 . From the {productname-short} dashboard, click *Gen AI studio* -> *Playground*.
 . From the model list, select the model that you want to test.
-. Adjust the following model parameters as needed:
+. Adjust the following model parameters:
 .. *Temperature*: Control the randomness of the model's output. Use values between 0 and 2.
 +
---
 The temperature value directly influences creativity:
-* *Values near 0 (0-0.3)*: Produce deterministic and factual responses, and are recommended for objective or factual tasks.
+* *Values near 0 (0-0.3)*: Produce deterministic and factual responses, for objective or factual tasks.
 * *Values around 0.7*: A common default for balanced output.
-* *Values near 1 (0.7-1)*: Increase creativity and randomness, and are recommended for generative or creative tasks.
-* *Values above 1 (such as 2)*: Typically produce incoherent output.
---
-.. *Streaming*: Show the LLM's response as it is being generated. This is helpful for testing model latency and seeing the model's progress in real time. When streaming is off, the full response will not render until it is complete.
+* *Values near 1 (0.7-1)*: Increase creativity and randomness, for generative or creative tasks.
+* *Values over 1 (such as 2)*: Typically produce incoherent output.
+.. *Streaming*: Show the LLM's response as it is generated. This is helpful for testing model latency and seeing the model's progress in real time. When streaming is off, the full response will not render until it is complete.
 .. *System instructions*: Review or edit the text to define the context, persona, or instructions for the model. The playground provides a default prompt.
 . In the chat input field, type a query.
 . Click *Send*.
 . Observe the model's response.
-+
-*NOTE:* After you send a prompt, the *Send* button in the chat input field changes to a *Stop* button. Click it if you want to interrupt the model's response, for example, when the response takes longer than you anticipated or if you notice that you made an error in your prompt. The Bot posts “You stopped this message” to confirm your stop request.
-. Optional. To clear the chat history and start a new conversation, click *New Chat*. The chat interface clears the chat history. Your playground configuration settings are preserved.
+. Optional: To clear the chat history and start a new conversation, click *New Chat*. The chat interface clears the chat history. Your playground configuration settings are preserved.
+. Optional: Compare multiple models. Multi-model comparison helps you select the best-performing model for your use case by displaying responses from up to three models simultaneously. For more information, see xref:comparing-model-outputs-in-playground_{context}[Comparing model outputs in the playground].
+ifndef::upstream[]
+[IMPORTANT]
+====
+ifdef::self-managed[]
+Multi-model comparison is currently available in {productname-long} {vernum} as a Technology Preview feature.
+endif::[]
+ifdef::cloud-service[]
+Multi-model comparison is currently available in {productname-long} as a Technology Preview feature.
+endif::[]
+Technology Preview features are not supported with {org-name} production service level agreements (SLAs) and might not be functionally complete.
+{org-name} does not recommend using them in production.
+These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
 
-
-.Verification
-
-* The model provides responses based on its general knowledge or pre-trained data.
+For more information about the support scope of {org-name} Technology Preview features, see link:https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+endif::[]
