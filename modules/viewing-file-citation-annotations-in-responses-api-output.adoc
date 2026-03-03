@@ -100,6 +100,35 @@ endif::[]
 The accuracy and consistency of citation annotations depend on the capabilities of the underlying language model. Smaller or less capable models might produce less precise attributions, even when retrieval is functioning correctly. If citation results are incomplete or inconsistent, verify the model configuration and consider using a larger or more capable model.
 ====
 
+.Optional: Using the OpenAI-compatible endpoint
+
+When you use an OpenAI SDK, configure the client `base_url` to include the `/v1` path suffix. The SDK automatically appends the appropriate endpoint path, such as `/responses`.
+
+For example:
+
+`http://llama-stack-service:8321/v1`
+
+When you send raw HTTP requests, include both the `/v1` path suffix and the `/responses` endpoint in the full request URL.
+
+For example:
+
+`http://llama-stack-service:8321/v1/responses`
+
+Ensure that `/v1` is included only once in the base URL. Do not append `/v1` multiple times.
+
+For more information, see 
+ifdef::upstream[]
+link:{odhdocshome}/working-with-llama-stack/#openai-compatibility-for-rag-apis-in-llama-stack_rag[OpenAI compatibility for RAG APIs in Llama Stack].
+endif::[]
+ifndef::upstream[]
+link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/openai-compatibility-for-rag-apis-in-llama-stack_rag[OpenAI compatibility for RAG APIs in Llama Stack].
+endif::[]
+
+[NOTE]
+====
+The accuracy and consistency of citation annotations depend on the capabilities of the underlying language model. Smaller or less capable models might produce less precise attributions, even when retrieval is functioning correctly. If citation results are incomplete or inconsistent, verify the model configuration and consider using a larger or more capable model.
+====
+
 .Verification
 
 * The response includes an `annotations` array under `output[].content[]`.
