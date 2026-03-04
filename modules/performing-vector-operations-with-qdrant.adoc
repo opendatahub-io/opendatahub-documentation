@@ -1,0 +1,87 @@
+:_module-type: PROCEDURE
+
+[id="performing-vector-operations-with-qdrant_{context}"]
+= Performing vector operations with Qdrant
+
+[role="_abstract"]
+After configuring Qdrant as the vector store provider in Llama Stack, you can perform vector operations by using the OpenAI-compatible Vector Stores API exposed by Llama Stack. These operations include creating vector stores, adding documents, performing similarity search, and deleting vector stores.
+
+.Prerequisites
+* You have installed and enabled the Llama Stack Operator in {productname-short}.
+* You have configured Qdrant as the vector store provider in your `LlamaStackDistribution`.
+* You have an embedding model available through a configured inference provider.
+* You have network access to the Llama Stack API endpoint.
+* You have Python 3.x with the `requests` library installed, or you can use `curl`.
+
+.Procedure
+
+. Determine how you will access the Llama Stack API.
++
+You can access the API from within the cluster or from outside the cluster.
++
+* *In-cluster access*: Run the `curl` commands from a pod in the same project, or from a workstation that has network access to the Llama Stack Service.
+* *External access*: Expose the Llama Stack Service by creating a Route, and then use the Route URL from your local workstation.
++
+Ensure that your base URL includes the `/v1` path suffix if required by your client configuration. For more information, see xref:openai-compatibility-for-rag-apis-in-llama-stack_rag[OpenAI compatibility for RAG APIs in Llama Stack].
++
+.Example base URL for in-cluster access
+[source,bash]
+----
+LLAMA_STACK_URL="http://llamastack-service:8080"
+----
++
+.Example base URL for external access through a Route
+[source,bash]
+----
+LLAMA_STACK_URL="https://llamastack-route.example.com"
+----
+
+. Create a vector store.
++
+[source,bash]
+----
+curl -X POST "${LLAMA_STACK_URL}/v1/vector_stores" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "my-rag-store"
+  }'
+----
+
+. Add a file to the vector store.
++
+[source,bash]
+----
+curl -X POST "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}/files" \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@/path/to/document.pdf"
+----
+
+. Query the vector store.
++
+[source,bash]
+----
+curl -X POST "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}/search" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "What is retrieval-augmented generation?",
+    "max_results": 5
+  }'
+----
+
+. Delete a vector store.
++
+[source,bash]
+----
+curl -X DELETE "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}"
+----
+
+.Verification
+* Confirm that creating a vector store returns a valid store ID.
+* Confirm that file uploads complete without errors.
+* Confirm that search queries return relevant results from the ingested content.
+
+[NOTE]
+====
+All vector operations are performed through the Llama Stack API. You do not interact directly with Qdrant. Llama Stack manages collection creation, embedding generation, and query execution on your behalf.
+====
+

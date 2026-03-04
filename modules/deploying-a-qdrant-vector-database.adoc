@@ -1,0 +1,128 @@
+:_module-type: PROCEDURE
+
+[id="deploying-a-qdrant-vector-database_{context}"]
+= Deploying a Qdrant vector database
+
+[role="_abstract"]
+You can connect Llama Stack in {productname-short} to an existing Qdrant instance or deploy a Qdrant vector database in your {openshift-platform} project. For development or evaluation purposes, you can deploy Qdrant by creating Kubernetes resources in the OpenShift web console.
+
+.Prerequisites
+* You have installed {openshift-platform} {ocp-minimum-version} or later.
+* You have permission to create resources in a project.
+* A StorageClass is available that can provision persistent volumes.
+* Optional: You have an API key for Qdrant authentication.
+
+.Procedure
+. Log in to the {openshift-platform} web console.
+. Select the project where you want to deploy Qdrant.
+. Click *Import YAML*.
+. Verify that the correct project is selected.
+. Paste the following YAML, replace the placeholder values, and then click *Create*.
+
+[IMPORTANT]
+====
+This example deploys a standalone Qdrant service for development or evaluation.
+
+For production deployments, review and adapt the configuration to meet your organization's security, availability, backup, and lifecycle requirements.
+====
+
+[source,yaml,subs="verbatim,attributes"]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <qdrant_credentials_secret>
+type: Opaque
+stringData:
+  QDRANT_API_KEY: "<api_key>"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: <qdrant_pvc>
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: <storage_size>
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <qdrant_deployment>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: <qdrant_app_label>
+  template:
+    metadata:
+      labels:
+        app: <qdrant_app_label>
+    spec:
+      containers:
+      - name: qdrant
+        image: qdrant/qdrant:v1.12.0
+        ports:
+        - name: http
+          containerPort: 6333
+        - name: grpc
+          containerPort: 6334
+        env:
+        - name: QDRANT__SERVICE__API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: <qdrant_credentials_secret>
+              key: QDRANT_API_KEY
+        volumeMounts:
+        - name: qdrant-storage
+          mountPath: /qdrant/storage
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 6333
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 6333
+          initialDelaySeconds: 10
+          periodSeconds: 20
+      volumes:
+      - name: qdrant-storage
+        persistentVolumeClaim:
+          claimName: <qdrant_pvc>
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: <qdrant_service>
+spec:
+  selector:
+    app: <qdrant_app_label>
+  ports:
+  - name: http
+    port: 6333
+    targetPort: 6333
+  - name: grpc
+    port: 6334
+    targetPort: 6334
+  type: ClusterIP
+----
+
+Replace the placeholder values as needed for your environment.
+
+.Verification
+. Navigate to *Networking* -> *Services* and confirm that the Qdrant Service exposes ports 6333 and 6334.
+. Navigate to *Workloads* -> *Pods* and confirm that the Qdrant pod is running.
+
+[NOTE]
+====
+This procedure verifies only that Qdrant is deployed in your project. To use this Qdrant instance with Llama Stack, configure the Qdrant provider in a `LlamaStackDistribution`.
+====
+

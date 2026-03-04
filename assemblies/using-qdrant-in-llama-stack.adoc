@@ -1,0 +1,24 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+[id="using-qdrant-in-llama-stack_{context}"]
+= Using Qdrant in Llama Stack
+
+[role="_abstract"]
+Qdrant is a supported remote vector store provider for Llama Stack in {productname-short}. You can deploy Qdrant in your {openshift-platform} project or connect to an existing Qdrant instance, and configure Llama Stack to use Qdrant for retrieval-augmented generation (RAG) workloads.
+
+To use Qdrant with Llama Stack, complete the following tasks:
+
+* Review how Qdrant integrates with Llama Stack.
+* Deploy a Qdrant instance or connect to an existing deployment.
+* Configure your `LlamaStackDistribution` to use Qdrant as the vector store provider.
+* Perform vector operations through the OpenAI-compatible Vector Stores API.
+
+include::modules/overview-of-qdrant-vector-databases.adoc[leveloffset=+1]
+include::modules/deploying-a-qdrant-vector-database.adoc[leveloffset=+1]
+include::modules/configuring-the-qdrant-remote-provider-in-llama-stack.adoc[leveloffset=+1]
+include::modules/performing-vector-operations-with-qdrant.adoc[leveloffset=+1]
+
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
