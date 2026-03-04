@@ -1,0 +1,27 @@
+:_module-type: ASSEMBLY
+
+ifdef::context[:parent-context: {context}]
+
+:context: permission-based-roles
+
+[id="introducing-custom-permission-based-roles_{context}"]
+= Introducing custom role-based permissions for data science projects
+
+[role="_abstract"]
+
+When you are creating a data science project, there are two default project role-based permissions that are provided by {productname-long}, depending on your access level: *contributor* and *admin*. These permissions affect the actions your users are able to take within a project. 
+
+As an [openshift-platform] cluster administrator, you might want to refine the permissions of your users even further.  
+
+There are two new permissions-based roles that you can apply to your users:
+
+* *Workbench maintainer*: The permission that grants minimum capabilities to a user as the administrator of the workbench component.
+* *Workbench updater*: The permission that grants minimum capabilities to a user as the updater of the workbench component _without_ creation or deletion capabilities.
+
+These permissions are part of a larger initiative to allow you to create custom permission-based roles for your project that are more specifically tailored to your needs, allowing you to manage user operations for a workbench or set of workbenches.
+
+You can apply these additional permission-based roles to the users of your project that are more specifically tailored to your needs through the [openshift-platform] console or through the [openshift-cli], allowing you to manage user operations for a workbench or set of workbenches.
+
+For more information about resource-based permissions, see link:https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/{ocp-latest-version}/html/managing_openshift_ai/managing-users-and-groups#overview-of-user-types-and-permissions_managing-rhoai[Overview of user types and permissions].
+
+include::modules/applying-resource-based-roles-cli.adoc[leveloffset=+1]
