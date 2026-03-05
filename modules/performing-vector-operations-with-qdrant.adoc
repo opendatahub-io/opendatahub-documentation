@@ -11,7 +11,6 @@ After configuring Qdrant as the vector store provider in Llama Stack, you can pe
 * You have configured Qdrant as the vector store provider in your `LlamaStackDistribution`.
 * You have an embedding model available through a configured inference provider.
 * You have network access to the Llama Stack API endpoint.
-* You have Python 3.x with the `requests` library installed, or you can use `curl`.
 * You have installed the `jq` command-line utility.
 +
 For installation instructions, see link:https://jqlang.org[jq].
@@ -25,7 +24,16 @@ You can access the API from within the cluster or from outside the cluster.
 * *In-cluster access*: Run the `curl` commands from a pod in the same project, or from a workstation that has network access to the Llama Stack Service.
 * *External access*: Expose the Llama Stack Service by creating a Route, and then use the Route URL from your local workstation.
 +
-Ensure that your base URL includes the `/v1` path suffix if required by your client configuration. For more information, see xref:openai-compatibility-for-rag-apis-in-llama-stack_rag[OpenAI compatibility for RAG APIs in Llama Stack].
+For this procedure, set `LLAMA_STACK_URL` to the service or route root URL *without* the `/v1` suffix. The example commands append `/v1` as part of the endpoint path.
++
+For more information about API compatibility and base URL requirements, see
++
+ifdef::upstream[]
+link:{odhdocshome}/working-with-llama-stack/#openai-compatibility-for-rag-apis-in-llama-stack_rag[OpenAI compatibility for RAG APIs in Llama Stack].
+endif::[]
+ifndef::upstream[]
+link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/openai-compatibility-for-rag-apis-in-llama-stack_rag[OpenAI compatibility for RAG APIs in Llama Stack].
+endif::[]
 +
 .Example base URL for in-cluster access
 [source,bash]

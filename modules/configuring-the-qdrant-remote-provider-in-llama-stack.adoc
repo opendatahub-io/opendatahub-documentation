@@ -14,8 +14,12 @@ To use Qdrant as a remote vector store, configure your `LlamaStackDistribution` 
 
 .Procedure
 . In the OpenShift web console, switch to the *Administrator* perspective.
-
-. Create a Secret that stores the Qdrant connection details.
+. Create a Secret that stores the Qdrant connection details used by Llama Stack. This Secret must contain the URL of the Qdrant service and, if required, the API key.
++
+[NOTE]
+====
+If you deployed Qdrant by using the procedure in xref:deploying-a-qdrant-vector-database_{context}[Deploying a Qdrant vector database], create this Secret separately for the Llama Stack configuration. The Secret created during the Qdrant deployment does not contain the `QDRANT_URL` value required by the Llama Stack provider.
+====
 +
 .. From the *Project* list, select the project where the `LlamaStackDistribution` resource is deployed.
 .. Click *Workloads* -> *Secrets*.
@@ -64,6 +68,8 @@ spec:
   server:
     containerSpec:
       env:
+        - name: ENABLE_QDRANT
+          value: "true"
         - name: QDRANT_URL
           valueFrom:
             secretKeyRef:
