@@ -19,9 +19,8 @@ The included procedure provides an example `LlamaStackDistribution` CR that depl
 * You have cluster administrator privileges for your OpenShift cluster.
 * You have activated the Llama Stack Operator in your cluster.
 * You have access to a PostgreSQL version 14 or later instance that is reachable from the {openshift-platform} cluster network.
-* You have PostgreSQL administrator credentials for that instance, for example a superuser role, to create a database and user.
+* You have PostgreSQL credentials for that instance that allow Llama Stack to create the database and tables.
 * You know the PostgreSQL hostname and database port to use for the `POSTGRES_HOST` and `POSTGRES_PORT` environment variables.
-* You have access to the `psql` client from a location that can reach the PostgreSQL instance, for example from a pod running in the cluster.
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
 ** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
@@ -42,7 +41,7 @@ apiVersion: llamastack.io/v1alpha1
 kind: LlamaStackDistribution
 metadata:
   name: llamastack-custom-distribution
-  namespace: llamastack
+  namespace: <project-name> # Replace with your OpenShift project
 spec:
   replicas: 1
   server:
@@ -57,7 +56,7 @@ spec:
         - name: POSTGRES_HOST
           value: <postgres-host>
         - name: POSTGRES_PORT
-          value: '5432'
+          value: '<postgres-port>' # Default PostgreSQL port is 5432
         - name: POSTGRES_DB
           value: llamastack
         - name: POSTGRES_USER
@@ -82,55 +81,15 @@ For example:
 +
 [source,terminal]
 ----
-$ oc create secret generic postgres-secret --from-file=password=pg-password.txt -n llamastack
+$ oc create secret generic postgres-secret --from-file=password=pg-password.txt -n <project-name>
 $ rm -f pg-password.txt
 ----
 +
 For more information about creating and managing Secrets, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-pods#nodes-pods-secrets[Providing sensitive data to pods by using secrets^].
 +
 Ensure that the file `pg-password.txt` contains only the database password and is deleted after the secret is created.
-
-ifdef::upstream[]
-If you deployed PostgreSQL by using the example in
-link:{odhdocshome}/working-with-llama-stack/#deploying-a-postgresql-instance-with-pgvector_rag[Deploying a PostgreSQL instance with pgvector],
-the database, user, and permissions are created automatically based on the Secret configuration.
-endif::[]
-
-ifndef::upstream[]
-If you deployed PostgreSQL by using the example in
-link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/using-postgresql-in-llama-stack_rag#deploying-a-postgresql-instance-with-pgvector_rag[Deploying a PostgreSQL instance with pgvector],
-the database, user, and permissions are created automatically based on the Secret configuration.
-endif::[]
-
-If you are using an existing or externally managed PostgreSQL instance, complete the following steps to create the database and grant the required permissions. Llama Stack does not automatically provision or configure the PostgreSQL database.
-
-. Open a terminal that has network access to the PostgreSQL instance and the PostgreSQL client installed, and start the PostgreSQL shell. For example:
 +
-[source,terminal]
-----
-$ psql -h <postgres-host> -p <postgres-port> -U <postgres-admin-user> -d postgres
-----
-
-. Create the Llama Stack database and user, and grant the required permissions:
-+
-[source,terminal]
-----
-CREATE DATABASE llamastack;
-
-CREATE ROLE llamastack WITH LOGIN PASSWORD '<password-for-user-access>';
-
-GRANT ALL PRIVILEGES ON DATABASE llamastack TO llamastack;
-
-\c llamastack
-
-GRANT USAGE, CREATE ON SCHEMA public TO llamastack;
-
-ALTER DEFAULT PRIVILEGES IN SCHEMA public
-GRANT ALL PRIVILEGES ON TABLES TO llamastack;
-
-ALTER DEFAULT PRIVILEGES IN SCHEMA public
-GRANT ALL PRIVILEGES ON SEQUENCES TO llamastack;
-----
+Llama Stack automatically creates the metadata database specified by the `POSTGRES_DB` environment variable if it does not already exist, provided that the PostgreSQL user has sufficient privileges.
 
 .Verification
 
