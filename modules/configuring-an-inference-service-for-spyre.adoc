@@ -49,11 +49,14 @@ If you are deploying to IBM Z (s390x) note the following platform-specific requi
 * IBM Z only supports continuous batching for this runtime. Ensure that you add the following runtime arguments in the `args` section: 
 ** `--max_model_len`
 ** `--max-num-seqs=4`
-** `--tensor-parallel-size`.
-* To use prebuilt model caches for {productname-short} Inference Server 3.2.5 images, ensure that you add the following runtime arguments in the `args` section:
+** `--tensor-parallel-size`
+** `--enable-prefix-caching`.
+* To use prebuilt model caches for {productname-short} Inference Server 3.4 EA1 images, ensure that you add the following runtime arguments in the `args` section:
 ** `--max_model_len=32768`
 ** `--max-num-seqs=32`
 ** `--tensor-parallel-size=4`
+** `--enable-prefix-caching`
+* For IBM Z (s390x), set the `VLLM_DT_CHUNK_LEN` environment variable to `512`.
 * The toleration key differs for the following platforms:
 ** For x86 nodes, use the toleration key `ibm.com/spyre_pf`.
 ** For IBM Z (s390x), only Virtual Function (VF) mode is supported for IBM Spyre devices. Therefore, use the VF toleration key for IBM Z: `ibm.com/spyre_vf`.
@@ -91,6 +94,10 @@ spec:
       - "--max_model_len=2048"
       - "--max-num-seqs=4"
       - "--tensor-parallel-size=1"
+      - "--enable-prefix-caching"
+      env:
+      - name: VLLM_DT_CHUNK_LEN
+        value: "512"
       # other container args and image config as required
     schedulerName: spyre-scheduler
     tolerations:
