@@ -37,7 +37,7 @@ stringData:
 Replace the placeholder values as follows:
 +
 * `<qdrant_url>`: The full URL to the Qdrant service, for example `http://qdrant-service:6333`. For in-cluster deployments, use the Service name and port. For external deployments, use the external URL.
-* `<api_key>`: The API key for authenticating with Qdrant. If authentication is not enabled, omit this key.
+* `<api_key>`: The API key for authenticating with Qdrant. If authentication is not enabled for your Qdrant instance, remove the `QDRANT_API_KEY` entry from both the Secret and the `env` section in the `LlamaStackDistribution` configuration.
 
 . Update your `LlamaStackDistribution` custom resource to reference the Secret and supply the required environment variables.
 +

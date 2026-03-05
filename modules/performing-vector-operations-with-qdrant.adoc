@@ -12,6 +12,7 @@ After configuring Qdrant as the vector store provider in Llama Stack, you can pe
 * You have an embedding model available through a configured inference provider.
 * You have network access to the Llama Stack API endpoint.
 * You have Python 3.x with the `requests` library installed, or you can use `curl`.
+* You have installed the `jq` command-line utility. For installation instructions, see link:https://jqlang.org[jq].
 
 .Procedure
 
@@ -40,12 +41,22 @@ LLAMA_STACK_URL="https://llamastack-route.example.com"
 +
 [source,bash]
 ----
-curl -X POST "${LLAMA_STACK_URL}/v1/vector_stores" \
+CREATE_RESPONSE=$(curl -s -X POST "${LLAMA_STACK_URL}/v1/vector_stores" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "my-rag-store"
-  }'
+  }')
 ----
+
+. Extract the vector store ID from the response.
++
+[source,bash]
+----
+VECTOR_STORE_ID=$(echo "$CREATE_RESPONSE" | jq -r '.id')
+echo "Vector store ID: ${VECTOR_STORE_ID}"
+----
++
+Ensure that the `VECTOR_STORE_ID` variable contains a valid value before continuing.
 
 . Add a file to the vector store.
 +

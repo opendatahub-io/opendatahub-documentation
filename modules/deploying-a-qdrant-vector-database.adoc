@@ -10,7 +10,7 @@ You can connect Llama Stack in {productname-short} to an existing Qdrant instanc
 * You have installed {openshift-platform} {ocp-minimum-version} or later.
 * You have permission to create resources in a project.
 * A StorageClass is available that can provision persistent volumes.
-* Optional: You have an API key for Qdrant authentication.
+* Optional: You have an API key for Qdrant authentication. If your Qdrant instance does not require authentication, remove the Secret and the `QDRANT__SERVICE__API_KEY` environment variable from the deployment example.
 
 .Procedure
 . Log in to the {openshift-platform} web console.
@@ -114,6 +114,12 @@ spec:
     targetPort: 6334
   type: ClusterIP
 ----
+
+[NOTE]
+====
+If your Qdrant instance does not require authentication, remove the Secret and the `QDRANT__SERVICE__API_KEY` environment variable from the Deployment configuration.
+====
+
 
 Replace the placeholder values as needed for your environment.
 
