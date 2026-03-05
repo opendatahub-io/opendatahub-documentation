@@ -1,0 +1,100 @@
+:_module-type: PROCEDURE
+
+[id="configuring-the-qdrant-remote-provider-in-llama-stack_{context}"]
+= Configuring the Qdrant remote provider in Llama Stack
+
+[role="_abstract"]
+To use Qdrant as a remote vector store, configure your `LlamaStackDistribution` resource with the connection details for your Qdrant service. This configuration enables Llama Stack to store and retrieve embedding vectors using Qdrant in {productname-short}.
+
+.Prerequisites
+* You have installed and enabled the Llama Stack Operator in {productname-short}.
+* You have a running Qdrant instance that is accessible from your {openshift-platform} cluster.
+* You have the Qdrant connection details, including the service URL and, if required, an API key.
+* You have permission to create Secrets and modify custom resources in your project.
+
+.Procedure
+. In the OpenShift web console, switch to the *Administrator* perspective.
+. Create a Secret that stores the Qdrant connection details used by Llama Stack. This Secret must contain the URL of the Qdrant service and, if required, the API key.
++
+[NOTE]
+====
+If you deployed Qdrant by using the procedure in xref:deploying-a-qdrant-vector-database_{context}[Deploying a Qdrant vector database], create this Secret separately for the Llama Stack configuration. The Secret created during the Qdrant deployment does not contain the `QDRANT_URL` value required by the Llama Stack provider.
+====
++
+.. From the *Project* list, select the project where the `LlamaStackDistribution` resource is deployed.
+.. Click *Workloads* -> *Secrets*.
+.. Click *Create* -> *From YAML*.
+.. Paste the following YAML:
++
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: qdrant-connection
+type: Opaque
+stringData:
+  QDRANT_URL: "<qdrant_url>"
+  QDRANT_API_KEY: "<api_key>"
+----
++
+.. Replace the placeholder values as follows:
++
+* `<qdrant_url>`: The full URL to the Qdrant service, for example `http://qdrant-service:6333`. For in-cluster deployments, use the Service name and port. For external deployments, use the external URL.
+* `<api_key>`: The API key for authenticating with Qdrant. If authentication is not enabled for your Qdrant instance, remove the `QDRANT_API_KEY` entry from both the Secret and the `env` section in the `LlamaStackDistribution` configuration.
+.. Click *Create*.
+
+. Update your `LlamaStackDistribution` custom resource to reference the Secret and supply the required environment variables.
++
+.. Click *Operators* -> *Installed Operators*.
+.. Select the *Llama Stack Operator*.
+.. Click the *LlamaStackDistribution* tab.
+.. Select your `LlamaStackDistribution` resource.
+.. Click *YAML*.
+.. Update the resource to include the following fields.
++
+[NOTE]
+====
+The environment variable names and configuration fields used by the Qdrant provider can vary depending on the Llama Stack version included with {productname-short}. Before applying this configuration, verify that the variables and fields match the supported versions listed in link:https://access.redhat.com/articles/rhoai-supported-configs-3.x[Supported Configurations for 3.x].
+====
++
+[source,yaml]
+----
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: llamastack
+spec:
+  server:
+    containerSpec:
+      env:
+        - name: ENABLE_QDRANT
+          value: "true"
+        - name: QDRANT_URL
+          valueFrom:
+            secretKeyRef:
+              name: qdrant-connection
+              key: QDRANT_URL
+        - name: QDRANT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: qdrant-connection
+              key: QDRANT_API_KEY
+----
+
+.. Click *Save*.
+
+.Verification
+
+* The Llama Stack pod reaches the *Running* state. You can confirm this on the *Workloads* -> *Pods* page in the {openshift-platform} web console.
+* The pod logs show that the Qdrant provider initializes successfully and does not report connection errors.
+* Vector operations executed through the Llama Stack API complete successfully, confirming that Llama Stack can communicate with Qdrant.
++
+For information about performing vector operations, see:
++
+ifdef::upstream[]
+link:{odhdocshome}/working-with-llama-stack/#performing-vector-operations-with-qdrant_rag[Performing vector operations with Qdrant].
+endif::[]
+ifndef::upstream[]
+link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/performing-vector-operations-with-qdrant_rag[Performing vector operations with Qdrant].
+endif::[]

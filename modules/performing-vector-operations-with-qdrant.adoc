@@ -1,0 +1,109 @@
+:_module-type: PROCEDURE
+
+[id="performing-vector-operations-with-qdrant_{context}"]
+= Performing vector operations with Qdrant
+
+[role="_abstract"]
+After configuring Qdrant as the vector store provider in Llama Stack, you can perform vector operations by using the OpenAI-compatible Vector Stores API exposed by Llama Stack. These operations include creating vector stores, adding documents, performing similarity search, and deleting vector stores. You interact with the Llama Stack API rather than connecting directly to Qdrant. Llama Stack manages collection creation, embedding generation, and query execution on your behalf.
+
+.Prerequisites
+* You have installed and enabled the Llama Stack Operator in {productname-short}.
+* You have configured Qdrant as the vector store provider in your `LlamaStackDistribution`.
+* You have an embedding model available through a configured inference provider.
+* You have network access to the Llama Stack API endpoint.
+* You have installed the `jq` command-line utility.
++
+For installation instructions, see link:https://jqlang.org[jq].
+
+.Procedure
+
+. Determine how you will access the Llama Stack API.
++
+You can access the API from within the cluster or from outside the cluster.
++
+* *In-cluster access*: Run the `curl` commands from a pod in the same project, or from a workstation that has network access to the Llama Stack Service.
+* *External access*: Expose the Llama Stack Service by creating a Route, and then use the Route URL from your local workstation.
++
+For this procedure, set `LLAMA_STACK_URL` to the service or route root URL *without* the `/v1` suffix. The example commands append `/v1` as part of the endpoint path.
++
+For more information about API compatibility and base URL requirements, see
++
+ifdef::upstream[]
+link:{odhdocshome}/working-with-llama-stack/#openai-compatibility-for-rag-apis-in-llama-stack_rag[OpenAI compatibility for RAG APIs in Llama Stack].
+endif::[]
+ifndef::upstream[]
+link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/openai-compatibility-for-rag-apis-in-llama-stack_rag[OpenAI compatibility for RAG APIs in Llama Stack].
+endif::[]
++
+.Example base URL for in-cluster access
+[source,bash]
+----
+LLAMA_STACK_URL="http://llamastack-service:8080"
+----
++
+.Example base URL for external access through a Route
+[source,bash]
+----
+LLAMA_STACK_URL="https://llamastack-route.example.com"
+----
+
+. Create a vector store and capture its ID.
++
+[source,bash]
+----
+CREATE_RESPONSE=$(curl -s -X POST "${LLAMA_STACK_URL}/v1/vector_stores" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "my-rag-store"
+  }')
+
+VECTOR_STORE_ID=$(echo "$CREATE_RESPONSE" | jq -r '.id')
+echo "Vector store ID: ${VECTOR_STORE_ID}"
+----
++
+Ensure that the `VECTOR_STORE_ID` variable contains a valid value before continuing.
+
+== Add files to a vector store
+
+Upload files to the vector store for ingestion. Llama Stack automatically splits the content into chunks, generates embeddings, and stores them in Qdrant.
+
+.Example using curl
+[source,bash]
+----
+curl -X POST "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}/files" \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@/path/to/document.pdf"
+----
+
+== Query a vector store
+
+Perform similarity search to retrieve relevant content from the vector store. The search query is converted into an embedding and compared with stored vectors in Qdrant.
+
+.Example using curl
+[source,bash]
+----
+curl -X POST "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}/search" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "What is retrieval-augmented generation?",
+    "max_results": 5
+  }'
+----
+
+== Delete a vector store
+
+Delete a vector store when it is no longer required. This removes the vector store and its associated data from Qdrant.
+
+.Example using curl
+[source,bash]
+----
+curl -X DELETE "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}"
+----
+
+.Verification
+
+* Creating a vector store returns a valid vector store ID.
+
+* File uploads complete successfully and are accepted by the API.
+
+* Search queries return results from the ingested content.
