@@ -1,0 +1,31 @@
+:_module-type: PROCEDURE
+
+
+[id="configuring-jit-checkpointing-with-a-pvc_{context}"]
+= Configuring JIT checkpointing with a PVC
+
+
+[role='_abstract']
+
+To enable JIT checkpointing with persistent storage, use the pvc:// URI scheme in the output_dir parameter of the TransformersTrainer. The SDK automatically mounts the PVC on all training pods.
+
+[NOTE]
+====
+Your project must have a PersistentVolumeClaim (PVC) with ReadWriteMany (RWX) access mode. For instructions on creating a PVC, see https://access.redhat.com/articles/7136179[Using RHAI trainers for progress tracking and checkpointing].
+====
+
+[source,subs="+quotes"]
+----
+trainer = TransformersTrainer(
+    func=train_func,
+    num_nodes=2,
+    resources_per_node={"nvidia.com/gpu": 1},
+    output_dir="pvc://training-checkpoints/checkpoints",
+)
+----
+
+*When JIT checkpointing is configured*:
+
+If pods receive a termination signal (SIGTERM), the trainer automatically saves a checkpoint.
+When the job restarts, training automatically resumes from the latest checkpoint.
+For more information about progress tracking and JIT checkpointing, see https://access.redhat.com/articles/7136179[Using RHAI trainers for progress tracking and checkpointing].

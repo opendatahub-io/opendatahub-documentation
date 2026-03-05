@@ -1,0 +1,96 @@
+:_module-type: CONCEPT
+
+
+[id="understanding-cluster-training-runtimes_{context}"]
+= Understanding ClusterTrainingRuntimes
+
+
+[role="_abstract"]
+
+
+ClusterTrainingRuntimes are cluster-scoped infrastructure templates that define the distributed training environment for your training
+jobs. They are created by the platform administrator and are available to all projects in the cluster. They replace the per-job infrastructure
+configuration that was required in Training Operator v1 (`PyTorchJob`), where you had to specify the full pod
+specification, environment variables, and distributed training setup for every job.
+
+
+With Kubeflow Trainer v2, your TrainJob resource references a `ClusterTrainingRuntime` through the `runtimeRef` field.
+The runtime handles the complexity of configuring `torchrun`, environment variables (`MASTER_ADDR`, `MASTER_PORT`), node
+coordination, and container image defaults, so you can focus on your training code and resource requirements.
+
+
+*Available ClusterTrainingRuntimes*
+Red Hat OpenShift AI provides the following pre-built ClusterTrainingRuntimes:
+
+
+[cols="3,3"]
+|===
+| Runtime | Description
+
+
+| `torch-distributed`
+| General-purpose PyTorch distributed training with CUDA support
+
+
+| `torch-distributed-rocm`
+| PyTorch distributed training for AMD ROCm GPUs
+
+
+| `torch-distributed-cuda128-torch29-py312`
+| PyTorch 2.9 with CUDA 12.8, Python 3.12
+
+
+| `training-hub`
+| Training Hub runtime with built-in fine-tuning algorithms (OSFT, SFT)
+
+
+| `training-hub-th05-cuda128-torch29-py312`
+| Training Hub runtime with CUDA 12.8, PyTorch 2.9, Python 3.12
+
+
+|===
+
+
+*Viewing available runtimes*
+
+
+.Prerequisites
+* You have installed the OpenShift CLI (`oc`).
+* You have access to an OpenShift cluster with {productname-long} installed.
+
+
+
+
+.Procedure
+
+
+To list the available ClusterTrainingRuntimes in your cluster, run the following command:
+
+
+[source,subs="+quotes"]
+----
+oc get clustertrainingruntime
+----
+
+
+Example output:
+
+
+[source,subs="+quotes"]
+----
+NAME                                             AGE
+torch-distributed                                5m
+torch-distributed-rocm                           5m
+torch-distributed-th03-cuda128-torch28-py312     5m
+training-hub                                     5m
+training-hub03-cuda128-torch28-py312             5m
+----
+
+
+To view the details of a specific runtime, run the following command:
+
+
+[source,subs="+quotes"]
+----
+oc get clustertrainingruntime torch-distributed -o yaml
+----
