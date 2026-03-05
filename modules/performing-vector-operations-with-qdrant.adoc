@@ -4,7 +4,7 @@
 = Performing vector operations with Qdrant
 
 [role="_abstract"]
-After configuring Qdrant as the vector store provider in Llama Stack, you can perform vector operations by using the OpenAI-compatible Vector Stores API exposed by Llama Stack. These operations include creating vector stores, adding documents, performing similarity search, and deleting vector stores.
+After configuring Qdrant as the vector store provider in Llama Stack, you can perform vector operations by using the OpenAI-compatible Vector Stores API exposed by Llama Stack. These operations include creating vector stores, adding documents, performing similarity search, and deleting vector stores. You interact with the Llama Stack API rather than connecting directly to Qdrant. Llama Stack manages collection creation, embedding generation, and query execution on your behalf.
 
 .Prerequisites
 * You have installed and enabled the Llama Stack Operator in {productname-short}.
@@ -12,7 +12,9 @@ After configuring Qdrant as the vector store provider in Llama Stack, you can pe
 * You have an embedding model available through a configured inference provider.
 * You have network access to the Llama Stack API endpoint.
 * You have Python 3.x with the `requests` library installed, or you can use `curl`.
-* You have installed the `jq` command-line utility. For installation instructions, see link:https://jqlang.org[jq].
+* You have installed the `jq` command-line utility.
++
+For installation instructions, see link:https://jqlang.org[jq].
 
 .Procedure
 
@@ -37,7 +39,7 @@ LLAMA_STACK_URL="http://llamastack-service:8080"
 LLAMA_STACK_URL="https://llamastack-route.example.com"
 ----
 
-. Create a vector store.
+. Create a vector store and capture its ID.
 +
 [source,bash]
 ----
@@ -46,20 +48,18 @@ CREATE_RESPONSE=$(curl -s -X POST "${LLAMA_STACK_URL}/v1/vector_stores" \
   -d '{
     "name": "my-rag-store"
   }')
-----
 
-. Extract the vector store ID from the response.
-+
-[source,bash]
-----
 VECTOR_STORE_ID=$(echo "$CREATE_RESPONSE" | jq -r '.id')
 echo "Vector store ID: ${VECTOR_STORE_ID}"
 ----
 +
 Ensure that the `VECTOR_STORE_ID` variable contains a valid value before continuing.
 
-. Add a file to the vector store.
-+
+== Add files to a vector store
+
+Upload files to the vector store for ingestion. Llama Stack automatically splits the content into chunks, generates embeddings, and stores them in Qdrant.
+
+.Example using curl
 [source,bash]
 ----
 curl -X POST "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}/files" \
@@ -67,8 +67,11 @@ curl -X POST "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}/files" \
   -F "file=@/path/to/document.pdf"
 ----
 
-. Query the vector store.
-+
+== Query a vector store
+
+Perform similarity search to retrieve relevant content from the vector store. The search query is converted into an embedding and compared with stored vectors in Qdrant.
+
+.Example using curl
 [source,bash]
 ----
 curl -X POST "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}/search" \
@@ -79,20 +82,20 @@ curl -X POST "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}/search" \
   }'
 ----
 
-. Delete a vector store.
-+
+== Delete a vector store
+
+Delete a vector store when it is no longer required. This removes the vector store and its associated data from Qdrant.
+
+.Example using curl
 [source,bash]
 ----
 curl -X DELETE "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}"
 ----
 
 .Verification
-* Confirm that creating a vector store returns a valid store ID.
-* Confirm that file uploads complete without errors.
-* Confirm that search queries return relevant results from the ingested content.
 
-[NOTE]
-====
-All vector operations are performed through the Llama Stack API. You do not interact directly with Qdrant. Llama Stack manages collection creation, embedding generation, and query execution on your behalf.
-====
+* Creating a vector store returns a valid vector store ID.
 
+* File uploads complete successfully and are accepted by the API.
+
+* Search queries return results from the ingested content.

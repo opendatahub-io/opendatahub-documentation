@@ -17,10 +17,10 @@ To use Qdrant as a remote vector store, configure your `LlamaStackDistribution` 
 
 . Create a Secret that stores the Qdrant connection details.
 +
-.. Ensure that the correct project is selected.
+.. From the *Project* list, select the project where the `LlamaStackDistribution` resource is deployed.
 .. Click *Workloads* -> *Secrets*.
 .. Click *Create* -> *From YAML*.
-.. Paste the following YAML, update the placeholder values, and then click *Create*.
+.. Paste the following YAML:
 +
 [source,yaml]
 ----
@@ -34,10 +34,11 @@ stringData:
   QDRANT_API_KEY: "<api_key>"
 ----
 +
-Replace the placeholder values as follows:
+.. Replace the placeholder values as follows:
 +
 * `<qdrant_url>`: The full URL to the Qdrant service, for example `http://qdrant-service:6333`. For in-cluster deployments, use the Service name and port. For external deployments, use the external URL.
 * `<api_key>`: The API key for authenticating with Qdrant. If authentication is not enabled for your Qdrant instance, remove the `QDRANT_API_KEY` entry from both the Secret and the `env` section in the `LlamaStackDistribution` configuration.
+.. Click *Create*.
 
 . Update your `LlamaStackDistribution` custom resource to reference the Secret and supply the required environment variables.
 +
@@ -46,7 +47,12 @@ Replace the placeholder values as follows:
 .. Click the *LlamaStackDistribution* tab.
 .. Select your `LlamaStackDistribution` resource.
 .. Click *YAML*.
-.. Update the resource to include the following fields, and then click *Save*.
+.. Update the resource to include the following fields.
++
+[NOTE]
+====
+The environment variable names and configuration fields used by the Qdrant provider can vary depending on the Llama Stack version included with {productname-short}. Before applying this configuration, verify that the variables and fields match the supported versions listed in link:https://access.redhat.com/articles/rhoai-supported-configs-3.x[Supported Configurations for 3.x].
+====
 +
 [source,yaml]
 ----
@@ -69,11 +75,20 @@ spec:
               name: qdrant-connection
               key: QDRANT_API_KEY
 ----
-+
-Ensure that the environment variable names and configuration fields match the version of Llama Stack included with {productname-short}.
+
+.. Click *Save*.
 
 .Verification
-. Click *Workloads* -> *Pods*.
-. Confirm that the Llama Stack pod restarts and reaches the *Running* state.
-. Open the pod logs and verify that the Qdrant connection initializes without errors.
-. Perform a test vector operation to confirm successful communication with Qdrant.
+
+* The Llama Stack pod reaches the *Running* state. You can confirm this on the *Workloads* -> *Pods* page in the {openshift-platform} web console.
+* The pod logs show that the Qdrant provider initializes successfully and does not report connection errors.
+* Vector operations executed through the Llama Stack API complete successfully, confirming that Llama Stack can communicate with Qdrant.
++
+For information about performing vector operations, see:
++
+ifdef::upstream[]
+link:{odhdocshome}/working-with-llama-stack/#performing-vector-operations-with-qdrant_rag[Performing vector operations with Qdrant].
+endif::[]
+ifndef::upstream[]
+link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/performing-vector-operations-with-qdrant_rag[Performing vector operations with Qdrant].
+endif::[]

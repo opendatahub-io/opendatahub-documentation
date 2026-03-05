@@ -9,23 +9,26 @@ You can connect Llama Stack in {productname-short} to an existing Qdrant instanc
 .Prerequisites
 * You have installed {openshift-platform} {ocp-minimum-version} or later.
 * You have permission to create resources in a project.
-* A StorageClass is available that can provision persistent volumes.
+* A StorageClass is available that can provision a PersistentVolume for the PersistentVolumeClaim used by this deployment.
++
+[NOTE]
+====
+This example uses a single PersistentVolumeClaim. If your cluster uses dynamic provisioning, the StorageClass provisions the required PersistentVolume automatically.
+====
 * Optional: You have an API key for Qdrant authentication. If your Qdrant instance does not require authentication, remove the Secret and the `QDRANT__SERVICE__API_KEY` environment variable from the deployment example.
+
 
 .Procedure
 . Log in to the {openshift-platform} web console.
-. Select the project where you want to deploy Qdrant.
+. From the *Project* list, select the project where you want to deploy Qdrant.
 . Click *Import YAML*.
-. Verify that the correct project is selected.
-. Paste the following YAML, replace the placeholder values, and then click *Create*.
-
+. Paste the following YAML:
++
 [IMPORTANT]
 ====
-This example deploys a standalone Qdrant service for development or evaluation.
-
-For production deployments, review and adapt the configuration to meet your organization's security, availability, backup, and lifecycle requirements.
+This example deploys a standalone Qdrant service for development or evaluation. For production deployments, review and adapt the configuration to meet your organization's security, availability, backup, and lifecycle requirements.
 ====
-
++
 [source,yaml,subs="verbatim,attributes"]
 ----
 apiVersion: v1
@@ -114,21 +117,31 @@ spec:
     targetPort: 6334
   type: ClusterIP
 ----
-
++
 [NOTE]
 ====
 If your Qdrant instance does not require authentication, remove the Secret and the `QDRANT__SERVICE__API_KEY` environment variable from the Deployment configuration.
 ====
-
-
-Replace the placeholder values as needed for your environment.
++
+. Replace the placeholder values as follows:
++
+* `<qdrant_credentials_secret>`: A name for the Secret that stores the Qdrant API key, for example `qdrant-credentials`.
+* `<api_key>`: An API key for authenticating with Qdrant. If authentication is not required, remove the Secret and the `QDRANT__SERVICE__API_KEY` environment variable from the Deployment.
+* `<qdrant_pvc>`: A name for the PersistentVolumeClaim, for example `qdrant-pvc`.
+* `<storage_size>`: The storage capacity to request, for example `10Gi`.
+* `<qdrant_deployment>`: A name for the Deployment, for example `qdrant`.
+* `<qdrant_app_label>`: A label for the application, for example `qdrant`.
+* `<qdrant_service>`: A name for the Service, for example `qdrant-service`.
++
+. Click *Create*.
 
 .Verification
-. Navigate to *Networking* -> *Services* and confirm that the Qdrant Service exposes ports 6333 and 6334.
-. Navigate to *Workloads* -> *Pods* and confirm that the Qdrant pod is running.
+
+* The Qdrant Service is present in the project and exposes ports `6333` (HTTP) and `6334` (gRPC). You can confirm this on the *Networking* -> *Services* page in the {openshift-platform} web console.
+* The Qdrant pod reaches the *Running* state. You can confirm this on the *Workloads* -> *Pods* page in the {openshift-platform} web console.
 
 [NOTE]
 ====
-This procedure verifies only that Qdrant is deployed in your project. To use this Qdrant instance with Llama Stack, configure the Qdrant provider in a `LlamaStackDistribution`.
+This verification confirms only that Qdrant is deployed and reachable within the project. To use this Qdrant instance with Llama Stack, configure the Qdrant provider in a `LlamaStackDistribution`.
 ====
 
