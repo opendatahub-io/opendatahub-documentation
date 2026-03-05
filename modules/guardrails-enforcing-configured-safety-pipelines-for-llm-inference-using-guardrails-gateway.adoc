@@ -18,7 +18,12 @@ The Guardrails Gateway is a sidecar image that you can use with the `GuardrailsO
 GUARDRAILS_GATEWAY=https://$(oc get routes guardrails-gateway -o jsonpath='{.spec.host}')
 ----
 +
+ifdef::upstream[]
 Based on the example configurations provided in link:{odhdocshome}/enabling-ai-safety#guardrails-gateway-config-parameters_safety[Configuring the Guardrails Gateway], the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
+endif::[]
+ifndef::upstream[]
+Based on the example configurations provided in link:{rhoaidocshome}{default-format-url}/enabling_ai_safety/enabling-ai-safety_safety#guardrails-gateway-config-parameters_safety[Configuring the Guardrails Gateway], the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
+endif::[]
 
 . Query the model with Guardrails `pii` endpoint:
 +
