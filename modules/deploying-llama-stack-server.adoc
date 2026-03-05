@@ -1,24 +1,26 @@
 :_module-type: PROCEDURE
 
 [id="deploying-llama-stack-server_{context}"]
-= Deploying a Llama Stack server 
+= Deploying a Llama Stack server
 
-Llama Stack allows you to create and deploy a server that enables various APIs for accessing AI services in your {productname-short} cluster. You can create a `LlamaStackDistribution` custom resource for your desired use cases. 
+[role='_abstract']
+Llama Stack allows you to create and deploy a server that enables various APIs for accessing AI services in your {productname-short} cluster. You can create a `LlamaStackDistribution` custom resource for your desired use cases. You are responsible for provisioning and managing the PostgreSQL instance. The PostgreSQL database can be deployed in-cluster or hosted externally, as long as it is reachable from the cluster network.
 
-The included procedure provides an example `LlamaStackDistribution` CR that deploys a Llama Stack server that enables the following setup: 
+The included procedure provides an example `LlamaStackDistribution` CR that deploys a Llama Stack server that enables the following setup:
 
 * A connection to a vLLM inference service with a `llama32-3b` model.
-* A connection to a remote vector database. 
-* An allocated persistent storage.
-* Orchestration endpoints. 
+* A connection to a remote vector database.
+* Allocated persistent storage.
+* Orchestration endpoints.
 
 .Prerequisites
-
 * You have installed {openshift-platform} 4.19 or newer.
 * You have logged in to {productname-long}.
 * You have cluster administrator privileges for your OpenShift cluster.
 * You have activated the Llama Stack Operator in your cluster.
-* You have installed the PostgreSQL Operator version 14 or later in your cluster. 
+* You have access to a PostgreSQL version 14 or later instance that is reachable from the {openshift-platform} cluster network.
+* You have PostgreSQL credentials for that instance that allow Llama Stack to create the database and tables.
+* You know the PostgreSQL hostname and database port to use for the `POSTGRES_HOST` and `POSTGRES_PORT` environment variables.
 * You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
 ifdef::upstream,self-managed[]
 ** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
@@ -29,9 +31,8 @@ ifdef::cloud-service[]
 ** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws_classic_architecture/{rosa-classic-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-classic-productname}
 endif::[]
 
-.Procedure 
-
-. In the OpenShift web console, select *Administrator* → *Quick Create* (image:images/quick-create-icon.png[]) → *Import YAML*, and create a CR similar to the following example `llamastack-custom-distribution.yaml` file: 
+.Procedure
+. In the OpenShift web console, select *Administrator* → *Quick Create* (image:images/quick-create-icon.png[]) → *Import YAML*, and create a CR similar to the following example `llamastack-custom-distribution.yaml` file:
 +
 .Example llamastack-custom-distribution.yaml
 [source,yaml]
@@ -40,7 +41,7 @@ apiVersion: llamastack.io/v1alpha1
 kind: LlamaStackDistribution
 metadata:
   name: llamastack-custom-distribution
-  namespace: llamastack
+  namespace: <project-name> # Replace with your OpenShift project
 spec:
   replicas: 1
   server:
@@ -55,7 +56,7 @@ spec:
         - name: POSTGRES_HOST
           value: <postgres-host>
         - name: POSTGRES_PORT
-          value: '5432'
+          value: '<postgres-port>' # Default PostgreSQL port is 5432
         - name: POSTGRES_DB
           value: llamastack
         - name: POSTGRES_USER
@@ -64,7 +65,7 @@ spec:
           valueFrom:
             secretKeyRef:
               key: password
-              name: postgres-secret <1> 
+              name: postgres-secret <1>
       name: llama-stack
       port: 8321
     distribution:
@@ -73,73 +74,33 @@ spec:
       size: 20Gi
       mountPath: <custom-mount-path> ## Defaults to /opt/app-root/src/.llama/distributions/rh/
 ----
-
-<1> You can create this secret by running `oc create secret generic postgres-secret\ --from-literal=password=<custom-password>` in your terminal.  
-
-. As the cluster administrator provisioning the Llama Stack server, you then need to create a Llama Stack PostgreSQL database and grant full permissions to a user. 
-
-.. Open a terminal that has network access to the PostgreSQL instance and the PostgreSQL client installed. 
-
-.. Start the PostgreSQL shell with the following command:
++
+<1> Create the secret in the same namespace as the `LlamaStackDistribution` resource. Avoid placing passwords directly on the command line, as they can be stored in shell history. Instead, create a file that contains only the database password and use that file to create the secret, or create the secret by using the OpenShift web console.
++
+For example:
 +
 [source,terminal]
 ----
-$ psql
+$ oc create secret generic postgres-secret --from-file=password=pg-password.txt -n <project-name>
+$ rm -f pg-password.txt
 ----
-
-.. Create the database with the following command:
 +
-[source,terminal]
-----
-CREATE DATABASE llamastack;
-----
-
-.. Create a user role called `llamastack` accessible with a custom password:
+For more information about creating and managing Secrets, see link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/nodes/working-with-pods#nodes-pods-secrets[Providing sensitive data to pods by using secrets^].
 +
-[source,terminal]
-----
-$ CREATE ROLE llamastack WITH LOGIN PASSWORD <password-for-user-access>;
-----
-
-.. Grant full permissions on the database to the user with the following command:
+Ensure that the file `pg-password.txt` contains only the database password and is deleted after the secret is created.
 +
-[source,terminal]
-----
-$ GRANT ALL PRIVILEGES ON DATABASE llamastack TO llamastack;
-----
+Llama Stack automatically creates the metadata database specified by the `POSTGRES_DB` environment variable if it does not already exist, provided that the PostgreSQL user has sufficient privileges.
 
-.. Connect to the new database by running the following command: 
-+
-[source,terminal]
-----
-$ \c llamastack
-----
+.Verification
 
-.. Grant table usage and creation privileges to the public schema:
-+
-[source,terminal]
-----
-$ GRANT USAGE, CREATE ON SCHEMA public TO llamastack;
-----
-
-.. Ensure all future tables are automatically accessible by running the following commands:
-+
-[source,terminal]
-----
-$ ALTER DEFAULT PRIVILEGES IN SCHEMA public
-$ GRANT ALL PRIVILEGES ON TABLES TO llamastack;
-----
-
-.Verification 
-
-. Check that the custom resource was created with the following command: 
+. Check that the custom resource was created with the following command:
 +
 [source,terminal]
 ----
 $ oc get llamastackdistribution -n llamastack
 ----
 
-. Check the running pods with the following command: 
+. Check the running pods with the following command:
 +
 [source,terminal]
 ----
@@ -153,7 +114,7 @@ $ oc get pods -n llamastack | grep llamastack-custom-distribution
 $ oc logs -n llamastack -l app=llama-stack
 ----
 +
-.Example output 
+.Example output
 [source,terminal]
 ----
 INFO: Started server process

@@ -3,11 +3,11 @@
 = Configuring the pgvector remote provider in Llama Stack
 
 [role="_abstract"]
-To use PostgreSQL with the pgvector extension as a remote vector store, configure pgvector in a `LlamaStackDistribution` and supply PostgreSQL connection details as environment variables. This configuration enables retrieval augmented generation (RAG) workflows in {productname-short} by using PostgreSQL-based vector storage.
+To use PostgreSQL with the pgvector extension as a remote vector store, configure pgvector in your existing `LlamaStackDistribution` and provide PostgreSQL connection details as environment variables. Ensure that your `LlamaStackDistribution` already includes the PostgreSQL metadata storage configuration. This setup enables retrieval augmented generation (RAG) workflows in {productname-short} by using PostgreSQL-based vector storage.
 
 .Prerequisites
 * You have installed and enabled the Llama Stack Operator in {productname-short}.
-* You have a PostgreSQL database with the pgvector extension enabled.
+* You have a PostgreSQL database with the pgvector extension enabled. Llama Stack uses PostgreSQL for two purposes: metadata storage and the optional pgvector remote vector store. You can use a single PostgreSQL instance for both roles or deploy separate instances.
 * You have the PostgreSQL connection details, including the host name, port number, database name, user name, and password.
 * You have permissions to create Secrets and edit custom resources in your project.
 
@@ -53,7 +53,19 @@ In {productname-short}, the pgvector provider is enabled when the `ENABLE_PGVECT
 .. Click the *LlamaStackDistribution* tab.
 .. Select your `LlamaStackDistribution` resource.
 .. Click *YAML*.
-.. Update the resource to include the following fields, and then click *Save*.
+.. Update the resource to include the following fields, and then click *Save*. 
++
+Before you enable pgvector, deploy a Llama Stack server and configure the PostgreSQL metadata store.
+
+ifdef::upstream[]
+For more information, see link:{odhdocshome}/working-with-llama-stack/#deploying-a-llama-stack-server_rag[Deploying a Llama Stack server].
+endif::[]
+
+ifndef::upstream[]
+For more information, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/deploying-a-llama-stack-server_rag[Deploying a Llama Stack server].
+endif::[]
+
+Then update your existing `LlamaStackDistribution` to add the pgvector configuration shown in the following example. The example shows only the additional environment variables required to enable the pgvector provider.
 +
 .Example `LlamaStackDistribution` configuration for pgvector
 [source,yaml]
