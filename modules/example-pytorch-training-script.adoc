@@ -1,0 +1,82 @@
+:_module-type: PROCEDURE
+
+
+[id="example-pytorch-training-script_{context}"]
+= Example PyTorch training script
+
+
+[role='_abstract']
+
+The following example shows a simple distributed PyTorch training script that you can store in a ConfigMap:
+
+[source,subs="+quotes"]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: training-script-configmap
+  namespace: test-namespace
+data:
+  train.py: |
+    import os
+    import torch
+    import torch.nn as nn
+    import torch.distributed as dist
+    from torch.nn.parallel import DistributedDataParallel as DDP
+    from torch.utils.data import DataLoader, TensorDataset, DistributedSampler
+
+    def main():
+        # Initialize distributed training
+        dist.init_process_group(backend="nccl")
+        rank = dist.get_rank()
+        world_size = dist.get_world_size()
+        local_rank = int(os.environ.get("LOCAL_RANK", 0))
+        torch.cuda.set_device(local_rank)
+
+        print(f"Rank {rank}/{world_size}, Local Rank: {local_rank}")
+
+        # Create a simple model
+        model = nn.Sequential(
+            nn.Linear(10, 128),
+            nn.ReLU(),
+            nn.Linear(128, 1),
+        ).cuda(local_rank)
+
+        model = DDP(model, device_ids=[local_rank])
+
+        # Create synthetic dataset
+        X = torch.randn(1000, 10)
+        y = torch.randn(1000, 1)
+        dataset = TensorDataset(X, y)
+        sampler = DistributedSampler(dataset, num_replicas=world_size, rank=rank)
+        dataloader = DataLoader(dataset, batch_size=32, sampler=sampler)
+
+        # Training loop
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+        criterion = nn.MSELoss()
+
+        for epoch in range(10):
+            sampler.set_epoch(epoch)
+            total_loss = 0
+            for batch_X, batch_y in dataloader:
+                batch_X = batch_X.cuda(local_rank)
+                batch_y = batch_y.cuda(local_rank)
+
+                optimizer.zero_grad()
+                output = model(batch_X)
+                loss = criterion(output, batch_y)
+                loss.backward()
+                optimizer.step()
+
+                total_loss += loss.item()
+
+            if rank == 0:
+                print(f"Epoch {epoch+1}/10, Loss: {total_loss/len(dataloader):.4f}")
+
+        dist.destroy_process_group()
+        if rank == 0:
+            print("Training complete!")
+
+    if __name__ == "__main__":
+        main()
+----

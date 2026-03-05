@@ -1,0 +1,53 @@
+:_module-type: PROCEDURE
+
+
+[id="example-trainjob-resource-for-amd-rocm-gpus_{context}"]
+= Example TrainJob resource for AMD ROCm GPUs
+
+
+[role='_abstract']
+
+The following example shows a `TrainJob` resource configured for AMD ROCm GPUs. The script is mounted using `podTemplateOverrides` (target job name `node` matches the default ROCm runtime):
+
+[source,subs="+quotes"]
+----
+apiVersion: trainer.kubeflow.org/v1alpha1
+kind: TrainJob
+metadata:
+  name: pytorch-rocm-example
+  namespace: test-namespace
+spec:
+  runtimeRef:
+    name: torch-distributed-rocm
+    kind: ClusterTrainingRuntime
+  trainer:
+    command: ["torchrun", "/workspace/train.py"]
+    numNodes: 2
+    resourcesPerNode:
+      requests:
+        cpu: "4"
+        memory: "8Gi"
+        amd.com/gpu: 1
+      limits:
+        cpu: "4"
+        memory: "8Gi"
+        amd.com/gpu: 1
+  podTemplateOverrides:
+    - targetJobs:
+        - name: node
+      spec:
+        volumes:
+          - name: training-script-volume
+            configMap:
+              name: training-script-configmap
+        containers:
+          - name: node
+            volumeMounts:
+              - name: training-script-volume
+                mountPath: /workspace
+----
+
+[NOTE]
+====
+The `torch-distributed-rocm` ClusterTrainingRuntime is specifically configured for AMD ROCm GPUs. The GPU resource request uses `amd.com/gpu` instead of `nvidia.com/gpu`.
+====
