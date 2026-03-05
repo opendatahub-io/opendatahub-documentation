@@ -1,0 +1,53 @@
+:_module-type: PROCEDURE
+
+
+[id="example-trainJob-resource-with-custom-training-runtime_{context}"]
+= Example TrainJob resource with custom TrainingRuntime (no environment variables needed)
+
+
+[role='_abstract']
+
+The following example shows a `TrainJob` resource that references a custom namespace-scoped `TrainingRuntime`. Use `podTemplateOverrides` to mount the script; set `targetJobs` and the container `name` to match your custom runtime template (here node is used as the trainer job/container name):
+
+[source,subs="+quotes"]
+----
+apiVersion: trainer.kubeflow.org/v1alpha1
+kind: TrainJob
+metadata:
+  name: pytorch-custom-runtime-example
+  namespace: my-project
+spec:
+  runtimeRef:
+    name: custom-torch-runtime
+    kind: TrainingRuntime
+  trainer:
+    command: ["torchrun", "/workspace/train.py"]
+    numNodes: 2
+    resourcesPerNode:
+      requests:
+        cpu: "8"
+        memory: "32Gi"
+        nvidia.com/gpu: 4
+      limits:
+        cpu: "8"
+        memory: "32Gi"
+        nvidia.com/gpu: 4
+  podTemplateOverrides:
+    - targetJobs:
+        - name: node
+      spec:
+        volumes:
+          - name: training-script-volume
+            configMap:
+              name: training-script-configmap
+        containers:
+          - name: node
+            volumeMounts:
+              - name: training-script-volume
+                mountPath: /workspace
+----
+
+[NOTE]
+====
+The `kind: TrainingRuntime` setting indicates that the runtime is namespace-scoped. Ensure that you have created the custom `TrainingRuntime` resource in the same namespace. See Understanding and using training runtimes for details. If your runtime uses a different replicated job or container name, change `targetJobs` and `containers[].name` accordingly.
+====

@@ -1,0 +1,84 @@
+:_module-type: PROCEDURE
+
+
+[id="example-trainJob-with-a-minimal-training-script_{context}"]
+= Example TrainJob with a minimal training script (no environment variables needed)
+
+
+[role='_abstract']
+
+The following example uses a small training script in a ConfigMap and runs it with `torchrun`. The runtime sets up distributed training (RANK, WORLD_SIZE, MASTER_ADDR, and so on) for you, so you do not need to set any environment variables. The script is mounted into the pod using `podTemplateOverrides`, which works with the default `torch-distributed` runtime (container name `node`).
+
+. *Create a ConfigMap with the training script*
++
+[source,subs="+quotes"]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minimal-train-script
+  namespace: test-namespace
+data:
+  train.py: |
+    import torch
+    import torch.distributed as dist
+
+    dist.init_process_group(backend="nccl")
+    rank = dist.get_rank()
+    world_size = dist.get_world_size()
+
+    print(f"Rank {rank}/{world_size}")
+    print(f"PyTorch: {torch.__version__}, CUDA: {torch.cuda.is_available()}")
+    if torch.cuda.is_available():
+        print(f"GPU: {torch.cuda.get_device_name(0)}")
+
+    tensor = torch.ones(1).cuda() * rank
+    dist.all_reduce(tensor)
+    print(f"Rank {rank}: all_reduce result = {tensor.item()}")
+
+    dist.destroy_process_group()
+    print("Done.")
+----
++
+
+. *Create the TrainJob*
++
+Use `podTemplateOverrides` to add the ConfigMap volume and mount it into the trainer container. The target job name `node` matches the default `torch-distributed` runtime.
+
++
+[source,subs="+quotes"]
+----
+apiVersion: trainer.kubeflow.org/v1alpha1
+kind: TrainJob
+metadata:
+  name: pytorch-minimal-example
+  namespace: test-namespace
+spec:
+  runtimeRef:
+    name: torch-distributed
+    kind: ClusterTrainingRuntime
+  trainer:
+    command: ["torchrun", "/workspace/train.py"]
+    numNodes: 2
+    resourcesPerNode:
+      requests:
+        nvidia.com/gpu: 1
+      limits:
+        nvidia.com/gpu: 1
+  podTemplateOverrides:
+    - targetJobs:
+        - name: node
+      spec:
+        volumes:
+          - name: script-volume
+            configMap:
+              name: minimal-train-script
+        containers:
+          - name: node
+            volumeMounts:
+              - name: script-volume
+                mountPath: /workspace
+----
++
+
+Apply the ConfigMap first, then the TrainJob. No environment variables are required; the runtime configures distributed training when you use `torchrun` with a script.

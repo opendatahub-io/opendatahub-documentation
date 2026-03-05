@@ -1,0 +1,38 @@
+:_module-type: PROCEDURE
+
+
+[id="suspending-and-resuming-a-training-job"]
+= Suspending and resuming a training job
+
+
+[role='_abstract']
+
+You can suspend a running TrainJob to pause training and free up cluster resources. If JIT checkpointing is configured, the training state is automatically saved before the pods are terminated.
+
+*Suspending a training job*
+[source,subs="+quotes"]
+----
+oc patch trainjob pytorch-multi-node-job -n <your-namespace> --type=merge -p 
+'{"spec":{"suspend":true}}'
+----
+
+*Resuming a training job*
+[source,subs="+quotes"]
+----
+oc patch trainjob pytorch-multi-node-job -n <your-namespace> --type=merge -p 
+'{"spec":{"suspend":false}}'
+----
+
+When resumed, the job automatically loads the latest checkpoint and continues training from where it stopped.
+
+For more information about JIT checkpointing and suspend/resume, see https://access.redhat.com/articles/7136179[Using RHAI trainers for progress tracking and checkpointing].
+
+*Deleting a training job*
+
+When you want to delete the job, run the following command:
+[source,subs="+quotes"]
+----
+oc delete trainjob/pytorch-multi-node-job -n <your-namespace>
+----
+
+Replace `<your-namespace>` with the name of your project.
