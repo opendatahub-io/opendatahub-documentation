@@ -19,11 +19,10 @@ GUARDRAILS_GATEWAY=https://$(oc get routes guardrails-gateway -o jsonpath='{.spe
 ----
 +
 ifdef::upstream[]
-Based on the example configurations provided in link:{odhdocshome}/enabling-ai-safety/#guardrails-gateway-config-parameters_safety[Configuring the built-in detector and Guardrails gateway], the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
+Based on the example configurations provided in link:{odhdocshome}/enabling-ai-safety#guardrails-gateway-config-parameters_safety[Configuring the Guardrails Gateway], the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
 endif::[]
-
 ifndef::upstream[]
-Based on the example configurations provided in xref:#guardrails-gateway-config-parameters_safety[Configuring the Guardrails Gateway], the available endpoint for the model with Guardrails is `$GUARDRAILS_GATEWAY/pii`.
+Based on the example configurations provided in link:{rhoaidocshome}{default-format-url}/enabling_ai_safety/enabling-ai-safety_safety#guardrails-gateway-config-parameters_safety[Configuring the Guardrails Gateway], the available endpoint for the guardrailed model is `$GUARDRAILS_GATEWAY/pii`.
 endif::[]
 
 . Query the model with Guardrails `pii` endpoint:
