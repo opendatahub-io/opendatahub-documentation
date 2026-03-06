@@ -1,34 +1,33 @@
 :_module-type: PROCEDURE
 
 [id="auth-on-llama-stack_{context}"]
-= Configuring Llama Stack with OAuth Authentication
+= Configuring Llama Stack with OAuth authentication
+
 [role="_abstract"]
-You can configure Llama Stack to enable Role-Based Access Control (RBAC) for model access using OAuth authentication on {productname-short}. The following example shows how to configure Llama Stack so that a vLLM model can be accessed by all authenticated users, while an OpenAI model is restricted to specific users. This example uses Keycloak to issue and validate tokens.
+You can configure Llama Stack to use role-based access control (RBAC) for model access with OAuth authentication on {productname-short}. The following example shows how to configure Llama Stack so that all authenticated users can access a vLLM model, while only specific users can access an OpenAI model. This example uses Keycloak to issue and validate tokens.
 
-
-
-This document assumes the Keycloak server is available at `https://my-keycloak-server.com`
+This procedure assumes that the Keycloak server is available at `https://my-keycloak-server.com`.
 
 [IMPORTANT]
 ====
-When accessing Llama Stack APIs, the required base URL depends on the client you are using.
+When you access Llama Stack APIs, the required base URL depends on the client that you use.
 
-* **OpenAI-compatible clients or raw HTTP requests**  
-  You must include the `/v1` path suffix in the base URL.  
-  For example: `http://llama-stack-service:8321/v1`
+* For OpenAI-compatible clients or raw HTTP requests, include the `/v1` path suffix in the base URL.
++
+For example, `http://llama-stack-service:8321/v1`
 
-* **`LlamaStackClient` SDK**  
-  Do not include the `/v1` path suffix.  
-  For example: `http://llama-stack-service:8321`
+* For the `LlamaStackClient` SDK, do not include the `/v1` path suffix in the base URL.
++
+For example, `http://llama-stack-service:8321`
 
-Using an incorrect base URL results in request failures.
+If you use an incorrect base URL, requests fail.
 ====
 
 .Prerequisites
 
-* You have installed {openshift-platform} 4.19 or newer.
+* You have installed {openshift-platform} 4.19 or later.
 * You have logged in to {productname-long}.
-* You have cluster administrator privileges for your OpenShift cluster.
+* You have cluster-admin privileges for your OpenShift cluster.
 * You have a Keycloak instance configured with the following settings:
 ** Realm: `llamastack-demo`
 ** Client: `llamastack` with direct access grants enabled
@@ -39,7 +38,7 @@ Using an incorrect base URL results in request failures.
 *** `user2` assigned the `inference_max` role
 * You have saved the Keycloak client secret for token requests.
 * Your Keycloak server is reachable at `https://my-keycloak-server.com`.
-* You have installed the {openshift-cli} as described in the appropriate documentation for your cluster:
+* You have installed the {openshift-cli} as described in the documentation for your cluster:
 ifdef::upstream,self-managed[]
 ** link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for OpenShift Container Platform
 ** link:https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/{rosa-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^] for {rosa-productname}
@@ -51,9 +50,9 @@ endif::[]
 
 .Procedure
 
-. To configure Llama Stack to use Role-Based Access Control (RBAC) to access models, you need to view and verify the OAuth provider token structure.
+. To configure Llama Stack to use role-based access control (RBAC) for model access, view and verify the OAuth provider token structure.
 
-.. Generate a Keycloak test token to view the structure with the following command:
+.. Generate a Keycloak test token by running the following command:
 +
 [source,terminal]
 ----
@@ -66,25 +65,26 @@ $ curl -d client_id=llamastack -d client_secret=YOUR_CLIENT_SECRET -d username=u
 ----
 $ cat test.token | cut -d . -f 2 | base64 -d 2>/dev/null | jq .
 ----
+
 +
 .Example token structure from Keycloak
 [source,terminal]
 ----
-$ {
+{
   "iss": "http://my-keycloak-server.com/realms/llamastack-demo",
   "aud": "account",
   "sub": "761cdc99-80e5-4506-9b9e-26a67a8566f7",
   "preferred_username": "user1",
   "llamastack_roles": [
     "inference_max"
-  ],
+  ]
 }
 ----
 
-. Update your existing `run.yaml` file by adding the OAuth parameter. 
+. Update your existing `run.yaml` file to add the OAuth parameters.
 
-.Example OAuth parameters in the `run.yaml` file
 +
+.Example OAuth parameters in the `run.yaml` file
 [source,yaml]
 ----
 server:
@@ -104,18 +104,17 @@ server:
       - permit: <3>
           actions: [read]
           resource: model::vllm-inference/llama-3-2-3b
-        description: Allow all authenticated users to access Llama 3.2 model
+        description: Allow all authenticated users to access the Llama 3.2 model
       - permit: <4>
           actions: [read]
           resource: model::openai/gpt-4o-mini
         when: user with inference_max in roles
-        description: Allow only users with inference_max role to access OpenAI models
+        description: Allow only users with the inference_max role to access OpenAI models
 ----
-+
-<1> Specify your Keycloak host and Realm in the URL.  
-<2> Maps the `llamastack_roles` path from the token to the `roles` field.  
-<3> Policy 1: Allow all authenticated users to access vLLM models.  
-<4> Policy 2: Restrict OpenAI models to users with the `inference_max` role.
+<1> Specify your Keycloak host and realm in the URL.
+<2> Maps the `llamastack_roles` claim from the token to the `roles` field.
+<3> Allows all authenticated users to access vLLM models.
+<4> Restricts OpenAI models to users with the `inference_max` role.
 
 . Create a ConfigMap that uses the updated `run.yaml` configuration by running the following command:
 +
@@ -124,7 +123,7 @@ server:
 $ oc create configmap llamastack-custom-config --from-file=run.yaml=run.yaml -n redhat-ods-operator
 ----
 
-. Create a `llamastack-distribution.yaml` file with the following parameters:
+. Create a `llamastack-distribution.yaml` file with the following content:
 +
 [source,yaml]
 ----
@@ -142,14 +141,14 @@ spec:
       name: llama-stack
       port: 8321
       env:
-        # vLLM Provider Configuration
+        # vLLM provider configuration
         - name: VLLM_URL
           value: "https://your-vllm-service:8000/v1"
         - name: VLLM_API_TOKEN
           value: "your-vllm-token"
         - name: VLLM_TLS_VERIFY
           value: "false"
-        # OpenAI Provider Configuration
+        # OpenAI provider configuration
         - name: OPENAI_API_KEY
           value: "your-openai-api-key"
         - name: OPENAI_BASE_URL
@@ -159,7 +158,7 @@ spec:
       configMapNamespace: redhat-ods-operator
 ----
 
-. To apply the distribution, run the following command:
+. Apply the distribution by running the following command:
 +
 [source,terminal]
 ----
@@ -170,12 +169,12 @@ $ oc apply -f llamastack-distribution.yaml
 +
 [source,terminal]
 ----
-oc wait --for=jsonpath='{.status.phase}'=Ready llamastackdistribution/llamastack-distribution -n redhat-ods-operator --timeout=300s
+$ oc wait --for=jsonpath='{.status.phase}'=Ready llamastackdistribution/llamastack-distribution -n redhat-ods-operator --timeout=300s
 ----
 
-. Generate the OAuth tokens for each user account to authenticate API requests.
+. Generate OAuth tokens for each user account to authenticate API requests.
 
-.. To request a basic access token, and to add the token to a `user1.token` file, run the following command:
+.. To request a basic access token and save it to a `user1.token` file, run the following command:
 +
 [source,terminal]
 ----
@@ -188,7 +187,7 @@ $ curl -d client_id=llamastack \
   | jq -r .access_token > user1.token
 ----
 
-.. To request full access token and add it to a `user2.token` file, run the following command:
+.. To request a token for the privileged user and save it to a `user2.token` file, run the following command:
 +
 [source,terminal]
 ----
@@ -201,7 +200,7 @@ $ curl -d client_id=llamastack \
   | jq -r .access_token > user2.token
 ----
 
-.. Verify the credentials by running the following command:
+.. Verify the token claims by running the following command:
 +
 [source,terminal]
 ----
@@ -209,76 +208,86 @@ $ cat user2.token | cut -d . -f 2 | base64 -d 2>/dev/null | jq .
 ----
 
 .Verification
+
 . Set the Llama Stack base URL:
 +
 [source,terminal]
 ----
-export LLAMASTACK_URL="http://<llama-stack-host>:8321"
+$ export LLAMASTACK_URL="http://<llama-stack-host>:8321"
 ----
 
-. Verify basic access for `user1` (no privileged roles).
+. Verify basic access for `user1`, who has no privileged roles.
+
 +
 Load the token:
 +
 [source,terminal]
 ----
-USER1_TOKEN=$(cat user1.token)
+$ USER1_TOKEN=$(cat user1.token)
 ----
+
 +
 Confirm that `user1` can access the vLLM-served model:
 +
 [source,terminal]
 ----
-curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+$ curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/chat/completions" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${USER1_TOKEN}" \
   -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
+
 +
 Expected result: HTTP `200`.
+
 +
 Confirm that `user1` is denied access to the restricted OpenAI model:
 +
 [source,terminal]
 ----
-curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+$ curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/chat/completions" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${USER1_TOKEN}" \
   -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
-+
-Expected result: HTTP `403` (forbidden).
 
-. Verify privileged access for `user2` (assigned the `inference_max` role).
++
+Expected result: HTTP `403`.
+
+. Verify privileged access for `user2`, who is assigned the `inference_max` role.
+
 +
 Load the token:
 +
 [source,terminal]
 ----
-USER2_TOKEN=$(cat user2.token)
+$ USER2_TOKEN=$(cat user2.token)
 ----
+
 +
 Confirm that `user2` can access both models:
 +
 [source,terminal]
 ----
-curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+$ curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/chat/completions" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${USER2_TOKEN}" \
   -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
+
 +
 [source,terminal]
 ----
-curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+$ curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/chat/completions" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${USER2_TOKEN}" \
   -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
+
 +
 Expected result: HTTP `200` for both requests.
 
@@ -286,11 +295,11 @@ Expected result: HTTP `200` for both requests.
 +
 [source,terminal]
 ----
-curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST "${LLAMASTACK_URL}/v1/openai/v1/chat/completions" \
+$ curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "${LLAMASTACK_URL}/v1/openai/chat/completions" \
   -H "Content-Type: application/json" \
   -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
-+
-Expected result: HTTP `401` (unauthorized).
 
++
+Expected result: HTTP `401`.
