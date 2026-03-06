@@ -83,6 +83,9 @@ spec:
         volumeMounts:
         - name: qdrant-storage
           mountPath: /qdrant/storage
+        - name: qdrant-storage
+          mountPath: /qdrant/snapshots
+          subPath: snapshots
         readinessProbe:
           httpGet:
             path: /readyz
