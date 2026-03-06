@@ -14,6 +14,7 @@ After configuring Qdrant as the vector store provider in Llama Stack, you can pe
 * You have installed the `jq` command-line utility.
 +
 For installation instructions, see link:https://jqlang.org[jq].
+* You have the `curl` command-line tool installed.
 
 .Procedure
 
@@ -38,7 +39,7 @@ endif::[]
 .Example base URL for in-cluster access
 [source,bash]
 ----
-LLAMA_STACK_URL="http://llamastack-service:8080"
+LLAMA_STACK_URL="http://llamastack-service:8321"
 ----
 +
 .Example base URL for external access through a Route
@@ -54,7 +55,10 @@ LLAMA_STACK_URL="https://llamastack-route.example.com"
 CREATE_RESPONSE=$(curl -s -X POST "${LLAMA_STACK_URL}/v1/vector_stores" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "my-rag-store"
+    "name": "my-rag-store",
+    "embedding_model": "sentence-transformers/ibm-granite/granite-embedding-125m-english",
+    "embedding_dimension": 768,
+    "provider_id": "qdrant-remote"
   }')
 
 VECTOR_STORE_ID=$(echo "$CREATE_RESPONSE" | jq -r '.id')
@@ -70,9 +74,13 @@ Upload files to the vector store for ingestion. Llama Stack automatically splits
 .Example using curl
 [source,bash]
 ----
-curl -X POST "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}/files" \
+FILE_RESPONSE=$(curl -s -X POST "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}/files" \
   -H "Content-Type: multipart/form-data" \
-  -F "file=@/path/to/document.pdf"
+  -F "file=@/path/to/document.pdf" \
+  -F "purpose=assistants")
+
+FILE_ID=$(echo "$FILE_RESPONSE" | jq -r '.id')
+echo "File ID: ${FILE_ID}"
 ----
 
 == Query a vector store
