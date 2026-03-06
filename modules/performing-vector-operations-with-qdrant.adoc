@@ -75,7 +75,6 @@ Upload files to the vector store for ingestion. Llama Stack automatically splits
 [source,bash]
 ----
 FILE_RESPONSE=$(curl -s -X POST "${LLAMA_STACK_URL}/v1/vector_stores/${VECTOR_STORE_ID}/files" \
-  -H "Content-Type: multipart/form-data" \
   -F "file=@/path/to/document.pdf" \
   -F "purpose=assistants")
 
