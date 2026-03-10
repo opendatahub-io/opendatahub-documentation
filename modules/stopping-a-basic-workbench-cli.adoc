@@ -22,14 +22,16 @@ Replace `$name` with your workbench name and `$namespace` with your project name
 +
 [source,terminal, subs="attributes+"]
 ----
-Bash
-----
-+
-[source,terminal, subs="attributes+"]
-----
 $ oc annotate notebook "$name" -n "$namespace" \
 "kubeflow-resource-stopped=$(date -u +%Y-%m-%dT%H:%M:%SZ)" --overwrite
 ----
-//Need example output
++
+.Example output
+[source,terminal]
+----
+$ oc get notebook jy-1 -n a-regular -o custom-columns=NAME:.metadata.name,RUNNING:.status.readyReplicas
+NAME   RUNNING
+jy-1   0
+----
 .Verification
-//need verification
+* The status of your workbench is *Stopped* on the *Workbenches* tab of the product details page of the {productname-long} dashboard.
