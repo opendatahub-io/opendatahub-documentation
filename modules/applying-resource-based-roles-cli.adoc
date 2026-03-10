@@ -1,0 +1,50 @@
+:_module-type: PROCEDURE
+
+[id='applying-resource-based-roles-cli_{context}']
+= Applying custom role-based permissions through the {openshift-platform} CLI
+
+[role="_abstract"]
+
+
+
+* *Workbench maintainer*: The permission that grants minimum capabilities to a user as the administrator of the workbench component.
+* *Workbench updater*: The permission that grants minimum capabilities to a user as the updater of the workbench component _without_ creation or deletion capabilities.
+
+.Prerequisites
+* You have created a data science project in {productname-long}.
+* You have enabled the `project rbac` Feature Flag to view permissions in the {productname-long} web console.
+// need instructions for how to do this - including this prereq for user verification
+ifndef::upstream[]
+* You have downloaded and installed the {productname-short} command-line interface (CLI). See link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp-latest-version}/html/cli_tools/openshift-cli-oc#installing-openshift-cli[Installing the OpenShift CLI^].
+endif::[]
+
+.Procedure
+. Run one of the following commands, based on your desired permission:
++
+[source,terminal]
+----
+$ oc apply -f workbench-maintainer-role.yaml
+----
++
+[source,terminal]
+----
+$ oc apply -f workbench-updater-role.yaml
+----
++
+//.Example output - what should the ouput look like?
+//[source,terminal]
+//----
+//----
+
+.Verification
+. Log into the {productname-long} web console
+. Click on the *Data science projects* tab on the left-hand side of the page.
+. Click on your desired project.
+. Click on the *Permissions* tab. 
++
+[NOTE]
+====
+There will be a Tech Preview flag next to the Permissions tab name. You can now click on the permissions to view more details about the assigned permission.
+====
++
+You should now see the new custom permission that you applied to your user name. Click on the permission to view more details.
