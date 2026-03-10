@@ -4,7 +4,7 @@
 = Enable the Models-as-a-Service dashboard interface
 
 [role="_abstract"]
-To view the Models-as-a-Service (MaaS) dashboard interface in {productname-short}, you must enable the feature in the `OdhDashboardConfig` custom resource (CR).
+To view the Models-as-a-Service (MaaS) dashboard interface in {productname-short}, you must enable the *Gen AI studio* menu item and the MaaS feature in the `OdhDashboardConfig` custom resource (CR). The MaaS dashboard interface appears in the *AI asset endpoints* page within *Gen AI studio*.
 
 The MaaS dashboard interface provides a user interface for:
 
@@ -14,13 +14,16 @@ The MaaS dashboard interface provides a user interface for:
 * Viewing your assigned tier and rate limits
 * Accessing API documentation and examples
 
-Enabling this interface makes MaaS functionality accessible to users through the dashboard.
-
 .Prerequisites
 
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have {productname-short} administrator privileges.
-* You have enabled the GenAI Studio menu item in the dashboard.
+ifndef::upstream[]
+* You have enabled the Llama Stack Operator on the OpenShift cluster by setting its `managementState` field to `Managed` in the `DataScienceCluster` custom resource (CR) of the {productname-short} Operator. For more information, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/activating-the-llama-stack-operator_rag[Activating the Llama Stack Operator].
+endif::[]
+ifdef::upstream[]
+* You have enabled the Llama Stack Operator on the OpenShift cluster by setting its `managementState` field to `Managed` in the `DataScienceCluster` custom resource (CR) of the {productname-short} Operator. For more information, see link:{odhdocshome}/working_with_llama_stack/activating-the-llama-stack-operator_rag[Activating the Llama Stack Operator].
+endif::[]
 * You have enabled the MaaS component.
 
 .Procedure
@@ -33,18 +36,22 @@ Enabling this interface makes MaaS functionality accessible to users through the
 . Click the *Instances* tab.
 . Click the *odh-dashboard-config* instance to open the details page.
 . Click the *YAML* tab.
-. In the `spec.dashboardConfig` section, add or update the `modelAsService` configuration:
+. In the `spec.dashboardConfig` section, add or update the `modelAsService` and `genAiStudio` configuration:
 +
 [source,yaml]
 ----
 # ... existing configuration ...
 spec:
   dashboardConfig:
+    genAiStudio: true
     modelAsService: true
 # ... remaining configuration ...
 ----
 +
-Set `modelAsService` to `true` to display the MaaS dashboard interface.
+where:
++
+`genAiStudio: true`:: Specifies that {productname-short} displays the *Gen AI studio* menu item in the dashboard.
+`modelAsService: true`:: Specifies that {productname-short} displays the MaaS dashboard interface in the *Gen AI studio* menu item.
 +
 . Click *Save*.
 +
@@ -54,15 +61,16 @@ The configuration is automatically applied to the dashboard pods.
 
 Verify that the MaaS dashboard interface is enabled and accessible:
 
-. Verify that the feature is enabled in the OdhDashboardConfig:
+. Verify that both features are enabled in the OdhDashboardConfig:
 +
 [source,terminal,subs="+attributes"]
 ----
-$ oc get odhdashboardconfig odh-dashboard-config -n {dbd-config-default-namespace} -o jsonpath='{.spec.dashboardConfig.modelAsService}'
+$ oc get odhdashboardconfig odh-dashboard-config -n {dbd-config-default-namespace} -o jsonpath='{.spec.dashboardConfig.genAiStudio}{"\n"}{.spec.dashboardConfig.modelAsService}'
 ----
 +
 .Example output
 ----
+true
 true
 ----
 
@@ -76,10 +84,10 @@ $ oc get pods -n {dbd-config-default-namespace} | grep dashboard
 Check that the pods are running and have been recently restarted.
 
 . Log in to the {productname-short} dashboard.
-. In the left navigation menu, click *AI assets endpoint*.
-. Verify that the *Models-as-a-Service* tab is displayed.
+. In the left navigation menu, click *Gen AI studio* -> *AI asset endpoints*.
+. Verify that the *Models as a service* tab is displayed.
 +
-The MaaS tab should appear alongside other endpoint tabs and provide access to model discovery, token generation, and API key management.
+The MaaS tab provides access to model discovery, token generation, and API key management.
 
 .Additional resources
 

@@ -22,7 +22,15 @@ Deploying large language models may require additional dependencies based on the
 
 [NOTE]
 ====
-To access MaaS through the dashboard interface, you must also enable the GenAI Studio menu item in the dashboard by setting `spec.dashboardConfig.genAiStudio: true` in the `OdhDashboardConfig` custom resource.
+To access MaaS through the dashboard interface:
+
+ifndef::upstream[]
+* You must enable the Llama Stack Operator on your {openshift-platform} cluster. For more information, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/activating-the-llama-stack-operator_rag[Activating the Llama Stack Operator].
+endif::[]
+ifdef::upstream[]
+* You must enable the Llama Stack Operator on your {openshift-platform} cluster. For more information, see link:{odhdocshome}/working_with_llama_stack/activating-the-llama-stack-operator_rag[Activating the Llama Stack Operator].
+endif::[]
+* You must enable the *Gen AI studio* menu item in the dashboard by setting `spec.dashboardConfig.genAiStudio: true` in the `OdhDashboardConfig` custom resource.
 ====
 
 ifndef::upstream[]
