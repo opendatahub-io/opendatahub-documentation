@@ -15,7 +15,7 @@ If the `maas-api` pod does not start or shows errors after enabling the MaaS com
 +
 [source,terminal,subs="+attributes"]
 ----
-$ oc logs -n {dbd-config-default-namespace} -l app=maas-api
+$ oc logs -n {dbd-config-default-namespace} -l app.kubernetes.io/name=maas-api
 ----
 
 * Verify that all prerequisites are met, especially:
@@ -47,7 +47,7 @@ If the Models-as-a-Service tab does not appear in the dashboard:
 +
 [source,terminal,subs="+attributes"]
 ----
-$ oc get pods -n {dbd-config-default-namespace} -l app=maas-api
+$ oc get pods -n {dbd-config-default-namespace} -l app.kubernetes.io/name=maas-api
 ----
 
 * Check that the OdhDashboardConfig was updated correctly:
@@ -77,7 +77,7 @@ $ oc logs -n {dbd-config-default-namespace} $(oc get pods -n {dbd-config-default
 +
 [source,terminal,subs="+attributes"]
 ----
-$ oc get pods -n {dbd-config-default-namespace} -l app=maas-api
+$ oc get pods -n {dbd-config-default-namespace} -l app.kubernetes.io/name=maas-api
 ----
 
 * Verify that the model is in a Ready state:
@@ -170,5 +170,5 @@ If users cannot access models after tier creation:
 +
 [source,terminal,subs="+attributes"]
 ----
-$ oc logs -n {dbd-config-default-namespace} -l app=maas-api --tail=50 | grep tier
+$ oc logs -n {dbd-config-default-namespace} -l app.kubernetes.io/name=maas-api --tail=50 | grep tier
 ----
