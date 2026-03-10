@@ -20,7 +20,12 @@ Enabling this interface makes MaaS functionality accessible to users through the
 
 * You have cluster administrator privileges for your {openshift-platform} cluster.
 * You have {productname-short} administrator privileges.
-* You have enabled the GenAI Studio menu item in the dashboard.
+ifndef::upstream[]
+* You have enabled the Llama Stack Operator on the OpenShift cluster by setting its `managementState` field to `Managed` in the `DataScienceCluster` custom resource (CR) of the {productname-short} Operator. For more information, see link:{rhoaidocshome}{default-format-url}/working_with_llama_stack/activating-the-llama-stack-operator_rag[Activating the Llama Stack Operator].
+ifdef::upstream[]
+* You have enabled the Llama Stack Operator on the OpenShift cluster by setting its `managementState` field to `Managed` in the `DataScienceCluster` custom resource (CR) of the {productname-short} Operator. For more information, see link:{odhdocshome}/working_with_llama_stack/activating-the-llama-stack-operator_rag[Activating the Llama Stack Operator].
+endif::[]
+* You have enabled the GenAI Studio menu item in the dashboard by setting `spec.dashboardConfig.genAiStudio: true` in the `OdhDashboardConfig` custom resource.
 * You have enabled the MaaS component.
 
 .Procedure
