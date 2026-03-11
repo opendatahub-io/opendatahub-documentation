@@ -71,7 +71,7 @@ $ cat test.token | cut -d . -f 2 | base64 -d 2>/dev/null | jq .
 [source,terminal]
 ----
 {
-  "iss": "http://my-keycloak-server.com/realms/llamastack-demo",
+  "iss": "https://my-keycloak-server.com/realms/llamastack-demo",
   "aud": "account",
   "sub": "761cdc99-80e5-4506-9b9e-26a67a8566f7",
   "preferred_username": "user1",
@@ -82,7 +82,6 @@ $ cat test.token | cut -d . -f 2 | base64 -d 2>/dev/null | jq .
 ----
 
 . Update your existing `run.yaml` file to add the OAuth parameters.
-
 +
 .Example OAuth parameters in the `run.yaml` file
 [source,yaml]
@@ -209,15 +208,14 @@ $ cat user2.token | cut -d . -f 2 | base64 -d 2>/dev/null | jq .
 
 .Verification
 
-. Set the Llama Stack base URL:
+. Set the Llama Stack service URL:
 +
 [source,terminal]
 ----
-$ export LLAMASTACK_URL="http://<llama-stack-host>:8321"
+$ export LLAMASTACK_HOST="http://<llama-stack-host>:8321"
 ----
 
 . Verify basic access for `user1`, who has no privileged roles.
-
 +
 Load the token:
 +
@@ -225,39 +223,34 @@ Load the token:
 ----
 $ USER1_TOKEN=$(cat user1.token)
 ----
-
 +
 Confirm that `user1` can access the vLLM-served model:
 +
 [source,terminal]
 ----
 $ curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST "${LLAMASTACK_URL}/v1/openai/chat/completions" \
+  -X POST "${LLAMASTACK_HOST}/v1/openai/chat/completions" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${USER1_TOKEN}" \
   -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
-
 +
 Expected result: HTTP `200`.
-
 +
 Confirm that `user1` is denied access to the restricted OpenAI model:
 +
 [source,terminal]
 ----
 $ curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST "${LLAMASTACK_URL}/v1/openai/chat/completions" \
+  -X POST "${LLAMASTACK_HOST}/v1/openai/chat/completions" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${USER1_TOKEN}" \
   -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
-
 +
 Expected result: HTTP `403`.
 
 . Verify privileged access for `user2`, who is assigned the `inference_max` role.
-
 +
 Load the token:
 +
@@ -265,29 +258,26 @@ Load the token:
 ----
 $ USER2_TOKEN=$(cat user2.token)
 ----
-
 +
 Confirm that `user2` can access both models:
 +
 [source,terminal]
 ----
 $ curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST "${LLAMASTACK_URL}/v1/openai/chat/completions" \
+  -X POST "${LLAMASTACK_HOST}/v1/openai/chat/completions" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${USER2_TOKEN}" \
   -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
-
 +
 [source,terminal]
 ----
 $ curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST "${LLAMASTACK_URL}/v1/openai/chat/completions" \
+  -X POST "${LLAMASTACK_HOST}/v1/openai/chat/completions" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${USER2_TOKEN}" \
   -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
-
 +
 Expected result: HTTP `200` for both requests.
 
@@ -296,10 +286,9 @@ Expected result: HTTP `200` for both requests.
 [source,terminal]
 ----
 $ curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST "${LLAMASTACK_URL}/v1/openai/chat/completions" \
+  -X POST "${LLAMASTACK_HOST}/v1/openai/chat/completions" \
   -H "Content-Type: application/json" \
   -d '{"model":"vllm-inference/llama-3-2-3b","messages":[{"role":"user","content":"Hello!"}],"max_tokens":50}'
 ----
-
 +
 Expected result: HTTP `401`.
