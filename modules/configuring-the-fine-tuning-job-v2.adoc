@@ -21,9 +21,9 @@ Alternatively, you can modify the example code to specify the appropriate config
     ** For the SFT example: 2 nodes with 2 NVIDIA GPUs each (Ampere-based or newer recommended), 4 CPUs and 64 GiB memory per node.
 * Your cluster administrator has configured the cluster as follows:
     ** Installed {productname-long} with the required distributed training components, as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.0/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.0/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
-    ** Configured the distributed training resources, as described in Managing distributed workloads.
+    ** Configured the distributed training resources.
     ** Installed the JobSet Operator from OLM, as described in https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/ai_workloads/jobset-operator#js-install[Installing the JobSet Operator].
-    ** Configured RBAC permissions for SDK access to ClusterTrainingRuntime resources, as described in Configuring User Permissions for SDK Access in the Installation Guide.
+    ** Configured RBAC permissions for SDK access to ClusterTrainingRuntime resources.
 * A training-hub ClusterTrainingRuntime is available in your cluster. To verify, run `oc get clustertrainingruntime training-hub`.
 * You can access a workbench that is suitable for distributed training, as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.0/html-single/creating_a_workbench/index[Creating a workbench for distributed training].
 * You can access a dynamic storage provisioner that supports ReadWriteMany (RWX) Persistent Volume Claim (PVC) provisioning, such as Red Hat OpenShift Data Foundation.
@@ -32,8 +32,8 @@ Alternatively, you can modify the example code to specify the appropriate config
     ** If you did not create the project, your cluster administrator must give you administrator access.
 
 .Procedure
-. Open the workbench, as follows:
-    . Log in to the Red Hat OpenShift AI web console.
+. Open the workbench:
+    . Log in to the {productname-long} web console.
     . Click *Projects* and click your project.
     . Click the *Workbenches* tab.
     . Ensure that the workbench uses a storage class with RWX capability.

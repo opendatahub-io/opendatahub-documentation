@@ -27,9 +27,9 @@ For most use cases, the pre-built `ClusterTrainingRuntime` resources are suffici
 
 
 .Prerequisites
-* Your platform administrator has installed Red Hat OpenShift AI with the required distributed training components as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
-*You can access the OpenShift Console for the cluster where OpenShift AI is installed.
-* You have *project administrato*r* access for the project where you want to create the TrainingRuntime.
+* Your platform administrator has installed {productname-long} with the required distributed training components as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+*You can access the OpenShift Console for the cluster where {productname-short} is installed.
+* You have project administrator access for the project where you want to create the TrainingRuntime.
    ** If you created the project, you automatically have administrator access.
    ** If you did not create the project, the platform administrator must give you project administrator access.
 
@@ -39,7 +39,7 @@ For most use cases, the pre-built `ClusterTrainingRuntime` resources are suffici
 . Create a `TrainingRuntime` resource, as follows:
 .. In the Administrator perspective, click *Home* > *Search*.
 .. From the *Project* list, select your project.
-.. Click the *Resources* list, and in the search field, start typing `TrainingRuntime`.
+.. Click the *Resources* list, and in the search field, type `TrainingRuntime`.
 .. Select *TrainingRuntime*, and click *Create TrainingRuntime*. The Create TrainingRuntime page opens, with default YAML code automatically added.
 .. Replace the default YAML code with your custom runtime definition. The following example shows a custom `TrainingRuntime` with a custom container image and default resource configuration:
 +
@@ -87,12 +87,13 @@ spec:
 
 
 .Verification
-   .. In the OpenShift Console, in the Administrator perspective, click *Home* > *Search*.
-   .. From the *Project* list, select your project.
-   .. Click the *Resources* list and search for *TrainingRuntime*.
-   .. Verify that your custom runtime appears in the list.
+  * Using the user interface:
+    ** In the OpenShift Console, in the Administrator perspective, click *Home* > *Search*.
+    ** From the *Project* list, select your project.
+    ** Click the *Resources* list and search for *TrainingRuntime*.
+    ** Verify that your custom runtime appears in the list.
 
-Alternatively, verify using the CLI:
+  * Using the CLI:
 
 [source,subs="+quotes"]
 ----

@@ -7,7 +7,7 @@
 
 [role='_abstract']
 
-You can create a TrainJob resource programmatically by using the Kubeflow SDK from an OpenShift AI workbench.
+You can create a TrainJob resource programmatically by using the Kubeflow SDK from an {productname-short} workbench.
 
 .Prerequisites
 * You can access an OpenShift cluster that has multiple worker nodes with supported NVIDIA GPUs or AMD GPUs.
@@ -17,7 +17,7 @@ You can create a TrainJob resource programmatically by using the Kubeflow SDK fr
     ** Installed the JobSet Operator from OLM, as described in https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/ai_workloads/jobset-operator#js-install[Installing the JobSet Operator].
     ** Configured RBAC permissions for SDK access to ClusterTrainingRuntime resources, as described in Configuring User Permissions for SDK Access in the Installation Guide.
 * A ClusterTrainingRuntime is available in your cluster (for example, `torch-distributed`). To verify, run `oc get clustertrainingruntime`.
-* You can access an OpenShift AI workbench with Python 3.9 or later.
+* You can access an {productname-short} workbench with Python 3.9 or later.
 * You have installed the Kubeflow SDK:
 +
 [source,subs="+quotes"]
@@ -40,11 +40,6 @@ Example output:
 Name: kubeflow
 Version: 0.2.1+rhai0 
 ----
-
-[NOTE]
-====
- This is an example output, Version is subject to change.
-====
 
 .Procedure
 
@@ -163,7 +158,7 @@ The TransformersTrainer parameters are:
 
 | `resources_per_node`
 | `dict`
-|Resource requests per node, for example `"nvidia.com/gpu": 1, "memory": "16Gi"`.
+| Resource requests per node, for example `"nvidia.com/gpu": 1, "memory": "16Gi"`.
 
 |===
 
@@ -172,7 +167,7 @@ The TransformersTrainer parameters are:
 +
 [source,subs="+quotes"]
 ----
-job = client.get_job(job_name)
+job = trainer_client.get_job(job_name)
 print(f"   Status: {job.status}")
 ----
 +
@@ -186,5 +181,5 @@ oc get pods -n <your-namespace> -l job-name=<job-name>
 +
 Replace `<your-namespace>` with the name of your project and `<job-name>` with the name of your training job.
 
-. (Optional) Navigate to the {productname-short} dashboard, click TrainingJobs, and verify that real-time progress metrics are displayed for your training job.
+. (Optional) Verify that real-time progress metrics are displayed for your training job. Navigate to the {productname-short} dashboard and click TrainingJobs to view these metrics.
 

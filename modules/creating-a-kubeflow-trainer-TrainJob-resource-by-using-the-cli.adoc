@@ -12,7 +12,7 @@ You can use the OpenShift CLI (`oc`) to create a TrainJob resource to run a dist
 .Prerequisites
 * You can access an OpenShift cluster that has multiple worker nodes with supported NVIDIA GPUs or AMD GPUs.
 * Your cluster administrator has configured the cluster as follows:
-** Installed Red Hat OpenShift AI with the required distributed training components, as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
+** Installed {productname-long} with the required distributed training components, as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components].
 ** Configured the distributed training resources, as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/working_with_distributed_workloads/index[Managing distributed workloads].
 ** Installed the JobSet Operator from OLM, as described in https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/ai_workloads/jobset-operator[Installing the JobSet Operator].
 * A ClusterTrainingRuntime is available in your cluster (for example, `torch-distributed`). To verify, run:
@@ -30,29 +30,13 @@ oc get clustertrainingruntime
 ** Installing the OpenShift CLI for Red Hat OpenShift Service on AWS
 
 .Procedure 
-. Log in to the OpenShift CLI (`oc`), as follows:
+. Log in to the OpenShift CLI (`oc`):
 +
 [source,bash,subs="+quotes"]
 ----
 oc login --token=<token> --server=<server>
 ----
 + 
-
-. (Optional) Verify that a ClusterTrainingRuntime is available, as follows:
-+
-[source,subs="+quotes"]
-----
-oc get clustertrainingruntime
-----
-+
-Example output:
-+
-[source,subs="+quotes"]
-----
-NAME                                             AGE
-torch-distributed                                5m
-torch-distributed-rocm
-----
 
 . Create a file named `train.py` and populate it with your training script, as follows:
 +
@@ -140,7 +124,7 @@ Replace `<your-namespace>` with the name of your project.
 +
 [source,subs="+quotes"]
 ----
-oc logs <pod-name> -n <your-namespace>>
+oc logs <pod-name> -n <your-namespace>
 ----
 +
 . Replace `<pod-name>` with the name of the pod and `<your-namespace>` with the name of your project.
