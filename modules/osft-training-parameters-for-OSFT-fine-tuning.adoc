@@ -1,0 +1,45 @@
+:_module-type: PROCEDURE
+
+
+[id="osft-training-parameters-for-OSFT-fine-tuning_{context}"]
+= OSFT training parameters for OSFT fine-tuning
+
+
+[role='_abstract']
+
+Create a cell with the following content to set the OSFT training parameters:
+
+[source,subs="+quotes"]
+----
+params = {
+    # Model + Data Paths
+    "model_path": "Qwen/Qwen2.5-1.5B-Instruct",
+    "data_path": "/mnt/shared/table-gpt-data/train/train_All_5000.jsonl",
+    "ckpt_output_dir": "/mnt/shared/checkpoints-logs-dir",
+    "data_output_path": "/mnt/shared/osft-json/_data",
+
+    # Training Hyperparameters
+    "unfreeze_rank_ratio": 0.25,   # OSFT-specific: controls the subspace dimension
+    "effective_batch_size": 128,
+    "learning_rate": 5.0e-6,
+    "num_epochs": 1,
+    "lr_scheduler": "cosine",
+    "warmup_steps": 0,
+    "seed": 42,
+
+    # Performance Hyperparameters
+    "use_liger": True,             # OSFT-specific: enables Liger kernel optimization
+    "max_tokens_per_gpu": 64000,
+    "max_seq_len": 8192,
+
+    # Checkpointing Settings
+    "save_final_checkpoint": True,
+    "checkpoint_at_epoch": False,
+
+    # Distributed training (delegated to Kubeflow Trainer)
+    "nproc_per_node": 2,
+    "nnodes": 2,
+}
+----
+
+Optional: Edit the parameters to suit your model, dataset, and resources.

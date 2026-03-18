@@ -44,8 +44,7 @@ Alternatively, you can modify the example code to specify the appropriate config
 + 
 [source,subs="+quotes"]
 ----
-!pip install kubeflow --index-url 
-https://console.redhat.com/api/pypi/public-rhai/rhoai/3.2/cuda12.9-ubi9/simple/
+!pip install kubeflow --index-url https://console.redhat.com/api/pypi/public-rhai/rhoai/3.2/cuda12.9-ubi9/simple/
 
 !pip install training-hub==0.3.0
 ----
@@ -94,91 +93,7 @@ The training parameters depend on the fine-tuning algorithm you choose. See the 
 
 . Click *File* > *Save Notebook As*, enter an appropriate file name, and click *Save*.
 
-*OSFT training parameters*
-
-Create a cell with the following content to set the OSFT training parameters:
-
-[source,subs="+quotes"]
-----
-params = {
-    # Model + Data Paths
-    "model_path": "Qwen/Qwen2.5-1.5B-Instruct",
-    "data_path": "/mnt/shared/table-gpt-data/train/train_All_5000.jsonl",
-    "ckpt_output_dir": "/mnt/shared/checkpoints-logs-dir",
-    "data_output_path": "/mnt/shared/osft-json/_data",
-
-    # Training Hyperparameters
-    "unfreeze_rank_ratio": 0.25,   # OSFT-specific: controls the subspace dimension
-    "effective_batch_size": 128,
-    "learning_rate": 5.0e-6,
-    "num_epochs": 1,
-    "lr_scheduler": "cosine",
-    "warmup_steps": 0,
-    "seed": 42,
-
-    # Performance Hyperparameters
-    "use_liger": True,             # OSFT-specific: enables Liger kernel optimization
-    "max_tokens_per_gpu": 64000,
-    "max_seq_len": 8192,
-
-    # Checkpointing Settings
-    "save_final_checkpoint": True,
-    "checkpoint_at_epoch": False,
-
-    # Distributed training (delegated to Kubeflow Trainer)
-    "nproc_per_node": 2,
-    "nnodes": 2,
-}
-----
-
-Optional: Edit the parameters to suit your model, dataset, and resources.
-
-*SFT training parameters*
-
-Create a cell with the following content to set the SFT training parameters:
-
-[source,subs="+quotes"]
-----
-training_parameters = {
-    # Model + Data Paths
-    "model_path": "/mnt/shared/Qwen/Qwen2.5-1.5B-Instruct",
-    "data_path": "/mnt/shared/table-gpt-data/train/train_All_5000.jsonl",
-    "ckpt_output_dir": "/mnt/shared/checkpoints",
-    "data_output_dir": "/mnt/shared/traininghub-sft-data",
-
-    # Training Hyperparameters
-    "effective_batch_size": 128,
-    "learning_rate": 5e-6,
-    "num_epochs": 1,
-    "lr_scheduler": "cosine",
-    "warmup_steps": 0,
-    "seed": 42,
-
-    # Performance Hyperparameters
-    "max_tokens_per_gpu": 10000,
-    "max_seq_len": 8192,
-
-    # Checkpointing Settings
-    "checkpoint_at_epoch": True,
-    "accelerate_full_state_at_epoch": False,
-
-    # FSDP Configuration
-    "fsdp_options": {
-        "sharding_strategy": "FULL_SHARD",
-    },
-    "nproc_per_node": 1,
-    "nnodes": 2,
-}
-----
-
-Optional: Edit the parameters to suit your model, dataset, and resources.
-
-*Training Data Format*
-
-Training Hub fine-tuning algorithms support training data in JSON Lines (`.jsonl`) format with a messages structure:
-
-[source,subs="+quotes"]
-----
-{"messages": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "Hello!"}, {"role": "assistant", "content": "Hi there! How can I help you?"}]}
-{"messages": [{"role": "user", "content": "What is OSFT?"}, {"role": "assistant", "content": "OSFT stands for Orthogonal Subspace Fine-Tuning..."}]}
-----
+include::osft-training-parameters-for-OSFT-fine-tuning.adoc[leveloffset=+1]
+include::sft-training-parameters-for-sft-fine-tuning.adoc[leveloffset=+1]
+include::example-fine-tuning-notebooks.adoc[leveloffset=+1]
+include::training-data-format.adoc[leveloffset=+1]

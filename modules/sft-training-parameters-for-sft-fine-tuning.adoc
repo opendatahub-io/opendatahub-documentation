@@ -1,0 +1,47 @@
+:_module-type: PROCEDURE
+
+
+[id="sft-training-parameters-for-sft-fine-tuning_{context}"]
+= SFT training parameters for SFT fine-tuning
+
+
+[role='_abstract']
+
+
+Create a cell with the following content to set the SFT training parameters:
+
+[source,subs="+quotes"]
+----
+training_parameters = {
+    # Model + Data Paths
+    "model_path": "/mnt/shared/Qwen/Qwen2.5-1.5B-Instruct",
+    "data_path": "/mnt/shared/table-gpt-data/train/train_All_5000.jsonl",
+    "ckpt_output_dir": "/mnt/shared/checkpoints",
+    "data_output_dir": "/mnt/shared/traininghub-sft-data",
+
+    # Training Hyperparameters
+    "effective_batch_size": 128,
+    "learning_rate": 5e-6,
+    "num_epochs": 1,
+    "lr_scheduler": "cosine",
+    "warmup_steps": 0,
+    "seed": 42,
+
+    # Performance Hyperparameters
+    "max_tokens_per_gpu": 10000,
+    "max_seq_len": 8192,
+
+    # Checkpointing Settings
+    "checkpoint_at_epoch": True,
+    "accelerate_full_state_at_epoch": False,
+
+    # FSDP Configuration
+    "fsdp_options": {
+        "sharding_strategy": "FULL_SHARD",
+    },
+    "nproc_per_node": 1,
+    "nnodes": 2,
+}
+----
+
+Optional: Edit the parameters to suit your model, dataset, and resources.

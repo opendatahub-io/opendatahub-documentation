@@ -1,4 +1,4 @@
-:_module-type: PROCEDURE
+:_module-type: REFERENCE
 
 
 [id="example-trainjob-resource-for-amd-rocm-gpus_{context}"]
@@ -7,7 +7,7 @@
 
 [role='_abstract']
 
-The following example shows a `TrainJob` resource configured for AMD ROCm GPUs. The script is mounted using `podTemplateOverrides` (target job name `node` matches the default ROCm runtime):
+The following example shows a `TrainJob` resource configured for AMD ROCm GPUs. The script is mounted using `podTemplateOverrides` because the target job name `node` matches the default ROCm runtime:
 
 [source,subs="+quotes"]
 ----
@@ -46,8 +46,6 @@ spec:
               - name: training-script-volume
                 mountPath: /workspace
 ----
+where: 
 
-[NOTE]
-====
-The `torch-distributed-rocm` ClusterTrainingRuntime is specifically configured for AMD ROCm GPUs. The GPU resource request uses `amd.com/gpu` instead of `nvidia.com/gpu`.
-====
+`torch-distributed-rocm`:: ClusterTrainingRuntime is specifically configured for AMD ROCm GPUs. The GPU resource request uses `amd.com/gpu` instead of `nvidia.com/gpu`.

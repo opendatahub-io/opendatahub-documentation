@@ -1,0 +1,20 @@
+:_module-type: PROCEDURE
+
+
+[id="suspending-a-training-job"]
+= Suspending a training job
+
+You can suspend a running TrainJob to pause training and free up cluster resources. If JIT checkpointing is configured, the training state is automatically saved before the pods are terminated.
+
+.Prerequisites
+. You have an active `TrainJob` currently running on the OpenShift cluster.
+. You have configured JIT (Just-In-Time) checkpointing in your training script. 
+. You have confirmed that your training script is configured to handle the SIGTERM signal.
+. You have the OpenShift CLI (`oc`) installed and are logged in with a user that has patch permissions for the `TrainJob` resource in the target namespace.
+
+.Procedure
+Run the following command:
+[source,subs="+quotes"]
+----
+oc patch trainjob pytorch-multi-node-job -n <your-namespace> --type=merge -p '{"spec":{"suspend":true}}'
+----

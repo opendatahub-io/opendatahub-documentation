@@ -1,4 +1,4 @@
-:_module-type: PROCEDURE
+:_module-type: REFERENCE
 
 
 [id="example-trainJob-resource-with-suspend-enabled_{context}"]
@@ -7,7 +7,7 @@
 
 [role='_abstract']
 
-The following example shows a TrainJob resource that is created in a suspended state. This is useful when you want to define a job but delay its execution:
+The following example shows a TrainJob resource that is created in a suspended state. This is useful when you want to define a job before starting it:
 
 [source,subs="+quotes"]
 ----
@@ -44,10 +44,9 @@ spec:
         name: training-script-configmap
 ----
 
-To start the job, resume it by running:
+To start the job:
 
 [source,subs="+quotes"]
 ----
-oc patch trainjob pytorch-suspended-example -n test-namespace 
---type=merge -p '{"spec":{"suspend":false}}'
+oc patch trainjob pytorch-suspended-example -n test-namespace --type=merge -p '{"spec":{"suspend":false}}'
 ----

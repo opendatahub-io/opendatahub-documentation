@@ -2,14 +2,16 @@
 
 
 [id="example-trainJob-with-a-minimal-training-script_{context}"]
-= Example TrainJob with a minimal training script (no environment variables needed)
+= Example TrainJob with a minimal training script
 
 
 [role='_abstract']
 
-The following example uses a small training script in a ConfigMap and runs it with `torchrun`. The runtime sets up distributed training (RANK, WORLD_SIZE, MASTER_ADDR, and so on) for you, so you do not need to set any environment variables. The script is mounted into the pod using `podTemplateOverrides`, which works with the default `torch-distributed` runtime (container name `node`).
+The following example uses a small training script in a ConfigMap and runs it with `torchrun`. The runtime sets up distributed training for you, so you do not need to set any environment variables. The script is mounted into the pod using `podTemplateOverrides`, which works with the default `torch-distributed` runtime with container name `node`.
 
-. *Create a ConfigMap with the training script*
+Apply the ConfigMap first, then the TrainJob.
+
+. Create a ConfigMap with the training script:
 +
 [source,subs="+quotes"]
 ----
@@ -41,7 +43,7 @@ data:
 ----
 +
 
-. *Create the TrainJob*
+. Create the TrainJob:
 +
 Use `podTemplateOverrides` to add the ConfigMap volume and mount it into the trainer container. The target job name `node` matches the default `torch-distributed` runtime.
 
@@ -79,6 +81,4 @@ spec:
               - name: script-volume
                 mountPath: /workspace
 ----
-+
 
-Apply the ConfigMap first, then the TrainJob. No environment variables are required; the runtime configures distributed training when you use `torchrun` with a script.

@@ -1,4 +1,4 @@
-:_module-type: PROCEDURE
+:_module-type: REFERENCE
 
 
 [id="example-trainJob-resource-with-custom-training-runtime_{context}"]
@@ -7,7 +7,7 @@
 
 [role='_abstract']
 
-The following example shows a `TrainJob` resource that references a custom namespace-scoped `TrainingRuntime`. Use `podTemplateOverrides` to mount the script; set `targetJobs` and the container `name` to match your custom runtime template (here node is used as the trainer job/container name):
+The following example shows a `TrainJob` resource that references a custom namespace-scoped `TrainingRuntime`. Use `podTemplateOverrides` to mount the script. Set `targetJobs` and the container `name` to match your custom runtime template. here node is used as the trainer job and container name:
 
 [source,subs="+quotes"]
 ----
@@ -47,7 +47,6 @@ spec:
                 mountPath: /workspace
 ----
 
-[NOTE]
-====
-The `kind: TrainingRuntime` setting indicates that the runtime is namespace-scoped. Ensure that you have created the custom `TrainingRuntime` resource in the same namespace. See Understanding and using training runtimes for details. If your runtime uses a different replicated job or container name, change `targetJobs` and `containers[].name` accordingly.
-====
+where:
+
+`kind: TrainingRuntime`:: indicates that the runtime is namespace-scoped. Ensure that you have created the custom `TrainingRuntime` resource in the same namespace. See Understanding and using training runtimes for details. If your runtime uses a different replicated job or container name, change `targetJobs` and `containers[].name` accordingly.
