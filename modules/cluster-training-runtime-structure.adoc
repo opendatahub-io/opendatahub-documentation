@@ -1,0 +1,47 @@
+:_module-type: CONCEPT
+
+
+[id="cluster-training-runtime-structure_{context}"]
+= ClusterTrainingRuntime structure
+
+
+[role="_abstract"]
+
+
+The following example shows the structure of the `torch-distributed` ClusterTrainingRuntime. This runtime is pre-installed in {productname-long} and handles PyTorch distributed training configuration, including `torchrun` setup, environment variables, and node coordination:
+
+
+[source,subs="+quotes"]
+----
+apiVersion: trainer.kubeflow.org/v1alpha1
+kind: ClusterTrainingRuntime
+metadata:
+ name: torch-distributed
+spec:
+ mlPolicy:
+   torch:
+     numProcPerNode: auto
+ template:
+   spec:
+     replicatedJobs:
+       - name: Node
+         template:
+           spec:
+             template:
+               spec:
+                 containers:
+                   - name: trainer
+                     env:
+                       - name: MASTER_ADDR
+                         value: "$(JOB_NAME)-node-0-0.$(JOB_NAME)"
+                       - name: MASTER_PORT
+                         value: "29500"
+                     command:
+                       - torchrun
+----
+
+
+[NOTE]
+====
+You do not need to create the `torch-distributed` ClusterTrainingRuntime. It is provided out of the box when the platform administrator enables the Kubeflow Trainer component in the DataScienceCluster. Only the platform administrator creates or modifies ClusterTrainingRuntimes.
+====

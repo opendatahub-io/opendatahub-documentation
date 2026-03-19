@@ -1,0 +1,16 @@
+:_module-type: PROCEDURE
+
+
+[id="training-data-format_{context}"]
+= Training data format
+
+
+[role='_abstract']
+
+Training Hub fine-tuning algorithms support training data in JSON Lines (`.jsonl`) format with a messages structure:
+
+[source,subs="+quotes"]
+----
+{"messages": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "Hello!"}, {"role": "assistant", "content": "Hi there! How can I help you?"}]}
+{"messages": [{"role": "user", "content": "What is OSFT?"}, {"role": "assistant", "content": "OSFT stands for Orthogonal Subspace Fine-Tuning..."}]}
+----

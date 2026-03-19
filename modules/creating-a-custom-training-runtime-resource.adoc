@@ -1,0 +1,102 @@
+:_module-type: CONCEPT
+
+
+[id="creating-a-custom-training-runtime-resource_{context}"]
+= Creating a custom TrainingRuntime resource
+
+
+[role="_abstract"]
+
+
+A *project administrator* can create a namespace-scoped `TrainingRuntime` resource when they need a custom training environment that differs from the pre-built `ClusterTrainingRuntime` resources provided by the platform.
+
+
+A `TrainingRuntime` is useful when you need to:
+
+
+* Use a custom container image with additional libraries or dependencies pre-installed.
+* Set custom environment variables for all training pods.
+* Define default resource requests and limits specific to your project.
+* Configure custom volume mounts or init containers.
+
+
+[NOTE]
+====
+For most use cases, the pre-built `ClusterTrainingRuntime` resources are sufficient. Create a custom `TrainingRuntime` only when you need project-specific configuration that cannot be overridden in the `TrainJob` resource.
+====
+
+
+.Prerequisites
+* Your platform administrator has installed {productname-long} with the required distributed training components as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+*You can access the OpenShift Console for the cluster where {productname-short} is installed.
+* You have project administrator access for the project where you want to create the TrainingRuntime.
+   ** If you created the project, you automatically have administrator access.
+   ** If you did not create the project, the platform administrator must give you project administrator access.
+
+
+.Procedure
+. Log in to the OpenShift Console.
+. Create a `TrainingRuntime` resource, as follows:
+.. In the Administrator perspective, click *Home* > *Search*.
+.. From the *Project* list, select your project.
+.. Click the *Resources* list, and in the search field, type `TrainingRuntime`.
+.. Select *TrainingRuntime*, and click *Create TrainingRuntime*. The Create TrainingRuntime page opens, with default YAML code automatically added.
+.. Replace the default YAML code with your custom runtime definition. The following example shows a custom `TrainingRuntime` with a custom container image and default resource configuration:
++
+[source,yaml,subs="+quotes"]
+----
+apiVersion: trainer.kubeflow.org/v1alpha1
+kind: TrainingRuntime
+metadata:
+  name: custom-torch-runtime
+  namespace: my-project
+spec:
+  mlPolicy:
+    torch:
+      numProcPerNode: auto
+  template:
+    spec:
+      replicatedJobs:
+        - name: Node
+          template:
+            spec:
+              template:
+                spec:
+                  containers:
+                    - name: trainer
+                      image: registry.redhat.io/rhoai/odh-training-cuda128-torch28-py312-rhel9:v3.0
+                      env:
+                        - name: MASTER_ADDR
+                          value: "$(JOB_NAME)-node-0-0.$(JOB_NAME)"
+                        - name: MASTER_PORT
+                          value: "29500"
+                        - name: MY_CUSTOM_ENV_VAR
+                          value: "my-custom-value"
+                      command:
+                        - torchrun
+                      resources:
+                        requests:
+                          cpu: "4"
+                          memory: "16Gi"
+                        limits:
+                          cpu: "4"
+                          memory: "16Gi"
+----
++
+.. Click *Create*.
+
+
+.Verification
+  * Using the user interface:
+    ** In the OpenShift Console, in the Administrator perspective, click *Home* > *Search*.
+    ** From the *Project* list, select your project.
+    ** Click the *Resources* list and search for *TrainingRuntime*.
+    ** Verify that your custom runtime appears in the list.
+
+  * Using the CLI:
+
+[source,subs="+quotes"]
+----
+oc get trainingruntime -n <your-namespace>
+----
+

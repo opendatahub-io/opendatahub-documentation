@@ -1,0 +1,24 @@
+:_module-type: PROCEDURE
+
+
+[id="deleting-a-training-job"]
+= Deleting a training job
+
+
+[role='_abstract']
+
+.Prerequisites
+. You have identified the name of the `TrainJob` and the namespace where it is deployed.
+. You have the OpenShift CLI (`oc`) installed and are logged in with a user that has delete permissions for the TrainJob resource.
+
+.Procedure
+
+Run the following command:
+[source,subs="+quotes"]
+----
+oc delete trainjob/pytorch-multi-node-job -n <your-namespace>
+----
+
+where
+
+`<your-namespace>`:: is the name of your project.

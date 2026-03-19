@@ -1,0 +1,185 @@
+:_module-type: PROCEDURE
+
+
+[id="creating-a-kubeflow-trainer-trainjob-resource-by-using-the-sdk_{context}"]
+= Creating a Kubeflow Trainer TrainJob resource by using the SDK
+
+
+[role='_abstract']
+
+You can create a TrainJob resource programmatically by using the Kubeflow SDK from an {productname-short} workbench.
+
+.Prerequisites
+* You can access an OpenShift cluster that has multiple worker nodes with supported NVIDIA GPUs or AMD GPUs.
+* Your cluster administrator has configured the cluster as follows:
+    ** Installed {productname-long} with the required distributed training components, as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+    ** Configured the distributed training resources, as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/managing_openshift_ai/managing_distributed_workloads[Managing distributed workloads].
+    ** Installed the JobSet Operator from OLM, as described in https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/ai_workloads/jobset-operator#js-install[Installing the JobSet Operator].
+    ** Configured RBAC permissions for SDK access to ClusterTrainingRuntime resources, as described in Configuring User Permissions for SDK Access in the Installation Guide.
+* A ClusterTrainingRuntime is available in your cluster (for example, `torch-distributed`). To verify, run `oc get clustertrainingruntime`.
+* You can access an {productname-short} workbench with Python 3.9 or later.
+* You have installed the Kubeflow SDK:
++
+[source,subs="+quotes"]
+----
+pip install kubeflow --index-url 
+https://console.redhat.com/api/pypi/public-rhai/rhoai/3.2/cuda12.9-ubi9/simple/
+----
++
+Verify the installation:
++
+[source,subs="+quotes"]
+----
+pip show kubeflow
+----
++
+Example output:
++
+[source,subs="+quotes"]
+----
+Name: kubeflow
+Version: 0.2.1+rhai0 
+----
+
+.Procedure
+
+. Obtain the API server URL and authentication token from your OpenShift cluster, as follows:
++
+[source,subs="+quotes"]
+----
+# Get the API server URL
+oc whoami --show-server
+
+# Get your authentication token
+oc whoami --show-token
+----
++
+[NOTE]
+====
+If your cluster uses a self-signed certificate, you must set configuration.verify_ssl = False in your code to avoid SSL verification errors.
+====
+
+. In your workbench, create a Python script or notebook cell and define your training function, configure authentication, and submit the training job, as follows:
++
+[source,subs="+quotes"]
+----
+from kubernetes import client
+from kubeflow.trainer import TrainerClient
+from kubeflow.trainer.rhai import TransformersTrainer
+from kubeflow.common.types import KubernetesBackendConfig
+
+
+# Define your training function
+def train_func():
+    from transformers import (
+        AutoModelForSequenceClassification,
+        AutoTokenizer,
+        Trainer,
+        TrainingArguments,
+    )
+    from datasets import load_dataset
+
+    # Load model and tokenizer
+    model = AutoModelForSequenceClassification.from_pretrained(
+        "bert-base-uncased", num_labels=2
+    )
+    tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+
+    # Load and tokenize dataset
+    dataset = load_dataset("imdb", split="train[:1000]")
+
+    def tokenize_function(examples):
+        return tokenizer(
+            examples["text"], padding="max_length", truncation=True, max_length=512
+        )
+
+    tokenized_dataset = dataset.map(tokenize_function, batched=True)
+
+    # Configure training
+    training_args = TrainingArguments(
+        output_dir="/tmp/output",
+        num_train_epochs=3,
+        per_device_train_batch_size=8,
+    )
+
+    # Train
+    trainer = Trainer(
+        model=model, args=training_args, train_dataset=tokenized_dataset
+    )
+    trainer.train()
+
+
+# Configure authentication for the workbench
+api_server = "<your-api-server-url>"  # e.g., "https://api.cluster.example.com:6443"
+token = "<your-bearer-token>"
+
+configuration = client.Configuration()
+configuration.host = api_server
+configuration.api_key = {"authorization": f"Bearer {token}"}
+# Uncomment the following line if your cluster uses a self-signed certificate
+# configuration.verify_ssl = False
+
+# Create the client with authentication
+trainer_client = TrainerClient(
+    backend_config=KubernetesBackendConfig(client_configuration=configuration)
+)
+
+# Create the trainer configuration
+trainer = TransformersTrainer(
+    func=train_func,
+    num_nodes=2,
+    resources_per_node={"nvidia.com/gpu": 1},
+)
+
+# Get the runtime and submit the training job
+runtime = trainer_client.backend.get_runtime("torch-distributed")
+job_name = trainer_client.train(trainer=trainer, runtime=runtime)
+print(f"Job '{job_name}' submitted!")
+----
++
+Replace `<your-api-server-url>` with the API server URL from step 1 and `<your-bearer-token>` with the authentication token from step 1.
++
+The TransformersTrainer parameters are:
++
+[cols="3,3,3"]
+|===
+| Parameter | Type | Description
+
+
+| `func`
+| `Callable`
+| The Python function contains your training code.
+
+
+| `num_nodes`
+| `int`
+| Number of distributed training nodes (default: 1).
+
+
+| `resources_per_node`
+| `dict`
+| Resource requests per node, for example `"nvidia.com/gpu": 1, "memory": "16Gi"`.
+
+|===
+
+.Verification
+. Verify that the job was submitted by checking the job status:
++
+[source,subs="+quotes"]
+----
+job = trainer_client.get_job(job_name)
+print(f"   Status: {job.status}")
+----
++
+
+. Verify that the training pods are running:
++
+[source,subs="+quotes"]
+----
+oc get pods -n <your-namespace> -l job-name=<job-name>
+----
++
+Replace `<your-namespace>` with the name of your project and `<job-name>` with the name of your training job.
+
+. (Optional) Verify that real-time progress metrics are displayed for your training job. Navigate to the {productname-short} dashboard and click TrainingJobs to view these metrics.
+

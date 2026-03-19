@@ -1,0 +1,188 @@
+:_module-type: PROCEDURE
+
+
+[id="running-the-fine-tuning-job-v2_{context}"]
+= Running the fine-tuning job
+
+
+[role='_abstract']
+
+When you run a training job to fine-tune a model, you must specify the resources needed, provide any authorization credentials required, and configure shared storage for datasets, models, and checkpoints.
+
+[NOTE]
+====
+The code in this procedure specifies how to run the example fine-tuning job. If you have the specified resources, you can run the example code without editing it.
+Alternatively, you can modify the example code to specify the appropriate details for your fine-tuning job.
+====
+
+.Prerequisites
+* You have acces to an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training or tuning job.
+* You have access to a workbench that is suitable for distributed training, as described in Creating a workbench for distributed training.
+* You have administrator access for the project.
+    ** If you created the project, you automatically have administrator access.
+    ** If you did not create the project, your cluster administrator must give you administrator access.
+* You have access to a model.
+* You have access to data that you can use to fine-tune the model.
+* You have configured the fine-tuning job as described in Configuring the fine-tuning job.
+* You can access a dynamic storage provisioner that supports ReadWriteMany (RWX) Persistent Volume Claim (PVC) provisioning, such as Red Hat OpenShift Data Foundation.
+* A PersistentVolumeClaim resource named shared with RWX access mode is attached to your workbench.
+* If using a gated model from the Hugging Face Hub, you have a Hugging Face account and access token. For more information, search for "user access tokens" in the Hugging Face documentation.
+
+.Procedure
+. Open the workbench, as follows:
+    .. Log in to the {productname-long} web console.
+    .. Click *Projects* and click your project.
+    .. Click the Workbenches tab. If your workbench is not already running, start the workbench.
+    .. Click the Open link to open the IDE in a new window.
+    .. Click *File* > *Open*, and open the Jupyter notebook that you used to configure the fine-tuning job.
+. Create a cell to run the job. 
+. Depending on your fine-tuning method, add the code for either OSFT or SFT:
+.. To enable OSFT fine-tuning, add:
++
+[source,subs="+quotes"]
+----
+from kubeflow.trainer.rhai import TrainingHubAlgorithms, TrainingHubTrainer
+from kubeflow.trainer.options.kubernetes import (
+    ContainerOverride,
+    PodSpecOverride,
+    PodTemplateOverride,
+    PodTemplateOverrides,
+)
+
+PVC_NAME = "shared"
+
+job_name = client.train(
+    trainer=TrainingHubTrainer(
+        algorithm=TrainingHubAlgorithms.OSFT,
+        func_args=params,
+        env={
+            "HF_HOME": "/mnt/shared/huggingface",
+            "TRITON_CACHE_DIR": "/mnt/shared/.triton",
+            "XDG_CACHE_HOME": "/opt/app-root/src/.cache",
+            "NCCL_DEBUG": "INFO",
+        },
+        resources_per_node={
+            "nvidia.com/gpu": 2,
+            "memory": "32Gi",
+            "cpu": 4,
+        },
+    ),
+    options=[
+        PodTemplateOverrides(
+            PodTemplateOverride(
+                target_jobs=["node"],
+                spec=PodSpecOverride(
+                    volumes=[
+                        {
+                            "name": "work",
+                            "persistentVolumeClaim": {"claimName": PVC_NAME},
+                        },
+                    ],
+                    containers=[
+                        ContainerOverride(
+                            name="node",
+                            volume_mounts=[
+                                {
+                                    "name": "work",
+                                    "mountPath": "/mnt/shared",
+                                },
+                            ],
+                        ),
+                    ],
+                ),
+            )
+        )
+    ],
+    runtime=th_runtime,
+)
+----
++
+.. To enable SFT fine-tuning, add:
++
+[source,subs="+quotes"]
+----
+from kubeflow.trainer.rhai import TrainingHubAlgorithms, TrainingHubTrainer
+from kubeflow.trainer.options.kubernetes import (
+    ContainerOverride,
+    PodSpecOverride,
+    PodTemplateOverride,
+    PodTemplateOverrides,
+)
+
+PVC_NAME = "shared"
+
+job_name = client.train(
+    trainer=TrainingHubTrainer(
+        algorithm=TrainingHubAlgorithms.SFT,
+        func_args=training_parameters,
+        env={
+            "HF_HOME": "/mnt/shared/huggingface",
+            "TRITON_CACHE_DIR": "/mnt/shared/.triton",
+            "XDG_CACHE_HOME": "/opt/app-root/src/.cache",
+            "NCCL_DEBUG": "INFO",
+        },
+        resources_per_node={
+            "nvidia.com/gpu": 2,
+            "memory": "64Gi",
+            "cpu": 4,
+        },
+    ),
+    options=[
+        PodTemplateOverrides(
+            PodTemplateOverride(
+                target_jobs=["node"],
+                spec=PodSpecOverride(
+                    volumes=[
+                        {
+                            "name": "work",
+                            "persistentVolumeClaim": {"claimName": PVC_NAME},
+                        },
+                    ],
+                    containers=[
+                        ContainerOverride(
+                            name="node",
+                            volume_mounts=[
+                                {
+                                    "name": "work",
+                                    "mountPath": "/mnt/shared",
+                                },
+                            ],
+                        ),
+                    ],
+                ),
+            )
+        )
+    ],
+    runtime=th_runtime,
+)
+----
+
+where:
+
+`resources_per_node`:: values should be updated according to the job requirements and the resources available. If you use AMD accelerators, in the `resources_per_node` entry, change `nvidia.com/gpu` to `amd.com/gpu`. If the RWX PersistentVolumeClaim resource attached to your workbench has a different name instead of shared, update the `PVC_NAME` value and the `mountPath` as needed. If using a gated Hugging Face model, add `"HF_TOKEN": "<your-token>"` to the env dictionary.
+
+.Verification
+View the progress of the job as follows:
+
+. Create a cell with the following content:
+
++
+[source,subs="+quotes"]
+----
+for logline in client.get_job_logs(job_name, follow=True):
+    print(logline, end="")
+----
++
+
+. Run the cell to view the job progress.
+. (Optional) Check the final job status:
+
++
+[source,subs="+quotes"]
+----
+job = client.get_job(job_name)
+print(f"Name: {job.name}")
+print(f"Status: {job.status}")
+print(f"Nodes: {job.num_nodes}")
+print(f"Runtime: {job.runtime.name}")
+----

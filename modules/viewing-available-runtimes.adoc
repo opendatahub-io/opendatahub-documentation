@@ -1,0 +1,39 @@
+:_module-type: PRODECURE
+
+
+[id="viewing-available-runtimes_{context}"]
+= Viewing available runtimes
+
+
+[role="_abstract"]
+
+.Prerequisites
+* You have installed the OpenShift CLI (`oc`).
+* You have access to an OpenShift cluster with {productname-long} installed.
+
+.Procedure
+To list the available ClusterTrainingRuntimes in your cluster, run the following command:
+
+[source,subs="+quotes"]
+----
+oc get clustertrainingruntime
+----
+
+Example output:
+
+[source,subs="+quotes"]
+----
+NAME                                             AGE
+torch-distributed                                5m
+torch-distributed-rocm                           5m
+torch-distributed-th03-cuda128-torch28-py312     5m
+training-hub                                     5m
+training-hub03-cuda128-torch28-py312             5m
+----
+
+To view the details of a specific runtime, run the following command:
+
+[source,subs="+quotes"]
+----
+oc get clustertrainingruntime torch-distributed -o yaml
+----

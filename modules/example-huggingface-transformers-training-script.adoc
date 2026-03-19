@@ -1,0 +1,71 @@
+:_module-type: REFERENCE
+
+
+[id="example-huggingface-transformers-training-script_{context}"]
+= Example HuggingFace Transformers training script
+
+
+[role='_abstract']
+
+The following example shows a HuggingFace Transformers training script for fine-tuning BERT on the IMDB dataset:
+
+[source,subs="+quotes"]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: transformers-training-script
+  namespace: test-namespace
+data:
+  train.py: |
+    from transformers import (
+        AutoModelForSequenceClassification,
+        AutoTokenizer,
+        Trainer,
+        TrainingArguments,
+    )
+    from datasets import load_dataset
+
+    def main():
+        # Load model and tokenizer
+        model_name = "bert-base-uncased"
+        model = AutoModelForSequenceClassification.from_pretrained(
+            model_name, num_labels=2
+        )
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+        # Load and tokenize dataset
+        dataset = load_dataset("imdb", split="train[:2000]")
+
+        def tokenize_function(examples):
+            return tokenizer(
+                examples["text"],
+                padding="max_length",
+                truncation=True,
+                max_length=512,
+            )
+
+        tokenized_dataset = dataset.map(tokenize_function, batched=True)
+
+        # Configure training
+        training_args = TrainingArguments(
+            output_dir="/tmp/output",
+            num_train_epochs=3,
+            per_device_train_batch_size=8,
+            logging_steps=10,
+            save_strategy="epoch",
+        )
+
+        # Create trainer and train
+        trainer = Trainer(
+            model=model,
+            args=training_args,
+            train_dataset=tokenized_dataset,
+        )
+        trainer.train()
+
+        print("Training complete!")
+
+    if __name__ == "__main__":
+        main()
+----

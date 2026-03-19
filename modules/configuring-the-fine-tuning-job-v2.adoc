@@ -1,0 +1,99 @@
+:_module-type: PROCEDURE
+
+
+[id="configuring-the-fine-tuning-job-v2_{context}"]
+= Configuring the fine-tuning job
+
+
+[role='_abstract']
+
+Before you can use a training job to fine-tune a model, you must configure the training job. You must set the training parameters, select the fine-tuning algorithm, and configure the Kubeflow SDK.
+
+[NOTE]
+====
+The code in this procedure specifies how to configure an example fine-tuning job. If you have the specified resources, you can run the example code without editing it.
+Alternatively, you can modify the example code to specify the appropriate configuration for your fine-tuning job.
+====
+
+.Prerequisites
+* You can access an OpenShift cluster that has sufficient worker nodes with supported accelerators to run your training or tuning job.
+    ** For the OSFT example: 2 nodes with 2 NVIDIA L40/L40S GPUs each (4 GPUs total), 4 CPUs and 32 GiB memory per node.
+    ** For the SFT example: 2 nodes with 2 NVIDIA GPUs each (Ampere-based or newer recommended), 4 CPUs and 64 GiB memory per node.
+* Your cluster administrator has configured the cluster as follows:
+    ** Installed {productname-long} with the required distributed training components, as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.0/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components] (for disconnected environments, see https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.0/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-distributed-workloads-components_install[Installing the distributed workloads components]).
+    ** Configured the distributed training resources.
+    ** Installed the JobSet Operator from OLM, as described in https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/ai_workloads/jobset-operator#js-install[Installing the JobSet Operator].
+    ** Configured RBAC permissions for SDK access to ClusterTrainingRuntime resources.
+* A training-hub ClusterTrainingRuntime is available in your cluster. To verify, run `oc get clustertrainingruntime training-hub`.
+* You can access a workbench that is suitable for distributed training, as described in https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.0/html-single/creating_a_workbench/index[Creating a workbench for distributed training].
+* You can access a dynamic storage provisioner that supports ReadWriteMany (RWX) Persistent Volume Claim (PVC) provisioning, such as Red Hat OpenShift Data Foundation.
+* You have administrator access for the project.
+    ** If you created the project, you automatically have administrator access.
+    ** If you did not create the project, your cluster administrator must give you administrator access.
+
+.Procedure
+. Open the workbench:
+    . Log in to the {productname-long} web console.
+    . Click *Projects* and click your project.
+    . Click the *Workbenches* tab.
+    . Ensure that the workbench uses a storage class with RWX capability.
+    . If your workbench is not already running, start the workbench.
+    . Click the *Open* link to open the IDE in a new window.
+    . Click *File* > *New* > *Notebook*.
+. Install the required packages. In a notebook cell, add the code to install the dependencies, as follows:
++ 
+[source,subs="+quotes"]
+----
+!pip install kubeflow --index-url https://console.redhat.com/api/pypi/public-rhai/rhoai/3.2/cuda12.9-ubi9/simple/
+
+!pip install training-hub==0.3.0
+----
++ 
+
+. Select the cell, and click *Run* > *Run selected cell*.
+. Configure the Kubeflow SDK client authentication by creating a cell with the following content:
++ 
+[source,subs="+quotes"]
+----
+from kubernetes import client as k8s
+from kubeflow.common.types import KubernetesBackendConfig
+from kubeflow.trainer import TrainerClient
+
+api_server = "<API_SERVER>"
+token = "<TOKEN>"
+
+configuration = k8s.Configuration()
+configuration.host = api_server
+configuration.api_key = {"authorization": f"Bearer {token}"}
+# Uncomment if your cluster API server uses a self-signed certificate
+# configuration.verify_ssl = False
+
+backend_cfg = KubernetesBackendConfig(client_configuration=configuration)
+client = TrainerClient(backend_cfg)
+----
++
+
+. Edit the `api_server` and `token` parameters to enter the values to authenticate to your OpenShift cluster. Run the cell to configure the SDK client authentication.
+. Verify that a Training Hub runtime is available, as follows:
++ 
+[source,subs="+quotes"]
+----
+for runtime in client.list_runtimes():
+    print("Found runtime: " + str(runtime))
+    if runtime.name == "training-hub":
+        th_runtime = runtime
+        print("Selected runtime: " + str(th_runtime))
+----
++ 
+
+. Set the training parameters.
+The training parameters depend on the fine-tuning algorithm you choose. See the following sections for algorithm-specific configuration:
+* OSFT training parameters for OSFT fine-tuning
+* SFT training parameters for SFT fine-tuning
+
+. Click *File* > *Save Notebook As*, enter an appropriate file name, and click *Save*.
+
+include::osft-training-parameters-for-OSFT-fine-tuning.adoc[leveloffset=+1]
+include::sft-training-parameters-for-sft-fine-tuning.adoc[leveloffset=+1]
+include::example-fine-tuning-notebooks.adoc[leveloffset=+1]
+include::training-data-format.adoc[leveloffset=+1]

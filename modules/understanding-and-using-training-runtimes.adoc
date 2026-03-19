@@ -1,0 +1,21 @@
+:_module-type: PROCEDURE
+
+
+[id="understanding-and-using-training-runtimes_{context}"]
+= Understanding and using training runtimes
+
+
+[role='_abstract']
+
+
+Kubeflow Trainer v2 uses training runtimes to define the distributed training infrastructure for your training jobs.
+Runtimes encapsulate best practices for distributed training, including PyTorch distributed
+configuration, torchrun setup, environment variables, and container image defaults.
+
+
+This section describes how to view the pre-built ClusterTrainingRuntime resources provided by {productname-long}, and how to create custom namespace-scoped TrainingRuntime resources when you need project-specific configuration.
+
+include::understanding-cluster-training-runtimes.adoc[leveloffset=+1]
+include::cluster-training-runtime-structure.adoc[leveloffset=+1]
+include::how-runtimeRef-connects-a-trainJob-to-a-runtime.adoc[leveloffset=+1]
+include::creating-a-custom-training-runtime-resource.adoc[leveloffset=+1]

@@ -1,0 +1,140 @@
+:_module-type: PROCEDURE
+
+
+[id="creating-a-kubeflow-trainer-trainJob-resource_{context}"]
+= Creating a Kubeflow Trainer TrainJob resource
+
+
+[role='_abstract']
+
+You can create a TrainJob resource to run a distributed PyTorch training job by using the OpenShift Console.
+
+.Prerequisites
+* You can access an OpenShift cluster that has multiple worker nodes with supported NVIDIA GPUs or AMD GPUs.
+* Your cluster administrator has configured the cluster as follows:
+    ** Installed {productname-long} with the required distributed training components.
+    ** Configured the distributed training resources.
+    ** Installed the JobSet Operator from OLM.
+    ** A ClusterTrainingRuntime is available in your cluster (for example, torch-distributed). To verify, run `oc get clustertrainingruntime`.
+* You have administrator access for the project.
+    ** If you created the project, you automatically have administrator access.
+    ** If you did not create the project, your cluster administrator must give you administrator access.
+
+.Procedure
+. Log in to the OpenShift Console.
+
+. Create a TrainJob resource, as follows:
+.. In the Administrator perspective, click *Home* ->  *Search*.
+.. From the Project list, select your project.
+.. Click the *Resources* list, and in the search field, type Job.
+. Select *TrainJob*, and click *Create TrainJob*. The Create TrainJob page opens, with default YAML code automatically added.
+. Update the metadata to replace the name and namespace values with the values for your environment, as shown in the following example:
++
+[source,subs="+quotes"]
+----
+metadata:
+  name: pytorch-multi-node-job
+  namespace: test-namespace
+----
++
+
+. Configure the runtime reference to specify which ClusterTrainingRuntime to use, as shown in the following example:
++
+[source,subs="+quotes"]
+----
+spec:
+  runtimeRef:
+    name: torch-distributed
+    kind: ClusterTrainingRuntime
+----
++
+
+. Configure the trainer section with your ClusterTrainingRuntime name, command, and the number of distributed training nodes, as shown in the following example:
++
+[source,subs="+quotes"]
+----
+spec:
+  runtimeRef:
+    name: torch-distributed
+    kind: ClusterTrainingRuntime
+  trainer:
+    command: ["python", "/workspace/scripts/train.py"]
+    numNodes: 3
+----
+where:
++
+`numNodes`:: Specifies the total number of distributed training nodes. This replaces the separate Master and Worker replica specifications used in Training Operator v1. For example, a v1 job with 1 Master and 2 Workers is equivalent to `numNodes: 3` in v2.
+
+. To use a ConfigMap resource to provide the training script for the TrainJob pods, add the ConfigMap volume mount information, as shown in the following example:
++
+[source,subs="+quotes"]
+----
+spec:
+  runtimeRef:
+    name: torch-distributed
+    kind: ClusterTrainingRuntime
+  trainer:
+    command: ["python", "/workspace/scripts/train.py"]
+    numNodes: 3
+  podTemplateOverrides:
+    - targetJobs:
+        - name: node
+      spec:
+        volumes:
+          - name: training-script-volume
+            configMap:
+              name: training-script-configmap
+        containers:
+          - name: node
+            volumeMounts:
+              - name: training-script-volume
+                mountPath: /workspace/scripts
+----
++
+
+. Add the appropriate resource constraints for your environment, as shown in the following example:
++
+[source,subs="+quotes"]
+----
+spec:
+  runtimeRef:
+    name: torch-distributed
+    kind: ClusterTrainingRuntime
+  trainer:
+    command: ["python", "/workspace/scripts/train.py"]
+    numNodes: 3
+    resourcesPerNode:
+      requests:
+        cpu: "4"
+        memory: "8Gi"
+        nvidia.com/gpu: 2
+      limits:
+        cpu: "4"
+        memory: "8Gi"
+        nvidia.com/gpu: 2
+  podTemplateOverrides:
+    - targetJobs:
+        - name: node
+      spec:
+        volumes:
+          - name: training-script-volume
+            configMap:
+              name: training-script-configmap
+        containers:
+          - name: node
+            volumeMounts:
+              - name: training-script-volume
+                mountPath: /workspace/scripts
+----
+where:
++
+`resourcesPerNode`:: applies the same resource requests and limits to every training node. This replaces the per-replica resource configuration used in Training Operator v1, where you had to specify resources separately for the Master and each Worker.
+
+. Click *Create*.
+
+.Verification
+. In the OpenShift Console, open the Administrator perspective.
+. From the Project list, select your project.
+    .. Click *Home* > *Search* > *TrainJob* and verify that the job was created.
+    .. Click *Workloads* > *Pods* and verify that the requested training node pods are running.
+. (Optional) If you enabled progress tracking, navigate to the {productname-short} dashboard, click Model training, and verify that real-time progress metrics are displayed.

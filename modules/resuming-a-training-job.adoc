@@ -1,0 +1,22 @@
+:_module-type: PROCEDURE
+
+
+[id="resuming-a-training-job"]
+= Resuming a training job
+
+.Prerequisites
+. You have a TrainJob that is currently in a suspended state (`spec.suspend: true`).
+. You have a Persistent Volume Claim (PVC) or S3-compatible storage containing the latest saved checkpoint files from the previous session.
+. Your training script is configured to automatically detect and load the most recent checkpoint from the designated storage path upon startup.
+. The cluster has sufficient available resources to fulfill the original resource requests of the job.
+
+.Procedure 
+Run the following command:
+[source,subs="+quotes"]
+----
+oc patch trainjob pytorch-multi-node-job -n <your-namespace> --type=merge -p '{"spec":{"suspend":false}}'
+----
+
+When resumed, the job automatically loads the latest checkpoint and continues training from where it stopped.
+
+For more information about JIT checkpointing and suspend/resume, see https://access.redhat.com/articles/7136179[Using RHAI trainers for progress tracking and checkpointing].

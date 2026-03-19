@@ -1,0 +1,20 @@
+:_module-type: PROCEDURE
+
+
+[id="disabling-progress-tracking_{context}"]
+= Disabling progress tracking
+
+
+[role='_abstract']
+
+Progress tracking is enabled by default when using RHAI trainers. To disable progress tracking, set `enable_progression_tracking=False`:
+
+[source,subs="+quotes"]
+----
+trainer = TransformersTrainer(
+    func=train_func,
+    num_nodes=2,
+    resources_per_node={"nvidia.com/gpu": 1},
+    enable_progression_tracking=False,
+)
+----

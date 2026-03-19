@@ -1,0 +1,50 @@
+:_module-type: REFERENCE
+
+
+[id="example-trainJob-resource-for-multi-node-training_{context}"]
+= Example TrainJob resource for multi-node training
+
+
+[role='_abstract']
+
+The following example shows a complete TrainJob resource for multi-node distributed PyTorch training using a ConfigMap to provide the training script:
+
+[source,subs="+quotes"]
+----
+apiVersion: trainer.kubeflow.org/v1alpha1
+kind: TrainJob
+metadata:
+  name: pytorch-multi-node-job
+  namespace: test-namespace
+  annotations:
+    trainer.opendatahub.io/progression-tracking: "true"
+spec:
+  runtimeRef:
+    name: torch-distributed
+    kind: ClusterTrainingRuntime
+  trainer:
+    command: ["torchrun", "/workspace/train.py"]
+    numNodes: 3
+    resourcesPerNode:
+      requests:
+        cpu: "4"
+        memory: "8Gi"
+        nvidia.com/gpu: 2
+      limits:
+        cpu: "4"
+        memory: "8Gi"
+        nvidia.com/gpu: 2
+  podTemplateOverrides:
+    - targetJobs:
+        - name: node
+      spec:
+        volumes:
+          - name: training-script-volume
+            configMap:
+              name: training-script-configmap
+        containers:
+          - name: node
+            volumeMounts:
+              - name: training-script-volume
+                mountPath: /workspace
+----

@@ -1,0 +1,19 @@
+:_module-type: CONCEPT
+
+
+[id="fine-tuning-a-model-by-using-kubeflow-trainerv2_{context}"]
+= Fine-tuning a model by using Kubeflow Trainer v2
+
+
+[role='_abstract']
+
+Fine-tuning is the process of customizing a Large Language Model (LLM) for a specific task by using labelled data. You can use Kubeflow Trainer v2 with Training Hub runtimes and the Kubeflow Python SDK to fine-tune LLMs in {productname-long}.
+
+{productname-long} supports the following fine-tuning algorithms through Training Hub:
+
+Orthogonal Subspace Fine-Tuning (OSFT):: Enables continual learning of pre-trained or instruction-tuned models without catastrophic forgetting. OSFT does not require a supplementary dataset to maintain the distribution of the original model.
+Supervised Fine-Tuning (SFT):: Standard fine-tuning for task adaptation using PyTorch Fully Sharded Data Parallel (FSDP) to distribute training across multiple GPUs and nodes.
+
+include::configuring-the-fine-tuning-job-v2.adoc[leveloffset=+1]
+include::running-the-fine-tuning-job-v2.adoc[leveloffset=+1]
+include::deleting-the-fine-tuning-job-v2.adoc[leveloffset=+1]

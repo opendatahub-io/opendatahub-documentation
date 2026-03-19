@@ -1,0 +1,25 @@
+:_module-type: CONCEPT
+
+
+[id="how-runtimeRef-connects-a-trainJob-to-a-runtime_{context}"]
+= How runtimeRef connects a TrainJob to a runtime
+
+
+[role="_abstract"]
+
+
+In your `TrainJob` resource, you reference a runtime using the `runtimeRef` field. This field specifies the name and kind of the runtime to use:
+
+
+[source,subs="+quotes"]
+----
+spec:
+ runtimeRef:
+   name: torch-distributed
+   kind: ClusterTrainingRuntime
+----
+where:
+
+`kind`::
+* `ClusterTrainingRuntime` A cluster-scoped runtime available to all projects. These are the pre-built runtimes provided by Red Hat OpenShift AI.
+* `TrainingRuntime` A namespace-scoped runtime that you create in your own project. See *Creating a custom TrainingRuntime resource* below for details.
