@@ -10,7 +10,10 @@ When you initialize the Feature Store instance, Feature Store completes the foll
 
 * Scans the Python files in your feature repository and finds all Feature Store object definitions, such as feature views, entities, and data sources.
 +
-*Note:* Feature Store reads all Python files recursively, including subdirectories, even if they do not contain feature definitions. For information on identifying Python files, such as imperative scripts that you want Feature Store to ignore, see _Specifying files to ignore_.
+[NOTE]
+====
+Feature Store reads all Python files recursively, including subdirectories, even if they do not contain feature definitions. For information on identifying Python files, such as imperative scripts that you want Feature Store to ignore, see _Specifying files to ignore_.
+====
 
 * Validates your feature definitions, for example, by checking for uniqueness of features within a feature view.
 
@@ -19,7 +22,10 @@ When you initialize the Feature Store instance, Feature Store completes the foll
 * Creates or updates all necessary Feature Store infrastructure. The exact infrastructure that Feature Store creates depends on the provider configuration that you have set in `feature_store.yaml`. 
 For example, when you specify `local` as your provider, Feature Store creates the infrastructure on the local cluster.
 +
-*Note:*  When you use a cloud provider, such as Google Cloud or Amazon Web Service, the `feast apply` command creates cloud infrastructure that might incur costs for your organization.
+[NOTE]
+====
+When you use a cloud provider, such as Google Cloud or Amazon Web Service, the `feast apply` command creates cloud infrastructure that might incur costs for your organization.
+====
 
 .Prerequisites
 
