@@ -5,7 +5,7 @@
 
 [role='_abstract']
 
-If you have a relational database in your {openshift-platform} cluster such as MySQL or MariaDB, you can configure TrustyAI to use your database instead of a persistent volume claim (PVC). Using a database instead of a PVC for storage can improve scalability, performance, and data management in TrustyAI. 
+If you have a MariaDB relational database in your {openshift-platform} cluster, you can configure TrustyAI to use your database instead of a persistent volume claim (PVC). Using a database instead of a PVC for storage can improve scalability, performance, and data management in TrustyAI.
 Provide TrustyAI with a database configuration secret before deployment. You can create a secret or specify the name of an existing Kubernetes secret within your project. 
 
 .Prerequisites
@@ -33,8 +33,6 @@ ifdef::upstream[]
 
 * The data scientist has created a project, as described in link:{odhdocshome}/working-on-projects/#creating-a-project_projects[Creating a project], that contains the models that the data scientist wants to monitor.  
 endif::[]
-
-* If you are configuring the TrustyAI service with an external MySQL database, your database must already be in your cluster and use at least MySQL version 5.x. However, {org-name} recommends that you use MySQL version 8.x. 
 
 * If you are configuring the TrustyAI service with a MariaDB database, your database must already be in your cluster and use MariaDB version 10.3 or later. However, {org-name} recommends that you use at least MariaDB version 10.5.
 
